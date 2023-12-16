@@ -7,7 +7,7 @@ block append stylesheets
 block body
   include _modal-storage
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    #modal-pricing-video.modal.fade(
+    #modal-watch-video.modal.fade(
       tabindex="-1",
       role="dialog",
       aria-labelledby="modal-pricing-video-title",
@@ -16,7 +16,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-pricing-video-title.h4.d-inline-block.ml-4= t("Product Tour")
+            #modal-watch-video-title.h4.d-inline-block.ml-4= t("Product Tour")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -93,7 +93,7 @@ block body
                     i.fa.fa-code
                     = " "
                     = t("Developers")
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto(
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto(
         href="#learn-more"
       )
         i.fa.fa-angle-double-down
@@ -136,7 +136,7 @@ block body
                 li
                   i.fa.fa-fw.fa-check-circle.text-success
                   = " "
-                  != t('We\'re the world\'s first and only email service to use <strong class="text-success">quantum-safe</strong> and <strong class="text-success">individually encrypted SQLite mailboxes</strong>')
+                  != t("We're the world's first and only email service to use <strong>quantum-safe</strong> and <strong>individually encrypted SQLite mailboxes</strong>")
             a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
               href=l("/blog/docs/best-quantum-safe-encrypted-email-service#email-service-provider-comparison"),
               target="_blank"
@@ -154,7 +154,7 @@ block body
               != t("The back-end is the <strong>most sensitive part</strong> of an email provider.")
               = " "
               != t("It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.")
-          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto(
+          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
             href="#features"
           )
             i.fa.fa-angle-double-down
@@ -169,14 +169,11 @@ block body
     data-src=manifest("img/art/stars.svg")
   )
     .text-center.d-block.d-md-none.my-3
-      .h1.mb-0.text-white= t("Pricing")
+      .h1.mb-0= t("Pricing")
     .container
       .row.row-cols-1.row-cols-lg-3
         .col
           .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .position-absolute.w-100.text-right
-              span.badge.badge-pill.badge-dark.mt-3.mr-3.text-uppercase
-                != t("Basic")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Free")
@@ -211,6 +208,7 @@ block body
                   = " "
                   button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
                     type="button",
+                    aria-label=t("Spam Scanner"),
                     data-confirm-type="info",
                     data-confirm-show-cancel-button="false",
                     data-confirm-prompt-title=t("Spam Scanner"),
@@ -239,7 +237,6 @@ block body
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-decoration-underline.text-themed(
                   href=l("/free-email-webhooks"),
-                  aria-label=t("Webhooks"),
                   target="_blank"
                 )
                   = t("Send emails to webhooks")
@@ -247,7 +244,6 @@ block body
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-decoration-underline.text-themed(
                   href=l("/email-forwarding-regex-pattern-filter"),
-                  aria-label=t("Regex filtering"),
                   target="_blank"
                 )
                   = t("Regular expression filtering")
@@ -255,7 +251,7 @@ block body
                 i.fa.fa-fw.fa-check-circle.text-themed.mr-3
                 ul.list-inline.mb-0
                   li.list-inline-item.mr-1.small= t("Supports")
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#do-you-support-webhooks")
@@ -263,7 +259,7 @@ block body
                       = "HTTP"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#do-you-support-sending-email-with-api")
@@ -271,7 +267,7 @@ block body
                       = "API"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-i-set-up-spf-for-forward-email")
@@ -279,7 +275,7 @@ block body
                       = "SPF"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-i-set-up-dkim-for-forward-email")
@@ -287,7 +283,7 @@ block body
                       = "DKIM"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-i-set-up-dmarc-for-forward-email")
@@ -295,7 +291,7 @@ block body
                       = "DMARC"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#do-you-support-email-best-practices")
@@ -303,7 +299,7 @@ block body
                       = "ARC"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-i-set-up-srs-for-forward-email")
@@ -311,7 +307,7 @@ block body
                       = "SRS"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-i-set-up-mta-sts-for-forward-email")
@@ -319,7 +315,7 @@ block body
                       = "MTA-STS"
                       = " "
                       i.fa.fa-angle-right
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.lead
                     a.badge.badge-light(
                       target="_blank",
                       href=l("/faq#how-do-you-perform-dns-lookups-on-domain-names")
@@ -329,12 +325,11 @@ block body
                       i.fa.fa-angle-right
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .position-absolute.w-100.text-right
-              span.badge.badge-pill.badge-success.mt-3.mr-3.text-uppercase
-                != t("Popular")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Enhanced")
+                = " "
+                = emoji("lock")
               p.text-center.mb-3= t("Advanced features and privacy")
               .lead.text-center.mb-3
                 if user && user.plan !== 'free'
@@ -392,6 +387,7 @@ block body
                   = " "
                   button.btn.btn-link.text-themed.py-0.no-js(
                     type="button",
+                    aria-label=t("Email Storage"),
                     data-toggle="modal",
                     data-target="#modal-storage"
                   )
@@ -401,7 +397,7 @@ block body
                 ul.list-inline.mb-0
                   li.list-inline-item.mr-1.small= t("Works with")
                   //- Apple
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/apple-email-clients"),
                       target="_blank"
@@ -409,7 +405,7 @@ block body
                       = "Apple"
                       != "&reg;"
                   //- Windows
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/windows-email-clients"),
                       target="_blank"
@@ -417,7 +413,7 @@ block body
                       = "Windows"
                       != "&reg;"
                   //- Android
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/android-email-clients"),
                       target="_blank"
@@ -427,7 +423,7 @@ block body
                       = "Android"
                       != "&trade;"
                   //- Linux
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/linux-email-clients"),
                       target="_blank"
@@ -437,7 +433,7 @@ block body
                       = "Linux"
                       != "&reg;"
                   //- Desktop
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/desktop-email-clients"),
                       target="_blank"
@@ -446,7 +442,7 @@ block body
                       = " "
                       = t("Desktop")
                   //- Web
-                  li.list-inline-item.mr-1
+                  li.list-inline-item.mr-1.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/web-email-clients"),
                       target="_blank"
@@ -466,7 +462,7 @@ block body
                         = "Chrome"
                         != "&reg;"
                   //- Terminal
-                  li.list-inline-item
+                  li.list-inline-item.lead
                     a.badge.badge-light(
                       href=l("/blog/open-source/terminal-email-clients"),
                       target="_blank"
@@ -482,6 +478,7 @@ block body
                   = " "
                   button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
                     type="button",
+                    aria-label=t("Encrypted Configuration"),
                     data-confirm-type="info",
                     data-confirm-show-cancel-button="false",
                     data-confirm-prompt-title=t("Encrypted Configuration"),
@@ -500,6 +497,7 @@ block body
                   = " "
                   button.confirm-prompt.btn.btn-link.text-themed.py-0.no-js(
                     type="button",
+                    aria-label=t("Outbound SMTP Limits"),
                     data-confirm-type="info",
                     data-confirm-show-cancel-button="false",
                     data-confirm-prompt-title=t("Outbound SMTP Limits"),
@@ -511,7 +509,6 @@ block body
                 = " "
                 a.font-weight-bold.text-decoration-underline.text-themed(
                   href=l("/faq#do-you-offer-a-money-back-guarantee-on-paid-plans"),
-                  aria-label=t("Refund Policy"),
                   target="_blank"
                 )
                   = t("30-day refund guarantee")
@@ -532,7 +529,6 @@ block body
                 = " "
                 a.font-weight-bold.text-decoration-underline.text-themed(
                   href=l("/faq#do-you-store-error-logs"),
-                  aria-label=t("Error Logs"),
                   target="_blank"
                 )
                   = t("Search and analyze error logs")
@@ -540,7 +536,6 @@ block body
                 i.fa.fa-fw.fa-code.text-themed.mr-3
                 a.font-weight-bold.text-decoration-underline.text-themed(
                   href=l("/email-api"),
-                  aria-label=t("API Features"),
                   target="_blank"
                 )
                   = t("Developer API access")
@@ -560,12 +555,11 @@ block body
                 = t("99.99% service uptime")
         .col.mt-3.mt-lg-0
           .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .position-absolute.w-100.text-right
-              span.badge.badge-pill.badge-primary.mt-3.mr-3.text-uppercase
-                != t("Business")
             .px-md-3.py-md-3.my-3.my-md-0
               .h3.text-center.font-weight-bold
                 = t("Team")
+                = " "
+                = emoji("rocket")
               p.text-center.mb-3= t("For groups and organizations")
               .lead.text-center.mb-3
                 if user && user.plan === 'team'
@@ -714,7 +708,7 @@ block body
       .row.my-3
         .col
           h3.h5.border-bottom.border-dark-50= t("Which payment methods do you accept?")
-          p!= t('We accept cards, wallets, and bank transfers using <a class="alert-link" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="alert-link" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
+          p!= t('We accept cards, wallets, and bank transfers using <a class="font-weight-bold" href="https://stripe.com/global" target="_blank" rel="noopener noreferrer">Stripe</a> and <a class="font-weight-bold" href="https://www.paypal.com" target="_blank" rel="noopener noreferrer">PayPal</a>.')
       .row.my-3
         .col
           h3.h5.border-bottom.border-dark-50= t("Do you accept one-time payments and subscriptions?")
@@ -729,14 +723,14 @@ block body
           p!= t('<span class="font-weight-bold">No.</span> Prices will never increase. Unlike other companies, we will never shutdown our service either.')
       .row.my-3
         .col
-          h3.h5.border-bottom.border-dark-50!= t('Can I configure <a href="%s" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
+          h3.h5.border-bottom.border-dark-50!= t('Can I configure <a href="%s" class="font-weight-bold" target="_blank" rel="noopener noreferrer">Spam Scanner</a> settings?', "https://spamscanner.net")
           p
             != t('<span class="font-weight-bold">Yes.</span> You can toggle filters for adult-related content, phishing, executables, and viruses from <a href="%s" class="font-weight-bold">Settings</a>.', sortedDomains && sortedDomains[0] && sortedDomains[0].name ? l(`/my-account/domains/${sortedDomains[0].name}/advanced-settings`) : l("/my-account/domains"))
       .row.my-3
         .col
           h3.h5.border-bottom.border-dark-50= t("Do you store SMTP logs or write to disk?")
           p
-            != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy</a> policy of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
+            != t('<span class="font-weight-bold">No.</span> We have a <a href="%s" class="font-weight-bold">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href="%s" class="font-weight-bold">errors</a>).', l("/privacy"), l("/faq#do-you-store-error-logs"))
             = " "
             = t("You will find that every other email forwarder stores SMTP logs and writes your emails to disk storage... usually on unencrypted databases and without SOC 2 Type 2 compliance.")
             = " "

@@ -3,8 +3,8 @@ extends ../layout
 block body
   if !isBot(ctx.get('User-Agent')) && isSANB(ctx.query.passkey)
     script(defer).
-      document.addEventListener(
-        "DOMContentLoaded",
+      window.addEventListener(
+        "load",
         function load() {
           if (!window.jQuery) return setTimeout(load, 50);
           $(function () {

@@ -33,11 +33,14 @@ $lead-font-weight:            400;
 
 // For lighthouse to pass Accessibility audit we darken this for bots
 // stylelint-disable-next-line scss/no-global-function-names
-$cyan: darken(#17a2b8, 10%) !default;
+$blue: #0066ff !default; // darken(#20C1ED, 10%) !default;
 // stylelint-disable-next-line scss/no-global-function-names
-$green: darken(#28a745, 15%) !default;
+$cyan: darken(#9DE5F9, 10%) !default;
+// stylelint-disable-next-line scss/no-global-function-names
+$green: darken(#269C32, 10%) !default;
 
 $dark: #1d1d1d;
+$dropdown-header-color: $dark;
 $yiq-contrasted-threshold:  150;
 
 $list-group-active-bg: $dark;

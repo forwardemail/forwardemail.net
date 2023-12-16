@@ -204,6 +204,7 @@ const purgeCssOptions = {
       'p-0',
       'p-2',
       'py-3',
+      'px-3',
       'row',
       'table-danger',
       'table-success',

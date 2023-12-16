@@ -237,3 +237,22 @@ pre {
 .swal2-grow-fullscreen {
   z-index: 9999;
 }
+
+.dropdown-header {
+  @include font-size($font-size-base);
+}
+
+a, .markdown-body a {
+  color: $link-color;
+  text-decoration: $link-decoration;
+  background-color: transparent; // Remove the gray background on active links in IE 10.
+
+  @include hover() {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+  }
+}
+
+.lazyframe[data-vendor=youtube], .lazyframe[data-vendor=youtube_nocookie] {
+  background-color: #000000;
+}

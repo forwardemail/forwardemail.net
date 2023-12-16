@@ -19,10 +19,7 @@ ul.list-unstyled.mb-3
       data-target="#modal-storage",
       title=striptags(t(config.meta["/blog/docs/best-quantum-safe-encrypted-email-service"][0]))
     )
-      if isBot(ctx.get('User-Agent'))
-        = t("Encrypted Email")
-      else
-        = t("Learn more")
+      = t("Encrypted Email")
       = " "
       i.fa.fa-angle-right
   //-.

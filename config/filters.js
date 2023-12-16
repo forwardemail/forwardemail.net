@@ -176,12 +176,21 @@ function fixTableOfContents(content, i18n, options) {
       continue;
     }
 
+    anchor.setAttribute('role', 'button');
     anchor.setAttribute('class', 'anchor');
+    anchor.setAttribute(
+      'aria-label',
+      i18n.api.t({
+        phrase: 'Go to top',
+        locale: (options && options.locale) || i18n.getLocale()
+      })
+    );
 
     if (lis.length > MAX_SECTIONS && header.rawTagName === 'h2') {
       // eslint-disable-next-line unicorn/prefer-dom-node-dataset
       anchor.setAttribute('data-toggle', 'collapse');
       anchor.setAttribute('role', 'button');
+      anchor.setAttribute('aria-label', header.text);
       anchor.setAttribute('aria-expanded', 'false');
       anchor.setAttribute('aria-controls', `collapse-${id}`);
       // eslint-disable-next-line unicorn/prefer-dom-node-dataset
@@ -252,6 +261,8 @@ function fixTableOfContents(content, i18n, options) {
           const id = header.getAttribute('id');
 
           if (!id) continue;
+          anchor.setAttribute('role', 'button');
+          anchor.setAttribute('aria-label', header.text);
           anchor.setAttribute('class', 'anchor');
           anchor.removeAttribute('aria-hidden');
           anchor.set_content(
@@ -357,7 +368,7 @@ function fixTableOfContents(content, i18n, options) {
         </li>
         <li class="list-inline-item"><i class="fa fa-angle-right align-middle text-white"></i></li>
         <li class="list-inline-item">
-          <a data-toggle="modal-anchor" data-target="#modal-table-of-contents" class="btn btn-success">
+          <a data-toggle="modal-anchor" role="button" data-target="#modal-table-of-contents" class="btn btn-success">
             <i class="fa fa-search"></i> ${str}
           </a>
         </li>

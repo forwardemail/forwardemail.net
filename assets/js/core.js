@@ -357,21 +357,18 @@ $body.on('keyup', '.verification-form', debounce(keyup, 200));
 // (this also supports lazyframe lazy loaded videos)
 // <https://stackoverflow.com/a/52315492>
 //
-$body.on('show.bs.modal', '.modal', function () {
-  const $modal = $(this);
-  if (
-    $modal.find('iframe').length === 0 &&
-    $modal.find('.lazyframe').length === 0
-  )
-    return;
-  if ($modal.data('modalHtml')) return;
-  $modal.data('modalHtml', $modal.html());
-  lazyframe($modal.find('.lazyframe'), { autoplay: true, initinview: false });
+$body.on('shown.bs.modal', '.modal', function () {
+  lazyframe('.lazyframe', { autoplay: true, initinview: false });
 });
 $body.on('hide.bs.modal', '.modal', function () {
   const $modal = $(this);
-  if (!$modal.data('modalHtml')) return;
-  $modal.html($modal.data('modalHtml'));
+  const $lazyframe = $modal.find('.lazyframe:first');
+  $lazyframe.empty().removeClass('lazyframe--loaded');
+  // need to completely replace element since addEventListener binded
+  // (otherwise it will play multiple times)
+  $lazyframe
+    .get(0)
+    .parentNode.replaceChild($lazyframe.clone().get(0), $lazyframe.get(0));
 });
 
 //

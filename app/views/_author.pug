@@ -15,7 +15,7 @@
     )
     .d-flex.flex-column.ml-2.font-weight-bold
       div
-        .small.text-muted= t("Written by")
+        .small= t("Written by")
         div
           = config.appName
           span.d-none.d-md-inline
@@ -36,7 +36,7 @@
           )
     .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
       div
-        .small.text-muted
+        .small
           span.d-none.d-md-inline
             i.fa.fa-calendar-day
             = " "
@@ -48,7 +48,7 @@
           = dayjs().startOf("month").format("M/D/YY")
     .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
       div
-        .small.text-muted
+        .small
           span.d-none.d-md-inline
             i.fa.fa-clock
             = " "

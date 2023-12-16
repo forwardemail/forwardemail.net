@@ -65,62 +65,62 @@ footer.mt-auto.small
                 )
         //-.
           .flex-wrap.flex-fill.mr-lg-3
-            h3.h6.mb-2= t("Guides")
+            h2.h5.mb-2= t("Guides")
             ul.list-unstyled.mb-0
               //-.
                 li
-                  a.d-block.text-light.py-2.py-md-0(
+                  a.d-block.text-white.py-2.py-md-0(
                     href=l('/guides/professional-business-email')
                   )= t('Professional business email')
                 li
-                  a.d-block.text-light.py-2.py-md-0(
+                  a.d-block.text-white.py-2.py-md-0(
                     href=l('/guides/how-to-setup-business-email')
                   )= t('How to setup business email')
                 li
-                  a.d-block.text-light.py-2.py-md-0(
+                  a.d-block.text-white.py-2.py-md-0(
                     href=l('/guides/custom-domain-email-service')
                   )= t('Custom domain email service')
                 li
-                  a.d-block.text-light.py-2.py-md-0(
+                  a.d-block.text-white.py-2.py-md-0(
                     href=l('/guides/free-business-email-address')
                   )= t('Free business email address')
               li
-                a.d-block.text-light.py-2.py-md-0(
+                a.d-block.text-white.py-2.py-md-0(
                   href=l("/guides/send-email-with-custom-domain-smtp")
                 )= t("Send Email with Custom Domain")
               li
-                a.d-block.text-light.py-2.py-md-0(
+                a.d-block.text-white.py-2.py-md-0(
                   href=l("/guides/send-mail-as-gmail-custom-domain")
                 )= t("Send Mail As with Gmail")
               each provider in nsProviders
                 li
-                  a.d-block.text-light.py-2.py-md-0(
+                  a.d-block.text-white.py-2.py-md-0(
                     href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
                   )
                     = provider.name
-              li: a.d-block.text-light.py-2.py-md-0(
+              li: a.d-block.text-white.py-2.py-md-0(
                 href=l("/faq#table-dns-management-by-registrar")
               )= t("Other providers")
           hr.d-lg-none.w-100
 
         .flex-wrap.flex-fill.mr-lg-3
           hr.d-lg-none.w-100
-          h3.h6.mb-2: a.text-light(href=l("/blog/open-source"))= t("Apps")
+          h2.h5.mb-2: a.text-white(href=l("/blog/open-source"))= t("Apps")
           ul.list-unstyled.mb-0.mb-lg-3
             //- Apple
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/apple-email-clients")
             )
               = "Apple"
               != "&reg;"
             //- Windows
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/windows-email-clients")
             )
               = "Windows"
               != "&reg;"
             //- Android
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/android-email-clients")
             )
               i.fa-fw.fab.fa-android
@@ -128,21 +128,21 @@ footer.mt-auto.small
               = "Android"
               != "&trade;"
             //- Linux
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/linux-email-clients")
             )
               i.fa-fw.fab.fa-linux
               = " "
               = "Linux"
               != "&reg;"
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/desktop-email-clients")
             )
               i.fa-fw.fas.fa-desktop
               = " "
               = t("Desktop")
             //- Web
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/web-email-clients")
             )
               if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
@@ -160,7 +160,7 @@ footer.mt-auto.small
                 = "Chrome"
                 != "&reg;"
             //- Terminal
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/blog/open-source/terminal-email-clients")
             )
               i.fa-fw.fas.fa-terminal
@@ -168,82 +168,82 @@ footer.mt-auto.small
               = "Terminal"
 
           hr.d-lg-none.w-100
-          h3.h6.mb-2: a.text-light(href=l("/guides"))= t("Guides")
+          h2.h5.mb-2: a.text-white(href=l("/guides"))= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/guides/send-email-with-custom-domain-smtp")
             )
               = t("Send Email with Custom Domain")
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/guides/send-mail-as-gmail-custom-domain")
             )
               = t("Send Mail As with Gmail")
             if isBot(ctx.get('User-Agent'))
               each provider in nsProviders
-                li: a.d-block.text-light.py-2.py-md-0(
+                li: a.d-block.text-white.py-2.py-md-0(
                   title=striptags(t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)),
                   href=domain && domain.name ? l(`/guides/${provider.slug}?domain=${domain.name}`) : l(`/guides/${provider.slug}`)
                 )!= t('How to Setup Email with <span class="notranslate">%s</span>', provider.name)
             else
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
-            li: a.d-block.text-light.py-2.py-md-0(
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/guides"))= t("Email Setup Guides")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=domain && domain.name ? l(`/guides/port-25-blocked-by-isp-workaround?domain=${domain.name}`) : l("/guides/port-25-blocked-by-isp-workaround")
             )= t("Port 25 blocked by ISP")
           hr.d-lg-none.w-100
-          h3.h6.mb-2: a.text-light(href=l("/resources"))= t("Resources")
+          h2.h5.mb-2: a.text-white(href=l("/resources"))= t("Resources")
           ul.list-unstyled.mb-0
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
               - pricingPageHref += "?pricing=true";
-            li: a.d-block.text-light.py-2.py-md-0(href=pricingPageHref)
+            li: a.d-block.text-white.py-2.py-md-0(href=pricingPageHref)
               if isBot(ctx.get('User-Agent'))
                 = t("Private Business Email")
               else
                 != t("Features &amp; Pricing")
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=domain && domain.name ? l(`/faq?domain=${domain.name}`) : l("/faq")
             )= t("Frequently Asked Questions")
             if !isBot(ctx.get('User-Agent'))
-              li: a.d-block.text-light.py-2.py-md-0(
+              li: a.d-block.text-white.py-2.py-md-0(
                 href=l("/help"),
                 role=isHelp ? "link" : "button",
                 data-target=isHelp ? false : "#modal-help"
               )= t("Help")
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/disposable-addresses")
             )= t("Disposable Addresses")
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/reserved-email-addresses")
             )= t("Reserved Email Addresses")
             if !isBot(ctx.get('User-Agent'))
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.mr-lg-3
-          h3.h6.mb-2: a.text-light(href=l("/blog/docs"))= t("Developers")
+          h2.h5.mb-2: a.text-white(href=l("/blog/docs"))= t("Developers")
           ul.list-unstyled.mb-0.mb-lg-3
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
-            li: a.d-block.text-light.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
-            li: a.d-block.text-light.py-2.py-md-0(
+            li: a.d-block.text-white.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
+            li: a.d-block.text-white.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
             if platforms.length > 0
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
           if developerDocs.length > 0
             hr.d-lg-none.w-100
-            h3.h6.mb-2= t("Developer Articles")
+            h2.h5.mb-2= t("Developer Articles")
             hr.d-none.d-md-none.d-lg-none.w-100
             ul.list-unstyled.mb-0.mb-lg-3
               each doc in developerDocs
                 li
-                  a.d-block.text-light.py-2.py-md-0(href=l(doc.slug))
+                  a.d-block.text-white.py-2.py-md-0(href=l(doc.slug))
                     if !isBot(ctx.get('User-Agent')) && doc.icon
                       i(class=doc.icon)
                       = " "
                     = t(doc.title)
           if platforms.length > 0 && isBot(ctx.get('User-Agent'))
             hr.d-lg-none.w-100
-            h3.h6.mb-2: a.text-light(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")
+            h2.h5.mb-2: a.text-white(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")
             ul.list-unstyled.mb-0.mb-lg-3
               - const tools = [];
               - const list = Object.keys(config.meta).filter((key) => key !== "/blog/open-source" && key.startsWith("/blog/open-source"));
@@ -252,17 +252,17 @@ footer.mt-auto.small
                 if match
                   - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
               each tool in tools
-                a.d-block.text-light.py-2.py-md-0(
+                a.d-block.text-white.py-2.py-md-0(
                   href=l(tool.slug),
                   title=striptags(t(tool.title))
                 )!= t(tool.title)
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
-            h3.h6.mb-2= t("Community")
+            h2.h5.mb-2= t("Community")
             ul.list-unstyled.mb-0.mb-lg-3
               li
-                a.d-block.text-light.py-2.py-md-0(
+                a.d-block.text-white.py-2.py-md-0(
                   href="https://github.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer",
@@ -274,7 +274,7 @@ footer.mt-auto.small
                   = " "
                   i.fa.fa-fw.fa-github
               li
-                a.d-block.text-light.py-2.py-md-0(
+                a.d-block.text-white.py-2.py-md-0(
                   href="https://youtube.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer",
@@ -286,12 +286,12 @@ footer.mt-auto.small
                   = " "
                   i.fab.fa-fw.fa-youtube.text-danger
             hr.d-lg-none.w-100
-            h3.h6.mb-2= t("Company")
+            h2.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/about"))= t("About")
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/terms"))= t("Terms")
-              li: a.d-block.text-light.py-2.py-md-0(
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/about"))= t("About")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/terms"))= t("Terms")
+              li: a.d-block.text-white.py-2.py-md-0(
                 href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
                 target="_blank",
                 rel="noopener noreferrer",
@@ -299,7 +299,7 @@ footer.mt-auto.small
                 data-title=t("Send us an email"),
                 data-placement="bottom"
               )= t("Careers")
-              li: a.d-block.text-light.py-2.py-md-0(
+              li: a.d-block.text-white.py-2.py-md-0(
                 href="https://github.com/forwardemail/forwardemail.net/security/policy",
                 target="_blank",
                 rel="noopener noreferrer",
@@ -307,9 +307,9 @@ footer.mt-auto.small
                 data-title=t("Read our policy"),
                 data-placement="bottom"
               )= t("Security Policy")
-              li: a.d-block.text-light.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
               if !isBot(ctx.get('User-Agent'))
-                li: a.d-block.text-light.py-2.py-md-0(
+                li: a.d-block.text-white.py-2.py-md-0(
                   href="https://status.forwardemail.net/",
                   target="_blank",
                   rel="noopener noreferrer",
@@ -324,7 +324,7 @@ footer.mt-auto.small
                   else
                     span.badge.badge-pill.badge-success.text-monospace= t("100%")
               if !isBot(ctx.get('User-Agent'))
-                li.small: a.d-block.text-light.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-2(
+                li.small: a.d-block.text-white.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-2(
                   href=`mailto:${config.supportEmail}`,
                   target="_blank",
                   rel="noopener noreferrer",
@@ -334,23 +334,23 @@ footer.mt-auto.small
                 )= config.supportEmail
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
-          .flex-wrap.flex-fill.d-flex.flex-column
+          .flex-wrap.flex-fill.d-flex.flex-column.ml-lg-3
             div
-              h3.h6.mb-2= t("Languages")
+              h2.h5.mb-2= t("Languages")
               ul.list-unstyled.mb-0.small
                 each language in availableLanguages
-                  li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
+                  li: a.d-block.text-white.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
         else
           noscript
             hr.d-lg-none.w-100
-            .flex-wrap.flex-fill.d-flex.flex-column
+            .flex-wrap.flex-fill.d-flex.flex-column.ml-lg-3
               div
-                h3.h6.mb-2= t("Languages")
+                h2.h5.mb-2= t("Languages")
                 ul.list-unstyled.mb-0.small
                   each language in availableLanguages
-                    li: a.d-block.text-light.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
-      .mt-5.text-muted.small
-        ul.list-unstyled.small
+                    li: a.d-block.text-white.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
+      .mt-5.text-white.small
+        ul.list-unstyled
           // <https://www.apple.com/legal/intellectual-property/trademark/appletmlist.html>
           li= t("Apple, Mac mini, Macbook, iMac, iPhone, macOS, iPad, watchOS, and Safari are registered trademarks of Apple Inc.")
           li= t("IOS is a trademark or registered trademark of Cisco.")

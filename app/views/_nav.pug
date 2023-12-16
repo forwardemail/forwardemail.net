@@ -77,13 +77,14 @@ nav.navbar(class=navbarClasses.join(" "))
   div(
     class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
-    a.navbar-brand.d-inline-block.m-0(
-      href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l()
+    a.navbar-brand.d-inline-block.m-0.font-weight-bold(
+      href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l(),
+      class=isBot(ctx.get("User-Agent")) ? "" : "text-themed"
     )
       span.sr-only.sr-only-focusable Forward Email
       include ../../assets/img/logo-square-30-30.svg
-      span.m-0.align-middle.no-js.font-weight-bold.ml-2(
-        class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block text-themed"
+      span.m-0.align-middle.no-js.ml-2(
+        class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
       )= "Forward Email"
     - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
     if user && user.plan === 'free' && !domain && Array.isArray(domains)

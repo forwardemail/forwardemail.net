@@ -9,10 +9,6 @@
 @import 'node_modules/bootstrap/scss/variables';
 @import 'variables';
 
-$blue: #20C1ED;
-$cyan: #9DE5F9;
-$green: #269C32;
-
 @import 'node_modules/bootstrap/scss/mixins';
 @import 'node_modules/@forevolve/bootstrap-dark/scss/bootstrap-prefers-dark';
 
@@ -21,6 +17,16 @@ $input-disabled-bg:                     $dark;
 
 // stylelint-disable scss/at-extend-no-missing-placeholder
 @media (prefers-color-scheme: dark) {
+  a, .markdown-body a {
+    color: $link-color;
+    text-decoration: $link-decoration;
+    background-color: transparent; // Remove the gray background on active links in IE 10.
+
+    @include hover() {
+      color: $link-hover-color;
+      text-decoration: $link-hover-decoration;
+    }
+  }
   .navbar-dark .navbar-toggler {
     color: white !important;
   }

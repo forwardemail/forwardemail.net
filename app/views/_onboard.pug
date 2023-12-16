@@ -3,6 +3,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
     #modal-onboard-pricing-video.modal.fade(
       tabindex="-1",
       role="dialog",
+      aria-label=t("Enhanced Protection Plan"),
       aria-labelledby="modal-onboard-pricing-video-title",
       aria-hidden="true"
     )
@@ -25,8 +26,8 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
             )
   if !isBot(ctx.get('User-Agent')) && isModalOnboard
     script(defer).
-      document.addEventListener(
-        "DOMContentLoaded",
+      window.addEventListener(
+        "load",
         function load() {
           if (!window.jQuery) return setTimeout(load, 50);
           $(function () {
@@ -38,13 +39,14 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
     #modal-onboard.modal.fade(
       tabindex="-1",
       role="dialog",
+      aria-label=onboardHeader,
       aria-labelledby="modal-onboard-title",
       aria-hidden="true"
     )
       .modal-dialog(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-onboard-pricing-video-title.h4.d-inline-block.ml-4= onboardHeader
+            #modal-onboard-title.h4.d-inline-block.ml-4= onboardHeader
             button.close(
               type="button",
               data-dismiss="modal",
@@ -58,7 +60,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
   else if !isBot(ctx.get('User-Agent'))
     div&attributes(attributes)
       div(
-        class=isInsideModal ? [].join(" ") : [onboardContainerClass, "bg-light", "bg-themed", "py-3", "py-md-4", "py-lg-5"].join(" ")
+        class=isInsideModal ? ["px-3"].join(" ") : [onboardContainerClass, "bg-light", "bg-themed", "py-3", "py-md-4", "py-lg-5"].join(" ")
       )
         div(class=isInsideModal ? false : "container")
           div(class=isInsideModal ? false : "row")
@@ -110,8 +112,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                 if isInsideModal
                   button.btn.btn-link.btn-sm.btn-block.text-muted(
                     type="button",
-                    data-dismiss="modal",
-                    aria-label="Close"
+                    data-dismiss="modal"
                   )
                     = t("Not interested?  Click here to keep reading")
                 else
