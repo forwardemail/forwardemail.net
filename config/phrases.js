@@ -20,6 +20,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  USER_UNVERIFIED:
+    'Please <a href="%s" target="_blank">verify your email address</a> to continue',
   SCHEDULED_SEND_SUBJECT:
     'Did you mean to use scheduled sending? (<span class="notranslate">%d</span> minute(s) delay detected)',
   SCHEDULED_SEND_MESSAGE:

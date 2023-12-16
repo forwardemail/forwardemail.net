@@ -53,7 +53,7 @@ async function createCatchAllPassword(ctx) {
     }
 
     const { password, salt, hash } = await createPassword(
-      ctx.request.body.new_password,
+      ctx.request.body.new_password || null,
       _.uniq(_.compact(userInputs))
     );
     domain.tokens.push({

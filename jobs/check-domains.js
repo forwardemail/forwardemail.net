@@ -321,7 +321,6 @@ async function mapper(id) {
                 {
                   verified_email_sent_at: {
                     $exists: false
-                  }
                 },
                 {
                   onboard_email_sent_at: {

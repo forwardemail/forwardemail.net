@@ -1522,10 +1522,12 @@ async function getToAndMajorityLocaleByDomain(domain) {
           typeof member?.user?._id === 'object' ? member.user._id : member.user
         )
     },
-    [config.userFields.hasVerifiedEmail]: true,
+    // [config.userFields.hasVerifiedEmail]: true,
     [config.userFields.isBanned]: false
   })
-    .select(`email ${config.lastLocaleField}`)
+    .select(
+      `email ${config.lastLocaleField} ${config.userFields.hasVerifiedEmail}`
+    )
     .lean()
     .exec();
 
@@ -1536,6 +1538,15 @@ async function getToAndMajorityLocaleByDomain(domain) {
   // <https://stackoverflow.com/a/49731453>
   const locales = users.map((user) => user[config.lastLocaleField]);
   const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
+
+  if (users.every((u) => !u[config.userFields.hasVerifiedEmail]))
+    throw Boom.badRequest(
+      i18n.translateError(
+        'USER_UNVERIFIED',
+        locale,
+        `${config.urls.web}${config.verifyRoute}`
+      )
+    );
 
   return { to, locale };
 }
