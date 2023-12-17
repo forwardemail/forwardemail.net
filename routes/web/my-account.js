@@ -216,6 +216,7 @@ router
   )
   .get(
     '/domains/:domain_id/advanced-settings',
+    web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
     render('my-account/domains/advanced-settings')
   )
@@ -228,6 +229,7 @@ router
   )
   .get(
     '/domains/:domain_id/verify-smtp',
+    web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
@@ -254,6 +256,7 @@ router
   )
   .get(
     '/domains/:domain_id/aliases',
+    web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
     paginate.middleware(10, 50),
@@ -428,7 +431,11 @@ router
     rateLimit(100, 'change email'),
     web.auth.changeEmail
   )
-  .get('/profile', web.myAccount.retrieveProfile)
+  .get(
+    '/profile',
+    web.myAccount.checkVerifiedEmail,
+    web.myAccount.retrieveProfile
+  )
   .put('/profile', web.myAccount.updateProfile)
   .put(
     '/profile/resend-email-change',
@@ -439,6 +446,7 @@ router
   .delete('/security', web.myAccount.resetAPIToken)
   .get(
     '/security',
+    web.myAccount.checkVerifiedEmail,
     (ctx, next) => {
       if (ctx.query.unsubscribe === 'true')
         ctx.flash('warning', ctx.translate('TO_UNSUBSCRIBE_DELETE_ACCOUNT'));
