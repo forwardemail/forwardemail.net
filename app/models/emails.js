@@ -755,7 +755,7 @@ Emails.statics.queue = async function (
           'members.user': new mongoose.Types.ObjectId(userId)
         }).populate(
           'members.user',
-          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
         )
       : null);
 
@@ -792,8 +792,10 @@ Emails.statics.queue = async function (
         !m.user[config.userFields.isBanned] &&
         m.user[config.userFields.hasVerifiedEmail] &&
         validPlans.includes(m.user.plan) &&
-        new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
-          Date.now() &&
+        (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
+          Date.now() ||
+          isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
+          isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
         m.group === 'admin'
     )
   )

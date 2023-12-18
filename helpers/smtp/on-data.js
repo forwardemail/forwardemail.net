@@ -102,7 +102,7 @@ async function onData(stream, _session, fn) {
     })
       .populate(
         'members.user',
-        `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit}`
+        `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
       )
       .select('+tokens +tokens.hash +tokens.salt')
       .exec();

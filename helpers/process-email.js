@@ -217,8 +217,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
           !m.user[config.userFields.isBanned] &&
           m.user[config.userFields.hasVerifiedEmail] &&
           validPlans.includes(m.user.plan) &&
-          new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
-            Date.now() &&
+          (new Date(m.user[config.userFields.planExpiresAt]).getTime() >=
+            Date.now() ||
+            isSANB(m.user[config.userFields.stripeSubscriptionID]) ||
+            isSANB(m.user[config.userFields.paypalSubscriptionID])) &&
           m.group === 'admin'
       )
     )
