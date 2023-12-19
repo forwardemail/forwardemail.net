@@ -69,8 +69,8 @@ async function getMessage(info, provider) {
         return Boolean(message);
       },
       {
-        interval: ms('1s'),
-        timeout: ms('1m')
+        interval: 0,
+        timeout: ms('30s')
       }
     );
   } catch (_err) {

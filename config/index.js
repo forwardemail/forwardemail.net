@@ -96,23 +96,29 @@ const imapConfigurations = [
         pass: env.TTI_FASTMAIL_IMAP_PASS
       }
     }
-  },
+  }
 
+  //
+  // NOTE: Yahoo does not allow App Passwords to be generated
+  //       therefore it is not possible to access Yahoo via IMAP
+  //       <https://old.reddit.com/r/yahoo/comments/v5hkc6/yahoo_mail_app_password_not_working/>
+  //       <https://archive.is/SPAAT>
+  //
   // Yahoo/AOL
   // <https://help.yahoo.com/kb/SLN4075.html>
-  {
-    name: 'Yahoo/AOL',
-    forwarder: env.TTI_YAHOO_FORWARDER,
-    config: {
-      host: 'imap.mail.yahoo.com',
-      port: 993,
-      secure: true,
-      auth: {
-        user: env.TTI_YAHOO_IMAP_USER,
-        pass: env.TTI_YAHOO_IMAP_PASS
-      }
-    }
-  }
+  // {
+  //   name: 'Yahoo/AOL',
+  //   forwarder: env.TTI_YAHOO_FORWARDER,
+  //   config: {
+  //     host: 'imap.mail.yahoo.com',
+  //     port: 993,
+  //     secure: true,
+  //     auth: {
+  //       user: env.TTI_YAHOO_IMAP_USER,
+  //       pass: env.TTI_YAHOO_IMAP_PASS
+  //     }
+  //   }
+  // }
 ];
 
 const config = {
