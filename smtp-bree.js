@@ -24,6 +24,12 @@ const bree = new Bree({
       name: 'send-emails',
       interval: '30s',
       timeout: 0
+    },
+    {
+      // time to inbox monitoring
+      name: 'tti',
+      interval: '1m',
+      timeout: 0
     }
   ]
 });

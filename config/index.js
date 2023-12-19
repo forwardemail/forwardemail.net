@@ -80,23 +80,24 @@ const imapConfigurations = [
         pass: env.TTI_APPLE_IMAP_PASS
       }
     }
-  },
+  }
 
+  // NOTE: removing fastmail since it requires a paid account after 30d
   // Fastmail
   // <https://www.fastmail.help/hc/en-us/articles/1500000279921-IMAP-POP-and-SMTP>
-  {
-    name: 'Fastmail',
-    forwarder: env.TTI_FASTMAIL_FORWARDER,
-    config: {
-      host: 'imap.fastmail.com',
-      port: 993,
-      secure: true,
-      auth: {
-        user: env.TTI_FASTMAIL_IMAP_USER,
-        pass: env.TTI_FASTMAIL_IMAP_PASS
-      }
-    }
-  }
+  // {
+  //   name: 'Fastmail',
+  //   forwarder: env.TTI_FASTMAIL_FORWARDER,
+  //   config: {
+  //     host: 'imap.fastmail.com',
+  //     port: 993,
+  //     secure: true,
+  //     auth: {
+  //       user: env.TTI_FASTMAIL_IMAP_USER,
+  //       pass: env.TTI_FASTMAIL_IMAP_PASS
+  //     }
+  //   }
+  // }
 
   //
   // NOTE: Yahoo does not allow App Passwords to be generated
