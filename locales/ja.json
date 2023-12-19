@@ -6550,5 +6550,11 @@
   "Can I configure <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">スパムスキャナーの</a>設定を行うことはできますか?",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href=\"%s\" class=\"font-weight-bold\">errors</a>).": "<span class=\"font-weight-bold\">いいえ。</span>当社には、SMTP ログ、メタデータ、電子メールを保存しないという<a href=\"%s\" class=\"font-weight-bold\">プライバシー ポリシー</a>があります (<a href=\"%s\" class=\"font-weight-bold\">エラー</a>を除く)。",
   "We accept cards, wallets, and bank transfers using <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "カード、ウォレット、 <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a>と<a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>を使用した銀行振込を受け付けています。",
-  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "続行するには<a href=\"%s\" target=\"_blank\">メールアドレスを確認して</a>ください"
+  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "続行するには<a href=\"%s\" target=\"_blank\">メールアドレスを確認して</a>ください",
+  "We are the only email service with 100% open-source and transparent monitoring.": "当社は、100% オープンソースで透明性のある監視を行う唯一の電子メール サービスです。",
+  "Time to Inbox": "受信箱までの時間",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "最終更新日: <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "直接",
+  "Forwarding": "転送",
+  "We are actively working to resolve time to inbox monitoring issues.": "私たちは、受信箱までの時間の監視の問題を解決するために積極的に取り組んでいます。"
 }

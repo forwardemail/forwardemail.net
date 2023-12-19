@@ -151,7 +151,8 @@ async function getTransporter(options = {}, err) {
 
   const requireTLS = Boolean(
     Boolean(mx.policyMatch && mx.policyMatch.mode === 'enforce') ||
-      (truthSource && OUTLOOK_HOSTS.has(truthSource))
+      (truthSource && OUTLOOK_HOSTS.has(truthSource)) ||
+      (truthSource && truthSource === 'google.com')
   );
 
   //

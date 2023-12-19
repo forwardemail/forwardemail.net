@@ -6550,5 +6550,11 @@
   "Can I configure <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "هل يمكنني ضبط إعدادات <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">برنامج فحص البريد العشوائي</a> ؟",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href=\"%s\" class=\"font-weight-bold\">errors</a>).": "<span class=\"font-weight-bold\">لا.</span> لدينا <a href=\"%s\" class=\"font-weight-bold\">سياسة خصوصية</a> تقضي بعدم تخزين سجلات SMTP أو بيانات التعريف أو رسائل البريد الإلكتروني (باستثناء <a href=\"%s\" class=\"font-weight-bold\">الأخطاء</a> ).",
   "We accept cards, wallets, and bank transfers using <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "نحن نقبل البطاقات والمحافظ والتحويلات المصرفية باستخدام <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> و<a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> .",
-  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "يرجى <a href=\"%s\" target=\"_blank\">التحقق من عنوان بريدك الإلكتروني</a> للمتابعة"
+  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "يرجى <a href=\"%s\" target=\"_blank\">التحقق من عنوان بريدك الإلكتروني</a> للمتابعة",
+  "We are the only email service with 100% open-source and transparent monitoring.": "نحن خدمة البريد الإلكتروني الوحيدة التي تتمتع بمراقبة مفتوحة المصدر وشفافة بنسبة 100%.",
+  "Time to Inbox": "حان الوقت للبريد الوارد",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "آخر تحديث بتاريخ <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "مباشر",
+  "Forwarding": "إعادة توجيه",
+  "We are actively working to resolve time to inbox monitoring issues.": "نحن نعمل جاهدين على حل مشكلات مراقبة البريد الوارد."
 }

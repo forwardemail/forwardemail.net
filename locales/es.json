@@ -6548,5 +6548,11 @@
   "Can I configure <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "¿Puedo configurar los ajustes <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">del escáner de spam</a> ?",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href=\"%s\" class=\"font-weight-bold\">errors</a>).": "<span class=\"font-weight-bold\">No.</span> Tenemos una <a href=\"%s\" class=\"font-weight-bold\">Política de Privacidad</a> de no almacenar registros SMTP, metadatos ni correos electrónicos (con excepción de <a href=\"%s\" class=\"font-weight-bold\">errores</a> ).",
   "We accept cards, wallets, and bank transfers using <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "Aceptamos tarjetas, billeteras y transferencias bancarias mediante <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> y<a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a> .",
-  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "Por favor <a href=\"%s\" target=\"_blank\">verifique su dirección de correo electrónico</a> para continuar"
+  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "Por favor <a href=\"%s\" target=\"_blank\">verifique su dirección de correo electrónico</a> para continuar",
+  "We are the only email service with 100% open-source and transparent monitoring.": "Somos el único servicio de correo electrónico con monitoreo 100% de código abierto y transparente.",
+  "Time to Inbox": "Hora de enviar la bandeja de entrada",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Última actualización el <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "Directo",
+  "Forwarding": "Reenvío",
+  "We are actively working to resolve time to inbox monitoring issues.": "Estamos trabajando activamente para resolver los problemas de seguimiento del tiempo de entrada de la bandeja de entrada."
 }

@@ -245,11 +245,6 @@ module.exports = (redis) => ({
       app.context.logger
     );
     app.use(async (ctx, next) => {
-      // to avoid LCP lighthouse issues
-      ctx.state.appCss = appCss;
-      ctx.state.botCss = botCss;
-      ctx.state.freddyCss = freddyCss;
-
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>
       ctx.set('X-XSS-Protection', '0');
@@ -291,6 +286,29 @@ module.exports = (redis) => ({
     });
   },
   hookBeforePassport(app) {
+    app.use(async (ctx, next) => {
+      if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
+        // to avoid LCP lighthouse issues
+        ctx.state.appCss = appCss;
+        ctx.state.botCss = botCss;
+        ctx.state.freddyCss = freddyCss;
+
+        // get TTI stats for footer (v1 rudimentary approach)
+        ctx.state.tti = false;
+        try {
+          const tti = await ctx.client.get('tti');
+          if (tti) {
+            ctx.state.tti = JSON.parse(tti);
+            ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);
+          }
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+      }
+
+      return next();
+    });
+
     app.use(async (ctx, next) => {
       let position = 'bottom';
 

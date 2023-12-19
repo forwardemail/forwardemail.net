@@ -3659,5 +3659,13 @@
   "Upgrade for $3": "Surclassement pour 3 $",
   "Email, domain name, or IP address": "E-mail, nom de domaine ou adresse IP",
   "Submit Request": "Envoyer la demande",
-  "Alias": "Alias"
+  "Alias": "Alias",
+  "We are the only email service with 100% open-source and transparent monitoring.": "Nous sommes le seul service de messagerie avec une surveillance 100 % open source et transparente.",
+  "Time to Inbox": "Il est temps d'arriver dans la boîte de réception",
+  "Try again": "Essayer à nouveau",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Dernière mise à jour le <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "Direct",
+  "Forwarding": "Expéditeur",
+  "N/A": "N / A",
+  "We are actively working to resolve time to inbox monitoring issues.": "Nous travaillons activement à résoudre les problèmes de surveillance des délais d'arrivée des boîtes de réception."
 }

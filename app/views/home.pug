@@ -216,7 +216,7 @@ block body
       = t("Learn more")
       = " "
       i.fa.fa-angle-double-down
-  #learn-more.bg-dark.text-white.py-3.d-block.overflow-hidden.min-vh-100(
+  #learn-more.bg-dark.text-white.py-3.d-block.overflow-hidden(
     data-ignore-hash-change
   )
     .container.text-center
@@ -506,11 +506,16 @@ block body
               | forwardemail.net
               | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
             .mt-2.small.text-muted hypersheet, db.team
-  #learn-more.bg-dark.py-3.py-md-5.d-block.overflow-hidden
+  include _tti
+  .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light.bg-themed
     .container
-      .row
+      .row.text-center.mb-3.mb-md-5
         .col-12
-          h2.display-5.font-weight-bold.text-white.mb-3.text-center= t("Unlimited email aliases")
+          .h2.display-3.mb-1.text-danger
+            i.fab.fa-youtube
+          .h1.mb-0!= t("Made for you")
+      .row.text-center.mb-3.mb-md-5
+        .col-12
           if isBot(ctx.get('User-Agent'))
             a.btn.btn-lg.btn-light.btn-block(
               href="https://www.youtube.com/watch?v=oWEVGMPXMbA",
@@ -527,12 +532,6 @@ block body
               style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
-  .border-top.border-bottom.py-3.py-md-4.py-lg-5.d-block.bg-light.bg-themed
-    .container
-      .row.text-center.d-block.mb-3.mb-md-5
-        .h2.display-3.mb-1.text-danger
-          i.fab.fa-youtube
-        .h1!= t("Made for you")
       .row
         .col-md.text-center.mb-3.mb-lg-0
           a.btn.btn-outline-dark.btn-lg(

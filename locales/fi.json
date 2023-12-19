@@ -6396,5 +6396,12 @@
   "Can I configure <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "Voinko määrittää <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">roskapostin skannerin</a> asetukset?",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href=\"%s\" class=\"font-weight-bold\">errors</a>).": "<span class=\"font-weight-bold\">Ei.</span> Meillä on <a href=\"%s\" class=\"font-weight-bold\">tietosuojakäytäntö</a> , jonka mukaan emme tallenna SMTP-lokeja, metatietoja tai sähköposteja ( <a href=\"%s\" class=\"font-weight-bold\">virheitä</a> lukuun ottamatta).",
   "We accept cards, wallets, and bank transfers using <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "Hyväksymme kortit, lompakot ja pankkisiirrot <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripen</a> ja<a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPalin</a> kautta.",
-  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "<a href=\"%s\" target=\"_blank\">Vahvista sähköpostiosoitteesi</a> jatkaaksesi"
+  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "<a href=\"%s\" target=\"_blank\">Vahvista sähköpostiosoitteesi</a> jatkaaksesi",
+  "We are the only email service with 100% open-source and transparent monitoring.": "Olemme ainoa sähköpostipalvelu, jossa on 100 % avoimen lähdekoodin ja läpinäkyvä seuranta.",
+  "Time to Inbox": "Aika Inboxiin",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Viimeksi päivitetty <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "Suoraan",
+  "Forwarding": "Edelleenlähetys",
+  "N/A": "Ei käytössä",
+  "We are actively working to resolve time to inbox monitoring issues.": "Pyrimme aktiivisesti ratkaisemaan postilaatikon seurantaan liittyviä ongelmia."
 }

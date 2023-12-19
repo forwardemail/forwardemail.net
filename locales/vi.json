@@ -3783,5 +3783,13 @@
   "Need instant removal?": "Cần loại bỏ ngay lập tức?",
   "Upgrade for $3": "Nâng cấp với giá 3 USD",
   "Email, domain name, or IP address": "Email, tên miền hoặc địa chỉ IP",
-  "Submit Request": "Gửi lời đề nghị"
+  "Submit Request": "Gửi lời đề nghị",
+  "We are the only email service with 100% open-source and transparent monitoring.": "Chúng tôi là dịch vụ email duy nhất có 100% nguồn mở và giám sát minh bạch.",
+  "Time to Inbox": "Đã đến lúc gửi hộp thư đến",
+  "Try again": "Thử lại",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Cập nhật lần cuối vào <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "Trực tiếp",
+  "Forwarding": "Chuyển tiếp",
+  "N/A": "không áp dụng",
+  "We are actively working to resolve time to inbox monitoring issues.": "Chúng tôi đang tích cực làm việc để giải quyết các vấn đề về thời gian giám sát hộp thư đến."
 }

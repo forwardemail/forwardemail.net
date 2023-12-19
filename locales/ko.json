@@ -6550,5 +6550,11 @@
   "Can I configure <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Spam Scanner</a> settings?": "<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">스팸 스캐너</a> 설정을 구성할 수 있나요?",
   "<span class=\"font-weight-bold\">No.</span> We have a <a href=\"%s\" class=\"font-weight-bold\">Privacy Policy</a> of not storing SMTP logs, metadata, nor emails (with the exception of <a href=\"%s\" class=\"font-weight-bold\">errors</a>).": "<span class=\"font-weight-bold\">아니요.</span> 당사에는 SMTP 로그, 메타데이터, 이메일( <a href=\"%s\" class=\"font-weight-bold\">오류</a> 제외)을 저장하지 않는다는 <a href=\"%s\" class=\"font-weight-bold\">개인정보 보호정책이</a> 있습니다.",
   "We accept cards, wallets, and bank transfers using <a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> and <a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal</a>.": "<a class=\"font-weight-bold\" href=\"https://stripe.com/global\" target=\"_blank\" rel=\"noopener noreferrer\">Stripe</a> 및<a class=\"font-weight-bold\" href=\"https://www.paypal.com\" target=\"_blank\" rel=\"noopener noreferrer\">PayPal을</a> 사용하여 카드, 지갑, 은행 송금을 허용합니다.",
-  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "계속하려면 <a href=\"%s\" target=\"_blank\">이메일 주소를 확인</a> 하세요."
+  "Please <a href=\"%s\" target=\"_blank\">verify your email address</a> to continue": "계속하려면 <a href=\"%s\" target=\"_blank\">이메일 주소를 확인</a> 하세요.",
+  "We are the only email service with 100% open-source and transparent monitoring.": "우리는 100% 오픈 소스 및 투명한 모니터링을 갖춘 유일한 이메일 서비스입니다.",
+  "Time to Inbox": "받은편지함까지 걸리는 시간",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "마지막 업데이트 날짜: <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "직접",
+  "Forwarding": "전송",
+  "We are actively working to resolve time to inbox monitoring issues.": "우리는 받은 편지함 모니터링 문제를 해결하기 위해 적극적으로 노력하고 있습니다."
 }

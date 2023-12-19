@@ -358,7 +358,11 @@ $body.on('keyup', '.verification-form', debounce(keyup, 200));
 // <https://stackoverflow.com/a/52315492>
 //
 $body.on('shown.bs.modal', '.modal', function () {
+  const $modal = $(this);
+  const $lazyframe = $modal.find('.lazyframe:first');
+  if ($lazyframe.length === 0) return;
   lazyframe('.lazyframe', { autoplay: true, initinview: false });
+  $lazyframe.click();
 });
 $body.on('hide.bs.modal', '.modal', function () {
   const $modal = $(this);

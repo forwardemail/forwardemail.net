@@ -32,8 +32,92 @@ const metaConfig = require('./meta-config');
 
 const zxcvbn = require('#helpers/zxcvbn');
 
+// now we can set up imap clients for all providers and get their values all at once
+const imapConfigurations = [
+  // Gmail
+  // <https://support.google.com/mail/answer/7126229?hl=en>
+  {
+    name: 'Gmail',
+    forwarder: env.TTI_GMAIL_FORWARDER,
+    config: {
+      host: 'imap.gmail.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_GMAIL_IMAP_USER,
+        pass: env.TTI_GMAIL_IMAP_PASS
+      }
+    }
+  },
+
+  // Microsoft Outlook/Hotmail
+  // <https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-8361e398-8af4-4e97-b147-6c6c4ac95353>
+  {
+    name: 'Outlook/Hotmail',
+    forwarder: env.TTI_OUTLOOK_FORWARDER,
+    config: {
+      host: 'outlook.office365.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_OUTLOOK_IMAP_USER,
+        pass: env.TTI_OUTLOOK_IMAP_PASS
+      }
+    }
+  },
+
+  // iCloud/Me
+  // <https://support.apple.com/en-us/102525>
+  {
+    name: 'Apple iCloud',
+    forwarder: env.TTI_APPLE_FORWARDER,
+    config: {
+      host: 'imap.mail.me.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_APPLE_IMAP_USER,
+        pass: env.TTI_APPLE_IMAP_PASS
+      }
+    }
+  },
+
+  // Fastmail
+  // <https://www.fastmail.help/hc/en-us/articles/1500000279921-IMAP-POP-and-SMTP>
+  {
+    name: 'Fastmail',
+    forwarder: env.TTI_FASTMAIL_FORWARDER,
+    config: {
+      host: 'imap.fastmail.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_FASTMAIL_IMAP_USER,
+        pass: env.TTI_FASTMAIL_IMAP_PASS
+      }
+    }
+  },
+
+  // Yahoo/AOL
+  // <https://help.yahoo.com/kb/SLN4075.html>
+  {
+    name: 'Yahoo/AOL',
+    forwarder: env.TTI_YAHOO_FORWARDER,
+    config: {
+      host: 'imap.mail.yahoo.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_YAHOO_IMAP_USER,
+        pass: env.TTI_YAHOO_IMAP_PASS
+      }
+    }
+  }
+];
+
 const config = {
   ...metaConfig,
+  imapConfigurations,
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
 

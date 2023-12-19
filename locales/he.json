@@ -4426,5 +4426,12 @@
   "Need instant removal?": "זקוק להסרה מיידית?",
   "Upgrade for $3": "שדרוג עבור $3",
   "Email, domain name, or IP address": "דואר אלקטרוני, שם דומיין או כתובת IP",
-  "Submit Request": "שלח בקשה"
+  "Submit Request": "שלח בקשה",
+  "We are the only email service with 100% open-source and transparent monitoring.": "אנחנו שירות הדוא\"ל היחיד עם 100% קוד פתוח ושקוף.",
+  "Time to Inbox": "זמן לתיבת הדואר הנכנס",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "עודכן לאחרונה ב- <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "Direct": "ישיר",
+  "Forwarding": "העברה",
+  "N/A": "לא",
+  "We are actively working to resolve time to inbox monitoring issues.": "אנו פועלים באופן פעיל כדי לפתור בעיות של ניטור זמן עד תיבת הדואר הנכנס."
 }

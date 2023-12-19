@@ -1,4 +1,7 @@
-footer.mt-auto.small
+footer.mt-auto
+  if ctx.pathWithoutLocale !== '/'
+    hr
+    include _tti
   //-.
     if !isHelp
       .bg-primary.text-center.py-3.border-top.border-themed
@@ -21,7 +24,7 @@ footer.mt-auto.small
                 role=isHelp ? "link" : "button",
                 data-target=isHelp ? false : "#modal-help"
               )= t("Need help?")
-  .bg-dark.text-white
+  .bg-dark.text-white.small
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
       .d-flex.flex-column.flex-lg-row
         if !isBot(ctx.get('User-Agent'))

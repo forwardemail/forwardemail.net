@@ -32,6 +32,12 @@ const jobs = [
     timeout: 0,
     path: path.join(__dirname, 'stripe', 'index.js')
   },
+  // time to inbox monitoring
+  {
+    name: 'tti',
+    interval: '5m',
+    timeout: 0
+  },
   //
   // we delete accounts after 30+ days of being unverified
   // (see "cleanup-database.js" job)
