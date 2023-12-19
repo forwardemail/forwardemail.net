@@ -6,7 +6,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
-const os = require('node:os');
+// const os = require('node:os');
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
 
@@ -17,7 +17,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 // const dayjs = require('dayjs-with-plugins');
-const ip = require('ip');
+// const ip = require('ip');
 const mongoose = require('mongoose');
 const pMapSeries = require('p-map-series');
 const safeStringify = require('fast-safe-stringify');
@@ -25,9 +25,9 @@ const sharedConfig = require('@ladjs/shared-config');
 const { randomstring } = require('@sidoshi/random-string');
 
 const config = require('#config');
-const createMtaStsCache = require('#helpers/create-mta-sts-cache');
-const createSession = require('#helpers/create-session');
-const createTangerine = require('#helpers/create-tangerine');
+// const createMtaStsCache = require('#helpers/create-mta-sts-cache');
+// const createSession = require('#helpers/create-session');
+// const createTangerine = require('#helpers/create-tangerine');
 const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 // const sendEmail = require('#helpers/send-email');
@@ -35,11 +35,10 @@ const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
-const cache = createMtaStsCache(client);
-const resolver = createTangerine(client, logger);
-
-const HOSTNAME = os.hostname();
-const IP_ADDRESS = ip.address();
+// const cache = createMtaStsCache(client);
+// const resolver = createTangerine(client, logger);
+// const HOSTNAME = os.hostname();
+// const IP_ADDRESS = ip.address();
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -84,7 +83,8 @@ ${messageId}`.trim();
               to
             };
 
-            // let date = new Date();
+            /*
+            let date = new Date();
 
             const options = {
               session: createSession({
@@ -109,7 +109,6 @@ ${messageId}`.trim();
 
             logger.debug('options', { options });
 
-            /*
             let info;
             try {
               // TODO: until Apple removes Bree from blocklist
