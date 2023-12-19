@@ -30,14 +30,9 @@ async function getMessage(info, provider) {
         await client.mailboxOpen('INBOX');
 
         try {
-          for await (const message of client.fetch(
-            {
-              seen: false
-            },
-            {
-              headers: ['Message-ID']
-            }
-          )) {
+          for await (const message of client.fetch('*', {
+            headers: ['Message-ID']
+          })) {
             if (received) continue;
             if (
               message.headers
