@@ -14,7 +14,7 @@ if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
           .alert.alert-danger.small.d-inline-block.mt-3.mt-md-5.mb-0= t("We are actively working to resolve time to inbox monitoring issues.")
         .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3.mt-md-5
           each provider in tti.providers
-            .col-12.col-sm-6.col-md-6.col-lg-4.mb-5
+            .col-12.col-sm-6.mb-5
               p.lead.font-weight-bold= provider.name
               ul.list-inline.mb-0
                 li.list-inline-item.mr-3.border.p-3.rounded-lg

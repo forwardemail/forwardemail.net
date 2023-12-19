@@ -70,7 +70,7 @@ async function getMessage(info, provider) {
       },
       {
         interval: 0,
-        timeout: ms('30s')
+        timeout: ms('1m')
       }
     );
   } catch (_err) {
