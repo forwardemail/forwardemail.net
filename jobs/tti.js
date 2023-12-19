@@ -30,7 +30,7 @@ const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
 const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
-const sendEmail = require('#helpers/send-email');
+// const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
@@ -84,7 +84,7 @@ ${messageId}`.trim();
               to
             };
 
-            let date = new Date();
+            // let date = new Date();
 
             const options = {
               session: createSession({
@@ -109,6 +109,7 @@ ${messageId}`.trim();
 
             logger.debug('options', { options });
 
+            /*
             let info;
             try {
               // TODO: until Apple removes Bree from blocklist
@@ -126,12 +127,13 @@ ${messageId}`.trim();
                   .replace(/GMT/, '+0000')}\n${raw}`
               });
             }
+            */
 
-            // date = new Date();
-            // const info = await config.email.transport.sendMail({
-            //   envelope,
-            //   raw: `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-            // });
+            const date = new Date();
+            const info = await config.email.transport.sendMail({
+              envelope,
+              raw: `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+            });
 
             // rewrite messageId since `raw` overrides this
             info.messageId = messageId;
