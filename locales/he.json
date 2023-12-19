@@ -4433,5 +4433,8 @@
   "Direct": "ישיר",
   "Forwarding": "העברה",
   "N/A": "לא",
-  "We are actively working to resolve time to inbox monitoring issues.": "אנו פועלים באופן פעיל כדי לפתור בעיות של ניטור זמן עד תיבת הדואר הנכנס."
+  "We are actively working to resolve time to inbox monitoring issues.": "אנו פועלים באופן פעיל כדי לפתור בעיות של ניטור זמן עד תיבת הדואר הנכנס.",
+  "passkeys and WebAuthn": "מפתחות סיסמה ו-WebAuthn",
+  "time to inbox": "זמן לתיבת הדואר הנכנס",
+  "monitoring.": "ניטור."
 }

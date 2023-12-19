@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "마지막 업데이트 날짜: <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "직접",
   "Forwarding": "전송",
-  "We are actively working to resolve time to inbox monitoring issues.": "우리는 받은 편지함 모니터링 문제를 해결하기 위해 적극적으로 노력하고 있습니다."
+  "We are actively working to resolve time to inbox monitoring issues.": "우리는 받은 편지함 모니터링 문제를 해결하기 위해 적극적으로 노력하고 있습니다.",
+  "passkeys and WebAuthn": "패스키 및 WebAuthn",
+  "time to inbox": "받은 편지함까지의 시간",
+  "monitoring.": "모니터링."
 }

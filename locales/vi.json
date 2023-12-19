@@ -3791,5 +3791,8 @@
   "Direct": "Trực tiếp",
   "Forwarding": "Chuyển tiếp",
   "N/A": "không áp dụng",
-  "We are actively working to resolve time to inbox monitoring issues.": "Chúng tôi đang tích cực làm việc để giải quyết các vấn đề về thời gian giám sát hộp thư đến."
+  "We are actively working to resolve time to inbox monitoring issues.": "Chúng tôi đang tích cực làm việc để giải quyết các vấn đề về thời gian giám sát hộp thư đến.",
+  "passkeys and WebAuthn": "mật mã và WebAuthn",
+  "time to inbox": "đã đến lúc gửi hộp thư đến",
+  "monitoring.": "giám sát."
 }

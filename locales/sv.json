@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Senast uppdaterad <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "Direkt",
   "Forwarding": "Spedition",
-  "We are actively working to resolve time to inbox monitoring issues.": "Vi arbetar aktivt med att lösa problem med övervakning av tid till inkorg."
+  "We are actively working to resolve time to inbox monitoring issues.": "Vi arbetar aktivt med att lösa problem med övervakning av tid till inkorg.",
+  "passkeys and WebAuthn": "lösenord och WebAuthn",
+  "time to inbox": "dags att inboxa",
+  "monitoring.": "övervakning."
 }

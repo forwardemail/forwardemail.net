@@ -6403,5 +6403,8 @@
   "Direct": "Suoraan",
   "Forwarding": "Edelleenlähetys",
   "N/A": "Ei käytössä",
-  "We are actively working to resolve time to inbox monitoring issues.": "Pyrimme aktiivisesti ratkaisemaan postilaatikon seurantaan liittyviä ongelmia."
+  "We are actively working to resolve time to inbox monitoring issues.": "Pyrimme aktiivisesti ratkaisemaan postilaatikon seurantaan liittyviä ongelmia.",
+  "passkeys and WebAuthn": "salasanat ja WebAuthn",
+  "time to inbox": "aika postilaatikkoon",
+  "monitoring.": "seurantaa."
 }

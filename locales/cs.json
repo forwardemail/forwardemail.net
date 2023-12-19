@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Naposledy aktualizováno <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "Přímo",
   "Forwarding": "Přeposílání",
-  "We are actively working to resolve time to inbox monitoring issues.": "Aktivně pracujeme na vyřešení problémů se sledováním doručené pošty."
+  "We are actively working to resolve time to inbox monitoring issues.": "Aktivně pracujeme na vyřešení problémů se sledováním doručené pošty.",
+  "passkeys and WebAuthn": "přístupové klíče a WebAuthn",
+  "time to inbox": "čas do doručené pošty",
+  "monitoring.": "sledování."
 }

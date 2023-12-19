@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Ostatnia aktualizacja <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "Bezpośredni",
   "Forwarding": "Przekierowanie",
-  "We are actively working to resolve time to inbox monitoring issues.": "Aktywnie pracujemy nad rozwiązaniem problemów z monitorowaniem czasu oczekiwania na skrzynkę odbiorczą."
+  "We are actively working to resolve time to inbox monitoring issues.": "Aktywnie pracujemy nad rozwiązaniem problemów z monitorowaniem czasu oczekiwania na skrzynkę odbiorczą.",
+  "passkeys and WebAuthn": "hasła i WebAuthn",
+  "time to inbox": "czas na skrzynkę odbiorczą",
+  "monitoring.": "monitorowanie."
 }

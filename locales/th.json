@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "อัปเดตล่าสุดเมื่อ <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "โดยตรง",
   "Forwarding": "การส่งต่อ",
-  "We are actively working to resolve time to inbox monitoring issues.": "เรากำลังดำเนินการแก้ไขปัญหาเวลาในการติดตามกล่องจดหมาย"
+  "We are actively working to resolve time to inbox monitoring issues.": "เรากำลังดำเนินการแก้ไขปัญหาเวลาในการติดตามกล่องจดหมาย",
+  "passkeys and WebAuthn": "รหัสผ่านและ WebAuthn",
+  "time to inbox": "ถึงเวลาเข้าอินบ็อกซ์",
+  "monitoring.": "การตรวจสอบ"
 }

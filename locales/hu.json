@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Utolsó frissítés: <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "Közvetlen",
   "Forwarding": "Szállítmányozás",
-  "We are actively working to resolve time to inbox monitoring issues.": "Aktívan dolgozunk a beérkező levelek figyelésével kapcsolatos problémák megoldásán."
+  "We are actively working to resolve time to inbox monitoring issues.": "Aktívan dolgozunk a beérkező levelek figyelésével kapcsolatos problémák megoldásán.",
+  "passkeys and WebAuthn": "jelszavak és a WebAuthn",
+  "time to inbox": "ideje beérkezni",
+  "monitoring.": "monitoring."
 }

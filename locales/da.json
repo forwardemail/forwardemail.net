@@ -6294,5 +6294,8 @@
   "Direct": "Direkte",
   "Forwarding": "Videresendelse",
   "N/A": "N/A",
-  "We are actively working to resolve time to inbox monitoring issues.": "Vi arbejder aktivt på at løse problemer med overvågning af tid til indbakke."
+  "We are actively working to resolve time to inbox monitoring issues.": "Vi arbejder aktivt på at løse problemer med overvågning af tid til indbakke.",
+  "passkeys and WebAuthn": "adgangsnøgler og WebAuthn",
+  "time to inbox": "tid til indbakke",
+  "monitoring.": "overvågning."
 }

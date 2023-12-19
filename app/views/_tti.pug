@@ -10,8 +10,6 @@ if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
         h2.h1.mt-3.mt-md-5= t("Time to Inbox")
         .small.text-muted
           != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
-        if tti.providers.some(p => p.directMs === 0 || p.forwardingMs === 0)
-          .alert.alert-danger.small.d-inline-block.mt-3.mt-md-5.mb-0= t("We are actively working to resolve time to inbox monitoring issues.")
         .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3.mt-md-5
           each provider in tti.providers
             .col-12.col-sm-6.mb-5
@@ -20,7 +18,7 @@ if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
                 li.list-inline-item.mr-3.border.p-3.rounded-lg
                   - let directClass = "text-success";
                   if provider.directMs === 0
-                    - directClass = "text-danger";
+                    - directClass = "text-muted";
                   else if provider.directMs > 10000
                     - directClass = "text-warning";
                   .h4.text-monospace.font-weight-bold(class=directClass)
@@ -32,7 +30,7 @@ if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
                 li.list-inline-item.border.p-3.rounded-lg
                   - let forwardingClass = "text-success";
                   if provider.forwardingMs === 0
-                    - forwardingClass = "text-danger";
+                    - forwardingClass = "text-muted";
                   else if provider.forwardingMs > 10000
                     - forwardingClass = "text-warning";
                   .h4.text-monospace.font-weight-bold(class=forwardingClass)

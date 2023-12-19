@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "En son <span class=\"dayjs\" data-time=\"%d\">%s</span> tarihinde güncellendi",
   "Direct": "Doğrudan",
   "Forwarding": "Yönlendirme",
-  "We are actively working to resolve time to inbox monitoring issues.": "Gelen kutusu izleme sorunlarını çözmek için aktif olarak çalışıyoruz."
+  "We are actively working to resolve time to inbox monitoring issues.": "Gelen kutusu izleme sorunlarını çözmek için aktif olarak çalışıyoruz.",
+  "passkeys and WebAuthn": "geçiş anahtarları ve WebAuthn",
+  "time to inbox": "gelen kutusuna gitme zamanı",
+  "monitoring.": "izleme."
 }

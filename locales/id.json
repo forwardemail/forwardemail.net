@@ -6556,5 +6556,8 @@
   "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Terakhir diperbarui pada <span class=\"dayjs\" data-time=\"%d\">%s</span>",
   "Direct": "Langsung",
   "Forwarding": "Penerusan",
-  "We are actively working to resolve time to inbox monitoring issues.": "Kami secara aktif berupaya menyelesaikan masalah pemantauan waktu ke kotak masuk."
+  "We are actively working to resolve time to inbox monitoring issues.": "Kami secara aktif berupaya menyelesaikan masalah pemantauan waktu ke kotak masuk.",
+  "passkeys and WebAuthn": "kunci sandi dan WebAuthn",
+  "time to inbox": "waktunya untuk masuk ke kotak masuk",
+  "monitoring.": "pemantauan."
 }

@@ -5593,5 +5593,8 @@
   "Direct": "Direkte",
   "Forwarding": "Weiterleitung",
   "N/A": "N / A",
-  "We are actively working to resolve time to inbox monitoring issues.": "Wir arbeiten aktiv daran, Probleme bei der Überwachung der Zeit bis zum Posteingang zu lösen."
+  "We are actively working to resolve time to inbox monitoring issues.": "Wir arbeiten aktiv daran, Probleme bei der Überwachung der Zeit bis zum Posteingang zu lösen.",
+  "passkeys and WebAuthn": "Passkeys und WebAuthn",
+  "time to inbox": "Zeit für den Posteingang",
+  "monitoring.": "Überwachung."
 }
