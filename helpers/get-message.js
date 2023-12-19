@@ -10,7 +10,7 @@ const { ImapFlow } = require('imapflow');
 const logger = require('#helpers/logger');
 
 async function getMessage(info, provider) {
-  let message;
+  let received;
   let err;
   try {
     await pWaitFor(
@@ -27,36 +27,40 @@ async function getMessage(info, provider) {
         // /blog/smtp-jmap-capability-imaprev
         // console.log('capabilities', client.capabilities);
 
-        const lock = await client.getMailboxLock('INBOX');
+        await client.mailboxOpen('INBOX');
 
         try {
-          const messages = await client.search({
-            from: info.envelope.from,
-            header: { 'Message-ID': info.messageId }
-          });
+          for await (const message of client.fetch('1:*', {
+            headers: ['Message-ID']
+          })) {
+            if (received) continue;
+            if (
+              message.headers
+                .toString()
+                .includes(
+                  info.messageId.replace('<', '').replace('>', '').split('@')[1]
+                )
+            ) {
+              //
+              // NOTE: due to NTP time differences we cannot rely on
+              //       a message's internal date from a given provider
+              //       nor can we rely on Recieved headers
+              //       nor can we rely on message envelope date
+              //
+              received = new Date();
+            }
+          }
 
-          if (messages.length > 0) {
-            const received = new Date();
-            //
-            // NOTE: due to NTP time differences we cannot rely on
-            //       a message's internal date from a given provider
-            //       nor can we rely on Recieved headers
-            //       nor can we rely on message envelope date
-            //
-            message = await client.fetchOne(messages[0], {
-              source: true,
-              envelope: true,
-              internalDate: true
-            });
-            message.received = received;
-
-            await client.messageDelete(message.uid);
+          if (received) {
+            try {
+              await client.messageDelete('1:*');
+            } catch (err) {
+              logger.fatal(err);
+            }
           }
         } catch (_err) {
           err = _err;
         }
-
-        lock.release();
 
         try {
           await client.logout();
@@ -66,7 +70,7 @@ async function getMessage(info, provider) {
 
         if (err) throw err;
 
-        return Boolean(message);
+        return Boolean(received);
       },
       {
         interval: 0,
@@ -77,7 +81,7 @@ async function getMessage(info, provider) {
     err = _err;
   }
 
-  return { provider, message, err };
+  return { provider, received, err };
 }
 
 module.exports = getMessage;

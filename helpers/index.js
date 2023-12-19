@@ -81,6 +81,7 @@ const parsePayload = require('./parse-payload');
 const wspServer = require('./wsp-server');
 const getFingerprint = require('./get-fingerprint');
 const zxcvbn = require('./zxcvbn');
+const createMtaStsCache = require('./create-mta-sts-cache');
 
 module.exports = {
   decrypt,
@@ -161,5 +162,6 @@ module.exports = {
   parsePayload,
   wspServer,
   getFingerprint,
-  zxcvbn
+  zxcvbn,
+  createMtaStsCache
 };
