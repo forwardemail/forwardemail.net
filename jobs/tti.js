@@ -58,8 +58,18 @@ graceful.listen();
     if (tti) {
       tti = JSON.parse(tti);
       tti.created_at = new Date(tti.created_at);
-      // if created_at of existing tti was < 5 minutes ago then return early
-      if (tti.created_at.getTime() > Date.now() - ms('5m')) {
+      // if created_at of existing tti was < 5 minutes ago
+      // and if all had values <= 10s then return early
+      if (
+        tti.created_at.getTime() > Date.now() - ms('5m') &&
+        tti.providers.every(
+          (p) =>
+            p.directMs !== 0 &&
+            p.directMs <= 10000 &&
+            p.forwardingMs !== 0 &&
+            p.forwardingMs <= 10000
+        )
+      ) {
         if (parentPort) parentPort.postMessage('done');
         else process.exit(0);
         return;
