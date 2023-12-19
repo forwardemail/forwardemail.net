@@ -7,7 +7,11 @@ if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
             strong= t("Did you know?")
             = " "
             != t("We are the only email service with 100% open-source and transparent monitoring.")
-        h2.h1.mt-3.mt-md-5= t("Time to Inbox")
+        h2.h1.mt-3.mt-md-5
+          if ctx.pathWithoutLocale === '/' && tti.providers.every(p => p.directMs > 0 && p.directMs <= 10000 && p.forwardingMs > 0 && p.forwardingMs <= 10000)
+            = t("The Fastest Email Service")
+          else
+            = t("Time to Inbox")
         .small.text-muted
           != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
         .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3.mt-md-5

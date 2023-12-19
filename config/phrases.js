@@ -88,6 +88,7 @@ module.exports = {
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
     'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
+  FASTEST_EMAIL: 'The Fastest Email Service',
   PAST_DUE_OR_INVALID_ADMIN:
     'Domain has past due balance or does not have at least one valid admin.',
   ALIAS_ACCOUNT_BANNED: 'Alias user is banned.',
