@@ -18,6 +18,12 @@ const _ = require('lodash');
 // in order to make the client-side payload less kb
 const mongoose = require('mongoose');
 
+// this package is ignored in `browser` config in `package.json`
+// in order to make the client-side payload less kb
+let structuredClone = require('@ungap/structured-clone');
+
+if (structuredClone) structuredClone = structuredClone.default;
+
 const loggerConfig = require('../config/logger');
 const isCodeBug = require('./is-code-bug');
 
@@ -237,6 +243,45 @@ async function hook(err, message, meta) {
 for (const level of logger.config.levels) {
   // eslint-disable-next-line complexity
   logger.pre(level, function (err, message, meta) {
+    // clone the data so that we don't mutate it
+    // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
+    // <https://github.com/ungap/structured-clone>
+    if (typeof err === 'object' && structuredClone)
+      err = structuredClone(err, {
+        // avoid throwing
+        lossy: true,
+        // avoid throwing *and* looks for toJSON
+        json: true
+      });
+
+    //
+    // NOTE: we can't use `superjson` because they don't export CJS right now
+    //       <https://github.com/blitz-js/superjson/issues/268#issuecomment-1863659516>
+    //
+    if (typeof message === 'object' && structuredClone) {
+      // clone the data so that we don't mutate it
+      // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
+      // <https://github.com/ungap/structured-clone>
+      message = structuredClone(message, {
+        // avoid throwing
+        lossy: true,
+        // avoid throwing *and* looks for toJSON
+        json: true
+      });
+    }
+
+    if (typeof meta === 'object' && structuredClone) {
+      // clone the data so that we don't mutate it
+      // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
+      // <https://github.com/ungap/structured-clone>
+      meta = structuredClone(meta, {
+        // avoid throwing
+        lossy: true,
+        // avoid throwing *and* looks for toJSON
+        json: true
+      });
+    }
+
     // add `isCodeBug` parsing here to `err` (safeguard)
     if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
 

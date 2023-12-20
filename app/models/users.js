@@ -188,8 +188,14 @@ object[config.userFields.paymentReminderFinalNoticeSentAt] = Date;
 object[config.userFields.paymentReminderTerminationNoticeSentAt] = Date;
 
 // VISA trial subscription requirement notifications
-object[config.userFields.stripeTrialSentAt] = Date;
-object[config.userFields.paypalTrialSentAt] = Date;
+object[config.userFields.stripeTrialSentAt] = {
+  type: Date,
+  index: true
+};
+object[config.userFields.paypalTrialSentAt] = {
+  type: Date,
+  index: true
+};
 
 // When the user upgraded to a paid plan
 object[config.userFields.planSetAt] = {
