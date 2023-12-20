@@ -104,11 +104,11 @@ Content-Language: en-US
 To: ${to}
 From: ${config.supportEmail}
 Message-ID: ${messageId}
-Subject: ${messageId}
+Subject: test
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-${messageId}`.trim();
+test`.trim();
 
             const envelope = {
               from: config.supportEmail,
