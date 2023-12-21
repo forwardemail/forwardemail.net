@@ -760,7 +760,9 @@ async function tti() {
     .send();
   $tti.replaceWith($(res.text).html());
   renderDayjs();
-  tti();
+  setTimeout(() => {
+    tti();
+  }, 30000);
 }
 
 if ($tti.length === 1) {
