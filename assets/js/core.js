@@ -759,7 +759,7 @@ async function tti() {
     .timeout(1000 * 30)
     .retry(3)
     .send();
-  $tti.replaceWith($(res.text).html());
+  $tti.html($(res.text).html());
   renderDayjs();
   setTimeout(function () {
     tti();
