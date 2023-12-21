@@ -607,7 +607,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
     </tr>
   </tbody>
 </table>
@@ -620,7 +620,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <span>
     If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
@@ -632,7 +632,7 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   <span>
     If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
     Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
     <br /><br />
@@ -709,7 +709,7 @@ Using your registrar's DNS management page, set the following <strong class="not
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>v=spf1 a mx include:spf.forwardemail.net -all</code></td>
+      <td><code>v=spf1 a include:spf.forwardemail.net -all</code></td>
     </tr>
   </tbody>
 </table>
@@ -722,7 +722,7 @@ Using your registrar's DNS management page, set the following <strong class="not
   <span>
     If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to the value above, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
@@ -734,7 +734,7 @@ Using your registrar's DNS management page, set the following <strong class="not
   <span>
     If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
@@ -746,7 +746,7 @@ Using your registrar's DNS management page, set the following <strong class="not
   <span>
     If you already have a similar line with "v=spf1", then you'll need to append <code>include:spf.forwardemail.net</code> right before any existing "include:host.com" records and before the "-all" in the same line, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:host.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:host.com -all</code>
     <br /><br />
     Note that there is a difference between "-all" and "~all".  The "-" indicates that the SPF check should FAIL if it does not match, and "~" indicates that the SPF check should SOFTFAIL.  We recommend to use the "-all" approach to prevent domain forgery.
     <br /><br />
@@ -2837,7 +2837,7 @@ You should also set the SPF record for Gmail in your DNS configuration <strong c
   <span>
     If you are using Gmail (e.g. Send Mail As) or G Suite, then you'll need to append <code>include:_spf.google.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:_spf.google.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:_spf.google.com -all</code>
   </span>
 </div>
 
@@ -2859,7 +2859,7 @@ You should also set the SPF record for Outlook in your DNS configuration <strong
   <span>
     If you are using Microsoft Outlook or Live.com, you'll need to append <code>include:spf.protection.outlook.com</code> to your SPF <strong class="notranslate">TXT</strong> record, for example:
     <br /><br />
-    <code>v=spf1 a mx include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
+    <code>v=spf1 a include:spf.forwardemail.net include:spf.protection.outlook.com -all</code>
   </span>
 </div>
 
