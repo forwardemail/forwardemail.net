@@ -69,7 +69,9 @@ localeRouter
     if (ctx.accepts('html')) return next();
     const html = pug.renderFile(filePath, {
       ...ctx.state,
-      pathWithoutLocale: ctx.pathWithoutLocale
+      ctx: {
+        pathWithoutLocale: ctx.pathWithoutLocale
+      }
     });
     ctx.body = html;
   })
