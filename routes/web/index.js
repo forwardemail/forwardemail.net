@@ -70,7 +70,10 @@ localeRouter
     const html = pug.renderFile(filePath, {
       ...ctx.state,
       ctx: {
-        pathWithoutLocale: ctx.pathWithoutLocale
+        pathWithoutLocale:
+          ctx.get('Referrer') === `${config.urls.web}/${ctx.locale}`
+            ? '/'
+            : ctx.pathWithoutLocale
       }
     });
     ctx.body = html;

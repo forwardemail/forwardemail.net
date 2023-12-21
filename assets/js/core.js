@@ -761,7 +761,7 @@ async function tti() {
     .send();
   $tti.replaceWith($(res.text).html());
   renderDayjs();
-  setTimeout(() => {
+  setTimeout(function () {
     tti();
   }, 30000);
 }
