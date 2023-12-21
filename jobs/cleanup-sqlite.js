@@ -213,6 +213,13 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
               timeout: ms('5s')
             });
             const user = JSON.parse(response);
+            if (typeof user.password !== 'string') {
+              const err = new TypeError('User payload did not have password');
+              err.user = user;
+              err.id = id;
+              throw err;
+            }
+
             // eslint-disable-next-line no-await-in-loop
             await wsp.request(
               {

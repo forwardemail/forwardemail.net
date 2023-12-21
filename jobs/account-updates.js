@@ -93,7 +93,7 @@ async function mapper(id) {
 
   try {
     const ids = await Users.distinct('_id', {
-      account_updates: {
+      [config.userFields.accountUpdates]: {
         $exists: true,
         $ne: []
       },

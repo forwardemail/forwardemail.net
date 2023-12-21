@@ -210,6 +210,9 @@ const Aliases = new mongoose.Schema({
   tokens: [Token]
 });
 
+// compound index
+Aliases.index({ user: 1, domain: 1 });
+
 Aliases.plugin(captainHook);
 
 // eslint-disable-next-line complexity

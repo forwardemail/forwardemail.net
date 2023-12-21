@@ -292,7 +292,10 @@ object[config.userFields.changeEmailNewAddress] = {
 };
 
 // Welcome email
-object[config.userFields.welcomeEmailSentAt] = Date;
+object[config.userFields.welcomeEmailSentAt] = {
+  type: Date,
+  index: true
+};
 
 // Launch email (before 11/23/2020 10:00 AM)
 object[config.userFields.launchEmailSentAt] = Date;
@@ -321,7 +324,10 @@ object[config.userFields.pendingRecovery] = {
 };
 
 // List of account updates that are batched every 1 min.
-object[config.userFields.accountUpdates] = Array;
+object[config.userFields.accountUpdates] = {
+  type: Array,
+  index: true
+};
 
 // Shared field names with @ladjs/passport for consistency
 object[fields.displayName] = {

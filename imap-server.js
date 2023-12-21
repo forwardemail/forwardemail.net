@@ -254,6 +254,16 @@ class IMAP {
             (c) => c?.session?.arrivalDate
           ).reverse();
 
+          // error if no password was on the object (for debugging)
+          if (!isSANB(sorted[0].session.user.password)) {
+            const err = new TypeError(
+              'IMAP connection session did not have password'
+            );
+            err.matches = matches;
+            err.sorted = sorted;
+            throw err;
+          }
+
           // find the most recent connection if any and broadcast that
           this.client.publish(
             'sqlite_auth_response',
