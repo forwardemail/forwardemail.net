@@ -749,7 +749,6 @@ if (window.PublicKeyCredential) {
 //
 const $tti = $('#tti');
 async function tti() {
-  if ($tti.length === 0) return;
   const res = await superagent
     .get(`${window.LOCALE}/tti`)
     .set({
@@ -760,10 +759,12 @@ async function tti() {
     .retry(3)
     .send();
   $tti.replaceWith($(res.text).html());
+  renderDayjs();
+  tti();
 }
 
-window.addEventListener('load', () => {
-  if ($tti.length === 0) return;
-  tti();
-  setInterval(tti, 1000 * 30);
-});
+if ($tti.length === 1) {
+  setTimeout(() => {
+    tti();
+  }, 5000);
+}

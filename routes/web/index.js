@@ -67,7 +67,10 @@ localeRouter
 
   .get('/tti', (ctx, next) => {
     if (ctx.accepts('html')) return next();
-    const html = pug.renderFile(filePath, ctx.state);
+    const html = pug.renderFile(filePath, {
+      ...ctx.state,
+      pathWithoutLocale: ctx.pathWithoutLocale
+    });
     ctx.body = html;
   })
 
