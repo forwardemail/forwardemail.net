@@ -20,6 +20,7 @@ const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
+const prettyMilliseconds = require('pretty-ms');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const { randomstring } = require('@sidoshi/random-string');
@@ -28,6 +29,7 @@ const config = require('#config');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
+const emailHelper = require('#helpers/email');
 const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
@@ -48,10 +50,14 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+//
+// TODO: need to test across all SMTP servers
+//       (then when we render on home page in _tti.pug it will be average across all)
+//       and we can have a /tti page rendering full charts historically
+//
 (async () => {
   await setupMongoose(logger);
   // TODO: dashboard with chart for admin
-  // TODO: email alert for admin
   try {
     // check existing (within past 5 mins don't run)
     let tti = await client.get('tti');
@@ -203,6 +209,48 @@ test`.trim();
         providers
       })
     );
+
+    // if some providers did not receive mail or
+    // if some have >= 10s delay then email admins
+    // (as long as we haven't in past 30m)
+    if (
+      providers.some(
+        (p) =>
+          p.directMs === 0 ||
+          p.forwardingMs === 0 ||
+          p.directMs >= 10000 ||
+          p.forwardingMs >= 10000
+      )
+    ) {
+      // ensure we haven't sent in past 30m
+      const key = await client.get('tti_admin_email');
+      if (!key) {
+        // send an email to admins of the error
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: 'TTI Issue Detected'
+          },
+          locals: {
+            message: `<ul class="mb-0"><li>${providers
+              .map(
+                (p) =>
+                  `<strong>${p.name}:</strong> Direct (${
+                    p.directMs === 0 ? 'N/A' : prettyMilliseconds(p.directMs)
+                  }) &bull; Forwarding (${
+                    p.forwardingMs === 0
+                      ? 'N/A'
+                      : prettyMilliseconds(p.forwardingMs)
+                  })`
+              )
+              .join('</li><li>')}</li></ul>`
+          }
+        });
+        // set email cache
+        await client.set('tti_admin_email', true, 'PX', ms('30m'));
+      }
+    }
   } catch (err) {
     await logger.error(err);
   }
