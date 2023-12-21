@@ -747,10 +747,11 @@ if (window.PublicKeyCredential) {
 //
 // update TTI every minute
 //
-const $tti = $('#tti');
 async function tti() {
+  const $tti = $('#tti');
+  if ($tti.length === 0) return;
   const res = await superagent
-    .get(`${window.LOCALE}/tti`)
+    .get(`/${window.LOCALE}/tti`)
     .set({
       Accept: 'application/json',
       'X-Requested-With': 'XMLHttpRequest'
@@ -765,8 +766,6 @@ async function tti() {
   }, 30000);
 }
 
-if ($tti.length === 1) {
-  setTimeout(() => {
-    tti();
-  }, 5000);
-}
+setTimeout(function () {
+  tti();
+}, 5000);
