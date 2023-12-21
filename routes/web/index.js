@@ -22,6 +22,8 @@ const rateLimit = require('#helpers/rate-limit');
 const { web } = require('#controllers');
 const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 
+const filePath = path.join(config.views.root, '_tti.pug');
+
 const router = new Router();
 
 router
@@ -62,6 +64,13 @@ localeRouter
     rateLimit(50, 'onboard'),
     web.onboard
   )
+
+  .get('/tti', (ctx, next) => {
+    if (ctx.accepts('html')) return next();
+    const html = pug.renderFile(filePath, ctx.state);
+    ctx.body = html;
+  })
+
   // denylist removal (only 5 requests per 24 hours and removal is instant for paid users)
   .get(
     '/denylist',

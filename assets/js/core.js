@@ -12,6 +12,7 @@ const Typed = require('typed.js');
 const URLParse = require('url-parse');
 const base64url = require('base64url');
 const lazyframe = require('lazyframe');
+const superagent = require('superagent');
 const { randomstring } = require('@sidoshi/random-string');
 const { spinner: Spinner } = require('@ladjs/assets');
 
@@ -742,3 +743,27 @@ if (window.PublicKeyCredential) {
     }
   });
 }
+
+//
+// update TTI every minute
+//
+const $tti = $('#tti');
+async function tti() {
+  if ($tti.length === 0) return;
+  const res = await superagent
+    .get(`${window.LOCALE}/tti`)
+    .set({
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    })
+    .timeout(1000 * 30)
+    .retry(3)
+    .send();
+  $tti.replaceWith($(res.text).html());
+}
+
+window.addEventListener('load', () => {
+  if ($tti.length === 0) return;
+  tti();
+  setInterval(tti, 1000 * 30);
+});

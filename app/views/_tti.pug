@@ -1,48 +1,49 @@
-if tti && !tti.providers.every(p => p.directMs === 0 && p.forwardingMs === 0)
-  #tti.container.text-center
-    .row
-      .col
-        if ctx.pathWithoutLocale === '/'
-          .alert.alert-primary.d-inline-block.mb-0.small.mt-3.mt-md-5
-            strong= t("Did you know?")
-            = " "
-            != t("We are the only email service with 100% open-source and transparent monitoring.")
-        h2.h1.mt-3.mt-md-5
-          if ctx.pathWithoutLocale === '/' && tti.providers.every(p => p.directMs > 0 && p.directMs <= 10000 && p.forwardingMs > 0 && p.forwardingMs <= 10000)
-            = t("The Fastest Email Service")
-          else
-            = t("Time to Inbox")
-        .small.text-muted
-          != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
-        .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3.mt-md-5
-          each provider, i in tti.providers
-            - let providerClass = "mb-3 mb-md-5";
-            if i === tti.providers.length - 1
-              - providerClass = "";
-            .col-12.col-sm-6.col-lg-4(class=providerClass)
-              p.lead.font-weight-bold= provider.name
-              ul.list-inline.mb-0
-                li.list-inline-item.mr-3.border.p-3.rounded-lg
-                  - let directClass = "text-success";
-                  if provider.directMs === 0
-                    - directClass = "text-muted";
-                  else if provider.directMs > 10000
-                    - directClass = "text-warning";
-                  .h4.text-monospace.font-weight-bold(class=directClass)
+#tti
+  if tti
+    .container.text-center(class=ctx.pathWithoutLocale === "/" ? "mb-3 mb-md-5" : "")
+      .row
+        .col
+          if ctx.pathWithoutLocale === '/'
+            .alert.alert-primary.d-inline-block.mb-0.small.mt-3.mt-md-5
+              strong= t("Did you know?")
+              = " "
+              != t("We are the only email service with 100% open-source and transparent monitoring.")
+          h2.h1.mt-3.mt-md-5
+            if ctx.pathWithoutLocale === '/' && tti.providers.every(p => p.directMs > 0 && p.directMs <= 10000 && p.forwardingMs > 0 && p.forwardingMs <= 10000)
+              = t("The Fastest Email Service")
+            else
+              = t("Time to Inbox")
+          .small.text-muted
+            != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
+          .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3.mt-md-5
+            each provider, i in tti.providers
+              - let providerClass = "mb-3 mb-md-5";
+              if i === tti.providers.length - 1
+                - providerClass = "";
+              .col-12.col-sm-6.col-lg-4(class=providerClass)
+                p.lead.font-weight-bold= provider.name
+                ul.list-inline.mb-0
+                  li.list-inline-item.mr-3.border.p-3.rounded-lg
+                    - let directClass = "text-success";
                     if provider.directMs === 0
-                      = t("N/A")
-                    else
-                      = prettyMilliseconds(provider.directMs)
-                  .small= t("Direct")
-                li.list-inline-item.border.p-3.rounded-lg
-                  - let forwardingClass = "text-success";
-                  if provider.forwardingMs === 0
-                    - forwardingClass = "text-muted";
-                  else if provider.forwardingMs > 10000
-                    - forwardingClass = "text-warning";
-                  .h4.text-monospace.font-weight-bold(class=forwardingClass)
+                      - directClass = "text-muted";
+                    else if provider.directMs > 10000
+                      - directClass = "text-warning";
+                    .h4.text-monospace.font-weight-bold(class=directClass)
+                      if provider.directMs === 0
+                        i.fa.fa-spin.fa-spinner.text-muted
+                      else
+                        = prettyMilliseconds(provider.directMs)
+                    .small= t("Direct")
+                  li.list-inline-item.border.p-3.rounded-lg
+                    - let forwardingClass = "text-success";
                     if provider.forwardingMs === 0
-                      = t("N/A")
-                    else
-                      = prettyMilliseconds(provider.forwardingMs)
-                  .small= t("Forwarding")
+                      - forwardingClass = "text-muted";
+                    else if provider.forwardingMs > 10000
+                      - forwardingClass = "text-warning";
+                    .h4.text-monospace.font-weight-bold(class=forwardingClass)
+                      if provider.forwardingMs === 0
+                        i.fa.fa-spin.fa-spinner.text-muted
+                      else
+                        = prettyMilliseconds(provider.forwardingMs)
+                    .small= t("Forwarding")

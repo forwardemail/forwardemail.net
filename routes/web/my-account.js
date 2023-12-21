@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const url = require('node:url');
 const crypto = require('node:crypto');
+const url = require('node:url');
 
 const Attestation = require('@forwardemail/passport-fido2-webauthn/lib/fido2/attestation');
 const AuthenticatorData = require('@forwardemail/passport-fido2-webauthn/lib/fido2/authenticatordata');

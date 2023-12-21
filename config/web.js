@@ -287,7 +287,11 @@ module.exports = (redis) => ({
   },
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
-      if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
+      if (
+        !ctx.api &&
+        ctx.method === 'GET' &&
+        (ctx.pathWithoutLocale === '/tti' || ctx.accepts('html'))
+      ) {
         // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
