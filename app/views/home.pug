@@ -155,10 +155,10 @@ block body
         //- )
         .col-12.text-center
           if isBot(ctx.get("User-Agent"))
-            h1.mb-3.text-monospace(data-ignore-hash-change)= t("Free Email Forwarding Service")
+            h1.mb-3.text-sans-serif(data-ignore-hash-change)= t("Free Email Forwarding Service")
           else
             #typed-home-header.h1.mb-3(data-ignore-hash-change)
-              span#typed-home(data-ignore-hash-change)
+              span#typed-home.text-sans-serif(data-ignore-hash-change)
                 != t("Encrypted email<br /> for everyone")
           if isBot(ctx.get("User-Agent"))
             p
