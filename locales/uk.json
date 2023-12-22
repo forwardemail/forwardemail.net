@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "ключі доступу та WebAuthn",
   "time to inbox": "час на поштову скриньку",
   "monitoring.": "моніторинг.",
-  "The Fastest Email Service": "Найшвидший сервіс електронної пошти"
+  "The Fastest Email Service": "Найшвидший сервіс електронної пошти",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Ви успішно створили новий псевдонім: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Ви успішно створили новий псевдонім: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "огляд",
+  "Review Alias": "Огляд псевдоніму"
 }

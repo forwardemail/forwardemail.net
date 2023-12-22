@@ -223,6 +223,13 @@ block body
         if domain.aliases.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
           .alert.alert-info= t("No aliases exist yet")
         else
+          if isSANB(ctx.query.new) && validator.isEmail(ctx.query.new) && ctx.query.new.endsWith(`@${domain.name}`)
+            .alert.alert-success
+              ul.list-inline.mb-0
+                li.list-inline-item.align-middle
+                  != t('You successfully created a new alias: <a class="font-weight-bold alert-link" href="%s">%s</a>', l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`), ctx.query.new)
+                li.list-inline-item.align-middle
+                  a(href=l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`)).btn.btn-sm.btn-dark= t("Review Alias")
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",

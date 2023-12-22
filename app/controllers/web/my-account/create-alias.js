@@ -79,9 +79,7 @@ async function createAlias(ctx, next) {
       position: 'top'
     });
     const redirectTo = ctx.state.l(
-      // NOTE: it's confusing to user to pre-fill search bar after creation
-      // `/my-account/domains/${ctx.state.domain.name}/aliases?q=${ctx.state.alias.name}@${ctx.state.domain.name}`
-      `/my-account/domains/${ctx.state.domain.name}/aliases`
+      `/my-account/domains/${ctx.state.domain.name}/aliases?new=${ctx.state.alias.name}@${ctx.state.domain.name}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

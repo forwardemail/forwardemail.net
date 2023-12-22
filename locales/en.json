@@ -6317,5 +6317,9 @@
   "We are actively working to resolve time to inbox monitoring issues.": "We are actively working to resolve time to inbox monitoring issues.",
   "passkeys and WebAuthn": "passkeys and WebAuthn",
   "time to inbox": "time to inbox",
-  "monitoring.": "monitoring."
+  "monitoring.": "monitoring.",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Review",
+  "Review Alias": "Review Alias"
 }

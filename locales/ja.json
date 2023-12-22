@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "パスキーとWebAuthn",
   "time to inbox": "受信箱までの時間",
   "monitoring.": "監視。",
-  "The Fastest Email Service": "最速の電子メール サービス"
+  "The Fastest Email Service": "最速の電子メール サービス",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "新しいエイリアスが正常に作成されました: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "新しいエイリアスが正常に作成されました: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "レビュー",
+  "Review Alias": "エイリアスのレビュー"
 }

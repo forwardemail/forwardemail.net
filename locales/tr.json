@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "geçiş anahtarları ve WebAuthn",
   "time to inbox": "gelen kutusuna gitme zamanı",
   "monitoring.": "izleme.",
-  "The Fastest Email Service": "En Hızlı E-posta Hizmeti"
+  "The Fastest Email Service": "En Hızlı E-posta Hizmeti",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Başarıyla yeni bir takma ad oluşturdunuz: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Başarıyla yeni bir takma ad oluşturdunuz: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Gözden geçirmek",
+  "Review Alias": "Takma Adı İncele"
 }

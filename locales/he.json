@@ -4437,5 +4437,9 @@
   "passkeys and WebAuthn": "מפתחות סיסמה ו-WebAuthn",
   "time to inbox": "זמן לתיבת הדואר הנכנס",
   "monitoring.": "ניטור.",
-  "The Fastest Email Service": "שירות הדוא\"ל המהיר ביותר"
+  "The Fastest Email Service": "שירות הדוא\"ל המהיר ביותר",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "יצרת בהצלחה כינוי חדש: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "יצרת בהצלחה כינוי חדש: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "סקירה",
+  "Review Alias": "סקירת כינוי"
 }

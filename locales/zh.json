@@ -6253,5 +6253,9 @@
   "passkeys and WebAuthn": "密钥和 WebAuthn",
   "time to inbox": "到收件箱的时间",
   "monitoring.": "监控。",
-  "The Fastest Email Service": "最快的电子邮件服务"
+  "The Fastest Email Service": "最快的电子邮件服务",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "您已成功创建新别名： <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "您已成功创建新别名： <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "审查",
+  "Review Alias": "审核别名"
 }

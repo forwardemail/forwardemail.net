@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "hasła i WebAuthn",
   "time to inbox": "czas na skrzynkę odbiorczą",
   "monitoring.": "monitorowanie.",
-  "The Fastest Email Service": "Najszybsza usługa e-mail"
+  "The Fastest Email Service": "Najszybsza usługa e-mail",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Pomyślnie utworzyłeś nowy alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Pomyślnie utworzyłeś nowy alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Recenzja",
+  "Review Alias": "Przejrzyj Alias"
 }

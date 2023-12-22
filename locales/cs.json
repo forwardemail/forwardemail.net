@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "přístupové klíče a WebAuthn",
   "time to inbox": "čas do doručené pošty",
   "monitoring.": "sledování.",
-  "The Fastest Email Service": "Nejrychlejší e-mailová služba"
+  "The Fastest Email Service": "Nejrychlejší e-mailová služba",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Úspěšně jste vytvořili nový alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Úspěšně jste vytvořili nový alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Posouzení",
+  "Review Alias": "Zkontrolujte Alias"
 }

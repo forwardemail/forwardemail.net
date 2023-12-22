@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "lösenord och WebAuthn",
   "time to inbox": "dags att inboxa",
   "monitoring.": "övervakning.",
-  "The Fastest Email Service": "Den snabbaste e-posttjänsten"
+  "The Fastest Email Service": "Den snabbaste e-posttjänsten",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har skapat ett nytt alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har skapat ett nytt alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Recension",
+  "Review Alias": "Granska Alias"
 }

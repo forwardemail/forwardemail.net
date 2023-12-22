@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "مفاتيح المرور وWebAuthn",
   "time to inbox": "الوقت إلى البريد الوارد",
   "monitoring.": "يراقب.",
-  "The Fastest Email Service": "أسرع خدمة بريد إلكتروني"
+  "The Fastest Email Service": "أسرع خدمة بريد إلكتروني",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "مراجعة",
+  "Review Alias": "مراجعة الاسم المستعار"
 }

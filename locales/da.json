@@ -6298,5 +6298,9 @@
   "passkeys and WebAuthn": "adgangsnøgler og WebAuthn",
   "time to inbox": "tid til indbakke",
   "monitoring.": "overvågning.",
-  "The Fastest Email Service": "Den hurtigste e-mail-tjeneste"
+  "The Fastest Email Service": "Den hurtigste e-mail-tjeneste",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har oprettet et nyt alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har oprettet et nyt alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Anmeldelse",
+  "Review Alias": "Gennemgå Alias"
 }

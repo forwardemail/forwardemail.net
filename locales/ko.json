@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "패스키 및 WebAuthn",
   "time to inbox": "받은 편지함까지의 시간",
   "monitoring.": "모니터링.",
-  "The Fastest Email Service": "가장 빠른 이메일 서비스"
+  "The Fastest Email Service": "가장 빠른 이메일 서비스",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "새 별칭을 성공적으로 생성했습니다: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "새 별칭을 성공적으로 생성했습니다: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "검토",
+  "Review Alias": "별칭 검토"
 }

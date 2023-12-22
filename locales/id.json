@@ -6560,5 +6560,9 @@
   "passkeys and WebAuthn": "kunci sandi dan WebAuthn",
   "time to inbox": "waktunya untuk masuk ke kotak masuk",
   "monitoring.": "pemantauan.",
-  "The Fastest Email Service": "Layanan Email Tercepat"
+  "The Fastest Email Service": "Layanan Email Tercepat",
+  "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Anda berhasil membuat alias baru: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Anda berhasil membuat alias baru: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
+  "Review": "Tinjauan",
+  "Review Alias": "Tinjau Alias"
 }
