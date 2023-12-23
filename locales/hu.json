@@ -6564,5 +6564,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Sikeresen létrehozott egy új aliast: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Sikeresen létrehozott egy új aliast: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Felülvizsgálat",
-  "Review Alias": "Tekintse át az Alias-t"
+  "Review Alias": "Tekintse át az Alias-t",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Sikeresen létrehozott egy új aliast: <code class=\"alert-link\">%s</code>"
 }

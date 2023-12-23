@@ -6569,5 +6569,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har opprettet et nytt alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har opprettet et nytt alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Anmeldelse",
-  "Review Alias": "Gjennomgå Alias"
+  "Review Alias": "Gjennomgå Alias",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link\">%s</code>"
 }

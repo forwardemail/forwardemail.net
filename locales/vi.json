@@ -3823,5 +3823,6 @@
   "Review": "Ôn tập",
   "Review Alias": "Xem lại bí danh",
   "Back to Aliases": "Quay lại Bí danh",
-  "✅ Setup | Forward Email": "✅ Thiết lập &#124; Chuyển tiếp email"
+  "✅ Setup | Forward Email": "✅ Thiết lập &#124; Chuyển tiếp email",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Bạn đã tạo thành công bí danh mới: <code class=\"alert-link\">%s</code>"
 }

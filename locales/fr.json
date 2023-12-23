@@ -3742,5 +3742,6 @@
   "Review": "Revoir",
   "Review Alias": "Alias de révision",
   "Back to Aliases": "Retour aux alias",
-  "✅ Setup | Forward Email": "✅ Configuration &#124; Un courriel transféré"
+  "✅ Setup | Forward Email": "✅ Configuration &#124; Un courriel transféré",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link\">%s</code>"
 }

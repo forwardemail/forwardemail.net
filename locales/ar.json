@@ -6564,5 +6564,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "مراجعة",
-  "Review Alias": "مراجعة الاسم المستعار"
+  "Review Alias": "مراجعة الاسم المستعار",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <code class=\"alert-link\">%s</code>"
 }

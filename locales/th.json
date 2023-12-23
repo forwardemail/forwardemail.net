@@ -6564,5 +6564,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "ทบทวน",
-  "Review Alias": "ทบทวนนามแฝง"
+  "Review Alias": "ทบทวนนามแฝง",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link\">%s</code>"
 }

@@ -6564,5 +6564,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Je hebt met succes een nieuwe alias aangemaakt: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Je hebt met succes een nieuwe alias aangemaakt: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Beoordeling",
-  "Review Alias": "Beoordeel Alias"
+  "Review Alias": "Beoordeel Alias",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Je hebt met succes een nieuwe alias aangemaakt: <code class=\"alert-link\">%s</code>"
 }

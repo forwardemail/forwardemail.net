@@ -6257,5 +6257,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "您已成功创建新别名： <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "您已成功创建新别名： <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "审查",
-  "Review Alias": "审核别名"
+  "Review Alias": "审核别名",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "您已成功创建新别名： <code class=\"alert-link\">%s</code>"
 }

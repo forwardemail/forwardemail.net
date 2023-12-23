@@ -6411,5 +6411,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Uuden aliaksen luominen onnistui: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Uuden aliaksen luominen onnistui: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Arvostelu",
-  "Review Alias": "Tarkista Alias"
+  "Review Alias": "Tarkista Alias",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link\">%s</code>"
 }

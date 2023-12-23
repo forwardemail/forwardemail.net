@@ -6564,5 +6564,6 @@
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Anda berhasil membuat alias baru: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Anda berhasil membuat alias baru: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Tinjauan",
-  "Review Alias": "Tinjau Alias"
+  "Review Alias": "Tinjau Alias",
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link\">%s</code>"
 }
