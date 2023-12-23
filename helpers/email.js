@@ -6,6 +6,7 @@
 const Email = require('email-templates');
 const _ = require('lodash');
 const striptags = require('striptags');
+const { decode } = require('html-entities');
 
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
@@ -21,7 +22,7 @@ module.exports = async (data) => {
     const emailLocals = await getEmailLocals();
     Object.assign(data.locals, emailLocals);
     if (data?.message?.subject)
-      data.message.subject = striptags(data.message.subject);
+      data.message.subject = decode(striptags(data.message.subject));
     const info = await email.send(data);
     return info;
   } catch (err) {
