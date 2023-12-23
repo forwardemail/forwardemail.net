@@ -6570,5 +6570,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Du har opprettet et nytt alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Anmeldelse",
   "Review Alias": "Gjennomgå Alias",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Du går glipp av noe!",
+  "Did you know about these features?": "Visste du om disse funksjonene?",
+  "Your plan includes these features at no extra cost:": "Planen din inkluderer disse funksjonene uten ekstra kostnad:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android"
 }

@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "ทบทวน",
   "Review Alias": "ทบทวนนามแฝง",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "คุณกำลังพลาด!",
+  "Did you know about these features?": "คุณรู้เกี่ยวกับคุณสมบัติเหล่านี้หรือไม่?",
+  "Your plan includes these features at no extra cost:": "แผนของคุณมีฟีเจอร์เหล่านี้โดยไม่มีค่าใช้จ่ายเพิ่มเติม:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "ทำงานร่วมกับ Apple, Outlook, Gmail, Thunderbird, Android"
 }

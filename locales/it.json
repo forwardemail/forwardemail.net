@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Hai creato con successo un nuovo alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Revisione",
   "Review Alias": "Rivedi Alias",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Hai creato con successo un nuovo alias: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Hai creato con successo un nuovo alias: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Ti stai perdendo!",
+  "Did you know about these features?": "Conoscevi queste funzionalità?",
+  "Your plan includes these features at no extra cost:": "Il tuo piano include queste funzionalità senza costi aggiuntivi:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Funziona con Apple, Outlook, Gmail, Thunderbird, Android"
 }

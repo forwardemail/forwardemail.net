@@ -3824,5 +3824,22 @@
   "Review Alias": "Xem lại bí danh",
   "Back to Aliases": "Quay lại Bí danh",
   "✅ Setup | Forward Email": "✅ Thiết lập &#124; Chuyển tiếp email",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Bạn đã tạo thành công bí danh mới: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Bạn đã tạo thành công bí danh mới: <code class=\"alert-link\">%s</code>",
+  "Plan expired on <span class=\"notranslate\">%s</span>.": "Gói đã hết hạn vào <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Thực hiện thanh toán</a> để tránh bị chấm dứt tài khoản.",
+  "You're missing out!": "Bạn đang bỏ lỡ!",
+  "Did you know about these features?": "Bạn đã biết về những tính năng này chưa?",
+  "Your plan includes these features at no extra cost:": "Gói của bạn bao gồm các tính năng này mà không mất thêm phí:",
+  "SMTP Guide": "Hướng dẫn SMTP",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Hoạt động với Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email API designed for developers": "API email được thiết kế cho nhà phát triển",
+  "Your Account": "Tài khoản của bạn",
+  "Manage your aliases, domains, settings, and security.": "Quản lý bí danh, tên miền, cài đặt và bảo mật của bạn.",
+  "Customer Support": "Hỗ trợ khách hàng",
+  "Read our FAQ, submit a help request, or reply to this email.": "Đọc Câu hỏi thường gặp của chúng tôi, gửi yêu cầu trợ giúp hoặc trả lời email này.",
+  "Read FAQ": "Đọc câu hỏi thường gặp",
+  "Help Request": "Yêu cầu trợ giúp",
+  "If you have any questions or comments, then please let us know": "Nếu bạn có bất kỳ câu hỏi hoặc ý kiến nào, xin vui lòng cho chúng tôi biết",
+  "Payment due <span class=\"notranslate\">%s</span>.": "Đến hạn thanh toán <span class=\"notranslate\">%s</span> .",
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Cần <a class=\"alert-link\" href=\"%s\">kích hoạt tính năng tự động gia hạn</a> ?"
 }

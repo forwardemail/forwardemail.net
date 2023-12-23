@@ -175,7 +175,16 @@ object[config.userFields.paypalSubscriptionID] = {
 };
 
 // Two factor auth reminders
-object[config.userFields.twoFactorReminderSentAt] = Date;
+object[config.userFields.twoFactorReminderSentAt] = {
+  type: Date,
+  index: true
+};
+
+// Feature reminder (e.g. SMTP/IMAP not being used)
+object[config.userFields.featureReminderSentAt] = {
+  type: Date,
+  index: true
+};
 
 // Api past due reminders
 object[config.userFields.apiPastDueSentAt] = Date;

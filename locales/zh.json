@@ -6258,5 +6258,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "您已成功创建新别名： <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "审查",
   "Review Alias": "审核别名",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "您已成功创建新别名： <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "您已成功创建新别名： <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "你错过了！",
+  "Did you know about these features?": "您了解这些功能吗？",
+  "Your plan includes these features at no extra cost:": "您的计划包括以下功能，无需额外付费：",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "适用于 Apple、Outlook、Gmail、Thunderbird、Android"
 }

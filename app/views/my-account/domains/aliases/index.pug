@@ -229,7 +229,9 @@ block body
                 li.list-inline-item.align-middle
                   != t('You successfully created a new alias: <code class="alert-link">%s</code>', ctx.query.new)
                 li.list-inline-item.align-middle
-                  a(href=l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`)).btn.btn-sm.btn-dark= t("Review Alias")
+                  a.btn.btn-sm.btn-dark(
+                    href=l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`)
+                  )= t("Review Alias")
           form.ajax-form.table-ajax-form(
             action=ctx.path,
             method="GET",

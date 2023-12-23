@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "新しいエイリアスが正常に作成されました: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "レビュー",
   "Review Alias": "エイリアスのレビュー",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "新しいエイリアスが正常に作成されました: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "新しいエイリアスが正常に作成されました: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "あなたは見逃しています！",
+  "Did you know about these features?": "これらの機能についてご存知でしたか?",
+  "Your plan includes these features at no extra cost:": "プランには次の機能が追加料金なしで含まれています。",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple、Outlook、Gmail、Thunderbird、Android で動作します"
 }

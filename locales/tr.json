@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Başarıyla yeni bir takma ad oluşturdunuz: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Gözden geçirmek",
   "Review Alias": "Takma Adı İncele",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Başarıyla yeni bir takma ad oluşturdunuz: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Başarıyla yeni bir takma ad oluşturdunuz: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Kaçırıyorsun!",
+  "Did you know about these features?": "Bu özellikleri biliyor muydunuz?",
+  "Your plan includes these features at no extra cost:": "Planınız şu özellikleri hiçbir ekstra ücret ödemeden içerir:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android ile çalışır"
 }

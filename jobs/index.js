@@ -207,6 +207,12 @@ const jobs = [
     name: 'bounce-report',
     interval: '4h',
     timeout: 0
+  },
+  // feature reminder for users not taking advantage of IMAP/SMTP
+  {
+    name: 'feature-reminder',
+    interval: '3h',
+    timeout: 0
   }
 ];
 

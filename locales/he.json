@@ -4442,5 +4442,20 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "יצרת בהצלחה כינוי חדש: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "סקירה",
   "Review Alias": "סקירת כינוי",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "יצרת בהצלחה כינוי חדש: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "יצרת בהצלחה כינוי חדש: <code class=\"alert-link\">%s</code>",
+  "Plan expired on <span class=\"notranslate\">%s</span>.": "תוקף התוכנית פג ב- <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">בצע תשלום</a> כדי למנוע סגירת חשבון.",
+  "You're missing out!": "אתה מפספס!",
+  "Did you know about these features?": "האם ידעת על התכונות הללו?",
+  "Your plan includes these features at no extra cost:": "התוכנית שלך כוללת את התכונות האלה ללא עלות נוספת:",
+  "SMTP Guide": "מדריך SMTP",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "עובד עם Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email API designed for developers": "API של אימייל המיועד למפתחים",
+  "Your Account": "החשבון שלך",
+  "Manage your aliases, domains, settings, and security.": "נהל את הכינויים, הדומיינים, ההגדרות והאבטחה שלך.",
+  "Customer Support": "שירות לקוחות",
+  "Read our FAQ, submit a help request, or reply to this email.": "קרא את השאלות הנפוצות שלנו, שלח בקשת עזרה או השב לדוא\"ל זה.",
+  "Read FAQ": "קרא שאלות נפוצות",
+  "Help Request": "בקשת עזרה",
+  "If you have any questions or comments, then please let us know": "אם יש לך שאלות או הערות, אנא הודע לנו"
 }

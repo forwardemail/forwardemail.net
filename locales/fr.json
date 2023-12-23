@@ -3743,5 +3743,22 @@
   "Review Alias": "Alias de révision",
   "Back to Aliases": "Retour aux alias",
   "✅ Setup | Forward Email": "✅ Configuration &#124; Un courriel transféré",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link\">%s</code>",
+  "Plan expired on <span class=\"notranslate\">%s</span>.": "Le forfait a expiré le <span class=\"notranslate\">%s</span> .",
+  "<a class=\"alert-link\" href=\"%s\">Make payment</a> to avoid account termination.": "<a class=\"alert-link\" href=\"%s\">Effectuez le paiement</a> pour éviter la résiliation du compte.",
+  "You're missing out!": "Vous manquez quelque chose !",
+  "Did you know about these features?": "Connaissiez-vous ces fonctionnalités ?",
+  "Your plan includes these features at no extra cost:": "Votre forfait comprend ces fonctionnalités sans frais supplémentaires :",
+  "SMTP Guide": "Guide SMTP",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fonctionne avec Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email API designed for developers": "API de messagerie conçue pour les développeurs",
+  "Your Account": "Votre compte",
+  "Manage your aliases, domains, settings, and security.": "Gérez vos alias, domaines, paramètres et sécurité.",
+  "Customer Support": "Service client",
+  "Read our FAQ, submit a help request, or reply to this email.": "Lisez notre FAQ, soumettez une demande d'aide ou répondez à cet e-mail.",
+  "Read FAQ": "Lire la FAQ",
+  "Help Request": "Demande d'aide",
+  "If you have any questions or comments, then please let us know": "Si vous avez des questions ou des commentaires, n'hésitez pas à nous le faire savoir",
+  "Payment due <span class=\"notranslate\">%s</span>.": "Paiement dû <span class=\"notranslate\">%s</span> .",
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Besoin d&#39; <a class=\"alert-link\" href=\"%s\">activer le renouvellement automatique</a> ?"
 }

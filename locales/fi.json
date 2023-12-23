@@ -6412,5 +6412,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Uuden aliaksen luominen onnistui: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Arvostelu",
   "Review Alias": "Tarkista Alias",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Jäät paitsi!",
+  "Did you know about these features?": "Tiesitkö näistä ominaisuuksista?",
+  "Your plan includes these features at no extra cost:": "Suunnitelmasi sisältää seuraavat ominaisuudet ilman lisäkustannuksia:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Toimii Applen, Outlookin, Gmailin, Thunderbirdin ja Androidin kanssa"
 }

@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Anda berhasil membuat alias baru: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "Tinjauan",
   "Review Alias": "Tinjau Alias",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Anda ketinggalan!",
+  "Did you know about these features?": "Tahukah Anda tentang fitur-fitur ini?",
+  "Your plan includes these features at no extra cost:": "Paket Anda mencakup fitur berikut tanpa biaya tambahan:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Bekerja dengan Apple, Outlook, Gmail, Thunderbird, Android"
 }

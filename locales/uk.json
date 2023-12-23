@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Ви успішно створили новий псевдонім: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "огляд",
   "Review Alias": "Огляд псевдоніму",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Ви успішно створили новий псевдонім: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "Ви успішно створили новий псевдонім: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "Ви втрачаєте!",
+  "Did you know about these features?": "Чи знали ви про ці функції?",
+  "Your plan includes these features at no extra cost:": "Ваш план включає ці функції без додаткових витрат:",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Працює з Apple, Outlook, Gmail, Thunderbird, Android"
 }

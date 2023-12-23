@@ -88,6 +88,13 @@ block content
                   = emoji("white_check_mark")
                   = " "
                   = t("Works with Apple, Outlook, Gmail, Thunderbird, Android")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/faq#do-you-support-receiving-email-with-imap`
+                  )
+                    = t("Apps")
+                    = " "
+                    != "&rarr;"
                 li
                   = emoji("white_check_mark")
                   = " "

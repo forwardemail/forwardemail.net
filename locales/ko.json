@@ -6565,5 +6565,9 @@
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "새 별칭을 성공적으로 생성했습니다: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "Review": "검토",
   "Review Alias": "별칭 검토",
-  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "새 별칭을 성공적으로 생성했습니다: <code class=\"alert-link\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link\">%s</code>": "새 별칭을 성공적으로 생성했습니다: <code class=\"alert-link\">%s</code>",
+  "You're missing out!": "당신은 놓치고 있어요!",
+  "Did you know about these features?": "이러한 기능에 대해 알고 계셨나요?",
+  "Your plan includes these features at no extra cost:": "귀하의 계획에는 추가 비용 없이 다음 기능이 포함됩니다.",
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android에서 작동합니다."
 }
