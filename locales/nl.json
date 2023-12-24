@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Voer nu een betaling uit om het doorsturen van e-mail te hervatten.",
   "You received 1 year of free credit!": "Je hebt 1 jaar gratis tegoed ontvangen!",
   "Quantum Safe Encryption": "Kwantumveilige codering",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Als u het niet weet: we ondersteunen nu <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> en <a href=\"%s\">POP3</a> – en we zijn ook &#39;s werelds eerste e-mailservice die <a href=\"%s\">kwantumveilige en gecodeerde SQLite-databases</a> voor mailboxen gebruikt."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Als u het niet weet: we ondersteunen nu <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> en <a href=\"%s\">POP3</a> – en we zijn ook &#39;s werelds eerste e-mailservice die <a href=\"%s\">kwantumveilige en gecodeerde SQLite-databases</a> voor mailboxen gebruikt.",
+  "you received 1 year of free credit!": "je hebt 1 jaar gratis tegoed ontvangen!"
 }

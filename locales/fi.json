@@ -6421,5 +6421,6 @@
   "Make payment now to resume email forwarding.": "Suorita maksu nyt jatkaaksesi sähköpostin edelleenlähetystä.",
   "You received 1 year of free credit!": "Sait 1 vuoden ilmaista luottoa!",
   "Quantum Safe Encryption": "Kvanttiturvallinen salaus",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jos et ole tietoinen, tuemme nyt <a href=\"%s\">SMTP:tä</a> , <a href=\"%s\">IMAP:ia</a> ja <a href=\"%s\">POP3:a</a> – ja olemme myös maailman ensimmäinen sähköpostipalvelu, joka käyttää <a href=\"%s\">kvanttiturvallisia ja salattuja SQLite-tietokantoja</a> postilaatikoissa."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jos et ole tietoinen, tuemme nyt <a href=\"%s\">SMTP:tä</a> , <a href=\"%s\">IMAP:ia</a> ja <a href=\"%s\">POP3:a</a> – ja olemme myös maailman ensimmäinen sähköpostipalvelu, joka käyttää <a href=\"%s\">kvanttiturvallisia ja salattuja SQLite-tietokantoja</a> postilaatikoissa.",
+  "you received 1 year of free credit!": "sait 1 vuoden ilmaista luottoa!"
 }

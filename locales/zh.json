@@ -6267,5 +6267,6 @@
   "Make payment now to resume email forwarding.": "立即付款以恢复电子邮件转发。",
   "You received 1 year of free credit!": "您获得了 1 年的免费信用！",
   "Quantum Safe Encryption": "量子安全加密",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "如果您不知道，我们现在支持<a href=\"%s\">SMTP</a> 、 <a href=\"%s\">IMAP</a>和<a href=\"%s\">POP3</a> – 而且我们也是世界上第一个使用<a href=\"%s\">量子安全和加密 SQLite 数据库</a>作为邮箱的电子邮件服务。"
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "如果您不知道，我们现在支持<a href=\"%s\">SMTP</a> 、 <a href=\"%s\">IMAP</a>和<a href=\"%s\">POP3</a> – 而且我们也是世界上第一个使用<a href=\"%s\">量子安全和加密 SQLite 数据库</a>作为邮箱的电子邮件服务。",
+  "you received 1 year of free credit!": "您获得了 1 年的免费信用！"
 }

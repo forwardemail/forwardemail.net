@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "E-posta yönlendirmeye devam etmek için şimdi ödeme yapın.",
   "You received 1 year of free credit!": "1 yıllık ücretsiz kredi aldınız!",
   "Quantum Safe Encryption": "Kuantum Güvenli Şifreleme",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Farkında değilseniz, artık <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> ve <a href=\"%s\">POP3&#39;ü</a> destekliyoruz ve aynı zamanda posta kutuları için <a href=\"%s\">kuantum güvenli ve şifreli SQLite veritabanlarını</a> kullanan dünyanın ilk e-posta hizmetiyiz."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Farkında değilseniz, artık <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> ve <a href=\"%s\">POP3&#39;ü</a> destekliyoruz ve aynı zamanda posta kutuları için <a href=\"%s\">kuantum güvenli ve şifreli SQLite veritabanlarını</a> kullanan dünyanın ilk e-posta hizmetiyiz.",
+  "you received 1 year of free credit!": "1 yıllık ücretsiz kredi aldınız!"
 }

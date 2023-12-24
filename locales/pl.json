@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Dokonaj płatności teraz, aby wznowić przekazywanie wiadomości e-mail.",
   "You received 1 year of free credit!": "Otrzymałeś 1 rok darmowego kredytu!",
   "Quantum Safe Encryption": "Kwantowe bezpieczne szyfrowanie",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jeśli nie wiesz, obsługujemy teraz <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> i <a href=\"%s\">POP3</a> – a także jesteśmy pierwszą na świecie usługą e-mail, która korzysta z <a href=\"%s\">bezpiecznych kwantowo i szyfrowanych baz danych SQLite</a> dla skrzynek pocztowych."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jeśli nie wiesz, obsługujemy teraz <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> i <a href=\"%s\">POP3</a> – a także jesteśmy pierwszą na świecie usługą e-mail, która korzysta z <a href=\"%s\">bezpiecznych kwantowo i szyfrowanych baz danych SQLite</a> dla skrzynek pocztowych.",
+  "you received 1 year of free credit!": "otrzymałeś 1 rok darmowego kredytu!"
 }

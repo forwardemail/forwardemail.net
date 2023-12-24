@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Betala nu för att återuppta vidarebefordran av e-post.",
   "You received 1 year of free credit!": "Du fick 1 års gratis kredit!",
   "Quantum Safe Encryption": "Quantum Safe Encryption",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Om du inte vet så stöder vi nu <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> och <a href=\"%s\">POP3</a> – och vi är också världens första e-posttjänst som använder <a href=\"%s\">kvantsäkra och krypterade SQLite-databaser</a> för postlådor."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Om du inte vet så stöder vi nu <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> och <a href=\"%s\">POP3</a> – och vi är också världens första e-posttjänst som använder <a href=\"%s\">kvantsäkra och krypterade SQLite-databaser</a> för postlådor.",
+  "you received 1 year of free credit!": "du fick 1 års gratis kredit!"
 }

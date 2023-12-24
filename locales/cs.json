@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Chcete-li obnovit přeposílání e-mailů, proveďte platbu nyní.",
   "You received 1 year of free credit!": "Získali jste kredit na 1 rok zdarma!",
   "Quantum Safe Encryption": "Kvantové bezpečné šifrování",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Pokud si nejste vědomi, nyní podporujeme <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> a <a href=\"%s\">POP3</a> – a jsme také první e-mailovou službou na světě, která používá pro poštovní schránky <a href=\"%s\">kvantově bezpečné a šifrované databáze SQLite</a> ."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Pokud si nejste vědomi, nyní podporujeme <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> a <a href=\"%s\">POP3</a> – a jsme také první e-mailovou službou na světě, která používá pro poštovní schránky <a href=\"%s\">kvantově bezpečné a šifrované databáze SQLite</a> .",
+  "you received 1 year of free credit!": "získali jste kredit na 1 rok zdarma!"
 }

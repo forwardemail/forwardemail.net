@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "قم بالدفع الآن لاستئناف إعادة توجيه البريد الإلكتروني.",
   "You received 1 year of free credit!": "لقد حصلت على رصيد مجاني لمدة عام!",
   "Quantum Safe Encryption": "التشفير الآمن الكمي",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "إذا لم تكن على علم، فنحن ندعم الآن <a href=\"%s\">SMTP</a> و <a href=\"%s\">IMAP</a> و <a href=\"%s\">POP3</a> - كما أننا أول خدمة بريد إلكتروني في العالم تستخدم <a href=\"%s\">قواعد بيانات SQLite الآمنة والمشفرة</a> لصناديق البريد."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "إذا لم تكن على علم، فنحن ندعم الآن <a href=\"%s\">SMTP</a> و <a href=\"%s\">IMAP</a> و <a href=\"%s\">POP3</a> - كما أننا أول خدمة بريد إلكتروني في العالم تستخدم <a href=\"%s\">قواعد بيانات SQLite الآمنة والمشفرة</a> لصناديق البريد.",
+  "you received 1 year of free credit!": "لقد حصلت على رصيد مجاني لمدة عام!"
 }

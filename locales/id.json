@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Lakukan pembayaran sekarang untuk melanjutkan penerusan email.",
   "You received 1 year of free credit!": "Anda menerima kredit gratis selama 1 tahun!",
   "Quantum Safe Encryption": "Enkripsi Aman Kuantum",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jika Anda belum mengetahuinya, kami kini mendukung <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> , dan <a href=\"%s\">POP3</a> – dan kami juga merupakan layanan email pertama di dunia yang menggunakan <a href=\"%s\">database SQLite terenkripsi dan aman kuantum</a> untuk kotak surat."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Jika Anda belum mengetahuinya, kami kini mendukung <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> , dan <a href=\"%s\">POP3</a> – dan kami juga merupakan layanan email pertama di dunia yang menggunakan <a href=\"%s\">database SQLite terenkripsi dan aman kuantum</a> untuk kotak surat.",
+  "you received 1 year of free credit!": "Anda menerima kredit gratis selama 1 tahun!"
 }

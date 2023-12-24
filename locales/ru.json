@@ -6574,5 +6574,6 @@
   "Make payment now to resume email forwarding.": "Внесите оплату сейчас, чтобы возобновить пересылку электронной почты.",
   "You received 1 year of free credit!": "Вы получили 1 год бесплатного кредита!",
   "Quantum Safe Encryption": "Квантовое безопасное шифрование",
-  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Если вы не в курсе, теперь мы поддерживаем <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> и <a href=\"%s\">POP3</a> , а также являемся первой в мире службой электронной почты, которая использует <a href=\"%s\">квантовобезопасные и зашифрованные базы данных SQLite</a> для почтовых ящиков."
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Если вы не в курсе, теперь мы поддерживаем <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> и <a href=\"%s\">POP3</a> , а также являемся первой в мире службой электронной почты, которая использует <a href=\"%s\">квантовобезопасные и зашифрованные базы данных SQLite</a> для почтовых ящиков.",
+  "you received 1 year of free credit!": "вы получили 1 год бесплатного кредита!"
 }
