@@ -227,7 +227,7 @@ async function hook(err, message, meta) {
     return request
       .type('application/json')
       .retry(3)
-      .send(safeStringify({ err: parseErr(err), message, meta }))
+      .send(safeStringify({ err, message, meta }))
       .then((response) =>
         logger.info('log sent over HTTP', { response, ignore_hook: true })
       )
@@ -246,13 +246,7 @@ for (const level of logger.config.levels) {
     // clone the data so that we don't mutate it
     // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
     // <https://github.com/ungap/structured-clone>
-    if (typeof err === 'object' && structuredClone)
-      err = structuredClone(err, {
-        // avoid throwing
-        lossy: true,
-        // avoid throwing *and* looks for toJSON
-        json: true
-      });
+    if (typeof err === 'object') err = parseErr(err);
 
     //
     // NOTE: we can't use `superjson` because they don't export CJS right now

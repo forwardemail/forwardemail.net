@@ -202,7 +202,7 @@ Additionally we use `VACUUM INTO` as opposed to `backup`, because the `backup` c
 The Secondary will instruct the Primary over the `WebSocket` connection to execute the backup – and the Primary will then receive the command to do so and will subsequently:
 
 1. Connect to your encrypted mailbox.
-2. Run the `backup` SQLite command.
+2. Run the `VACUUM INTO` SQLite command.
 3. Compress the resulting backup file with `gzip`.
 4. Upload it to Cloudflare R2 for storage (or your own provider if specified).
 
