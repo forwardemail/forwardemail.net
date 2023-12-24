@@ -20,7 +20,6 @@ const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 
@@ -46,9 +45,9 @@ const THREE_SECONDS = ms('3s');
 graceful.listen();
 
 // eslint-disable-next-line complexity
-async function mapper(id) {
-  const user = await Users.findById(id).lean().exec();
-  if (!user) throw new Error('User does not exist');
+async function mapper(user) {
+  // safeguard
+  if (!user) return;
 
   // stripe support
   if (
@@ -307,7 +306,7 @@ async function mapper(id) {
         })
       ]);
 
-    const ids = await Users.distinct('_id', {
+    for await (const user of Users.find({
       $or: [
         {
           $and: [
@@ -340,9 +339,15 @@ async function mapper(id) {
           ]
         }
       ]
-    });
-
-    await pMapSeries(ids, mapper);
+    })
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      try {
+        await mapper(user);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error
