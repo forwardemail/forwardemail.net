@@ -6328,5 +6328,8 @@
   "Your plan includes these features at no extra cost:": "Your plan includes these features at no extra cost:",
   "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Works with Apple, Outlook, Gmail, Thunderbird, Android",
   "Email forwarding is currently paused.": "Email forwarding is currently paused.",
-  "Make payment now to resume email forwarding.": "Make payment now to resume email forwarding."
+  "Make payment now to resume email forwarding.": "Make payment now to resume email forwarding.",
+  "You received 1 year of free credit!": "You received 1 year of free credit!",
+  "Quantum Safe Encryption": "Quantum Safe Encryption",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes."
 }

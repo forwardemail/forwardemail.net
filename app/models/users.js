@@ -63,6 +63,8 @@ const omitExtraFields = [
   config.userFields.isBanned,
   config.userFields.accountUpdates,
   config.userFields.twoFactorReminderSentAt,
+  config.userFields.featureReminderSentAt,
+  config.userFields.pastDueReliefSentAt,
   config.userFields.planSetAt,
   config.userFields.planExpiresAt,
   // fields.otpEnabled,
@@ -182,6 +184,12 @@ object[config.userFields.twoFactorReminderSentAt] = {
 
 // Feature reminder (e.g. SMTP/IMAP not being used)
 object[config.userFields.featureReminderSentAt] = {
+  type: Date,
+  index: true
+};
+
+// Past due relief (users get 1 yr free after 6 months past due)
+object[config.userFields.pastDueReliefSentAt] = {
   type: Date,
   index: true
 };

@@ -213,6 +213,12 @@ const jobs = [
     name: 'feature-reminder',
     interval: '3h',
     timeout: 0
+  },
+  // past due relief (users that are more than 6 months past due are relieved)
+  {
+    name: 'past-due-relief',
+    interval: '1h',
+    timeout: 0
   }
 ];
 

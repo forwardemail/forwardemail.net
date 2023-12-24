@@ -6571,5 +6571,8 @@
   "Your plan includes these features at no extra cost:": "แผนของคุณมีฟีเจอร์เหล่านี้โดยไม่มีค่าใช้จ่ายเพิ่มเติม:",
   "Works with Apple, Outlook, Gmail, Thunderbird, Android": "ทำงานร่วมกับ Apple, Outlook, Gmail, Thunderbird, Android",
   "Email forwarding is currently paused.": "การส่งต่ออีเมลถูกหยุดชั่วคราวในขณะนี้",
-  "Make payment now to resume email forwarding.": "ชำระเงินทันทีเพื่อดำเนินการส่งต่ออีเมลต่อ"
+  "Make payment now to resume email forwarding.": "ชำระเงินทันทีเพื่อดำเนินการส่งต่ออีเมลต่อ",
+  "You received 1 year of free credit!": "คุณได้รับเครดิตฟรี 1 ปี!",
+  "Quantum Safe Encryption": "การเข้ารหัสควอนตัมปลอดภัย",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "หากคุณไม่ทราบ ขณะนี้เรารองรับ <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> และ <a href=\"%s\">POP3</a> แล้ว และเรายังเป็นบริการอีเมลรายแรกของโลกที่ใช้ <a href=\"%s\">ฐานข้อมูล SQLite ที่ปลอดภัยและเข้ารหัส</a> สำหรับควอนตัมสำหรับกล่องจดหมาย"
 }

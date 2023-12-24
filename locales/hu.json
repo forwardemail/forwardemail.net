@@ -6571,5 +6571,8 @@
   "Your plan includes these features at no extra cost:": "A csomag a következő funkciókat tartalmazza felár nélkül:",
   "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Működik Apple, Outlook, Gmail, Thunderbird és Android rendszerekkel",
   "Email forwarding is currently paused.": "Az e-mailek továbbítása jelenleg szünetel.",
-  "Make payment now to resume email forwarding.": "Fizessen be most az e-mail-továbbítás folytatásához."
+  "Make payment now to resume email forwarding.": "Fizessen be most az e-mail-továbbítás folytatásához.",
+  "You received 1 year of free credit!": "1 év ingyenes hitelt kaptál!",
+  "Quantum Safe Encryption": "Kvantumbiztos titkosítás",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Ha nem tudja, most már támogatjuk <a href=\"%s\">az SMTP-t</a> , <a href=\"%s\">az IMAP-ot</a> és <a href=\"%s\">a POP3-at</a> – és mi vagyunk a világ első e-mail szolgáltatása, amely <a href=\"%s\">kvantumbiztonságos és titkosított SQLite adatbázisokat</a> használ postafiókokhoz."
 }

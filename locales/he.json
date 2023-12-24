@@ -4477,5 +4477,13 @@
   "Enable OTP": "אפשר OTP",
   "Recovery keys": "מפתחות שחזור",
   "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.": "מפתחות שחזור מאפשרים לך להתחבר לחשבון שלך כאשר איבדת את הגישה למכשיר האימות הדו-גורמי שלך או לאפליקציית המאמת. הורד את מפתחות השחזור שלך והנח אותם במקום בטוח לשימוש כמוצא אחרון.",
-  "Download recovery keys": "הורד מפתחות שחזור"
+  "Download recovery keys": "הורד מפתחות שחזור",
+  "You received 1 year of free credit!": "קיבלת אשראי לשנה בחינם!",
+  "Quantum Safe Encryption": "הצפנה בטוחה קוונטית",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "אם אינך מודע, אנו תומכים כעת <a href=\"%s\">ב-SMTP</a> , <a href=\"%s\">IMAP</a> ו- <a href=\"%s\">POP3</a> - ואנחנו גם שירות הדואר האלקטרוני הראשון בעולם שמשתמש <a href=\"%s\">במסדי נתונים בטוחים ומוצפנים של SQLite</a> עבור תיבות דואר.",
+  "100% Free": "100% חינם",
+  "Privacy-focused email": "דוא\"ל ממוקד פרטיות",
+  "Enterprise-grade 99.99% uptime SLA": "SLA בדרגה ארגונית של 99.99% זמן פעילות",
+  "View FAQ": "הצג שאלות נפוצות",
+  "Powered by bare metal servers": "מופעל על ידי שרתי מתכת חשופה"
 }

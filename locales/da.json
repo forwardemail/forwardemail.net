@@ -6309,5 +6309,8 @@
   "Your plan includes these features at no extra cost:": "Dit abonnement inkluderer disse funktioner uden ekstra omkostninger:",
   "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android",
   "Email forwarding is currently paused.": "Videresendelse af e-mail er i øjeblikket sat på pause.",
-  "Make payment now to resume email forwarding.": "Foretag betaling nu for at genoptage videresendelse af e-mail."
+  "Make payment now to resume email forwarding.": "Foretag betaling nu for at genoptage videresendelse af e-mail.",
+  "You received 1 year of free credit!": "Du har modtaget 1 års gratis kredit!",
+  "Quantum Safe Encryption": "Kvantesikker kryptering",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Hvis du ikke er klar over det, understøtter vi nu <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> og <a href=\"%s\">POP3</a> – og vi er også verdens første e-mail-tjeneste til at bruge <a href=\"%s\">kvantesikre og krypterede SQLite-databaser</a> til postkasser."
 }

@@ -393,6 +393,7 @@ const config = {
     isBanned: 'is_banned',
     twoFactorReminderSentAt: 'two_factor_reminder_sent_at',
     featureReminderSentAt: 'feature_reminder_sent_at',
+    pastDueReliefSentAt: 'past_due_relief_sent_at',
     planSetAt: 'plan_set_at',
     planExpiresAt: 'plan_expires_at',
     stripeCustomerID: 'stripe_customer_id',

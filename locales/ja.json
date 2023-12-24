@@ -6571,5 +6571,8 @@
   "Your plan includes these features at no extra cost:": "プランには次の機能が追加料金なしで含まれています。",
   "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple、Outlook、Gmail、Thunderbird、Android で動作します",
   "Email forwarding is currently paused.": "現在メール転送を一時停止しております。",
-  "Make payment now to resume email forwarding.": "今すぐ支払いを行ってメール転送を再開してください。"
+  "Make payment now to resume email forwarding.": "今すぐ支払いを行ってメール転送を再開してください。",
+  "You received 1 year of free credit!": "1 年間の無料クレジットを受け取りました!",
+  "Quantum Safe Encryption": "量子安全な暗号化",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "ご存知ないかもしれませんが、当社は現在<a href=\"%s\">SMTP</a> 、 <a href=\"%s\">IMAP</a> 、および<a href=\"%s\">POP3</a>をサポートしています。また、メールボックスに<a href=\"%s\">量子安全で暗号化された SQLite データベースを</a>使用する世界初の電子メール サービスでもあります。"
 }

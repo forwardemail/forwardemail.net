@@ -3871,5 +3871,14 @@
   "Enable OTP": "Kích hoạt OTP",
   "Recovery keys": "Khóa khôi phục",
   "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.": "Khóa khôi phục cho phép bạn đăng nhập vào tài khoản của mình khi bạn mất quyền truy cập vào thiết bị Xác thực hai yếu tố hoặc ứng dụng xác thực. Tải xuống khóa khôi phục của bạn và đặt chúng ở nơi an toàn để sử dụng như là phương sách cuối cùng.",
-  "Download recovery keys": "Tải xuống khóa khôi phục"
+  "Download recovery keys": "Tải xuống khóa khôi phục",
+  "You received 1 year of free credit!": "Bạn đã nhận được 1 năm tín dụng miễn phí!",
+  "Quantum Safe Encryption": "Mã hóa an toàn lượng tử",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Nếu bạn chưa biết thì hiện tại chúng tôi hỗ trợ <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> và <a href=\"%s\">POP3</a> – và chúng tôi cũng là dịch vụ email đầu tiên trên thế giới sử dụng <a href=\"%s\">cơ sở dữ liệu SQLite được mã hóa và an toàn lượng tử</a> cho hộp thư.",
+  "100% Free": "100% miễn phí",
+  "Privacy-focused email": "Email tập trung vào quyền riêng tư",
+  "Enterprise-grade 99.99% uptime SLA": "SLA thời gian hoạt động 99,99% cấp doanh nghiệp",
+  "View FAQ": "Xem câu hỏi thường gặp",
+  "Powered by bare metal servers": "Được hỗ trợ bởi các máy chủ kim loại trần",
+  "View": "Xem"
 }

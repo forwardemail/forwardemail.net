@@ -3791,5 +3791,14 @@
   "Enable OTP": "Activer OTP",
   "Recovery keys": "Clés de récupération",
   "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.": "Les clés de récupération vous permettent de vous connecter à votre compte lorsque vous avez perdu l'accès à votre appareil d'authentification à deux facteurs ou à votre application d'authentification. Téléchargez vos clés de récupération et conservez-les dans un endroit sûr pour les utiliser en dernier recours.",
-  "Download recovery keys": "Télécharger les clés de récupération"
+  "Download recovery keys": "Télécharger les clés de récupération",
+  "You received 1 year of free credit!": "Vous avez reçu 1 an de crédit gratuit !",
+  "Quantum Safe Encryption": "Cryptage quantique sécurisé",
+  "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "Si vous ne le savez pas, nous prenons désormais en charge <a href=\"%s\">SMTP</a> , <a href=\"%s\">IMAP</a> et <a href=\"%s\">POP3</a> – et nous sommes également le premier service de messagerie au monde à utiliser <a href=\"%s\">des bases de données SQLite cryptées et sécurisées quantiquement</a> pour les boîtes aux lettres.",
+  "100% Free": "100% Gratuit",
+  "Privacy-focused email": "E-mail axé sur la confidentialité",
+  "Enterprise-grade 99.99% uptime SLA": "SLA de disponibilité de 99,99 % de niveau entreprise",
+  "View FAQ": "Voir la FAQ",
+  "Powered by bare metal servers": "Propulsé par des serveurs nus",
+  "View": "Voir"
 }
