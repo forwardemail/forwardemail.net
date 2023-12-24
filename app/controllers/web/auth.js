@@ -15,6 +15,9 @@ const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 const { errors } = require('passport-local-mongoose');
+const {
+  SessionChallengeStore
+} = require('@forwardemail/passport-fido2-webauthn');
 
 const config = require('#config');
 const email = require('#helpers/email');
@@ -25,11 +28,24 @@ const { Users } = require('#models');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const options = { length: 10, type: 'numeric' };
+const store = new SessionChallengeStore();
 
-function logout(ctx) {
+async function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
-  if (ctx.session && ctx.session.otp && !ctx.session.otp_remember_me)
+  if (ctx.session) {
     delete ctx.session.otp;
+    delete ctx.session.otp_remember_me;
+    delete ctx.session.returnTo;
+    delete ctx.session[store._key];
+    delete ctx.session._gh_issue;
+  }
+
+  try {
+    await ctx.saveSession();
+  } catch (err) {
+    ctx.logger.fatal(err);
+  }
+
   ctx.logout();
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -221,7 +237,14 @@ function loginOtp(ctx, next) {
           ctx.session.otp_remember_me = boolean(
             ctx.request.body.otp_remember_me
           );
+
           ctx.session.otp = 'totp';
+
+          try {
+            await ctx.saveSession();
+          } catch (err) {
+            ctx.logger.fatal(err);
+          }
         }
 
         const redirectTo = await parseLoginSuccessRedirect(ctx);

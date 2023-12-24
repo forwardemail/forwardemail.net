@@ -51,7 +51,6 @@ async function callbackRedirect(ctx, next) {
     ctx.isAuthenticated() &&
     ctx.state.user[config.passport.fields.otpEnabled]
   ) {
-    ctx.session.otp_remember_me = false;
     ctx.session.otp = 'passkey';
     await ctx.saveSession();
   }

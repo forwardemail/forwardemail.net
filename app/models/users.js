@@ -65,7 +65,7 @@ const omitExtraFields = [
   config.userFields.twoFactorReminderSentAt,
   config.userFields.planSetAt,
   config.userFields.planExpiresAt,
-  fields.otpEnabled,
+  // fields.otpEnabled,
   fields.otpToken,
   config.userFields.launchEmailSentAt,
   config.userFields.stripeCustomerID,

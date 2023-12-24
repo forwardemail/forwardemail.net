@@ -285,6 +285,37 @@ module.exports = (redis) => ({
       return next();
     });
   },
+  hookBeforeRoutes(app) {
+    // if user has OTP remember me then set on session
+    app.use(async (ctx, next) => {
+      if (
+        ctx.session &&
+        ctx.isAuthenticated() &&
+        ctx.state.user[config.passport.fields.otpEnabled]
+      ) {
+        if (ctx.session.otp) {
+          if (ctx.session.otp_remember_me) {
+            ctx.cookies.set('otp_remember_me', ctx.state.user.id, {
+              // Disable signed cookies in NODE_ENV=test
+              signed: env.NODE_ENV !== 'test',
+              expires: new Date(Date.now() + 31556952000) // one year in ms
+            });
+          } else {
+            // unset cookie
+            ctx.cookies.set('otp_remember_me', ctx.state.user.id, {
+              // Disable signed cookies in NODE_ENV=test
+              signed: env.NODE_ENV !== 'test',
+              expires: new Date()
+            });
+          }
+        } else if (ctx.cookies.get('otp_remember_me') === ctx.state.user.id) {
+          ctx.session.otp = 'remember_me';
+        }
+      }
+
+      return next();
+    });
+  },
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
       if (

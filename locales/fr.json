@@ -3777,5 +3777,19 @@
   "Make payment now to avoid account termination.": "Effectuez le paiement maintenant pour éviter la résiliation du compte.",
   "make payment to keep your account active": "effectuer un paiement pour garder votre compte actif",
   "Issue Detected": "Problème détecté",
-  "Issue": "Problème"
+  "Issue": "Problème",
+  "Edit Nickname": "Edit Nickname",
+  "Passkey Nickname": "Passkey Nickname",
+  "Nickname has a max of 150 characters.": "Nickname has a max of 150 characters.",
+  "Update Nickname": "Update Nickname",
+  "Remove": "Remove",
+  "Need to set a password?": "Need to set a password?",
+  "My Account - Passkeys": "My Account - Passkeys",
+  "Two-Factor Authentication": "Two-Factor Authentication",
+  "Configure One-time Password": "Configure One-time Password",
+  "One-time passwords (\"OTP\") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.": "One-time passwords (\"OTP\") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.",
+  "Enable OTP": "Enable OTP",
+  "Recovery keys": "Recovery keys",
+  "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.": "Recovery keys allow you to login to your account when you have lost access to your Two-Factor Authentication device or authenticator app.  Download your recovery keys and put them in a safe place to use as a last resort.",
+  "Download recovery keys": "Download recovery keys"
 }
