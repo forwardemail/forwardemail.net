@@ -227,7 +227,7 @@ block body
             .alert.alert-success
               ul.list-inline.mb-0
                 li.list-inline-item.align-middle
-                  != t('You successfully created a new alias: <code class="alert-link">%s</code>', ctx.query.new)
+                  != t('You successfully created a new alias: <code class="alert-link text-decoration-underline">%s</code>', ctx.query.new)
                 li.list-inline-item.align-middle
                   a.btn.btn-sm.btn-dark(
                     href=l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`)
