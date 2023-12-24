@@ -322,7 +322,7 @@ ZXhhbXBsZQo=
     // eslint-disable-next-line new-cap
     const stat = await t.context.pop3Command.STAT();
     t.log('stat', stat);
-    t.is(stat, '1 643');
+    t.is(stat, '1 645');
   }
 
   // LIST
@@ -330,7 +330,7 @@ ZXhhbXBsZQo=
     // eslint-disable-next-line new-cap
     const list = await t.context.pop3Command.LIST();
     t.log('list', list);
-    t.deepEqual(list, [['1', '643']]);
+    t.deepEqual(list, [['1', '645']]);
   }
 
   // RETR 1
@@ -353,7 +353,8 @@ To: ${t.context.alias.name}@${t.context.domain.name}
 From: ${t.context.alias.name}@${t.context.domain.name}
 Subject: test
 
-This is a multi-part message in MIME format.--------------cWFvDSey27tFG0hVYLqp9hs9
+This is a multi-part message in MIME format.
+--------------cWFvDSey27tFG0hVYLqp9hs9
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
