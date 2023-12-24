@@ -7,7 +7,6 @@
 require('#config/env');
 
 const process = require('node:process');
-const os = require('node:os');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -16,7 +15,6 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const pMap = require('p-map');
 const mongoose = require('mongoose');
 
 const Aliases = require('#models/aliases');
@@ -26,8 +24,6 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const email = require('#helpers/email');
-
-const concurrency = os.cpus().length;
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -51,14 +47,12 @@ if (parentPort)
 
 graceful.listen();
 
-async function mapper(_id) {
+async function mapper(user) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
   try {
-    const user = await Users.findById(_id).lean().exec();
-
-    // user could have been deleted in the interim
+    // safeguard
     if (!user) return;
 
     // if the email was sent within the past 3 months
@@ -118,7 +112,7 @@ async function mapper(_id) {
   await setupMongoose(logger);
   try {
     // filter for users that do not have reminders sent yet
-    const userIds = await Users.distinct('_id', {
+    for await (const user of Users.find({
       $and: [
         {
           [config.userFields.hasVerifiedEmail]: true,
@@ -142,12 +136,18 @@ async function mapper(_id) {
           ]
         }
       ]
-    });
-
-    logger.info('sending reminders', { count: userIds.length });
-
-    // send emails and update `feature_reminder_sent_at` date
-    await pMap(userIds, mapper, { concurrency });
+    })
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      // break if cancelled
+      if (isCancelled) break;
+      // send emails and update `feature_reminder_sent_at` date
+      try {
+        await mapper(user);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
   } catch (err) {
     await logger.error(err);
   }

@@ -102,14 +102,13 @@ graceful.listen();
         if (domain.name !== rootDomain) set.add(rootDomain);
       }
 
-      const aliasIds = await Aliases.distinct('_id', {
+      for await (const alias of Aliases.find({
         domain: domain._id,
         is_enabled: true,
         user: {
           $nin: bannedUserIds
         }
-      });
-      for await (const alias of Aliases.find({ _id: { $in: aliasIds } })
+      })
         .lean()
         .cursor()
         .addCursorFlag('noCursorTimeout', true)) {

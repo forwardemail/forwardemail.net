@@ -6569,5 +6569,7 @@
   "You're missing out!": "Kaçırıyorsun!",
   "Did you know about these features?": "Bu özellikleri biliyor muydunuz?",
   "Your plan includes these features at no extra cost:": "Planınız şu özellikleri hiçbir ekstra ücret ödemeden içerir:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android ile çalışır"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android ile çalışır",
+  "Email forwarding is currently paused.": "E-posta yönlendirme şu anda duraklatıldı.",
+  "Make payment now to resume email forwarding.": "E-posta yönlendirmeye devam etmek için şimdi ödeme yapın."
 }

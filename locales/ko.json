@@ -6569,5 +6569,7 @@
   "You're missing out!": "당신은 놓치고 있어요!",
   "Did you know about these features?": "이러한 기능에 대해 알고 계셨나요?",
   "Your plan includes these features at no extra cost:": "귀하의 계획에는 추가 비용 없이 다음 기능이 포함됩니다.",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android에서 작동합니다."
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple, Outlook, Gmail, Thunderbird, Android에서 작동합니다.",
+  "Email forwarding is currently paused.": "현재 이메일 전달이 일시중지되었습니다.",
+  "Make payment now to resume email forwarding.": "이메일 전달을 재개하려면 지금 결제하세요."
 }

@@ -6262,5 +6262,7 @@
   "You're missing out!": "你错过了！",
   "Did you know about these features?": "您了解这些功能吗？",
   "Your plan includes these features at no extra cost:": "您的计划包括以下功能，无需额外付费：",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "适用于 Apple、Outlook、Gmail、Thunderbird、Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "适用于 Apple、Outlook、Gmail、Thunderbird、Android",
+  "Email forwarding is currently paused.": "电子邮件转发当前已暂停。",
+  "Make payment now to resume email forwarding.": "立即付款以恢复电子邮件转发。"
 }

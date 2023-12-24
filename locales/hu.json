@@ -6569,5 +6569,7 @@
   "You're missing out!": "Lemaradsz!",
   "Did you know about these features?": "Tudtál ezekről a funkciókról?",
   "Your plan includes these features at no extra cost:": "A csomag a következő funkciókat tartalmazza felár nélkül:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Működik Apple, Outlook, Gmail, Thunderbird és Android rendszerekkel"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Működik Apple, Outlook, Gmail, Thunderbird és Android rendszerekkel",
+  "Email forwarding is currently paused.": "Az e-mailek továbbítása jelenleg szünetel.",
+  "Make payment now to resume email forwarding.": "Fizessen be most az e-mail-továbbítás folytatásához."
 }

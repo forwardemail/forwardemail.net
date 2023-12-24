@@ -6574,5 +6574,7 @@
   "You're missing out!": "Du går glipp av noe!",
   "Did you know about these features?": "Visste du om disse funksjonene?",
   "Your plan includes these features at no extra cost:": "Planen din inkluderer disse funksjonene uten ekstra kostnad:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Videresending av e-post er midlertidig stoppet.",
+  "Make payment now to resume email forwarding.": "Utfør betaling nå for å gjenoppta videresending av e-post."
 }

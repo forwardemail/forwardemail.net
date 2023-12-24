@@ -6569,5 +6569,7 @@
   "You're missing out!": "あなたは見逃しています！",
   "Did you know about these features?": "これらの機能についてご存知でしたか?",
   "Your plan includes these features at no extra cost:": "プランには次の機能が追加料金なしで含まれています。",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple、Outlook、Gmail、Thunderbird、Android で動作します"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Apple、Outlook、Gmail、Thunderbird、Android で動作します",
+  "Email forwarding is currently paused.": "現在メール転送を一時停止しております。",
+  "Make payment now to resume email forwarding.": "今すぐ支払いを行ってメール転送を再開してください。"
 }

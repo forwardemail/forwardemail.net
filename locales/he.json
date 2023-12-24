@@ -4457,5 +4457,18 @@
   "Read our FAQ, submit a help request, or reply to this email.": "קרא את השאלות הנפוצות שלנו, שלח בקשת עזרה או השב לדוא\"ל זה.",
   "Read FAQ": "קרא שאלות נפוצות",
   "Help Request": "בקשת עזרה",
-  "If you have any questions or comments, then please let us know": "אם יש לך שאלות או הערות, אנא הודע לנו"
+  "If you have any questions or comments, then please let us know": "אם יש לך שאלות או הערות, אנא הודע לנו",
+  "expired": "לא בתוקף",
+  "Your plan <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>": "התוכנית שלך <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>",
+  "Email forwarding is currently paused.": "העברת אימייל מושהית כעת.",
+  "This is your <u>final notice</u> to make payment.": "זוהי <u>ההודעה האחרונה</u> שלך לביצוע תשלום.",
+  "Make payment now to resume email forwarding.": "בצע תשלום כעת כדי לחדש את העברת האימייל.",
+  "Manage Billing": "נהל חיוב",
+  "Account Summary": "סיכום חשבון",
+  "<span class=\"notranslate\">TXT</span>": "<span class=\"notranslate\">TXT</span>",
+  "Please note that MX and <span class=\"notranslate\">TXT</span> statuses may be inaccurate.": "שים לב שסטטוסי MX ו- <span class=\"notranslate\">TXT</span> עשויים להיות לא מדויקים.",
+  "You must make payment to avoid account termination.": "עליך לבצע תשלום כדי למנוע סגירת חשבון.",
+  "final notice!": "הודעה סופית!",
+  "Make payment now to avoid account termination.": "בצע תשלום כעת כדי למנוע סגירת חשבון.",
+  "make payment to keep your account active": "לבצע תשלום כדי לשמור על חשבונך פעיל"
 }

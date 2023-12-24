@@ -6569,5 +6569,7 @@
   "You're missing out!": "Вы пропускаете!",
   "Did you know about these features?": "Знали ли вы об этих функциях?",
   "Your plan includes these features at no extra cost:": "Ваш план включает в себя следующие функции без дополнительной оплаты:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Работает с Apple, Outlook, Gmail, Thunderbird, Android."
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Работает с Apple, Outlook, Gmail, Thunderbird, Android.",
+  "Email forwarding is currently paused.": "Пересылка электронной почты в настоящее время приостановлена.",
+  "Make payment now to resume email forwarding.": "Внесите оплату сейчас, чтобы возобновить пересылку электронной почты."
 }

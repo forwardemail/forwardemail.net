@@ -4,7 +4,6 @@
  */
 
 const process = require('node:process');
-const os = require('node:os');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -16,7 +15,6 @@ const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
-const pMap = require('p-map');
 const mongoose = require('mongoose');
 
 const i18n = require('#helpers/i18n');
@@ -25,8 +23,6 @@ const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Payments } = require('#models');
-
-const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -50,12 +46,11 @@ if (parentPort)
 graceful.listen();
 
 // eslint-disable-next-line complexity
-async function mapper(id) {
+async function mapper(user) {
   // return early if the job was already cancelled
   if (isCancelled) return;
 
-  let user = await Users.findById(id);
-
+  // safeguard
   if (!user) return;
 
   // ensure not banned
@@ -71,7 +66,7 @@ async function mapper(id) {
   // (e.g. and remove expiration notice dates if plan expires in future)
   await user.save();
 
-  user = await Users.findById(id).lean().exec();
+  user = await Users.findById(user._id).lean().exec();
 
   if (!user) return;
 
@@ -264,7 +259,7 @@ async function mapper(id) {
   await setupMongoose(logger);
 
   try {
-    const ids = await Users.distinct('_id', {
+    for await (const user of Users.find({
       plan: { $ne: 'free' },
       group: 'user',
       [config.userFields.isBanned]: false,
@@ -286,17 +281,24 @@ async function mapper(id) {
         $exists: false
       }
       // TODO: we can optimize this query more with date filtering in the future
-    });
-
-    //
-    // NOTE: we send an initial notice
-    //       then a follow-up one week later
-    //       then a final notice three weeks later
-    //       and then finally ban the account one month later
-    //       (so users technically have 2 months after they receive initial notice before they get banned)
-    //       (and they only get banned if we successfully have sent them each notice in order)
-    //
-    await pMap(ids, mapper, { concurrency });
+    })
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      //
+      // NOTE: we send an initial notice
+      //       then a follow-up one week later
+      //       then a final notice three weeks later
+      //       and then finally ban the account one month later
+      //       (so users technically have 2 months after they receive initial notice before they get banned)
+      //       (and they only get banned if we successfully have sent them each notice in order)
+      //
+      if (isCancelled) break;
+      try {
+        await mapper(user);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
   } catch (err) {
     await logger.error(err);
   }

@@ -6569,5 +6569,7 @@
   "You're missing out!": "Du missar något!",
   "Did you know about these features?": "Visste du om dessa funktioner?",
   "Your plan includes these features at no extra cost:": "Din plan innehåller dessa funktioner utan extra kostnad:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerar med Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerar med Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Vidarebefordran av e-post är för närvarande pausad.",
+  "Make payment now to resume email forwarding.": "Betala nu för att återuppta vidarebefordran av e-post."
 }

@@ -6569,5 +6569,7 @@
   "You're missing out!": "Chybíš!",
   "Did you know about these features?": "Věděli jste o těchto funkcích?",
   "Your plan includes these features at no extra cost:": "Váš tarif zahrnuje tyto funkce bez dalších nákladů:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Funguje s Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Funguje s Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Přeposílání e-mailů je momentálně pozastaveno.",
+  "Make payment now to resume email forwarding.": "Chcete-li obnovit přeposílání e-mailů, proveďte platbu nyní."
 }

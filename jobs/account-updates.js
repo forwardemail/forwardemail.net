@@ -7,7 +7,6 @@
 require('#config/env');
 
 const process = require('node:process');
-const os = require('node:os');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -16,7 +15,6 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
 const humanize = require('humanize-string');
-const pMap = require('p-map');
 const titleize = require('titleize');
 const mongoose = require('mongoose');
 
@@ -27,8 +25,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const Users = require('#models/users');
 
-const concurrency = os.cpus().length;
-
 const graceful = new Graceful({
   mongooses: [mongoose],
   logger
@@ -36,9 +32,9 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-async function mapper(id) {
-  const user = await Users.findById(id).lean().exec();
-  if (!user) throw new Error('User does not exist');
+async function mapper(user) {
+  // safeguard
+  if (!user) return;
 
   // ensure it still had a non-empty array
   if (
@@ -92,16 +88,22 @@ async function mapper(id) {
   await setupMongoose(logger);
 
   try {
-    const ids = await Users.distinct('_id', {
+    for await (const user of Users.find({
       [config.userFields.accountUpdates]: {
         $exists: true,
         $ne: []
       },
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false
-    });
-
-    await pMap(ids, mapper, { concurrency });
+    })
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      try {
+        await mapper(user);
+      } catch (err) {
+        logger.error(err);
+      }
+    }
   } catch (err) {
     await logger.error(err);
   }

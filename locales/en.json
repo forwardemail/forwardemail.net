@@ -6326,5 +6326,7 @@
   "You're missing out!": "You're missing out!",
   "Did you know about these features?": "Did you know about these features?",
   "Your plan includes these features at no extra cost:": "Your plan includes these features at no extra cost:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Works with Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Works with Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Email forwarding is currently paused.",
+  "Make payment now to resume email forwarding.": "Make payment now to resume email forwarding."
 }

@@ -3760,5 +3760,22 @@
   "Help Request": "Demande d'aide",
   "If you have any questions or comments, then please let us know": "Si vous avez des questions ou des commentaires, n'hésitez pas à nous le faire savoir",
   "Payment due <span class=\"notranslate\">%s</span>.": "Paiement dû <span class=\"notranslate\">%s</span> .",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Besoin d&#39; <a class=\"alert-link\" href=\"%s\">activer le renouvellement automatique</a> ?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Besoin d&#39; <a class=\"alert-link\" href=\"%s\">activer le renouvellement automatique</a> ?",
+  "expired": "expiré",
+  "Your plan <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>": "Votre forfait <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>",
+  "Email forwarding is currently paused.": "Le transfert d'e-mails est actuellement suspendu.",
+  "This is your <u>final notice</u> to make payment.": "Ceci est votre <u>dernier avis</u> de paiement.",
+  "Make payment now to resume email forwarding.": "Effectuez le paiement maintenant pour reprendre le transfert des e-mails.",
+  "Manage Billing": "Gérer la facturation",
+  "Account Summary": "Relevé de compte",
+  "Plan": "Plan",
+  "MX": "MX",
+  "<span class=\"notranslate\">TXT</span>": "<span class=\"notranslate\">TXT</span>",
+  "Please note that MX and <span class=\"notranslate\">TXT</span> statuses may be inaccurate.": "Veuillez noter que les statuts MX et <span class=\"notranslate\">TXT</span> peuvent être inexacts.",
+  "You must make payment to avoid account termination.": "Vous devez effectuer le paiement pour éviter la résiliation du compte.",
+  "final notice!": "avis final!",
+  "Make payment now to avoid account termination.": "Effectuez le paiement maintenant pour éviter la résiliation du compte.",
+  "make payment to keep your account active": "effectuer un paiement pour garder votre compte actif",
+  "Issue Detected": "Problème détecté",
+  "Issue": "Problème"
 }

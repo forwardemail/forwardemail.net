@@ -6307,5 +6307,7 @@
   "You're missing out!": "Du går glip af noget!",
   "Did you know about these features?": "Vidste du om disse funktioner?",
   "Your plan includes these features at no extra cost:": "Dit abonnement inkluderer disse funktioner uden ekstra omkostninger:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Fungerer med Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Videresendelse af e-mail er i øjeblikket sat på pause.",
+  "Make payment now to resume email forwarding.": "Foretag betaling nu for at genoptage videresendelse af e-mail."
 }

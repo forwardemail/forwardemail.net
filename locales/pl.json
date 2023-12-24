@@ -6569,5 +6569,7 @@
   "You're missing out!": "Brakuje Ci!",
   "Did you know about these features?": "Czy wiedziałeś o tych funkcjach?",
   "Your plan includes these features at no extra cost:": "Twój plan obejmuje następujące funkcje bez dodatkowych kosztów:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Współpracuje z Apple, Outlookiem, Gmailem, Thunderbirdem i Androidem"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Współpracuje z Apple, Outlookiem, Gmailem, Thunderbirdem i Androidem",
+  "Email forwarding is currently paused.": "Przekazywanie wiadomości e-mail jest obecnie wstrzymane.",
+  "Make payment now to resume email forwarding.": "Dokonaj płatności teraz, aby wznowić przekazywanie wiadomości e-mail."
 }

@@ -6567,5 +6567,7 @@
   "You're missing out!": "¡Te lo estás perdiendo!",
   "Did you know about these features?": "¿Conocías estas características?",
   "Your plan includes these features at no extra cost:": "Tu plan incluye estas características sin costo adicional:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Funciona con Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Funciona con Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "El reenvío de correo electrónico está actualmente en pausa.",
+  "Make payment now to resume email forwarding.": "Realice el pago ahora para reanudar el reenvío de correo electrónico."
 }

@@ -3841,5 +3841,21 @@
   "Help Request": "Yêu cầu trợ giúp",
   "If you have any questions or comments, then please let us know": "Nếu bạn có bất kỳ câu hỏi hoặc ý kiến nào, xin vui lòng cho chúng tôi biết",
   "Payment due <span class=\"notranslate\">%s</span>.": "Đến hạn thanh toán <span class=\"notranslate\">%s</span> .",
-  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Cần <a class=\"alert-link\" href=\"%s\">kích hoạt tính năng tự động gia hạn</a> ?"
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Cần <a class=\"alert-link\" href=\"%s\">kích hoạt tính năng tự động gia hạn</a> ?",
+  "expired": "hết hạn",
+  "Your plan <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>": "Kế hoạch của bạn <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>",
+  "Email forwarding is currently paused.": "Việc chuyển tiếp email hiện đang bị tạm dừng.",
+  "This is your <u>final notice</u> to make payment.": "Đây là <u>thông báo cuối cùng</u> của bạn để thực hiện thanh toán.",
+  "Make payment now to resume email forwarding.": "Hãy thanh toán ngay bây giờ để tiếp tục chuyển tiếp email.",
+  "Manage Billing": "Quản lý thanh toán",
+  "Account Summary": "Tóm tắt tài khoản",
+  "MX": "MX",
+  "<span class=\"notranslate\">TXT</span>": "<span class=\"notranslate\">TXT</span>",
+  "Please note that MX and <span class=\"notranslate\">TXT</span> statuses may be inaccurate.": "Xin lưu ý rằng trạng thái MX và <span class=\"notranslate\">TXT</span> có thể không chính xác.",
+  "You must make payment to avoid account termination.": "Bạn phải thực hiện thanh toán để tránh bị chấm dứt tài khoản.",
+  "final notice!": "thông báo cuối cùng!",
+  "Make payment now to avoid account termination.": "Hãy thanh toán ngay để tránh bị chấm dứt tài khoản.",
+  "make payment to keep your account active": "thanh toán để duy trì hoạt động tài khoản của bạn",
+  "Issue Detected": "Đã phát hiện sự cố",
+  "Issue": "Vấn đề"
 }

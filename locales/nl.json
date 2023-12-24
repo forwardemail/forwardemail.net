@@ -6569,5 +6569,7 @@
   "You're missing out!": "Je mist iets!",
   "Did you know about these features?": "Kende u deze functies?",
   "Your plan includes these features at no extra cost:": "Uw abonnement omvat deze functies zonder extra kosten:",
-  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Werkt met Apple, Outlook, Gmail, Thunderbird, Android"
+  "Works with Apple, Outlook, Gmail, Thunderbird, Android": "Werkt met Apple, Outlook, Gmail, Thunderbird, Android",
+  "Email forwarding is currently paused.": "Het doorsturen van e-mail is momenteel onderbroken.",
+  "Make payment now to resume email forwarding.": "Voer nu een betaling uit om het doorsturen van e-mail te hervatten."
 }
