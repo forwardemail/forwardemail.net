@@ -110,10 +110,10 @@ async function mapper(user) {
       },
       [config.userFields.planExpiresAt]: {
         $lte: dayjs().subtract(6, 'month').toDate()
-      },
-      [config.userFields.pastDueReliefSentAt]: {
-        $exists: false
       }
+      // [config.userFields.pastDueReliefSentAt]: {
+      //   $exists: false
+      // }
     })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
