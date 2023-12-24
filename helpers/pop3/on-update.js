@@ -62,30 +62,62 @@ async function onUpdate(update, session, fn) {
       if (!updatedMailbox)
         throw new Error(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'));
 
-      await Messages.updateMany(
-        this,
-        session,
-        {
-          _id: {
-            $in: update.seen
-              .filter((message) => mongoose.isObjectIdOrHexString(message.id))
-              .map((message) => new mongoose.Types.ObjectId(message.id))
-          },
-          mailbox: updatedMailbox._id,
-          modseq: {
-            $lt: updatedMailbox.modifyIndex
-          }
-        },
-        {
-          $set: {
-            modseq: updatedMailbox.modifyIndex,
-            unseen: false
-          },
-          $addToSet: {
-            flags: '\\Seen'
-          }
+      const _ids = update.seen
+        .filter((m) => mongoose.isObjectIdOrHexString(m.id))
+        .map((m) => new mongoose.Types.ObjectId(m.id));
+      //
+      // NOTE: since $addToSet isn't supported in our mongoose sqlite helper yet
+      //       we use a simple loop to update messages that match the query filter
+      //
+      // await Messages.updateMany(
+      //   this,
+      //   session,
+      //   {
+      //     _id: {
+      //       $in: _ids
+      //     },
+      //     mailbox: updatedMailbox._id,
+      //     modseq: {
+      //       $lt: updatedMailbox.modifyIndex
+      //     }
+      //   },
+      //   {
+      //     $set: {
+      //       modseq: updatedMailbox.modifyIndex,
+      //       unseen: false
+      //     },
+      //     $addToSet: {
+      //       flags: '\\Seen'
+      //     }
+      //   }
+      // );
+      for (const _id of _ids) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await Messages.findOneAndUpdate(
+            this,
+            session,
+            {
+              _id,
+              mailbox: updatedMailbox._id,
+              modseq: {
+                $lt: updatedMailbox.modifyIndex
+              }
+            },
+            {
+              $set: {
+                modseq: updatedMailbox.modifyIndex,
+                unseen: false
+              },
+              $addToSet: {
+                flags: '\\Seen'
+              }
+            }
+          );
+        } catch (err) {
+          this.logger.fatal(err, { update, session });
         }
-      );
+      }
 
       try {
         await this.server.notifier.addEntries(
