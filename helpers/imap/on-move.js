@@ -76,18 +76,24 @@ async function onMove(mailboxId, update, session, fn) {
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'TRYCREATE'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'TRYCREATE'
+        }
+      );
 
     const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
     });
 
     if (!targetMailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'TRYCREATE'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'TRYCREATE'
+        }
+      );
 
     lock = await acquireLock(this, session.db);
 
@@ -130,7 +136,7 @@ async function onMove(mailboxId, update, session, fn) {
       //
       if (!updatedMailbox)
         throw new IMAPError(
-          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en')
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
         );
 
       const newModseq = updatedMailbox.modifyIndex || 1;
@@ -210,7 +216,7 @@ async function onMove(mailboxId, update, session, fn) {
         // (e.g. `throw new IMAPError('...', { imapResponse: 'NONEXISTENT' });`)
         if (!updatedTargetMailbox)
           throw new IMAPError(
-            i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en')
+            i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
           );
 
         // push new destination uid

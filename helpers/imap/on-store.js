@@ -96,9 +96,12 @@ async function onStore(mailboxId, update, session, fn) {
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
 

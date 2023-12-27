@@ -28,6 +28,7 @@ const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 
+const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
@@ -221,8 +222,12 @@ class IMAP {
       subscriber: this.subscriber
     });
 
-    this.subscriber.on('message', (channel, id) => {
-      if (channel !== 'sqlite_auth_request' && channel !== 'sqlite_auth_reset')
+    this.subscriber.on('message', async (channel, id) => {
+      if (
+        channel !== 'sqlite_auth_request' &&
+        channel !== 'sqlite_auth_reset' &&
+        channel !== 'pgp_reload'
+      )
         return;
       try {
         if (typeof id !== 'string' || !mongoose.isObjectIdOrHexString(id))
@@ -269,6 +274,22 @@ class IMAP {
             'sqlite_auth_response',
             safeStringify(sorted[0].session.user)
           );
+          return;
+        }
+
+        if (channel === 'pgp_reload') {
+          const alias = await Aliases.findOne({ id })
+            .select('has_pgp public_key')
+            .lean()
+            .exec();
+          if (alias) {
+            for (const connection of this.server.connections) {
+              if (connection?.session?.user?.alias_id !== id) continue;
+              connection.session.user.alias_has_pgp = alias.has_pgp;
+              connection.session.user.alias_public_key = alias.public_key;
+            }
+          }
+
           return;
         }
 

@@ -146,7 +146,11 @@ test.beforeEach(async (t) => {
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storage_location
+      storage_location: alias.storage_location,
+      alias_has_pgp: alias.has_pgp,
+      alias_public_key: alias.public_key,
+      locale: 'en',
+      owner_full_email: `${alias.name}@${domain.name}`
     }
   };
 
@@ -282,7 +286,11 @@ test('onAppend with private PGP', async (t) => {
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storage_location
+      storage_location: alias.storage_location,
+      alias_has_pgp: alias.has_pgp,
+      alias_public_key: alias.public_key,
+      locale: 'en',
+      owner_full_email: `${alias.name}@${domain.name}`
     }
   };
 
@@ -429,7 +437,11 @@ test('onAppend with public PGP', async (t) => {
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storage_location
+      storage_location: alias.storage_location,
+      alias_has_pgp: alias.has_pgp,
+      alias_public_key: alias.public_key,
+      locale: 'en',
+      owner_full_email: `${alias.name}@${domain.name}`
     }
   };
 
@@ -908,7 +920,11 @@ ZXhhbXBsZQo=
       domain_id: domain.id,
       domain_name: domain.name,
       password: encrypt(pass),
-      storage_location: alias.storage_location
+      storage_location: alias.storage_location,
+      alias_has_pgp: alias.has_pgp,
+      alias_public_key: alias.public_key,
+      locale: 'en',
+      owner_full_email: `${alias.name}@${domain.name}`
     }
   };
 

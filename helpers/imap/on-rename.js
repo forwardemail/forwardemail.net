@@ -53,23 +53,32 @@ async function onRename(path, newPath, session, fn) {
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     if (mailbox.path === 'INBOX')
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_RESERVED', 'en'), {
-        imapResponse: 'CANNOT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
+        }
+      );
 
     const targetMailbox = await Mailboxes.findOne(this, session, {
       path: newPath
     });
 
     if (targetMailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', 'en'), {
-        imapResponse: 'ALREADYEXISTS'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', session.user.locale),
+        {
+          imapResponse: 'ALREADYEXISTS'
+        }
+      );
 
     const renamedMailbox = await Mailboxes.findOneAndUpdate(
       this,
@@ -86,9 +95,12 @@ async function onRename(path, newPath, session, fn) {
 
     // could not write/lock mailbox
     if (!renamedMailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     try {
       await this.server.notifier.addEntries(this, session, mailbox, {

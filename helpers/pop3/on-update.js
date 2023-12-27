@@ -60,7 +60,9 @@ async function onUpdate(update, session, fn) {
       );
 
       if (!updatedMailbox)
-        throw new Error(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'));
+        throw new Error(
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
+        );
 
       const _ids = update.seen
         .filter((m) => mongoose.isObjectIdOrHexString(m.id))
@@ -147,7 +149,9 @@ async function onUpdate(update, session, fn) {
       });
 
       if (!trashMailbox)
-        throw new Error(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'));
+        throw new Error(
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
+        );
 
       await onMovePromise.call(
         this,

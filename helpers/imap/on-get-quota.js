@@ -49,7 +49,7 @@ async function onGetQuota(path, session, fn) {
     const storageUsed = await Aliases.getStorageUsed({
       id: session.user.alias_id,
       domain: session.user.domain_id,
-      locale: 'en'
+      locale: session.user.locale
     });
 
     fn(null, {

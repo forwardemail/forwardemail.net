@@ -24,10 +24,11 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
 const env = require('#config/env');
+const getQueryResponse = require('#helpers/get-query-response');
+const i18n = require('#helpers/i18n');
+const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/smtp/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-const isValidPassword = require('#helpers/is-valid-password');
-const getQueryResponse = require('#helpers/get-query-response');
 
 const onConnectPromise = pify(onConnect);
 
@@ -163,7 +164,7 @@ async function onAuth(auth, session, fn) {
       })
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.fullEmail} ${config.lastLocaleField}`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
@@ -310,6 +311,24 @@ async function onAuth(auth, session, fn) {
     // increase counter for alias by 1 (with ttl safeguard)
     await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
 
+    const to = [];
+
+    // this also ensures that at least one admin has a verified email address
+    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+    // set default locale for translation for the session
+    let locale = i18n.config.defaultLocale;
+    locale =
+      alias && alias.user[config.lastLocaleField]
+        ? alias.user[config.lastLocaleField]
+        : obj.locale;
+
+    if (alias && alias.user[config.userFields.fullEmail]) {
+      to.push(alias.user[config.userFields.fullEmail]);
+    } else {
+      to.push(...obj.to);
+    }
+
     // prepare user object for `session.user`
     // <https://github.com/nodemailer/wildduck/issues/510>
     const user = {
@@ -328,7 +347,25 @@ async function onAuth(auth, session, fn) {
       domain_id: domain.id,
       domain_name: domain.name,
       // safeguard to encrypt in-memory
-      password: encrypt(auth.password)
+      password: encrypt(auth.password),
+      //
+      // NOTE: if `has_pgp` or `public_key` gets updated then
+      //       they will be refreshed automatically via websockets
+      //       (see update alias controller)
+      //
+      // NOTE: these fields will refresh in `refreshSession` helper
+      //
+      // pgp support
+      ...(alias && alias.has_pgp && alias.public_key
+        ? {
+            alias_has_pgp: alias.has_pgp,
+            alias_public_key: alias.public_key
+          }
+        : {}),
+      // NOTE: this field will refresh in `refreshSession` helper
+      locale,
+      // NOTE: this field will refresh in `refreshSession` helper
+      owner_full_email: to
     };
 
     //

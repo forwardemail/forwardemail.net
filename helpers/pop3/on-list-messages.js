@@ -36,7 +36,9 @@ async function onListMessages(session, fn) {
     });
 
     if (!mailbox)
-      throw new Error(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'));
+      throw new Error(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
+      );
 
     // TODO: do we need this (?)
     // arbitrary assignment (we could use something else or a Symbol)

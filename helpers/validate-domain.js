@@ -19,7 +19,10 @@ function validateDomain(domain, domainName) {
 
   if (domain.is_global)
     throw new SMTPError(
-      i18n.translate('EMAIL_SMTP_GLOBAL_NOT_PERMITTED', 'en')
+      i18n.translate(
+        'EMAIL_SMTP_GLOBAL_NOT_PERMITTED',
+        i18n.config.defaultLocale
+      )
     );
 
   //
@@ -41,7 +44,9 @@ function validateDomain(domain, domainName) {
         m.group === 'admin'
     )
   )
-    throw new SMTPError(i18n.translate('PAST_DUE_OR_INVALID_ADMIN', 'en'));
+    throw new SMTPError(
+      i18n.translate('PAST_DUE_OR_INVALID_ADMIN', i18n.config.defaultLocale)
+    );
 }
 
 module.exports = validateDomain;

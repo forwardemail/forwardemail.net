@@ -15,6 +15,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
+const i18n = require('#helpers/i18n');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 
@@ -80,7 +81,7 @@ async function refreshSession(session, command) {
       .populate(
         'user',
         // TODO: we can remove `smtpLimit` (?)
-        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.fullEmail} ${config.lastLocaleField}`
       )
       .select('+tokens.hash +tokens.salt')
       .lean()
@@ -92,6 +93,13 @@ async function refreshSession(session, command) {
 
   // validate alias (in case tampered with during session)
   validateAlias(alias, session.user.domain_name, session.user.alias_name);
+
+  // refresh the user's pgp settings, email, and locale
+  session.user.alias_has_pgp = alias.has_pgp;
+  session.user.alias_public_key = alias.public_key;
+  session.user.locale =
+    alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
+  session.user.owner_full_email = alias.user[config.userFields.fullEmail];
 
   //
   // NOTE: we don't need to perform the below validation because we

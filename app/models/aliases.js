@@ -358,7 +358,7 @@ Aliases.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api', 'tokens'],
+  omitExtraFields: ['is_api', 'tokens', 'pgp_error_sent_at'],
   defaultLocale: i18n.getLocale()
 });
 

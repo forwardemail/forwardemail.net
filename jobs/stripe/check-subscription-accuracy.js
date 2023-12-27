@@ -214,7 +214,7 @@ async function mapper(customer) {
     }
 
     // send an email here
-    const locale = user[config.lastLocaleField] || 'en';
+    const locale = user[config.lastLocaleField] || i18n.config.defaultLocale;
     await emailHelper({
       template: 'alert',
       message: {

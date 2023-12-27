@@ -51,12 +51,15 @@ async function onCreate(path, session, fn) {
     const { isOverQuota } = await Aliases.isOverQuota({
       id: session.user.alias_id,
       domain: session.user.domain_id,
-      locale: 'en'
+      locale: session.user.locale
     });
     if (isOverQuota)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
-        imapResponse: 'OVERQUOTA'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
+        {
+          imapResponse: 'OVERQUOTA'
+        }
+      );
 
     //
     // limit the number of mailboxes a user can create
@@ -66,18 +69,24 @@ async function onCreate(path, session, fn) {
     const count = await Mailboxes.countDocuments(this, session, {});
 
     if (count > config.maxMailboxes)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_MAX_EXCEEDED', 'en'), {
-        imapResponse: 'OVERQUOTA'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_MAX_EXCEEDED', session.user.locale),
+        {
+          imapResponse: 'OVERQUOTA'
+        }
+      );
 
     let mailbox = await Mailboxes.findOne(this, session, {
       path
     });
 
     if (mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', 'en'), {
-        imapResponse: 'ALREADYEXISTS'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_ALREADY_EXISTS', session.user.locale),
+        {
+          imapResponse: 'ALREADYEXISTS'
+        }
+      );
 
     mailbox = await Mailboxes.create({
       instance: this,

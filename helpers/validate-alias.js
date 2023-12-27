@@ -13,6 +13,8 @@ function validateAlias(alias, domain, name) {
       { responseCode: 535, ignoreHook: true }
     );
 
+  if (!alias.user) throw new SMTPError('Alias user does not exist');
+
   //
   // TODO: adjust refineAndLogError to detect this error
   //       and subsequently invoke `sqlite_auth_reset` for this id

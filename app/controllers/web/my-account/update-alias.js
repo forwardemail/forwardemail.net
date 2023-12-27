@@ -16,6 +16,15 @@ async function updateAlias(ctx, next) {
     ctx.state.alias.locale = ctx.locale;
     ctx.state.alias.is_update = true;
     ctx.state.alias = await ctx.state.alias.save();
+
+    // if the body had `has_pgp` or `public_key` and if the values changed
+    // then refresh all IMAP sessions with the new updated public key and boolean
+    if (
+      (ctx.client && typeof ctx.request.body.public_key === 'string') ||
+      ctx.request.body.has_pgp !== 'undefined'
+    )
+      ctx.client.publish('pgp_reload', ctx.state.alias.id);
+
     if (ctx.api) {
       ctx.state.alias = toObject(Aliases, ctx.state.alias);
       ctx.state.alias.user = toObject(Users, ctx.state.user);

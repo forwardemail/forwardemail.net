@@ -1514,7 +1514,7 @@ Domains.statics.getNameRestrictions = getNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
   // get all the admins we should send the email to
-  const users = await Users.find({
+  let users = await Users.find({
     _id: {
       $in: domain.members
         .filter((member) => member.group === 'admin')
@@ -1533,13 +1533,9 @@ async function getToAndMajorityLocaleByDomain(domain) {
 
   if (users.length === 0) throw new Error('Domain had zero admins');
 
-  const to = _.uniq(users.map((user) => user.email));
+  users = users.filter((u) => u[config.userFields.hasVerifiedEmail]);
 
-  // <https://stackoverflow.com/a/49731453>
-  const locales = users.map((user) => user[config.lastLocaleField]);
-  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
-
-  if (users.every((u) => !u[config.userFields.hasVerifiedEmail]))
+  if (users.length === 0)
     throw Boom.badRequest(
       i18n.translateError(
         'USER_UNVERIFIED',
@@ -1547,6 +1543,12 @@ async function getToAndMajorityLocaleByDomain(domain) {
         `${config.urls.web}${config.verifyRoute}`
       )
     );
+
+  const to = _.uniq(users.map((user) => user.email));
+
+  // <https://stackoverflow.com/a/49731453>
+  const locales = users.map((user) => user[config.lastLocaleField]);
+  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
 
   return { to, locale };
 }

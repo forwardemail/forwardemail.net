@@ -18,6 +18,7 @@ const pMap = require('p-map');
 
 const mongoose = require('mongoose');
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
@@ -43,7 +44,7 @@ async function mapper(alias) {
   }
 
   // force EN for locale
-  alias.locale = 'en';
+  alias.locale = i18n.config.defaultLocale;
 
   try {
     await alias.save();

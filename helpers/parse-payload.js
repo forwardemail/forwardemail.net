@@ -852,14 +852,19 @@ async function parsePayload(data, ws) {
             try {
               const alias = await Aliases.findById(obj.id)
                 .populate('domain', 'id name')
-                .populate('user', config.userFields.isBanned)
+                .populate(
+                  'user',
+                  `${config.userFields.isBanned} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+                )
                 .select(
-                  'id has_imap storage_location user is_enabled name domain'
+                  'id has_imap has_pgp public_key storage_location user is_enabled name domain'
                 )
                 .lean()
                 .exec();
 
               if (!alias) throw new TypeError('Alias does not exist');
+
+              if (!alias.user) throw new TypeError('User does not exist');
 
               // alias must not have banned user
               if (alias.user[config.userFields.isBanned])
@@ -895,7 +900,11 @@ async function parsePayload(data, ws) {
                   domain_id: alias.domain.id,
                   domain_name: alias.domain.name,
                   password: encrypt(env.API_SECRETS[0]),
-                  storage_location: alias.storage_location
+                  storage_location: alias.storage_location,
+                  alias_has_pgp: alias.has_pgp,
+                  alias_public_key: alias.public_key,
+                  locale: alias.user[config.lastLocaleField],
+                  owner_full_email: alias.user[config.userFields.fullEmail]
                 }
               };
 
@@ -916,7 +925,7 @@ async function parsePayload(data, ws) {
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
-                    'en',
+                    session.user.locale || i18n.config.defaultLocale,
                     session.user.username
                   ),
                   {
@@ -940,7 +949,7 @@ async function parsePayload(data, ws) {
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
-                    'en',
+                    session.user.locale || i18n.config.defaultLocale,
                     session.user.username
                   ),
                   {

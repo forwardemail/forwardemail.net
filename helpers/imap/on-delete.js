@@ -72,14 +72,20 @@ async function onDelete(path, session, fn) {
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     if (mailbox.specialUse || mailbox.path === 'INBOX')
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_RESERVED', 'en'), {
-        imapResponse: 'CANNOT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_RESERVED', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
+        }
+      );
 
     //
     // NOTE: we move all messages to trash dir (safeguard for users)

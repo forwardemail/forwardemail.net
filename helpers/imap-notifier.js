@@ -140,10 +140,13 @@ class IMAPNotifier extends EventEmitter {
       .map((entry) => entry.message);
 
     if (!mailboxId)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        responseCode: 404,
-        code: 'NoSuchMailbox'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          responseCode: 404,
+          code: 'NoSuchMailbox'
+        }
+      );
 
     // prepare query and prevent additional db call if necessary
     const query = {};
@@ -178,10 +181,13 @@ class IMAPNotifier extends EventEmitter {
     if (!mailbox) mailbox = await Mailboxes.findOne(instance, session, query);
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        responseCode: 404,
-        code: 'NoSuchMailbox'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          responseCode: 404,
+          code: 'NoSuchMailbox'
+        }
+      );
 
     const modseq = mailbox.modifyIndex;
     const created = new Date();

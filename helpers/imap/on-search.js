@@ -60,9 +60,12 @@ async function onSearch(mailboxId, options, session, fn) {
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     // prepare query for search
     const query = {

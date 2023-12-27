@@ -75,30 +75,39 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     const { isOverQuota } = await Aliases.isOverQuota({
       id: session.user.alias_id,
       domain: session.user.domain_id,
-      locale: 'en'
+      locale: session.user.locale
     });
     if (isOverQuota)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', 'en'), {
-        imapResponse: 'OVERQUOTA'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
+        {
+          imapResponse: 'OVERQUOTA'
+        }
+      );
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
     });
 
     if (!mailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'NONEXISTENT'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'NONEXISTENT'
+        }
+      );
 
     const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
     });
 
     if (!targetMailbox)
-      throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
-        imapResponse: 'TRYCREATE'
-      });
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'TRYCREATE'
+        }
+      );
 
     const sourceUid = [];
     const destinationUid = [];
@@ -191,7 +200,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
       if (!updatedMailbox)
         throw new IMAPError(
-          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'),
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
           {
             imapResponse: 'TRYCREATE'
           }
@@ -306,7 +315,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         {
           id: session.user.alias_id,
           domain: session.user.domain_id,
-          locale: 'en'
+          locale: session.user.locale
         },
         copiedStorage
       )
@@ -315,7 +324,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             const err = new IMAPError(
               i18n.translate(
                 'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
-                'en',
+                session.user.locale,
                 session.user.username
               ),
               {

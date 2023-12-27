@@ -125,13 +125,21 @@ class SQLite {
         )
           return fn(
             Boom.unauthorized(
-              i18n.translateError('INVALID_API_CREDENTIALS', 'en')
+              i18n.translateError(
+                'INVALID_API_CREDENTIALS',
+                i18n.config.defaultLocale
+              )
             )
           );
 
         if (!env.API_SECRETS.includes(decrypt(credentials.name)))
           return fn(
-            Boom.unauthorized(i18n.translateError('INVALID_API_TOKEN', 'en'))
+            Boom.unauthorized(
+              i18n.translateError(
+                'INVALID_API_TOKEN',
+                i18n.config.defaultLocale
+              )
+            )
           );
 
         fn();

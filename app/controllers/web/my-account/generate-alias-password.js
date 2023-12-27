@@ -156,7 +156,11 @@ async function generateAliasPassword(ctx) {
             domain_id: ctx.state.domain.id,
             domain_name: ctx.state.domain.name,
             password: encrypt(ctx.request.body.password),
-            storage_location: alias.storage_location
+            storage_location: alias.storage_location,
+            alias_has_pgp: alias.has_pgp,
+            alias_public_key: alias.public_key,
+            locale: ctx.locale,
+            owner_full_email: ctx.state.user[config.userFields.fullEmail]
           }
         }
       });
@@ -192,7 +196,11 @@ async function generateAliasPassword(ctx) {
             domain_id: ctx.state.domain.id,
             domain_name: ctx.state.domain.name,
             password: encrypt(pass),
-            storage_location: alias.storage_location
+            storage_location: alias.storage_location,
+            alias_has_pgp: alias.has_pgp,
+            alias_public_key: alias.public_key,
+            locale: ctx.locale,
+            owner_full_email: ctx.state.user[config.userFields.fullEmail]
           }
         }
       });
@@ -222,7 +230,11 @@ async function generateAliasPassword(ctx) {
             domain_id: ctx.state.domain.id,
             domain_name: ctx.state.domain.name,
             password: encrypt(pass),
-            storage_location: alias.storage_location
+            storage_location: alias.storage_location,
+            alias_has_pgp: alias.has_pgp,
+            alias_public_key: alias.public_key,
+            locale: ctx.locale,
+            owner_full_email: ctx.state.user[config.userFields.fullEmail]
           }
         }
       });
