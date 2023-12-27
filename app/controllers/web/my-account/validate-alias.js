@@ -10,6 +10,7 @@ const splitLines = require('split-lines');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 
+// eslint-disable-next-line complexity
 function validateAlias(ctx, next) {
   const body = _.pick(ctx.request.body, [
     'name',
@@ -26,6 +27,11 @@ function validateAlias(ctx, next) {
 
   if (isSANB(ctx.request.body.public_key))
     body.public_key = ctx.request.body.public_key;
+  else if (
+    typeof ctx.request.body.public_key === 'string' &&
+    ctx.request.body.public_key === ''
+  )
+    body.public_key = '';
 
   if (isSANB(body.labels))
     body.labels = _.compact(
