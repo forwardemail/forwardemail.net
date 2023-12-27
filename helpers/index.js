@@ -82,6 +82,9 @@ const wspServer = require('./wsp-server');
 const getFingerprint = require('./get-fingerprint');
 const zxcvbn = require('./zxcvbn');
 const createMtaStsCache = require('./create-mta-sts-cache');
+const encryptMessage = require('./encrypt-message');
+const getKeyInfo = require('./get-key-info');
+const isMessageEncrypted = require('./is-message-encrypted');
 
 module.exports = {
   decrypt,
@@ -163,5 +166,8 @@ module.exports = {
   wspServer,
   getFingerprint,
   zxcvbn,
-  createMtaStsCache
+  createMtaStsCache,
+  encryptMessage,
+  getKeyInfo,
+  isMessageEncrypted
 };

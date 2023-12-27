@@ -707,10 +707,10 @@ test('auth with catch-all password when alias exists too', async (t) => {
     transporter.sendMail({
       envelope: {
         from: `${alias.name}@${domain.name}`,
-        to: 'test@test.com'
+        to: ['test@test.com', 'test-2@test.com']
       },
       raw: `
-To: test@test.com
+To: test@test.com, test-2@test.com
 From: ${alias.name}@${domain.name}
 Subject: test
 Content-Type: text/plain; charset=us-ascii
@@ -763,6 +763,176 @@ Test`.trim()
       client
     })
   );
+});
+
+test('automatic openpgp support', async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const resolver = createTangerine(t.context.client, logger);
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    has_smtp: true,
+    resolver
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const map = new Map();
+
+  // spoof forwardemail.net mx records
+  map.set(
+    'mx:forwardemail.net',
+    resolver.spoofPacket(
+      'forwardemail.net',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  const email = await Emails.queue({
+    message: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'support@forwardemail.net',
+      subject: 'test',
+      text: 'test'
+    },
+    user: user._id
+  });
+
+  const testPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        // const buffer = Buffer.concat(chunks);
+        // t.log(buffer.toString());
+        fn();
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(testPort);
+
+  //
+  // process the email
+  //
+  const info = await processEmail({
+    email,
+    port: testPort,
+    resolver,
+    client
+  });
+
+  t.true(info[0].pgp);
 });
 
 test('smtp outbound auth', async (t) => {

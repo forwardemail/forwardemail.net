@@ -316,25 +316,27 @@ nav.navbar(class=navbarClasses.join(" "))
                   a.dropdown-item(
                     href="https://github.com/forwardemail",
                     target="_blank",
-                    rel="noopener noreferrer",
-                    data-toggle="tooltip",
-                    data-title=t("100% open-source software"),
-                    data-placement="bottom"
+                    rel="noopener noreferrer"
                   )
-                    = "GitHub"
-                    = " "
                     i.fa.fa-fw.fa-github
+                    = " "
+                    = "GitHub"
                   a.dropdown-item(
                     href="https://youtube.com/forwardemail",
                     target="_blank",
-                    rel="noopener noreferrer",
-                    data-toggle="tooltip",
-                    data-title=t("Watch our YouTube channel"),
-                    data-placement="bottom"
+                    rel="noopener noreferrer"
                   )
-                    = "YouTube"
-                    = " "
                     i.fab.fa-fw.fa-youtube.text-danger
+                    = " "
+                    = "YouTube"
+                  a.dropdown-item(
+                    href="https://matrix.to/#/#forwardemail:matrix.org",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa-fw.fa.fa-comments
+                    = " "
+                    = "Matrix"
                   hr.dropdown-divider
                   h6.dropdown-header= t("Company")
                   each companyPage in companyPages

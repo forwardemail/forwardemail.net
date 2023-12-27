@@ -20,6 +20,9 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
+  FAILED_TO_PROCESS_PUBLIC_KEY: 'Failed to process public key.',
+  FAILED_TO_VERIFY_PUBLIC_KEY: 'Failed to verify public key.',
   USER_UNVERIFIED:
     'Please <a href="%s" target="_blank">verify your email address</a> to continue',
   SCHEDULED_SEND_SUBJECT:

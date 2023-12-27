@@ -508,8 +508,6 @@ pm2 deploy ecosystem-web.json production exec "git reset --hard HEAD && git pull
 
 [brew]: https://brew.sh/
 
-[node]: https://nodejs.org/
-
 [n]: https://github.com/tj/n
 
 [ansible-lint]: https://github.com/ansible/ansible-lint

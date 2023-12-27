@@ -24,6 +24,9 @@ function validateAlias(ctx, next) {
     ? striptags(body.description)
     : '';
 
+  if (isSANB(ctx.request.body.public_key))
+    body.public_key = ctx.request.body.public_key;
+
   if (isSANB(body.labels))
     body.labels = _.compact(
       _.uniq(
@@ -63,6 +66,9 @@ function validateAlias(ctx, next) {
 
   if (typeof ctx.request.body.is_enabled !== 'undefined' || !ctx.api)
     body.is_enabled = boolean(ctx.request.body.is_enabled);
+
+  if (typeof ctx.request.body.has_pgp !== 'undefined' || !ctx.api)
+    body.has_pgp = boolean(ctx.request.body.has_pgp);
 
   if (isSANB(body.recipients))
     body.recipients = _.compact(

@@ -8,20 +8,24 @@ const { Buffer } = require('node:buffer');
 const { createPublicKey } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
+const WKD = require('@openpgp/wkd-client');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
+const { fetch, Agent } = require('undici');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
+const { readKey } = require('openpgp');
 
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
@@ -39,6 +43,8 @@ const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const sendEmail = require('./send-email');
 const { decrypt } = require('./encrypt-decrypt');
+const isMessageEncrypted = require('#helpers/is-message-encrypted');
+const encryptMessage = require('#helpers/encrypt-message');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -108,7 +114,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
         )
         .exec(),
       Aliases.findById(email.alias)
-        .populate('user', `id ${config.userFields.isBanned}`)
+        .populate(
+          'user',
+          `id ${config.userFields.isBanned} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+        )
         .lean()
         .exec()
     ]);
@@ -668,11 +677,31 @@ async function processEmail({ email, port = 25, resolver, client }) {
       config.truthSources.has(parseRootDomain(key)) ? 0 : 1
     );
 
-    const results = await pMap(
-      keys,
-      async (target) => {
-        const to = [...map.get(target)];
+    // prepare an array of emails to send to
+    const addresses = [];
+    for (const target of keys) {
+      addresses.push(...map.get(target));
+    }
 
+    // check if the message was encrypted already
+    let isEncrypted = false;
+    try {
+      isEncrypted = isMessageEncrypted(raw);
+    } catch (err) {
+      logger.fatal(err, {
+        user: email.user,
+        email: email._id,
+        domains: [email.domain],
+        session: createSession(email)
+      });
+    }
+
+    const results = await pMap(
+      addresses,
+      // eslint-disable-next-line complexity
+      async (address) => {
+        const to = [address];
+        const target = address.split('@')[1];
         //
         // check if exists for domain being blocked
         // (ensures real-time blocking working)
@@ -749,9 +778,90 @@ async function processEmail({ email, port = 25, resolver, client }) {
             resolver,
             client
           };
-          logger.debug('sending email', { options });
+
+          //
+          // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
+          //       (e.g. when it arrives at the destination mail server, it is already encrypted)
+          //
+          let pgp = false;
+          if (!isEncrypted) {
+            try {
+              //
+              // NOTE: this uses `fetch` which is OK because
+              //       as of Node v18 it uses Undici fetch under the hood
+              //
+              // <https://github.com/nodejs/undici/issues/421#issuecomment-1491441971>
+              // <https://keys.openpgp.org/about/api#rate-limiting>
+              //
+              const wkd = new WKD();
+
+              wkd._fetch = (url) => {
+                return fetch(url, {
+                  signal: AbortSignal.timeout(ms('10s')),
+                  dispatcher: new Agent({
+                    headersTimeout: ms('10s'),
+                    connectTimeout: ms('10s'),
+                    bodyTimeout: ms('10s'),
+                    connect: {
+                      lookup(hostname, options, fn) {
+                        resolver
+                          .lookup(hostname, options)
+                          .then((result) => {
+                            fn(null, result?.address, result?.family);
+                          })
+                          .catch((err) => fn(err));
+                      }
+                    }
+                  })
+                });
+              };
+
+              const binaryKey = await wkd.lookup({
+                email: address
+              });
+
+              const publicKey = await readKey({
+                binaryKey
+              });
+
+              if (publicKey) {
+                try {
+                  options.raw = await encryptMessage(
+                    publicKey,
+                    options.raw,
+                    false
+                  );
+                  pgp = true;
+                } catch (err) {
+                  logger.fatal(err, {
+                    user: email.user,
+                    email: email._id,
+                    domains: [email.domain],
+                    session: createSession(email)
+                  });
+                }
+              }
+            } catch (err) {
+              // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
+              if (
+                !err.message.includes('NotFound') &&
+                !err.message.includes('Gone') &&
+                !isRetryableError(err)
+              )
+                err.isCodeBug = true;
+              logger.error(err, {
+                user: email.user,
+                email: email._id,
+                domains: [email.domain],
+                session: createSession(email)
+              });
+            }
+          }
+
+          logger.debug('sending email', { options, pgp });
           const info = await sendEmail(options);
-          logger.debug('sent email', { info });
+          logger.debug('sent email', { info, pgp });
+          info.pgp = pgp;
           return info;
         } catch (err) {
           // log the error (dups will be removed)
@@ -1045,6 +1155,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //     logger.fatal(err);
     //   }
     // }
+
+    // used to detect pgp encryption
+    if (config.env === 'test') return results;
 
     return;
   } catch (err) {

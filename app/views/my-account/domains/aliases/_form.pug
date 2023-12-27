@@ -146,3 +146,41 @@ if !domain || (domain && !domain.is_global)
   )
   label.form-check-label(for="input-is-enabled")= t("Active")
   p.form-text.small.text-black.text-themed-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")
+if !domain || !domain.is_global
+  .form-group.form-check
+    input#input-has-pgp.form-check-input(
+      type="checkbox",
+      name="has_pgp",
+      value="true",
+      checked=alias ? alias.has_pgp : false
+    )
+    label.form-check-label(for="input-has-pgp")
+      = t("OpenPGP for IMAP Storage")
+      = " "
+      span.text-muted= t("(optional)")
+      = " "
+      span.badge.badge-success= t("New")
+    p.form-text.small.text-black.text-themed-50= t("Our IMAP Storage service is already encrypted using ChaCha20-Poly1305 encryption.  However if you'd like double the level of encryption, then if you have IMAP Storage enabled and if you also check this, then all future email stored will also be encrypted with the public key below.")
+  label(for="textarea-public-key")
+    = t('End-to-end Encryption ("E2EE")')
+    = " "
+    span.text-muted= t("(optional)")
+    = " "
+    span.badge.badge-success= t("New")
+  p.form-text.small.text-black.text-themed-50
+    != t('Please enter your optional OpenPGP public key below in ASCII Armor format. This feature enables you to use end-to-end encryption ("E2EE") with <a href="%s" target="_blank">supported email clients</a> and recipients.', l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"))
+    = " "
+    != t('<strong class="text-decoration-underline">This assumes you have already <a href="%s" target="_blank">followed our instructions</a></strong> and <a href="https://keys.openpgp.org/upload" target="_blank">uploaded your public key to the keys.openpgp.org server</a> (or are self-hosting).', l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"))
+  ul.list-inline.mb-3
+    li.list-inline-item
+      a.btn.btn-success.btn-sm(
+        href=l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"),
+        target="_blank"
+      )= t("Learn more")
+    li.list-inline-item
+      a.btn.btn-primary.btn-sm(
+        href="/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt",
+        target="_blank"
+      )= t("View Example")
+  .form-group
+    textarea#textarea-public-key.form-control(name="public_key", rows=3)= alias && alias.public_key ? alias.public_key : ""

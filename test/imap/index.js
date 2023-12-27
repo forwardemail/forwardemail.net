@@ -28,6 +28,7 @@ const getStream = require('get-stream');
 const ip = require('ip');
 // const isCI = require('is-ci');
 const ms = require('ms');
+const openpgp = require('openpgp');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
@@ -223,6 +224,308 @@ test('prevents domain-wide passwords', async (t) => {
   t.true(err.authenticationFailed);
   t.regex(err.response, /Alias does not exist/);
 });
+
+test('onAppend with private PGP', async (t) => {
+  // creates unique user/domain/alias
+  // (otherwise would interfere with other tests)
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver: t.context.imap.resolver,
+    has_smtp: true
+  });
+
+  const alias = await factory.create('alias', {
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const pass = await alias.createToken();
+  await alias.save();
+
+  const { publicKey } = await openpgp.generateKey({
+    type: 'ecc', // Type of the key, defaults to ECC
+    curve: 'curve25519', // ECC curve name, defaults to curve25519
+    userIDs: [{ name: '', email: `${alias.name}@${domain.name}` }], // you can pass multiple user IDs
+    passphrase: 'super long and hard to guess secret', // protects the private key
+    format: 'armored' // output key format, defaults to 'armored' (other options: 'binary' or 'object')
+  });
+
+  alias.has_pgp = true;
+  alias.public_key = publicKey;
+  await alias.save();
+
+  const session = {
+    user: {
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      password: encrypt(pass),
+      storage_location: alias.storage_location
+    }
+  };
+
+  await getDatabase(t.context.imap, alias, session);
+
+  // spoof dns records
+  const map = new Map();
+  map.set(
+    `txt:${domain.name}`,
+    t.context.imap.resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await t.context.imap.resolver.options.cache.mset(map);
+
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  await imapFlow.connect();
+
+  //
+  // `mailboxCreate(path)` whereas `path` is parsed by `normalizePath` function
+  // <https://github.com/postalsys/imapflow/blob/d48d0d84e169d0c4315e32d1d565c08f382cace7/lib/tools.js#L36-L52>
+  //
+  await imapFlow.mailboxCreate('append-with-private-pgp');
+
+  let mailbox = await Mailboxes.findOne(t.context.imap, session, {
+    path: 'append-with-private-pgp'
+  });
+
+  if (!mailbox) throw new Error('Mailbox does not exist');
+
+  const raw = `
+Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
+MIME-Version: 1.0
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: test
+
+This is a multi-part message in MIME format.
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+test
+
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; name="example.txt"
+Content-Disposition: attachment; filename="example.txt"
+Content-Transfer-Encoding: base64
+
+ZXhhbXBsZQo=
+
+--------------cWFvDSey27tFG0hVYLqp9hs9--`.trim();
+
+  const append = await imapFlow.append(
+    'append-with-private-pgp',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+
+  // <https://github.com/postalsys/imapflow/issues/146#issuecomment-1747958257>
+  t.is(append.destination, 'append-with-private-pgp');
+  t.is(append.uid, 1);
+  t.is(append.uidValidity, BigInt(mailbox.uidValidity));
+
+  mailbox = await Mailboxes.findById(t.context.imap, session, mailbox._id);
+
+  t.is(mailbox.uidNext, 2);
+
+  // ensure PGP encrypted message was stored
+  const msg = await Messages.findOne(t.context.imap, session, {
+    mailbox: mailbox._id,
+    uid: append.uid
+  });
+  t.is(
+    msg.mimeTree.body.toString().trim(),
+    'This is an OpenPGP/MIME encrypted message'
+  );
+});
+
+/*
+test('onAppend with public PGP', async (t) => {
+  // creates unique user/domain/alias
+  // (otherwise would interfere with other tests)
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  const domain = await factory.create('domain', {
+    // NOTE: this is a known email with openpgp
+    name: 'forwardemail.net',
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver: t.context.imap.resolver,
+    has_smtp: true
+  });
+
+  const alias = await factory.create('alias', {
+    // NOTE: this is a known email with openpgp
+    name: 'support',
+    user: user._id,
+    domain: domain._id,
+    recipients: [user.email]
+  });
+
+  const pass = await alias.createToken();
+  await alias.save();
+
+  const session = {
+    user: {
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      password: encrypt(pass),
+      storage_location: alias.storage_location
+    }
+  };
+
+  await getDatabase(t.context.imap, alias, session);
+
+  // spoof dns records
+  const map = new Map();
+  map.set(
+    `txt:${domain.name}`,
+    t.context.imap.resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await t.context.imap.resolver.options.cache.mset(map);
+
+  const imapFlow = new ImapFlow({
+    host: IP_ADDRESS,
+    port: t.context.port,
+    secure: t.context.secure,
+    logger,
+    tls,
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  await imapFlow.connect();
+
+  //
+  // `mailboxCreate(path)` whereas `path` is parsed by `normalizePath` function
+  // <https://github.com/postalsys/imapflow/blob/d48d0d84e169d0c4315e32d1d565c08f382cace7/lib/tools.js#L36-L52>
+  //
+  await imapFlow.mailboxCreate('append-with-public-pgp');
+
+  let mailbox = await Mailboxes.findOne(t.context.imap, session, {
+    path: 'append-with-public-pgp'
+  });
+
+  if (!mailbox) throw new Error('Mailbox does not exist');
+
+  const raw = `
+Content-Type: multipart/mixed; boundary="------------cWFvDSey27tFG0hVYLqp9hs9"
+MIME-Version: 1.0
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: test
+
+This is a multi-part message in MIME format.
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+test
+
+--------------cWFvDSey27tFG0hVYLqp9hs9
+Content-Type: text/plain; charset=UTF-8; name="example.txt"
+Content-Disposition: attachment; filename="example.txt"
+Content-Transfer-Encoding: base64
+
+ZXhhbXBsZQo=
+
+--------------cWFvDSey27tFG0hVYLqp9hs9--`.trim();
+
+  const append = await imapFlow.append(
+    'append-with-public-pgp',
+    Buffer.from(raw),
+    ['\\Seen'],
+    new Date()
+  );
+
+  // <https://github.com/postalsys/imapflow/issues/146#issuecomment-1747958257>
+  t.is(append.destination, 'append-with-public-pgp');
+  t.is(append.uid, 1);
+  t.is(append.uidValidity, BigInt(mailbox.uidValidity));
+
+  mailbox = await Mailboxes.findById(t.context.imap, session, mailbox._id);
+
+  t.is(mailbox.uidNext, 2);
+
+  // ensure PGP encrypted message was stored
+  const msg = await Messages.findOne(t.context.imap, session, {
+    mailbox: mailbox._id,
+    uid: append.uid
+  });
+  t.is(
+    msg.mimeTree.body.toString().trim(),
+    'This is an OpenPGP/MIME encrypted message'
+  );
+});
+*/
 
 test('onAppend', async (t) => {
   const { imapFlow, alias, domain } = t.context;

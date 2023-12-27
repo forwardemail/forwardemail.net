@@ -6575,5 +6575,115 @@
   "You received 1 year of free credit!": "لقد حصلت على رصيد مجاني لمدة عام!",
   "Quantum Safe Encryption": "التشفير الآمن الكمي",
   "If you're not aware, we now support <a href=\"%s\">SMTP</a>, <a href=\"%s\">IMAP</a>, and <a href=\"%s\">POP3</a> &ndash; and we are also the world's first email service to use <a href=\"%s\">quantum safe and encrypted SQLite databases</a> for mailboxes.": "إذا لم تكن على علم، فنحن ندعم الآن <a href=\"%s\">SMTP</a> و <a href=\"%s\">IMAP</a> و <a href=\"%s\">POP3</a> - كما أننا أول خدمة بريد إلكتروني في العالم تستخدم <a href=\"%s\">قواعد بيانات SQLite الآمنة والمشفرة</a> لصناديق البريد.",
-  "you received 1 year of free credit!": "لقد حصلت على رصيد مجاني لمدة عام!"
+  "you received 1 year of free credit!": "لقد حصلت على رصيد مجاني لمدة عام!",
+  "GPG Key": "مفتاح جي بي جي",
+  "We support OpenPGP and end-to-end encryption": "نحن ندعم OpenPGP والتشفير الشامل",
+  "OpenPGP for IMAP Storage": "OpenPGP لتخزين IMAP",
+  "Our IMAP Storage service is already encrypted using ChaCha20-Poly1305 encryption.  However if you'd like double the level of encryption, then if you have IMAP Storage enabled and if you also check this, then all future email stored will also be encrypted with the public key below.": "خدمة تخزين IMAP الخاصة بنا مشفرة بالفعل باستخدام تشفير ChaCha20-Poly1305. ومع ذلك، إذا كنت تريد مضاعفة مستوى التشفير، فإذا قمت بتمكين تخزين IMAP وإذا حددت ذلك أيضًا، فسيتم أيضًا تشفير جميع رسائل البريد الإلكتروني المخزنة في المستقبل باستخدام المفتاح العام أدناه.",
+  "End-to-end Encryption (\"E2EE\")": "التشفير الشامل (\"E2EE\")",
+  "Please enter your optional OpenPGP public key below in ASCII Armor format. This feature enables you to use end-to-end encryption (\"E2EE\") with <a href=\"%s\" target=\"_blank\">supported email clients</a> and recipients.": "يرجى إدخال مفتاح OpenPGP العام الاختياري أدناه بتنسيق ASCII Armor. تمكنك هذه الميزة من استخدام التشفير الشامل (&quot;E2EE&quot;) مع <a href=\"%s\" target=\"_blank\">عملاء ومستلمي البريد الإلكتروني المدعومين</a> .",
+  "<strong class=\"text-decoration-underline\">This assumes you have already <a href=\"%s\" target=\"_blank\">followed our instructions</a></strong> and <a href=\"https://keys.openpgp.org/upload\" target=\"_blank\">uploaded your public key to the keys.openpgp.org server</a> (or are self-hosting).": "<strong class=\"text-decoration-underline\">يفترض هذا أنك <a href=\"%s\" target=\"_blank\">اتبعت تعليماتنا</a> بالفعل</strong> وقمت <a href=\"https://keys.openpgp.org/upload\" target=\"_blank\">بتحميل مفتاحك العام إلى خادم keys.openpgp.org</a> (أو أنك تستضيف نفسك ذاتيًا).",
+  "View Example": "عرض المثال",
+  "monitoring, and": "رصد و",
+  "Do you support OpenPGP/MIME, end-to-end encryption (\"E2EE\"), and Web Key Directory (\"WKD\")": "هل تدعم OpenPGP/MIME، والتشفير الشامل (\"E2EE\")، ودليل مفاتيح الويب (\"WKD\")؟",
+  "Yes, we support": "نعم نحن نؤيد",
+  "OpenPGP": "OpenPGP",
+  "end-to-end encryption (\"E2EE\")": "التشفير الشامل (\"E2EE\")",
+  ", and the discovery of public keys using": "واكتشاف المفاتيح العامة باستخدام",
+  "Web Key Directory (\"WKD\")": "دليل مفاتيح الويب (\"WKD\")",
+  ".  You can configure OpenPGP using": ". يمكنك تكوين OpenPGP باستخدام",
+  "keys.openpgp.org": "keys.openpgp.org",
+  "self-host your own keys": "استضافة المفاتيح الخاصة بك ذاتيًا",
+  "You must follow all of the following steps in order to enable OpenPGP for your custom domain name.": "يجب عليك اتباع جميع الخطوات التالية لتمكين OpenPGP لاسم المجال المخصص الخاص بك.",
+  "Download and install your email client's recommended plugin below:": "قم بتنزيل وتثبيت البرنامج الإضافي الموصى به لعميل البريد الإلكتروني الخاص بك أدناه:",
+  "Email Client": "عميل البريد الإلكتروني",
+  "Platform": "منصة",
+  "Recommended Plugin": "البرنامج المساعد الموصى به",
+  "Notes": "ملحوظات",
+  "Configure OpenPGP in Thunderbird": "قم بتكوين OpenPGP في Thunderbird",
+  "Thunderbird has built-in support for OpenPGP.": "لدى Thunderbird دعم مدمج لـ OpenPGP.",
+  "Browser": "المتصفح",
+  "Mailvelope": "ظرف بريد",
+  "FlowCrypt": "فلوكريبت",
+  "(proprietary license)": "(رخصة الملكية)",
+  "Gmail does not support OpenPGP, however you can download the open-source plugin": "لا يدعم Gmail OpenPGP، ومع ذلك يمكنك تنزيل المكون الإضافي مفتوح المصدر",
+  "macOS": "ماك",
+  "Free-GPGMail": "Free-GPGMail",
+  "Apple Mail does not support OpenPGP, however you can download the open-source plugin": "لا يدعم Apple Mail برنامج OpenPGP، ومع ذلك يمكنك تنزيل البرنامج الإضافي مفتوح المصدر",
+  "iOS": "دائرة الرقابة الداخلية",
+  "PGPro": "PGPro",
+  "Windows": "شبابيك",
+  "gpg4win": "com.gpg4win",
+  "Outlook's desktop mail client does not support OpenPGP, however you can download the open-source plugin": "لا يدعم عميل بريد سطح المكتب الخاص بـ Outlook OpenPGP، ومع ذلك يمكنك تنزيل البرنامج الإضافي مفتوح المصدر",
+  "Outlook's web-based mail client does not support OpenPGP, however you can download the open-source plugin": "لا يدعم برنامج البريد الإلكتروني الخاص بـ Outlook برنامج OpenPGP، ومع ذلك يمكنك تنزيل البرنامج الإضافي مفتوح المصدر",
+  "Mobile": "متحرك",
+  "OpenKeychain": "OpenKeychain",
+  "Android mail clients": "عملاء بريد أندرويد",
+  "such as": "مثل",
+  "FairEmail": "بريد الكتروني عادل",
+  "both support the open-source plugin": "كلاهما يدعم البرنامج المساعد مفتوح المصدر",
+  ". You could alternatively use the open-source (proprietary licensing) plugin": ". يمكنك بدلاً من ذلك استخدام البرنامج الإضافي مفتوح المصدر (ترخيص الملكية).",
+  "Google Chrome": "جوجل كروم",
+  "You can download the open-source browser extension": "يمكنك تنزيل ملحق المتصفح مفتوح المصدر",
+  "Mozilla Firefox": "موزيلا فايرفوكس",
+  "Microsoft Edge": "مايكروسوفت ايدج",
+  "Brave": "شجاع",
+  "Balsa": "البلسا",
+  "Configure OpenPGP in Balsa": "قم بتكوين OpenPGP في Balsa",
+  "Balsa has built-in support for OpenPGP.": "لدى Balsa دعم مدمج لـ OpenPGP.",
+  "KMail": "كميل",
+  "Configure OpenPGP in KMail": "تكوين OpenPGP في KMail",
+  "KMail has built-in support for OpenPGP.": "يحتوي KMail على دعم مدمج لـ OpenPGP.",
+  "GNOME Evolution": "تطور جنوم",
+  "Configure OpenPGP in Evolution": "قم بتكوين OpenPGP في Evolution",
+  "GNOME Evolution has built-in support for OpenPGP.": "يحتوي GNOME Evolution على دعم مدمج لـ OpenPGP.",
+  "Configure gpg in Terminal": "تكوين gpg في المحطة الطرفية",
+  "You can use the open-source": "يمكنك استخدام المصدر المفتوح",
+  "gpg command line tool": "أداة سطر الأوامر gpg",
+  "to generate a new key from command line.": "لإنشاء مفتاح جديد من سطر الأوامر.",
+  "Open the plugin, create your public key, and configure your email client to use it.": "افتح البرنامج الإضافي، وأنشئ مفتاحك العام، ثم قم بتكوين عميل البريد الإلكتروني الخاص بك لاستخدامه.",
+  "Upload your public key": "قم بتحميل مفتاحك العام",
+  ". If your email client supports publishing (e.g. Thunderbird), then you can simply click your email clients OpenPGP \"Publish\" button.": ". إذا كان برنامج البريد الإلكتروني الخاص بك يدعم النشر (مثل Thunderbird)، فيمكنك ببساطة النقر فوق الزر \"نشر\" الخاص بعملاء البريد الإلكتروني OpenPGP.",
+  "You can visit": "يمكنك زيارة",
+  "https://keys.openpgp.org/manage": "https://keys.openpgp.org/manage",
+  "to manage your key in the future.": "لإدارة مفتاحك في المستقبل.",
+  "encrypted storage (IMAP/POP3)": "التخزين المشفر (IMAP/POP3)",
+  "service and want": "الخدمة والرغبة",
+  "all": "الجميع",
+  "email stored in your (already encrypted) SQLite database to be encrypted with your public key, then go to": "البريد الإلكتروني المخزن في قاعدة بيانات SQLite (المشفرة بالفعل) ليتم تشفيره باستخدام مفتاحك العام، ثم انتقل إلى",
+  "OpenPGP and upload your public key.": "افتح PGP وقم بتحميل مفتاحك العام.",
+  "Add a new": "أضف جديدا",
+  "record to your domain name (e.g.": "سجل لاسم النطاق الخاص بك (على سبيل المثال.",
+  "We created an open-source software project 🍊": "لقد أنشأنا مشروع برمجي مفتوح المصدر 🍊",
+  "Require recipients to click an email verification link for emails to flow through (defaults to the domain's setting if not explicitly set in the request body)": "مطالبة المستلمين بالنقر فوق رابط التحقق من البريد الإلكتروني حتى تتدفق رسائل البريد الإلكتروني من خلاله (الإعدادات الافتراضية لإعدادات المجال إذا لم يتم تعيينها بشكل صريح في نص الطلب)",
+  "Whether to enable or disable this alias (if disabled, emails will be routed nowhere but return successful status codes). If a value is passed, it is converted to a boolean using": "ما إذا كان سيتم تمكين هذا الاسم المستعار أو تعطيله (إذا تم تعطيله، فلن يتم توجيه رسائل البريد الإلكتروني إلى أي مكان ولكن سيتم إرجاع رموز الحالة الناجحة). إذا تم تمرير قيمة، فسيتم تحويلها إلى استخدام منطقي",
+  "Whether to enable or disable IMAP storage for this alias (if disabled, then inbound emails received will not get stored to": "ما إذا كان سيتم تمكين أو تعطيل تخزين IMAP لهذا الاسم المستعار (إذا تم تعطيله، فلن يتم تخزين رسائل البريد الإلكتروني الواردة المستلمة في",
+  "Whether to enable or disable": "سواء لتمكين أو تعطيل",
+  "OpenPGP encryption": "تشفير OpenPGP",
+  "IMAP/POP3 encrypted email storage": "تخزين البريد الإلكتروني المشفر عبر IMAP/POP3",
+  "using the alias'": "باستخدام الاسم المستعار",
+  "OpenPGP public key in ASCII Armor format (": "المفتاح العام OpenPGP بتنسيق ASCII Armor (",
+  "click here to view an example": "انقر هنا لعرض مثال",
+  "; e.g. GPG key for": "; على سبيل المثال مفتاح GPG ل",
+  "). This only applies if you have": "). وهذا ينطبق فقط إذا كان لديك",
+  "set to": "ضبط ل",
+  "Learn more about end-to-end encryption in our FAQ": "تعرف على المزيد حول التشفير الشامل في الأسئلة الشائعة",
+  "Whether to enable or disable this alias (if disabled, emails will be routed nowhere but return successful status codes)": "ما إذا كان سيتم تمكين هذا الاسم المستعار أو تعطيله (إذا تم تعطيله، فلن يتم توجيه رسائل البريد الإلكتروني إلى أي مكان ولكن سيتم إرجاع رموز الحالة الناجحة)",
+  "(refer to": "(تشير إلى",
+  "this gist for WKD server setup": "هذا جوهر إعداد خادم WKD",
+  "Automatic Encryption:": "التشفير التلقائي:",
+  "outbound SMTP service": "خدمة SMTP الصادرة",
+  "and sending unencrypted messages, then we will automatically attempt to encrypt messages on a per-recipient basis using": "وإرسال رسائل غير مشفرة، فسنحاول تلقائيًا تشفير الرسائل على أساس كل مستلم باستخدام",
+  "Upload your public key at": "قم بتحميل مفتاحك العام على",
+  "https://keys.openpgp.org/upload": "https://keys.openpgp.org/upload",
+  "If you are using one of our": "إذا كنت تستخدم واحدة من لدينا",
+  "vanity/disposable domains": "المجالات الغرور / القابل للتصرف",
+  "(e.g. `hideaddress.net`), then rest assured we have already configured this DNS record for you.": "(على سبيل المثال، \"hideaddress.net\")، فتأكد من أننا قمنا بالفعل بتكوين سجل DNS هذا لك.",
+  "An error occurred with OpenPGP encryption": "حدث خطأ في تشفير OpenPGP",
+  "Failed to process public key.": "فشلت معالجة المفتاح العام.",
+  "Failed to verify public key.": "فشل في التحقق من المفتاح العام.",
+  "If your alias is using our": "إذا كان الاسم المستعار الخاص بك يستخدم لدينا",
+  "(e.g.": "(على سبيل المثال",
+  "), then you don't need to take action; we already configured this DNS record.": ")، فلن تحتاج إلى اتخاذ أي إجراء؛ لقد قمنا بالفعل بتكوين سجل DNS هذا.",
+  "), then you can skip this step.": "), then you can skip this step."
 }

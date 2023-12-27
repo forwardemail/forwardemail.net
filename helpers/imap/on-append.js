@@ -16,10 +16,16 @@
 const { Buffer } = require('node:buffer');
 
 const bytes = require('bytes');
+const dayjs = require('dayjs-with-plugins');
+const mongoose = require('mongoose');
 const ms = require('ms');
+const parseErr = require('parse-err');
 const splitLines = require('split-lines');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
+
+const email = require('../email');
+const isCodeBug = require('../is-code-bug');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
@@ -27,6 +33,7 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const config = require('#config');
+const encryptMessage = require('#helpers/encrypt-message');
 const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -121,6 +128,241 @@ async function onAppend(path, flags, date, raw, session, fn) {
       throw new IMAPError(i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', 'en'), {
         imapResponse: 'TRYCREATE'
       });
+
+    // encrypt message if it is not a Draft and user has a public key
+    if (!flags.includes('\\Draft')) {
+      // TODO: we should move this into `session` object and use websocket to refresh
+      const alias = await Aliases.findOne({
+        _id: new mongoose.Types.ObjectId(session.user.alias_id),
+        domain: new mongoose.Types.ObjectId(session.user.domain_id)
+      })
+        .populate(
+          'user',
+          `email ${config.userFields.fullEmail} ${config.lastLocaleField}`
+        )
+        .select('user has_pgp public_key')
+        .lean()
+        .exec();
+
+      if (!alias || !alias.user)
+        throw new IMAPError(i18n.translate('ALIAS_DOES_NOT_EXIST', 'en'));
+
+      //
+      // NOTE: encryptMessage won't encrypt message if it already is
+      //
+      if (alias.has_pgp && alias.public_key) {
+        try {
+          raw = await encryptMessage(alias.public_key, raw);
+          // unset pgp_error_sent_at if it was a date and more than 1h ago
+          Aliases.findOneAndUpdate(
+            {
+              _id: new mongoose.Types.ObjectId(session.user.alias_id),
+              domain: new mongoose.Types.ObjectId(session.user.domain_id),
+              pgp_error_sent_at: {
+                $exists: true,
+                $lte: dayjs().subtract(1, 'hour').toDate()
+              }
+            },
+            {
+              $unset: {
+                pgp_error_sent_at: 1
+              }
+            }
+          )
+            .then()
+            .catch((err) =>
+              this.logger.fatal(err, { path, flags, date, session })
+            );
+        } catch (err) {
+          this.logger.fatal(err, { path, flags, date, session });
+          if (!isCodeBug(err)) {
+            // email alias user (only once a day as a reminder) if it was not a code bug
+            const now = new Date();
+            Aliases.findOneAndUpdate(
+              {
+                $and: [
+                  {
+                    _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                    domain: new mongoose.Types.ObjectId(session.user.domain_id)
+                  },
+                  {
+                    $or: [
+                      {
+                        pgp_error_sent_at: {
+                          $exists: false
+                        }
+                      },
+                      {
+                        pgp_error_sent_at: {
+                          $lte: dayjs().subtract(1, 'day').toDate()
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                $set: {
+                  pgp_error_sent_at: now
+                }
+              }
+            )
+              .then((alias) => {
+                if (!alias) return;
+                // send email here and if error occurred then unset
+                email({
+                  template: 'alert',
+                  message: {
+                    to: alias.user[config.userFields.fullEmail],
+                    cc: config.email.message.from,
+                    subject: i18n.translate(
+                      'PGP_ENCRYPTION_ERROR',
+                      alias.user[config.lastLocaleField]
+                    )
+                  },
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`,
+                    locale: alias.user[config.lastLocaleField]
+                  }
+                })
+                  .then(() => {
+                    Aliases.findOneAndUpdate(alias._id, {
+                      $set: {
+                        pgp_error_sent_at: new Date()
+                      }
+                    })
+                      .then()
+                      .catch((err) =>
+                        this.logger.fatal(err, { path, flags, date, session })
+                      );
+                  })
+                  .catch((err) => {
+                    this.logger.fatal(err, { path, flags, date, session });
+                    Aliases.findOneAndUpdate(
+                      {
+                        _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                        domain: new mongoose.Types.ObjectId(
+                          session.user.domain_id
+                        ),
+                        pgp_error_sent_at: now
+                      },
+                      {
+                        $unset: {
+                          pgp_error_sent_at: 1
+                        }
+                      }
+                    ).catch((err) =>
+                      this.logger.fatal(err, { path, flags, date, session })
+                    );
+                  });
+              })
+              .catch((err) =>
+                this.logger.fatal(err, { path, flags, date, session })
+              );
+          }
+        }
+      } else {
+        /*
+        try {
+          //
+          // TODO: if we ever uncomment this then merge in custom _fetch logic
+          //       from `helpers/process-email.js` which leverages tangerine
+          //
+          const wkd = new WKD();
+          //
+          // NOTE: this uses `fetch` which is OK because
+          //       as of Node v18 it uses Undici fetch under the hood
+          //
+          // TODO: however it does not use our Tangerine DNS caching
+          //
+          // TODO: rate limiting is imposed
+          //
+          const binaryKey = await wkd.lookup({
+            email: session.user.username
+          });
+          const publicKey = await readKey({
+            binaryKey
+          });
+          if (publicKey) {
+            try {
+              raw = await encryptMessage(publicKey, raw, false);
+              // unset pgp_error_sent_at if it was a date
+              // and it was more than 3 days ago (otherwise duplicate emails might occur)
+              if (
+                _.isDate(alias.pgp_error_sent_at) &&
+                new Date(alias.pgp_error_sent_at).getTime() >=
+                  dayjs().subtract(3, 'days').toDate().getTime()
+              )
+                Aliases.findByIdAndUpdate(alias._id, {
+                  $unset: {
+                    pgp_error_sent_at: 1
+                  }
+                })
+                  .then()
+                  .catch((err) =>
+                    this.logger.fatal(err, { path, flags, date, session })
+                  );
+            } catch (err) {
+              this.logger.fatal(err, { path, flags, date, session });
+              // email alias user (only once a day as a reminder) if it was not a code bug
+              if (
+                !isCodeBug(err) &&
+                (!_.isDate(alias.pgp_error_sent_at) ||
+                  new Date(alias.pgp_error_sent_at).getTime() <
+                    dayjs().subtract(1, 'day').toDate().getTime())
+              ) {
+                email({
+                  template: 'alert',
+                  message: {
+                    to: alias.user[config.userFields.fullEmail],
+                    cc: config.email.message.from,
+                    subject: i18n.translate(
+                      'PGP_ENCRYPTION_ERROR',
+                      alias.user[config.lastLocaleField]
+                    )
+                  },
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`,
+                    locale: alias.user[config.lastLocaleField]
+                  }
+                })
+                  .then(() => {
+                    Aliases.findByIdAndUpdate(alias._id, {
+                      $set: {
+                        pgp_error_sent_at: new Date()
+                      }
+                    })
+                      .then()
+                      .catch((err) =>
+                        this.logger.fatal(err, { path, flags, date, session })
+                      );
+                  })
+                  .catch((err) =>
+                    this.logger.fatal(err, { path, flags, date, session })
+                  );
+              }
+            }
+          }
+        } catch (err) {
+          // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
+          if (
+            !err.message.includes('NotFound') &&
+            !err.message.includes('Gone')
+          )
+            err.isCodeBug = true;
+          this.logger.warn(err, { path, flags, date, session });
+        }
+        */
+      }
+    }
 
     const {
       id,
@@ -276,8 +518,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     if (maildata.attachments && maildata.attachments.length > 0)
       data.attachments = maildata.attachments;
-
-    // TODO: encrypt message if it is not a Draft and user has a public key
 
     //
     // TODO: explore modseq usage (for journal sorting by modseq uids in ascending order)

@@ -28,6 +28,7 @@ const Users = require('./users');
 
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
+const getKeyInfo = require('#helpers/get-key-info');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 
@@ -69,6 +70,20 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // pgp encryption support
+  has_pgp: {
+    type: Boolean,
+    default: false
+  },
+  public_key: {
+    type: String,
+    trim: true
+  },
+  pgp_error_sent_at: {
+    type: Date,
+    index: true
+  },
+
   has_imap: {
     type: Boolean,
     default: false,
@@ -214,6 +229,18 @@ const Aliases = new mongoose.Schema({
 Aliases.index({ user: 1, domain: 1 });
 
 Aliases.plugin(captainHook);
+
+// validate PGP key if any
+Aliases.pre('save', async function (next) {
+  if (!this.public_key) return next();
+
+  try {
+    await getKeyInfo(this.public_key, this.locale);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // eslint-disable-next-line complexity
 Aliases.pre('validate', function (next) {

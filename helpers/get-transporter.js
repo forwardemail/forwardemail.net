@@ -125,7 +125,7 @@ async function getTransporter(options = {}, err) {
         resolve: callbackify(resolver.resolve.bind(resolver))
       },
       mtaSts: {
-        enabled: true,
+        enabled: config.env !== 'test',
         logger(results) {
           logger[results.success ? 'info' : 'error']('MTA-STS', {
             results

@@ -309,7 +309,7 @@ const Domains = new mongoose.Schema({
   dkim_public_key: mongoose.Schema.Types.Buffer,
   return_path: {
     type: String,
-    default: 'fe-bounces'
+    default: config.returnPath
   },
   has_mx_record: {
     type: Boolean,

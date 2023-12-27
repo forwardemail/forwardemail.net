@@ -124,6 +124,7 @@ const imapConfigurations = [
 
 const config = {
   ...metaConfig,
+  returnPath: 'fe-bounces',
   imapConfigurations,
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',

@@ -74,6 +74,10 @@ function getBounceInfo(err) {
       ' ; Resolve this issue by visiting https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/configure-proofpoint-with-exchange#specify-a-limit-for-the-number-of-messages-per-connection ;';
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
+  } else if (
+    response.includes('Your IP subnet has been temporarily deferred')
+  ) {
+    bounceInfo.category = 'blocklist';
   } else if (response.includes('unsolicited mail')) {
     // 421-4.7.28 Gmail has detected an unusual rate of unsolicited mail originating
     // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]

@@ -8,6 +8,7 @@ const path = require('node:path');
 const process = require('node:process');
 
 const Boom = require('@hapi/boom');
+const delay = require('delay');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -286,8 +287,21 @@ module.exports = (redis) => ({
     });
   },
   hookBeforeRoutes(app) {
+    // redirect return-path CNAME to main domain
+    // (e.g. fe-bounces.forwardemail.net > forwardemail.net)
+    app.use((ctx, next) => {
+      // if (config.env === 'test' || ctx.hostname === config.webHost)
+      if (ctx.hostname !== `${config.returnPath}.${config.webHost}`)
+        return next();
+      // redirect
+      ctx.status = 301;
+      let port;
+      if (ctx.host.split(':').length === 2) port = ':' + ctx.host.split(':')[1];
+      ctx.redirect(`${ctx.protocol}://${config.webHost}${port}${ctx.url}`);
+    });
+
     // if user has OTP remember me then set on session
-    app.use(async (ctx, next) => {
+    app.use((ctx, next) => {
       if (
         ctx.session &&
         ctx.isAuthenticated() &&
@@ -331,7 +345,10 @@ module.exports = (redis) => ({
         // get TTI stats for footer (v1 rudimentary approach)
         ctx.state.tti = false;
         try {
-          const tti = await ctx.client.get('tti');
+          const tti = await Promise.race([
+            ctx.client.get('tti'),
+            delay(ms('3s'))
+          ]);
           if (tti) {
             ctx.state.tti = JSON.parse(tti);
             ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);

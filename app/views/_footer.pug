@@ -267,26 +267,29 @@ footer.mt-auto
                 a.d-block.text-white.py-2.py-md-0(
                   href="https://github.com/forwardemail",
                   target="_blank",
-                  rel="noopener noreferrer",
-                  data-toggle="tooltip",
-                  data-title=t("100% open-source software"),
-                  data-placement="bottom"
+                  rel="noopener noreferrer"
                 )
-                  = "GitHub"
-                  = " "
                   i.fa.fa-fw.fa-github
+                  = " "
+                  = "GitHub"
               li
                 a.d-block.text-white.py-2.py-md-0(
                   href="https://youtube.com/forwardemail",
                   target="_blank",
-                  rel="noopener noreferrer",
-                  data-toggle="tooltip",
-                  data-title=t("Watch our YouTube channel"),
-                  data-placement="bottom"
+                  rel="noopener noreferrer"
                 )
-                  = "YouTube"
-                  = " "
                   i.fab.fa-fw.fa-youtube.text-danger
+                  = " "
+                  = "YouTube"
+              li
+                a.d-block.text-white.py-2.py-md-0(
+                  href="https://matrix.to/#/#forwardemail:matrix.org",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa-fw.fa.fa-comments
+                  = " "
+                  = "Matrix"
             hr.d-lg-none.w-100
             h2.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3
@@ -326,14 +329,35 @@ footer.mt-auto
                   else
                     span.badge.badge-pill.badge-success.text-monospace= t("100%")
               if !isBot(ctx.get('User-Agent'))
-                li.small: a.d-block.text-white.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-2(
-                  href=`mailto:${config.supportEmail}`,
-                  target="_blank",
-                  rel="noopener noreferrer",
-                  data-toggle="tooltip",
-                  data-title=t("Send us an email"),
-                  data-placement="bottom"
-                )= config.supportEmail
+                li.small
+                  a.d-block.text-white.font-weight-bold.py-2.py-md-0.text-monospace.small.mt-3(
+                    href=`mailto:${config.supportEmail}`,
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    data-toggle="tooltip",
+                    data-title=t("Send us an email"),
+                    data-placement="bottom"
+                  )= config.supportEmail
+                li
+                  a.badge.badge-success.font-weight-bold.p-2.mt-3(
+                    href="/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc",
+                    target="_blank",
+                    data-toggle="tooltip",
+                    data-title=config.supportEmail
+                  )
+                    i.fa.fa-lock
+                    = " "
+                    = t("GPG Key")
+                  = " "
+                  a.badge.badge-dark.font-weight-bold.p-2.mt-3(
+                    href=ctx.pathWithoutLocale === "/faq" ? "#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"),
+                    data-toggle=ctx.pathWithoutLocale === "/faq" ? "collapse" : "tooltip",
+                    aria-controls=ctx.pathWithoutLocale === "/faq" ? "collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
+                    data-target=ctx.pathWithoutLocale === "/faq" ? "#collapse-do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd" : false,
+                    data-title=t("Learn more"),
+                    aria-label=t("We support OpenPGP and end-to-end encryption")
+                  )
+                    i.fa.fa-info-circle
         if isBot(ctx.get('User-Agent'))
           hr.d-lg-none.w-100
           .flex-wrap.flex-fill.d-flex.flex-column.ml-lg-3

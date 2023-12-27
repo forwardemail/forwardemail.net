@@ -1,0 +1,24 @@
+#modal-openpgp-example.modal.fade(
+  tabindex="-1",
+  role="dialog",
+  aria-labelledby="modal-openpgp-example-title",
+  aria-hidden="true",
+  data-backdrop="static"
+)
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header.text-center.d-block
+        h4#modal-openpgp-example-title.d-inline-block.ml-4= t("OpenPGP Example")
+        button.close(
+          type="button",
+          data-dismiss="modal",
+          data-toggle="modal",
+          data-target="#modal-alias",
+          aria-label="Close"
+        )
+          span(aria-hidden="true") &times;
+      .modal-body
+        .markdown-body
+          pre
+            code
+              include ../../../../assets/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc
