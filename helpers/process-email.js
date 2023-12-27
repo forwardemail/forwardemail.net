@@ -849,12 +849,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 !isRetryableError(err)
               )
                 err.isCodeBug = true;
-              logger.error(err, {
-                user: email.user,
-                email: email._id,
-                domains: [email.domain],
-                session: createSession(email)
-              });
+              if (err.isCodeBug)
+                logger.error(err, {
+                  user: email.user,
+                  email: email._id,
+                  domains: [email.domain],
+                  session: createSession(email)
+                });
             }
           }
 
