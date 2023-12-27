@@ -683,18 +683,19 @@ async function processEmail({ email, port = 25, resolver, client }) {
       addresses.push(...map.get(target));
     }
 
+    // TODO: this is temporary until we fix DKIM signatures
     // check if the message was encrypted already
-    let isEncrypted = false;
-    try {
-      isEncrypted = isMessageEncrypted(raw);
-    } catch (err) {
-      logger.fatal(err, {
-        user: email.user,
-        email: email._id,
-        domains: [email.domain],
-        session: createSession(email)
-      });
-    }
+    let isEncrypted = true; // false;
+    // try {
+    //   isEncrypted = isMessageEncrypted(raw);
+    // } catch (err) {
+    //   logger.fatal(err, {
+    //     user: email.user,
+    //     email: email._id,
+    //     domains: [email.domain],
+    //     session: createSession(email)
+    //   });
+    // }
 
     const results = await pMap(
       addresses,
