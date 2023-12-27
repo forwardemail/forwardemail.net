@@ -698,7 +698,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     const results = await pMap(
       addresses,
-      // eslint-disable-next-line complexity
       async (address) => {
         const to = [address];
         const target = address.split('@')[1];
@@ -842,6 +841,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 }
               }
             } catch (err) {
+              logger.debug(err, {
+                user: email.user,
+                email: email._id,
+                domains: [email.domain],
+                session: createSession(email)
+              });
+              /*
               // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
               if (
                 !err.message.includes('NotFound') &&
@@ -856,6 +862,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   domains: [email.domain],
                   session: createSession(email)
                 });
+              */
             }
           }
 
