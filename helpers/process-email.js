@@ -683,19 +683,18 @@ async function processEmail({ email, port = 25, resolver, client }) {
       addresses.push(...map.get(target));
     }
 
-    // TODO: this is temporary until we fix DKIM signatures
     // check if the message was encrypted already
-    let isEncrypted = true; // false;
-    // try {
-    //   isEncrypted = isMessageEncrypted(raw);
-    // } catch (err) {
-    //   logger.fatal(err, {
-    //     user: email.user,
-    //     email: email._id,
-    //     domains: [email.domain],
-    //     session: createSession(email)
-    //   });
-    // }
+    let isEncrypted = false;
+    try {
+      isEncrypted = isMessageEncrypted(raw);
+    } catch (err) {
+      logger.fatal(err, {
+        user: email.user,
+        email: email._id,
+        domains: [email.domain],
+        session: createSession(email)
+      });
+    }
 
     const results = await pMap(
       addresses,
@@ -784,6 +783,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           //       (e.g. when it arrives at the destination mail server, it is already encrypted)
           //
           let pgp = false;
+          // TODO: cache the responses below
           if (!isEncrypted) {
             try {
               //
@@ -797,11 +797,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
               wkd._fetch = (url) => {
                 return fetch(url, {
-                  signal: AbortSignal.timeout(ms('10s')),
+                  signal: AbortSignal.timeout(
+                    config.env === 'test' ? ms('2s') : ms('5s')
+                  ),
                   dispatcher: new Agent({
-                    headersTimeout: ms('10s'),
-                    connectTimeout: ms('10s'),
-                    bodyTimeout: ms('10s'),
+                    headersTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
+                    connectTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
+                    bodyTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
                     connect: {
                       lookup(hostname, options, fn) {
                         resolver
@@ -826,10 +828,42 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
               if (publicKey) {
                 try {
-                  options.raw = await encryptMessage(
+                  const encryptedUnsignedMessage = await encryptMessage(
                     publicKey,
-                    options.raw,
+                    unsigned,
                     false
+                  );
+                  const signResult = await dkimSign(encryptedUnsignedMessage, {
+                    canonicalization: 'relaxed/relaxed',
+                    algorithm: 'rsa-sha256',
+                    signTime: new Date(),
+                    signatureData: [
+                      {
+                        signingDomain: domain.name,
+                        selector: domain.dkim_key_selector,
+                        privateKey: decrypt(domain.dkim_private_key),
+                        algorithm: 'rsa-sha256',
+                        canonicalization: 'relaxed/relaxed'
+                      }
+                    ]
+                  });
+
+                  if (signResult.errors.length > 0) {
+                    const err = combineErrors(
+                      signResult.errors.map((error) => error.err)
+                    );
+                    // we may want to remove cyclical reference
+                    // for (const error of signResult.errors) {
+                    //   delete error.err;
+                    // }
+                    err.signResult = signResult;
+                    throw err;
+                  }
+
+                  const signatures = Buffer.from(signResult.signatures, 'utf8');
+                  options.raw = Buffer.concat(
+                    [signatures, encryptedUnsignedMessage],
+                    signatures.length + encryptedUnsignedMessage.length
                   );
                   pgp = true;
                 } catch (err) {
