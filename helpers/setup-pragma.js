@@ -11,6 +11,7 @@ const { mkdirp } = require('mkdirp');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
+const IMAPError = require('#helpers/imap-error');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 // dynamically import file-type
@@ -45,6 +46,15 @@ async function setupPragma(db, session, cipher = 'chacha20') {
       (err.code === 'SQLITE_NOTADB' || err.code === 'SQLITE_ERROR')
     )
       return setupPragma(db, session, 'aes256cbc');
+    // invalid password
+    if (err.code === 'SQLITE_NOTADB')
+      throw new IMAPError(
+        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
     throw err;
   }
 
