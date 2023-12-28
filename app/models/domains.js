@@ -1539,7 +1539,7 @@ async function getToAndMajorityLocaleByDomain(domain) {
     throw Boom.badRequest(
       i18n.translateError(
         'USER_UNVERIFIED',
-        locale,
+        'en',
         `${config.urls.web}${config.verifyRoute}`
       )
     );
