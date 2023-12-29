@@ -35,6 +35,7 @@ const sitemap = require('./sitemap');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const Users = require('#models/users');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
@@ -310,17 +311,18 @@ async function regenerateAliasPassword(ctx) {
       domain: domain._id
     })
       .select('+tokens.hash +tokens.salt')
-      .populate(
-        'user',
-        `${config.userFields.fullEmail} ${config.lastLocaleField}`
-      )
       .exec();
 
     // validate alias exists
     if (!alias || alias.name === '*' || alias.name.startsWith('/'))
       throw new Error('Alias does not exist');
 
-    if (!alias.user) throw new Error('User does not exist');
+    const user = await Users.findById(alias.user)
+      .select(`${config.userFields.fullEmail} ${config.lastLocaleField}`)
+      .lean()
+      .exec();
+
+    if (!user) throw new Error('User does not exist');
 
     if (!Array.isArray(alias.tokens) || alias.tokens.length === 0)
       throw new Error('Alias does not have any generated passwords');
@@ -366,9 +368,8 @@ async function regenerateAliasPassword(ctx) {
           storage_location: alias.storage_location,
           alias_has_pgp: alias.has_pgp,
           alias_public_key: alias.public_key,
-          locale:
-            alias.user[config.lastLocaleField] || i18n.config.defaultLocale,
-          owner_full_email: alias.user[config.userFields.fullEmail]
+          locale: user[config.lastLocaleField] || i18n.config.defaultLocale,
+          owner_full_email: user[config.userFields.fullEmail]
         }
       }
     });
