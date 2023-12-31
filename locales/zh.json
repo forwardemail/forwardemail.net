@@ -6427,5 +6427,7 @@
   "If you are confused as to how to import into Thunderbird, then you can refer to official instructions at": "如果您对如何导入 Thunderbird 感到困惑，那么您可以参考官方说明：",
   "https://kb.mozillazine.org/Importing_folders": "https://kb.mozillazine.org/Importing_folders",
   "https://github.com/thunderbird/import-export-tools-ng/wiki": "https://github.com/thunderbird/import-export-tools-ng/wiki",
-  "Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).": "完成导出和导入过程后，您可能还需要在现有电子邮件帐户上启用转发并设置自动回复以通知发件人您有新的电子邮件地址（例如，如果您以前使用过 Gmail，并且现在正在使用）现在使用带有您的自定义域名的电子邮件）。"
+  "Once you have completed the export and import process, then you may also want to enable forwarding on your existing email account and set up an auto-responder to notify senders that you have a new email address (e.g. if you were previously using Gmail and are now using an email with your custom domain name).": "完成导出和导入过程后，您可能还需要在现有电子邮件帐户上启用转发并设置自动回复以通知发件人您有新的电子邮件地址（例如，如果您以前使用过 Gmail，并且现在正在使用）现在使用带有您的自定义域名的电子邮件）。",
+  "Create a new local folder in Thunderbird, and then right click on it  → select the": "在 Thunderbird 中创建一个新的本地文件夹，然后右键单击它→选择",
+  "Drag/drop from the local folder to a new (or existing) IMAP folder in Thunderbird you wish to upload messages to in IMAP storage with our service.  This will ensure they are backed up online with our SQLite encrypted storage.": "从本地文件夹拖/放到 Thunderbird 中的新（或现有）IMAP 文件夹中，您希望使用我们的服务将邮件上传到 IMAP 存储中。这将确保它们通过我们的 SQLite 加密存储进行在线备份。"
 }
