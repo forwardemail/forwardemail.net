@@ -34,12 +34,13 @@ const graceful = new Graceful({
 graceful.listen();
 
 (async () => {
+  // koa:sess:*
   // allowlist:*
   // denylist:*
   // backscatter:*
   // silent:*
-  const [allowlist, denylist, backscatter, silent] = await pMap(
-    ['allowlist', 'denylist', 'backscatter', 'silent'],
+  const [koa, allowlist, denylist, backscatter, silent] = await pMap(
+    ['koa:sess', 'allowlist', 'denylist', 'backscatter', 'silent'],
     async (key) => {
       const keys = await oldRedis.keys(`${key}:*`);
       console.log('copying over', key, 'keys.length', keys.length);
@@ -56,6 +57,7 @@ graceful.listen();
     }
   );
 
+  console.log('koa', koa);
   console.log('allowlist', allowlist);
   console.log('denylist', denylist);
   console.log('backscatter', backscatter);
