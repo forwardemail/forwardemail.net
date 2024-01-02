@@ -13,7 +13,7 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
 
@@ -38,22 +38,20 @@ graceful.listen();
   // denylist:*
   // backscatter:*
   // silent:*
-  const [allowlist, denylist, backscatter, silent] = await pMapSeries(
+  const [allowlist, denylist, backscatter, silent] = await pMap(
     ['allowlist', 'denylist', 'backscatter', 'silent'],
     async (key) => {
       const keys = await oldRedis.keys(`${key}:*`);
-      const pipeline = newRedis.pipeline();
       console.log('copying over', key, 'keys.length', keys.length);
-      for (const key of keys) {
-        // eslint-disable-next-line no-await-in-loop
-        const results = await oldRedis.pipeline().get(key).pttl(key).exec();
-        const val = results[0][1];
-        const pttl = results[1][1];
-        pipeline.set(key, val);
-        if (pttl && pttl > 0) pipeline.pexpire(key, pttl);
+      const pipeline = newRedis.pipeline();
+      const values = await oldRedis.mget(keys);
+      for (const [i, key_] of keys.entries()) {
+        console.log(`${key_} = ${values[i]}`);
+        pipeline.set(key_, values[i]);
       }
 
       await pipeline.exec();
+
       return keys.length;
     }
   );
