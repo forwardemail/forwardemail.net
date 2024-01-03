@@ -46,6 +46,23 @@ const RATELIMIT_ALLOWLIST =
     ? env.RATELIMIT_ALLOWLIST
     : [];
 
+let signingKeys;
+if (isSANB(env.GPG_SECURITY_KEY) && isSANB(env.GPG_SECURITY_PASSPHRASE)) {
+  try {
+    const privateKeyArmored = fs.readFileSync(env.GPG_SECURITY_KEY, 'utf8');
+    (async () => {
+      signingKeys = await openpgp.decryptKey({
+        privateKey: await openpgp.readPrivateKey({
+          armoredKey: privateKeyArmored
+        }),
+        passphrase: env.GPG_SECURITY_PASSPHRASE
+      });
+    })();
+  } catch (err) {
+    logger.error(err);
+  }
+}
+
 let appCss;
 let botCss;
 let freddyCss;
@@ -277,21 +294,8 @@ module.exports = (redis) => ({
           .join('\r\n')
           .trim();
 
-        if (
-          isSANB(env.GPG_SECURITY_KEY) &&
-          isSANB(env.GPG_SECURITY_PASSPHRASE)
-        ) {
+        if (signingKeys) {
           try {
-            const privateKeyArmored = await fs.promises.readFile(
-              env.GPG_SECURITY_KEY,
-              'utf8'
-            );
-            const signingKeys = await openpgp.decryptKey({
-              privateKey: await openpgp.readPrivateKey({
-                armoredKey: privateKeyArmored
-              }),
-              passphrase: env.GPG_SECURITY_PASSPHRASE
-            });
             const unsignedMessage = await openpgp.createCleartextMessage({
               text
             });
