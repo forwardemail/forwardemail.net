@@ -399,6 +399,14 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     node ansible-playbook ansible/playbooks/fonts.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
     ```
 
+21. (Optional) Copy over GPG keys to be installed on the server (e.g. used for GPG signing `security.txt`, see <https://forwardemail.net/security.txt>).
+
+    > **NOTE:** This assumes that you have also set in `.env` file the keys of `GPG_SECURITY_KEY` with the full file path to the key _and_ `GPG_SECURITY_PASSPHRASE` with the GPG passphrase. You can export via `gpg --armor --export-secret-key YOURKEYIDHERE > .gpg-security-key`. You can get `YOURKEYIDHERE` via `gpg --list-keys`.  You can generate a key with `gpg --full-generate-key` (e.g. for `support@yourdomain.com` or `security@yourdomain.com`).  Note you should also update the path in `config/index.js` for `openPGPKey` value.
+
+    ```sh
+    node ansible-playbook ansible/playbooks/gpg-security-key.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    ```
+
 21. Copy the `.env.production` to the servers:
 
     ```sh

@@ -1,0 +1,41 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- hosts: imap:pop3:smtp:http:bree:sqlite
+  name: GPG Security Key
+  vars_prompt:
+    - name: input_profile
+      prompt: Enter path to GPG local fil (e.g. /path/to/.gpg-security-key)
+      private: false
+
+  tasks:
+    # local file
+    - name: Check if local file exists
+      local_action: stat path={{ input_profile }}
+      become: false
+      register: local_profile_file
+    - name: Fail when local local file does not exist
+      fail:
+        msg: "local file does not exist: {{ input_profile }}"
+      when: not local_profile_file.stat.exists
+
+    # remote dir
+    - name: Check if remote dir exists
+      stat:
+        path: /var/www/production
+      register: remote_dir
+
+    - name: Fail when remote dir does not exist
+      fail:
+        msg: pm2 dir not yet created
+      when: not remote_dir.stat.exists or not remote_dir.stat.isdir
+
+    # copy local file
+    - name: Copy local file to server
+      copy:
+        src: "{{ input_profile }}"
+        dest: /var/www/production/.gpg-security-key
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: "0660"
