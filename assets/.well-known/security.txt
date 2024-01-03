@@ -1,17 +1,18 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA512
 
-Contact: security@forwardemail.net
+Contact: mailto:security@forwardemail.net
 Encryption: https://forwardemail.net/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc
 Preferred-Languages: en
 Canonical: https://forwardemail.net/.well-known/security.txt
 Policy: https://github.com/forwardemail/.github/blob/main/SECURITY.md
 Hiring: https://forwardemail.net
+Expires: 2034-01-01T06:00:00.000Z
 -----BEGIN PGP SIGNATURE-----
 
-iI8EARYKADcWIQQuOJfu3jTvrKlBlLWaFY5SVG5z1QUCZZWdQBkcc3VwcG9ydEBm
-b3J3YXJkZW1haWwubmV0AAoJEJoVjlJUbnPVl6QBAOAimMsr8JGTgqR/SBcVcWft
-dSngEHkY7M19k6aqryI5AQDStLns3aVcLvhWP0VoPh4Ph4sVxPvcnTGezWFn+AfD
-Dg==
-=jLIF
+iI8EARYKADcWIQQuOJfu3jTvrKlBlLWaFY5SVG5z1QUCZZWzHxkcc3VwcG9ydEBm
+b3J3YXJkZW1haWwubmV0AAoJEJoVjlJUbnPVz0kBAMmqvJ8PVK06/I1C92DG1ri2
+YLFFBMJrbDOE6r9o7gUbAQC6UP1ykG0JoPyVQXl8tLiJnj6dvby3AdPBybYKBlK2
+Bg==
+=mm1a
 -----END PGP SIGNATURE-----
