@@ -8,6 +8,7 @@ const path = require('node:path');
 const process = require('node:process');
 
 const Boom = require('@hapi/boom');
+const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
@@ -245,6 +246,35 @@ module.exports = (redis) => ({
       app.context.client,
       app.context.logger
     );
+    // dynamic security.txt with 1 yr expiry
+    // (not signed with gpg)
+    // `gpg --clearsign --sign --default-key support@forwardemail.net assets/.well-known/security.txt`
+    // <https://github.com/js-kyle/koa-security.txt>
+    app.use((ctx, next) => {
+      if (
+        ctx.path !== '/security.txt' &&
+        ctx.path !== '/.well-known/security.txt'
+      )
+        return next();
+      if (ctx.method !== 'GET' && ctx.method !== 'HEAD') {
+        ctx.status = ctx.method === 'OPTIONS' ? 200 : 405;
+        ctx.set('Allow', 'GET, HEAD, OPTIONS');
+      } else {
+        ctx.type = 'text/plain';
+        ctx.body = [
+          `Contact: mailto:security@${config.webHost}`,
+          `Encryption: ${config.urls.web}${config.openPGPKey}`,
+          // TODO: Acknowledgements (?)
+          `Preferred-Languages: ${i18n.config.defaultLocale}`,
+          `Canonical: ${config.urls.web}/.well-known/security.txt`,
+          `Policy: https://github.com/forwardemail/.github/blob/main/SECURITY.md`,
+          `Hiring: ${config.urls.web}`,
+          // can't do more than 1 year otherwise test tools throw a warning
+          // (e.g. <https://internet.nl/site/forwardemail.net/>)
+          `Expires: ${dayjs().add(3, 'month').toDate().toISOString()}`
+        ].join('\n');
+      }
+    });
     app.use(async (ctx, next) => {
       // since we're on an older helmet version due to koa-helmet
       // <https://github.com/helmetjs/helmet/issues/230>

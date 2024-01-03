@@ -124,6 +124,7 @@ const imapConfigurations = [
 
 const config = {
   ...metaConfig,
+  openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',
   returnPath: 'fe-bounces',
   imapConfigurations,
   passkeyLimit: 30,
@@ -926,7 +927,8 @@ config.views.locals.config = _.pick(config, [
   'goodDomains',
   'meta',
   'metaTitleAffix',
-  'modulusLength'
+  'modulusLength',
+  'openPGPKey'
 ]);
 
 // <https://nodemailer.com/transports/>
