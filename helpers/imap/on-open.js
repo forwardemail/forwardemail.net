@@ -89,18 +89,26 @@ async function onOpen(path, session, fn) {
     });
 
     let docs;
+    let err;
 
-    if (session.db.wsp) {
-      docs = await this.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
-      });
-    } else {
-      docs = session.db.prepare(sql.query).pluck().all(sql.values);
+    try {
+      if (session.db.wsp) {
+        docs = await this.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+        });
+      } else {
+        docs = session.db.prepare(sql.query).pluck().all(sql.values);
+      }
+
+      if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
+    } catch (_err) {
+      err = _err;
+      err.sql = sql;
     }
 
-    if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
+    if (err) throw err;
 
     // send response
     const response = mailbox.toObject();

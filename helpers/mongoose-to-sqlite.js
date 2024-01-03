@@ -854,6 +854,8 @@ async function findOneAndUpdate(
       }
     } catch (_err) {
       err = _err;
+      err.sql = sql;
+      err.update = update;
     }
 
     // release lock if options.lock not set

@@ -14,11 +14,11 @@ block content
                 alt=""
               )
             .p-3.text-center
-              if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt])
+              if _.isDate(user[config.userFields.paymentReminderFollowUpSentAt]) && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
                 p.card-text: strong.text-danger= t("Email forwarding is currently paused.")
                 p.card-text: strong.text-danger!= t("This is your <u>final notice</u> to make payment.")
                 p.card-text.mb-0= t("Make payment now to resume email forwarding.")
-              else if _.isDate(user[config.userFields.paymentReminderInitialSentAt])
+              else if _.isDate(user[config.userFields.paymentReminderInitialSentAt]) && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now()
                 p.card-text: strong.text-danger= t("Email forwarding is currently paused.")
                 p.card-text: strong.text-danger!= t("This is a follow-up to a previous notice.")
                 p.card-text.mb-0= t("Make payment now to resume email forwarding.")
