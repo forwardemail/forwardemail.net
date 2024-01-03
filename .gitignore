@@ -88,3 +88,4 @@ temp/
 .ssl-dhparam
 .ssl-csr
 *.p8
+.gpg-security-key

@@ -15,6 +15,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const openpgp = require('openpgp');
 const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');
 
@@ -247,10 +248,9 @@ module.exports = (redis) => ({
       app.context.logger
     );
     // dynamic security.txt with 1 yr expiry
-    // (not signed with gpg)
     // `gpg --clearsign --sign --default-key support@forwardemail.net assets/.well-known/security.txt`
     // <https://github.com/js-kyle/koa-security.txt>
-    app.use((ctx, next) => {
+    app.use(async (ctx, next) => {
       if (
         ctx.path !== '/security.txt' &&
         ctx.path !== '/.well-known/security.txt'
@@ -261,7 +261,8 @@ module.exports = (redis) => ({
         ctx.set('Allow', 'GET, HEAD, OPTIONS');
       } else {
         ctx.type = 'text/plain';
-        ctx.body = [
+
+        const text = [
           `Contact: mailto:security@${config.webHost}`,
           `Encryption: ${config.urls.web}${config.openPGPKey}`,
           // TODO: Acknowledgements (?)
@@ -271,8 +272,42 @@ module.exports = (redis) => ({
           `Hiring: ${config.urls.web}`,
           // can't do more than 1 year otherwise test tools throw a warning
           // (e.g. <https://internet.nl/site/forwardemail.net/>)
-          `Expires: ${dayjs().add(3, 'month').toDate().toISOString()}`
-        ].join('\n');
+          `Expires: ${dayjs().utc().endOf('year').toDate().toISOString()}`
+        ]
+          .join('\r\n')
+          .trim();
+
+        if (
+          isSANB(env.GPG_SECURITY_KEY) &&
+          isSANB(env.GPG_SECURITY_PASSPHRASE)
+        ) {
+          try {
+            const privateKeyArmored = await fs.promises.readFile(
+              env.GPG_SECURITY_KEY,
+              'utf8'
+            );
+            const signingKeys = await openpgp.decryptKey({
+              privateKey: await openpgp.readPrivateKey({
+                armoredKey: privateKeyArmored
+              }),
+              passphrase: env.GPG_SECURITY_PASSPHRASE
+            });
+            const unsignedMessage = await openpgp.createCleartextMessage({
+              text
+            });
+            const cleartextMessage = await openpgp.sign({
+              message: unsignedMessage,
+              signingKeys
+            });
+            ctx.body = cleartextMessage;
+          } catch (err) {
+            err.isCodeBug = true;
+            ctx.logger.fatal(err);
+            ctx.body = text;
+          }
+        } else {
+          ctx.body = text;
+        }
       }
     });
     app.use(async (ctx, next) => {
