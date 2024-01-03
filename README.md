@@ -401,19 +401,19 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
 21. (Optional) Copy over GPG keys to be installed on the server (e.g. used for GPG signing `security.txt`, see <https://forwardemail.net/security.txt>).
 
-    > **NOTE:** This assumes that you have also set in `.env` file the keys of `GPG_SECURITY_KEY` with the full file path to the key _and_ `GPG_SECURITY_PASSPHRASE` with the GPG passphrase. You can export via `gpg --armor --export-secret-key YOURKEYIDHERE > .gpg-security-key`. You can get `YOURKEYIDHERE` via `gpg --list-keys`.  You can generate a key with `gpg --full-generate-key` (e.g. for `support@yourdomain.com` or `security@yourdomain.com`).  Note you should also update the path in `config/index.js` for `openPGPKey` value.
+    > **NOTE:** This assumes that you have also set in `.env` file the keys of `GPG_SECURITY_KEY` with the full file path to the key *and* `GPG_SECURITY_PASSPHRASE` with the GPG passphrase. You can export via `gpg --armor --export-secret-key YOURKEYIDHERE > .gpg-security-key`. You can get `YOURKEYIDHERE` via `gpg --list-keys`.  You can generate a key with `gpg --full-generate-key` (e.g. for `support@yourdomain.com` or `security@yourdomain.com`).  Note you should also update the path in `config/index.js` for `openPGPKey` value.
 
     ```sh
     node ansible-playbook ansible/playbooks/gpg-security-key.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
     ```
 
-21. Copy the `.env.production` to the servers:
+22. Copy the `.env.production` to the servers:
 
     ```sh
     node ansible-playbook ansible/playbooks/env.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
     ```
 
-22. Run an initial deploy to all the servers:
+23. Run an initial deploy to all the servers:
 
     ```sh
     pm2 deploy ecosystem-web.json production
@@ -443,7 +443,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-sqlite.json production
     ```
 
-23. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
+24. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
     pm2 deploy ecosystem-web.json production exec "pm2 save"
@@ -473,21 +473,21 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-sqlite.json production exec "pm2 save"
     ```
 
-24. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
+25. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
 
-25. Configure your DNS records for the web and API server hostnames and respective IP addresses.
+26. Configure your DNS records for the web and API server hostnames and respective IP addresses.
 
-26. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
+27. Test by visiting your web and API server in your browser (in an incognito window).  There should not be any certificate warnings (similar to the one that occurred in step 15).
 
-27. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+28. (Optional) Remove the local `.env.production` file for security purposes.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
     ```sh
     rm .env.production
     ```
 
-28. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
+29. (Optional) Remove the local certificate files you downloaded locally and specified in step 11.  If you do this, then make sure you have a backup, or securely back up off the server in the future before destroying the server.
 
-29. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
+30. Finished. If you need to deploy again, then push your changes to GitHub `master` branch and then follow step 14 again.  We recommend you to read the [Ansible getting started guide][ansible-guide], as it provides you with insight into commands like `ansible all -a "echo hello"` which can be run across all or specific servers.
 
 
 ## Deployment Advice
