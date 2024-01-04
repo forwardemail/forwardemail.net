@@ -6,7 +6,7 @@ After=local-fs.target
 [Service]
 Type=oneshot
 User=root
-ExecStart=/usr/sbin/swapoff -a
+ExecStart=/sbin/swapoff -a
 
 [Install]
 WantedBy=default.target

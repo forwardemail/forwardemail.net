@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Node.js
   become: true
   become_user: root
@@ -100,6 +100,12 @@
           - libfontconfig
           - fonts-noto-cjk
           - fonts-noto-cjk-extra
+        update_cache: true
+    # install libjpeg-turbo8 for wkhtmltopdf
+    - name: Install libjpeg-turbo8
+      apt:
+        name:
+          - libjpeg-turbo8
         update_cache: true
     # install wkhtmltopdf
     - name: Install wkhtmltopdf

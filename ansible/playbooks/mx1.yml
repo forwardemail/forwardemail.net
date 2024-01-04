@@ -1,0 +1,68 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- name: Import security playbook
+  import_playbook: security.yml
+- name: Import Node.js playbook
+  import_playbook: node.yml
+- name: Import SSH keys playbook
+  import_playbook: ssh-keys.yml
+
+- hosts: mx1
+  name: Hostname
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'MX1_HOST') }}"
+
+- hosts: mx1
+  name: MX1
+  become: true
+  become_user: root
+  # this was already defined in the ufw role
+  # https://github.com/Oefenweb/ansible-ufw/blob/master/handlers/main.yml
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+  tasks:
+    # ufw
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+    - name: Set UFW default forward policy to DROP
+      lineinfile:
+        dest: /etc/default/ufw
+        line: DEFAULT_FORWARD_POLICY="DROP"
+        regexp: ^DEFAULT_FORWARD_POLICY\=
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+    - name: Allow port 25
+      ufw:
+        rule: allow
+        port: 25
+        proto: tcp
+    #
+    # modify ufw setup
+    # https://github.com/Oefenweb/ansible-ufw/issues/21
+    #
+    - name: "Update ufw before.rules until #21 is resolved"
+      template:
+        src: "{{ playbook_dir }}/templates/before.rules.j2"
+        dest: /etc/ufw/before.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW

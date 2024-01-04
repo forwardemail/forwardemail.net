@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Security
   become: true
   become_user: root
@@ -273,7 +273,7 @@
       become_user: deploy
       shell: git config --global --add safe.directory '*'
 
-- hosts: imap:pop3:smtp:http:bree:sqlite
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Mongo Shell
   become: true
   become_user: root
@@ -288,7 +288,7 @@
           - mongodb-mongosh
         update_cache: true
 
-- hosts: imap:pop3:smtp:http:bree:sqlite
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Sysctl
   become: true
   become_user: root

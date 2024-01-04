@@ -14,9 +14,6 @@
     - name: input_bundle
       prompt: "Optional: Leave blank or enter path to certificate CA bundle file (e.g. /path/to/.ssl-ca)"
       private: false
-    - name: input_dhparam
-      prompt: "Optional: Leave blank or enter path to certificate DHPARAM file (e.g. /path/to/.ssl-dhparam)"
-      private: false
     - name: input_apple_key
       prompt: "Optional: Leave blank or enter path to Apple K8 certificate key file (e.g. /path/to/AuthKey_00000000000.p8)"
       private: false
@@ -54,18 +51,6 @@
       fail:
         msg: "bundle file does not exist: {{ input_bundle }}"
       when: (input_bundle is defined) and (input_bundle | length > 0) and (not local_bundle_file.stat.exists)
-
-    # dhparam file
-    - name: Check if dhparam file exists
-      local_action: stat path={{ input_dhparam }}
-      register: local_dhparam_file
-      become: false
-      when: (input_dhparam is defined) and (input_dhparam | length > 0)
-
-    - name: Fail when local dhparam file does not exist
-      fail:
-        msg: "dhparam file does not exist: {{ input_dhparam }}"
-      when: (input_dhparam is defined) and (input_dhparam | length > 0) and (not local_dhparam_file.stat.exists)
 
     # apple_key file
     - name: Check if apple_key file exists
@@ -117,16 +102,6 @@
         # https://chmodcommand.com/chmod-660/
         mode: "0660"
       when: (input_bundle is defined) and (input_bundle | length > 0)
-
-    # copy local dhparam
-    - name: Copy local dhparam file to server
-      copy:
-        src: "{{ input_dhparam }}"
-        dest: /var/www/production/.ssl-dhparam
-        owner: deploy
-        # https://chmodcommand.com/chmod-660/
-        mode: "0660"
-      when: (input_dhparam is defined) and (input_dhparam | length > 0)
 
     # copy local apple_key
     - name: Copy local apple_key file to server
