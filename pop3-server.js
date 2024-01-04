@@ -21,7 +21,6 @@ const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const POP3Server = require('wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
-const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
