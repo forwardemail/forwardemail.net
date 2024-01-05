@@ -364,6 +364,10 @@ module.exports = (redis) => ({
       }
     });
     app.use(async (ctx, next) => {
+      // since we're on an older helmet version due to koa-helmet
+      // <https://github.com/helmetjs/helmet/issues/230>
+      ctx.set('X-XSS-Protection', '0');
+
       // convert local IPv6 addresses to IPv4 format
       // <https://blog.apify.com/ipv4-mapped-ipv6-in-nodejs/>
       if (ipaddr.isValid(ctx.request.ip)) {
