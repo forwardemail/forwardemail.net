@@ -1265,7 +1265,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
   </span>
 </div>
 
-<div class="mx-auto lazyframe border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" style="border-color: #1d1d1d !important; max-width:100%; border-width:0.5rem !important;width:640px;height:360px" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="How to Send Mail As using Gmail" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="legacy-free-guide">
 
@@ -1342,7 +1342,7 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 
 <div class="mb-3">
   Our service works with popular email clients such as:
-  <ul class="ml-1 h4 d-inline list-inline mb-0" style="padding-left: 0px;">
+  <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
     <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
     <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
@@ -2751,7 +2751,7 @@ For example, if I want an email that goes to `hello@example.com` to get forwarde
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code style="cursor: initial;" data-original-title="" title="" aria-describedby="tooltip885348">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
+      <td><code class="cursor-initial" data-original-title="" title="">forward-email=hello:user+a@gmail.com,hello:user+b@gmail.com</code></td>
     </tr>
   </tbody>
 </table>

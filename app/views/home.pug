@@ -2,11 +2,12 @@ extends layout
 
 block append stylesheets
   if freddyCss
-    style!= freddyCss
+    style(nonce=nonce)!= freddyCss
 
 block append scripts
   if !isBot(ctx.get("User-Agent"))
-    script(defer).
+    //- <https://github.com/mattboldt/typed.js/issues/592>
+    script(defer, nonce=nonce).
       window.addEventListener(
         "load",
         function load() {
@@ -20,6 +21,7 @@ block append scripts
               backSpeed: 70,
               startDelay: 2000,
               backDelay: 2000,
+              autoInsertCss: false,
             });
           }, 7000);
         },
@@ -49,7 +51,6 @@ block body
           .modal-body
             .lazyframe(
               title=t("Forward Email's Paid Plans"),
-              style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
             )
@@ -73,7 +74,6 @@ block body
           .modal-body
             .lazyframe(
               title=t("Email Forwarding for Creators"),
-              style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/ql9rtNpTid4?autoplay=0"
             )
@@ -96,7 +96,6 @@ block body
           .modal-body
             .lazyframe(
               title=t("Email Forwarding for Developers"),
-              style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/1e9UyIoFu4Y?autoplay=0"
             )
@@ -119,7 +118,6 @@ block body
           .modal-body
             .lazyframe(
               title=t("Email Forwarding for Businesses"),
-              style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
@@ -150,9 +148,9 @@ block body
             div!= t("Encrypted email<br /> for marketing")
             div!= t("Encrypted email<br /> for sales")
             div!= t("Encrypted email<br /> for you")
-        //- .col-12(
-        //-   class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
-        //- )
+        .col-12(
+          class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
+        )
         .col-12.text-center
           if isBot(ctx.get("User-Agent"))
             h1.mb-3.text-sans-serif(data-ignore-hash-change)= t("Free Email Forwarding Service")
@@ -288,9 +286,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- DHH
         .col
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -335,9 +331,7 @@ block body
             .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
         //- Abhi Nemani
         .col.mt-4.mt-md-0
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -379,9 +373,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- Andrew Escobar
         .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -421,9 +413,7 @@ block body
             .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
         //- Ullrich Schäfer
         .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -451,9 +441,7 @@ block body
       .row.row-cols-1.row-cols-md-2
         //- Andre Goncalves
         .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -479,9 +467,7 @@ block body
             .mt-2.small.text-muted Computer Engineer, Software Developer
         //- Phil Cockfield
         .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed(
-            style="border-width: 0.5rem !important"
-          )
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
             .d-flex.align-items-top
               noscript
                 img.rounded-circle(
@@ -526,10 +512,9 @@ block body
               = " "
               = t("Watch Video")
           else
-            .lazyframe.border.d-block.mx-auto(
+            .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
               data-vendor="youtube_nocookie",
               title=t("How to create unlimited email addresses and aliases"),
-              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
       .row

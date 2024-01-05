@@ -20,12 +20,11 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
           .modal-body
             .lazyframe(
               title=t("Setup your domain with email"),
-              style="width: 100%; height: 450px",
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/q7zfEpn2NdA?autoplay=0"
             )
   if !isBot(ctx.get('User-Agent')) && isModalOnboard
-    script(defer).
+    script(defer, nonce=nonce).
       window.addEventListener(
         "load",
         function load() {
@@ -73,7 +72,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                 .form-row
                   div(class=isInsideModal ? "col-12" : "col-12 col-md-6 offset-md-3")
                     .form-group.floating-label.position-relative
-                      .position-absolute(style="right: 0")
+                      .position-absolute.right-0
                         label.badge.badge-pill.badge-dark.mt-3.mr-3(
                           for="input-onboard-domain"
                         )= t("Step 1")
@@ -86,7 +85,7 @@ mixin onboard(onboardHeader, onboardText, onboardFormAction=ctx.path, onboardKee
                       )
                       label(for="input-onboard-domain")= t("Your custom domain")
                     .form-group.floating-label.position-relative
-                      .position-absolute(style="right: 0")
+                      .position-absolute.right-0
                         label.badge.badge-pill.badge-dark.mt-3.mr-3(
                           for="input-onboard-email"
                         )= t("Step 2")

@@ -41,10 +41,9 @@ block body
                   = " "
                   = t("Watch Video")
               else
-                .lazyframe.border.border-themed.d-inline-block(
+                .lazyframe.border.border-themed.d-inline-block,lazyframe-bordered(
                   data-vendor="youtube_nocookie",
                   title=t("How to send email with your custom domain video"),
-                  style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                   data-src="https://www.youtube-nocookie.com/embed/TODO?autoplay=0"
                 )
       #step-by-step-instructions.col-12.mt-3

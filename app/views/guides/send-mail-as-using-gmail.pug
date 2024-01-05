@@ -44,10 +44,9 @@ block body
                   = " "
                   = t("Watch Video")
               else
-                .lazyframe.border.border-themed.d-inline-block(
+                .lazyframe.border.border-themed.d-inline-block.lazyframe-bordered(
                   data-vendor="youtube_nocookie",
                   title=t("How to Send Mail As using Gmail"),
-                  style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
                   data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
                 )
     .row.mt-3
@@ -80,10 +79,9 @@ block body
               strong= t("Important:")
               = " "
               != t('This guide works, however we deprecated it as of May 2023 since <a class="alert-link" href="%s">we now support outbound SMTP</a> on our paid plans. If you use the guide below, then <a class="alert-link" href="%s">this will cause your outbound email</a> to say <span class="notranslate text-danger font-weight-bold">"via forwardemail dot net"</span> in Gmail.', l("/faq#do-you-support-sending-email-with-smtp"), l("/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail"))
-            .mx-auto.lazyframe.border.border-themed(
+            .mx-auto.lazyframe.border.border-themed.lazyframe-bordered(
               data-vendor="youtube_nocookie",
               title=t("How to Send Mail As using Gmail"),
-              style="border-color: #1d1d1d !important; max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"
             )
             != legacyFreeGuide

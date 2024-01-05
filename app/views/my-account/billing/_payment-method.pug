@@ -8,24 +8,24 @@ mixin paymentMethod(payment)
     if !returnHTML
       case payment.method
         when 'amex'
-          i.fa.fa-cc-amex
+          i.fab.fa-cc-amex
         when 'diners'
-          i.fa.fa-cc-diners-club
+          i.fab.fa-cc-diners-club
         when 'discover'
-          i.fa.fa-cc-discover
+          i.fab.fa-cc-discover
         when 'jcb'
-          i.fa.fa-cc-jcb
+          i.fab.fa-cc-jcb
         when 'mastercard'
-          i.fa.fa-cc-mastercard
+          i.fab.fa-cc-mastercard
         when 'visa'
-          i.fa.fa-cc-visa
+          i.fab.fa-cc-visa
         when 'free_beta_program'
         when 'unknown'
           i.fa.fa-gift
         when 'alipay'
-          i.fa.fa-alipay
+          i.fab.fa-alipay
         when 'ideal'
-          i.fa.fa-ideal
+          i.fab.fa-ideal
         when 'unionpay'
           i.fa.fa-credit-card
         when 'plan_conversion'
@@ -50,7 +50,7 @@ mixin paymentMethod(payment)
       = t("via")
       if !returnHTML
         = " "
-        i.fa.fa-cc-apple-pay
+        i.fab.fa-cc-apple-pay
       = " "
       = "Apple Pay"
     else if payment.is_google_pay
@@ -58,6 +58,6 @@ mixin paymentMethod(payment)
       = t("via")
       = " "
       if !returnHTML
-        i.fa.fa-google-pay
+        i.fab.fa-google-pay
         = " "
       = "Google Pay"

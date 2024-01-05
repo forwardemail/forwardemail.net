@@ -48,13 +48,7 @@ mixin registerOrLogin(verb, isModal = false)
               href="#",
               role="button"
             )
-              span.btn-auth-icon.btn-auth-icon-fill.lazyload(
-                data-src=manifest("img/fa-key.svg")
-              )
-              noscript
-                span.btn-auth-icon.btn-auth-icon-fill(
-                  style=`background-image:url("${manifest("img/fa-key.svg")}")`
-                )
+              span.btn-auth-icon.btn-auth-icon-fill.btn-auth-fa-key
               span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Passkey`)
         //- <https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple>
         if passport && passport.apple
@@ -62,13 +56,7 @@ mixin registerOrLogin(verb, isModal = false)
             href="/auth/apple",
             role="button"
           )
-            span.btn-auth-icon.btn-auth-icon-fill.lazyload(
-              data-src=manifest("img/apple-logo.svg")
-            )
-            noscript
-              span.btn-auth-icon.btn-auth-icon-fill(
-                style=`background-image:url("${manifest("img/apple-logo.svg")}")`
-              )
+            span.btn-auth-icon.btn-auth-icon-fill.btn-auth-apple-logo
             span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Apple`)
         //- <https://developers.google.com/identity/branding-guidelines>
         if passport && passport.google
@@ -76,13 +64,7 @@ mixin registerOrLogin(verb, isModal = false)
             href="/auth/google",
             role="button"
           )
-            span.btn-auth-icon.lazyload(
-              data-src=manifest("img/google-logo.svg")
-            )
-            noscript
-              span.btn-auth-icon(
-                style=`background-image:url("${manifest("img/google-logo.svg")}")`
-              )
+            span.btn-auth-icon.btn-auth-google-logo
             span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with Google`)
         //- <https://github.com/logos>
         if passport && passport.github
@@ -90,13 +72,7 @@ mixin registerOrLogin(verb, isModal = false)
             href="/auth/github",
             role="button"
           )
-            span.btn-auth-icon.btn-auth-icon-fill.lazyload(
-              data-src=manifest("img/github-logo.svg")
-            )
-            noscript
-              span.btn-auth-icon.btn-auth-icon-fill(
-                style=`background-image:url("${manifest("img/github-logo.svg")}")`
-              )
+            span.btn-auth-icon.btn-auth-icon-fill.btn-auth-github-logo
             span.btn-auth-text.font-weight-bold= t(`${humanize(verb)} with GitHub`)
 
         if passport && (passport.apple || passport.google || passport.github || (verb === 'sign in' && passport.webauthn))

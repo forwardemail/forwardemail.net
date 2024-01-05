@@ -67,10 +67,9 @@ mixin renderCard(platform, provider)
             data-title=provider.name,
             data-footer=t(provider.attribution)
           )
-            img.img-fluid.img-thumbnail(
+            img.img-fluid.img-thumbnail.max-height-300px(
               src=manifest(provider.img),
-              alt=striptags(str),
-              style="max-height: 300px"
+              alt=striptags(str)
             )
         a(
           href=manifest(provider.img),
@@ -79,10 +78,9 @@ mixin renderCard(platform, provider)
           data-title=provider.name,
           data-footer=t(provider.attribution)
         )
-          img.lazyload.img-fluid.img-thumbnail(
+          img.lazyload.img-fluid.img-thumbnail.max-height-300px(
             src=manifest(provider.img),
-            alt=striptags(str),
-            style="max-height: 300px"
+            alt=striptags(str)
           )
       if provider.screenshot
         .text-center.small.mt-3: a(
@@ -118,7 +116,7 @@ block body
       +onboard(t('Setup email in minutes'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), '#top', 'border-top', true)
 
   if !isBot(ctx.get('User-Agent'))
-    script(defer).
+    script(defer, nonce=nonce).
       window.addEventListener(
         "load",
         function load() {

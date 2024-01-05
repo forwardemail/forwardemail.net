@@ -19,7 +19,7 @@ mixin deleteDomain
 
 block append scripts
   //- prettier-ignore
-  script.
+  script(nonce=nonce).
     window.IS_CUSTOM_VERIFICATION_DISABLED = !{domain.plan === 'free' || !domain.has_custom_verification};
   |
   script(

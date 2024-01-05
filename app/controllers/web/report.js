@@ -4,6 +4,8 @@
  */
 
 async function report(ctx) {
+  if (ctx?.request?.body && ctx.request.body['csp-report'])
+    ctx.logger.debug(ctx.request.body);
   ctx.body = 'OK';
 }
 

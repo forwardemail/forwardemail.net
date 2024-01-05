@@ -65,6 +65,12 @@ const MAX_SECTIONS = 5;
 
 // eslint-disable-next-line complexity
 function fixTableOfContents(content, i18n, options) {
+  // CSP fixes
+  content = content.replaceAll(
+    'style="text-align:center"',
+    'class="text-center"'
+  );
+
   const root = parse(content);
 
   // go through all <code> blocks and remove nested <a> tags (convert them to <span>)

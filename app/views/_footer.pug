@@ -376,6 +376,189 @@ footer.mt-auto
                   each language in availableLanguages
                     li: a.d-block.text-white.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
       .mt-5.text-white.small
+        ul.list-inline.mb-3
+          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-success.p-2.text-monospace.font-weight-bold.mb-1
+            i.fa.fa-lock.text-success
+            = " "
+            = t("Privacy Protected")
+          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-success.p-2.text-monospace.font-weight-bold.mb-1
+            i.fa.fa-shield.text-success
+            = " "
+            = t("Secure Checkout")
+          //-.
+            li.list-inline-item.mb-1
+              a(
+                href="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                noscript
+                  img(
+                    alt=t("Build Status"),
+                    src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg"
+                  )
+                img.lazyload(
+                  alt=t("Build Status"),
+                  data-src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg"
+                )
+          li.list-inline-item.mb-1
+            a(
+              href="https://www.ssllabs.com/ssltest/analyze.html?d=forwardemail.net&latest",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Qualys SSL Labs SSL Server Test"),
+                  src="https://img.shields.io/badge/Qualys_SSL_Labs-A+_Grade-green"
+                )
+              img.lazyload(
+                alt=t("Qualys SSL Labs SSL Server Test"),
+                data-src="https://img.shields.io/badge/Qualys_SSL_Labs-A+_Grade-green"
+              )
+          li.list-inline-item.mb-1
+            a(
+              href="https://observatory.mozilla.org/analyze/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Mozilla HTTP Observatory Grade"),
+                  src="https://img.shields.io/mozilla-observatory/grade-score/forwardemail.net"
+                )
+              img.lazyload(
+                alt=t("Mozilla HTTP Observatory Grade"),
+                data-src="https://img.shields.io/mozilla-observatory/grade-score/forwardemail.net"
+              )
+        ul.list-inline.mb-3
+          li.list-inline-item.mb-3
+            a(
+              href="https://www.hardenize.com/report/forwardemail.net?summary",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Hardenize Badge"),
+                  src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
+                  width="70",
+                  height="110"
+                )
+              img.lazyload(
+                alt=t("Hardenize Badge"),
+                data-src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
+                width="70",
+                height="110"
+              )
+          //-.
+            li.list-inline-item.mb-3
+              a(
+                href="https://www.trustpilot.com/review/forwardemail.net",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                noscript
+                  img(
+                    alt=t("Review us on Trustpilot"),
+                    src=manifest("img/trustpilot.png"),
+                    width="216.5",
+                    height="52"
+                  )
+                img.lazyload(
+                  alt=t("Review us on Trustpilot"),
+                  data-src=manifest("img/trustpilot.png"),
+                  width="216.5",
+                  height="52"
+                )
+          li.list-inline-item.mb-3
+            a(
+              href="https://internet.nl/site/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Internet Site Test"),
+                  src=manifest("img/internet-nl-site-test.svg"),
+                  width=204,
+                  height=39
+                )
+              img.lazyload(
+                alt=t("Internet Site Test"),
+                data-src=manifest("img/internet-nl-site-test.svg"),
+                width=204,
+                height=39
+              )
+          li.list-inline-item.mb-3
+            a(
+              href="https://internet.nl/mail/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Internet Mail Test"),
+                  src=manifest("img/internet-nl-mail-test.svg"),
+                  width=204,
+                  height=39
+                )
+              img.lazyload(
+                alt=t("Internet Mail Test"),
+                data-src=manifest("img/internet-nl-mail-test.svg"),
+                width=204,
+                height=39
+              )
+        ul.list-inline.mb-3
+          li.list-inline-item
+            strong= "Payment Methods:"
+          li.list-inline-item
+            i.fab.fa-paypal
+            = " PayPal"
+          li.list-inline-item
+            i.fab.fa-cc-visa
+            = " Visa"
+          li.list-inline-item
+            i.fab.fa-cc-mastercard
+            = " Mastercard"
+          li.list-inline-item
+            i.fab.fa-cc-amex
+            = " American Express"
+          li.list-inline-item
+            i.fab.fa-cc-discover
+            = " Discover"
+          li.list-inline-item
+            i.fab.fa-cc-diners-club
+            = " Diners Club"
+          li.list-inline-item
+            i.fab.fa-cc-jcb
+            = " JCB"
+          li.list-inline-item
+            = " China UnionPay"
+          li.list-inline-item
+            i.fab.fa-alipay
+            = " Alipay"
+          li.list-inline-item
+            i.fab.fa-cc-apple-pay
+            = " Apple Pay"
+          li.list-inline-item
+            i.fab.fa-google-pay
+            = " Google Pay"
+          li.list-inline-item Link
+          li.list-inline-item Bancontact
+          li.list-inline-item EPS
+          li.list-inline-item giropay
+          li.list-inline-item
+            i.fab.fa-ideal
+            = " iDEAL"
+          li.list-inline-item Przelewy24
+          li.list-inline-item Sofort
+          li.list-inline-item Affirm
+          li.list-inline-item Afterpay / Clearpay
+          li.list-inline-item Klarna
+          li.list-inline-item= t("SEPA Direct Debit")
+          li.list-inline-item= t("Canadian pre-authorized debits")
+          li.list-inline-item= t("ACH Direct Debit")
         ul.list-unstyled
           // <https://www.apple.com/legal/intellectual-property/trademark/appletmlist.html>
           li= t("Apple, Mac mini, Macbook, iMac, iPhone, macOS, iPad, watchOS, and Safari are registered trademarks of Apple Inc.")

@@ -202,6 +202,7 @@ const purgeCssOptions = {
       'offset-lg-3',
       'offset-md-2',
       'p-0',
+      'pl-0',
       'p-2',
       'py-3',
       'px-3',
@@ -421,7 +422,6 @@ async function bundle() {
   const since = lastRun(bundle);
   const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
   const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
-  const mermaidPath = path.join(config.buildBase, 'js', 'mermaid.js');
   const ekkoLightboxPath = path.join(
     config.buildBase,
     'js',
@@ -484,11 +484,6 @@ async function bundle() {
         'ekko-lightbox.js'
       ),
       ekkoLightboxPath
-    ),
-    // mermaid
-    fs.promises.copyFile(
-      path.join(__dirname, 'node_modules', 'mermaid', 'dist', 'mermaid.js'),
-      mermaidPath
     ),
     getFactorBundle()
   ]);

@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
 
 const Boom = require('@hapi/boom');
+const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const ipaddr = require('ipaddr.js');
@@ -128,9 +130,30 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
       "'self'",
       'data:',
-      `*.${process.env.WEB_HOST}:*`,
-      process.env.WEB_HOST,
-      `${process.env.WEB_HOST}:*`
+      `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}*.${
+        env.WEB_HOST
+      }:*`,
+      `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}${
+        env.WEB_HOST
+      }`,
+      ...(env.NODE_ENV === 'production' ? [] : [`http://${env.WEB_HOST}:*`]),
+      function (req, res) {
+        let nonce;
+        for (const s of Object.getOwnPropertySymbols(res)) {
+          const desc = s.toString().replace(/Symbol\((.*)\)$/, '$1');
+          if (
+            desc === 'kOutHeaders' &&
+            typeof res[s] === 'object' &&
+            res[s]['x-csp-nonce'] &&
+            Array.isArray(res[s]['x-csp-nonce']) &&
+            res[s]['x-csp-nonce'].length === 2
+          )
+            nonce = res[s]['x-csp-nonce'][1];
+        }
+
+        if (!nonce) return;
+        return `'nonce-${nonce}'`;
+      }
     ]
   : null;
 
@@ -176,53 +199,58 @@ module.exports = (redis) => ({
     // TODO: eventually make the CSP only set on PayPal required pages
     contentSecurityPolicy: defaultSrc
       ? {
+          useDefaults: false,
           directives: {
-            defaultSrc,
-            connectSrc: [
+            'default-src': _.without(defaultSrc, 'data:'),
+            'connect-src': [
               ...defaultSrc,
-              'plausible.io',
-              'www.paypal.com',
-              'noembed.com',
+              'https://plausible.io',
+              'https://www.paypal.com',
+              'https://noembed.com',
               ...(env.NODE_ENV === 'production'
                 ? []
-                : ['www.sandbox.paypal.com'])
+                : ['https://www.sandbox.paypal.com'])
             ],
-            fontSrc: [...defaultSrc],
-            imgSrc: [
+            'font-src': [...defaultSrc],
+            'img-src': [
               ...defaultSrc,
-              'tracking.qa.paypal.com',
-              'www.paypalobjects.com',
-              'github.com',
-              '*.github.com',
-              'githubusercontent.com',
-              '*.githubusercontent.com',
-              'shields.io',
-              '*.shields.io',
-              'ytimg.com',
-              '*.ytimg.com'
+              'https://badge.hardenize.com',
+              'https://tracking.qa.paypal.com',
+              'https://www.paypalobjects.com',
+              'https://github.com',
+              'https://*.github.com',
+              'https://githubusercontent.com',
+              'https://*.githubusercontent.com',
+              'https://shields.io',
+              'https://*.shields.io',
+              'https://ytimg.com',
+              'https://*.ytimg.com'
             ],
-            styleSrc: [...defaultSrc, "'unsafe-inline'"],
-            scriptSrc: [
-              ...defaultSrc,
-              "'unsafe-inline'",
-              'plausible.io',
-              'challenges.cloudflare.com',
-              'www.paypal.com',
+            'style-src': [...defaultSrc, "'unsafe-inline'"],
+            'script-src': [
+              ..._.without(defaultSrc, 'data:'),
+              'https://plausible.io',
+              'https://challenges.cloudflare.com',
+              'https://www.paypal.com',
               ...(env.NODE_ENV === 'production'
                 ? []
-                : ['www.sandbox.paypal.com'])
+                : ['https://www.sandbox.paypal.com'])
             ],
-            frameSrc: [
+            'object-src': _.without(defaultSrc, 'data:'),
+            'frame-ancestors': ["'self'"],
+            'frame-src': [
               ...defaultSrc,
-              'www.youtube.com',
-              '*.youtube-nocookie.com',
-              'challenges.cloudflare.com',
-              'www.paypal.com',
+              'https://www.youtube.com',
+              'https://*.youtube-nocookie.com',
+              'https://challenges.cloudflare.com',
+              'https://www.paypal.com',
               ...(env.NODE_ENV === 'production'
                 ? []
-                : ['www.sandbox.paypal.com'])
+                : ['https://www.sandbox.paypal.com'])
             ],
-            reportUri: reportUri || null
+            'report-uri': reportUri || null,
+            'base-uri': ["'self'"],
+            'form-action': ["'self'", 'https://www.anrdoezrs.net']
           }
         }
       : null,
@@ -264,6 +292,22 @@ module.exports = (redis) => ({
       app.context.client,
       app.context.logger
     );
+    // csp nonce
+    // <script nonce="whatever">
+    // <style nonce="whatever">
+    //
+    // NOTE: CSP nonces are hidden from browser DOM
+    //       <https://github.com/pugjs/pug/issues/2899>
+    //       <https://github.com/whatwg/html/issues/2369>
+    app.use((ctx, next) => {
+      if (ctx.method === 'GET') {
+        const nonce = crypto.randomBytes(16).toString('hex');
+        ctx.set('X-CSP-Nonce', nonce);
+        ctx.state.nonce = nonce;
+      }
+
+      return next();
+    });
     // dynamic security.txt with 1 yr expiry
     // `gpg --clearsign --sign --default-key support@forwardemail.net assets/.well-known/security.txt`
     // <https://github.com/js-kyle/koa-security.txt>
@@ -315,10 +359,6 @@ module.exports = (redis) => ({
       }
     });
     app.use(async (ctx, next) => {
-      // since we're on an older helmet version due to koa-helmet
-      // <https://github.com/helmetjs/helmet/issues/230>
-      ctx.set('X-XSS-Protection', '0');
-
       // convert local IPv6 addresses to IPv4 format
       // <https://blog.apify.com/ipv4-mapped-ipv6-in-nodejs/>
       if (ipaddr.isValid(ctx.request.ip)) {
@@ -356,10 +396,15 @@ module.exports = (redis) => ({
     });
   },
   hookBeforeRoutes(app) {
+    // remove nonce used in headers for helmet compatibility (old req/res approach)
+    app.use((ctx, next) => {
+      if (ctx.method === 'GET') ctx.remove('X-CSP-Nonce');
+      return next();
+    });
     // redirect return-path CNAME to main domain
     // (e.g. fe-bounces.forwardemail.net > forwardemail.net)
     app.use((ctx, next) => {
-      // if (config.env === 'test' || ctx.hostname === config.webHost)
+      // if (env.NODE_ENV === 'test' || ctx.hostname === config.webHost)
       if (ctx.hostname !== `${config.returnPath}.${config.webHost}`)
         return next();
       // redirect

@@ -2,18 +2,18 @@ extends ../../layout
 
 block append scripts
   if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew"
-    script(defer).
+    script(defer, nonce=nonce).
       window.USER_PLAN = "#{user.plan}";
   else if isSANB(ctx.query.plan)
-    script(defer).
+    script(defer, nonce=nonce).
       window.USER_PLAN = "#{ctx.query.plan}";
 
   //- this is equivalent to isEnableAutoRenew (but in pug you can't define variables twice and variables can't be shared between blocks)
   if ctx.pathWithoutLocale === "/my-account/billing/enable-auto-renew" && dayjs(user[config.userFields.planExpiresAt]).isAfter(dayjs())
-    script(defer).
+    script(defer, nonce=nonce).
       window.PLAN_EXPIRES_AT = "#{new Date(user[config.userFields.planExpiresAt]).toISOString()}";
 
-  script(defer).
+  script(defer, nonce=nonce).
     window.PAYPAL_NOT_LOADED = "#{ t('Please wait for PayPal to load and try again.') }";
 
   script(

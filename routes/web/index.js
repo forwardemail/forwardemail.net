@@ -5,11 +5,25 @@
 
 const path = require('node:path');
 
+const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const dashify = require('dashify');
+const isSANB = require('is-string-and-not-blank');
+const pWaitFor = require('p-wait-for');
+const pTimeout = require('p-timeout');
+const ms = require('ms');
 const pug = require('pug');
+const puppeteer = require('puppeteer');
 const render = require('koa-views-render');
+const revHash = require('rev-hash');
 const { parse } = require('node-html-parser');
+
+// dynamically import mermaid cli
+let parseMMD;
+
+import('@mermaid-js/mermaid-cli').then((obj) => {
+  parseMMD = obj.parseMMD;
+});
 
 const admin = require('./admin');
 const auth = require('./auth');
@@ -19,8 +33,9 @@ const otp = require('./otp');
 const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
-const { web } = require('#controllers');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 const { developerDocs, nsProviders, platforms } = require('#config/utilities');
+const { web } = require('#controllers');
 
 const filePath = path.join(config.views.root, '_tti.pug');
 
@@ -39,7 +54,80 @@ router
   // sitemap
   .get('/sitemap.xml', web.sitemap)
   // report URI support (not locale specific)
-  .post('/report', web.report);
+  .post('/report', web.report)
+
+  // mermaid charts
+  // TODO: once svg fixed we can use that instead
+  // <https://github.com/mermaid-js/mermaid-cli/issues/632>
+  .get('/mermaid.png', async (ctx) => {
+    let browser;
+    try {
+      if (!isSANB(ctx.query.code)) throw new Error('Code missing');
+      if (ctx.query.theme !== 'dark' && ctx.query.theme !== 'default')
+        throw new Error('Theme invalid');
+
+      const code = decrypt(ctx.query.code);
+      const hash = revHash(`${ctx.query.theme}:${code}`);
+
+      if (global.mermaid && global.mermaid[hash]) {
+        ctx.type = 'image/png';
+        ctx.body = global.mermaid[hash];
+        return;
+      }
+
+      // attempt to find in redis cache a buffer
+      try {
+        const buffer = await pTimeout(
+          ctx.client.getBuffer(`buffer:${hash}`),
+          1000
+        );
+        if (buffer) {
+          if (!global.mermaid) global.mermaid = {};
+          global.mermaid[hash] = buffer;
+          ctx.type = 'image/png';
+          ctx.body = buffer;
+          return;
+        }
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+
+      if (!parseMMD)
+        await pWaitFor(() => Boolean(parseMMD), { timeout: ms('5s') });
+
+      browser = await puppeteer.launch();
+      const svg = await parseMMD(browser, code, 'png', {
+        viewport: {
+          width: 3000,
+          height: 3000,
+          deviceScaleFactor: 2
+        },
+        mermaidConfig: {
+          diagramPadding: 100,
+          theme: ctx.query.theme
+        },
+        backgroundColor: ctx.query.theme === 'default' ? 'white' : 'transparent'
+      });
+      if (!global.mermaid) global.mermaid = {};
+      global.mermaid[hash] = svg;
+      ctx.type = 'image/png';
+      ctx.body = svg;
+      // store buffer in cache
+      try {
+        await ctx.client.set(`buffer:${hash}`, svg);
+      } catch (err) {
+        ctx.logger.error(err);
+      }
+    } catch (err) {
+      if (browser)
+        browser
+          .close()
+          .then()
+          .catch((err) => ctx.logger.error(err));
+      ctx.logger.error(err);
+      throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
+    }
+  });
 
 const localeRouter = new Router({ prefix: '/:locale' });
 

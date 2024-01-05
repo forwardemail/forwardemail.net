@@ -167,7 +167,8 @@ const keys = new Set(
 );
 
 // eslint-disable-next-line complexity
-async function generateOpenGraphImage(ctx) {
+async function generateOpenGraphImage(ctx, next) {
+  if (ctx.path === '/mermaid.png') return next();
   try {
     let url = (ctx.pathWithoutLocale || ctx.path)
       .replace('.png', '')

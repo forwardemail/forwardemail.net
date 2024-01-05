@@ -4,7 +4,7 @@
  */
 
 const $ = require('jquery');
-const Swal = require('sweetalert2');
+const Swal = require('sweetalert2/dist/sweetalert2.js');
 const URLParse = require('url-parse');
 const qs = require('qs');
 const { spinner: Spinner } = require('@ladjs/assets');

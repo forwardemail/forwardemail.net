@@ -3,6 +3,7 @@ extends ../../layout
 block append scripts
   if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
     script(
+      nonce=nonce,
       defer,
       src=manifest("js/confetti.js"),
       integrity=manifest("js/confetti.js", "integrity"),

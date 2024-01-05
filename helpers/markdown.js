@@ -8,9 +8,8 @@ const markdownItEmoji = require('markdown-it-emoji');
 const markdownItGitHubHeadings = require('markdown-it-github-headings');
 const markdownItHighlightJS = require('markdown-it-highlightjs');
 const markdownItTaskCheckbox = require('markdown-it-task-checkbox');
-const mermaid = require('mermaid');
 
-const logger = require('#helpers/logger');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
 // <https://github.com/markdown-it/markdown-it>
 // <https://github.com/valeriangalliat/markdown-it-highlightjs>
@@ -27,30 +26,7 @@ markdown.use(markdownItGitHubHeadings, {
   prefix: ''
 });
 
-const mermaidChart = (code) => {
-  try {
-    mermaid.parse(code);
-    return `<div class="mermaid text-center">${code}</div>`;
-  } catch (err) {
-    err.isCodeBug = true;
-    logger.fatal(err);
-    // return `<pre>${err.str}</pre>`;
-    return '';
-  }
-};
-
-// <https://github.com/markslides/markdown-it-mermaid/issues/1>
-// <https://github.com/wekan/markdown-it-mermaid> (fork so no GH issues available, still same ESM issue)
-// <https://github.com/mermaid-js/mermaid/issues/2559>
-
-const markdownItMermaid = (md) => {
-  mermaid.init({
-    theme: 'default',
-    startOnLoad: true
-  });
-
-  md.mermaid = mermaid;
-
+const markdownItmermaid = (md) => {
   const original =
     md.renderer.rules.fence ||
     // eslint-disable-next-line max-params
@@ -61,15 +37,30 @@ const markdownItMermaid = (md) => {
   // eslint-disable-next-line max-params
   md.renderer.rules.fence = (tokens, idx, options, env, self) => {
     const token = tokens[idx];
-    const code = token.content.trim();
     if (token.info === 'mermaid') {
-      return mermaidChart(code);
+      const code = encrypt(token.content.trim());
+      // TODO: alt could be closest header token (?)
+      const alt = '';
+      return `<div class="text-center">
+        <a href="/mermaid.png?code=${code}&theme=default" target="_blank" data-toggle="lightbox" data-title="${alt}">
+          <picture>
+            <source
+              srcset="/mermaid.png?code=${code}&theme=dark"
+              media="(prefers-color-scheme: dark)"
+            />
+            <img
+              src="/mermaid.png?code=${code}&theme=default"
+              alt="${alt}"
+            />
+          </picture>
+        </a>
+      </div>`;
     }
 
     return original(tokens, idx, options, env, self);
   };
 };
 
-markdown.use(markdownItMermaid);
+markdown.use(markdownItmermaid);
 
 module.exports = markdown;

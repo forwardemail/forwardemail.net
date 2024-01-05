@@ -7,7 +7,7 @@ block footer
 
 block scripts
   if ctx && ctx.path && ctx.path.endsWith('.html')
-    script.
+    script(nonce=nonce).
       window.print();
 
 block body

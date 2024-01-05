@@ -7,7 +7,7 @@ const $ = require('jquery');
 const Clipboard = require('clipboard');
 const Lazyload = require('lazyload');
 const Popper = require('popper.js');
-const Swal = require('sweetalert2');
+const Swal = require('sweetalert2/dist/sweetalert2.js');
 const Typed = require('typed.js');
 const URLParse = require('url-parse');
 const base64url = require('base64url');
@@ -71,6 +71,7 @@ const {
 } = require('@ladjs/assets');
 
 const debounce = require('./debounce');
+const logger = require('./logger');
 const sendRequest = require('./send-request');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
@@ -99,12 +100,12 @@ $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
 // Add calc to min-vh-100
 const $navbarFixedTop = $('.navbar.fixed-top');
 if ($navbarFixedTop.length > 0) {
-  $('.min-vh-100').attr(
-    'style',
-    `min-height: calc(100vh - ${$navbarFixedTop.outerHeight()}px) !important;`
+  $('.min-vh-100').css(
+    'min-height',
+    `calc(100vh - ${$navbarFixedTop.outerHeight()}px) !important;`
   );
 } else {
-  $('.min-vh-100').attr('style', 'min-height: 100vh !important;');
+  $('.min-vh-100').css('min-height: 100vh !important;');
 }
 
 // Some pages have a navbar fixed to bottom (e.g. Step 1, Step 2)
@@ -512,46 +513,6 @@ if (el && $nav.length > 0) {
 }
 
 //
-// mermaid support + theme change support
-//
-if (window.mermaid) {
-  initializeMermaid();
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', initializeMermaid);
-} else {
-  $('div.mermaid').addClass('d-none');
-}
-
-function initializeMermaid() {
-  const theme =
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'neutral';
-
-  // <https://github.com/mermaid-js/mermaid/issues/1945>
-  window.mermaid.initialize({
-    mermaid: {
-      startOnLoad: true
-    },
-    theme,
-    flowchart: {
-      useMaxWidth: true,
-      htmlLabels: true
-    },
-    secure: [
-      'secure',
-      'securityLevel',
-      'startOnLoad',
-      'maxTextSize',
-      'htmlLabels'
-    ],
-    securityLevel: 'strict'
-  });
-}
-
-//
 // if user attempts to use CTRL+F or CMD+F then expand all collapsed sections
 // so that full text search will work on pages like the FAQ
 //
@@ -750,22 +711,31 @@ if (window.PublicKeyCredential) {
 async function tti() {
   const $tti = $('#tti');
   if ($tti.length === 0) return;
-  const res = await superagent
-    .get(`/${window.LOCALE}/tti`)
-    .set({
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    })
-    .timeout(1000 * 30)
-    .retry(3)
-    .send();
-  $tti.html($(res.text).html());
-  renderDayjs();
-  setTimeout(function () {
-    tti();
-  }, 30000);
+  try {
+    const res = await superagent
+      .get(`/${window.LOCALE}/tti`)
+      .set({
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      })
+      .timeout(1000 * 30)
+      .retry(3)
+      .send();
+    $tti.html($(res.text).html());
+    renderDayjs();
+    setTimeout(function () {
+      tti();
+    }, 30000);
+  } catch (err) {
+    logger.error(err);
+  }
 }
 
 setTimeout(function () {
   tti();
 }, 5000);
+
+// Avoid CSP issues with inline styling for widths on progress bars
+$('[data-width]').each(function () {
+  $(this).css('width', $(this).attr('data-width'));
+});

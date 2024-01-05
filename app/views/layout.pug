@@ -77,13 +77,21 @@ html.h-100.no-js(
       meta(name="msapplication-TileColor", content=config.appColor)
       meta(name="theme-color", content="#ffffff")
 
-      script.
+      //- <https://stackoverflow.com/questions/76791110/how-to-resolve-error-with-permissions-policy-header-origin-trial-controlled-fea>
+      //- <https://github.com/orgs/community/discussions/52356>
+      //-.
+        meta(
+          http-equiv="Permissions-Policy",
+          content="interest-cohort=(), user-id=()"
+        )
+
+      script(nonce=nonce).
         document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();
       if isBot(ctx.get('User-Agent'))
-        style= ".is-bot { display: none !important; }"
+        style(nonce=nonce)= ".is-bot { display: none !important; }"
 
       //- associate with wikipedia
-      script(type="application/ld+json").
+      script(type="application/ld+json", nonce=nonce).
         {
           "@context": "http://schema.org",
           "@type": "Organization",
@@ -204,7 +212,7 @@ html.h-100.no-js(
     block stylesheets
       if isBot(ctx.get('User-Agent'))
         if ctx.pathWithoutLocale === '/' && botCss
-          style!= botCss
+          style(nonce=nonce)!= botCss
           link(
             rel="prefetch",
             href=manifest("css/app-bot.css"),
@@ -227,7 +235,7 @@ html.h-100.no-js(
           )
         else
           if ctx.pathWithoutLocale === '/' && appCss
-            style!= appCss
+            style(nonce=nonce)!= appCss
             link(
               rel="prefetch",
               href=manifest("css/app.css"),
@@ -243,7 +251,7 @@ html.h-100.no-js(
             )
 
     //-.
-      script(crossorigin="anonymous").
+      script(crossorigin="anonymous", nonce=nonce).
         (function () {
           var script = document.createElement('script');
           script.src = 'https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js';
@@ -285,7 +293,7 @@ html.h-100.no-js(
     block scripts
       if !isBot(ctx.get('User-Agent'))
         //- flash messaging (with koa-better-flash and sweetalert2)
-        script(defer).
+        script(defer, nonce=nonce).
           window._types = {
             success: "#{ t('Success') }",
             error: "#{ t('Error') }",
@@ -293,12 +301,12 @@ html.h-100.no-js(
             warning: "#{ t('Warning') }",
             question: "#{ t('Question') }"
           };
-        script(defer, data-ignore-hash-change)#flash-messages.
+        script(defer, nonce=nonce, data-ignore-hash-change)#flash-messages.
           window._messages = !{json(flash(), null, null)};
 
         //- set defaults for sweetalert2
         //- <https://github.com/limonte/sweetalert2/issues/763>
-        script(defer).
+        script(defer, nonce=nonce).
           window._swalDefaults = {
             confirmButtonText: "#{ t('OK') }",
             cancelButtonText: "#{ t('Cancel') }",
@@ -307,23 +315,23 @@ html.h-100.no-js(
           };
 
         //- set defaults for confirm prompt sweetalert2 modal
-        script(defer).
+        script(defer, nonce=nonce).
           window._confirmPromptTitle = "#{ t('Are you sure?') }";
           window._confirmPromptHTML = "#{ t('Please confirm if you wish to continue.') }";
 
         //- set the locale to be used by front-end assets
-        script(defer).
+        script(defer, nonce=nonce).
           window.LOCALE = "#{locale}";
 
         //- set the API endpoint to be used by front-end assets
-        script(defer).
+        script(defer, nonce=nonce).
           window.API_URL = "#{config.urls.api}";
 
       //- set the user and API key to be used by CabinJS
       if config.env !== 'test' && !isBot(ctx.get('User-Agent'))
         //- set the user and API key to be used by CabinJS
         if user
-          script(defer).
+          script(defer, nonce=nonce).
             window.USER = {
               id: "#{user.id}",
               name: "#{user[config.passport.fields.displayName]}",
@@ -331,7 +339,7 @@ html.h-100.no-js(
             };
             window.API_TOKEN = "#{user[config.userFields.apiToken]}";
         else if ctx.sessionId
-          script(defer).
+          script(defer, nonce=nonce).
             window.USER = {
               id: "#{ctx.sessionId}",
             };
@@ -378,7 +386,7 @@ html.h-100.no-js(
 
         //- cloudflare turnstile (hidden from bots and admins)
         if config.turnstileEnabled && (!user || user.group !== 'admin')
-          script(defer).
+          script(defer, nonce=nonce).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
           script(defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')

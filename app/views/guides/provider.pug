@@ -87,10 +87,9 @@ block body
               = " "
               = t("Watch Video")
           else
-            .lazyframe.border.d-block.mx-auto(
+            .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
               data-vendor="youtube_nocookie",
               title=meta.title ? striptags(convert(meta.title)) : false,
-              style="max-width: 100%; border-width: 0.5rem !important; width: 640px; height: 360px",
               data-src=`https://www.youtube-nocookie.com/embed/${provider.video.split('?v=')[1]}?autoplay=0`
             )
     .row

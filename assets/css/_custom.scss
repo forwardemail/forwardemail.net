@@ -8,7 +8,7 @@
   min-height: 80vh !important;
 }
 .min-vh-100 {
-  min-height: calc(100vh - 57.6328px) !important;
+  min-height: calc(100vh - 58.61px) !important;
 }
 .min-h-100 {
   min-height: 100%;
@@ -17,7 +17,7 @@
 // NOTE: we have to use class name here otherwise emails get a padding on top
 //       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
 body.app {
-  padding-top: 57.6328px;
+  padding-top: 58.61px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -154,11 +154,6 @@ html {
       display: none !important;
     }
 
-    // hide mermaid charts
-    div.mermaid {
-      display: none !important;
-    }
-
     // override for pages like FAQ to render q&a dropdowns
     .collapse:not(.show) {
       display: block;
@@ -257,6 +252,58 @@ a, .markdown-body a {
   background-color: #000000;
 }
 
+.lazyframe {
+  width: 100%;
+  height: 450px;
+  border-radius: 0.3rem !important;
+}
+
+.lazyframe-bordered {
+  max-width: 100%;
+  border-width: 0.5rem !important;
+  width: 640px;
+  height: 360px;
+}
+
 .text-sans-serif {
   font-family: $font-family-sans-serif;
+}
+
+.border-05rem {
+  border-width: 0.5rem !important;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.cursor-initial {
+  cursor: initial;
+}
+
+.max-height-300px {
+  max-height: 300px;
+}
+
+// <https://github.com/mattboldt/typed.js/issues/592>
+.typed-cursor{
+  opacity: 1;
+}
+.typed-cursor.typed-cursor--blink {
+  -webkit-animation: typedjsBlink 0.7s infinite;
+  animation: typedjsBlink 0.7s infinite;
+}
+
+@keyframes typedjsBlink {
+  50% { opacity: 0.0; }
+}
+
+@-webkit-keyframes typedjsBlink {
+  0% { opacity: 1; }
+  50% { opacity: 0.0; }
+  100% { opacity: 1; }
+}
+
+.min-width-25 {
+  min-width: 25%;
 }
