@@ -4274,5 +4274,18 @@
   "Reserved Email Addresses Code Example in <span class=\"notranslate\">2024</span>": "Exemple de code d&#39;adresses e-mail réservées en <span class=\"notranslate\">2024</span>",
   "Send React Emails Code Example in <span class=\"notranslate\">2024</span>": "Exemple de code d&#39;envoi d&#39;e-mails React en <span class=\"notranslate\">2024</span>",
   "URL Regex JavaScript and Node.js Code Example in <span class=\"notranslate\">2024</span>": "Exemple de code URL Regex JavaScript et Node.js en <span class=\"notranslate\">2024</span>",
-  "Review us on Trustpilot": "Évaluez-nous sur Trustpilot"
+  "Review us on Trustpilot": "Évaluez-nous sur Trustpilot",
+  "Please enable JavaScript for PayPal checkout option.": "Veuillez activer JavaScript pour l'option de paiement PayPal.",
+  "Card, Wallet, or Bank": "Carte, portefeuille ou banque",
+  "Payment Methods": "méthodes de payement",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "Nous acceptons Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA. Débit direct, prélèvements préautorisés canadiens et prélèvement automatique ACH.",
+  "3 years ($324 USD)": "3 ans (324 $ USD)",
+  "2 years ($216 USD)": "2 ans (216 $ USD)",
+  "1 year ($108 USD)": "1 an (108 $)",
+  "6 months ($54 USD)": "6 mois (54 $)",
+  "3 months ($27 USD)": "3 mois (27$ USD)",
+  "2 months ($18 USD)": "2 mois (18$ USD)",
+  "1 month ($9 USD)": "1 mois (9 USD)",
+  "Checkout": "Vérifier",
+  "We'll automatically email you if you're late on a payment.": "Nous vous enverrons automatiquement un e-mail si vous êtes en retard sur un paiement."
 }

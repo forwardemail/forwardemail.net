@@ -239,7 +239,10 @@ const purgeCssOptions = {
       'bg-themed',
       'navbar-expand-lg',
       'fixed-top',
-      'card-columns-2'
+      'card-columns-2',
+      /^swal2/,
+      /^typed-/,
+      'component-frame'
     ])
   ]
 };

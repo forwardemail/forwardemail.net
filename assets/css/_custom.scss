@@ -307,3 +307,9 @@ a, .markdown-body a {
 .min-width-25 {
   min-width: 25%;
 }
+
+// paypal due to CSP issue with inline styling
+.component-frame {
+  width: 100%;
+  height: 100%;
+}

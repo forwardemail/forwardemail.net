@@ -4353,5 +4353,18 @@
   "Reserved Email Addresses Code Example in <span class=\"notranslate\">2024</span>": "Ví dụ về mã địa chỉ email dành riêng vào <span class=\"notranslate\">2024</span>",
   "Send React Emails Code Example in <span class=\"notranslate\">2024</span>": "Gửi ví dụ về mã email phản ứng vào <span class=\"notranslate\">2024</span>",
   "URL Regex JavaScript and Node.js Code Example in <span class=\"notranslate\">2024</span>": "Ví dụ về URL Regex JavaScript và Node.js vào <span class=\"notranslate\">2024</span>",
-  "Review us on Trustpilot": "Đánh giá chúng tôi trên Trustpilot"
+  "Review us on Trustpilot": "Đánh giá chúng tôi trên Trustpilot",
+  "Please enable JavaScript for PayPal checkout option.": "Vui lòng bật JavaScript cho tùy chọn thanh toán PayPal.",
+  "Card, Wallet, or Bank": "Thẻ, Ví hoặc Ngân hàng",
+  "Payment Methods": "Phương thức thanh toán",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "Chúng tôi chấp nhận Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Ghi nợ trực tiếp, ghi nợ được ủy quyền trước của Canada và Ghi nợ trực tiếp ACH.",
+  "3 years ($324 USD)": "3 năm ($324 USD)",
+  "2 years ($216 USD)": "2 năm ($216 USD)",
+  "1 year ($108 USD)": "1 năm ($108 USD)",
+  "6 months ($54 USD)": "6 tháng ($54 USD)",
+  "3 months ($27 USD)": "3 tháng ($27 USD)",
+  "2 months ($18 USD)": "2 tháng ($18 USD)",
+  "1 month ($9 USD)": "1 tháng ($9 USD)",
+  "Checkout": "Thủ tục thanh toán",
+  "We'll automatically email you if you're late on a payment.": "Chúng tôi sẽ tự động gửi email cho bạn nếu bạn thanh toán trễ."
 }

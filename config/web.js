@@ -226,7 +226,12 @@ module.exports = (redis) => ({
               'https://ytimg.com',
               'https://*.ytimg.com'
             ],
-            'style-src': [...defaultSrc, "'unsafe-inline'"],
+            'style-src': [
+              ...defaultSrc,
+              "'unsafe-inline'",
+              'https://www.paypal.com',
+              'https://challenges.cloudflare.com'
+            ],
             'script-src': [
               ..._.without(defaultSrc, 'data:'),
               'https://plausible.io',
