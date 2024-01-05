@@ -129,7 +129,6 @@ setInterval(checkGitHubIssues, 60000);
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
       "'self'",
-      "'unsafe-inline'",
       'data:',
       `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}*.${
         env.WEB_HOST
@@ -142,6 +141,7 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
         let nonce;
         for (const s of Object.getOwnPropertySymbols(res)) {
           const desc = s.toString().replace(/Symbol\((.*)\)$/, '$1');
+          console.log('s', s, 'desc', desc, 'res', res);
           if (
             desc === 'kOutHeaders' &&
             typeof res[s] === 'object' &&
@@ -235,6 +235,7 @@ module.exports = (redis) => ({
             ],
             'script-src': [
               ..._.without(defaultSrc, 'data:'),
+              "'unsafe-inline'",
               'https://plausible.io',
               'https://challenges.cloudflare.com',
               'https://www.paypal.com',
