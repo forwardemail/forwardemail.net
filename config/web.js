@@ -141,10 +141,8 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
         let nonce;
         for (const s of Object.getOwnPropertySymbols(res)) {
           const desc = s.toString().replace(/Symbol\((.*)\)$/, '$1');
-          console.log('s', s, 'desc', desc, 'res', res);
           if (
             desc === 'kOutHeaders' &&
-            typeof res[s] === 'object' &&
             res[s]['x-csp-nonce'] &&
             Array.isArray(res[s]['x-csp-nonce']) &&
             res[s]['x-csp-nonce'].length === 2
@@ -243,7 +241,7 @@ module.exports = (redis) => ({
                 ? []
                 : ['https://www.sandbox.paypal.com'])
             ],
-            'object-src': _.without(defaultSrc, 'data:'),
+            'object-src': ["'none'"],
             'frame-ancestors': ["'self'"],
             'frame-src': [
               ...defaultSrc,
@@ -299,6 +297,12 @@ module.exports = (redis) => ({
       app.context.client,
       app.context.logger
     );
+    app.use((ctx, next) => {
+      // since we're on an older helmet version due to koa-helmet
+      // <https://github.com/helmetjs/helmet/issues/230>
+      ctx.set('X-XSS-Protection', '0');
+      return next();
+    });
     // csp nonce
     // <script nonce="whatever">
     // <style nonce="whatever">
@@ -366,10 +370,6 @@ module.exports = (redis) => ({
       }
     });
     app.use(async (ctx, next) => {
-      // since we're on an older helmet version due to koa-helmet
-      // <https://github.com/helmetjs/helmet/issues/230>
-      ctx.set('X-XSS-Protection', '0');
-
       // convert local IPv6 addresses to IPv4 format
       // <https://blog.apify.com/ipv4-mapped-ipv6-in-nodejs/>
       if (ipaddr.isValid(ctx.request.ip)) {

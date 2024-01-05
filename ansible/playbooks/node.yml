@@ -101,6 +101,27 @@
           - fonts-noto-cjk
           - fonts-noto-cjk-extra
         update_cache: true
+    # install puppeteer dep
+    - name: Install puppeteer dep
+      apt:
+        name:
+          - libnss3-dev
+          - libatk1.0-0
+          - libnss3
+          - libatk1.0-0
+          - libatk-bridge2.0-0
+          - libx11-xcb1
+          - libxcb-dri3-0
+          - libxcomposite1
+          - libxfixes3
+          - libcups2
+          - libdrm2
+          - libxrandr2
+          - libgbm1
+          - libasound2
+          - libpangocairo-1.0-0
+          - libgtk-3-0
+        update_cache: true
     # install libjpeg-turbo8 for wkhtmltopdf
     - name: Install libjpeg-turbo8
       apt:

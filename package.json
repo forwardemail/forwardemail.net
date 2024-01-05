@@ -47,7 +47,7 @@
     "@ladjs/proxy": "4.0.1",
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "9.1.4",
-    "@ladjs/web": "21.0.15",
+    "@ladjs/web": "21.0.16",
     "@mermaid-js/mermaid-cli": "10.6.1",
     "@octokit/core": "4.2.4",
     "@openpgp/wkd-client": "0.0.4",
