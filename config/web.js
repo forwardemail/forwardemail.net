@@ -129,6 +129,7 @@ setInterval(checkGitHubIssues, 60000);
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
       "'self'",
+      "'unsafe-inline'",
       'data:',
       `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}*.${
         env.WEB_HOST
