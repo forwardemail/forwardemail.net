@@ -375,15 +375,6 @@ html.h-100.no-js(
             crossorigin="anonymous"
           )
 
-        //- TODO: remove plausible and migrate to our own
-        //- analytics via plausible.io
-        if (!user || user.group !== 'admin') && isNotPrivateRoute
-          script(
-            defer,
-            data-domain="forwardemail.net",
-            src="https://plausible.io/js/plausible.js"
-          )
-
         //- cloudflare turnstile (hidden from bots and admins)
         if config.turnstileEnabled && (!user || user.group !== 'admin')
           script(defer, nonce=nonce).

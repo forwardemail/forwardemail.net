@@ -128,6 +128,7 @@ setInterval(checkGitHubIssues, 60000);
 
 const defaultSrc = isSANB(process.env.WEB_HOST)
   ? [
+      "'none'",
       "'self'",
       'data:',
       `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}*.${
@@ -136,7 +137,9 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
       `${env.NODE_ENV === 'production' ? 'https://' : 'http://'}${
         env.WEB_HOST
       }`,
-      ...(env.NODE_ENV === 'production' ? [] : [`http://${env.WEB_HOST}:*`]),
+      ...(env.NODE_ENV === 'production'
+        ? [`https://${env.WEB_HOST}:*`]
+        : [`http://${env.WEB_HOST}:*`]),
       function (req, res) {
         let nonce;
         for (const s of Object.getOwnPropertySymbols(res)) {
