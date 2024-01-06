@@ -22,11 +22,10 @@ $info: theme-color('info');
 $question: theme-color('light');
 
 // sweetalert2
-@media (prefers-color-scheme: light) {
-  @import 'node_modules/sweetalert2/src/sweetalert2';
-  // sweetalert2 fix
-  @import 'swal2';
-}
+@import 'node_modules/sweetalert2/src/sweetalert2';
+
+// sweetalert2 fix
+@import 'swal2';
 
 // highlight.js
 // @import 'node_modules/highlight.js/scss/default';
