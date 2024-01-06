@@ -240,7 +240,7 @@ const purgeCssOptions = {
       'navbar-expand-lg',
       'fixed-top',
       'card-columns-2',
-      /^swal2/,
+      /swal2/,
       /^typed-/,
       'component-frame'
     ])
