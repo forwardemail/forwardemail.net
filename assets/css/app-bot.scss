@@ -111,3 +111,7 @@ $question: theme-color('light');
     padding-top: 0 !important;
   }
 }
+
+// support for RTL
+// (languages like Farsi and Arabic)
+@import 'node_modules/bootstrap-v4-rtl/scss/rtl';

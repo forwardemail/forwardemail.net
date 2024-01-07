@@ -82,6 +82,7 @@
     "boolean": "3.2.0",
     "bootstrap": "4.6.2",
     "bootstrap-dropdown-hover": "4.2.0",
+    "bootstrap-v4-rtl": "4.6.2-1",
     "bree": "9.2.2",
     "bson-objectid": "2.0.4",
     "bufferutil": "4.0.8",
