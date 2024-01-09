@@ -539,13 +539,15 @@ Domains.pre('validate', async function (next) {
       // Domain cannot be one of the trusted senders
       if (config.truthSources.has(root)) {
         const users = await Users.find({
-          $in: domain.members
-            .filter((member) => member.group === 'admin')
-            .map((member) =>
-              typeof member?.user?._id === 'object'
-                ? member.user._id
-                : member.user
-            ),
+          _id: {
+            $in: domain.members
+              .filter((member) => member.group === 'admin')
+              .map((member) =>
+                typeof member?.user?._id === 'object'
+                  ? member.user._id
+                  : member.user
+              )
+          },
           [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false
         })

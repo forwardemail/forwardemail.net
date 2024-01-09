@@ -6692,5 +6692,7 @@
   "Best Practices for Node.js Logging Code Example in <span class=\"notranslate\">2024</span>": "Best Practices for Node.js Logging Code Example in <span class=\"notranslate\">2024</span>",
   "Review us on Trustpilot": "Review us on Trustpilot",
   "Support for E2EE/OpenPGP/WKD": "Support for E2EE/OpenPGP/WKD",
-  "Easily migrate from any provider": "Easily migrate from any provider"
+  "Easily migrate from any provider": "Easily migrate from any provider",
+  "Request Time-out": "Request Time-out",
+  "The domain name you entered of <span class=\"font-weight-bold notranslate\">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href=\"%s\">contact us</a> for account approval.": "The domain name you entered of <span class=\"font-weight-bold notranslate\">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href=\"%s\">contact us</a> for account approval."
 }

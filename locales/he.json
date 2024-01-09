@@ -4919,5 +4919,6 @@
   "No domains exist for that search.": "לא קיימים דומיינים עבור החיפוש הזה.",
   "Support for E2EE/OpenPGP/WKD": "תמיכה ב-E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "העבר בקלות מכל ספק",
-  "thanks for signing up!": "תודה על ההרשמה!"
+  "thanks for signing up!": "תודה על ההרשמה!",
+  "Request Time-out": "בקש פסק זמן"
 }

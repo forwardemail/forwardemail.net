@@ -4292,5 +4292,22 @@
   "No domains exist for that search.": "Aucun domaine n'existe pour cette recherche.",
   "Support for E2EE/OpenPGP/WKD": "Prise en charge d'E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "Migrez facilement depuis n’importe quel fournisseur",
-  "thanks for signing up!": "Merci pour l'enregistrement!"
+  "thanks for signing up!": "Merci pour l'enregistrement!",
+  "Request Time-out": "Demander un délai d'attente",
+  "Billing | Forward Email": "Facturation &#124; Un courriel transféré",
+  "Not ready to upgrade?": "Vous n'êtes pas prêt à effectuer une mise à niveau ?",
+  "Switch to the Free plan": "Passer au forfait Gratuit",
+  "learn more": "apprendre encore plus",
+  "Upgrade to <strong class=\"notranslate\">%s</strong>": "Mettre à niveau vers <strong class=\"notranslate\">%s</strong>",
+  "Eligible for automatic refund until <span class=\"notranslate\">%s</span>.": "Éligible au remboursement automatique jusqu&#39;au <span class=\"notranslate\">%s</span> .",
+  "Subscription": "Abonnement",
+  "One-time payment": "Paiement unique",
+  "3 years ($108 USD)": "3 ans (108 $ USD)",
+  "2 years ($72 USD)": "2 ans (72 $ US)",
+  "1 year ($36 USD)": "1 an (36 $ US)",
+  "6 months ($18 USD)": "6 mois (18$ USD)",
+  "3 months ($9 USD)": "3 mois (9 USD)",
+  "2 months ($6 USD)": "2 mois (6 USD)",
+  "1 month ($3 USD)": "1 mois (3 USD)",
+  "You will automatically receive unlimited domains for this price.": "Vous recevrez automatiquement des domaines illimités pour ce prix."
 }

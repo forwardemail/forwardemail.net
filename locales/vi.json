@@ -4371,5 +4371,22 @@
   "No domains exist for that search.": "Không có tên miền tồn tại cho tìm kiếm đó.",
   "Support for E2EE/OpenPGP/WKD": "Hỗ trợ E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "Dễ dàng di chuyển từ bất kỳ nhà cung cấp nào",
-  "thanks for signing up!": "Cảm ơn bạn đã đăng ký!"
+  "thanks for signing up!": "Cảm ơn bạn đã đăng ký!",
+  "Request Time-out": "Hết thời gian yêu cầu",
+  "Billing | Forward Email": "Thanh toán &#124; Chuyển tiếp email",
+  "Not ready to upgrade?": "Chưa sẵn sàng để nâng cấp?",
+  "Switch to the Free plan": "Chuyển sang gói miễn phí",
+  "learn more": "tìm hiểu thêm",
+  "Upgrade to <strong class=\"notranslate\">%s</strong>": "Nâng cấp lên <strong class=\"notranslate\">%s</strong>",
+  "Eligible for automatic refund until <span class=\"notranslate\">%s</span>.": "Đủ điều kiện để được hoàn tiền tự động cho đến <span class=\"notranslate\">%s</span> .",
+  "Subscription": "Đăng ký",
+  "One-time payment": "Thanh toán một lần",
+  "3 years ($108 USD)": "3 năm ($108 USD)",
+  "2 years ($72 USD)": "2 năm ($72 USD)",
+  "1 year ($36 USD)": "1 năm ($36 USD)",
+  "6 months ($18 USD)": "6 tháng ($18 USD)",
+  "3 months ($9 USD)": "3 tháng ($9 USD)",
+  "2 months ($6 USD)": "2 tháng ($6 USD)",
+  "1 month ($3 USD)": "1 tháng ($3 USD)",
+  "You will automatically receive unlimited domains for this price.": "Bạn sẽ tự động nhận được tên miền không giới hạn với mức giá này."
 }
