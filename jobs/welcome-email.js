@@ -14,14 +14,15 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
-
 const mongoose = require('mongoose');
+const pMapSeries = require('p-map-series');
+
+const Domains = require('#models/domains');
+const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
-const Users = require('#models/users');
-const Domains = require('#models/domains');
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -39,53 +40,54 @@ graceful.listen();
         $lte: dayjs().subtract(1, 'minute').toDate()
       }
     };
+
     object[config.userFields.welcomeEmailSentAt] = { $exists: false };
     object[config.userFields.hasVerifiedEmail] = true;
     object[config.userFields.isBanned] = false;
 
     const _ids = await Users.distinct('_id', object);
 
+    logger.info('_ids', _ids.length);
+
     // send welcome email
-    await Promise.all(
-      _ids.map(async (_id) => {
-        try {
-          const user = await Users.findById(_id).lean().exec();
+    await pMapSeries(_ids, async (_id) => {
+      try {
+        const user = await Users.findById(_id).lean().exec();
 
-          // in case email was sent for whatever reason
-          if (user[config.userFields.welcomeEmailSentAt]) return;
+        // in case email was sent for whatever reason
+        if (user[config.userFields.welcomeEmailSentAt]) return;
 
-          // find a domain that the user created
-          const domain = await Domains.findOne({
-            members: {
-              $elemMatch: {
-                user: user._id,
-                group: 'admin'
-              }
+        // find a domain that the user created
+        const domain = await Domains.findOne({
+          members: {
+            $elemMatch: {
+              user: user._id,
+              group: 'admin'
             }
-          })
-            .lean()
-            .exec();
+          }
+        })
+          .lean()
+          .exec();
 
-          // send email
-          await email({
-            template: 'welcome',
-            message: {
-              to: user[config.userFields.fullEmail]
-            },
-            locals: { user, domain }
-          });
+        // send email
+        await email({
+          template: 'welcome',
+          message: {
+            to: user[config.userFields.fullEmail]
+          },
+          locals: { user, domain }
+        });
 
-          // store that we sent this email
-          await Users.findByIdAndUpdate(user._id, {
-            $set: {
-              [config.userFields.welcomeEmailSentAt]: new Date()
-            }
-          });
-        } catch (err) {
-          await logger.error(err);
-        }
-      })
-    );
+        // store that we sent this email
+        await Users.findByIdAndUpdate(user._id, {
+          $set: {
+            [config.userFields.welcomeEmailSentAt]: new Date()
+          }
+        });
+      } catch (err) {
+        await logger.error(err);
+      }
+    });
   } catch (err) {
     await logger.error(err);
   }

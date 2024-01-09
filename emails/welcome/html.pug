@@ -69,6 +69,28 @@ block content
                 li
                   = emoji("white_check_mark")
                   = " "
+                  = t("Support for E2EE/OpenPGP/WKD")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd`
+                  )
+                    = t("Learn more")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Easily migrate from any provider")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`
+                  )
+                    = t("Learn more")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
                   = t("Enterprise-grade 99.99% uptime SLA")
                   = " "
                   a.badge.badge-dark(href=`${config.urls.web}/${locale}/faq`)

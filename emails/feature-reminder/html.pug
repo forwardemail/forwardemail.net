@@ -58,6 +58,65 @@ block content
                 li
                   = emoji("white_check_mark")
                   = " "
+                  = t("Support for E2EE/OpenPGP/WKD")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd`
+                  )
+                    = t("Learn more")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Easily migrate from any provider")
+                  = " "
+                  a.badge.badge-dark(
+                    href=`${config.urls.web}/${locale}/faq#how-do-i-import-and-migrate-my-existing-mailbox`
+                  )
+                    = t("Learn more")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Enterprise-grade 99.99% uptime SLA")
+                  = " "
+                  a.badge.badge-dark(href=`${config.urls.web}/${locale}/faq`)
+                    = t("View FAQ")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("Powered by bare metal servers")
+                  = " "
+                  a.badge.badge-dark(
+                    href="https://status.forwardemail.net",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("Status Page")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
+                  = t("100% open-source software")
+                  = " "
+                  a.badge.badge-dark(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    = t("View")
+                    = " "
+                    = t("GitHub")
+                    = " "
+                    != "&rarr;"
+                li
+                  = emoji("white_check_mark")
+                  = " "
                   = t("Email API designed for developers")
                   = " "
                   a.badge.badge-dark(href=`${config.urls.web}/email-api`)

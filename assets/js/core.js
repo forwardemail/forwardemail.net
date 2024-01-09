@@ -300,7 +300,7 @@ if (Clipboard.isSupported()) {
     let $container = $(this).parents('pre:first');
     if ($container.length === 0) $container = $(this);
     $container
-      .css('cursor', 'pointer')
+      .css('cursor', 'copy')
       .tooltip({
         title: 'Click to copy',
         placement: 'bottom',
@@ -311,7 +311,7 @@ if (Clipboard.isSupported()) {
   $body.on('mouseleave', 'code', function () {
     let $container = $(this).parents('pre:first');
     if ($container.length === 0) $container = $(this);
-    $container.tooltip('dispose').css('cursor', 'initial');
+    $container.tooltip('dispose').css('cursor', 'copy');
   });
   const clipboard = new Clipboard('code', {
     text(trigger) {

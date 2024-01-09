@@ -41,13 +41,9 @@ const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
 
 //
-// TODO: run migration for existing IMAP db storage in Mongo -> SQLite temp mailboxes
-//
 // TODO: handle translation of the folder names (similar to wildduck)
 // TODO: send welcome email to user in their sqlite dbs
-// TODO: alias bootstrap progress bars for storage, pooled, etc
 // TODO: when user deletes account then also purge sqlite databases and backups
-// TODO: alert user they have new email if messages detected > 24 hours ago
 
 // TODO: search filters like has:attachment
 // TODO: run validate() on all docs before 'update' and 'insert'
@@ -66,8 +62,6 @@ const refreshSession = require('#helpers/refresh-session');
 // - [ ] remove or enforce maxTimeMS for all imap handlers
 // - [ ] projection on all handlers (instead of returning entire document)
 // - [ ] allow aliases to configure retention in the future (default is 0)
-// - [ ] delete old threads over time
-//       <https://github.com/nodemailer/wildduck/issues/515>
 
 // TODO: urgent items
 // - [ ] when users delete their account then delete all Emails, Messages, Attachments, Threads, and Mailboxes in the system (make this both a job and hook on delete)

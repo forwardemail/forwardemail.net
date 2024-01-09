@@ -4288,5 +4288,9 @@
   "1 month ($9 USD)": "1 mois (9 USD)",
   "Checkout": "Vérifier",
   "We'll automatically email you if you're late on a payment.": "Nous vous enverrons automatiquement un e-mail si vous êtes en retard sur un paiement.",
-  "العربية": "L'arabe"
+  "العربية": "L'arabe",
+  "No domains exist for that search.": "Aucun domaine n'existe pour cette recherche.",
+  "Support for E2EE/OpenPGP/WKD": "Prise en charge d'E2EE/OpenPGP/WKD",
+  "Easily migrate from any provider": "Migrez facilement depuis n’importe quel fournisseur",
+  "thanks for signing up!": "Merci pour l'enregistrement!"
 }

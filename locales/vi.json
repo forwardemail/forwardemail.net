@@ -4367,5 +4367,9 @@
   "1 month ($9 USD)": "1 tháng ($9 USD)",
   "Checkout": "Thủ tục thanh toán",
   "We'll automatically email you if you're late on a payment.": "Chúng tôi sẽ tự động gửi email cho bạn nếu bạn thanh toán trễ.",
-  "العربية": "tiếng Ả Rập"
+  "العربية": "tiếng Ả Rập",
+  "No domains exist for that search.": "Không có tên miền tồn tại cho tìm kiếm đó.",
+  "Support for E2EE/OpenPGP/WKD": "Hỗ trợ E2EE/OpenPGP/WKD",
+  "Easily migrate from any provider": "Dễ dàng di chuyển từ bất kỳ nhà cung cấp nào",
+  "thanks for signing up!": "Cảm ơn bạn đã đăng ký!"
 }
