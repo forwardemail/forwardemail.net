@@ -115,7 +115,9 @@ const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
-if (!conn) throw new Error('Mongoose connection does not exist');
+if (!conn) {
+  throw new Error('Mongoose connection does not exist');
+}
 
 const Token = new mongoose.Schema({
   user: {
@@ -221,7 +223,7 @@ const Domains = new mongoose.Schema({
     default: true
   },
 
-  // on larger domains with 10K+ aliases (or global domains)
+  // On larger domains with 10K+ aliases (or global domains)
   // we prohibit catch-all aliases
   is_catchall_regex_disabled: {
     type: Boolean,
@@ -259,10 +261,10 @@ const Domains = new mongoose.Schema({
     index: true
   },
 
-  // when the txt/mx was last checked at
+  // When the txt/mx was last checked at
   last_checked_at: Date,
 
-  // if the user was suspended for non-payment, the date of notice sent
+  // If the user was suspended for non-payment, the date of notice sent
   email_suspended_sent_at: Date,
 
   is_api: {
@@ -305,7 +307,7 @@ const Domains = new mongoose.Schema({
     default: () => `fe-${revHash(dayjs().format('YYYYMMDDHHmmss'))}`
   },
   dkim_private_key: String,
-  // rendered as base64 in front-end
+  // Rendered as base64 in front-end
   dkim_public_key: mongoose.Schema.Types.Buffer,
   return_path: {
     type: String,
@@ -357,15 +359,15 @@ const Domains = new mongoose.Schema({
   verified_email_sent_at: Date,
   missing_txt_sent_at: Date,
   multiple_exchanges_sent_at: Date,
-  // default option to require `has_recipient_verification`
+  // Default option to require `has_recipient_verification`
   // on all aliases for verification emails to send
   has_recipient_verification: {
     type: Boolean,
-    // if true then aliases default to true
+    // If true then aliases default to true
     // (if not explicitly set, e.g. via API request)
     default: false
   },
-  // premium alias verification template
+  // Premium alias verification template
   // (manually enabled by admins only upon request)
   has_custom_verification: {
     type: Boolean,
@@ -400,7 +402,7 @@ const Domains = new mongoose.Schema({
       validate: (value) => isURL(value) || value === ''
     }
   },
-  // nameservers (Array of either IP or FQDN)
+  // Nameservers (Array of either IP or FQDN)
   ns: [
     {
       type: String,
@@ -419,7 +421,7 @@ Domains.index(
   }
 );
 
-// shared tangerine resolver
+// Shared tangerine resolver
 Domains.virtual('resolver')
   .get(function () {
     return this.__resolver;
@@ -461,32 +463,39 @@ Domains.virtual('skip_ns_check')
   });
 
 Domains.pre('remove', function (next) {
-  if (this.is_global)
+  if (this.is_global) {
     return next(
       Boom.badRequest(
         i18n.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN', this.locale)
       )
     );
+  }
+
   next();
 });
 
-// set a default dkim key for the user
+// Set a default dkim key for the user
 Domains.pre('validate', async function (next) {
-  if (isSANB(this.dkim_private_key)) return next();
-  // if the provider is cloudflare then default to 2048 bit modulus
+  if (isSANB(this.dkim_private_key)) {
+    return next();
+  }
+
+  // If the provider is cloudflare then default to 2048 bit modulus
   if (
     Array.isArray(this.ns) &&
     this.ns.length > 0 &&
-    this.ns.every((val) => val.endsWith('cloudflare.com')) &&
+    this.ns.every((value) => value.endsWith('cloudflare.com')) &&
     !this.skip_ns_check
-  )
+  ) {
     this.dkim_modulus_length = 2048;
+  }
+
   try {
     const { privateKey, publicKey } = await promisify(crypto.generateKeyPair)(
       'rsa',
       {
         modulusLength: this.dkim_modulus_length || config.defaultModulusLength,
-        // default as of nodemailer v6.9.1
+        // Default as of nodemailer v6.9.1
         hashAlgorithm: 'RSA-SHA256',
         publicKeyEncoding: {
           type: 'spki',
@@ -508,42 +517,77 @@ Domains.pre('validate', async function (next) {
 Domains.pre('validate', async function (next) {
   try {
     const domain = this;
-    if (!domain.plan) domain.plan = 'free';
-    if (domain.is_global) domain.plan = 'team';
+    if (!domain.plan) {
+      domain.plan = 'free';
+    }
 
-    // domain.name must be IP or FQDN
-    if (!isSANB(domain.name) || (!isFQDN(domain.name) && !isIP(domain.name)))
+    if (domain.is_global) {
+      domain.plan = 'team';
+    }
+
+    // Domain.name must be IP or FQDN
+    if (!isSANB(domain.name) || (!isFQDN(domain.name) && !isIP(domain.name))) {
       throw Boom.badRequest(
         i18n.translateError('INVALID_DOMAIN', domain.locale)
       );
-
-    // if it is a FQDN then convert to unicode
-    if (isFQDN(domain.name)) {
-      domain.name = punycode.toUnicode(domain.name);
-      // domain cannot be one of the trusted senders
-      if (config.truthSources.has(parseRootDomain(domain.name)))
-        throw Boom.badRequest(
-          i18n.translateError(
-            'ALLOWLIST_DOMAIN_NOT_ALLOWED',
-            domain.locale,
-            parseRootDomain(domain.name),
-            `/${domain.locale}/help`
-          )
-        );
     }
 
-    if (!isSANB(this.verification_record))
+    // If it is a FQDN then convert to unicode
+    if (isFQDN(domain.name)) {
+      domain.name = punycode.toUnicode(domain.name);
+      const root = parseRootDomain(domain.name);
+      // Domain cannot be one of the trusted senders
+      if (config.truthSources.has(root)) {
+        const users = await Users.find({
+          $in: domain.members
+            .filter((member) => member.group === 'admin')
+            .map((member) =>
+              typeof member?.user?._id === 'object'
+                ? member.user._id
+                : member.user
+            ),
+          [config.userFields.hasVerifiedEmail]: true,
+          [config.userFields.isBanned]: false
+        })
+          .select(
+            `email ${config.lastLocaleField} ${config.userFields.hasVerifiedEmail}`
+          )
+          .lean()
+          .exec();
+        if (
+          users.length === 0 ||
+          !users.some(
+            (u) =>
+              u.email.endsWith(`@${root}`) ||
+              u.email.endsWith(`@${domain.name}`)
+          )
+        ) {
+          throw Boom.badRequest(
+            i18n.translateError(
+              'ALLOWLIST_DOMAIN_NOT_ALLOWED',
+              domain.locale,
+              parseRootDomain(domain.name),
+              `/${domain.locale}/help`
+            )
+          );
+        }
+      }
+    }
+
+    if (!isSANB(this.verification_record)) {
       this.verification_record = await cryptoRandomString.async(
         verificationRecordOptions
       );
+    }
 
     if (
       this.verification_record.replace(REGEX_VERIFICATION, '') !==
       this.verification_record
-    )
+    ) {
       throw Boom.badRequest(
         i18n.translateError('INVALID_VERIFICATION_RECORD', domain.locale)
       );
+    }
 
     next();
   } catch (err) {
@@ -558,22 +602,25 @@ Domains.pre('validate', function (next) {
     !this.members.some(
       (member) => typeof member.user !== 'undefined' && member.group === 'admin'
     )
-  )
+  ) {
     throw Boom.badRequest(
       i18n.translateError('AT_LEAST_ONE_ADMIN_REQUIRED', this.locale)
     );
+  }
 
   next();
 });
 
-// prevent new domains from being created with a plan
+// Prevent new domains from being created with a plan
 // that the user is not yet subscribed to, and also
 // enforce that when domains are saved, they are required
 // to have at least one admin with the plan of the domain
 // (otherwise throw an error that tells them what's wrong)
 Domains.pre('validate', async function (next) {
-  // we can skip this for TXT validation since it has duplicate logic
-  if (this.skip_payment_check) return next();
+  // We can skip this for TXT validation since it has duplicate logic
+  if (this.skip_payment_check) {
+    return next();
+  }
 
   try {
     const domain = this;
@@ -590,16 +637,21 @@ Domains.pre('validate', async function (next) {
       .exec();
 
     const hasValidPlan = users.some((user) => {
-      if (domain.plan === 'team' && user.plan === 'team') return true;
+      if (domain.plan === 'team' && user.plan === 'team') {
+        return true;
+      }
+
       if (
         domain.plan === 'enhanced_protection' &&
         ['enhanced_protection', 'team'].includes(user.plan)
-      )
+      ) {
         return true;
+      }
+
       return false;
     });
 
-    // if it is a restricted domain then ensure has paid plan
+    // If it is a restricted domain then ensure has paid plan
     // and ensure every user has a restricted extension (no personal emails allowed)
     if (isRestricted) {
       const badUserEmails = [];
@@ -608,20 +660,22 @@ Domains.pre('validate', async function (next) {
           config.restrictedDomains.every(
             (ext) => !user.email.endsWith(`.${ext}`)
           )
-        )
+        ) {
           badUserEmails.push(user.email);
+        }
       }
 
-      if (badUserEmails.length > 0)
+      if (badUserEmails.length > 0) {
         logger.error(
           new Error(
             `Restricted domain had personal emails: ${domain.name} (${domain.id})`
           ),
           { domain, badUserEmails }
         );
+      }
 
-      // if the domain is not on a paid plan then it's not valid
-      if (domain.plan === 'free')
+      // If the domain is not on a paid plan then it's not valid
+      if (domain.plan === 'free') {
         throw Boom.paymentRequired(
           i18n.translateError(
             'RESTRICTED_PLAN_UPGRADE_REQUIRED',
@@ -630,6 +684,7 @@ Domains.pre('validate', async function (next) {
             `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
           )
         );
+      }
     }
 
     if (domain.plan === 'free') {
@@ -644,11 +699,11 @@ Domains.pre('validate', async function (next) {
         );
       }
 
-      // if the domain contained any of these words then require paid upgrade
+      // If the domain contained any of these words then require paid upgrade
       // - mail
       // - disposable
       // - inbox
-      if (isDisposable)
+      if (isDisposable) {
         throw Boom.paymentRequired(
           i18n.translateError(
             'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
@@ -657,9 +712,10 @@ Domains.pre('validate', async function (next) {
             `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
           )
         );
+      }
     }
 
-    if (!hasValidPlan && domain.plan !== 'free')
+    if (!hasValidPlan && domain.plan !== 'free') {
       throw Boom.paymentRequired(
         i18n.translateError(
           'DOMAIN_PLAN_UPGRADE_REQUIRED',
@@ -669,6 +725,7 @@ Domains.pre('validate', async function (next) {
           `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
         )
       );
+    }
 
     next();
   } catch (err) {
@@ -678,8 +735,8 @@ Domains.pre('validate', async function (next) {
 
 Domains.pre('validate', function (next) {
   const domain = this;
-  // domain must be on a paid plan in order to require verification
-  if (domain.plan === 'free' && domain.has_recipient_verification)
+  // Domain must be on a paid plan in order to require verification
+  if (domain.plan === 'free' && domain.has_recipient_verification) {
     return next(
       Boom.badRequest(
         i18n.translateError(
@@ -688,34 +745,39 @@ Domains.pre('validate', function (next) {
         )
       )
     );
+  }
+
   next();
 });
 
 Domains.pre('validate', function (next) {
   const domain = this;
 
-  // boolean helper for fast querying against an indexed boolean
+  // Boolean helper for fast querying against an indexed boolean
   domain.is_smtp_suspended = _.isDate(domain.smtp_suspended_sent_at);
 
-  // we return early here in case the boolean was set to false
+  // We return early here in case the boolean was set to false
   // and we want to preserve what the user had already set for templates
   // (e.g. as a backup in case they ever restore it or we turn it back on)
-  if (!domain.has_custom_verification) return next();
+  if (!domain.has_custom_verification) {
+    return next();
+  }
 
-  // if template was empty for html then assume it's not set
+  // If template was empty for html then assume it's not set
   if (!isSANB(domain.custom_verification.html)) {
     domain.custom_verification.html = '';
     domain.custom_verification.text = '';
     return next();
   }
 
-  // strip subject of all tags
+  // Strip subject of all tags
   domain.custom_verification.subject = striptags(
     domain.custom_verification.subject
   );
 
-  if (!isSANB(domain.custom_verification.subject))
+  if (!isSANB(domain.custom_verification.subject)) {
     domain.custom_verification.subject = '';
+  }
 
   // TODO: clean up the HTML
   if (!isSANB(domain.custom_verification.html)) {
@@ -724,43 +786,52 @@ Domains.pre('validate', function (next) {
     return next();
   }
 
-  // ensure that the HTML has at least one occurrence
+  // Ensure that the HTML has at least one occurrence
   // of the `VERIFICATION_LINK` variable
   // (even though we interpolate all of them)
-  if (!domain.custom_verification.html.includes('VERIFICATION_LINK'))
+  if (!domain.custom_verification.html.includes('VERIFICATION_LINK')) {
     return next(
       Boom.badRequest(
         i18n.translateError('MISSING_VERIFICATION_LINK', domain.locale)
       )
     );
+  }
 
-  // auto-generate text portion if blank
-  if (isSANB(domain.custom_verification.text))
+  // Auto-generate text portion if blank
+  if (isSANB(domain.custom_verification.text)) {
     domain.custom_verification.text = striptags(
       domain.custom_verification.text
     );
-  else
+  } else {
     domain.custom_verification.text = convert(domain.custom_verification.html, {
       selectors: [{ selector: 'img', format: 'skip' }]
     });
+  }
 
-  // ensure that text has at least one occurrence
+  // Ensure that text has at least one occurrence
   // of the `VERIFICATION_LINK` variable
   // (even though we interpolate all of them)
-  if (!domain.custom_verification.text.includes('VERIFICATION_LINK'))
+  if (!domain.custom_verification.text.includes('VERIFICATION_LINK')) {
     return next(
       Boom.badRequest(
         i18n.translateError('MISSING_VERIFICATION_LINK', domain.locale)
       )
     );
+  }
 
   next();
 });
 
-// prevent members from existing on domains after plan changes
+// Prevent members from existing on domains after plan changes
 Domains.pre('save', function (next) {
-  if (this.plan === 'team') return next();
-  if (this.members.length === 1) return next();
+  if (this.plan === 'team') {
+    return next();
+  }
+
+  if (this.members.length === 1) {
+    return next();
+  }
+
   return next(
     Boom.badRequest(
       i18n.translateError('REMOVE_MEMBERS_BEFORE_PLAN_CHANGE', this.locale)
@@ -772,12 +843,14 @@ Domains.pre('save', async function (next) {
   try {
     const domain = this;
 
-    // helper virtual to skip verification results
+    // Helper virtual to skip verification results
     // (e.g. when onboarding a user that's just visiting the API/FAQ page)
     // (or if we already performed the verification results lookup)
-    if (domain.skip_verification) return next();
+    if (domain.skip_verification) {
+      return next();
+    }
 
-    // if (!domain.resolver) {
+    // If (!domain.resolver) {
     //   logger.fatal(new Error('Resolver not passed'));
     //   return next();
     // }
@@ -793,25 +866,35 @@ Domains.pre('save', async function (next) {
     //
     const hasDNSError =
       Array.isArray(errors) &&
-      errors.some((err) => err.code && DNS_RETRY_CODES.has(err.code));
+      errors.some((error) => error.code && DNS_RETRY_CODES.has(error.code));
 
     if (!hasDNSError) {
-      // reset missing txt so we alert users if they are missing a TXT in future again
-      if (!domain.has_txt_record && txt && _.isDate(domain.missing_txt_sent_at))
+      // Reset missing txt so we alert users if they are missing a TXT in future again
+      if (
+        !domain.has_txt_record &&
+        txt &&
+        _.isDate(domain.missing_txt_sent_at)
+      ) {
         domain.missing_txt_sent_at = undefined;
-      // reset multiple exchanges error so we alert users if they have multiple MX in the future
+      }
+
+      // Reset multiple exchanges error so we alert users if they have multiple MX in the future
       if (
         !domain.has_mx_record &&
         mx &&
         _.isDate(domain.multiple_exchanges_sent_at)
-      )
+      ) {
         domain.multiple_exchanges_sent_at = undefined;
+      }
+
       domain.has_txt_record = txt;
       domain.has_mx_record = mx;
-      if (ns) domain.ns = ns;
+      if (ns) {
+        domain.ns = ns;
+      }
     }
 
-    // store when we last checked it
+    // Store when we last checked it
     domain.last_checked_at = new Date();
 
     next();
@@ -865,12 +948,14 @@ async function getNSRecords(domain, resolver) {
       purgeCache: true
     });
     if (Array.isArray(records) && records.length > 0) {
-      // filter records for IP and FQDN only values
+      // Filter records for IP and FQDN only values
       records = records.filter(
         (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
       );
-      // only set `ns` if we have at least one record
-      if (records.length > 1) ns = records;
+      // Only set `ns` if we have at least one record
+      if (records.length > 1) {
+        ns = records;
+      }
     }
   } catch (err) {
     try {
@@ -908,12 +993,14 @@ async function getNSRecords(domain, resolver) {
           purgeCache: true
         });
         if (Array.isArray(records) && records.length > 0) {
-          // filter records for IP and FQDN only values
+          // Filter records for IP and FQDN only values
           records = records.filter(
             (record) => (isSANB(record) && isIP(record)) || isFQDN(record)
           );
-          // only set `ns` if we have at least one record
-          if (records.length > 1) ns = records;
+          // Only set `ns` if we have at least one record
+          if (records.length > 1) {
+            ns = records;
+          }
         }
       }
     } catch (err) {
@@ -959,17 +1046,17 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     // NOTE: we don't purge ns here since we assume it's already setup
     const records = [
       {
-        // dkim
+        // Dkim
         domain: `${domain.dkim_key_selector}._domainkey.${domain.name}`,
         type: 'TXT'
       },
       {
-        // return-path
+        // Return-path
         domain: `${domain.return_path}.${domain.name}`,
         type: 'CNAME'
       },
       {
-        // dmarc
+        // Dmarc
         domain: `_dmarc.${domain.name}`,
         type: 'TXT'
       }
@@ -998,7 +1085,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         domain,
         records
       });
-      // wait one second for DNS changes to propagate
+      // Wait one second for DNS changes to propagate
       await delay(ms('1s'));
     } catch (err) {
       err.domain = domain;
@@ -1026,7 +1113,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
           `${domain.dkim_key_selector}._domainkey.${domain.name}`,
           { purgeCache: true }
         );
-        const str = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString(
+        const string_ = `v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString(
           'base64'
         )};`.trim();
         for (const record of records) {
@@ -1035,10 +1122,10 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
             .join('')
             .split(';')
             .join('; ')
-            // remove double whitespace
+            // Remove double whitespace
             .replace(/\s\s+/g, ' ')
-            .trim(); // join chunks together
-          if (line === str) {
+            .trim(); // Join chunks together
+          if (line === string_) {
             dkim = true;
             break;
           }
@@ -1074,8 +1161,9 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
               ? 'forwardemail.net'
               : config.webHost
           )
-        )
+        ) {
           returnPath = true;
+        }
       } catch (err) {
         logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
@@ -1117,8 +1205,9 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
           dmarcRecord &&
           dmarcRecord.v === 'DMARC1' &&
           dmarcRecord.pct === 100
-        )
+        ) {
           dmarc = true;
+        }
       } catch (err) {
         logger.debug(err);
         // TODO: isCodeBug needs integrated anywhere resolver is used
@@ -1135,31 +1224,35 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     })()
   ]);
 
-  if (!dkim)
+  if (!dkim) {
     errors.push(
       Boom.badRequest(
         i18n.translateError('INVALID_DKIM_SIGNATURE', domain.locale)
       )
     );
+  }
 
-  if (!returnPath)
+  if (!returnPath) {
     errors.push(
       Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH', domain.locale))
     );
+  }
 
-  if (!dmarc)
+  if (!dmarc) {
     errors.push(
       Boom.badRequest(
         i18n.translateError('INVALID_DMARC_RESULT', domain.locale)
       )
     );
+  }
 
-  if (!dkim || !returnPath || !dmarc)
+  if (!dkim || !returnPath || !dmarc) {
     errors.unshift(
       Boom.badRequest(
         i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
       )
     );
+  }
 
   return {
     ns,
@@ -1204,7 +1297,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
         domain,
         types: CACHE_TYPES
       });
-      // wait one second for DNS changes to propagate
+      // Wait one second for DNS changes to propagate
       await delay(ms('1s'));
     } catch (err) {
       err.domain = domain;
@@ -1303,7 +1396,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             txt = false;
           }
 
-          if (errors.length === 0 && result.errors.length === 0) txt = true;
+          if (errors.length === 0 && result.errors.length === 0) {
+            txt = true;
+          }
         } else if (
           result.forwardingAddresses.length === 0 &&
           result.globalForwardingAddresses.length === 0 &&
@@ -1413,7 +1508,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
           exchanges.length > 0 &&
           exchanges.every((exchange) => config.exchanges.includes(exchange));
         if (hasOtherExchanges) {
-          const err = Boom.badRequest(
+          const error = Boom.badRequest(
             i18n.translateError(
               'MX_HAS_OTHER',
               domain.locale,
@@ -1421,10 +1516,11 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
               domain.name
             )
           );
-          err.has_multiple_exchanges = hasAllExchanges;
-          errors.push(err);
-        } else if (hasAllExchanges) mx = true;
-        else
+          error.has_multiple_exchanges = hasAllExchanges;
+          errors.push(error);
+        } else if (hasAllExchanges) {
+          mx = true;
+        } else {
           errors.push(
             Boom.badRequest(
               i18n.translateError(
@@ -1435,8 +1531,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
               )
             )
           );
+        }
       } catch (err) {
-        // logger.debug(err);
+        // Logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -1468,22 +1565,25 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
   ]);
 
   if (!requiresPaidPlan) {
-    if (!txt || !mx)
+    if (!txt || !mx) {
       errors.push(
         Boom.badRequest(i18n.translateError('AUTOMATED_CHECK', domain.locale))
       );
+    }
 
-    if (!txt && !mx)
+    if (!txt && !mx) {
       errors.push(
         Boom.badRequest(i18n.translateError('NAMESERVER_CHECK', domain.locale))
       );
+    }
 
-    if (!txt || !mx)
+    if (!txt || !mx) {
       errors.unshift(
         Boom.badRequest(
           i18n.translateError('DNS_CHANGES_TAKE_TIME', domain.locale)
         )
       );
+    }
   }
 
   return { ns, txt, mx, errors: _.uniqBy(errors, 'message') };
@@ -1513,7 +1613,7 @@ function getNameRestrictions(domainName) {
 Domains.statics.getNameRestrictions = getNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
-  // get all the admins we should send the email to
+  // Get all the admins we should send the email to
   let users = await Users.find({
     _id: {
       $in: domain.members
@@ -1531,11 +1631,13 @@ async function getToAndMajorityLocaleByDomain(domain) {
     .lean()
     .exec();
 
-  if (users.length === 0) throw new Error('Domain had zero admins');
+  if (users.length === 0) {
+    throw new Error('Domain had zero admins');
+  }
 
   users = users.filter((u) => u[config.userFields.hasVerifiedEmail]);
 
-  if (users.length === 0)
+  if (users.length === 0) {
     throw Boom.badRequest(
       i18n.translateError(
         'USER_UNVERIFIED',
@@ -1543,6 +1645,7 @@ async function getToAndMajorityLocaleByDomain(domain) {
         `${config.urls.web}${config.verifyRoute}`
       )
     );
+  }
 
   const to = _.uniq(users.map((user) => user.email));
 
@@ -1555,24 +1658,33 @@ async function getToAndMajorityLocaleByDomain(domain) {
 
 Domains.statics.getToAndMajorityLocaleByDomain = getToAndMajorityLocaleByDomain;
 
-function splitString(str) {
-  if (str.indexOf('/') === 0) {
-    // it can either be split by ",/" or ","
-    const index = str.includes(',/')
-      ? str.lastIndexOf('/:', str.indexOf(',/'))
-      : str.indexOf('/:');
-    const lastComma = str.indexOf(',', index);
-    if (lastComma === -1) return [str];
-    if (lastComma === str.length - 1) return [str.slice(0, lastComma)];
-    return [str.slice(0, lastComma), ...splitString(str.slice(lastComma + 1))];
+function splitString(string_) {
+  if (string_.indexOf('/') === 0) {
+    // It can either be split by ",/" or ","
+    const index = string_.includes(',/')
+      ? string_.lastIndexOf('/:', string_.indexOf(',/'))
+      : string_.indexOf('/:');
+    const lastComma = string_.indexOf(',', index);
+    if (lastComma === -1) {
+      return [string_];
+    }
+
+    if (lastComma === string_.length - 1) {
+      return [string_.slice(0, lastComma)];
+    }
+
+    return [
+      string_.slice(0, lastComma),
+      ...splitString(string_.slice(lastComma + 1))
+    ];
   }
 
-  return str.includes(',')
+  return string_.includes(',')
     ? [
-        str.slice(0, str.indexOf(',')),
-        ...splitString(str.slice(str.indexOf(',') + 1))
+        string_.slice(0, string_.indexOf(',')),
+        ...splitString(string_.slice(string_.indexOf(',') + 1))
       ]
-    : [str];
+    : [string_];
 }
 
 // eslint-disable-next-line complexity
@@ -1582,62 +1694,69 @@ async function getTxtAddresses(
   allowEmpty = false,
   resolver
 ) {
-  if (!isFQDN(domainName))
+  if (!isFQDN(domainName)) {
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
+  }
 
-  if (typeof resolver !== 'object' || typeof resolver.resolveTxt !== 'function')
-    throw new Error('Resolver missing');
+  if (
+    typeof resolver !== 'object' ||
+    typeof resolver.resolveTxt !== 'function'
+  ) {
+    throw new TypeError('Resolver missing');
+  }
 
   const records = await resolver.resolveTxt(domainName, { purgeCache: true });
 
-  // verification records that contain `forward-email-site-verification=` prefix
+  // Verification records that contain `forward-email-site-verification=` prefix
   const verifications = [];
 
-  // dns TXT record must contain `forward-email=` prefix
+  // Dns TXT record must contain `forward-email=` prefix
   const validRecords = [];
 
-  // add support for multi-line TXT records
+  // Add support for multi-line TXT records
   for (let i = 0; i < records.length; i++) {
-    records[i] = records[i].join('').trim(); // join chunks together
-    if (records[i].startsWith(config.freePrefix))
+    records[i] = records[i].join('').trim(); // Join chunks together
+    if (records[i].startsWith(config.freePrefix)) {
       validRecords.push(records[i].replace(config.freePrefix, ''));
-    else if (records[i].startsWith(config.paidPrefix))
+    } else if (records[i].startsWith(config.paidPrefix)) {
       verifications.push(records[i].replace(config.paidPrefix, ''));
+    }
   }
 
-  // join multi-line TXT records together and replace double w/single commas
+  // Join multi-line TXT records together and replace double w/single commas
   const record = validRecords.join(',').replace(/,+/g, ',').trim();
 
   const addresses = isSANB(record)
     ? record
         .split({
-          [Symbol.split](str) {
-            return splitString(str);
+          [Symbol.split](string_) {
+            return splitString(string_);
           }
         })
-        // remove trailing whitespaces from each address listed
-        .map((str) => str.trim())
+        // Remove trailing whitespaces from each address listed
+        .map((string_) => string_.trim())
     : [];
 
-  if (!allowEmpty && addresses.length === 0)
+  if (!allowEmpty && addresses.length === 0) {
     throw Boom.badRequest(
       i18n.translateError('MISSING_DNS_TXT', locale, domainName)
     );
+  }
 
-  // store if we have a forwarding address or not
+  // Store if we have a forwarding address or not
   const forwardingAddresses = [];
 
-  // store if we have a global redirect or not
+  // Store if we have a global redirect or not
   const globalForwardingAddresses = [];
 
-  // store if we have ignored addresses or not
+  // Store if we have ignored addresses or not
   const ignoredAddresses = [];
 
-  // store errors
+  // Store errors
   const errors = [];
 
   for (const element of addresses) {
-    // convert addresses to lowercase
+    // Convert addresses to lowercase
     const lowerCaseAddress = element.toLowerCase();
 
     if (
@@ -1652,13 +1771,13 @@ async function getTxtAddresses(
       const isRegex = element.indexOf('/') === 0;
       const index = isRegex
         ? element.lastIndexOf('/:') + 1
-        : element.lastIndexOf(':'); // last index because of regex usage
+        : element.lastIndexOf(':'); // Last index because of regex usage
       const addr =
         index === -1
           ? [element]
           : [element.slice(0, index), element.slice(index + 1)];
 
-      // addr[0] = hello (username)
+      // Addr[0] = hello (username)
       // addr[1] = forwardemail@gmail.com (forwarding email)
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
@@ -1676,17 +1795,18 @@ async function getTxtAddresses(
           !isIP(addr[1]) &&
           !isEmail(addr[1]) &&
           !isURL(addr[1], config.isURLOptions))
-      )
+      ) {
         errors.push(
           new Error(
             // TODO: we may want to replace this with "Invalid Recipients"
             `Domain has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
         );
+      }
 
       forwardingAddresses.push({ name: addr[0], recipient: addr[1] });
     } else if (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress)) {
-      // allow domain alias forwarding
+      // Allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isEmail(lowerCaseAddress)) {
@@ -1708,11 +1828,13 @@ async function getTxtAddresses(
 Domains.statics.getTxtAddresses = getTxtAddresses;
 
 async function ensureUserHasValidPlan(user, locale) {
-  // if the user was on the team plan
+  // If the user was on the team plan
   // then all of their domains would be valid
-  if (user.plan === 'team') return;
+  if (user.plan === 'team') {
+    return;
+  }
 
-  // get all domains associated with this user
+  // Get all domains associated with this user
   const domains = await this.find({
     plan: { $ne: 'free' },
     'members.user': user._id
@@ -1722,28 +1844,32 @@ async function ensureUserHasValidPlan(user, locale) {
     .lean()
     .exec();
 
-  // if no domains then return early
-  if (domains.length === 0) return;
+  // If no domains then return early
+  if (domains.length === 0) {
+    return;
+  }
 
   const errors = [];
 
   for (const domain of domains) {
-    // determine what plans are required
+    // Determine what plans are required
     const validPlans =
       domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
     let isValid = false;
 
     for (const member of domain.members) {
-      // return early if the member is not an admin (irrelevant)
-      if (member.group !== 'admin') continue;
+      // Return early if the member is not an admin (irrelevant)
+      if (member.group !== 'admin') {
+        continue;
+      }
 
-      // if the user did not exist then return early
+      // If the user did not exist then return early
       if (!member.user || !member.user.id) {
         logger.error(new Error(`Member in ${domain.name} no longer exists.`));
         continue;
       }
 
-      // use the new/latest plan passed in the `user` argument (as opposed to what exists)
+      // Use the new/latest plan passed in the `user` argument (as opposed to what exists)
       // (e.g. this method `ensureUserHasValidPlan` is called before saving a user's plan change)
       const memberPlan =
         member.user.id === user.id ? user.plan : member.user.plan;
@@ -1754,7 +1880,7 @@ async function ensureUserHasValidPlan(user, locale) {
       }
     }
 
-    if (!isValid)
+    if (!isValid) {
       errors.push(
         i18n.translateError(
           'DOMAIN_PLAN_UPGRADE_REQUIRED',
@@ -1764,13 +1890,18 @@ async function ensureUserHasValidPlan(user, locale) {
           `/${locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
         )
       );
+    }
   }
 
-  if (errors.length === 0) return;
+  if (errors.length === 0) {
+    return;
+  }
 
   logger.error('Member did not have valid plan', { errors });
 
-  if (errors.length === 1) throw Boom.badRequest(errors[0].message);
+  if (errors.length === 1) {
+    throw Boom.badRequest(errors[0].message);
+  }
 
   throw Boom.badRequest(`
     <p class="font-weight-bold text-danger">${i18n.translate(
@@ -1800,17 +1931,19 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
     .lean()
     .exec();
 
-  if (!domain)
+  if (!domain) {
     throw Boom.notFound(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
+  }
 
-  // safeguard to not check storage used for global domains
-  if (domain.is_global)
+  // Safeguard to not check storage used for global domains
+  if (domain.is_global) {
     throw new TypeError('Global domains not supported for storage');
+  }
 
-  // safeguard for storage to only be used on paid plans
-  if (domain.plan === 'free')
+  // Safeguard for storage to only be used on paid plans
+  if (domain.plan === 'free') {
     throw Boom.badRequest(
       i18n.translateError(
         'DOMAIN_PLAN_UPGRADE_REQUIRED',
@@ -1820,14 +1953,16 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
       )
     );
+  }
 
-  // if we're on non-team plan, then there should only be one member (safeguard)
-  if (domain.plan !== 'team' && domain.members.length > 1)
+  // If we're on non-team plan, then there should only be one member (safeguard)
+  if (domain.plan !== 'team' && domain.members.length > 1) {
     throw new TypeError(
       `Domain ${domain.name} (${domain.id}) has more than one member`
     );
+  }
 
-  // filter out a domain's members without actual users
+  // Filter out a domain's members without actual users
   const adminMembers = domain.members.filter(
     (member) =>
       _.isObject(member.user) &&
@@ -1836,18 +1971,20 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
       mongoose.isObjectIdOrHexString(member.user._id)
   );
 
-  if (adminMembers.length === 0)
+  if (adminMembers.length === 0) {
     throw Boom.notFound(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
+  }
 
-  // if we're on non-team plan, then there should only be one admin (safeguard)
-  if (domain.plan !== 'team' && adminMembers.length > 1)
+  // If we're on non-team plan, then there should only be one admin (safeguard)
+  if (domain.plan !== 'team' && adminMembers.length > 1) {
     throw new TypeError(
       `Domain ${domain.name} (${domain.id}) has more than one admin`
     );
+  }
 
-  // now get all domains where $elemMatch is the admin user id and group is admin
+  // Now get all domains where $elemMatch is the admin user id and group is admin
   const domainIds = aliasesOnly
     ? [_id]
     : await this.distinct('_id', {
@@ -1859,15 +1996,18 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         }
       });
 
-  // safeguard
-  if (domainIds.length === 0)
+  // Safeguard
+  if (domainIds.length === 0) {
     throw Boom.notFound(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
+  }
 
   if (domainIds.length > 0) {
-    if (typeof conn?.models?.Aliases?.aggregate !== 'function')
+    if (typeof conn?.models?.Aliases?.aggregate !== 'function') {
       throw new TypeError('Aliases model is not ready');
+    }
+
     const results = await conn.models.Aliases.aggregate([
       {
         $match: {
@@ -1885,15 +2025,16 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         }
       }
     ]);
-    // results [ { _id: '', storage_used: 91360 } ]
+    // Results [ { _id: '', storage_used: 91360 } ]
     if (
       results.length !== 1 ||
       typeof results[0] !== 'object' ||
       typeof results[0].storage_used !== 'number'
-    )
+    ) {
       throw Boom.notFound(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
+    }
 
     storageUsed += results[0].storage_used;
   }

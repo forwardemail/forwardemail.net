@@ -606,6 +606,32 @@ async function getDatabase(
       instance.logger.fatal(err, { session });
     }
 
+    // remove messages in Junk/Trash folder that are >= 30 days old
+    try {
+      const mailboxes = await Mailboxes.find(instance, session, {
+        specialUse: {
+          $in: ['\\Trash', '\\Junk']
+        }
+      });
+      if (mailboxes.length === 0)
+        throw new TypeError('Trash folder(s) do not exist');
+      // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
+      // (as we've done below by simply mapping and returning `id` vs `_id`)
+      await Messages.deleteMany(instance, session, {
+        mailbox: {
+          $in: mailboxes.map((m) => m.id)
+        },
+        exp: true,
+        rdate: {
+          $lte: Date.now()
+        }
+      });
+    } catch (err) {
+      instance.logger.fatal(err, { session });
+    }
+
+    // TODO: delete orphaned attachments (those without messages that reference them)
+
     // release lock
     try {
       if (lock) await releaseLock(instance, db, lock);

@@ -304,6 +304,71 @@ async function countDocuments(instance, session, filter = {}) {
   return result[expression];
 }
 
+// NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
+async function deleteMany(instance, session, condition = {}, options = {}) {
+  const table = this?.collection?.modelName;
+  if (!isSANB(table)) throw new TypeError('Table name missing');
+  const mapping = this?.mapping;
+  if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
+    throw new TypeError('Database is missing');
+
+  if (
+    !instance?.wsp ||
+    (!(instance.wsp instanceof WebSocketAsPromised) &&
+      !instance.wsp[Symbol.for('isWSP')])
+  )
+    throw new TypeError('WebSocketAsPromised missing');
+
+  if (typeof session?.user?.password !== 'string')
+    throw new TypeError('Session user and password missing');
+
+  if (!_.isEmpty(options)) {
+    throw new TypeError('Options not yet supported');
+  }
+
+  const sql = builder.build({
+    type: 'remove',
+    table,
+    condition
+  });
+
+  // acquire lock if options.lock not set
+  let lock;
+  if (!options?.lock) lock = await acquireLock(instance, session.db);
+
+  let result;
+  let err;
+  try {
+    // use websockets if readonly
+    if (session.db.readonly) {
+      result = await instance.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        lock: options.lock || lock,
+        stmt: [
+          ['prepare', sql.query],
+          ['run', sql.values]
+        ]
+      });
+    } else {
+      result = session.db.prepare(sql.query).run(sql.values);
+    }
+  } catch (_err) {
+    err = _err;
+  }
+
+  // release lock if options.lock not set
+  if (lock) await releaseLock(instance, session.db, lock);
+
+  // throw error if any
+  if (err) throw err;
+
+  if (typeof result?.changes !== 'number')
+    throw new TypeError('Result should be a number');
+  return { deletedCount: result.changes };
+}
+
 // eslint-disable-next-line complexity
 async function deleteOne(instance, session, conditions = {}, options = {}) {
   const table = this?.collection?.modelName;
@@ -1026,7 +1091,13 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
               op.updateOne.filter
             );
 
-          if (!doc) throw new TypeError('Doc does not exist');
+          if (!doc) {
+            const err = new TypeError('Doc does not exist');
+            err.op = op;
+            err.operator = '$addToSet';
+            err.filter = op.updateOne.filter;
+            throw err;
+          }
 
           for (const prop of Object.keys(op.updateOne.update.$addToSet)) {
             // only support boolean, string, or number (not array or object)
@@ -1096,7 +1167,13 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
               op.updateOne.filter
             );
 
-          if (!doc) throw new TypeError('Doc does not exist');
+          if (!doc) {
+            const err = new TypeError('Doc does not exist');
+            err.op = op;
+            err.operator = '$pull';
+            err.filter = op.updateOne.filter;
+            throw err;
+          }
 
           // op.updateOne.update {
           //   '$pull': { flags: { '$in': [Array] } },
@@ -1307,6 +1384,7 @@ function dummyProofModel(model) {
   model.findById = findById.bind(model);
   model.findOne = findOne.bind(model);
   model.deleteOne = deleteOne.bind(model);
+  model.deleteMany = deleteMany.bind(model);
   model.findByIdAndUpdate = findByIdAndUpdate.bind(model);
   model.findOneAndUpdate = findOneAndUpdate.bind(model);
   model.distinct = distinct.bind(model);

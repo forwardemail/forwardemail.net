@@ -312,7 +312,7 @@ module.exports = (redis) => ({
     //       <https://github.com/pugjs/pug/issues/2899>
     //       <https://github.com/whatwg/html/issues/2369>
     app.use((ctx, next) => {
-      if (ctx.method === 'GET') {
+      if (ctx.method === 'GET' && env.NODE_ENV !== 'test') {
         const nonce = crypto.randomBytes(16).toString('hex');
         ctx.set('X-CSP-Nonce', nonce);
         ctx.state.nonce = nonce;
