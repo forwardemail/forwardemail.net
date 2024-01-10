@@ -116,7 +116,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       Aliases.findById(email.alias)
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+          `id ${config.userFields.isBanned} email ${config.userFields.fullEmail} ${config.lastLocaleField}`
         )
         .lean()
         .exec()

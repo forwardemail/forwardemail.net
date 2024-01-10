@@ -164,7 +164,7 @@ async function onAuth(auth, session, fn) {
       })
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField}`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
@@ -323,8 +323,8 @@ async function onAuth(auth, session, fn) {
         ? alias.user[config.lastLocaleField]
         : obj.locale;
 
-    if (alias && alias.user[config.userFields.fullEmail]) {
-      to.push(alias.user[config.userFields.fullEmail]);
+    if (alias && alias.user.email) {
+      to.push(alias.user.email);
     } else {
       to.push(...obj.to);
     }

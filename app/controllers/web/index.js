@@ -319,7 +319,7 @@ async function regenerateAliasPassword(ctx) {
       throw new Error('Alias does not exist');
 
     const user = await Users.findById(alias.user)
-      .select(`${config.userFields.fullEmail} ${config.lastLocaleField}`)
+      .select(`email ${config.lastLocaleField}`)
       .lean()
       .exec();
 
@@ -370,7 +370,7 @@ async function regenerateAliasPassword(ctx) {
           alias_has_pgp: alias.has_pgp,
           alias_public_key: alias.public_key,
           locale: user[config.lastLocaleField] || i18n.config.defaultLocale,
-          owner_full_email: user[config.userFields.fullEmail]
+          owner_full_email: user.email
         }
       }
     });

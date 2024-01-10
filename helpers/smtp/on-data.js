@@ -6,6 +6,7 @@
 const _ = require('lodash');
 const bytes = require('bytes');
 const getStream = require('get-stream');
+const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const { isEmail } = require('validator');
 
@@ -73,7 +74,10 @@ async function onData(stream, _session, fn) {
     let alias;
     let isValid = false;
     if (session.user.alias_id) {
-      alias = await Aliases.findOne({ id: session.user.alias_id })
+      alias = await Aliases.findOne({
+        _id: new mongoose.Types.ObjectId(session.user.alias_id),
+        domain: new mongoose.Types.ObjectId(session.user.domain_id)
+      })
         .populate(
           'user',
           `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`

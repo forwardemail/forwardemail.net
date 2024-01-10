@@ -135,7 +135,7 @@ async function downloadAliasBackup(ctx) {
               alias_has_pgp: alias.has_pgp,
               alias_public_key: alias.public_key,
               locale: ctx.locale,
-              owner_full_email: ctx.state.user[config.userFields.fullEmail]
+              owner_full_email: ctx.state.user.email
             }
           }
         })

@@ -81,7 +81,7 @@ async function refreshSession(session, command) {
       .populate(
         'user',
         // TODO: we can remove `smtpLimit` (?)
-        `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+        `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.lastLocaleField}`
       )
       .select('+tokens.hash +tokens.salt')
       .lean()
@@ -99,7 +99,7 @@ async function refreshSession(session, command) {
   session.user.alias_public_key = alias.public_key;
   session.user.locale =
     alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
-  session.user.owner_full_email = alias.user[config.userFields.fullEmail];
+  session.user.owner_full_email = alias.user.email;
 
   //
   // NOTE: we don't need to perform the below validation because we

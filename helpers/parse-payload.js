@@ -854,7 +854,7 @@ async function parsePayload(data, ws) {
                 .populate('domain', 'id name')
                 .populate(
                   'user',
-                  `${config.userFields.isBanned} ${config.userFields.fullEmail} ${config.lastLocaleField}`
+                  `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
                   'id has_imap has_pgp public_key storage_location user is_enabled name domain'
@@ -904,7 +904,7 @@ async function parsePayload(data, ws) {
                   alias_has_pgp: alias.has_pgp,
                   alias_public_key: alias.public_key,
                   locale: alias.user[config.lastLocaleField],
-                  owner_full_email: alias.user[config.userFields.fullEmail]
+                  owner_full_email: alias.user.email
                 }
               };
 
@@ -1294,7 +1294,8 @@ async function parsePayload(data, ws) {
 
       case 'vacuum': {
         const alias = await Aliases.findOne({
-          id: payload.session.user.alias_id
+          _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+          domain: new mongoose.Types.ObjectId(payload.session.user.domain_id)
         })
           .lean()
           .exec();
@@ -1316,7 +1317,8 @@ async function parsePayload(data, ws) {
           // store when we last vacuumed database
           await Aliases.findOneAndUpdate(
             {
-              _id: alias._id
+              _id: alias._id,
+              domain: alias.domain
             },
             {
               $set: {
@@ -1863,7 +1865,10 @@ async function parsePayload(data, ws) {
           // update alias imap backup date using provided time
           await Aliases.findOneAndUpdate(
             {
-              id: payload.session.user.alias_id
+              _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+              domain: new mongoose.Types.ObjectId(
+                payload.session.user.domain_id
+              )
             },
             {
               $set: {
