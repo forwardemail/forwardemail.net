@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "Trustpilot でレビューしてください",
   "Support for E2EE/OpenPGP/WKD": "E2EE/OpenPGP/WKDのサポート",
   "Easily migrate from any provider": "あらゆるプロバイダーから簡単に移行",
-  "Request Time-out": "リクエストタイムアウト"
+  "Request Time-out": "リクエストタイムアウト",
+  "Additionally these": "さらにこれら",
+  "brand and corporate top-level domains": "ブランドおよび企業のトップレベル ドメイン",
+  "are allowlisted by default (e.g.": "デフォルトで許可リストに登録されています（例:",
+  "for Apple Card bank statements):": "Apple Card の銀行明細の場合):"
 }

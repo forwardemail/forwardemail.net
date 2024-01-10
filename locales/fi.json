@@ -6803,5 +6803,9 @@
   "Review us on Trustpilot": "Arvostele meidät Trustpilotissa",
   "Support for E2EE/OpenPGP/WKD": "Tuki E2EE/OpenPGP/WKD:lle",
   "Easily migrate from any provider": "Siirrä helposti miltä tahansa palveluntarjoajalta",
-  "Request Time-out": "Pyynnön aikakatkaisu"
+  "Request Time-out": "Pyynnön aikakatkaisu",
+  "Additionally these": "Lisäksi nämä",
+  "brand and corporate top-level domains": "tuotemerkkien ja yritysten huipputason verkkotunnuksia",
+  "are allowlisted by default (e.g.": "ovat oletusarvoisesti sallittuja (esim.",
+  "for Apple Card bank statements):": "Apple Cardin tiliotteet):"
 }

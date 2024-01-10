@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "Trustpilot에서 우리를 검토하세요",
   "Support for E2EE/OpenPGP/WKD": "E2EE/OpenPGP/WKD 지원",
   "Easily migrate from any provider": "모든 공급자로부터 쉽게 마이그레이션",
-  "Request Time-out": "요청 시간 초과"
+  "Request Time-out": "요청 시간 초과",
+  "Additionally these": "추가적으로 이들",
+  "brand and corporate top-level domains": "브랜드 및 기업 최상위 도메인",
+  "are allowlisted by default (e.g.": "기본적으로 허용 목록에 포함되어 있습니다(예:",
+  "for Apple Card bank statements):": "Apple Card 은행 명세서의 경우):"
 }

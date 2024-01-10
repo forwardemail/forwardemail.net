@@ -6649,5 +6649,9 @@
   "Review us on Trustpilot": "在 Trustpilot 上评价我们",
   "Support for E2EE/OpenPGP/WKD": "支持E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "从任何提供商轻松迁移",
-  "Request Time-out": "请求超时"
+  "Request Time-out": "请求超时",
+  "Additionally these": "另外这些",
+  "brand and corporate top-level domains": "品牌和企业顶级域名",
+  "are allowlisted by default (e.g.": "默认情况下已列入白名单（例如",
+  "for Apple Card bank statements):": "对于 Apple Card 银行对帐单）："
 }

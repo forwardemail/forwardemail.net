@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "Bizi Trustpilot'ta inceleyin",
   "Support for E2EE/OpenPGP/WKD": "E2EE/OpenPGP/WKD desteği",
   "Easily migrate from any provider": "Herhangi bir sağlayıcıdan kolayca geçiş yapın",
-  "Request Time-out": "İstek zaman aşımına uğradı"
+  "Request Time-out": "İstek zaman aşımına uğradı",
+  "Additionally these": "Bunlara ek olarak",
+  "brand and corporate top-level domains": "marka ve kurumsal üst düzey alan adları",
+  "are allowlisted by default (e.g.": "varsayılan olarak izin verilenler listesindedir (ör.",
+  "for Apple Card bank statements):": "Apple Card banka ekstreleri için):"
 }

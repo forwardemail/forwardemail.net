@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "ตรวจสอบเราบน Trustpilot",
   "Support for E2EE/OpenPGP/WKD": "รองรับ E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "ย้ายจากผู้ให้บริการได้อย่างง่ายดาย",
-  "Request Time-out": "หมดเวลาการร้องขอ"
+  "Request Time-out": "หมดเวลาการร้องขอ",
+  "Additionally these": "นอกจากนี้สิ่งเหล่านี้",
+  "brand and corporate top-level domains": "แบรนด์และโดเมนระดับบนสุดขององค์กร",
+  "are allowlisted by default (e.g.": "อยู่ในรายการที่อนุญาตโดยค่าเริ่มต้น (เช่น",
+  "for Apple Card bank statements):": "สำหรับใบแจ้งยอดธนาคารของ Apple Card):"
 }

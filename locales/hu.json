@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "Értékeljen minket a Trustpiloton",
   "Support for E2EE/OpenPGP/WKD": "E2EE/OpenPGP/WKD támogatása",
   "Easily migrate from any provider": "Könnyen migrálhat bármely szolgáltatótól",
-  "Request Time-out": "Időt kér"
+  "Request Time-out": "Időt kér",
+  "Additionally these": "Ezen kívül ezeket",
+  "brand and corporate top-level domains": "márka és vállalati felső szintű domainek",
+  "are allowlisted by default (e.g.": "alapértelmezés szerint engedélyezőlistán vannak (pl.",
+  "for Apple Card bank statements):": "Apple Card bankszámlakivonatokhoz):"
 }

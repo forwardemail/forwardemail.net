@@ -6961,5 +6961,9 @@
   "Review us on Trustpilot": "Anmeld oss på Trustpilot",
   "Support for E2EE/OpenPGP/WKD": "Støtte for E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "Migrer enkelt fra hvilken som helst leverandør",
-  "Request Time-out": "Be om tidsavbrudd"
+  "Request Time-out": "Be om tidsavbrudd",
+  "Additionally these": "I tillegg disse",
+  "brand and corporate top-level domains": "merkevare og bedriftens toppnivådomener",
+  "are allowlisted by default (e.g.": "er godkjent som standard (f.eks.",
+  "for Apple Card bank statements):": "for Apple Card-kontoutskrifter):"
 }

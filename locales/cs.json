@@ -6956,5 +6956,9 @@
   "Review us on Trustpilot": "Prohlédněte si nás na Trustpilot",
   "Support for E2EE/OpenPGP/WKD": "Podpora pro E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "Snadná migrace od jakéhokoli poskytovatele",
-  "Request Time-out": "Zažádat o timeout"
+  "Request Time-out": "Zažádat o timeout",
+  "Additionally these": "Navíc tyto",
+  "brand and corporate top-level domains": "značkové a podnikové domény nejvyšší úrovně",
+  "are allowlisted by default (e.g.": "jsou ve výchozím nastavení na seznamu povolených (např.",
+  "for Apple Card bank statements):": "pro bankovní výpisy Apple Card):"
 }

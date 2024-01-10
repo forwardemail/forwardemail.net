@@ -4920,5 +4920,9 @@
   "Support for E2EE/OpenPGP/WKD": "תמיכה ב-E2EE/OpenPGP/WKD",
   "Easily migrate from any provider": "העבר בקלות מכל ספק",
   "thanks for signing up!": "תודה על ההרשמה!",
-  "Request Time-out": "בקש פסק זמן"
+  "Request Time-out": "בקש פסק זמן",
+  "Additionally these": "בנוסף אלה",
+  "brand and corporate top-level domains": "מותגים ותחומים ברמה העליונה של הארגון",
+  "are allowlisted by default (e.g.": "רשומים כברירת מחדל (למשל",
+  "for Apple Card bank statements):": "עבור דפי חשבון בנק של Apple Card):"
 }
