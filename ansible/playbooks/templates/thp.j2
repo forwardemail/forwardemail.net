@@ -8,6 +8,7 @@ Before=mongod.service
 Type=oneshot
 ExecStart=/bin/sh -c 'echo never | tee /sys/kernel/mm/transparent_hugepage/enabled > /dev/null'
 ExecStart=/bin/sh -c 'echo never | tee /sys/kernel/mm/transparent_hugepage/defrag > /dev/null'
+ExecStart=/bin/sh -c 'echo 0 | tee /sys/kernel/mm/transparent_hugepage/khugepaged/defrag > /dev/null'
 
 [Install]
 WantedBy=multi-user.target
