@@ -6698,5 +6698,9 @@
   "Additionally these": "Additionally these",
   "brand and corporate top-level domains": "brand and corporate top-level domains",
   "are allowlisted by default (e.g.": "are allowlisted by default (e.g.",
-  "for Apple Card bank statements):": "for Apple Card bank statements):"
+  "for Apple Card bank statements):": "for Apple Card bank statements):",
+  "Allowlisted Senders": "Allowlisted Senders",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.",
+  "Denylisted Senders": "Denylisted Senders"
 }

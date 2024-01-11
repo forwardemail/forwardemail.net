@@ -6960,5 +6960,10 @@
   "Additionally these": "Bunlara ek olarak",
   "brand and corporate top-level domains": "marka ve kurumsal üst düzey alan adları",
   "are allowlisted by default (e.g.": "varsayılan olarak izin verilenler listesindedir (ör.",
-  "for Apple Card bank statements):": "Apple Card banka ekstreleri için):"
+  "for Apple Card bank statements):": "Apple Card banka ekstreleri için):",
+  "Allowlisted Senders": "İzin Verilenler Listesindeki Gönderenler",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Dikkat:</strong> Aşağıya herhangi bir değer girilirse, yalnızca bu belirli gönderenlerin <code class='alert-link notranslate'>%s</code> alan adınıza e-posta göndermesine izin vereceğiz (diğerlerinin tümü reddedilecektir).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Aşağıya IP adreslerini, alan adlarını ve/veya e-posta adreslerini girin. Sınırlayıcı olarak satır sonlarını, virgülleri ve/veya boşlukları kullanabilirsiniz.",
+  "Denylisted Senders": "Reddedilenler Listesindeki Gönderenler",
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Alanın özel izin verilenler listesi veya reddedilenler listesi <span class='notranslate'>%d</span> giriş sınırını aşıyor."
 }

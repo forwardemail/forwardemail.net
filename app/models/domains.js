@@ -202,6 +202,15 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  //
+  // NOTE: allowlist/denylist are stored in DB as an array
+  //       but when rendered we join by \n in a <textarea>
+  //       and allow users to use comma, space, or newline to delimit
+  //       (we automatically filter for to lowercase and uniqueness, and compact)
+  //
+  allowlist: [String],
+  denylist: [String],
+
   last_allowlist_sync_at: {
     type: Date,
     index: true
@@ -474,6 +483,32 @@ Domains.pre('remove', function (next) {
         i18n.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN', this.locale)
       )
     );
+  }
+
+  next();
+});
+
+Domains.pre('validate', function (next) {
+  for (const key of ['allowlist', 'denylist']) {
+    if (!Array.isArray(this[key])) this[key] = [];
+
+    // cleanup allowlist/denylist
+    this[key] = _.compact(_.uniq(this[key].map((v) => v.toLowerCase().trim())));
+
+    // must be IP, FQDN, or email
+    this[key] = this[key].filter((v) => isIP(v) || isFQDN(v) || isEmail(v));
+
+    // can have at most 1000 entries in each list (arbitrary, can increase later)
+    if (this[key].length > 1000)
+      return next(
+        Boom.badRequest(
+          i18n.translateError(
+            'ALLOWLIST_DENYLIST_EXCEEDS_LIMIT',
+            this.locale,
+            1000
+          )
+        )
+      );
   }
 
   next();

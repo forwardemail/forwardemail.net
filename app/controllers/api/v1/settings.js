@@ -41,6 +41,8 @@ async function settings(ctx) {
       let hasPhishingProtection = true;
       let hasExecutableProtection = true;
       let hasVirusProtection = true;
+      let allowlist = [];
+      let denylist = [];
 
       for (const element of records) {
         const record = element.join('').trim(); // join chunks together
@@ -64,7 +66,7 @@ async function settings(ctx) {
           verification_record: verifications[0]
         })
           .select(
-            'smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection'
+            'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection'
           )
           .lean()
           .exec();
@@ -75,6 +77,8 @@ async function settings(ctx) {
           hasPhishingProtection = domain.has_phishing_protection;
           hasExecutableProtection = domain.has_executable_protection;
           hasVirusProtection = domain.has_virus_protection;
+          if (Array.isArray(domain.allowlist)) allowlist = domain.allowlist;
+          if (Array.isArray(domain.denylist)) denylist = domain.denylist;
         } else {
           ctx.logger.warn(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
           /*
@@ -102,7 +106,9 @@ async function settings(ctx) {
         has_adult_content_protection: hasAdultContentProtection,
         has_phishing_protection: hasPhishingProtection,
         has_executable_protection: hasExecutableProtection,
-        has_virus_protection: hasVirusProtection
+        has_virus_protection: hasVirusProtection,
+        allowlist,
+        denylist
       };
     } catch (err) {
       // superagent inside of the smtp-server will retry on 408 error code

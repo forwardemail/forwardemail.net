@@ -6960,5 +6960,10 @@
   "Additionally these": "Inoltre questi",
   "brand and corporate top-level domains": "domini di primo livello aziendali e di marca",
   "are allowlisted by default (e.g.": "sono consentiti per impostazione predefinita (ad es.",
-  "for Apple Card bank statements):": "per gli estratti conto della carta Apple):"
+  "for Apple Card bank statements):": "per gli estratti conto della carta Apple):",
+  "Allowlisted Senders": "Mittenti consentiti",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Attenzione:</strong> se vengono inseriti dei valori di seguito, consentiremo solo a questi mittenti specifici di inviare e-mail al tuo dominio <code class='alert-link notranslate'>%s</code> (tutti gli altri verranno rifiutati).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Inserisci gli indirizzi IP, i nomi di dominio e/o gli indirizzi email di seguito. Puoi utilizzare interruzioni di riga, virgole e/o spazi come delimitatori.",
+  "Denylisted Senders": "Mittenti negati",
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "La lista consentita o la lista negata personalizzata del dominio supera il limite di <span class='notranslate'>%d</span> voci."
 }

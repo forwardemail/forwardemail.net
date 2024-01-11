@@ -158,6 +158,24 @@ router
   )
 
   .post(
+    '/domains/:domain_id/allowlist',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(100, 'update allowlist'),
+    web.myAccount.updateAllowlistAndDenylist
+  )
+
+  .post(
+    '/domains/:domain_id/denylist',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(100, 'update denylist'),
+    web.myAccount.updateAllowlistAndDenylist
+  )
+
+  .post(
     '/domains/:domain_id/catch-all-passwords',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,

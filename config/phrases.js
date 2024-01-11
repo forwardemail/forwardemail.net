@@ -439,6 +439,8 @@ module.exports = {
   PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',
   RECEIPT: 'Receipt',
   MAKE_PAYMENT: 'Make Payment',
+  ALLOWLIST_DENYLIST_EXCEEDS_LIMIT:
+    "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.",
   ALLOWLIST_DOMAIN_NOT_ALLOWED:
     'The domain name you entered of <span class="font-weight-bold notranslate">%s</span> is not a valid custom domain name or it requires account approval for usage. Please use a custom domain name or <a href="%s">contact us</a> for account approval.',
   DENYLIST_DOMAIN_NOT_ALLOWED:

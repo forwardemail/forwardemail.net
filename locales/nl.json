@@ -6960,5 +6960,10 @@
   "Additionally these": "Daarnaast deze",
   "brand and corporate top-level domains": "merk- en bedrijfstopniveaudomeinen",
   "are allowlisted by default (e.g.": "staan standaard op de toelatingslijst (bijv.",
-  "for Apple Card bank statements):": "voor Apple Card-bankafschriften):"
+  "for Apple Card bank statements):": "voor Apple Card-bankafschriften):",
+  "Allowlisted Senders": "Afzenders op de toelatingslijst",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Let op:</strong> als er hieronder waarden worden ingevoerd, staan we alleen deze specifieke afzenders toe e-mail naar uw domein <code class='alert-link notranslate'>%s</code> te sturen (alle andere worden afgewezen).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Vul hieronder IP-adressen, domeinnamen en/of e-mailadressen in. U kunt regeleinden, komma's en/of spaties als scheidingstekens gebruiken.",
+  "Denylisted Senders": "Geweigerde afzenders",
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "De aangepaste toelatings- of weigeringslijst van het domein overschrijdt de limiet van <span class='notranslate'>%d</span> vermeldingen."
 }

@@ -62,6 +62,7 @@ const createCatchAllPassword = require('./create-catch-all-password');
 const removeCatchAllPassword = require('./remove-catch-all-password');
 const changeModulusLength = require('./change-modulus-length');
 const checkVerifiedEmail = require('./check-verified-email');
+const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 
 module.exports = {
   cancelEmailChange,
@@ -122,5 +123,6 @@ module.exports = {
   createCatchAllPassword,
   removeCatchAllPassword,
   changeModulusLength,
-  checkVerifiedEmail
+  checkVerifiedEmail,
+  updateAllowlistAndDenylist
 };

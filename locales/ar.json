@@ -6960,5 +6960,10 @@
   "Additionally these": "بالإضافة إلى هذه",
   "brand and corporate top-level domains": "نطاقات المستوى الأعلى للعلامة التجارية والشركات",
   "are allowlisted by default (e.g.": "يتم إدراجها في القائمة المسموح بها افتراضيًا (على سبيل المثال",
-  "for Apple Card bank statements):": "بالنسبة للبيانات المصرفية لبطاقة Apple Card):"
+  "for Apple Card bank statements):": "بالنسبة للبيانات المصرفية لبطاقة Apple Card):",
+  "Allowlisted Senders": "المرسلون المدرجون في القائمة المسموح بها",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>تنبيه:</strong> إذا تم إدخال أي قيم أدناه، فسنسمح فقط لهؤلاء المرسلين المحددين بإرسال بريد إلكتروني إلى المجال الخاص بك <code class='alert-link notranslate'>%s</code> (سيتم رفض جميع الآخرين).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "أدخل عناوين IP و/أو أسماء النطاقات و/أو عناوين البريد الإلكتروني أدناه. يمكنك استخدام فواصل الأسطر والفواصل و/أو المسافات كمحددات.",
+  "Denylisted Senders": "المرسلون المحظورون",
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "تتجاوز القائمة المسموح بها أو القائمة المرفوضة المخصصة للنطاق الحد المسموح به وهو <span class='notranslate'>%d</span> من الإدخالات."
 }

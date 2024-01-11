@@ -6965,5 +6965,10 @@
   "Additionally these": "I tillegg disse",
   "brand and corporate top-level domains": "merkevare og bedriftens toppnivådomener",
   "are allowlisted by default (e.g.": "er godkjent som standard (f.eks.",
-  "for Apple Card bank statements):": "for Apple Card-kontoutskrifter):"
+  "for Apple Card bank statements):": "for Apple Card-kontoutskrifter):",
+  "Allowlisted Senders": "Godkjente avsendere",
+  "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Forsiktig:</strong> Hvis noen verdier er angitt nedenfor, vil vi bare tillate disse spesifikke avsenderne å sende e-post til domenet ditt <code class='alert-link notranslate'>%s</code> (alle andre vil bli avvist).",
+  "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Skriv inn IP-adresser, domenenavn og/eller e-postadresser nedenfor. Du kan bruke linjeskift, komma og/eller mellomrom som skilletegn.",
+  "Denylisted Senders": "Avsendere avslått",
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Domenets egendefinerte godkjenningsliste eller avvisningsliste overskrider grensen på <span class='notranslate'>%d</span> oppføringer."
 }

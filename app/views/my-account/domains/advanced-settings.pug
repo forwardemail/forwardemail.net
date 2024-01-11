@@ -387,6 +387,44 @@ block body
                     a.dropdown-item.small.text-muted(
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
+
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt(
+              action=l(`/my-account/domains/${domain.name}/allowlist`),
+              method="POST"
+            ).card.border-themed.mb-3
+              h2.h6.card-header= t("Allowlisted Senders")
+              .card-body
+                .alert.alert-danger.small!= t("<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).", domain.name)
+                .alert.alert-info.small= t("Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
+                label(for="#textarea-allowlist")= t("Allowlist")
+                textarea#textarea-allowlist.form-control(
+                  name="allowlist",
+                  rows=5
+                )= Array.isArray(domain.allowlist) ? domain.allowlist.join("\n") : ""
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(type="submit")= t("Save")
+
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt(
+              action=l(`/my-account/domains/${domain.name}/denylist`),
+              method="POST"
+            ).card.border-themed.mb-3
+              h2.h6.card-header= t("Denylisted Senders")
+              .card-body
+                .alert.alert-info.small= t("Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
+                label(for="#textarea-denylist")= t("Denylist")
+                textarea#textarea-denylist.form-control(
+                  name="denylist",
+                  rows=5
+                )= Array.isArray(domain.denylist) ? domain.denylist.join("\n") : ""
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(type="submit")= t("Save")
+
           if domain.group === 'admin'
             - const hasInvites = Array.isArray(domain.invites) && domain.invites.length > 0 && domain.plan === "team";
             .card.border-themed.mb-3
