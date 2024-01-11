@@ -18,7 +18,7 @@
     z-index: -3;
     width: 100%;
     bottom: 0;
-    background-size: 40vmin, 25%, 110%;
+    background-size: 40vmin, 50vmin, 110%;
     background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
     background-repeat: no-repeat, repeat, no-repeat;
     background-position: 110% 110%, 50% 50%, 100% 100%;
@@ -60,7 +60,7 @@
   }
   @include media-breakpoint-up(md) {
     #stars {
-      background-size: 45vmin, 25%, 110%;
+      background-size: 45vmin, 50vmin, 110%;
     }
     #waving {
       right: 15%;
@@ -70,7 +70,7 @@
   }
   @include media-breakpoint-up(lg) {
     #stars {
-      background-size: 50vmin, 25%, 110%;
+      background-size: 50vmin, 50vmin, 110%;
     }
     #waving {
       width: 126px;
@@ -79,7 +79,7 @@
   }
   @include media-breakpoint-up(xl) {
     #stars {
-      background-size: 60vmin, 25%, 110%;
+      background-size: 60vmin, 50vmin, 110%;
     }
   }
 }
