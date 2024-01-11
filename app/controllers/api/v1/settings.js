@@ -61,8 +61,7 @@ async function settings(ctx) {
 
         const domain = await Domains.findOne({
           name: ctx.query.domain,
-          verification_record: verifications[0],
-          plan: { $ne: 'free' }
+          verification_record: verifications[0]
         })
           .select(
             'smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection'
@@ -70,7 +69,7 @@ async function settings(ctx) {
           .lean()
           .exec();
 
-        if (domain) {
+        if (domain && domain.plan !== 'free') {
           port = domain.smtp_port;
           hasAdultContentProtection = domain.has_adult_content_protection;
           hasPhishingProtection = domain.has_phishing_protection;

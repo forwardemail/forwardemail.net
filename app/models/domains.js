@@ -421,6 +421,11 @@ Domains.index(
   }
 );
 
+Domains.index({
+  name: 1,
+  verification_record: 1
+});
+
 // Shared tangerine resolver
 Domains.virtual('resolver')
   .get(function () {
