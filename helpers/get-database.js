@@ -9,6 +9,8 @@ const fs = require('node:fs');
 const Database = require('better-sqlite3-multiple-ciphers');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const ms = require('ms');
+const pRetry = require('p-retry');
 
 const Attachments = require('#models/attachments');
 const Mailboxes = require('#models/mailboxes');
@@ -17,6 +19,7 @@ const Threads = require('#models/threads');
 const config = require('#config');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const setupPragma = require('#helpers/setup-pragma');
@@ -689,4 +692,21 @@ async function getDatabase(
   }
 }
 
-module.exports = getDatabase;
+function retryGetDatabase(...args) {
+  return pRetry(
+    () => {
+      return getDatabase(...args);
+    },
+    {
+      retries: 2,
+      minTimeout: ms('5s'),
+      onFailedAttempt(err) {
+        if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return;
+        if (isTimeoutError(err)) return;
+        throw err;
+      }
+    }
+  );
+}
+
+module.exports = retryGetDatabase;
