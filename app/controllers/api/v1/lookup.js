@@ -27,25 +27,16 @@ async function lookup(ctx) {
       Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
-  const query = {
-    verification_record: ctx.query.verification_record,
-    plan: { $ne: 'free' }
-  };
-
-  // legacy compatibility
-  if (isSANB(ctx.query.domain)) query.name = ctx.query.domain;
-
-  // safeguard to prevent returning any domain
-  if (_.isEmpty(query)) throw new Error('Domain query was empty');
-
-  const domain = await Domains.findOne(query)
+  const domain = await Domains.findOne({
+    verification_record: ctx.query.verification_record
+  })
     .select(
       'is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at'
     )
     .lean()
     .exec();
 
-  if (!domain) {
+  if (!domain || domain.plan === 'free') {
     ctx.body = {};
     return;
   }
@@ -66,7 +57,7 @@ async function lookup(ctx) {
         // get all not banned, paid users, and expiration is >= 30 days ago
         {
           [config.userFields.isBanned]: false,
-          plan: { $ne: 'free' },
+          plan: { $in: ['enhanced_protection', 'team'] },
           [config.userFields.planExpiresAt]: {
             $gte: dayjs().subtract(30, 'days').toDate()
           }

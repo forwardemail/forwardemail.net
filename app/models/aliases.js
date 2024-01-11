@@ -228,7 +228,7 @@ const Aliases = new mongoose.Schema({
 // compound index
 Aliases.index({ user: 1, domain: 1 });
 Aliases.index({ _id: 1, domain: 1 });
-
+Aliases.index({ name: 1, domain: 1 });
 Aliases.plugin(captainHook);
 
 // validate PGP key if any
