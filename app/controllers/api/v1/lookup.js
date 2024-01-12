@@ -41,8 +41,6 @@ async function lookup(ctx) {
     return;
   }
 
-  const bannedUserIdSet = await Users.getBannedUserIdSet(ctx);
-
   const username = isSANB(ctx.query.username)
     ? ctx.query.username.toLowerCase()
     : false;
@@ -84,15 +82,21 @@ async function lookup(ctx) {
         'Username required for search due to catch-all/regex search disabled'
       );
 
+    const bannedUserIds = await Users.distinct('_id', {
+      [config.userFields.isBanned]: true
+    });
+
     if (domain.is_catchall_regex_disabled) {
       aliasQuery = {
         domain: domain._id,
+        ...(bannedUserIds.length > 0 ? { user: { $nin: bannedUserIds } } : {}),
         name: username
       };
     } else {
       // it is faster to query without $regex
       aliasQuery = {
-        domain: domain._id
+        domain: domain._id,
+        ...(bannedUserIds.length > 0 ? { user: { $nin: bannedUserIds } } : {})
       };
     }
   }
@@ -103,7 +107,7 @@ async function lookup(ctx) {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   const aliases = await Aliases.find(aliasQuery)
     .select(
-      'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+      'id has_imap recipients name is_enabled has_recipient_verification verified_recipients'
     )
     .lean()
     .exec();
@@ -330,7 +334,6 @@ async function lookup(ctx) {
   if (username) {
     for (const alias of aliases) {
       if (
-        !bannedUserIdSet.has(alias.user.toString()) &&
         alias.has_imap &&
         alias.is_enabled &&
         alias.name !== '*' &&
@@ -342,7 +345,6 @@ async function lookup(ctx) {
   }
 
   for (const alias of aliases) {
-    if (bannedUserIdSet.has(alias.user.toString())) continue;
     // rewrite `alias.recipients` to verified recipients only
     // if and only if user has recipient verification enabled
     if (alias.has_recipient_verification) {

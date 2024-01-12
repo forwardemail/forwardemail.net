@@ -100,11 +100,6 @@ async function processEvent(ctx) {
           }
         });
         await user.save();
-        // clear banned cache
-        ctx.client
-          .del('banned_user_ids')
-          .then()
-          .catch((err) => ctx.logger.fatal(err));
       }
 
       break;

@@ -16,7 +16,6 @@ const mongooseCommonPlugin = require('mongoose-common-plugin');
 const mongooseOmitCommonFields = require('mongoose-omit-common-fields');
 const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
-const safeStringify = require('fast-safe-stringify');
 const sanitizeHtml = require('sanitize-html');
 const striptags = require('striptags');
 const validator = require('validator');
@@ -892,29 +891,6 @@ Users.index(
     }
   }
 );
-
-async function getBannedUserIdSet(ctx) {
-  let bannedUserIds = [];
-  bannedUserIds = await ctx.client.get('banned_user_ids');
-  if (bannedUserIds) {
-    bannedUserIds = new Set(JSON.parse(bannedUserIds));
-  } else {
-    bannedUserIds = await Users.distinct('id', {
-      [config.userFields.isBanned]: true
-    });
-    ctx.client
-      .set('banned_user_ids', safeStringify(bannedUserIds), 'PX', ms('1h'))
-      .then()
-      .catch((err) => {
-        ctx.logger.fatal(err);
-      });
-    bannedUserIds = new Set(bannedUserIds);
-  }
-
-  return bannedUserIds;
-}
-
-Users.statics.getBannedUserIdSet = getBannedUserIdSet;
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
