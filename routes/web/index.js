@@ -8,6 +8,7 @@ const path = require('node:path');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const dashify = require('dashify');
+const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const pWaitFor = require('p-wait-for');
 const pTimeout = require('p-timeout');
@@ -153,8 +154,20 @@ localeRouter
     web.onboard
   )
 
-  .get('/tti', (ctx, next) => {
+  .get('/tti', async (ctx, next) => {
     if (ctx.accepts('html')) return next();
+    // get TTI stats for footer (v1 rudimentary approach)
+    ctx.state.tti = false;
+    try {
+      const tti = await Promise.race([ctx.client.get('tti'), delay(ms('3s'))]);
+      if (tti) {
+        ctx.state.tti = JSON.parse(tti);
+        ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);
+      }
+    } catch (err) {
+      ctx.logger.error(err);
+    }
+
     const html = pug.renderFile(filePath, {
       ...ctx.state,
       ctx: {

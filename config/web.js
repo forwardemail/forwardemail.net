@@ -11,7 +11,6 @@ const process = require('node:process');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -379,7 +378,7 @@ module.exports = (redis) => ({
       }
 
       // if we need to allowlist certain IP which resolve to our hostnames
-      if (ctx.resolver) {
+      if (ctx.resolver && ctx.api) {
         try {
           // maximum of 3s before ac times out
           const abortController = new AbortController();
@@ -457,30 +456,12 @@ module.exports = (redis) => ({
   },
   hookBeforePassport(app) {
     app.use(async (ctx, next) => {
-      if (
-        !ctx.api &&
-        ctx.method === 'GET' &&
-        (ctx.pathWithoutLocale === '/tti' || ctx.accepts('html'))
-      ) {
+      if (!ctx.api && ctx.method === 'GET' && ctx.accepts('html')) {
         // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
         ctx.state.freddyCss = freddyCss;
-
-        // get TTI stats for footer (v1 rudimentary approach)
         ctx.state.tti = false;
-        try {
-          const tti = await Promise.race([
-            ctx.client.get('tti'),
-            delay(ms('3s'))
-          ]);
-          if (tti) {
-            ctx.state.tti = JSON.parse(tti);
-            ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);
-          }
-        } catch (err) {
-          ctx.logger.error(err);
-        }
       }
 
       return next();
