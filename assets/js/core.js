@@ -723,17 +723,15 @@ async function tti() {
       .send();
     $tti.html($(res.text).html());
     renderDayjs();
-    setTimeout(function () {
-      tti();
+    setTimeout(async function () {
+      await tti();
     }, 30000);
   } catch (err) {
     logger.error(err);
   }
 }
 
-setTimeout(function () {
-  tti();
-}, 5000);
+tti();
 
 // Avoid CSP issues with inline styling for widths on progress bars
 $('[data-width]').each(function () {
