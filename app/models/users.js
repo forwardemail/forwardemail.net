@@ -899,7 +899,7 @@ async function getBannedUserIdSet(ctx) {
   if (bannedUserIds) {
     bannedUserIds = new Set(JSON.parse(bannedUserIds));
   } else {
-    bannedUserIds = await Users.distinct('id', {
+    bannedUserIds = await this.distinct('id', {
       [config.userFields.isBanned]: true
     });
     ctx.client
