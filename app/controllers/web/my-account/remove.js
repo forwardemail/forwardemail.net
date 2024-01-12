@@ -212,6 +212,12 @@ async function remove(ctx) {
   // ctx.state.user[config.userFields.stripeCustomerID] = undefined;
   await ctx.state.user.save();
 
+  // clear banned cache
+  ctx.client
+    .del('banned_user_ids')
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
+
   if (!ctx.api)
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
