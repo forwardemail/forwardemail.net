@@ -202,6 +202,10 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // booleans for lookup optimizations
+  has_regex: { type: Boolean, default: true },
+  has_catchall: { type: Boolean, default: true },
+
   //
   // NOTE: allowlist/denylist are stored in DB as an array
   //       but when rendered we join by \n in a <textarea>
@@ -943,6 +947,36 @@ Domains.pre('save', async function (next) {
   } catch (err) {
     next(err);
   }
+});
+
+// TODO: move this into an automated job and also on alias save
+Domains.pre('save', async function (next) {
+  if (this.is_catchall_regex_disabled) return next();
+
+  try {
+    if (typeof conn?.models?.Aliases?.aggregate !== 'function')
+      throw new TypeError('Aliases model is not ready');
+
+    const names = await conn.models.Aliases.distinct('name', {
+      domain: this._id
+    });
+
+    let hasCatchall = false;
+    let hasRegex = false;
+
+    for (const name of names) {
+      if (hasCatchall && hasRegex) break;
+      if (name === '*') hasCatchall = true;
+      else if (name.startsWith('/')) hasRegex = true;
+    }
+
+    this.has_catchall = hasCatchall;
+    this.has_regex = hasRegex;
+  } catch (err) {
+    logger.fatal(err);
+  }
+
+  next();
 });
 
 Domains.plugin(mongooseCommonPlugin, {

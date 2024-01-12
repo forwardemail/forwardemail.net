@@ -4393,5 +4393,9 @@
   "Total revenue since launch": "Revenu total depuis le lancement",
   "Plan distribution": "Répartition des régimes",
   "Paid locale distribution": "Distribution locale payante",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "La liste d&#39;autorisation ou la liste de refus personnalisée du domaine dépasse la limite de <span class='notranslate'>%d</span> entrées."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "La liste d&#39;autorisation ou la liste de refus personnalisée du domaine dépasse la limite de <span class='notranslate'>%d</span> entrées.",
+  "catch-all": "fourre-tout",
+  "You must <a href=\"%s\" class=\"alert-link\">complete setup</a> to send emails via SMTP and API.": "Vous devez <a href=\"%s\" class=\"alert-link\">terminer la configuration</a> pour envoyer des e-mails via SMTP et API.",
+  "Add Alias | Forward Email": "Ajouter un alias &#124; Un courriel transféré",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

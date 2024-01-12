@@ -615,6 +615,35 @@ Aliases.pre('save', async function (next) {
   }
 });
 
+async function updateDomainCatchallRegexBooleans(alias) {
+  try {
+    const names = await alias.constructor.distinct('name', {
+      domain: alias.domain
+    });
+
+    let hasCatchall = false;
+    let hasRegex = false;
+
+    for (const name of names) {
+      if (hasCatchall && hasRegex) break;
+      if (name === '*') hasCatchall = true;
+      else if (name.startsWith('/')) hasRegex = true;
+    }
+
+    await Domains.findByIdAndUpdate(alias.domain, {
+      $set: {
+        has_catchall: hasCatchall,
+        has_regex: hasRegex
+      }
+    });
+  } catch (err) {
+    logger.fatal(err);
+  }
+}
+
+Aliases.post('deleteOne', updateDomainCatchallRegexBooleans);
+Aliases.post('save', updateDomainCatchallRegexBooleans);
+
 //
 // TODO: storage quota for any given alias is the sum
 //       of all admins for the domain (if not a paid plan domain then error)

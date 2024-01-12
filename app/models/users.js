@@ -895,8 +895,9 @@ Users.index(
 
 async function getBannedUserIdSet(ctx) {
   let bannedUserIds = [];
-  bannedUserIds = await ctx.client.get('banned_user_ids');
-  if (bannedUserIds) {
+  // TODO: uncomment this once redis performance gets better in prod
+  // bannedUserIds = await ctx.client.get('banned_user_ids');
+  if (bannedUserIds.length > 0) {
     bannedUserIds = new Set(JSON.parse(bannedUserIds));
   } else {
     bannedUserIds = await this.distinct('id', {

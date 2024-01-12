@@ -31,7 +31,7 @@ async function lookup(ctx) {
     verification_record: ctx.query.verification_record
   })
     .select(
-      'is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at'
+      'has_catchall has_regex is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at'
     )
     .lean()
     .exec();
@@ -54,27 +54,8 @@ async function lookup(ctx) {
   if (domain.is_global) {
     if (!username) throw new Error('Username required for global search');
 
-    const validUsers = await Users.distinct('_id', {
-      $or: [
-        // get all not banned, paid users, and expiration is >= 30 days ago
-        {
-          [config.userFields.isBanned]: false,
-          plan: { $in: ['enhanced_protection', 'team'] },
-          [config.userFields.planExpiresAt]: {
-            $gte: dayjs().subtract(30, 'days').toDate()
-          }
-        },
-        // get all not banned, admin users
-        {
-          [config.userFields.isBanned]: false,
-          group: 'admin'
-        }
-      ]
-    });
-
     aliasQuery = {
       domain: domain._id,
-      user: { $in: validUsers },
       name: username
     };
   } else {
@@ -94,6 +75,17 @@ async function lookup(ctx) {
       aliasQuery = {
         domain: domain._id
       };
+      // if domain doesn't have wildcard nor regex then add `name` to query
+      // (a majority of domains don't have wildcards nor regular expressions)
+      if (
+        username &&
+        typeof domain.has_catchall === 'boolean' &&
+        !domain.has_catchall &&
+        typeof domain.has_regex === 'boolean' &&
+        !domain.has_regex
+      ) {
+        aliasQuery.name = username;
+      }
     }
   }
 
@@ -101,7 +93,7 @@ async function lookup(ctx) {
   if (_.isEmpty(aliasQuery)) throw new Error('Alias query was empty');
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
-  const aliases = await Aliases.find(aliasQuery)
+  let aliases = await Aliases.find(aliasQuery)
     .select(
       'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
     )
@@ -111,6 +103,37 @@ async function lookup(ctx) {
   if (aliases.length === 0) {
     ctx.body = {};
     return;
+  }
+
+  //
+  // if the domain was global then filter aliases
+  // that belong to users with a non-banned and paid account
+  //
+  if (domain.is_global) {
+    const validUserIds = await Users.distinct('id', {
+      $or: [
+        // get all paid users with expiration is >= 30 days ago
+        {
+          plan: { $in: ['enhanced_protection', 'team'] },
+          [config.userFields.planExpiresAt]: {
+            $gte: dayjs().subtract(30, 'days').toDate()
+          }
+        },
+        // get all admin users
+        {
+          group: 'admin'
+        }
+      ]
+    });
+
+    const validUserIdSet = new Set(validUserIds);
+
+    aliases = aliases.filter((a) => {
+      return (
+        validUserIdSet.has(a.user.toString()) &&
+        !bannedUserIdSet.has(a.user.toString())
+      );
+    });
   }
 
   //

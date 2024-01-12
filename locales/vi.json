@@ -4410,5 +4410,6 @@
   "Total revenue since launch": "Tổng doanh thu kể từ khi ra mắt",
   "Plan distribution": "Kế hoạch phân bổ",
   "Paid locale distribution": "Phân phối địa phương phải trả phí",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Danh sách cho phép hoặc danh sách từ chối tùy chỉnh của miền vượt quá giới hạn <span class='notranslate'>%d</span> mục nhập."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Danh sách cho phép hoặc danh sách từ chối tùy chỉnh của miền vượt quá giới hạn <span class='notranslate'>%d</span> mục nhập.",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Bạn đã tạo thành công bí danh mới: <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

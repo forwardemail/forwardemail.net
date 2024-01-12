@@ -6658,5 +6658,6 @@
   "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>注意：</strong>如果在下面输入任何值，那么我们将只允许这些特定发件人向您的域<code class='alert-link notranslate'>%s</code>发送电子邮件（所有其他发件人将被拒绝）。",
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "在下面输入 IP 地址、域名和/或电子邮件地址。您可以使用换行符、逗号和/或空格作为分隔符。",
   "Denylisted Senders": "列入拒绝名单的发件人",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "该域的自定义允许列表或拒绝列表超出了<span class='notranslate'>%d</span>条目的限制。"
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "该域的自定义允许列表或拒绝列表超出了<span class='notranslate'>%d</span>条目的限制。",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "您已成功创建新别名： <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

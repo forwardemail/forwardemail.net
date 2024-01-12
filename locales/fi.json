@@ -6812,5 +6812,6 @@
   "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Varoitus:</strong> Jos alle syötetään arvoja, sallimme vain näiden lähettäjien lähettää sähköpostia verkkotunnukseesi <code class='alert-link notranslate'>%s</code> (kaikki muut hylätään).",
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Kirjoita IP-osoitteet, verkkotunnukset ja/tai sähköpostiosoitteet alle. Voit käyttää erottimina rivinvaihtoja, pilkkuja ja/tai välilyöntejä.",
   "Denylisted Senders": "Kielletyt lähettäjät",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Verkkotunnuksen mukautettu sallittujen luettelo tai estolista ylittää <span class='notranslate'>%d</span> merkinnän rajan."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Verkkotunnuksen mukautettu sallittujen luettelo tai estolista ylittää <span class='notranslate'>%d</span> merkinnän rajan.",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

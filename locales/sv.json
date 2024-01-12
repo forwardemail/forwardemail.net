@@ -6965,5 +6965,6 @@
   "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Varning:</strong> Om några värden anges nedan kommer vi endast att tillåta dessa specifika avsändare att skicka e-post till din domän <code class='alert-link notranslate'>%s</code> (alla andra kommer att avvisas).",
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Ange IP-adresser, domännamn och/eller e-postadresser nedan. Du kan använda radbrytningar, kommatecken och/eller blanksteg som avgränsare.",
   "Denylisted Senders": "Avvisade avsändare",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Domänens anpassade godkännandelista eller denylist överskrider gränsen på <span class='notranslate'>%d</span> poster."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Domänens anpassade godkännandelista eller denylist överskrider gränsen på <span class='notranslate'>%d</span> poster.",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Du har skapat ett nytt alias: <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

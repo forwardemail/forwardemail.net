@@ -6965,5 +6965,6 @@
   "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Cuidado:</strong> Se algum valor for inserido abaixo, permitiremos que apenas esses remetentes específicos enviem e-mails para o seu domínio <code class='alert-link notranslate'>%s</code> (todos os outros serão rejeitados).",
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Insira endereços IP, nomes de domínio e/ou endereços de e-mail abaixo. Você pode usar quebras de linha, vírgulas e/ou espaços como delimitadores.",
   "Denylisted Senders": "Remetentes negados",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "A lista de permissões ou lista de bloqueios personalizada do domínio excede o limite de <span class='notranslate'>%d</span> entradas."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "A lista de permissões ou lista de bloqueios personalizada do domínio excede o limite de <span class='notranslate'>%d</span> entradas.",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Você criou com sucesso um novo alias: <code class=\"alert-link text-decoration-underline\">%s</code>"
 }

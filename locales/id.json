@@ -6965,5 +6965,6 @@
   "<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).": "<strong>Perhatian:</strong> Jika ada nilai yang dimasukkan di bawah, maka kami hanya akan mengizinkan pengirim tertentu untuk mengirim email ke domain Anda <code class='alert-link notranslate'>%s</code> (semua nilai lainnya akan ditolak).",
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Masukkan alamat IP, nama domain, dan/atau alamat email di bawah. Anda dapat menggunakan jeda baris, koma, dan/atau spasi sebagai pembatas.",
   "Denylisted Senders": "Pengirim yang Ditolak",
-  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Daftar yang diizinkan atau ditolak khusus domain melebihi batas <span class='notranslate'>%d</span> entri."
+  "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Daftar yang diizinkan atau ditolak khusus domain melebihi batas <span class='notranslate'>%d</span> entri.",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link text-decoration-underline\">%s</code>"
 }
