@@ -127,6 +127,11 @@ async function remove(ctx) {
   // instead of removing the user entirely we just ban them
   user[config.userFields.isBanned] = true;
   await user.save();
+  // clear banned cache
+  ctx.client
+    .del('banned_user_ids')
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
     text: ctx.translate('REQUEST_OK'),

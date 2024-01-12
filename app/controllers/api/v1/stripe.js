@@ -360,6 +360,11 @@ async function processEvent(ctx, event) {
       if (!user[config.userFields.isBanned]) {
         user[config.userFields.isBanned] = true;
         await user.save();
+        // clear banned cache
+        ctx.client
+          .del('banned_user_ids')
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
         // email admins that the user was banned
         await emailHelper({
           template: 'alert',
