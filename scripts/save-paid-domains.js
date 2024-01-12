@@ -47,8 +47,12 @@ graceful.listen();
       domain.skip_verification = true;
       domain.skip_ns_check = true;
       domain.skip_payment_check = true;
-      await domain.save();
-      console.log('saved', _id);
+      try {
+        await domain.save();
+        console.log('saved', _id);
+      } catch (err) {
+        logger.error(err, { domain });
+      }
     },
     { concurrency: config.concurrency }
   );
