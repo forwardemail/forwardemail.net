@@ -737,8 +737,12 @@ async function parsePayload(data, ws) {
 
         // TODO: unlock the temporary database
 
-        tmpDb.pragma('optimize');
-        tmpDb.close();
+        try {
+          tmpDb.pragma('optimize');
+          tmpDb.close();
+        } catch (err) {
+          logger.fatal(err, { payload });
+        }
 
         // vacuum database
         await this.wsp.request.call(this, {
@@ -1215,8 +1219,13 @@ async function parsePayload(data, ws) {
                   err = _err;
                 }
 
-                tmpDb.pragma('optimize');
-                tmpDb.close();
+                try {
+                  tmpDb.pragma('optimize');
+                  tmpDb.close();
+                } catch (err) {
+                  logger.fatal(err, { payload });
+                }
+
                 if (err) throw err;
               }
             } catch (err) {
@@ -1617,8 +1626,13 @@ async function parsePayload(data, ws) {
           // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
           backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
           backupDb.pragma('journal_mode=WAL');
-          backupDb.pragma('optimize');
-          backupDb.close();
+
+          try {
+            backupDb.pragma('optimize');
+            backupDb.close();
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
 
           // rename backup file (overwrites existing destination file)
           await fs.promises.rename(tmp, storagePath);
@@ -1818,8 +1832,13 @@ async function parsePayload(data, ws) {
             false,
             tmp
           );
-          backupDb.pragma('optimize');
-          backupDb.close();
+
+          try {
+            backupDb.pragma('optimize');
+            backupDb.close();
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
 
           // calculate hash of file
           const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
@@ -1924,8 +1943,12 @@ async function parsePayload(data, ws) {
     }
 
     if (db && db.open && typeof db.close === 'function') {
-      db.pragma('optimize');
-      db.close();
+      try {
+        db.pragma('optimize');
+        db.close();
+      } catch (err) {
+        logger.fatal(err, { payload });
+      }
     }
 
     if (!ws || typeof ws.send !== 'function') return response;
@@ -1955,8 +1978,12 @@ async function parsePayload(data, ws) {
     }
 
     if (db && db.open && typeof db.close === 'function') {
-      db.pragma('optimize');
-      db.close();
+      try {
+        db.pragma('optimize');
+        db.close();
+      } catch (err) {
+        logger.fatal(err, { payload });
+      }
     }
 
     if (!ws || typeof ws.send !== 'function') throw err;

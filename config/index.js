@@ -462,7 +462,16 @@ const config = {
       otpToken: 'otp_token',
       otpEnabled: 'otp_enabled'
     },
-    phrases
+    phrases: {
+      INVALID_USER: phrases.INVALID_USER,
+      INVALID_PROFILE_RESPONSE: phrases.INVALID_PROFILE_RESPONSE,
+      INVALID_EMAIL: phrases.INVALID_EMAIL,
+      INVALID_PROFILE_ID: phrases.INVALID_PROFILE_ID,
+      CONSENT_REQUIRED: phrases.CONSENT_REQUIRED,
+      OTP_NOT_ENABLED: phrases.OTP_NOT_ENABLED,
+      OTP_TOKEN_DOES_NOT_EXIST: phrases.OTP_TOKEN_DOES_NOT_EXIST,
+      INVALID_WEBAUTHN_KEY: phrases.INVALID_WEBAUTHN_KEY
+    }
   },
 
   // passport-local-mongoose options
