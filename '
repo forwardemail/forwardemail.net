@@ -37,18 +37,12 @@ block body
           li.list-inline-item
             a.btn.btn-sm.btn-light(href="#free")
               = t("Free")
-              = " "
-              i.fa.fa-search-plus
           li.list-inline-item
             a.btn.btn-sm.btn-success(href="#enhanced")
               = t("Enhanced")
-              = " "
-              i.fa.fa-search-plus
           li.list-inline-item
             a.btn.btn-sm.btn-primary(href="#team")
               = t("Team")
-              = " "
-              i.fa.fa-search-plus
 
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     .min-vh-100.d-flex.flex-column(
@@ -358,7 +352,7 @@ block body
                 else
                   != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$3</span><span class="d-inline-block h6 text-black text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
               if sortedDomains.length === 0
-                a.btn.btn-block.btn-lg.btn-success.font-weight-bold.text-nowrap(
+                a.btn.btn-block.btn-lg.btn-success.font-weight-bold(
                   href=l("/my-account/domains/new?plan=enhanced_protection")
                 )
                   != t('Get <span class="notranslate">you@yourdomain.com</span>')
@@ -399,7 +393,7 @@ block body
                 i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
                 = " "
                 = t("Everything in Free plus:")
-              li.list-group-item.d-flex.align-items-center.bg-primary.text-white.font-weight-bold.text-nowrap
+              li.list-group-item.d-flex.align-items-center.bg-primary.text-white.font-weight-bold
                 i.fa.fa-fw.fa-infinity.mr-3
                 = " "
                 span.text-decoration-underline= t("Unlimited aliases")
@@ -422,7 +416,7 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold.bg-success.text-white
                 i.fa.fa-fw.fa-lock.mr-3
                 = " "
-                = t("10 GB pooled storage")
+                = t("10 GB pooled email storage")
                 if !isBot(ctx.get("User-Agent"))
                   = " "
                   button.btn.btn-link.text-themed.py-0.no-js(
@@ -575,7 +569,7 @@ block body
                   href=l("/faq#do-you-store-error-logs"),
                   target="_blank"
                 )
-                  != t("Search &amp; analyze error logs")
+                  = t("Search and analyze error logs")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-code.text-themed.mr-3
                 a.font-weight-bold.text-decoration-underline.text-themed(

@@ -6005,5 +6005,21 @@
   "Denylisted Senders": "Absender auf der Sperrliste",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Die benutzerdefinierte Zulassungs- oder Sperrliste der Domäne überschreitet die Grenze von <span class='notranslate'>%d</span> Einträgen.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Sie haben erfolgreich einen neuen Alias erstellt: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Akzeptierte Zahlungsmethoden:"
+  "Payment Methods Accepted:": "Akzeptierte Zahlungsmethoden:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Machen Sie sich keine Sorgen</strong> – Sie können den Tarif jederzeit wechseln.",
+  "Only supports email forwarding": "Unterstützt nur die E-Mail-Weiterleitung",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/Monat für <span class=\"text-decoration-underline\">unbegrenzte Domains</span></span>",
+  "Forward your domain's mail": "Leiten Sie die E-Mails Ihrer Domain weiter",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Senden und empfangen Sie als <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/Monat für <span class=\"text-decoration-underline\">unbegrenzte Domains</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Erhalten Sie <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "0 $/Benutzer",
+  "Unlimited Aliases": "Unbegrenzte Aliase",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Im Gegensatz zu anderen E-Mail-Diensten berechnen wir keine zusätzlichen Gebühren pro Benutzer (üblicherweise als „Alias“ bezeichnet). Das bedeutet, dass Sie ohne zusätzliche versteckte Gebühren so viele Aliase erstellen können, wie Sie möchten. Sie können beispielsweise Postfächer für <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> und <span class=\"notranslate\">sales@yourdomain.com</span> erstellen – und zahlen trotzdem nur 3 $/Monat für alles.",
+  "10 GB pooled storage": "10 GB gepoolter Speicher",
+  "30-day guarantee": "30 Tage Garantie",
+  "instant refunds": "sofortige Rückerstattung",
+  "Search &amp; analyze error logs": "Suchen &amp; Fehlerprotokolle analysieren",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/Monat für <span class=\"text-decoration-underline\">unbegrenzte Domains</span></span>",
+  "Create Team": "Team erstellen"
 }

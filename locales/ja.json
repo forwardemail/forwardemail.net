@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "拒否リストに登録された送信者",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "ドメインのカスタム許可リストまたは拒否リストが<span class='notranslate'>%d</span>エントリの制限を超えています。",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "新しいエイリアスが正常に作成されました: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "ご利用いただけるお支払い方法:"
+  "Payment Methods Accepted:": "ご利用いただけるお支払い方法:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>心配しないでください</strong>。プランはいつでもすぐに切り替えることができます。",
+  "Only supports email forwarding": "電子メール転送のみをサポートします",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">無制限のドメイン</span>で月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span>",
+  "Forward your domain's mail": "ドメインのメールを転送する",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span>として送受信します",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">無制限のドメイン</span>で月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 ドル</span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span>を取得します",
+  "$0/user": "$0/ユーザー",
+  "Unlimited Aliases": "無制限のエイリアス",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "他の電子メール サービスとは異なり、ユーザー (一般に「エイリアス」と呼ばれます) ごとに追加料金はかかりません。つまり、余分な追加料金なしで、必要なだけエイリアスを作成できます。たとえば、 <span class=\"notranslate\">you@yourdomain.com</span> 、 <span class=\"notranslate\">info@yourdomain.com</span> 、 <span class=\"notranslate\">help@yourdomain.com</span> 、 <span class=\"notranslate\">sales@yourdomain.com</span>のメールボックスを作成できますが、料金はすべてに対して月額 3 ドルのみです。",
+  "10 GB pooled storage": "10 GBのプールされたストレージ",
+  "30-day guarantee": "30日間の保証",
+  "instant refunds": "即時返金",
+  "Search &amp; analyze error logs": "検索＆エラーログを分析する",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">無制限のドメイン</span>の場合は月額</span><span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 ドル</span>",
+  "Create Team": "チームの作成"
 }

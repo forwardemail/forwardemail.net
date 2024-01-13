@@ -4412,5 +4412,22 @@
   "Paid locale distribution": "Phân phối địa phương phải trả phí",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Danh sách cho phép hoặc danh sách từ chối tùy chỉnh của miền vượt quá giới hạn <span class='notranslate'>%d</span> mục nhập.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Bạn đã tạo thành công bí danh mới: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Phương thức thanh toán được chấp nhận:"
+  "Payment Methods Accepted:": "Phương thức thanh toán được chấp nhận:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Đừng lo lắng</strong> – bạn có thể chuyển đổi gói ngay lập tức bất kỳ lúc nào.",
+  "Only supports email forwarding": "Chỉ hỗ trợ chuyển tiếp email",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng cho <span class=\"text-decoration-underline\">tên miền không giới hạn</span></span>",
+  "Forward your domain's mail": "Chuyển tiếp thư tên miền của bạn",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Gửi và nhận dưới dạng <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng cho <span class=\"text-decoration-underline\">tên miền không giới hạn</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Nhận <span class=\"notranslate\">you@yourdomain.com</span>",
+  "Unlimited aliases": "Bí danh không giới hạn",
+  "$0/user": "$0/người dùng",
+  "Unlimited Aliases": "Bí danh không giới hạn",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Không giống như các dịch vụ email khác, chúng tôi không tính thêm phí cho mỗi người dùng (thường được gọi là &quot;bí danh&quot;). Điều này có nghĩa là bạn có thể tạo bao nhiêu bí danh tùy thích mà không phải trả thêm phí ẩn. Ví dụ: bạn có thể tạo hộp thư cho <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> và <span class=\"notranslate\">sales@yourdomain.com</span> – và bạn vẫn chỉ phải trả $3/tháng cho mọi thứ.",
+  "10 GB pooled storage": "Dung lượng lưu trữ gộp 10 GB",
+  "30-day guarantee": "Bảo hành 30 ngày",
+  "instant refunds": "hoàn tiền ngay lập tức",
+  "Search &amp; analyze error logs": "Tìm kiếm &amp; phân tích nhật ký lỗi",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/tháng cho <span class=\"text-decoration-underline\">tên miền không giới hạn</span></span>",
+  "Create Team": "Tạo nhóm"
 }

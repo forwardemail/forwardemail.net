@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "거부된 발신자",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "도메인의 사용자 정의 허용 목록 또는 거부 목록이 <span class='notranslate'>%d</span> 개의 항목 제한을 초과합니다.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "새 별칭을 성공적으로 생성했습니다: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "허용되는 결제 방법:"
+  "Payment Methods Accepted:": "허용되는 결제 방법:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>걱정하지 마세요</strong> . 언제든지 즉시 요금제를 전환할 수 있습니다.",
+  "Only supports email forwarding": "이메일 전달만 지원",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">무제한 도메인</span> 의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span>",
+  "Forward your domain's mail": "도메인의 메일 전달",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span> 으로 보내고 받기",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">무제한 도메인</span> 의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span> 받기",
+  "$0/user": "$0/사용자",
+  "Unlimited Aliases": "무제한 별칭",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "다른 이메일 서비스와 달리 우리는 사용자당 추가 비용을 청구하지 않습니다(일반적으로 &quot;별칭&quot;이라고 함). 이는 추가 숨겨진 비용 없이 원하는 만큼 별칭을 만들 수 있음을 의미합니다. 예를 들어 <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> 및 <span class=\"notranslate\">sales@yourdomain.com</span> 에 대한 사서함을 만들 수 있으며 여전히 모든 항목에 대해 월 3달러만 지불하면 됩니다.",
+  "10 GB pooled storage": "10GB 공용 스토리지",
+  "30-day guarantee": "30일 보증",
+  "instant refunds": "즉시 환불",
+  "Search &amp; analyze error logs": "검색 및 오류 로그 분석",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">무제한 도메인</span> 의 경우 월</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span>",
+  "Create Team": "팀 만들기"
 }

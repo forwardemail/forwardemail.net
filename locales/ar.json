@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "المرسلون المحظورون",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "تتجاوز القائمة المسموح بها أو القائمة المرفوضة المخصصة للنطاق الحد المسموح به وهو <span class='notranslate'>%d</span> من الإدخالات.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "لقد قمت بإنشاء اسم مستعار جديد بنجاح: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "طرق الدفع المقبولة:"
+  "Payment Methods Accepted:": "طرق الدفع المقبولة:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>لا تقلق</strong> - يمكنك تبديل الخطط على الفور في أي وقت.",
+  "Only supports email forwarding": "يدعم فقط إعادة توجيه البريد الإلكتروني",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 دولار</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا لعدد <span class=\"text-decoration-underline\">غير محدود من النطاقات</span></span>",
+  "Forward your domain's mail": "إعادة توجيه البريد الخاص بنطاقك",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "أرسل واستقبل باسم <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 دولارات</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا لعدد <span class=\"text-decoration-underline\">غير محدود من النطاقات</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "احصل على <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "0 دولار/مستخدم",
+  "Unlimited Aliases": "أسماء مستعارة غير محدودة",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "على عكس خدمات البريد الإلكتروني الأخرى، فإننا لا نفرض رسومًا إضافية على كل مستخدم (يشار إليها عادةً باسم &quot;الاسم المستعار&quot;). وهذا يعني أنه يمكنك إنشاء أي عدد تريده من الأسماء المستعارة دون رسوم مخفية إضافية. على سبيل المثال، يمكنك إنشاء صناديق بريد لـ <span class=\"notranslate\">you@yourdomain.com</span> و <span class=\"notranslate\">info@yourdomain.com</span> و <span class=\"notranslate\">help@yourdomain.com</span> و <span class=\"notranslate\">sales@yourdomain.com</span> – ولا تزال تدفع 3 دولارات شهريًا فقط مقابل كل شيء.",
+  "10 GB pooled storage": "مساحة تخزين مجمعة تبلغ 10 جيجابايت",
+  "30-day guarantee": "ضمان لمدة 30 يومًا",
+  "instant refunds": "المبالغ المستردة الفورية",
+  "Search &amp; analyze error logs": "بحث &amp; تحليل سجلات الأخطاء",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 دولارات</span> <span class=\"d-inline-block h6 text-black text-themed-50\">شهريًا لعدد <span class=\"text-decoration-underline\">غير محدود من النطاقات</span></span>",
+  "Create Team": "إنشاء فريق"
 }

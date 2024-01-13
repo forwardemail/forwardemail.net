@@ -4398,5 +4398,22 @@
   "You must <a href=\"%s\" class=\"alert-link\">complete setup</a> to send emails via SMTP and API.": "Vous devez <a href=\"%s\" class=\"alert-link\">terminer la configuration</a> pour envoyer des e-mails via SMTP et API.",
   "Add Alias | Forward Email": "Ajouter un alias &#124; Un courriel transféré",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Méthodes de paiement acceptées :"
+  "Payment Methods Accepted:": "Méthodes de paiement acceptées :",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Ne vous inquiétez pas</strong> , vous pouvez changer instantanément de forfait à tout moment.",
+  "Only supports email forwarding": "Prend uniquement en charge le transfert d'e-mails",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/mois pour <span class=\"text-decoration-underline\">des domaines illimités</span></span>",
+  "Forward your domain's mail": "Transférer le courrier de votre domaine",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Envoyez et recevez en tant que <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/mois pour <span class=\"text-decoration-underline\">des domaines illimités</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Obtenez <span class=\"notranslate\">you@yourdomain.com</span>",
+  "Unlimited aliases": "Alias illimités",
+  "$0/user": "0 $/utilisateur",
+  "Unlimited Aliases": "Alias illimités",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Contrairement à d&#39;autres services de messagerie, nous ne facturons pas de supplément par utilisateur (communément appelé « alias »). Cela signifie que vous pouvez créer autant d’alias que vous le souhaitez sans frais cachés supplémentaires. Par exemple, vous pouvez créer des boîtes aux lettres pour <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> et <span class=\"notranslate\">sales@yourdomain.com</span> – et vous ne payez toujours que 3 $/mois pour tout.",
+  "10 GB pooled storage": "10 Go de stockage mutualisé",
+  "30-day guarantee": "Garantie 30 jours",
+  "instant refunds": "remboursements instantanés",
+  "Search &amp; analyze error logs": "Rechercher et amp; analyser les journaux d'erreurs",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/mois pour <span class=\"text-decoration-underline\">des domaines illimités</span></span>",
+  "Create Team": "Créer une équipe"
 }

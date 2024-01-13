@@ -6972,5 +6972,21 @@
   "Denylisted Senders": "Avsendere avslått",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Domenets egendefinerte godkjenningsliste eller avvisningsliste overskrider grensen på <span class='notranslate'>%d</span> oppføringer.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Godkjente betalingsmåter:"
+  "Payment Methods Accepted:": "Godkjente betalingsmåter:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Ikke bekymre deg</strong> – du kan bytte planer umiddelbart når som helst.",
+  "Only supports email forwarding": "Støtter kun videresending av e-post",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/måned for <span class=\"text-decoration-underline\">ubegrensede domener</span></span>",
+  "Forward your domain's mail": "Videresend domenets e-post",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Send og motta som <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/ måned for <span class=\"text-decoration-underline\">ubegrensede domener</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Få <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$0/bruker",
+  "Unlimited Aliases": "Ubegrensede aliaser",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "I motsetning til andre e-posttjenester, tar vi ikke ekstra betalt per bruker (ofte referert til som et &quot;alias&quot;). Dette betyr at du kan lage så mange aliaser du vil uten ekstra skjulte avgifter. Du kan for eksempel opprette postbokser for <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> og <span class=\"notranslate\">sales@yourdomain.com</span> – og du betaler fortsatt bare $3/md for alt.",
+  "10 GB pooled storage": "10 GB samlet lagring",
+  "30-day guarantee": "30 dagers garanti",
+  "instant refunds": "umiddelbare refusjoner",
+  "Search &amp; analyze error logs": "Søk &amp; analysere feillogger",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/ måned for <span class=\"text-decoration-underline\">ubegrensede domener</span></span>",
+  "Create Team": "Opprett team"
 }

@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Заблоковані відправники",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Спеціальний білий або заборонений список домену перевищує ліміт <span class='notranslate'>%d</span> записів.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Ви успішно створили новий псевдонім: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Приймаються способи оплати:"
+  "Payment Methods Accepted:": "Приймаються способи оплати:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Не хвилюйтеся</strong> – ви можете будь-коли миттєво змінити плани.",
+  "Only supports email forwarding": "Підтримує лише пересилання електронної пошти",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 доларів США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для <span class=\"text-decoration-underline\">необмежених доменів</span></span>",
+  "Forward your domain's mail": "Пересилання пошти вашого домену",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Надсилайте й отримуйте як <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 долари США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для <span class=\"text-decoration-underline\">необмежених доменів</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Отримати <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$0/користувач",
+  "Unlimited Aliases": "Необмежена кількість псевдонімів",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "На відміну від інших служб електронної пошти, ми не стягуємо додаткову плату за користувача (зазвичай його називають &quot;псевдонімом&quot;). Це означає, що ви можете створити скільки завгодно псевдонімів без додаткових прихованих платежів. Наприклад, ви можете створити поштові скриньки для <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> і <span class=\"notranslate\">sales@yourdomain.com</span> – і ви все одно платите лише 3 долари на місяць за все.",
+  "10 GB pooled storage": "10 ГБ спільної пам’яті",
+  "30-day guarantee": "Гарантія 30 днів",
+  "instant refunds": "миттєве повернення коштів",
+  "Search &amp; analyze error logs": "Пошук &amp; аналізувати журнали помилок",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 доларів США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">на місяць для <span class=\"text-decoration-underline\">необмежених доменів</span></span>",
+  "Create Team": "Створити команду"
 }

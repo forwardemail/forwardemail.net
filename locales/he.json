@@ -4931,5 +4931,22 @@
   "Denylisted Senders": "שולחים דחויים",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "רשימת ההיתרים המותאמת אישית או רשימת הדחיה של הדומיין חורגת מהמגבלה של <span class='notranslate'>%d</span> כניסות.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "יצרת בהצלחה כינוי חדש: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "אמצעי תשלום מקובלים:"
+  "Payment Methods Accepted:": "אמצעי תשלום מקובלים:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>אל תדאג</strong> - אתה יכול להחליף תוכניות באופן מיידי בכל עת.",
+  "Only supports email forwarding": "תומך רק בהעברת אימייל",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור <span class=\"text-decoration-underline\">דומיינים ללא הגבלה</span></span>",
+  "Forward your domain's mail": "העבר את הדואר של הדומיין שלך",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "שלח וקבל בתור <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור <span class=\"text-decoration-underline\">דומיינים ללא הגבלה</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "קבל <span class=\"notranslate\">you@yourdomain.com</span>",
+  "Unlimited aliases": "כינויים ללא הגבלה",
+  "$0/user": "$0 למשתמש",
+  "Unlimited Aliases": "כינויים ללא הגבלה",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "בניגוד לשירותי דוא&quot;ל אחרים, אנו לא גובים תשלום נוסף לכל משתמש (המכונה בדרך כלל &quot;כינוי&quot;). זה אומר שאתה יכול ליצור כמה כינויים שאתה רוצה ללא עמלות נסתרות נוספות. לדוגמה, אתה יכול ליצור תיבות דואר עבור <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> ו- <span class=\"notranslate\">sales@yourdomain.com</span> - ועדיין אתה משלם רק $3 לחודש עבור הכל.",
+  "10 GB pooled storage": "אחסון מאוחד של 10 GB",
+  "30-day guarantee": "אחריות ל-30 יום",
+  "instant refunds": "החזרים מיידיים",
+  "Search &amp; analyze error logs": "חפש &amp; לנתח יומני שגיאות",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">לחודש עבור <span class=\"text-decoration-underline\">דומיינים ללא הגבלה</span></span>",
+  "Create Team": "צור צוות"
 }

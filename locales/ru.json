@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Запрещенные отправители",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Пользовательский список разрешений или список запретов домена превышает ограничение <span class='notranslate'>%d</span> записей.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Вы успешно создали новый псевдоним: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Принимаемые способы оплаты:"
+  "Payment Methods Accepted:": "Принимаемые способы оплаты:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Не волнуйтесь</strong> – вы можете мгновенно сменить план в любое время.",
+  "Only supports email forwarding": "Поддерживает только пересылку электронной почты",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 долларов США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">в месяц за <span class=\"text-decoration-underline\">неограниченное количество доменов</span></span>",
+  "Forward your domain's mail": "Переслать почту вашего домена",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Отправляйте и получайте на адрес <span class=\"notranslate\">you@yourdomain.com</span> .",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 доллара США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">в месяц за <span class=\"text-decoration-underline\">неограниченное количество доменов</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Получить <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "0 долларов США/пользователь",
+  "Unlimited Aliases": "Неограниченное количество псевдонимов",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "В отличие от других почтовых служб, мы не взимаем дополнительную плату за каждого пользователя (обычно называемого «псевдонимом»). Это означает, что вы можете создать столько псевдонимов, сколько захотите, без дополнительных скрытых платежей. Например, вы можете создать почтовые ящики для <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> и <span class=\"notranslate\">sales@yourdomain.com</span> — и вы все равно будете платить за все всего 3 доллара в месяц.",
+  "10 GB pooled storage": "10 ГБ объединенного хранилища",
+  "30-day guarantee": "30-дневная гарантия",
+  "instant refunds": "мгновенные возвраты",
+  "Search &amp; analyze error logs": "Поиск и усиление; анализировать журналы ошибок",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 долларов США</span> <span class=\"d-inline-block h6 text-black text-themed-50\">в месяц за <span class=\"text-decoration-underline\">неограниченное количество доменов</span></span>",
+  "Create Team": "Создать команду"
 }

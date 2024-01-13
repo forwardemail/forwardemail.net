@@ -6706,5 +6706,21 @@
   "Node.js DNS over HTTPS Code Example in <span class=\"notranslate\">2024</span>": "Node.js DNS over HTTPS Code Example in <span class=\"notranslate\">2024</span>",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
   "Payment Methods Accepted:": "Payment Methods Accepted:",
-  "Best Email Spam Protection Filter Code Example in <span class=\"notranslate\">2024</span>": "Best Email Spam Protection Filter Code Example in <span class=\"notranslate\">2024</span>"
+  "Best Email Spam Protection Filter Code Example in <span class=\"notranslate\">2024</span>": "Best Email Spam Protection Filter Code Example in <span class=\"notranslate\">2024</span>",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.",
+  "Only supports email forwarding": "Only supports email forwarding",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>",
+  "Forward your domain's mail": "Forward your domain's mail",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Get <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$0/user",
+  "Unlimited Aliases": "Unlimited Aliases",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.",
+  "10 GB pooled storage": "10 GB pooled storage",
+  "30-day guarantee": "30-day guarantee",
+  "instant refunds": "instant refunds",
+  "Search &amp; analyze error logs": "Search &amp; analyze error logs",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>",
+  "Create Team": "Create Team"
 }

@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Geweigerde afzenders",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "De aangepaste toelatings- of weigeringslijst van het domein overschrijdt de limiet van <span class='notranslate'>%d</span> vermeldingen.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Je hebt met succes een nieuwe alias aangemaakt: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Betaalmethoden geaccepteerd:"
+  "Payment Methods Accepted:": "Betaalmethoden geaccepteerd:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Maak je geen zorgen</strong> : je kunt op elk moment direct van abonnement wisselen.",
+  "Only supports email forwarding": "Ondersteunt alleen het doorsturen van e-mail",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor <span class=\"text-decoration-underline\">onbeperkte domeinen</span></span>",
+  "Forward your domain's mail": "Stuur de e-mail van uw domein door",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Verzenden en ontvangen als <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor <span class=\"text-decoration-underline\">onbeperkte domeinen</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Ontvang <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$ 0/gebruiker",
+  "Unlimited Aliases": "Onbeperkte aliassen",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "In tegenstelling tot andere e-maildiensten brengen wij geen extra kosten per gebruiker in rekening (ook wel een &quot;alias&quot; genoemd). Dit betekent dat u zoveel aliassen kunt maken als u wilt, zonder extra verborgen kosten. U kunt bijvoorbeeld mailboxen maken voor <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> en <span class=\"notranslate\">sales@yourdomain.com</span> – en u betaalt nog steeds slechts $ 3/maand voor alles.",
+  "10 GB pooled storage": "10 GB gecombineerde opslag",
+  "30-day guarantee": "30 dagen garantie",
+  "instant refunds": "onmiddellijke terugbetalingen",
+  "Search &amp; analyze error logs": "Zoeken &amp; foutenlogboeken analyseren",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$ 9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/maand voor <span class=\"text-decoration-underline\">onbeperkte domeinen</span></span>",
+  "Create Team": "Maak een team"
 }

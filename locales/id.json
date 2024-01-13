@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Pengirim yang Ditolak",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Daftar yang diizinkan atau ditolak khusus domain melebihi batas <span class='notranslate'>%d</span> entri.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Metode Pembayaran Diterima:"
+  "Payment Methods Accepted:": "Metode Pembayaran Diterima:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Jangan khawatir</strong> – Anda dapat langsung beralih paket kapan saja.",
+  "Only supports email forwarding": "Hanya mendukung penerusan email",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk <span class=\"text-decoration-underline\">domain tak terbatas</span></span>",
+  "Forward your domain's mail": "Meneruskan email domain Anda",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Kirim &amp; terima sebagai <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk <span class=\"text-decoration-underline\">domain tak terbatas</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Dapatkan <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$0/pengguna",
+  "Unlimited Aliases": "Alias Tidak Terbatas",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Tidak seperti layanan email lainnya, kami tidak mengenakan biaya tambahan per pengguna (biasa disebut sebagai &quot;alias&quot;). Ini berarti Anda dapat membuat alias sebanyak yang Anda inginkan tanpa biaya tambahan yang tersembunyi. Misalnya, Anda dapat membuat kotak surat untuk <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> , dan <span class=\"notranslate\">sales@yourdomain.com</span> – dan Anda tetap hanya membayar $3/bln untuk semuanya.",
+  "10 GB pooled storage": "Penyimpanan gabungan 10 GB",
+  "30-day guarantee": "Garansi 30 hari",
+  "instant refunds": "pengembalian dana instan",
+  "Search &amp; analyze error logs": "Cari &amp; menganalisis log kesalahan",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/bulan untuk <span class=\"text-decoration-underline\">domain tak terbatas</span></span>",
+  "Create Team": "Buat Tim"
 }

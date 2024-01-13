@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Reddedilenler Listesindeki Gönderenler",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Alanın özel izin verilenler listesi veya reddedilenler listesi <span class='notranslate'>%d</span> giriş sınırını aşıyor.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Başarıyla yeni bir takma ad oluşturdunuz: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Kabul Edilen Ödeme Yöntemleri:"
+  "Payment Methods Accepted:": "Kabul Edilen Ödeme Yöntemleri:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Endişelenmeyin</strong> ; istediğiniz zaman anında planlar arasında geçiş yapabilirsiniz.",
+  "Only supports email forwarding": "Yalnızca e-posta iletmeyi destekler",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">Sınırsız alan adı</span> için ayda</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 ABD doları</span>",
+  "Forward your domain's mail": "Alan adınızın postasını yönlendirin",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span> olarak gönderin ve alın",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">Sınırsız alan adı</span> için ayda</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 ABD doları</span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "<span class=\"notranslate\">you@yourdomain.com</span> alın",
+  "$0/user": "0$/kullanıcı",
+  "Unlimited Aliases": "Sınırsız Takma Adlar",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Diğer e-posta hizmetlerinin aksine, kullanıcı başına ekstra ücret talep etmiyoruz (genellikle &quot;takma ad&quot; olarak anılır). Bu, ekstra gizli ücretler olmadan istediğiniz kadar takma ad oluşturabileceğiniz anlamına gelir. Örneğin, <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> ve <span class=\"notranslate\">sales@yourdomain.com</span> için posta kutuları oluşturabilirsiniz ve yine de her şey için ayda yalnızca 3 ABD doları ödersiniz.",
+  "10 GB pooled storage": "10 GB havuz depolama alanı",
+  "30-day guarantee": "30 günlük garanti",
+  "instant refunds": "anında geri ödeme",
+  "Search &amp; analyze error logs": "Ara ve hata günlüklerini analiz edin",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h6 text-black text-themed-50\"><span class=\"text-decoration-underline\">Sınırsız alan adı</span> için ayda</span> <span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 ABD doları</span>",
+  "Create Team": "Takım oluştur"
 }

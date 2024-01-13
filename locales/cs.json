@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "Odepření odesílatelé",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Vlastní seznam povolených nebo zakázaných domén překračuje limit <span class='notranslate'>%d</span> položek.",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Úspěšně jste vytvořili nový alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "Přijímané platební metody:"
+  "Payment Methods Accepted:": "Přijímané platební metody:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>Nebojte se</strong> – plány můžete kdykoli okamžitě změnit.",
+  "Only supports email forwarding": "Podporuje pouze přeposílání e-mailů",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">0 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">měsíčně pro <span class=\"text-decoration-underline\">neomezené domény</span></span>",
+  "Forward your domain's mail": "Přepošlete poštu vaší domény",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "Odesílejte a přijímejte jako <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">3 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">měsíčně pro <span class=\"text-decoration-underline\">neomezené domény</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "Získejte <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "0 $/uživatel",
+  "Unlimited Aliases": "Neomezené aliasy",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "Na rozdíl od jiných e-mailových služeb neúčtujeme poplatky navíc za uživatele (běžně označované jako „alias“). To znamená, že můžete vytvořit tolik aliasů, kolik chcete, bez dalších skrytých poplatků. Můžete si například vytvořit poštovní schránky pro <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> a <span class=\"notranslate\">sales@yourdomain.com</span> – a stále za všechno zaplatíte jen 3 $ měsíčně.",
+  "10 GB pooled storage": "10 GB sdíleného úložiště",
+  "30-day guarantee": "30denní záruka",
+  "instant refunds": "okamžité vrácení peněz",
+  "Search &amp; analyze error logs": "Hledat &amp; analyzovat protokoly chyb",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">9 $</span> <span class=\"d-inline-block h6 text-black text-themed-50\">měsíčně pro <span class=\"text-decoration-underline\">neomezené domény</span></span>",
+  "Create Team": "Vytvořte tým"
 }

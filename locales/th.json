@@ -6967,5 +6967,21 @@
   "Denylisted Senders": "ผู้ส่งที่ถูกปฏิเสธ",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "รายการที่อนุญาตหรือปฏิเสธที่กำหนดเองของโดเมนเกินขีดจำกัดของ <span class='notranslate'>%d</span> รายการ",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Payment Methods Accepted:": "วิธีการชำระเงินที่ยอมรับ:"
+  "Payment Methods Accepted:": "วิธีการชำระเงินที่ยอมรับ:",
+  "<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.": "<strong>ไม่ต้องกังวล</strong> คุณสามารถเปลี่ยนแผนได้ทันทีเมื่อใดก็ได้",
+  "Only supports email forwarding": "รองรับการส่งต่ออีเมลเท่านั้น",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$0</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/เดือนสำหรับ <span class=\"text-decoration-underline\">โดเมนไม่จำกัด</span></span>",
+  "Forward your domain's mail": "ส่งต่อจดหมายของโดเมนของคุณ",
+  "Send &amp; receive as <span class=\"notranslate\">you@yourdomain.com</span>": "ส่งและรับในชื่อ <span class=\"notranslate\">you@yourdomain.com</span>",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$3</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/เดือนสำหรับ <span class=\"text-decoration-underline\">โดเมนไม่จำกัด</span></span>",
+  "Get <span class=\"notranslate\">you@yourdomain.com</span>": "รับ <span class=\"notranslate\">you@yourdomain.com</span>",
+  "$0/user": "$0/ผู้ใช้",
+  "Unlimited Aliases": "นามแฝงไม่จำกัด",
+  "Unlike other email services, we do not charge extra per user (commonly referred to as an \"alias\").  This means you can create as many aliases as you want without extra hidden fees. For example, you can create mailboxes for <span class=\"notranslate\">you@yourdomain.com</span>, <span class=\"notranslate\">info@yourdomain.com</span>, <span class=\"notranslate\">help@yourdomain.com</span>, and <span class=\"notranslate\">sales@yourdomain.com</span> &ndash; and you still only pay $3/mo for everything.": "แตกต่างจากบริการอีเมลอื่น ๆ เราไม่เรียกเก็บเงินเพิ่มเติมต่อผู้ใช้ (โดยทั่วไปเรียกว่า &quot;นามแฝง&quot;) ซึ่งหมายความว่าคุณสามารถสร้างนามแฝงได้มากเท่าที่คุณต้องการโดยไม่มีค่าธรรมเนียมแอบแฝงเพิ่มเติม ตัวอย่างเช่น คุณสามารถสร้างกล่องจดหมายสำหรับ <span class=\"notranslate\">you@yourdomain.com</span> , <span class=\"notranslate\">info@yourdomain.com</span> , <span class=\"notranslate\">help@yourdomain.com</span> และ <span class=\"notranslate\">sales@yourdomain.com</span> โดยคุณยังคงจ่ายเพียง $3/เดือนสำหรับทุกสิ่ง",
+  "10 GB pooled storage": "พื้นที่เก็บข้อมูลร่วม 10 GB",
+  "30-day guarantee": "รับประกัน 30 วัน",
+  "instant refunds": "การคืนเงินทันที",
+  "Search &amp; analyze error logs": "ค้นหา &amp; วิเคราะห์บันทึกข้อผิดพลาด",
+  "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span><span class=\"d-inline-block h6 text-black text-themed-50\">/month for <span class=\"text-decoration-underline\">unlimited domains</span></span>": "<span class=\"d-inline-block h4 mb-0 font-weight-bold\">$9</span> <span class=\"d-inline-block h6 text-black text-themed-50\">/เดือนสำหรับ <span class=\"text-decoration-underline\">โดเมนไม่จำกัด</span></span>",
+  "Create Team": "สร้างทีม"
 }
