@@ -731,7 +731,9 @@ async function tti() {
   }
 }
 
-tti();
+setTimeout(() => {
+  tti();
+}, 500);
 
 // Avoid CSP issues with inline styling for widths on progress bars
 $('[data-width]').each(function () {
