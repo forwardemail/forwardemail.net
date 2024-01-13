@@ -378,7 +378,7 @@ module.exports = (redis) => ({
       }
 
       // if we need to allowlist certain IP which resolve to our hostnames
-      if (ctx.resolver && ctx.api) {
+      if (ctx.resolver) {
         try {
           // maximum of 3s before ac times out
           const abortController = new AbortController();
