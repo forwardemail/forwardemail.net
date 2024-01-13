@@ -354,7 +354,7 @@ block body
               .lead.text-center.mb-3.text-nowrap
                 if user && user.plan !== 'free'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
-                  s.d-block.h6.text-muted= t('$3/month for <span class="text-decoration-underline">unlimited domains</span>')
+                  s.d-block.h6.text-muted!= t('$3/month for <span class="text-decoration-underline">unlimited domains</span>')
                 else
                   != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$3</span><span class="d-inline-block h6 text-black text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
               if sortedDomains.length === 0
@@ -608,7 +608,7 @@ block body
               .lead.text-center.mb-3.text-nowrap
                 if user && user.plan === 'team'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
-                  s.d-block.h6.text-muted= t('$9/month for <span class="text-decoration-underline">unlimited domains</span>')
+                  s.d-block.h6.text-muted!= t('$9/month for <span class="text-decoration-underline">unlimited domains</span>')
                 else
                   != t('<span class="d-inline-block h4 mb-0 font-weight-bold">$9</span><span class="d-inline-block h6 text-black text-themed-50">/month for <span class="text-decoration-underline">unlimited domains</span></span>')
               if sortedDomains.length === 0
