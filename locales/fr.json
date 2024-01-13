@@ -4397,5 +4397,6 @@
   "catch-all": "fourre-tout",
   "You must <a href=\"%s\" class=\"alert-link\">complete setup</a> to send emails via SMTP and API.": "Vous devez <a href=\"%s\" class=\"alert-link\">terminer la configuration</a> pour envoyer des e-mails via SMTP et API.",
   "Add Alias | Forward Email": "Ajouter un alias &#124; Un courriel transféré",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Vous avez créé avec succès un nouvel alias : <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Méthodes de paiement acceptées :"
 }

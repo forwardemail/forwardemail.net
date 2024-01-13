@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "아래에 IP 주소, 도메인 이름 및/또는 이메일 주소를 입력하세요. 줄 바꿈, 쉼표 및/또는 공백을 구분 기호로 사용할 수 있습니다.",
   "Denylisted Senders": "거부된 발신자",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "도메인의 사용자 정의 허용 목록 또는 거부 목록이 <span class='notranslate'>%d</span> 개의 항목 제한을 초과합니다.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "새 별칭을 성공적으로 생성했습니다: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "새 별칭을 성공적으로 생성했습니다: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "허용되는 결제 방법:"
 }

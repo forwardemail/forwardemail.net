@@ -6971,5 +6971,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Skriv inn IP-adresser, domenenavn og/eller e-postadresser nedenfor. Du kan bruke linjeskift, komma og/eller mellomrom som skilletegn.",
   "Denylisted Senders": "Avsendere avslått",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Domenets egendefinerte godkjenningsliste eller avvisningsliste overskrider grensen på <span class='notranslate'>%d</span> oppføringer.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Du har opprettet et nytt alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Godkjente betalingsmåter:"
 }

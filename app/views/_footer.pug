@@ -23,8 +23,65 @@ footer.mt-auto
                 role=isHelp ? "link" : "button",
                 data-target=isHelp ? false : "#modal-help"
               )= t("Need help?")
-  .bg-dark.text-white.small
+  .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
+      ul.list-inline.mb-3.text-center
+        li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
+          i.fa.fa-lock.mr-2
+          = t("Privacy Protected")
+        li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
+          i.fa.fa-shield.mr-2
+          = t("Secure Checkout")
+      ul.list-inline.mb-3.text-center.mb-5
+        li.list-inline-item
+          strong= t("Payment Methods Accepted:")
+        li.list-inline-item
+          i.fab.fa-paypal
+          = " PayPal"
+        li.list-inline-item
+          i.fab.fa-cc-visa
+          = " Visa"
+        li.list-inline-item
+          i.fab.fa-cc-mastercard
+          = " Mastercard"
+        li.list-inline-item
+          i.fab.fa-cc-amex
+          = " American Express"
+        li.list-inline-item
+          i.fab.fa-cc-discover
+          = " Discover"
+        li.list-inline-item
+          i.fab.fa-cc-diners-club
+          = " Diners Club"
+        li.list-inline-item
+          i.fab.fa-cc-jcb
+          = " JCB"
+        li.list-inline-item
+          = " China UnionPay"
+        li.list-inline-item
+          i.fab.fa-alipay
+          = " Alipay"
+        li.list-inline-item
+          i.fab.fa-cc-apple-pay
+          = " Apple Pay"
+        li.list-inline-item
+          i.fab.fa-google-pay
+          = " Google Pay"
+        li.list-inline-item Link
+        li.list-inline-item Bancontact
+        li.list-inline-item EPS
+        li.list-inline-item giropay
+        li.list-inline-item
+          i.fab.fa-ideal
+          = " iDEAL"
+        li.list-inline-item Przelewy24
+        li.list-inline-item Sofort
+        li.list-inline-item Affirm
+        li.list-inline-item Afterpay / Clearpay
+        li.list-inline-item Klarna
+        li.list-inline-item= t("SEPA Direct Debit")
+        li.list-inline-item= t("Canadian pre-authorized debits")
+        li.list-inline-item= t("ACH Direct Debit")
       .d-flex.flex-column.flex-lg-row
         if !isBot(ctx.get('User-Agent'))
           .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3
@@ -254,10 +311,11 @@ footer.mt-auto
                 if match
                   - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
               each tool in tools
-                a.d-block.text-white.py-2.py-md-0(
-                  href=l(tool.slug),
-                  title=striptags(t(tool.title))
-                )!= t(tool.title)
+                li
+                  a.d-block.text-white.py-2.py-md-0(
+                    href=l(tool.slug),
+                    title=striptags(t(tool.title))
+                  )!= t(tool.title)
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.d-flex.flex-column
           div
@@ -377,32 +435,9 @@ footer.mt-auto
                     li: a.d-block.text-white.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
       .mt-5.text-white.small
         ul.list-inline.mb-3
-          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-success.p-2.text-monospace.font-weight-bold.mb-1
-            i.fa.fa-lock.text-success
-            = " "
-            = t("Privacy Protected")
-          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-success.p-2.text-monospace.font-weight-bold.mb-1
-            i.fa.fa-shield.text-success
-            = " "
-            = t("Secure Checkout")
-          //-.
-            li.list-inline-item.mb-1
-              a(
-                href="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                noscript
-                  img(
-                    alt=t("Build Status"),
-                    src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg"
-                  )
-                img.lazyload(
-                  alt=t("Build Status"),
-                  data-src="https://github.com/forwardemail/forwardemail.net/actions/workflows/ci.yml/badge.svg"
-                )
-          li.list-inline-item.mb-1
+          li.list-inline-item.mb-3.mr-3
             a(
+              aria-label=t("Qualys SSL Labs SSL Server Test"),
               href="https://www.ssllabs.com/ssltest/analyze.html?d=forwardemail.net&latest",
               target="_blank",
               rel="noopener noreferrer"
@@ -420,9 +455,10 @@ footer.mt-auto
                 width=164,
                 height=20
               )
-          li.list-inline-item.mb-1
+          li.list-inline-item.mb-3
             a(
               href="https://observatory.mozilla.org/analyze/forwardemail.net",
+              aria-label=t("Mozilla HTTP Observatory Grade"),
               target="_blank",
               rel="noopener noreferrer"
             )
@@ -438,26 +474,6 @@ footer.mt-auto
                 data-src="https://img.shields.io/mozilla-observatory/grade-score/forwardemail.net",
                 width=162,
                 height=20
-              )
-        ul.list-inline.mb-3
-          li.list-inline-item.mb-3
-            a(
-              href="https://www.hardenize.com/report/forwardemail.net?summary",
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              noscript
-                img(
-                  alt=t("Hardenize Badge"),
-                  src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
-                  width="70",
-                  height="110"
-                )
-              img.lazyload(
-                alt=t("Hardenize Badge"),
-                data-src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
-                width="70",
-                height="110"
               )
           //-.
             li.list-inline-item.mb-3
@@ -479,8 +495,10 @@ footer.mt-auto
                   width="216.5",
                   height="52"
                 )
+        ul.list-inline.mb-3
           li.list-inline-item.mb-3
             a(
+              aria-label=t("Internet Site Test"),
               href="https://internet.nl/site/forwardemail.net",
               target="_blank",
               rel="noopener noreferrer"
@@ -500,6 +518,7 @@ footer.mt-auto
               )
           li.list-inline-item.mb-3
             a(
+              aria-label=t("Internet Mail Test"),
               href="https://internet.nl/mail/forwardemail.net",
               target="_blank",
               rel="noopener noreferrer"
@@ -519,55 +538,26 @@ footer.mt-auto
               )
         ul.list-inline.mb-3
           li.list-inline-item
-            strong= "Payment Methods:"
-          li.list-inline-item
-            i.fab.fa-paypal
-            = " PayPal"
-          li.list-inline-item
-            i.fab.fa-cc-visa
-            = " Visa"
-          li.list-inline-item
-            i.fab.fa-cc-mastercard
-            = " Mastercard"
-          li.list-inline-item
-            i.fab.fa-cc-amex
-            = " American Express"
-          li.list-inline-item
-            i.fab.fa-cc-discover
-            = " Discover"
-          li.list-inline-item
-            i.fab.fa-cc-diners-club
-            = " Diners Club"
-          li.list-inline-item
-            i.fab.fa-cc-jcb
-            = " JCB"
-          li.list-inline-item
-            = " China UnionPay"
-          li.list-inline-item
-            i.fab.fa-alipay
-            = " Alipay"
-          li.list-inline-item
-            i.fab.fa-cc-apple-pay
-            = " Apple Pay"
-          li.list-inline-item
-            i.fab.fa-google-pay
-            = " Google Pay"
-          li.list-inline-item Link
-          li.list-inline-item Bancontact
-          li.list-inline-item EPS
-          li.list-inline-item giropay
-          li.list-inline-item
-            i.fab.fa-ideal
-            = " iDEAL"
-          li.list-inline-item Przelewy24
-          li.list-inline-item Sofort
-          li.list-inline-item Affirm
-          li.list-inline-item Afterpay / Clearpay
-          li.list-inline-item Klarna
-          li.list-inline-item= t("SEPA Direct Debit")
-          li.list-inline-item= t("Canadian pre-authorized debits")
-          li.list-inline-item= t("ACH Direct Debit")
-        ul.list-unstyled
+            a(
+              aria-label=t("Hardenize Badge"),
+              href="https://www.hardenize.com/report/forwardemail.net?summary",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Hardenize Badge"),
+                  src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
+                  width="70",
+                  height="110"
+                )
+              img.lazyload(
+                alt=t("Hardenize Badge"),
+                data-src="https://badge.hardenize.com/v2/images/hardenize-badge-forwardemail.net.png",
+                width="70",
+                height="110"
+              )
+        ul.list-unstyled.small
           // <https://www.apple.com/legal/intellectual-property/trademark/appletmlist.html>
           li= t("Apple, Mac mini, Macbook, iMac, iPhone, macOS, iPad, watchOS, and Safari are registered trademarks of Apple Inc.")
           li= t("IOS is a trademark or registered trademark of Cisco.")
@@ -582,7 +572,7 @@ footer.mt-auto
           //- <https://www.linuxfoundation.org/legal/trademark-usage>
           //- <https://isc.tamu.edu/~lewing/linux/> (Tux the Penguin)
           li= t("Linux is the registered trademark of Linus Torvalds.")
-        ul.list-unstyled
+        ul.list-unstyled.small
           li
             != "&copy;"
             = " "

@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Níže zadejte IP adresy, názvy domén a/nebo e-mailové adresy. Jako oddělovače můžete použít zalomení řádků, čárky a/nebo mezery.",
   "Denylisted Senders": "Odepření odesílatelé",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Vlastní seznam povolených nebo zakázaných domén překračuje limit <span class='notranslate'>%d</span> položek.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Úspěšně jste vytvořili nový alias: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Úspěšně jste vytvořili nový alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Přijímané platební metody:"
 }

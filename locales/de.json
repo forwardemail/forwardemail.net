@@ -6004,5 +6004,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Geben Sie unten IP-Adressen, Domänennamen und/oder E-Mail-Adressen ein. Als Trennzeichen können Sie Zeilenumbrüche, Kommas und/oder Leerzeichen verwenden.",
   "Denylisted Senders": "Absender auf der Sperrliste",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Die benutzerdefinierte Zulassungs- oder Sperrliste der Domäne überschreitet die Grenze von <span class='notranslate'>%d</span> Einträgen.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Sie haben erfolgreich einen neuen Alias erstellt: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Sie haben erfolgreich einen neuen Alias erstellt: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Akzeptierte Zahlungsmethoden:"
 }

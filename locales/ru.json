@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Введите IP-адреса, имена доменов и/или адреса электронной почты ниже. В качестве разделителей можно использовать разрывы строк, запятые и/или пробелы.",
   "Denylisted Senders": "Запрещенные отправители",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Пользовательский список разрешений или список запретов домена превышает ограничение <span class='notranslate'>%d</span> записей.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Вы успешно создали новый псевдоним: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Вы успешно создали новый псевдоним: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Принимаемые способы оплаты:"
 }

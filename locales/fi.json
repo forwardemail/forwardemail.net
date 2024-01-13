@@ -6813,5 +6813,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Kirjoita IP-osoitteet, verkkotunnukset ja/tai sähköpostiosoitteet alle. Voit käyttää erottimina rivinvaihtoja, pilkkuja ja/tai välilyöntejä.",
   "Denylisted Senders": "Kielletyt lähettäjät",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Verkkotunnuksen mukautettu sallittujen luettelo tai estolista ylittää <span class='notranslate'>%d</span> merkinnän rajan.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Uuden aliaksen luominen onnistui: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Hyväksytyt maksutavat:"
 }

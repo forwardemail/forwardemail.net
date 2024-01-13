@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Vul hieronder IP-adressen, domeinnamen en/of e-mailadressen in. U kunt regeleinden, komma's en/of spaties als scheidingstekens gebruiken.",
   "Denylisted Senders": "Geweigerde afzenders",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "De aangepaste toelatings- of weigeringslijst van het domein overschrijdt de limiet van <span class='notranslate'>%d</span> vermeldingen.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Je hebt met succes een nieuwe alias aangemaakt: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Je hebt met succes een nieuwe alias aangemaakt: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Betaalmethoden geaccepteerd:"
 }

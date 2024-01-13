@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Masukkan alamat IP, nama domain, dan/atau alamat email di bawah. Anda dapat menggunakan jeda baris, koma, dan/atau spasi sebagai pembatas.",
   "Denylisted Senders": "Pengirim yang Ditolak",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Daftar yang diizinkan atau ditolak khusus domain melebihi batas <span class='notranslate'>%d</span> entri.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Anda berhasil membuat alias baru: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Metode Pembayaran Diterima:"
 }

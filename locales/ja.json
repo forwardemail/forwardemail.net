@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "以下に IP アドレス、ドメイン名、電子メール アドレス、あるいはその両方を入力します。改行、カンマ、スペースを区切り文字として使用できます。",
   "Denylisted Senders": "拒否リストに登録された送信者",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "ドメインのカスタム許可リストまたは拒否リストが<span class='notranslate'>%d</span>エントリの制限を超えています。",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "新しいエイリアスが正常に作成されました: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "新しいエイリアスが正常に作成されました: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "ご利用いただけるお支払い方法:"
 }

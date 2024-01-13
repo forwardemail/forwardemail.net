@@ -6659,5 +6659,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "在下面输入 IP 地址、域名和/或电子邮件地址。您可以使用换行符、逗号和/或空格作为分隔符。",
   "Denylisted Senders": "列入拒绝名单的发件人",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "该域的自定义允许列表或拒绝列表超出了<span class='notranslate'>%d</span>条目的限制。",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "您已成功创建新别名： <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "您已成功创建新别名： <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "接受的付款方式："
 }

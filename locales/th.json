@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "ป้อนที่อยู่ IP ชื่อโดเมน และ/หรือที่อยู่อีเมลด้านล่าง คุณสามารถใช้ตัวแบ่งบรรทัด จุลภาค และ/หรือช่องว่างเป็นตัวคั่นได้",
   "Denylisted Senders": "ผู้ส่งที่ถูกปฏิเสธ",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "รายการที่อนุญาตหรือปฏิเสธที่กำหนดเองของโดเมนเกินขีดจำกัดของ <span class='notranslate'>%d</span> รายการ",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "คุณสร้างนามแฝงใหม่สำเร็จแล้ว: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "วิธีการชำระเงินที่ยอมรับ:"
 }

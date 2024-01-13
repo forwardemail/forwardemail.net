@@ -4930,5 +4930,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "הזן כתובות IP, שמות דומיין ו/או כתובות דואר אלקטרוני למטה. ניתן להשתמש במעברי שורות, פסיקים ו/או רווחים כמפרידים.",
   "Denylisted Senders": "שולחים דחויים",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "רשימת ההיתרים המותאמת אישית או רשימת הדחיה של הדומיין חורגת מהמגבלה של <span class='notranslate'>%d</span> כניסות.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "יצרת בהצלחה כינוי חדש: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "יצרת בהצלחה כינוי חדש: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "אמצעי תשלום מקובלים:"
 }

@@ -6966,5 +6966,6 @@
   "Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.": "Aşağıya IP adreslerini, alan adlarını ve/veya e-posta adreslerini girin. Sınırlayıcı olarak satır sonlarını, virgülleri ve/veya boşlukları kullanabilirsiniz.",
   "Denylisted Senders": "Reddedilenler Listesindeki Gönderenler",
   "The domain's custom allowlist or denylist exceeds the limit of <span class='notranslate'>%d</span> entries.": "Alanın özel izin verilenler listesi veya reddedilenler listesi <span class='notranslate'>%d</span> giriş sınırını aşıyor.",
-  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Başarıyla yeni bir takma ad oluşturdunuz: <code class=\"alert-link text-decoration-underline\">%s</code>"
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "Başarıyla yeni bir takma ad oluşturdunuz: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Payment Methods Accepted:": "Kabul Edilen Ödeme Yöntemleri:"
 }
