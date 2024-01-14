@@ -9,6 +9,8 @@ const POP3Server = require('wildduck/lib/pop3/server');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
+const revHash = require('rev-hash');
+const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 const { isEmail } = require('validator');
 
@@ -266,13 +268,37 @@ async function onAuth(auth, session, fn) {
       isValid = await isValidPassword(domain.tokens, auth.password);
 
     if (!isValid) {
-      // increase failed counter by 1
+      // increase failed counter by 1 iff new password was used
       const key = `auth_limit_${config.env}:${session.remoteAddress}`;
-      await this.client
-        .pipeline()
-        .incrby(key, 1)
-        .pexpire(key, config.smtpLimitAuthDuration)
-        .exec();
+      const attemptsKey = `auth_attempts_${config.env}:${session.remoteAddress}`;
+      const hash = revHash(auth.password);
+
+      let previousPasswordHashes = await this.client.get(attemptsKey);
+      if (isSANB(previousPasswordHashes)) {
+        try {
+          previousPasswordHashes = JSON.parse(previousPasswordHashes);
+        } catch (err) {
+          this.logger.fatal(err, { session });
+        }
+      }
+
+      if (!Array.isArray(previousPasswordHashes)) previousPasswordHashes = [];
+
+      if (!previousPasswordHashes.includes(hash)) {
+        previousPasswordHashes.push(hash);
+        await this.client
+          .pipeline()
+          .incrby(key, 1)
+          .pexpire(key, config.smtpLimitAuthDuration)
+          .set(
+            attemptsKey,
+            safeStringify(previousPasswordHashes),
+            'PX',
+            config.smtpLimitAuthDuration
+          )
+          .exec();
+      }
+
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
