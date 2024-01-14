@@ -125,7 +125,7 @@ module.exports = function (config) {
       `How to Setup Email for Custom Domain Name in <span class="notranslate">${dayjs(
         now
       ).format('YYYY')}</span>`,
-      'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration step by step guide.'
+      'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration setup guide.'
     ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `How to Send Mail As for Gmail Alias <span class="notranslate">${dayjs(
@@ -250,7 +250,7 @@ module.exports = function (config) {
       `${serverCount} ${sample} Open Source Email Servers for <span class="notranslate">${platform}</span> in <span class="notranslate">${dayjs(
         now
       ).format('YYYY')}</span>`,
-      `The ${serverCount} ${sample.toLowerCase()} free and open-source email servers for <span class="notranslate">${platform}</span> with step guides, tutorials, videos, and instructions.`
+      `The ${serverCount} ${sample.toLowerCase()} free and open-source email servers for <span class="notranslate">${platform}</span> with setup guides, tutorials, videos, and instructions.`
     ];
 
     // email client
