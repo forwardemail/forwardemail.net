@@ -46,6 +46,8 @@ const Aliases = require('#models/aliases');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
+const email = require('#helpers/email');
+const encryptMessage = require('#helpers/encrypt-message');
 const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
@@ -1176,6 +1178,140 @@ async function parsePayload(data, ws) {
 
                   // if already existed then return early
                   if (count > 0) return;
+
+                  //
+                  // note we don't need to do this logic above if a session was found in IMAP
+                  // because the APPEND logic already has this built-in
+                  //
+                  if (
+                    session.user.alias_has_pgp &&
+                    session.user.alias_public_key
+                  ) {
+                    try {
+                      // NOTE: encryptMessage won't encrypt message if it already is
+                      payload.raw = await encryptMessage(
+                        session.user.alias_public_key,
+                        payload.raw
+                      );
+                      // unset pgp_error_sent_at if it was a date and more than 1h ago
+                      Aliases.findOneAndUpdate(
+                        {
+                          _id: new mongoose.Types.ObjectId(
+                            session.user.alias_id
+                          ),
+                          domain: new mongoose.Types.ObjectId(
+                            session.user.domain_id
+                          ),
+                          pgp_error_sent_at: {
+                            $exists: true,
+                            $lte: dayjs().subtract(1, 'hour').toDate()
+                          }
+                        },
+                        {
+                          $unset: {
+                            pgp_error_sent_at: 1
+                          }
+                        }
+                      )
+                        .then()
+                        .catch((err) => this.logger.fatal(err, { payload }));
+                    } catch (err) {
+                      logger.fatal(err, { payload });
+                      if (!isCodeBug(err)) {
+                        // email alias user (only once a day as a reminder) if it was not a code bug
+                        const now = new Date();
+                        Aliases.findOneAndUpdate(
+                          {
+                            $and: [
+                              {
+                                _id: new mongoose.Types.ObjectId(
+                                  session.user.alias_id
+                                ),
+                                domain: new mongoose.Types.ObjectId(
+                                  session.user.domain_id
+                                )
+                              },
+                              {
+                                $or: [
+                                  {
+                                    pgp_error_sent_at: {
+                                      $exists: false
+                                    }
+                                  },
+                                  {
+                                    pgp_error_sent_at: {
+                                      $lte: dayjs().subtract(1, 'day').toDate()
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            $set: {
+                              pgp_error_sent_at: now
+                            }
+                          }
+                        )
+                          .then((alias) => {
+                            if (!alias) return;
+                            // send email here and if error occurred then unset
+                            email({
+                              template: 'alert',
+                              message: {
+                                to: session.user.owner_full_email,
+                                cc: config.email.message.from,
+                                subject: i18n.translate(
+                                  'PGP_ENCRYPTION_ERROR',
+                                  session.user.locale
+                                )
+                              },
+                              locals: {
+                                message: `<pre><code>${JSON.stringify(
+                                  parseErr(err),
+                                  null,
+                                  2
+                                )}</code></pre>`,
+                                locale: session.user.locale
+                              }
+                            })
+                              .then(() => {
+                                Aliases.findOneAndUpdate(alias._id, {
+                                  $set: {
+                                    pgp_error_sent_at: new Date()
+                                  }
+                                })
+                                  .then()
+                                  .catch((err) =>
+                                    this.logger.fatal(err, { payload })
+                                  );
+                              })
+                              .catch((err) => {
+                                this.logger.fatal(err, { payload });
+                                Aliases.findOneAndUpdate(
+                                  {
+                                    _id: new mongoose.Types.ObjectId(
+                                      session.user.alias_id
+                                    ),
+                                    domain: new mongoose.Types.ObjectId(
+                                      session.user.domain_id
+                                    ),
+                                    pgp_error_sent_at: now
+                                  },
+                                  {
+                                    $unset: {
+                                      pgp_error_sent_at: 1
+                                    }
+                                  }
+                                ).catch((err) =>
+                                  this.logger.fatal(err, { payload })
+                                );
+                              });
+                          })
+                          .catch((err) => this.logger.fatal(err, { payload }));
+                      }
+                    }
+                  }
 
                   // store temp message
                   await TemporaryMessages.create({
