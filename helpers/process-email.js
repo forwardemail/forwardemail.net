@@ -959,7 +959,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 $in: domain.members
                   .filter((m) => m.group === 'admin')
                   .map((m) =>
-                    typeof m.user === 'object' && typeof m.user._id === 'object'
+                    typeof m.user === 'object' &&
+                    typeof m?.user?._id === 'object'
                       ? m.user._id
                       : m.user
                   )

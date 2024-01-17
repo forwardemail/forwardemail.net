@@ -402,6 +402,11 @@ window.addEventListener(
 //
 // eslint-disable-next-line no-new
 new Lazyload();
+// in case of bootstrap-table renderings
+setTimeout(() => {
+  // eslint-disable-next-line no-new
+  new Lazyload();
+}, 1000);
 
 //
 // strip protocol from input[name="domain"][type="text"]
