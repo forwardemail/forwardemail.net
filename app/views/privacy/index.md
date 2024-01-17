@@ -43,9 +43,9 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 
 ## Information Shared
 
-We do not share your information with any third parties.
+We do not share your information with any third parties.  We also do not use any third-party analytics nor telemetry software services.
 
-We may need to and will comply with court ordered legal requests (but keep in mind we do not collect information mentioned above, so we will not be able to provide it to begin with).
+We may need to and will comply with court ordered legal requests (but keep in mind [we do not collect information mentioned above under "Information Not Collected"](#information-not-collected), so we will not be able to provide it to begin with).
 
 
 ## Information Removal

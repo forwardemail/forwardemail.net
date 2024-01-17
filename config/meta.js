@@ -23,6 +23,7 @@
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 
+const alternatives = require('./alternatives');
 const {
   developerDocs,
   nsProviders,
@@ -35,7 +36,7 @@ module.exports = function (config) {
   // in order for snapshots to be consistent we need the same date to be used
   const now =
     config.env === 'test'
-      ? dayjs.tz('2023-01-01', 'America/Los_Angeles').toDate()
+      ? dayjs.tz('2024-01-01', 'America/Los_Angeles').toDate()
       : new Date();
 
   // currently we cannot use the `|` pipe character due to this issue
@@ -262,6 +263,59 @@ module.exports = function (config) {
       `Reviews, comparison, screenshots and more for the ${clientCount} ${sample.toLowerCase()} open-source email clients for <span class="notranslate">${platform}</span>.`
     ];
   }
+
+  meta[`/blog/best-email-service`] = [
+    `${
+      alternatives.length
+    } Best Email Services in <span class="notranslate">${dayjs(now).format(
+      'YYYY'
+    )}</span>`,
+    `Reviews, comparison, screenshots and more for the ${alternatives.length} best email services.`
+  ];
+
+  meta[`/blog/best-private-email-service`] = [
+    `${
+      alternatives.filter((a) => a.e2ee || a.openpgp || a.wkd).length
+    } Best Private Email Services in <span class="notranslate">${dayjs(
+      now
+    ).format('YYYY')}</span>`,
+    `Reviews, comparison, screenshots and more for the ${
+      alternatives.filter((a) => a.e2ee || a.openpgp || a.wkd).length
+    } best private email services.`
+  ];
+
+  meta[`/blog/best-open-source-email-service`] = [
+    `${
+      alternatives.filter((a) => a.oss).length
+    } Best Open-Source Email Services in <span class="notranslate">${dayjs(
+      now
+    ).format('YYYY')}</span>`,
+    `Reviews, comparison, screenshots and more for the ${
+      alternatives.filter((a) => a.oss).length
+    } best open-source email services.`
+  ];
+
+  meta[`/blog/best-transactional-email-service`] = [
+    `${
+      alternatives.filter((a) => a.api).length
+    } Best Transactional Email Services in <span class="notranslate">${dayjs(
+      now
+    ).format('YYYY')}</span>`,
+    `Reviews, comparison, screenshots and more for the ${
+      alternatives.filter((a) => a.api).length
+    } best transactional email services.`
+  ];
+
+  meta[`/blog/best-email-api-developer-service`] = [
+    `${
+      alternatives.filter((a) => a.api).length
+    } Best Email API's for Developers in <span class="notranslate">${dayjs(
+      now
+    ).format('YYYY')}</span>`,
+    `Reviews, comparison, screenshots and more for the ${
+      alternatives.filter((a) => a.api).length
+    } best email service API's for developers.`
+  ];
 
   // developer docs
   for (const doc of developerDocs) {

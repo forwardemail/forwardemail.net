@@ -179,6 +179,7 @@ window.onloadTurnstileCallback = function () {
 };
 
 // Re-render dates with user's local time
+// TODO: use <time> https://github.com/github/relative-time-element
 function renderDayjs() {
   $('.dayjs').each(function () {
     const data = $(this).data();

@@ -3,11 +3,17 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
+
 const test = require('ava');
+const pMap = require('p-map');
+const ip = require('ip');
 
 const utils = require('../utils');
 
 const config = require('#config');
+
+const IP_ADDRESS = ip.address();
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
@@ -102,11 +108,27 @@ const keys = Object.keys(config.meta).filter((key) => {
   return key;
 });
 
-for (const key of keys) {
-  const route = `/en${key === '/' ? '' : key}`;
-  test(`GET ${route}`, async (t) => {
-    const { web } = t.context;
-    const res = await web.get(route);
-    t.is(res.status, 200);
-  });
+// add all the alternatives (since it would be massive translation file addition otherwise)
+for (const alternative of config.alternatives) {
+  keys.push(`/blog/best-${alternative.slug}-alternative`);
+  for (const a of config.alternatives) {
+    if (a.name === alternative.name) continue;
+    keys.push(
+      `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
+    );
+  }
 }
+
+test(`get dynamic routes`, async (t) => {
+  t.context._web.config.rateLimit.allowlist.push(IP_ADDRESS, '127.0.0.1');
+  await pMap(
+    keys,
+    async (key) => {
+      const route = `/en${key === '/' ? '' : key}`;
+      const { web } = t.context;
+      const res = await web.get(route);
+      t.is(res.status, 200);
+    },
+    { concurrency: os.cpus().length }
+  );
+});

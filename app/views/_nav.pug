@@ -423,13 +423,17 @@ nav.navbar(class=navbarClasses.join(" "))
           //- Developers
           li.nav-item.dropdown.no-js
             form.mb-0
+              - let isEmailComparison = false;
+                each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+                  if ctx.pathWithoutLocale === `/blog/${str}`
+                    - isEmailComparison = true;
               a#navbar-dropdown-docs.btn.dropdown-toggle.d-block.text-left.no-js(
                 href=l("/blog/docs"),
                 data-toggle="dropdown",
                 data-boundary="window",
                 aria-haspopup="true",
                 aria-expanded="false",
-                class=!isApps && (ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                class=!isApps && (isEmailComparison || ctx.pathWithoutLocale === "/email-api" || ctx.pathWithoutLocale === "/free-email-webhooks" || ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" || ctx.pathWithoutLocale.startsWith("/blog/docs") || ctx.pathWithoutLocale.startsWith("/blog/open-source")) ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
               )
                 = t("Developers")
               .dropdown-menu.dropdown-menu-right(
@@ -447,6 +451,19 @@ nav.navbar(class=navbarClasses.join(" "))
                   href=l("/email-forwarding-regex-pattern-filter"),
                   class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
                 )= t("Regex Email Forwarding")
+                if config.alternatives.length > 0
+                  hr.dropdown-divider
+                  h6.dropdown-header= t("Email Service Comparison")
+                  .small
+                    each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+                      a.dropdown-item(
+                        href=l(`/blog/${str}`),
+                        class=ctx.pathWithoutLocale === `/blog/${str}` ? "active" : ""
+                      )
+                        - let title = config.meta[`/blog/${str}`][0];
+                        if !isBot(ctx.get("User-Agent"))
+                          - title = title.split("Best ")[1].split(" in")[0];
+                        != striptags(t(title))
                 if developerDocs.length > 0
                   hr.dropdown-divider
                   h6.dropdown-header= t("Developer Articles")

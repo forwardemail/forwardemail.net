@@ -60,6 +60,7 @@ exports.setupWebServer = async (t) => {
     },
     Users
   );
+  t.context._web = web;
   const port = await getPort();
   t.context.web = request.agent(web.app.listen(port));
 };

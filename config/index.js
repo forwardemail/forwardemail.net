@@ -29,6 +29,7 @@ const phrases = require('./phrases');
 const utilities = require('./utilities');
 const payments = require('./payments');
 const metaConfig = require('./meta-config');
+const alternatives = require('./alternatives');
 
 const zxcvbn = require('#helpers/zxcvbn');
 
@@ -1329,8 +1330,11 @@ config.views.locals.manifest = manifestRev({
   manifest: config.srimanifest
 });
 
+config.alternatives = alternatives;
+
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'alternatives',
   'smtpLimitMessages',
   'smtpLimitDuration',
   'supportEmail',

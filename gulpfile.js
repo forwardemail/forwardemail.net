@@ -208,6 +208,8 @@ const purgeCssOptions = {
       'px-3',
       'row',
       'table-danger',
+      'table-primary',
+      'table-warning',
       'table-success',
       'text-center',
       'text-danger',
@@ -242,7 +244,12 @@ const purgeCssOptions = {
       'card-columns-2',
       /swal2/,
       /^typed-/,
-      'component-frame'
+      'component-frame',
+      // bootstrap-table icons for bs4
+      'fa-minus',
+      'fa-plus',
+      'fa-sort',
+      'pt-md-5'
     ])
   ]
 };
@@ -423,20 +430,9 @@ function xo() {
 // TODO: in the future use merge-streams and return a stream w/o through2
 async function bundle() {
   const since = lastRun(bundle);
-  const polyfillPath = path.join(config.buildBase, 'js', 'polyfill.js');
-  const lazyloadPath = path.join(config.buildBase, 'js', 'lazyload.js');
-  const ekkoLightboxPath = path.join(
-    config.buildBase,
-    'js',
-    'ekko-lightbox.js'
-  );
-  const factorBundlePath = path.join(
-    config.buildBase,
-    'js',
-    'factor-bundle.js'
-  );
 
   await makeDir(path.join(config.buildBase, 'js'));
+  await makeDir(path.join(config.buildBase, 'css'));
 
   async function getFactorBundle() {
     const paths = await globby('**/*.js', { cwd: 'assets/js' });
@@ -456,7 +452,10 @@ async function bundle() {
           resolve(data);
         });
     });
-    await fs.promises.writeFile(factorBundlePath, factorBundle);
+    await fs.promises.writeFile(
+      path.join(config.buildBase, 'js', 'factor-bundle.js'),
+      factorBundle
+    );
   }
 
   await Promise.all([
@@ -470,12 +469,12 @@ async function bundle() {
         'dist',
         'polyfill.js'
       ),
-      polyfillPath
+      path.join(config.buildBase, 'js', 'polyfill.js')
     ),
     // lazyload
     fs.promises.copyFile(
       path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
-      lazyloadPath
+      path.join(config.buildBase, 'js', 'lazyload.js')
     ),
     // ekko-lightbox
     fs.promises.copyFile(
@@ -486,8 +485,54 @@ async function bundle() {
         'dist',
         'ekko-lightbox.js'
       ),
-      ekkoLightboxPath
+      path.join(config.buildBase, 'js', 'ekko-lightbox.js')
     ),
+    // bootstrap-table
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'bootstrap-table',
+        'dist',
+        'bootstrap-table.js'
+      ),
+      path.join(config.buildBase, 'js', 'bootstrap-table.js')
+    ),
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'bootstrap-table',
+        'dist',
+        'bootstrap-table.css'
+      ),
+      path.join(config.buildBase, 'css', 'bootstrap-table.css')
+    ),
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'bootstrap-table',
+        'dist',
+        'extensions',
+        'sticky-header',
+        'bootstrap-table-sticky-header.js'
+      ),
+      path.join(config.buildBase, 'js', 'bootstrap-table-sticky-header.js')
+    ),
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        'bootstrap-table',
+        'dist',
+        'extensions',
+        'sticky-header',
+        'bootstrap-table-sticky-header.css'
+      ),
+      path.join(config.buildBase, 'css', 'bootstrap-table-sticky-header.css')
+    ),
+    // factor bundle
     getFactorBundle()
   ]);
 

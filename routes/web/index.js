@@ -7,12 +7,14 @@ const path = require('node:path');
 
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
+const _ = require('lodash');
 const dashify = require('dashify');
+const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
-const pWaitFor = require('p-wait-for');
-const pTimeout = require('p-timeout');
 const ms = require('ms');
+const pTimeout = require('p-timeout');
+const pWaitFor = require('p-wait-for');
 const pug = require('pug');
 const puppeteer = require('puppeteer');
 const render = require('koa-views-render');
@@ -493,6 +495,133 @@ for (const provider of nsProviders) {
     },
     render('guides/provider')
   );
+}
+
+localeRouter.get('/blog/best-email-service', (ctx) => {
+  return ctx.render('compare', { alternatives: config.alternatives });
+});
+
+localeRouter.get('/blog/best-private-email-service', (ctx) => {
+  // sort by oss
+  const alts = [];
+  for (let i = 0; i < config.alternatives.length; i++) {
+    const alt = { ...config.alternatives[i] };
+    if (!alt.e2ee && !alt.openpgp && !alt.wkd) continue;
+    alts.push(alt);
+  }
+
+  ctx.state.alternatives = alts;
+  return ctx.render('compare');
+});
+
+localeRouter.get('/blog/best-open-source-email-service', (ctx) => {
+  // sort by oss
+  const alts = [];
+  for (let i = 0; i < config.alternatives.length; i++) {
+    const alt = { ...config.alternatives[i] };
+    if (!alt.oss) continue;
+    alts.push(alt);
+  }
+
+  ctx.state.alternatives = alts;
+  return ctx.render('compare');
+});
+
+localeRouter.get('/blog/best-transactional-email-service', (ctx) => {
+  // sort by transactional (api)
+  const alts = [];
+  for (let i = 0; i < config.alternatives.length; i++) {
+    const alt = { ...config.alternatives[i] };
+    if (!alt.api) continue;
+    alts.push(alt);
+  }
+
+  ctx.state.alternatives = alts;
+  return ctx.render('compare');
+});
+
+localeRouter.get('/blog/best-email-api-developer-service', (ctx) => {
+  // sort by transactional (api)
+  const alts = [];
+  for (let i = 0; i < config.alternatives.length; i++) {
+    const alt = { ...config.alternatives[i] };
+    if (!alt.api) continue;
+    alts.push(alt);
+  }
+
+  ctx.state.alternatives = alts;
+  return ctx.render('compare');
+});
+
+for (const alternative of config.alternatives) {
+  localeRouter.get(`/blog/best-${alternative.slug}-alternative`, (ctx) => {
+    // sort and push to top (below FE)
+    const alts = [];
+    for (let i = 0; i < config.alternatives.length; i++) {
+      const alt = { ...config.alternatives[i] };
+      alt._key = `${
+        alt.name === alternative.name || alt.name === 'Forward Email'
+          ? '0'
+          : '1'
+      }_${i}`;
+      if (alt.name === alternative.name) alt.comparison = true;
+
+      alts.push(alt);
+    }
+
+    ctx.state.meta.title = ctx.state.t(
+      '<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>',
+      config.alternatives.length - 1,
+      alternative.name,
+      dayjs().format('YYYY')
+    );
+
+    ctx.state.meta.description = ctx.state.t(
+      'Reviews, comparison, screenshots and more for the <span class="notranslate">%d</span> best alternatives to <span class="notranslate">%s</span> email service.',
+      config.alternatives.length - 1,
+      alternative.name
+    );
+
+    ctx.state.alternativeTo = alternative.name;
+    ctx.state.alternatives = _.sortBy(alts, '_key');
+    return ctx.render('compare');
+  });
+  for (const a of config.alternatives) {
+    if (a.name === alternative.name) continue;
+    localeRouter.get(
+      `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`,
+      (ctx) => {
+        ctx.state.meta.title = ctx.state.t(
+          `<span class="notranslate">%s</span> vs <span class="notranslate">%s</span> Comparison (<span class="notranslate">%s</span>)`,
+          alternative.name,
+          a.name,
+          dayjs().format('YYYY')
+        );
+
+        ctx.state.meta.description = ctx.state.t(
+          `What are the differences between <span class="notranslate">%s</span> and <span class="notranslate">%s</span>?`,
+          alternative.name,
+          a.name
+        );
+
+        // sort and push to top (below FE)
+        const alts = [];
+        for (let i = 0; i < config.alternatives.length; i++) {
+          const alt = { ...config.alternatives[i] };
+          if (alt.name === alternative.name || alt.name === a.name)
+            alt.comparison = true;
+          if (!alt.comparison) continue;
+          alt._key = alt.name === alternative.name ? 0 : 1;
+          alts.push(alt);
+        }
+
+        ctx.state.alternativeTo = alternative.name;
+        ctx.state.alternatives = _.sortBy(alts, '_key');
+        ctx.state.comparison = true;
+        return ctx.render('compare');
+      }
+    );
+  }
 }
 
 localeRouter.use(myAccount.routes()).use(admin.routes()).use(otp.routes());

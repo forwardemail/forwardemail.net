@@ -139,15 +139,15 @@ block body
       .row
         if !isBot(ctx.get("User-Agent"))
           #typed-home-strings.d-none(data-ignore-hash-change)
-            div!= t("Encrypted email<br /> for enterprise")
-            div!= t("Encrypted email<br /> for education")
-            div!= t("Encrypted email<br /> for startups")
-            div!= t("Encrypted email<br /> for stores")
-            div!= t("Encrypted email<br /> for designers")
-            div!= t("Encrypted email<br /> for developers")
-            div!= t("Encrypted email<br /> for marketing")
-            div!= t("Encrypted email<br /> for sales")
-            div!= t("Encrypted email<br /> for you")
+            div!= t("Email service<br /> for enterprise")
+            div!= t("Email service<br /> for education")
+            div!= t("Email service<br /> for startups")
+            div!= t("Email service<br /> for stores")
+            div!= t("Email service<br /> for designers")
+            div!= t("Email service<br /> for developers")
+            div!= t("Email service<br /> for marketing")
+            div!= t("Email service<br /> for sales")
+            div!= t("Email service<br /> for you")
         .col-12(
           class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
         )
@@ -157,7 +157,7 @@ block body
           else
             #typed-home-header.h1.mb-3(data-ignore-hash-change)
               span#typed-home.text-sans-serif(data-ignore-hash-change)
-                != t("Encrypted email<br /> for everyone")
+                != t("Email service<br /> for everyone")
           if isBot(ctx.get("User-Agent"))
             p
               != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
@@ -175,7 +175,7 @@ block body
               a.btn.mb-3(
                 class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-light",
                 href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true"),
-                title=striptags(t(config.meta["/private-business-email"][0]))
+                title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/private-business-email"][0])) : false
               )
                 i.fa.fa-fw.fa-layer-group
                 = " "
@@ -250,7 +250,7 @@ block body
                 = " "
                 != t("We're the world's first and only email service to use <strong>quantum-safe</strong> and <strong>individually encrypted SQLite mailboxes</strong>")
           a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
-            href=l("/blog/docs/best-quantum-safe-encrypted-email-service#email-service-provider-comparison"),
+            href=l("/blog/best-email-service"),
             target="_blank"
           )
             != t("Read Email Service Comparison")

@@ -1,0 +1,1518 @@
+extends layout
+
+mixin renderCard(alternative)
+  .card.rounded-lg.position-relative.d-inline-block.mb-3
+    .position-absolute.w-100.text-right.lead.d-none.d-xl-block
+      if alternative.name === "Forward Email"
+        span.badge.badge-success.mr-3.mt-3
+          = emoji("star")
+          = " "
+          = t("Recommended")
+      span.badge.mr-3.mt-3(
+        class=alternative.oss === true ? "badge-success" : "badge-danger"
+      )= alternative.oss === true ? t("Open-source") : t("Closed-source")
+    - const str = t(`<span class="notranslate">%s</span> is <span class="notranslate">%s</span> email service.`, alternative.name, alternative.oss === true ? t("an open-source") : t("a closed-source"));
+    .card-body
+      h2.h5.card-title= alternative.name
+      if alternative.name === "Forward Email"
+        .d-block.d-xl-none.lead.mb-3
+          span.badge.badge-success.mr-3
+            = emoji("star")
+            = " "
+            = t("Recommended")
+      p
+        != str
+        = " "
+        != t('The official description from its website says, "<span class="notranslate">%s</span>".', t(alternative.description))
+      .text-center
+        noscript
+          a(
+            href=manifest(alternative.img),
+            target="_blank",
+            data-toggle="lightbox",
+            data-title=alternative.name,
+            data-footer=t("Screenshot by Forward Email")
+          )
+            img.img-fluid.img-thumbnail.max-height-300px(
+              src=manifest(alternative.img),
+              alt=striptags(str)
+            )
+        a(
+          href=manifest(alternative.img),
+          target="_blank",
+          data-toggle="lightbox",
+          data-title=alternative.name,
+          data-footer=t("Screenshot by Forward Email")
+        )
+          img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+            src=manifest(alternative.img),
+            alt=striptags(str)
+          )
+      if alternative.screenshot
+        .text-center.small.mt-3: a(
+          href=alternative.screenshot,
+          target="_blank",
+          rel="noopener noreferrer"
+        )= t("Screenshot by Forward Email")
+      else
+        .small.text-center.mt-3: small.text-muted= t("Screenshot by Forward Email")
+    .card-footer
+      a.btn.btn-md.btn-dark.btn-block(
+        href=alternative.website,
+        target="_blank",
+        rel="noopener noreferrer",
+        title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Service', alternative.name))
+      )
+        span.text-uppercase.font-weight-bold.align-middle!= t("Visit Website")
+        = " "
+        i.fa.fa-external-link.align-middle
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/ekko-lightbox.js"),
+    integrity=manifest("js/ekko-lightbox.js", "integrity"),
+    crossorigin="anonymous"
+  )
+  if !isBot(ctx.get("User-Agent"))
+    script(
+      defer,
+      src=manifest("js/bootstrap-table.js"),
+      integrity=manifest("js/bootstrap-table.js", "integrity"),
+      crossorigin="anonymous"
+    )
+    script(
+      defer,
+      src=manifest("js/bootstrap-table-sticky-header.js"),
+      integrity=manifest("js/bootstrap-table-sticky-header.js", "integrity"),
+      crossorigin="anonymous"
+    )
+    //-.
+      //- there seems to be a bug where multiple-sort is not considering custom sort functions already existing and defined
+      script(
+        src="https://unpkg.com/bootstrap-table@1.22.2/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"
+      )
+      //- there seems to be a bug where modal isn't hiding
+      script(nonce=nonce)!= "$('table').on('multiple-sort.bs.table', function() { $('.modal').modal('hide'); });"
+    script(nonce=nonce)!= "function totalCurrencySort(a, b) { a = a.substring(1).split('/')[0]; b = +b.substring(1).split('/')[0]; if (a > b) return 1; if (a < b) return -1; return 0; }"
+    script(nonce=nonce)!= "function attachmentSort(a, b) { a = a.includes('MB') ? Number.parseFloat(a.split('MB')[0].trim()) : 0; b = b.includes('MB') ? Number.parseFloat(b.split('MB')[0].trim()) : 0; if (a > b) return 1; if (a < b) return -1; return 0; }"
+    script(nonce=nonce)!= "function storageSort(a, b) { a = a.includes('GB') ? Number.parseInt(a.split('GB')[0].trim(), 10) : 0; b = b.includes('GB') ? Number.parseInt(b.split('GB')[0].trim(), 10) : 0; if (a > b) return 1; if (a < b) return -1; return 0; }"
+    script(nonce=nonce)!= "function checkboxSort(a, b) { a = a === '❌' ? 0 : a === '✅' ? 1 : 0.5; b = b === '❌' ? 0 : b === '✅' ? 1 : 0.5; if (a > b) return 1; if (a < b) return -1; return 0; }"
+
+block append stylesheets
+  if !isBot(ctx.get("User-Agent"))
+    link(
+      rel="stylesheet",
+      href=manifest("css/bootstrap-table.css"),
+      integrity=manifest("css/bootstrap-table.css", "integrity"),
+      crossorigin="anonymous"
+    )
+    link(
+      rel="stylesheet",
+      href=manifest("css/bootstrap-table-sticky-header.css"),
+      integrity=manifest("css/bootstrap-table-sticky-header.css", "integrity"),
+      crossorigin="anonymous"
+    )
+    style(nonce=nonce).
+      .bootstrap-table .fixed-table-container .fixed-table-body {
+        overflow: visible !important;
+      }
+      .bootstrap-table .fixed-table-container {
+        overflow: visible !important;
+      }
+
+block body
+  include _modal-storage
+
+  - const sorted = _.sortBy(config.alternatives, "name");
+
+  if !isBot(ctx.get('User-Agent'))
+    script(defer, nonce=nonce).
+      window.addEventListener(
+        "load",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function () {
+            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
+              ev.preventDefault();
+              $(this).ekkoLightbox();
+            });
+          });
+        },
+        false
+      );
+
+  if !isBot(ctx.get('User-Agent'))
+    .fixed-bottom.text-center.d-print-none
+      .bg-dark.p-2.border-top.border-themed
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(href="#email-service-comparison")
+              span.badge.badge-pill.mr-1.badge-primary
+                i.fa.fa-table
+              = t("Comparison")
+          li.list-inline-item
+            a.btn.btn-sm.btn-light(href="#email-service-screenshots")
+              span.badge.badge-pill.mr-1.badge-success
+                i.fa.fa-image
+              = t("Screenshots")
+        .mt-3.text-white.font-weight-bold.small.text-center(
+          class=comparison ? "d-block d-md-none" : ""
+        )
+          = t("Scroll to the right to see entire table")
+          = " "
+          i.fa.fa-angle-double-right.align-middle
+
+  .py-5
+    .container
+      .row
+        .col-12
+          .text-center
+            h1!= meta.title
+            p!= meta.description
+            include _author
+      .row.mt-3
+        .col-12.text-center
+          .alert.alert-success.small.text-center.mb-0.d-inline-block
+            if alternativeTo && alternativeTo !== 'Forward Email'
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best alternative to <span class="notranslate">%s</span>.', l("/"), alternativeTo)
+            else if ctx.pathWithoutLocale === '/blog/best-transactional-email-service'
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best transactional email service.', l("/"))
+            else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email API service for developers.', l("/"))
+            else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
+              != t('<a href="%s" class="alert-link text-decoration-underline">Forward Email</a> is the best and only 100% open-source email service.', l("/"))
+            else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best private email service.', l("/"))
+            else
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email service alternative.', l("/"))
+      .row
+        .col-12
+          #email-service-comparison.text-center.py-3.py-md-5.mb-0
+            h2
+              if ctx.pathWithoutLocale === '/blog/best-transactional-email-service'
+                = t("Transactional Email Comparison")
+              else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
+                = t("Email API Comparison")
+              else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
+                = t("Open-Source Email Service Comparison")
+              else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
+                = t("Private Email Service Comparison")
+              else
+                = t("Email Service Comparison")
+            if comparison
+              small.text-uppercase.text-muted= t("20 facts in comparison")
+          if comparison
+            table.table.table-striped.table-hover.table-bordered.table-lg.mb-0.bg-white.bg-themed(
+              data-toggle="table",
+              data-sticky-header,
+              data-sticky-header-offset-y="58.61"
+            )
+              thead.thead-dark
+                tr
+                  th.w-33.text-center.align-middle.font-weight-bold(
+                    scope="col"
+                  )= alternatives[0].name
+                  th.w-33.text-center.align-middle(scope="col"): span.sr-only= t("vs.")
+                  th.w-33.text-center.align-middle.font-weight-bold(
+                    scope="col"
+                  )= alternatives[1].name
+              tbody
+                tr
+                  td.w-33.align-middle.text-center
+                    h3.mb-1
+                      a(
+                        href=l(`/blog/best-${alternatives[0].slug}-alternative`),
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[0].name, dayjs().format("YYYY"))) : false,
+                        class=alternatives[0].name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                      )= alternatives[0].name
+                    if alternatives[0].name === "Forward Email"
+                      .lead.mb-3
+                        span.badge.badge-success
+                          = emoji("star")
+                          = " "
+                          = t("Recommended")
+                    .text-center.mb-3
+                      noscript
+                        a(
+                          href=manifest(alternatives[0].img),
+                          target="_blank",
+                          data-toggle="lightbox",
+                          data-title=alternatives[0].name,
+                          data-footer=t("Screenshot by Forward Email")
+                        )
+                          img.img-fluid.img-thumbnail.max-height-300px(
+                            src=manifest(alternatives[0].img),
+                            alt=striptags(t(alternatives[0].description))
+                          )
+                      a(
+                        href=manifest(alternatives[0].img),
+                        target="_blank",
+                        data-toggle="lightbox",
+                        data-title=alternatives[0].name,
+                        data-footer=t("Screenshot by Forward Email")
+                      )
+                        img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+                          src=manifest(alternatives[0].img),
+                          alt=striptags(t(alternatives[0].description))
+                        )
+                    //- Description
+                    blockquote.mb-3
+                      = '"'
+                      = t(alternatives[0].description)
+                      = '"'
+                    ul.list-inline.mb-1
+                      li.list-inline-item.mb-1
+                        //- Website
+                        a.btn.btn-dark.btn-sm.text-nowrap(
+                          href=alternatives[0].website,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          i.fa.fa-external-link
+                          = " "
+                          = t("Website")
+                      if !isBot(ctx.get("User-Agent"))
+                        li.list-inline-item.mb-1
+                          button.btn.btn-sm.btn-dark.dropdown-toggle(
+                            type="button",
+                            data-toggle="dropdown",
+                            data-boundary="scrollParent",
+                            aria-haspopup="true",
+                            aria-expanded="false"
+                          )
+                            i.fa.fa-balance-scale
+                            = " "
+                            = t("Compare with...")
+                          .dropdown-menu.dropdown-menu-right.small
+                            .card-columns.small
+                              each a in sorted
+                                if a.name !== alternatives[0].name
+                                  a.dropdown-item(
+                                    href=l(`/blog/${alternatives[0].slug}-vs-${a.slug}-email-service-comparison`)
+                                  )= a.name
+                    //- Badges
+                    ul.list-unstyled
+                      //- Hardenize
+                      li
+                        a(
+                          aria-label=t("Hardenize Test"),
+                          href=alternatives[0].hardenize_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          noscript
+                            img(
+                              alt=t("Hardenize Test"),
+                              width=128,
+                              height=20,
+                              src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[0].hardenize_pass ? "Pass" : "Fail"}-${alternatives[0].hardenize_pass ? "green" : "red"}`
+                            )
+                          img.lazyload(
+                            alt=t("Hardenize Test"),
+                            width=128,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[0].hardenize_pass ? "Pass" : "Fail"}-${alternatives[0].hardenize_pass ? "green" : "red"}`
+                          )
+
+                      //- Internet.nl Site
+                      li
+                        a(
+                          aria-label=t("Internet.nl Site Test"),
+                          href=alternatives[0].internetnl_site_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let color1a = "red";
+                          if (alternatives[0].internetnl_site_value >= 90)
+                            - color1a = "green";
+                          else if (alternatives[0].internetnl_site_value >= 80)
+                            - color1a = "orange";
+                          noscript
+                            img(
+                              alt=t("Internet.nl Site Test"),
+                              width=170,
+                              height=20,
+                              src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[0].internetnl_site_value}/100-${color1a}`
+                            )
+                          img.lazyload(
+                            alt=t("Internet.nl Site Test"),
+                            width=170,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[0].internetnl_site_value}/100-${color1a}`
+                          )
+
+                      //- Internet.nl Mail
+                      li
+                        a(
+                          aria-label=t("Internet.nl Mail Test"),
+                          href=alternatives[0].internetnl_mail_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let color2a = "red";
+                          if (alternatives[0].internetnl_mail_value >= 90)
+                            - color2a = "green";
+                          else if (alternatives[0].internetnl_mail_value >= 80)
+                            - color2a = "orange";
+                          noscript
+                            img(
+                              alt=t("Internet.nl Mail Test"),
+                              width=172,
+                              height=20,
+                              src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[0].internetnl_mail_value}/100-${color2a}`
+                            )
+                          img.lazyload(
+                            alt=t("Internet.nl Mail Test"),
+                            width=172,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[0].internetnl_mail_value}/100-${color2a}`
+                          )
+
+                      //- Mozilla Observatory
+                      li
+                        a(
+                          href=`https://observatory.mozilla.org/analyze/${alternatives[0].root_domain}`,
+                          aria-label=t("Mozilla HTTP Observatory Grade"),
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          noscript
+                            img(
+                              alt=t("Mozilla HTTP Observatory Grade"),
+                              src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[0].root_domain}`,
+                              width=162,
+                              height=20
+                            )
+                          img.lazyload(
+                            alt=t("Mozilla HTTP Observatory Grade"),
+                            data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[0].root_domain}`,
+                            width=162,
+                            height=20
+                          )
+                      //- Qualys SSL Labs
+                      li
+                        a(
+                          aria-label=t("Qualys SSL Labs SSL Server Test"),
+                          href=`https://www.ssllabs.com/ssltest/analyze.html?d=${alternatives[0].root_domain}&latest`,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let colora = "red";
+                          if alternatives[0].ssl_labs === 'A+'
+                            - colora = "green";
+                          else if alternatives[0].ssl_labs.startsWith('A')
+                            - colora = "blue";
+                          else if alternatives[0].ssl_labs.startsWith('B')
+                            - colora = "orange";
+                          noscript
+                            img(
+                              alt=t("Qualys SSL Labs SSL Server Test"),
+                              src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[0].ssl_labs}_Grade-${colora}`,
+                              width=164,
+                              height=20
+                            )
+                          img.lazyload(
+                            alt=t("Qualys SSL Labs SSL Server Test"),
+                            data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[0].ssl_labs}_Grade-${colora}`,
+                            width=164,
+                            height=20
+                          )
+                  th.align-middle.text-center.h2(scope="row")= t("vs.")
+                  td.w-33.align-middle.text-center
+                    h3.mb-1
+                      a(
+                        href=l(`/blog/best-${alternatives[1].slug}-alternative`),
+                        target="_blank",
+                        rel="noopener noreferrer",
+                        title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[1].name, dayjs().format("YYYY"))) : false,
+                        class=alternatives[1].name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                      )= alternatives[1].name
+                    if alternatives[1].name === "Forward Email"
+                      .lead.mb-3
+                        span.badge.badge-success
+                          = emoji("star")
+                          = " "
+                          = t("Recommended")
+                    .text-center.mb-3
+                      noscript
+                        a(
+                          href=manifest(alternatives[1].img),
+                          target="_blank",
+                          data-toggle="lightbox",
+                          data-title=alternatives[1].name,
+                          data-footer=t("Screenshot by Forward Email")
+                        )
+                          img.img-fluid.img-thumbnail.max-height-300px(
+                            src=manifest(alternatives[1].img),
+                            alt=striptags(t(alternatives[1].description))
+                          )
+                      a(
+                        href=manifest(alternatives[1].img),
+                        target="_blank",
+                        data-toggle="lightbox",
+                        data-title=alternatives[1].name,
+                        data-footer=t("Screenshot by Forward Email")
+                      )
+                        img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+                          src=manifest(alternatives[1].img),
+                          alt=striptags(t(alternatives[1].description))
+                        )
+                    //- Description
+                    blockquote.mb-3
+                      = '"'
+                      = t(alternatives[1].description)
+                      = '"'
+                    ul.list-inline.mb-1
+                      li.list-inline-item.mb-1
+                        //- Website
+                        a.btn.btn-dark.btn-sm.text-nowrap(
+                          href=alternatives[1].website,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          i.fa.fa-external-link
+                          = " "
+                          = t("Website")
+                      if !isBot(ctx.get("User-Agent"))
+                        li.list-inline-item.mb-1
+                          button.btn.btn-sm.btn-dark.dropdown-toggle(
+                            type="button",
+                            data-toggle="dropdown",
+                            data-boundary="scrollParent",
+                            aria-haspopup="true",
+                            aria-expanded="false"
+                          )
+                            i.fa.fa-balance-scale
+                            = " "
+                            = t("Compare with...")
+                          .dropdown-menu.dropdown-menu-right.small
+                            .card-columns.small
+                              each a in sorted
+                                if a.name !== alternatives[1].name
+                                  a.dropdown-item(
+                                    href=l(`/blog/${alternatives[1].slug}-vs-${a.slug}-email-service-comparison`)
+                                  )= a.name
+                    //- Badges
+                    ul.list-unstyled
+                      //- Hardenize
+                      li
+                        a(
+                          aria-label=t("Hardenize Test"),
+                          href=alternatives[1].hardenize_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          noscript
+                            img(
+                              alt=t("Hardenize Test"),
+                              width=128,
+                              height=20,
+                              src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[1].hardenize_pass ? "Pass" : "Fail"}-${alternatives[1].hardenize_pass ? "green" : "red"}`
+                            )
+                          img.lazyload(
+                            alt=t("Hardenize Test"),
+                            width=128,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[1].hardenize_pass ? "Pass" : "Fail"}-${alternatives[1].hardenize_pass ? "green" : "red"}`
+                          )
+
+                      //- Internet.nl Site
+                      li
+                        a(
+                          aria-label=t("Internet.nl Site Test"),
+                          href=alternatives[1].internetnl_site_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let color1 = "red";
+                          if (alternatives[1].internetnl_site_value >= 90)
+                            - color1 = "green";
+                          else if (alternatives[1].internetnl_site_value >= 80)
+                            - color1 = "orange";
+                          noscript
+                            img(
+                              alt=t("Internet.nl Site Test"),
+                              width=170,
+                              height=20,
+                              src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[1].internetnl_site_value}/100-${color1}`
+                            )
+                          img.lazyload(
+                            alt=t("Internet.nl Site Test"),
+                            width=170,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[1].internetnl_site_value}/100-${color1}`
+                          )
+
+                      //- Internet.nl Mail
+                      li
+                        a(
+                          aria-label=t("Internet.nl Mail Test"),
+                          href=alternatives[1].internetnl_mail_href,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let color2 = "red";
+                          if (alternatives[1].internetnl_mail_value >= 90)
+                            - color2 = "green";
+                          else if (alternatives[1].internetnl_mail_value >= 80)
+                            - color2 = "orange";
+                          noscript
+                            img(
+                              alt=t("Internet.nl Mail Test"),
+                              width=172,
+                              height=20,
+                              src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[1].internetnl_mail_value}/100-${color2}`
+                            )
+                          img.lazyload(
+                            alt=t("Internet.nl Mail Test"),
+                            width=172,
+                            height=20,
+                            data-src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[1].internetnl_mail_value}/100-${color2}`
+                          )
+
+                      //- Mozilla Observatory
+                      li
+                        a(
+                          href=`https://observatory.mozilla.org/analyze/${alternatives[1].root_domain}`,
+                          aria-label=t("Mozilla HTTP Observatory Grade"),
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          noscript
+                            img(
+                              alt=t("Mozilla HTTP Observatory Grade"),
+                              src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[1].root_domain}`,
+                              width=162,
+                              height=20
+                            )
+                          img.lazyload(
+                            alt=t("Mozilla HTTP Observatory Grade"),
+                            data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[1].root_domain}`,
+                            width=162,
+                            height=20
+                          )
+                      //- Qualys SSL Labs
+                      li
+                        a(
+                          aria-label=t("Qualys SSL Labs SSL Server Test"),
+                          href=`https://www.ssllabs.com/ssltest/analyze.html?d=${alternatives[1].root_domain}&latest`,
+                          target="_blank",
+                          rel="noopener noreferrer"
+                        )
+                          - let color = "red";
+                          if alternatives[1].ssl_labs === 'A+'
+                            - color = "green";
+                          else if alternatives[1].ssl_labs.startsWith('A')
+                            - color = "blue";
+                          else if alternatives[1].ssl_labs.startsWith('B')
+                            - color = "orange";
+                          noscript
+                            img(
+                              alt=t("Qualys SSL Labs SSL Server Test"),
+                              src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[1].ssl_labs}_Grade-${color}`,
+                              width=164,
+                              height=20
+                            )
+                          img.lazyload(
+                            alt=t("Qualys SSL Labs SSL Server Test"),
+                            data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[1].ssl_labs}_Grade-${color}`,
+                            width=164,
+                            height=20
+                          )
+                tr
+                  td.w-33.align-middle.text-center!= alternatives[0].pricing
+                  th.align-middle.text-center(scope="row")= t("Pricing")
+                  td.w-33.align-middle.text-center!= alternatives[1].pricing
+                tr
+                  td.w-33.align-middle.text-center
+                    if alternatives[0].storage === false
+                      if isBot(ctx.get("User-Agent"))
+                        = t("No")
+                      else
+                        = emoji("x")
+                      = " "
+                      != t('<span class="notranslate">%s</span> does not support storage', alternatives[0].name)
+                    else
+                      != alternatives[0].storage
+                  th.align-middle.text-center(scope="row")= t("Storage")
+                  td.w-33.align-middle.text-center
+                    if alternatives[1].storage === false
+                      if isBot(ctx.get("User-Agent"))
+                        = t("No")
+                      else
+                        = emoji("x")
+                      = " "
+                      != t('<span class="notranslate">%s</span> does not support storage', alternatives[1].name)
+                    else
+                      != alternatives[1].storage
+                tr
+                  td.w-33.align-middle.text-center
+                    if alternatives[0].attachment_limit === false
+                      if isBot(ctx.get("User-Agent"))
+                        = t("No")
+                      else
+                        = emoji("x")
+                      = " "
+                      != t('<span class="notranslate">%s</span> does not support attachments', alternatives[0].name)
+                    else
+                      != alternatives[0].attachment_limit
+                  th.align-middle.text-center(scope="row")= t("Attachments")
+                  td.w-33.align-middle.text-center
+                    if alternatives[1].attachment_limit === false
+                      if isBot(ctx.get("User-Agent"))
+                        = t("No")
+                      else
+                        = emoji("x")
+                      = " "
+                      != t('<span class="notranslate">%s</span> does not support attachments', alternatives[1].name)
+                    else
+                      != alternatives[1].attachment_limit
+                //- OSS
+                //- Sandboxed
+                //- Unlimited Domains
+                //- Unlimited Aliases
+                //- Time to Inbox
+                //- SMTP
+                //- IMAP
+                //- POP3
+                //- API
+                //- E2EE
+                //- OpenPGP
+                //- WKD
+                each key in ['oss', 'sandboxed', 'unlimited_domains', 'unlimited_aliases', 'tti', 'smtp', 'imap', 'pop3', 'api', 'e2ee', 'openpgp', 'wkd' ]
+                  tr
+                    td.w-33.align-middle.text-center
+                      if typeof alternatives[0][key] === 'string'
+                        if validator.isURL(alternatives[0][key])
+                          a.btn.btn-dark.btn-sm.text-nowrap(
+                            href=alternatives[0][key],
+                            target="_blank",
+                            rel="noopener noreferrer"
+                          )
+                            = t("TTI")
+                            = " "
+                            i.fa.fa-external-link
+                        else
+                          if ['e2ee', 'openpgp', 'wkd'].includes(key)
+                            = emoji("warning")
+                          else
+                            = emoji("x")
+                          = " "
+                          != alternatives[0][key]
+                      else
+                        if isBot(ctx.get("User-Agent"))
+                          = alternatives[0][key] ? t("Yes") : t("No")
+                        else
+                          = alternatives[0][key] ? emoji("white_check_mark") : emoji("x")
+                    th.align-middle.text-center(scope="row")
+                      case key
+                        when 'oss'
+                          = t("Open-Source")
+                        when 'sandboxed'
+                          != t("Sandboxed Encryption")
+                          = " "
+                          button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                            type="button",
+                            aria-label=t("Sandboxed Encryption"),
+                            data-confirm-type="info",
+                            data-confirm-show-cancel-button="false",
+                            data-confirm-prompt-title=t("Sandboxed Encryption"),
+                            data-confirm-prompt-html=t('Unlike other email services, Forward Email does not store your email in a shared relational database with other users\' emails. Instead it uses individually encrypted SQLite mailboxes with your email. This means that your emails are sandboxed from everyone else, and therefore bad actors (or even rogue employees) cannot access your mailbox. You can learn more about our approach to email encryption by <a href="%s" target="_blank">clicking here</a>.', l("/blog/docs/best-quantum-safe-encrypted-email-service"))
+                          )
+                            i.fa.fa-info-circle
+                        when 'unlimited_domains'
+                          = t("Unlimited Domains")
+                        when 'unlimited_aliases'
+                          = t("Unlimited Aliases")
+                        when 'tti'
+                          = "TTI"
+                          = " "
+                          button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                            type="button",
+                            aria-label=t("Time to Inbox"),
+                            data-confirm-type="info",
+                            data-confirm-show-cancel-button="false",
+                            data-confirm-prompt-title=t("Time to Inbox"),
+                            data-confirm-prompt-html=t("Forward Email is the only email service that publicly shares its email delivery times (in seconds) to popular email services such as Gmail, Outlook, and Apple (and the source code behind this monitoring metric too!).")
+                          )
+                            i.fa.fa-info-circle
+                        when 'smtp'
+                          = "SMTP"
+                        when 'imap'
+                          = "IMAP"
+                        when 'pop3'
+                          = "POP3"
+                        when 'api'
+                          = "API"
+                        when 'e2ee'
+                          = "E2EE"
+                          = " "
+                          button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                            type="button",
+                            aria-label=t("End-to-end Encryption"),
+                            data-confirm-type="info",
+                            data-confirm-show-cancel-button="false",
+                            data-confirm-prompt-title=t("End-to-end Encryption"),
+                            data-confirm-prompt-html=t('The email standard for end-to-end encryption (E2EE) is to use OpenPGP and Web Key Directory (WKD).  <a href="https://www.privacyguides.org/en/basics/email-security/" target="_blank" rel="noreferrer noopener">Learn more about E2EE on Privacy Guides</a>.')
+                          )
+                            i.fa.fa-info-circle
+                        when 'openpgp'
+                          = "OpenPGP"
+                          = " "
+                          button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                            type="button",
+                            aria-label=t("OpenPGP Encryption"),
+                            data-confirm-type="info",
+                            data-confirm-show-cancel-button="false",
+                            data-confirm-prompt-title=t("OpenPGP Encryption"),
+                            data-confirm-prompt-html=t('OpenPGP is the open-source standard of Pretty Good Privacy (PGP). Learn more about OpenPGP on <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" target="_blank" rel="noreferrer noopener">Wikipedia</a> or <a href="https://www.privacyguides.org/en/basics/email-security/" target="_blank" rel="noreferrer noopener">Privacy Guides</a>.')
+                          )
+                            i.fa.fa-info-circle
+                        when 'wkd'
+                          = "WKD"
+                          = " "
+                          button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                            type="button",
+                            aria-label=t("Web Key Directory"),
+                            data-confirm-type="info",
+                            data-confirm-show-cancel-button="false",
+                            data-confirm-prompt-title=t("Web Key Directory"),
+                            data-confirm-prompt-html=t('Web Key Directory (WKD) is the open-source standard for email clients and servers to discover the OpenPGP key for specific email addresses. <a href="https://www.privacyguides.org/en/basics/email-security/#what-is-the-web-key-directory-standard" target="_blank" rel="noreferrer noopener">Learn more about Web Key Directory on Privacy Guides</a>.')
+                          )
+                            i.fa.fa-info-circle
+                    td.w-33.align-middle.text-center
+                      if typeof alternatives[1][key] === 'string'
+                        if validator.isURL(alternatives[1][key])
+                          a.btn.btn-dark.btn-sm.text-nowrap(
+                            href=alternatives[1][key],
+                            target="_blank",
+                            rel="noopener noreferrer"
+                          )
+                            = t("TTI")
+                            = " "
+                            i.fa.fa-external-link
+                        else
+                          if ['e2ee', 'openpgp', 'wkd'].includes(key)
+                            = emoji("warning")
+                          else
+                            = emoji("x")
+                          = " "
+                          != alternatives[1][key]
+                      else
+                        if isBot(ctx.get("User-Agent"))
+                          = alternatives[1][key] ? t("Yes") : t("No")
+                        else
+                          = alternatives[1][key] ? emoji("white_check_mark") : emoji("x")
+    if !comparison
+      table.table.table-hover.table-bordered.mb-0.bg-white.bg-themed(
+        data-toggle="table",
+        data-sticky-header,
+        data-sticky-header-offset-y="58.61"
+      )
+        thead.thead-dark
+          tr
+            th.align-middle(data-sortable, scope="col")= t("Email Service")
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="totalCurrencySort",
+              scope="col"
+            )= t("Pricing")
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="storageSort",
+              scope="col"
+            )= t("Storage")
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="attachmentSort",
+              scope="col"
+            )= t("Attachments")
+            th.align-middle.text-center.text-nowrap(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= t("Open-Source")
+            th.align-middle.text-center.text-nowrap(scope="col")
+              != t("Sandboxed Encryption")
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                type="button",
+                aria-label=t("Sandboxed Encryption"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("Sandboxed Encryption"),
+                data-confirm-prompt-html=t('Unlike other email services, Forward Email does not store your email in a shared relational database with other users\' emails. Instead it uses individually encrypted SQLite mailboxes with your email. This means that your emails are sandboxed from everyone else, and therefore bad actors (or even rogue employees) cannot access your mailbox. You can learn more about our approach to email encryption by <a href="%s" target="_blank">clicking here</a>.', l("/blog/docs/best-quantum-safe-encrypted-email-service"))
+              )
+                i.fa.fa-info-circle
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= t("Unlimited Domains")
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= t("Unlimited Aliases")
+            th.align-middle.text-center.text-nowrap(scope="col")
+              = "TTI"
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                type="button",
+                aria-label=t("Time to Inbox"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("Time to Inbox"),
+                data-confirm-prompt-html=t("Forward Email is the only email service that publicly shares its email delivery times (in seconds) to popular email services such as Gmail, Outlook, and Apple (and the source code behind this monitoring metric too!).")
+              )
+                i.fa.fa-info-circle
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= "SMTP"
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= "IMAP"
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= "POP3"
+            th.align-middle.text-center(
+              data-sortable,
+              data-sorter="checkboxSort",
+              scope="col"
+            )= "API"
+            th.align-middle.text-center.text-nowrap(scope="col")
+              = "E2EE"
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                type="button",
+                aria-label=t("End-to-end Encryption"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("End-to-end Encryption"),
+                data-confirm-prompt-html=t('The email standard for end-to-end encryption (E2EE) is to use OpenPGP and Web Key Directory (WKD).  <a href="https://www.privacyguides.org/en/basics/email-security/" target="_blank" rel="noreferrer noopener">Learn more about E2EE on Privacy Guides</a>.')
+              )
+                i.fa.fa-info-circle
+            th.align-middle.text-center.text-nowrap(scope="col")
+              = "OpenPGP"
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                type="button",
+                aria-label=t("OpenPGP Encryption"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("OpenPGP Encryption"),
+                data-confirm-prompt-html=t('OpenPGP is the open-source standard of Pretty Good Privacy (PGP). Learn more about OpenPGP on <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" target="_blank" rel="noreferrer noopener">Wikipedia</a> or <a href="https://www.privacyguides.org/en/basics/email-security/" target="_blank" rel="noreferrer noopener">Privacy Guides</a>.')
+              )
+                i.fa.fa-info-circle
+            th.align-middle.text-center.text-nowrap(scope="col")
+              = "WKD"
+              = " "
+              button.confirm-prompt.btn.btn-link.text-themed.p-0.no-js(
+                type="button",
+                aria-label=t("Web Key Directory"),
+                data-confirm-type="info",
+                data-confirm-show-cancel-button="false",
+                data-confirm-prompt-title=t("Web Key Directory"),
+                data-confirm-prompt-html=t('Web Key Directory (WKD) is the open-source standard for email clients and servers to discover the OpenPGP key for specific email addresses. <a href="https://www.privacyguides.org/en/basics/email-security/#what-is-the-web-key-directory-standard" target="_blank" rel="noreferrer noopener">Learn more about Web Key Directory on Privacy Guides</a>.')
+              )
+                i.fa.fa-info-circle
+        tbody
+          each alternative in alternatives
+            tr(
+              class=alternative.name === "Forward Email" ? "table-success" : alternative.comparison ? "table-primary" : ""
+            )
+              //- Name
+              td.align-middle
+                h3.h5.mb-1
+                  a(
+                    href=l(`/blog/best-${alternative.slug}-alternative`),
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternative.name, dayjs().format("YYYY"))) : false,
+                    class=alternative.name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                  )= alternative.name
+                if alternative.name === "Forward Email"
+                  = " "
+                  span.lead
+                    span.badge.badge-success
+                      = emoji("star")
+                      = " "
+                      = t("Recommended")
+                //- Description
+                blockquote.mb-1= t(alternative.description)
+                ul.list-inline.mb-1
+                  li.list-inline-item.mb-1
+                    //- Screenshot
+                    a.btn.btn-primary.btn-sm.text-nowrap(
+                      href=manifest(alternative.img),
+                      target="_blank",
+                      data-toggle="lightbox",
+                      data-title=alternative.name,
+                      data-footer=t("Screenshot by Forward Email")
+                    )
+                      i.fa.fa-image
+                      = " "
+                      = t("Screenshot")
+                  li.list-inline-item.mb-1
+                    //- Website
+                    a.btn.btn-dark.btn-sm.text-nowrap(
+                      href=alternative.website,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      i.fa.fa-external-link
+                      = " "
+                      = t("Website")
+                  if !isBot(ctx.get("User-Agent"))
+                    li.list-inline-item.mb-1
+                      button.btn.btn-sm.btn-dark.dropdown-toggle(
+                        type="button",
+                        data-toggle="dropdown",
+                        data-boundary="scrollParent",
+                        aria-haspopup="true",
+                        aria-expanded="false"
+                      )
+                        i.fa.fa-balance-scale
+                        = " "
+                        = t("Compare with...")
+                      .dropdown-menu.dropdown-menu-right.small
+                        .card-columns.small
+                          each a in sorted
+                            if a.name !== alternative.name
+                              a.dropdown-item(
+                                href=l(`/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`)
+                              )= a.name
+                //- Badges
+                ul.list-unstyled
+                  //- Hardenize
+                  li
+                    a(
+                      aria-label=t("Hardenize Test"),
+                      href=alternative.hardenize_href,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      noscript
+                        img(
+                          alt=t("Hardenize Test"),
+                          width=128,
+                          height=20,
+                          src=`https://img.shields.io/badge/Hardenize_Test-${alternative.hardenize_pass ? "Pass" : "Fail"}-${alternative.hardenize_pass ? "green" : "red"}`
+                        )
+                      img.lazyload(
+                        alt=t("Hardenize Test"),
+                        width=128,
+                        height=20,
+                        data-src=`https://img.shields.io/badge/Hardenize_Test-${alternative.hardenize_pass ? "Pass" : "Fail"}-${alternative.hardenize_pass ? "green" : "red"}`
+                      )
+
+                  //- Internet.nl Site
+                  li
+                    a(
+                      aria-label=t("Internet.nl Site Test"),
+                      href=alternative.internetnl_site_href,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      - let color1 = "red";
+                      if (alternative.internetnl_site_value >= 90)
+                        - color1 = "green";
+                      else if (alternative.internetnl_site_value >= 80)
+                        - color1 = "orange";
+                      noscript
+                        img(
+                          alt=t("Internet.nl Site Test"),
+                          width=170,
+                          height=20,
+                          src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternative.internetnl_site_value}/100-${color1}`
+                        )
+                      img.lazyload(
+                        alt=t("Internet.nl Site Test"),
+                        width=170,
+                        height=20,
+                        data-src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternative.internetnl_site_value}/100-${color1}`
+                      )
+
+                  //- Internet.nl Mail
+                  li
+                    a(
+                      aria-label=t("Internet.nl Mail Test"),
+                      href=alternative.internetnl_mail_href,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      - let color2 = "red";
+                      if (alternative.internetnl_mail_value >= 90)
+                        - color2 = "green";
+                      else if (alternative.internetnl_mail_value >= 80)
+                        - color2 = "orange";
+                      noscript
+                        img(
+                          alt=t("Internet.nl Mail Test"),
+                          width=172,
+                          height=20,
+                          src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternative.internetnl_mail_value}/100-${color2}`
+                        )
+                      img.lazyload(
+                        alt=t("Internet.nl Mail Test"),
+                        width=172,
+                        height=20,
+                        data-src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternative.internetnl_mail_value}/100-${color2}`
+                      )
+
+                  //- Mozilla Observatory
+                  li
+                    a(
+                      href=`https://observatory.mozilla.org/analyze/${alternative.root_domain}`,
+                      aria-label=t("Mozilla HTTP Observatory Grade"),
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      noscript
+                        img(
+                          alt=t("Mozilla HTTP Observatory Grade"),
+                          src=`https://img.shields.io/mozilla-observatory/grade-score/${alternative.root_domain}`,
+                          width=162,
+                          height=20
+                        )
+                      img.lazyload(
+                        alt=t("Mozilla HTTP Observatory Grade"),
+                        data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternative.root_domain}`,
+                        width=162,
+                        height=20
+                      )
+                  //- Qualys SSL Labs
+                  li
+                    a(
+                      aria-label=t("Qualys SSL Labs SSL Server Test"),
+                      href=`https://www.ssllabs.com/ssltest/analyze.html?d=${alternative.root_domain}&latest`,
+                      target="_blank",
+                      rel="noopener noreferrer"
+                    )
+                      - let color = "red";
+                      if alternative.ssl_labs === 'A+'
+                        - color = "green";
+                      else if alternative.ssl_labs.startsWith('A')
+                        - color = "blue";
+                      else if alternative.ssl_labs.startsWith('B')
+                        - color = "orange";
+                      noscript
+                        img(
+                          alt=t("Qualys SSL Labs SSL Server Test"),
+                          src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternative.ssl_labs}_Grade-${color}`,
+                          width=164,
+                          height=20
+                        )
+                      img.lazyload(
+                        alt=t("Qualys SSL Labs SSL Server Test"),
+                        data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternative.ssl_labs}_Grade-${color}`,
+                        width=164,
+                        height=20
+                      )
+              //- Pricing
+              td.align-middle.text-center
+                != alternative.pricing
+              //- Storage
+              td.align-middle.text-center
+                if alternative.storage === false
+                  if isBot(ctx.get("User-Agent"))
+                    = t("No")
+                  else
+                    = emoji("x")
+                  = " "
+                  != t('<span class="notranslate">%s</span> does not support storage', alternative.name)
+                else
+                  != alternative.storage
+              //- Attachment Limit
+              td.align-middle.text-center
+                if alternative.attachment_limit === false
+                  if isBot(ctx.get("User-Agent"))
+                    = t("No")
+                  else
+                    = emoji("x")
+                  = " "
+                  != t('<span class="notranslate">%s</span> does not support attachments', alternative.name)
+                else
+                  != alternative.attachment_limit
+              //- OSS
+              //- Sandboxed
+              //- Unlimited Domains
+              //- Unlimited Aliases
+              //- Time to Inbox
+              //- SMTP
+              //- IMAP
+              //- POP3
+              //- API
+              //- E2EE
+              //- OpenPGP
+              //- WKD
+              each key in ['oss', 'sandboxed', 'unlimited_domains', 'unlimited_aliases', 'tti', 'smtp', 'imap', 'pop3', 'api', 'e2ee', 'openpgp', 'wkd' ]
+                td.align-middle.text-center
+                  if typeof alternative[key] === 'string'
+                    if validator.isURL(alternative[key])
+                      a.btn.btn-dark.btn-sm.text-nowrap(
+                        href=alternative[key],
+                        target="_blank",
+                        rel="noopener noreferrer"
+                      )
+                        = t("TTI")
+                        = " "
+                        i.fa.fa-external-link
+                    else
+                      if ['e2ee', 'openpgp', 'wkd'].includes(key)
+                        = emoji("warning")
+                      else
+                        = emoji("x")
+                      = " "
+                      != alternative[key]
+                  else
+                    if isBot(ctx.get("User-Agent"))
+                      = alternative[key] ? t("Yes") : t("No")
+                    else
+                      = alternative[key] ? emoji("white_check_mark") : emoji("x")
+    .container
+      .row
+        .col
+          h2#email-service-screenshots.text-center.py-3.py-md-5.mb-0
+            if ctx.pathWithoutLocale === '/blog/best-transactional-email-service'
+              = t("Transactional Email Service Screenshots")
+            else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
+              = t("Email API Screenshots")
+            else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
+              = t("Open-Source Email Service Screenshots")
+            else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
+              = t("Private Email Service Screenshots")
+            else
+              = t("Email Service Screenshots")
+      .row
+        if alternatives.length <= 2
+          each alternative in alternatives
+            .d-flex.col-md-6.mb-3.align-items-stretch
+              +renderCard(alternative)
+        else
+          .card-columns-2
+            each alternative in alternatives
+              +renderCard(alternative)
+      .row.mt-3
+        .col.text-center
+          ul.list-unstyled
+            each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+              if ctx.pathWithoutLocale !== `/blog/${str}`
+                li.mb-3
+                  a.btn.btn-dark.btn-lg.btn-block(href=l(`/blog/${str}`))
+                    - let title = config.meta[`/blog/${str}`][0];
+                    if !isBot(ctx.get("User-Agent"))
+                      - title = title.split("Best ")[1].split(" in")[0];
+                    != striptags(t(title))
+                    = " "
+                    i.fa.fa-angle-double-right.align-middle
+
+      if (comparison || alternativeTo) && isBot(ctx.get("User-Agent"))
+        - const match = alternatives.find((a) => a.name === alternativeTo);
+        .row.mt-3
+          .col.text-center
+            h2!= t('Compare <span class="notranslate">%s</span> with <span class="notranslate">%d</span> email services', match.name, config.alternatives.length - 1)
+            ul.list-unstyled
+              each a in sorted
+                if a.name !== alternativeTo
+                  li
+                    - const strippedTitle = striptags(t(`<span class="notranslate">%s</span> vs <span class="notranslate">%s</span> Comparison (<span class="notranslate">%s</span>)`, match.name, a.name, dayjs().format("YYYY")));
+                    a(
+                      href=l(`/blog/${match.slug}-vs-${a.slug}-email-service-comparison`)
+                    )= strippedTitle
+
+      //- Disclaimer
+      if !isBot(ctx.get('User-Agent'))
+        - const externalalternatives = alternatives.filter((p) => p.name !== "Forward Email");
+        if externalalternatives.length > 0
+          .row.mt-3
+            .col-12
+              .alert.alert-secondary.small.mb-0
+                strong= t("Notice of Non-Affiliation and Disclaimer:")
+                = " "
+                != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalalternatives.map((p) => p.name)), arrayJoinConjunction(externalalternatives.map((p) => p.name)))
+  .bg-dark.text-white.py-3.d-block.overflow-hidden(data-ignore-hash-change)
+    .container.text-center
+      .row
+        .col-12
+          h2.display-5.font-weight-bold.mt-5.mb-3= t("Why use us as your email provider?")
+          .lead
+            include _feature-list
+      hr
+      .row
+        .col-12
+          h2.display-5.font-weight-bold.my-3= t("What makes us different than others?")
+          .lead
+            ul.list-unstyled.mb-3
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                != t('We\'re <strong class="text-decoration-underline">the only 100% open-source provider</strong>')
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("We don't rely on any third parties (we don't use Amazon SES or an alternative like others)")
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("Our pricing allows you to scale cost effectively (we don't charge per user and you can pay as you go for storage)")
+              li.mb-3
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                = t("Unlike others, your email with us is not stored in a shared relational database alongside everyone else")
+              li
+                i.fa.fa-fw.fa-check-circle.text-success
+                = " "
+                != t("We're the world's first and only email service to use <strong>quantum-safe</strong> and <strong>individually encrypted SQLite mailboxes</strong>")
+          a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
+            href=l("/blog/best-email-service"),
+            target="_blank"
+          )
+            != t("Read Email Service Comparison")
+            = " "
+            i.fa.fa-angle-right.align-middle
+      hr
+      .row
+        .col-12
+          h2.display-5.font-weight-bold.my-3= t("Did you know?")
+          p.lead
+            != t('Other email services advertise as open-source, but <strong class="text-danger">they do not release the source code to their back-end</strong>.')
+            = " "
+            != t("The back-end is the <strong>most sensitive part</strong> of an email provider.")
+            = " "
+            != t("It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.")
+        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
+          href="#testimonials"
+        )
+          i.fa.fa-angle-double-down
+          = " "
+          = t("Testimonials")
+          = " "
+          i.fa.fa-angle-double-down
+  #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
+    data-src=manifest("img/art/postcard.svg"),
+    data-ignore-hash-change
+  )
+    .text-center.d-block.d-lg-none.mt-3
+      .h2.display-3.mb-1.text-danger
+        i.fa.fa-heart
+      .h1!= t("Happy users")
+    .container.py-3.py-lg-5.d-block
+      .row.row-cols-1.row-cols-md-2
+        //- DHH
+        .col
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  width=50,
+                  height=50,
+                  src=manifest("img/testimonials/dhh.jpg"),
+                  alt="dhh"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/dhh.jpg"),
+                alt="dhh"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div
+                    | DHH
+                    noscript
+                      img.ml-1(
+                        src=manifest("img/testimonials/twitter-verified.svg"),
+                        width=20,
+                        height=20,
+                        alt="Verified"
+                      )
+                    img.lazyload.ml-1(
+                      data-src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @dhh
+            .mt-3
+              | Congrats for fully launching Forward Email – a forwarding service
+              | for email that doesn't keep logs or store emails, and which works with ARC to ensure
+              | signed forwards don't trip email filters
+              = " "
+              = emoji("clap")
+              | . I'm a happy user!
+              = " "
+              = emoji("heart")
+            .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
+        //- Abhi Nemani
+        .col.mt-4.mt-md-0
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  width=50,
+                  height=50,
+                  src=manifest("img/testimonials/abhinemani.jpg"),
+                  alt="abhinemani"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/abhinemani.jpg"),
+                alt="abhinemani"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div
+                    | abhi nemani
+                    noscript
+                      img.ml-1(
+                        src=manifest("img/testimonials/twitter-verified.svg"),
+                        width=20,
+                        height=20,
+                        alt="Verified"
+                      )
+                    img.lazyload.ml-1(
+                      data-src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @abhinemani
+            .mt-3
+              | Have now switched email forwarding from MailGun to
+              = " "
+              | ForwardEmail.net
+              | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
+            .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
+      .row.row-cols-1.row-cols-md-2
+        //- Andrew Escobar
+        .col.mt-4
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  src=manifest("img/testimonials/andrewe.jpg"),
+                  width=50,
+                  height=50,
+                  alt="Verified"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/andrewe.jpg"),
+                alt="andrewe"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div
+                    | Andrew Escobar (Andres)
+                    noscript
+                      img.ml-1(
+                        src=manifest("img/testimonials/twitter-verified.svg"),
+                        width=20,
+                        height=20,
+                        alt="Verified"
+                      )
+                    img.lazyload.ml-1(
+                      data-src=manifest("img/testimonials/twitter-verified.svg"),
+                      width=20,
+                      height=20,
+                      alt="Verified"
+                    )
+                  .small.text-muted @andrewe
+            .mt-3
+              | This is so dope. Thank you.
+              = " "
+              | forwardemail.net
+            .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
+        //- Ullrich Schäfer
+        .col.mt-4
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  width=50,
+                  height=50,
+                  src=manifest("img/testimonials/stigi.jpg"),
+                  alt="stigi"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/stigi.jpg"),
+                alt="stigi"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div Ullrich Schäfer
+                  .small.text-muted @stigi
+            .mt-3
+              | Thanks so much for
+              = " "
+              | forwardemail.net
+              | ! It solves a real problem for our little org!
+            .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
+      .row.row-cols-1.row-cols-md-2
+        //- Andre Goncalves
+        .col.mt-4
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  width=50,
+                  height=50,
+                  src=manifest("img/testimonials/andregce.jpg"),
+                  alt="andregce"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/andregce.jpg"),
+                alt="andregce"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div Andre Goncalves
+                  .small.text-muted @andregce
+            .mt-3
+              | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
+              = " "
+              | forwardemail.net
+            .mt-2.small.text-muted Computer Engineer, Software Developer
+        //- Phil Cockfield
+        .col.mt-4
+          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+            .d-flex.align-items-top
+              noscript
+                img.rounded-circle(
+                  width=50,
+                  height=50,
+                  src=manifest("img/testimonials/philcockfield.jpg"),
+                  alt="philcockfield"
+                )
+              img.lazyload.rounded-circle(
+                width=50,
+                height=50,
+                data-src=manifest("img/testimonials/philcockfield.jpg"),
+                alt="philcockfield"
+              )
+              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                div
+                  div Phil
+                  .small.text-muted @philcockfield
+            .mt-3
+              | Thanks for your
+              = " "
+              | forwardemail.net
+              | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
+            .mt-2.small.text-muted hypersheet, db.team

@@ -17,7 +17,7 @@ ul.list-unstyled.mb-3
       role="button",
       data-toggle="modal",
       data-target="#modal-storage",
-      title=striptags(t(config.meta["/blog/docs/best-quantum-safe-encrypted-email-service"][0]))
+      title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/docs/best-quantum-safe-encrypted-email-service"][0])) : false
     )
       = t("Encrypted Email")
       = " "
@@ -51,7 +51,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/apple-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/apple-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/apple-email-clients"][0])) : false
         )
           //- apple doesn't let you use logo
           = "Apple"
@@ -61,7 +61,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/windows-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/windows-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/windows-email-clients"][0])) : false
         )
           = "Windows"
           != "&reg;"
@@ -70,7 +70,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/android-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/android-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/android-email-clients"][0])) : false
         )
           i.fa-fw.fab.fa-android
           = " "
@@ -81,7 +81,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/linux-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/linux-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/linux-email-clients"][0])) : false
         )
           i.fa-fw.fab.fa-linux
           = " "
@@ -92,7 +92,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/desktop-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/desktop-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/desktop-email-clients"][0])) : false
         )
           i.fa-fw.fas.fa-desktop
           = " "
@@ -102,7 +102,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/web-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/web-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/web-email-clients"][0])) : false
         )
           if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
             i.fab.fa-fw.fa-firefox-browser
@@ -123,7 +123,7 @@ ul.list-unstyled.mb-3
         a.badge.badge-light(
           target="_blank",
           href=l("/blog/open-source/terminal-email-clients"),
-          title=striptags(t(config.meta["/blog/open-source/terminal-email-clients"][0]))
+          title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/blog/open-source/terminal-email-clients"][0])) : false
         )
           i.fa-fw.fas.fa-terminal
           = " "
