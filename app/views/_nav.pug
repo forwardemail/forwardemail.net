@@ -451,7 +451,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   href=l("/email-forwarding-regex-pattern-filter"),
                   class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
                 )= t("Regex Email Forwarding")
-                if config.alternatives.length > 0
+                if config.alternatives && config.alternatives.length > 0
                   hr.dropdown-divider
                   h6.dropdown-header= t("Email Service Comparison")
                   .small

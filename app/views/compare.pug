@@ -124,7 +124,7 @@ block append stylesheets
 block body
   include _modal-storage
 
-  - const sorted = _.sortBy(config.alternatives, "name");
+  - const sorted = config.alternatives ? _.sortBy(config.alternatives, "name") : [];
 
   if !isBot(ctx.get('User-Agent'))
     script(defer, nonce=nonce).
@@ -274,7 +274,7 @@ block body
                           i.fa.fa-external-link
                           = " "
                           = t("Website")
-                      if !isBot(ctx.get("User-Agent"))
+                      if !isBot(ctx.get("User-Agent")) && sorted.length > 0
                         li.list-inline-item.mb-1
                           button.btn.btn-sm.btn-dark.dropdown-toggle(
                             type="button",
@@ -476,7 +476,7 @@ block body
                           i.fa.fa-external-link
                           = " "
                           = t("Website")
-                      if !isBot(ctx.get("User-Agent"))
+                      if !isBot(ctx.get("User-Agent")) && sorted.length > 0
                         li.list-inline-item.mb-1
                           button.btn.btn-sm.btn-dark.dropdown-toggle(
                             type="button",
@@ -972,7 +972,7 @@ block body
                       i.fa.fa-external-link
                       = " "
                       = t("Website")
-                  if !isBot(ctx.get("User-Agent"))
+                  if !isBot(ctx.get("User-Agent")) && sorted.length > 0
                     li.list-inline-item.mb-1
                       button.btn.btn-sm.btn-dark.dropdown-toggle(
                         type="button",
@@ -1216,7 +1216,7 @@ block body
                     = " "
                     i.fa.fa-angle-double-right.align-middle
 
-      if (comparison || alternativeTo) && isBot(ctx.get("User-Agent"))
+      if config.alternatives && sorted.length > 0 && (comparison || alternativeTo) && isBot(ctx.get("User-Agent"))
         - const match = alternatives.find((a) => a.name === alternativeTo);
         .row.mt-3
           .col.text-center

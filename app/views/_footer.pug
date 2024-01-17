@@ -288,7 +288,7 @@ footer.mt-auto
             )= t("Regex Email Forwarding")
             if platforms.length > 0
               li: a.d-block.text-white.py-2.py-md-0(href=l("/blog/open-source"))= t("Open Source")
-          if config.alternatives.length > 0
+          if config.alternatives && config.alternatives.length > 0
             hr.d-lg-none.w-100
             h2.h5.mb-2= t("Email Service Comparison")
             hr.d-none.d-md-none.d-lg-none.w-100
