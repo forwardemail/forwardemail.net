@@ -226,7 +226,7 @@ block body
                         target="_blank",
                         rel="noopener noreferrer",
                         title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[0].name, dayjs().format("YYYY"))) : false,
-                        class=alternatives[0].name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                        class=alternatives[0].name === "Forward Email" ? "text-themed font-weight-bold" : "text-themed"
                       )= alternatives[0].name
                     if alternatives[0].name === "Forward Email"
                       .lead.mb-3
@@ -428,7 +428,7 @@ block body
                         target="_blank",
                         rel="noopener noreferrer",
                         title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternatives[1].name, dayjs().format("YYYY"))) : false,
-                        class=alternatives[1].name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                        class=alternatives[1].name === "Forward Email" ? "text-themed font-weight-bold" : "text-themed"
                       )= alternatives[1].name
                     if alternatives[1].name === "Forward Email"
                       .lead.mb-3
@@ -938,7 +938,7 @@ block body
                     target="_blank",
                     rel="noopener noreferrer",
                     title=isBot(ctx.get("User-Agent")) ? striptags(t('<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>', config.alternatives.length - 1, alternative.name, dayjs().format("YYYY"))) : false,
-                    class=alternative.name === "Forward Email" ? "text-dark font-weight-bold" : "text-dark"
+                    class=alternative.name === "Forward Email" ? "text-dark font-weight-bold" : alternative.comparison ? "text-dark" : "text-themed"
                   )= alternative.name
                 if alternative.name === "Forward Email"
                   = " "
