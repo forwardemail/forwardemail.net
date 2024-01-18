@@ -745,3 +745,31 @@ setTimeout(() => {
 $('[data-width]').each(function () {
   $(this).css('width', $(this).attr('data-width'));
 });
+
+//
+// <https://github.com/Faisal-Manzer/postcss-viewport-height-correction>
+//
+
+const customViewportCorrectionVariable = 'vh';
+
+function setViewportProperty(doc) {
+  let prevClientHeight;
+  const customVar = '--' + (customViewportCorrectionVariable || 'vh');
+  function handleResize() {
+    const { clientHeight } = doc;
+    if (clientHeight === prevClientHeight) return;
+    if (window.requestAnimationFrame !== undefined)
+      window.requestAnimationFrame(function () {
+        doc.style.setProperty(customVar, clientHeight * 0.01 + 'px');
+        prevClientHeight = clientHeight;
+      });
+  }
+
+  handleResize();
+  return handleResize;
+}
+
+window.addEventListener(
+  'resize',
+  setViewportProperty(document.documentElement)
+);

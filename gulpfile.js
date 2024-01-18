@@ -41,8 +41,10 @@ const ms = require('ms');
 const order = require('gulp-order');
 const pWaitFor = require('p-wait-for');
 const postcss = require('gulp-postcss');
+const postcss100VHFix = require('postcss-100vh-fix');
 const postcssInlineBase64 = require('postcss-inline-base64');
 const postcssPresetEnv = require('postcss-preset-env');
+const postcssViewportHeightCorrection = require('postcss-viewport-height-correction');
 const prettier = require('gulp-prettier');
 const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
@@ -327,6 +329,8 @@ function css() {
       // sourcemaps.init()
       sass().on('error', sass.logError),
       postcss([
+        postcss100VHFix(),
+        postcssViewportHeightCorrection(),
         postcssInlineBase64(),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         cssnano({ autoprefixer: false }),
@@ -349,6 +353,8 @@ function css() {
       order(CONCAT_CSS_ORDER, { base: './' }),
       concat('css/app.css'),
       postcss([
+        postcss100VHFix(),
+        postcssViewportHeightCorrection(),
         postcssInlineBase64(),
         postcssPresetEnv({ browsers: 'extends @ladjs/browserslist-config' }),
         cssnano({ autoprefixer: false }),
@@ -364,6 +370,8 @@ function css() {
       // purge css for email specifically
       rename('css/app-email.css'),
       postcss([
+        postcss100VHFix(),
+        postcssViewportHeightCorrection(),
         postcssInlineBase64(),
         // TODO: once a majority of clients support this then add back
         // <https://www.caniemail.com/features/css-at-font-face/>
