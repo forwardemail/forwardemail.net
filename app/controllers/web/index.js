@@ -332,7 +332,7 @@ async function generateOpenGraphImage(ctx, next) {
         'font-size="85"',
         `font-size="${freeEmail.length >= 14 ? 65 : 85}"`
       )
-      .replace('forwardemail.net', `forwardemail.net${urlBar}`);
+      .replace('forwardemail.net', `forwardemail.net${urlBar}`)
       .replace('font-size="56"', `font-size="${str.length >= 40 ? 40 : 56}"`);
 
     const svg = Buffer.from(svgReplaced, 'utf8');
