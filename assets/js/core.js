@@ -784,4 +784,3 @@ window.addEventListener(
   'resize',
   setViewportProperty(document.documentElement)
 );
-setViewportProperty(document.documentElement);
