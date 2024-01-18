@@ -10,11 +10,13 @@ const { Buffer } = require('node:buffer');
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const revHash = require('rev-hash');
+const sanitizeHtml = require('sanitize-html');
 const sharp = require('sharp');
 const shortID = require('mongodb-short-id');
 const titleize = require('titleize');
@@ -166,6 +168,15 @@ const keys = new Set(
   })
 );
 
+// add all the alternatives (since it would be massive translation file addition otherwise)
+for (const alternative of config.alternatives) {
+  keys.add(`/blog/best-${alternative.slug}-alternative`);
+  for (const a of config.alternatives) {
+    if (a.name === alternative.name) continue;
+    keys.add(`/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`);
+  }
+}
+
 // eslint-disable-next-line complexity
 async function generateOpenGraphImage(ctx, next) {
   if (ctx.path === '/mermaid.png') return next();
@@ -184,14 +195,82 @@ async function generateOpenGraphImage(ctx, next) {
     // load seo metadata
     let data = {};
     let match = `/${ctx.locale}`;
+    let found = false;
     try {
       data = meta.getByPath(url, ctx.request.t);
+      found = true;
       match = `/${ctx.locale}${url}`;
       if (match.length > 40)
         match = _.escape(_.unescape(match).slice(0, 40) + '...');
     } catch (err) {
-      logger.error(err);
+      if (!keys.has(url)) logger.error(err);
       data = meta.getByPath('/', ctx.request.t);
+    }
+
+    // add all the alternatives (since it would be massive translation file addition otherwise)
+    if (!found) {
+      for (const alternative of config.alternatives) {
+        const slug = `/blog/best-${alternative.slug}-alternative`;
+        if (url === slug) {
+          match = `/${ctx.locale}${slug}`;
+
+          const title = ctx.state.t(
+            '<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>',
+            config.alternatives.length - 1,
+            alternative.name,
+            dayjs().format('YYYY')
+          );
+          const description = ctx.state.t(
+            'Reviews, comparison, screenshots and more for the <span class="notranslate">%d</span> best alternatives to <span class="notranslate">%s</span> email service.',
+            config.alternatives.length - 1,
+            alternative.name
+          );
+
+          data = {
+            title: sanitizeHtml(title, {
+              allowedTags: [],
+              allowedAttributes: {}
+            }),
+            description: sanitizeHtml(description, {
+              allowedTags: [],
+              allowedAttributes: {}
+            })
+          };
+          break;
+        }
+
+        for (const a of config.alternatives) {
+          if (a.name === alternative.name) continue;
+          const slug = `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`;
+          if (url === slug) {
+            match = `/${ctx.locale}${slug}`;
+
+            const title = ctx.state.t(
+              `<span class="notranslate">%s</span> vs <span class="notranslate">%s</span> Comparison (<span class="notranslate">%s</span>)`,
+              alternative.name,
+              a.name,
+              dayjs().format('YYYY')
+            );
+
+            const description = ctx.state.t(
+              `What are the differences between <span class="notranslate">%s</span> and <span class="notranslate">%s</span>?`,
+              alternative.name,
+              a.name
+            );
+
+            data = {
+              title: sanitizeHtml(title, {
+                allowedTags: [],
+                allowedAttributes: {}
+              }),
+              description: sanitizeHtml(description, {
+                allowedTags: [],
+                allowedAttributes: {}
+              })
+            };
+          }
+        }
+      }
     }
 
     if (match === '/') match = `/${ctx.locale}`;
