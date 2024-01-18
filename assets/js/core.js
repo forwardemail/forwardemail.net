@@ -755,9 +755,10 @@ const customViewportCorrectionVariable = 'vh';
 function setViewportProperty(doc) {
   let prevClientHeight;
   const customVar = '--' + (customViewportCorrectionVariable || 'vh');
-  const sab = Number.parseFloat(
+  let sab = Number.parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--sab')
   );
+  if (Number.isNaN(sab)) sab = 0;
   function handleResize() {
     const { clientHeight } = doc;
     if (clientHeight === prevClientHeight) return;
