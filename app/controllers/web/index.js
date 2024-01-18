@@ -317,6 +317,12 @@ async function generateOpenGraphImage(ctx, next) {
     if (noCreditCard.length > 60)
       noCreditCard = i18n.translate('NO_CREDIT_CARD', 'en');
 
+    let urlBar = match;
+    if (urlBar.length > 40) {
+      urlBar = urlBar.slice(0, 40);
+      urlBar += '...';
+    }
+
     const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
       .replaceAll('MONOSPACE_NAME', 'Inconsolata-dz')
       .replaceAll('FONT_NAME', 'VC Honey')
@@ -326,7 +332,7 @@ async function generateOpenGraphImage(ctx, next) {
         'font-size="85"',
         `font-size="${freeEmail.length >= 14 ? 65 : 85}"`
       )
-      .replace('forwardemail.net', 'forwardemail.net' + match)
+      .replace('forwardemail.net', `forwardemail.net${urlBar}`);
       .replace('font-size="56"', `font-size="${str.length >= 40 ? 40 : 56}"`);
 
     const svg = Buffer.from(svgReplaced, 'utf8');
