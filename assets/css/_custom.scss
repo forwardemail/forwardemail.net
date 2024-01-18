@@ -14,6 +14,14 @@
   min-height: 100%;
 }
 
+// <https://stackoverflow.com/a/63947940>
+:root {
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom); /* THIS ONE GETS US THE HOME BAR HEIGHT */
+  --sal: env(safe-area-inset-left);
+}
+
 // NOTE: we have to use class name here otherwise emails get a padding on top
 //       which is especially annoying in email clients like Thunderbird where it pads the top of composition window
 body.app {

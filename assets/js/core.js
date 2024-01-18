@@ -755,13 +755,16 @@ const customViewportCorrectionVariable = 'vh';
 function setViewportProperty(doc) {
   let prevClientHeight;
   const customVar = '--' + (customViewportCorrectionVariable || 'vh');
+  const sab = Number.parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue('--sab')
+  );
   function handleResize() {
     const { clientHeight } = doc;
     if (clientHeight === prevClientHeight) return;
     if (window.requestAnimationFrame !== undefined)
       window.requestAnimationFrame(function () {
-        doc.style.setProperty(customVar, clientHeight * 0.01 + 'px');
-        prevClientHeight = clientHeight;
+        doc.style.setProperty(customVar, (clientHeight - sab) * 0.01 + 'px');
+        prevClientHeight = clientHeight - sab;
       });
   }
 
