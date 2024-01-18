@@ -755,6 +755,10 @@ const customViewportCorrectionVariable = 'vh';
 function setViewportProperty(doc) {
   let prevClientHeight;
   const customVar = '--' + (customViewportCorrectionVariable || 'vh');
+  let sat = Number.parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue('--sat')
+  );
+  if (Number.isNaN(sat)) sat = 0;
   let sab = Number.parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--sab')
   );
@@ -764,8 +768,11 @@ function setViewportProperty(doc) {
     if (clientHeight === prevClientHeight) return;
     if (window.requestAnimationFrame !== undefined)
       window.requestAnimationFrame(function () {
-        doc.style.setProperty(customVar, (clientHeight - sab) * 0.01 + 'px');
-        prevClientHeight = clientHeight - sab;
+        doc.style.setProperty(
+          customVar,
+          (clientHeight - sat - sab) * 0.01 + 'px'
+        );
+        prevClientHeight = clientHeight - sat - sab;
       });
   }
 
@@ -777,3 +784,4 @@ window.addEventListener(
   'resize',
   setViewportProperty(document.documentElement)
 );
+setViewportProperty(document.documentElement);
