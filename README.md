@@ -331,9 +331,9 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
     ```sh
     gh repo deploy-key add deployment-keys/api-do-sf-ca.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/api-do-am-nl.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/web-do-sf-ca.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/web-do-am-nl.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-do-am-nl.pub -R forwardemail/forwardemail.net
