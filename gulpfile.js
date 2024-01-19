@@ -28,6 +28,9 @@ const concat = require('gulp-concat');
 const cssnano = require('cssnano');
 const del = require('del');
 const discardFonts = require('postcss-discard-font-face');
+const discardUnused = require('postcss-discard-unused');
+const comments = require('postcss-discard-comments');
+const cssVariables = require('postcss-css-variables');
 const envify = require('@ladjs/gulp-envify');
 const filter = require('gulp-filter');
 const getStream = require('get-stream');
@@ -38,6 +41,7 @@ const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
 const ms = require('ms');
+const nested = require('postcss-nested');
 const order = require('gulp-order');
 const pWaitFor = require('p-wait-for');
 const postcss = require('gulp-postcss');
@@ -45,7 +49,9 @@ const postcss100VHFix = require('postcss-100vh-fix');
 const postcssInlineBase64 = require('postcss-inline-base64');
 const postcssPresetEnv = require('postcss-preset-env');
 const postcssViewportHeightCorrection = require('postcss-viewport-height-correction');
+const postcssStripFontFace = require('postcss-strip-font-face');
 const prettier = require('gulp-prettier');
+const pruneVar = require('postcss-prune-var');
 const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
 const purgeFromPug = require('purgecss-from-pug');
@@ -79,6 +85,29 @@ let imagemin;
 import('gulp-imagemin').then((obj) => {
   imagemin = obj.default;
 });
+
+// inspired by postcss-remove-selectors
+function removeClasses(regex) {
+  return {
+    postcssPlugin: 'remove-classes',
+    prepare() {
+      return {
+        AtRule(atrule) {
+          const str = atrule.toString().split('{')[0];
+          if (regex.test(str)) {
+            atrule.remove();
+          }
+        },
+        Rule(rule) {
+          const str = rule.toString().split('{')[0];
+          if (regex.test(str)) {
+            rule.remove();
+          }
+        }
+      };
+    }
+  };
+}
 
 const developerDocsIcons = [
   ...new Set(
@@ -369,18 +398,9 @@ function css() {
       ...(DEV ? [lr(config.livereload)] : []),
       // purge css for email specifically
       rename('css/app-email.css'),
-      postcss([
-        postcss100VHFix(),
-        postcssViewportHeightCorrection(),
-        postcssInlineBase64(),
-        // TODO: once a majority of clients support this then add back
-        // <https://www.caniemail.com/features/css-at-font-face/>
-        discardFonts(() => false),
-        cssnano({ autoprefixer: false }),
-        reporter()
-      ]),
       purgecss({
         ...purgeCssOptions,
+        variables: true,
         content: [
           'emails/**/*.pug',
           'app/views/my-account/billing/_receipt.pug'
@@ -420,6 +440,51 @@ function css() {
           ])
         ]
       }),
+      //
+      // NOTE: gmail only supports 16384 bytes in <style>
+      // <https://www.caniemail.com/clients/gmail/>
+      //
+      // Limit on styles (16 KB):
+      // <https://github.com/hteumeuleu/email-bugs/issues/90>
+      //
+      postcss([
+        // gmail doesn't support dark mdoe
+        // gmail does not support css variables
+        // <https://www.caniemail.com/features/css-variables/>
+        cssVariables(),
+        pruneVar(),
+        // gmail does not support inline base64 images
+        // <https://www.caniemail.com/features/image-base64/>
+        // postcssInlineBase64(),
+        // TODO: once a majority of clients support this then add back
+        // <https://www.caniemail.com/features/css-at-font-face/>
+        discardFonts(() => false),
+        // fixes for gmail
+        postcssStripFontFace(),
+        // fixes for gmail
+        comments({ removeAll: true }),
+        nested(),
+        // gmail does not support attribute nor pseudo selectors
+        // <https://stackoverflow.com/a/25104594>
+        cssnano({
+          autoprefixer: false,
+          discardComments: { removeAll: true }
+        }),
+        removeClasses(/::?/),
+        removeClasses(/\[/),
+        removeClasses(/@font-face/),
+        removeClasses(/@import/),
+        removeClasses(/@keyframes/),
+        removeClasses(/-webkit-device-pixel-ratio/),
+        removeClasses(/prefers-color-scheme/),
+        removeClasses(/prefers-reduced-motion/),
+        discardUnused(),
+        cssnano({
+          autoprefixer: false,
+          discardComments: { removeAll: true }
+        }),
+        reporter()
+      ]),
       dest(config.buildBase)
     ],
     (err) => {

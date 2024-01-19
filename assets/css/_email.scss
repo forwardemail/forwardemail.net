@@ -5,6 +5,12 @@
 
 // <https://github.com/Automattic/juice/pull/442>
 // <https://github.com/Automattic/juice/issues/439>
+html {
+  box-sizing: border-box;
+}
+* {
+  box-sizing: inherit;
+}
 body.email {
   max-width: 600px !important;
   padding: 0 !important;
@@ -25,5 +31,8 @@ body.email {
     max-width: 100% !important;
     height: auto !important;
     object-fit: cover !important;
+  }
+  * {
+    box-sizing: border-box;
   }
 }
