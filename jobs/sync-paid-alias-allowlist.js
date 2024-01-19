@@ -119,11 +119,11 @@ graceful.listen();
           alias.recipients.length
         );
         // add alias.name @ domain.name
-        if (
-          !alias.name.startsWith('/') &&
-          isEmail(`${alias.name}@${domain.name}`)
-        )
-          set.add(`${alias.name}@${domain.name}`);
+        // if (
+        //   !alias.name.startsWith('/') &&
+        //   isEmail(`${alias.name}@${domain.name}`)
+        // )
+        //   set.add(`${alias.name}@${domain.name}`);
         for (const recipient of alias.recipients) {
           if (isFQDN(recipient)) {
             const domain = recipient.toLowerCase();
@@ -132,11 +132,14 @@ graceful.listen();
             const rootDomain = parseRootDomain(domain);
             if (domain !== rootDomain) set.add(domain);
           } else if (isEmail(recipient)) {
-            set.add(recipient); // already lowercased (see alias model)
             // parse domain
+            // const [userPortion, domain] = recipient.split('@');
             const [, domain] = recipient.split('@');
             // parse root domain
             set.add(domain);
+            // if (alias.name.startsWith('/') && !/\$\d/.test(userPortion))
+            //   set.add(recipient); // already lowercased (see alias model)
+            // else set.add(recipient); // already lowercased (see alias model)
             // parse root domain
             const rootDomain = parseRootDomain(domain);
             if (domain !== rootDomain) set.add(domain);
