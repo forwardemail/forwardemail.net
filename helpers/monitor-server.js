@@ -31,6 +31,21 @@ let lastUsedPercentage = 0;
 const mountMapping = {};
 
 async function check() {
+  // ensure that `netstat`, `tcpdump`, `get`, `curl`, `nc`, `gcc` is not installed
+  // TODO: apparmor
+  // TODO: routinely clear shell history
+  // TODO: check shell history and send to admins
+  // TODO: ensure hard drive is luks-encrypted
+  // TODO: <https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit>
+  // TODO: email alert if users logged in via ssh
+  // TODO: email alert if root user is accessed
+  // TODO: sysctl kernel.unprivileged_bpf_disabled to 1
+  // TODO: sysctl net.core.bpf_jit_harden to 2
+  // TODO: sysctl kernel.kptr_restrict to 2
+  // TODO: fail2ban running as devops user instead of root
+  // TODO: kernel option CONFIG_REFCOUNT_FULL
+  // TODO: kernel option CONFIG_IO_STRICT_DEVMEM
+
   try {
     // check memory
     const memInfo = await osu.mem.info();
