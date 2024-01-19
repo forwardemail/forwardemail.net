@@ -278,7 +278,7 @@ nav.navbar(class=navbarClasses.join(" "))
           if !isBot(ctx.get('User-Agent'))
             - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/privacy", "/terms", "/report-abuse"];
-            - const isResourcesPage = (ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale)) && !hasPricingLink;
+            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale));
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
@@ -291,6 +291,11 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Resources")
                 .dropdown-menu(aria-labelledby="navbar-dropdown-resources")
+                  if !isBot(ctx.get('User-Agent')) && ctx.pathWithoutLocale !== '/faq'
+                    a.dropdown-item.font-weight-bold(
+                      href=l("/faq#what-is-forward-email")
+                    )
+                      != t('What is <span class="notranslate">Forward Email</span>?')
                   each resourcePage in resourcePages
                     if resourcePage === '/private-business-email'
                       - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");

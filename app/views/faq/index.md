@@ -3,6 +3,7 @@
 
 ## Table of Contents
 
+* [What is Forward Email](#what-is-forward-email)
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
@@ -80,6 +81,34 @@
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
 * [Will you ever increase prices](#will-you-ever-increase-prices)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+
+
+## What is Forward Email
+
+Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
+
+Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-safe encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
+
+**Unlike other services, we don't charge you per user.**  You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.
+
+You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
+
+We provide email hosting and email forwarding service to notable users such as:
+
+* Netflix
+* Disney Ad Sales
+* Government of South Australia
+* Government of Dominican Republic
+* Government of New South Wales
+* The University of Maryland
+* The University of Washington
+* Tufts University
+* Swarthmore College
+* Saint Louis University
+* David Heinemeier Hansson
+* 430,000+ custom domain names
+
+You can learn more about Forward Email on [our About page](/about).
 
 
 ## How fast is this service

@@ -25,6 +25,25 @@ footer.mt-auto
               )= t("Need help?")
   .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
+      .text-center.mb-3
+        a(
+          href="https://www.trustpilot.com/review/forwardemail.net",
+          target="_blank",
+          rel="noopener noreferrer"
+        )
+          noscript
+            img(
+              alt=t("Review us on Trustpilot"),
+              src=manifest("img/trustpilot.png"),
+              width="216.5",
+              height="52"
+            )
+          img.lazyload(
+            alt=t("Review us on Trustpilot"),
+            data-src=manifest("img/trustpilot.png"),
+            width="216.5",
+            height="52"
+          )
       ul.list-inline.mb-3.text-center
         li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
           i.fa.fa-lock.mr-2
@@ -487,26 +506,6 @@ footer.mt-auto
                 width=162,
                 height=20
               )
-          //-.
-            li.list-inline-item.mb-3
-              a(
-                href="https://www.trustpilot.com/review/forwardemail.net",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                noscript
-                  img(
-                    alt=t("Review us on Trustpilot"),
-                    src=manifest("img/trustpilot.png"),
-                    width="216.5",
-                    height="52"
-                  )
-                img.lazyload(
-                  alt=t("Review us on Trustpilot"),
-                  data-src=manifest("img/trustpilot.png"),
-                  width="216.5",
-                  height="52"
-                )
         ul.list-inline.mb-3
           li.list-inline-item.mb-3
             a(

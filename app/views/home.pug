@@ -139,15 +139,15 @@ block body
       .row
         if !isBot(ctx.get("User-Agent"))
           #typed-home-strings.d-none(data-ignore-hash-change)
-            div!= t("Email service<br /> for enterprise")
-            div!= t("Email service<br /> for education")
-            div!= t("Email service<br /> for startups")
-            div!= t("Email service<br /> for stores")
-            div!= t("Email service<br /> for designers")
-            div!= t("Email service<br /> for developers")
-            div!= t("Email service<br /> for marketing")
-            div!= t("Email service<br /> for sales")
-            div!= t("Email service<br /> for you")
+            div!= t("Email hosting<br /> for enterprise")
+            div!= t("Email hosting<br /> for education")
+            div!= t("Email hosting<br /> for startups")
+            div!= t("Email hosting<br /> for stores")
+            div!= t("Email hosting<br /> for designers")
+            div!= t("Email hosting<br /> for developers")
+            div!= t("Email hosting<br /> for marketing")
+            div!= t("Email hosting<br /> for sales")
+            div!= t("Email hosting<br /> for you")
         .col-12(
           class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
         )
@@ -157,7 +157,7 @@ block body
           else
             #typed-home-header.h1.mb-3(data-ignore-hash-change)
               span#typed-home.text-sans-serif(data-ignore-hash-change)
-                != t("Email service<br /> for everyone")
+                != t("Email hosting<br /> for everyone")
           if isBot(ctx.get("User-Agent"))
             p
               != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
@@ -206,6 +206,39 @@ block body
                   i.fa.fa-code
                   = " "
                   = t("Developers")
+      if !isBot(ctx.get('User-Agent'))
+        .row
+          .col-12.text-center
+            p.lead.text-white.font-weight-bold= t("Used by")
+            ul.list-inline.d-md-none
+              li.list-inline-item.badge.badge-dark Netflix
+              li.list-inline-item.badge.badge-dark Disney Ad Sales
+              li.list-inline-item.badge.badge-dark Government of South Australia
+              li.list-inline-item.badge.badge-dark Government of Dominican Republic
+              li.list-inline-item.badge.badge-dark Government of New South Wales
+              li.list-inline-item.badge.badge-dark The University of Maryland
+              li.list-inline-item.badge.badge-dark The University of Washington
+              li.list-inline-item.badge.badge-dark Tufts University
+              li.list-inline-item.badge.badge-dark Swarthmore College
+              li.list-inline-item.badge.badge-dark Saint Louis University
+              li.list-inline-item.badge.badge-dark David Heinemeier Hansson
+              li.list-inline-item.badge.badge-dark
+                = t("430,000+ custom domain names")
+            ul.list-inline.lead.d-none.d-md-block
+              li.list-inline-item.badge.badge-dark Netflix
+              li.list-inline-item.badge.badge-dark Disney Ad Sales
+              li.list-inline-item.badge.badge-dark Government of South Australia
+              li.list-inline-item.badge.badge-dark Government of Dominican Republic
+              li.list-inline-item.badge.badge-dark Government of New South Wales
+              li.list-inline-item.badge.badge-dark The University of Maryland
+              li.list-inline-item.badge.badge-dark The University of Washington
+              li.list-inline-item.badge.badge-dark Tufts University
+              li.list-inline-item.badge.badge-dark Swarthmore College
+              li.list-inline-item.badge.badge-dark Saint Louis University
+              li.list-inline-item.badge.badge-dark David Heinemeier Hansson
+              li.list-inline-item.badge.badge-dark
+                = t("430,000+ custom domain names")
+
     a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto(
       href="#learn-more"
     )
