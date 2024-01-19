@@ -285,7 +285,15 @@ const config = {
       from: env.EMAIL_DEFAULT_FROM
     },
     send: env.SEND_EMAIL,
-    juiceResources: {},
+    juiceResources: {
+      preserveImportant: true,
+      applyStyleTags: true,
+      removeStyleTags: true,
+      insertPreservedExtraCss: true,
+      preservePseudos: false,
+      preserveKeyFrames: false,
+      preserveFontFaces: false
+    },
     lastLocaleField: 'last_locale',
     i18n: {
       ...i18n,

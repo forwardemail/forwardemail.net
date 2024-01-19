@@ -473,6 +473,7 @@ function css() {
         removeClasses(/::?/),
         removeClasses(/\[/),
         removeClasses(/@font-face/),
+        removeClasses(/@media print/),
         removeClasses(/@import/),
         removeClasses(/@keyframes/),
         removeClasses(/-webkit-device-pixel-ratio/),
