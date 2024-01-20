@@ -4676,5 +4676,16 @@
   "You can learn more about Forward Email on": "Bạn có thể tìm hiểu thêm về Chuyển tiếp email trên",
   "our About page": "trang Giới thiệu của chúng tôi",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> là gì?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "Admin - Users": "Quản trị viên - Người dùng",
+  "Search for users": "Tìm kiếm người dùng",
+  "Search by first name, last name, or email": "Tìm kiếm theo tên, họ hoặc email",
+  "First Name": "Tên đầu tiên",
+  "Last Name": "Họ",
+  "email": "e-mail",
+  "plan": "kế hoạch",
+  "group": "nhóm",
+  "Last Login": "Lân đăng nhập cuôi",
+  "OTP Enabled": "Đã bật OTP",
+  "Log in as user": "Đăng nhập với tư cách người dùng"
 }

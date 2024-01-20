@@ -4662,5 +4662,17 @@
   "You can learn more about Forward Email on": "Vous pouvez en savoir plus sur le transfert d'e-mails sur",
   "our About page": "notre page À propos",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Qu’est-ce <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "Admin - Users": "Administrateur - Utilisateurs",
+  "Search for users": "Rechercher des utilisateurs",
+  "Search by first name, last name, or email": "Rechercher par prénom, nom ou email",
+  "First Name": "Prénom",
+  "Last Name": "Nom de famille",
+  "email": "e-mail",
+  "plan": "plan",
+  "group": "groupe",
+  "Last Login": "Dernière connexion",
+  "OTP Enabled": "OTP activé",
+  "Log in as user": "Connectez-vous en tant qu'utilisateur",
+  "Your request has timed out and we have been alerted of this issue. Please try again or contact us.": "Votre demande a expiré et nous avons été alertés de ce problème. Veuillez réessayer ou contactez-nous."
 }
