@@ -60,7 +60,10 @@ function createTangerine(
       timeout: env.NODE_ENV === 'production' ? 5000 : 2500,
       tries: env.NODE_ENV === 'production' ? 4 : 2,
       // use Cloudflare first then Google as a fallback in round-robin approach
-      servers: new Set(['1.1.1.1', '1.0.0.1', '8.8.8.8', '8.8.4.4'])
+      servers: new Set(['1.1.1.1', '1.0.0.1', '8.8.8.8', '8.8.4.4']),
+      setCacheArgs(key, result) {
+        return ['PX', Math.round(result.ttl * 1000)];
+      }
     };
 
   // <https://github.com/forwardemail/tangerine#cache>

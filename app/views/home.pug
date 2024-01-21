@@ -170,47 +170,49 @@ block body
               data-target="#modal-sign-up"
             )
               = t("Sign up free")
-          ul.list-inline
-            li.list-inline-item.d-block.d-md-inline
-              a.btn.mb-3(
-                class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-light",
-                href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true"),
-                title=isBot(ctx.get("User-Agent")) ? striptags(t(config.meta["/private-business-email"][0])) : false
-              )
-                i.fa.fa-fw.fa-layer-group
-                = " "
-                != t("Features")
-            //- Product Tour
-            if !isBot(ctx.get('User-Agent'))
+
+          if isBot(ctx.get("User-Agent"))
+            ul.list-inline
               li.list-inline-item.d-block.d-md-inline
-                a.btn.btn-light.mb-3(
-                  role="button",
-                  data-toggle="modal",
-                  data-target="#modal-watch-video",
-                  href="https://www.youtube.com/watch?v=N6zjv40zuIY",
-                  target="_blank",
-                  rel="noopener noreferrer"
+                a.btn.mb-3(
+                  class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-light",
+                  href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
                 )
-                  i.fab.fa-youtube.text-danger
+                  i.fa.fa-fw.fa-layer-group
                   = " "
-                  = t("Tour")
-            //- Developers
-            li.list-inline-item.d-block.d-md-inline
-              if isBot(ctx.get('User-Agent'))
-                a.btn.btn-dark.mb-3(href=l("/blog/docs"))
-                  i.fa.fa-code
-                  = " "
-                  = t("Transactional Email API")
-              else
-                a.btn.btn-light.mb-3(href=l("/blog/docs"))
-                  i.fa.fa-code
-                  = " "
-                  = t("Developers")
+                  != t("Features")
+              //- Product Tour
+              if !isBot(ctx.get('User-Agent'))
+                li.list-inline-item.d-block.d-md-inline
+                  a.btn.btn-light.mb-3(
+                    role="button",
+                    data-toggle="modal",
+                    data-target="#modal-watch-video",
+                    href="https://www.youtube.com/watch?v=N6zjv40zuIY",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fab.fa-youtube.text-danger
+                    = " "
+                    = t("Tour")
+              //- Developers
+              li.list-inline-item.d-block.d-md-inline
+                if isBot(ctx.get('User-Agent'))
+                  a.btn.btn-dark.mb-3(href=l("/blog/docs"))
+                    i.fa.fa-code
+                    = " "
+                    = t("Transactional Email API")
+                else
+                  a.btn.btn-light.mb-3(href=l("/blog/docs"))
+                    i.fa.fa-code
+                    = " "
+                    = t("Developers")
+
       if !isBot(ctx.get('User-Agent'))
         .row
-          .col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
+          .col-8.offset-2.col-xl-10.offset-xl-1.text-center
             p.lead.text-white.font-weight-bold= t("Used by")
-            ul.list-inline.d-md-none
+            ul.list-inline.lead.d-none.d-lg-block
               li.list-inline-item.badge.badge-dark Netflix
               li.list-inline-item.badge.badge-dark Disney Ad Sales
               li.list-inline-item.badge.badge-dark Government of South Australia
@@ -224,7 +226,7 @@ block body
               li.list-inline-item.badge.badge-dark David Heinemeier Hansson
               li.list-inline-item.badge.badge-dark
                 = t("430,000+ custom domain names")
-            ul.list-inline.lead.d-none.d-md-block
+            ul.list-inline.d-lg-none
               li.list-inline-item.badge.badge-dark Netflix
               li.list-inline-item.badge.badge-dark Disney Ad Sales
               li.list-inline-item.badge.badge-dark Government of South Australia
