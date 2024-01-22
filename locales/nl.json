@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "Meer informatie over het doorsturen van e-mail vindt u op",
   "our About page": "onze Over-pagina",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Wat is <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "must be an alias-specific generated password.": "moet een aliasspecifiek gegenereerd wachtwoord zijn."
 }

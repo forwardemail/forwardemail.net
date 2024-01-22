@@ -165,6 +165,11 @@ async function increaseRateLimiting(client, date, sender, root, byteLength) {
     .incr(countKey)
     .incrby(specificSizeKey, byteLength)
     .incr(specificCountKey)
+    // TODO: all ansible servers should be set to use utc timezone
+    .pexpire(sizeKey, ms('1d'))
+    .pexpire(countKey, ms('1d'))
+    .pexpire(specificSizeKey, ms('1d'))
+    .pexpire(specificCountKey, ms('1d'))
     .exec();
 }
 

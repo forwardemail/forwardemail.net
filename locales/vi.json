@@ -4688,6 +4688,7 @@
   "Last Login": "Lân đăng nhập cuôi",
   "OTP Enabled": "Đã bật OTP",
   "Log in as user": "Đăng nhập với tư cách người dùng",
-  "Create your free, private, and professional business email.": "Create your free, private, and professional business email.",
-  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>."
+  "Create your free, private, and professional business email.": "Tạo email doanh nghiệp miễn phí, riêng tư và chuyên nghiệp của bạn.",
+  "Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Gửi và nhận email dưới dạng <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
+  "must be an alias-specific generated password.": "phải là mật khẩu được tạo dành riêng cho bí danh."
 }

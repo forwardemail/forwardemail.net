@@ -5196,5 +5196,6 @@
   "our About page": "דף המידע שלנו",
   "What is <span class=\"notranslate\">Forward Email</span>?": "מה זה <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "דוד היינמאייר הנסון",
-  "OTP Enabled": "OTP מופעל"
+  "OTP Enabled": "OTP מופעל",
+  "must be an alias-specific generated password.": "חייבת להיות סיסמה שנוצרת בכינוי ספציפי."
 }

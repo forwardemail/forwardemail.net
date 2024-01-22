@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "คุณสามารถเรียนรู้เพิ่มเติมเกี่ยวกับการส่งต่ออีเมลได้ที่",
   "our About page": "หน้าเกี่ยวกับของเรา",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> คืออะไร?",
-  "David Heinemeier Hansson": "เดวิด ไฮเนอไมเออร์ แฮนส์สัน"
+  "David Heinemeier Hansson": "เดวิด ไฮเนอไมเออร์ แฮนส์สัน",
+  "must be an alias-specific generated password.": "ต้องเป็นรหัสผ่านที่สร้างขึ้นเฉพาะนามแฝง"
 }

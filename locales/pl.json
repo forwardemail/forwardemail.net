@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "Więcej informacji na temat przekazywania wiadomości e-mail można znaleźć na stronie",
   "our About page": "nasza strona Informacje",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Co to jest <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "Davida Heinemeiera Hanssona"
+  "David Heinemeier Hansson": "Davida Heinemeiera Hanssona",
+  "must be an alias-specific generated password.": "musi być wygenerowanym hasłem specyficznym dla aliasu."
 }

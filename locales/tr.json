@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "E-postayı İletme hakkında daha fazla bilgiyi şu adreste bulabilirsiniz:",
   "our About page": "Hakkında sayfamız",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> Nedir?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "must be an alias-specific generated password.": "takma ada özel oluşturulmuş bir şifre olmalıdır."
 }

@@ -34,12 +34,24 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    await Emails.deleteMany(
-      {
-        created_at: { $lt: Date.now() - ms(config.emailRetention) }
-      },
-      { writeConcern: { w: 0, j: false } }
-    );
+    for await (const email of Emails.find({
+      created_at: { $lt: Date.now() - ms(config.emailRetention) }
+    })
+      .select('_id')
+      .lean()
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      try {
+        await Emails.deleteOne(
+          { _id: email._id },
+          {
+            writeConcern: { w: 0, j: false }
+          }
+        );
+      } catch (err) {
+        logger.error(err);
+      }
+    }
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error

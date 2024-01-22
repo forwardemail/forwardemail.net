@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "Az e-mailek továbbításáról itt olvashat bővebben",
   "our About page": "Névjegy oldalunkat",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Mi az <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "must be an alias-specific generated password.": "alias-specifikus generált jelszónak kell lennie."
 }

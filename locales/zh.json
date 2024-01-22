@@ -6923,5 +6923,6 @@
   "You can learn more about Forward Email on": "您可以了解有关转发电子邮件的更多信息",
   "our About page": "我们的关于页面",
   "What is <span class=\"notranslate\">Forward Email</span>?": "什么是<span class=\"notranslate\">Forward Email</span> ？",
-  "David Heinemeier Hansson": "大卫·海涅迈尔·汉森"
+  "David Heinemeier Hansson": "大卫·海涅迈尔·汉森",
+  "must be an alias-specific generated password.": "必须是特定于别名的生成密码。"
 }

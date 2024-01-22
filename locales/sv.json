@@ -7230,5 +7230,6 @@
   "You can learn more about Forward Email on": "Du kan lära dig mer om Vidarebefordra e-post på",
   "our About page": "vår Om-sida",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Vad är <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "must be an alias-specific generated password.": "måste vara ett aliasspecifikt genererat lösenord."
 }

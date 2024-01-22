@@ -11,8 +11,10 @@ const safeStringify = require('fast-safe-stringify');
 
 const logger = require('#helpers/logger');
 
+const MAX_AGE = ms('1y') / 1000;
+
 module.exports = (client) => ({
-  maxAge: ms('1y') / 1000,
+  maxAge: MAX_AGE,
   hash: (ctx) => `koa-cash:${ctx.request.url}`,
   setCachedHeader: true,
   async get(key) {
@@ -42,15 +44,26 @@ module.exports = (client) => ({
         await pTimeout(
           client.mset(
             new Map([
-              [`buffer:${key}`, body, ...(maxAge > 0 ? ['EX', maxAge] : [])],
-              [key, safeStringify(data), ...(maxAge > 0 ? ['EX', maxAge] : [])]
+              [
+                `buffer:${key}`,
+                body,
+                ...(maxAge > 0 ? ['EX', maxAge] : ['EX', MAX_AGE])
+              ],
+              [
+                key,
+                safeStringify(data),
+                ...(maxAge > 0 ? ['EX', maxAge] : ['EX', MAX_AGE])
+              ]
             ])
           ),
           1000
         );
       } else {
         if (maxAge <= 0)
-          await pTimeout(client.set(key, safeStringify(value)), 1000);
+          await pTimeout(
+            client.set(key, safeStringify(value), 'EX', MAX_AGE),
+            1000
+          );
         await client.set(key, safeStringify(value), 'EX', maxAge);
       }
     } catch (err) {

@@ -14,6 +14,7 @@ const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const revHash = require('rev-hash');
 const sanitizeHtml = require('sanitize-html');
@@ -21,6 +22,7 @@ const sharp = require('sharp');
 const shortID = require('mongodb-short-id');
 const titleize = require('titleize');
 const { isEmail } = require('validator');
+const { gzip } = require('node-gzip');
 
 const admin = require('./admin');
 const api = require('./api');
@@ -54,6 +56,8 @@ const SVG_STR = fs.readFileSync(
     : path.join(config.buildDir, 'img', 'template.svg'),
   'utf8'
 );
+
+const MAX_AGE = ms('1y') / 1000;
 
 function breadcrumbs(ctx, next) {
   const breadcrumbs = _.compact(ctx.path.split('/')).slice(1);
@@ -183,6 +187,7 @@ async function generateOpenGraphImage(ctx, next) {
   try {
     let url = (ctx.pathWithoutLocale || ctx.path)
       .replace('.png', '')
+      .replace('.jpeg', '')
       .replace('.svg', '');
     if (url === '/index') url = '/';
 
@@ -277,7 +282,11 @@ async function generateOpenGraphImage(ctx, next) {
     else if (match.endsWith('/')) match = match.slice(0, -1);
     if (match === `/${i18n.config.defaultLocale}`) match = '';
 
-    ctx.type = ctx.path.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
+    ctx.type = ctx.path.endsWith('.svg')
+      ? 'image/svg+xml'
+      : ctx.path.endsWith('.jpeg')
+      ? 'image/jpeg'
+      : 'image/png';
 
     let [str] = data.title
       .replace(config.views.locals.striptags(config.metaTitleAffix), '')
@@ -338,10 +347,16 @@ async function generateOpenGraphImage(ctx, next) {
     const svg = Buffer.from(svgReplaced, 'utf8');
     const hash = revHash(ctx.type + ':' + svgReplaced);
 
-    const key = `og:${hash}`;
+    const key = `og:gzip:${hash}`;
     let result;
 
     if (config.env === 'production') result = await ctx.client.get(key);
+
+    ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
+
+    // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
+    ctx.set('Content-Encoding', 'gzip');
+    ctx.res.removeHeader('Content-Length');
 
     if (result) {
       ctx.body = Buffer.from(result, 'hex');
@@ -349,16 +364,29 @@ async function generateOpenGraphImage(ctx, next) {
     }
 
     if (ctx.type === 'image/svg+xml') {
-      ctx.body = svg;
+      const compressed = await gzip(svg);
+      ctx.body = compressed;
       ctx.client
-        .set(key, svg.toString('hex'))
+        .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
         .then()
         .catch((err) => ctx.logger.fatal(err));
     } else {
-      const buffer = await sharp(svg).png({ quality: 100 }).toBuffer();
-      ctx.body = buffer;
+      const buffer =
+        ctx.type === 'image/jpeg'
+          ? await sharp(svg).jpeg({ quality: 80, mozjpeg: true }).toBuffer()
+          : await sharp(svg)
+              .png({
+                quality: 100,
+                palette: true,
+                compressionLevel: 9,
+                dither: 0,
+                effort: 10
+              })
+              .toBuffer();
+      const compressed = await gzip(buffer);
+      ctx.body = compressed;
       ctx.client
-        .set(key, buffer.toString('hex'))
+        .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
         .then()
         .catch((err) => ctx.logger.fatal(err));
     }

@@ -7077,5 +7077,6 @@
   "You can learn more about Forward Email on": "Voit lukea lisää sähköpostin edelleenlähettämisestä osoitteessa",
   "our About page": "Tietoja-sivultamme",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Mikä on <span class=\"notranslate\">Forward Email</span> ?",
-  "David Heinemeier Hansson": "David Heinemeier Hansson"
+  "David Heinemeier Hansson": "David Heinemeier Hansson",
+  "must be an alias-specific generated password.": "on oltava aliaskohtainen luotu salasana."
 }
