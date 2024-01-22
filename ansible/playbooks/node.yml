@@ -92,6 +92,7 @@
     - name: Install fonts
       apt:
         name:
+          - fonts-powerline
           - xfonts-75dpi
           - fontconfig
           - libxrender1

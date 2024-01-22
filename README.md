@@ -135,7 +135,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
    ```
 
    ```sh
-   sudo apt-get install xfonts-75dpi fontconfig libxrender1 xfonts-base ttf-mscorefonts-installer libfontconfig
+   sudo apt-get install xfonts-75dpi fontconfig libxrender1 xfonts-base ttf-mscorefonts-installer libfontconfig fonts-powerline
    ```
 
 8. Install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html#stable) (**optional:** only used for generating PDF receipts):
