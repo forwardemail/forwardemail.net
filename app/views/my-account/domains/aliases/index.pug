@@ -221,7 +221,7 @@ block body
     .row
       .col
         include ../../../_breadcrumbs
-        if domain.aliases.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
+        if domain && domain.aliases && domain.aliases.length === 0 && !ctx.query.q && (!ctx.query.page || ctx.query.page === 1)
           .alert.alert-info= t("No aliases exist yet")
         else
           if isSANB(ctx.query.new) && validator.isEmail(ctx.query.new) && ctx.query.new.endsWith(`@${domain.name}`)
