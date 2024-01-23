@@ -333,7 +333,7 @@ async function generateOpenGraphImage(ctx, next) {
     }
 
     const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
-      .replaceAll('MONOSPACE_NAME', 'Inconsolata-dz')
+      .replaceAll('MONOSPACE_NAME', 'Inconsolata-dz for Powerline')
       .replaceAll('FONT_NAME', 'VC Honey')
       .replace('PRIVATE_BUSINESS', str.trim())
       .replace('FREE_EMAIL', freeEmail)
