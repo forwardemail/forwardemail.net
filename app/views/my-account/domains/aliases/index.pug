@@ -213,7 +213,7 @@ block body
             method="POST"
           )
             include _form
-            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
+            button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Create Alias")
 
   .py-3(
     class=typeof isContainerFluid === "boolean" && isContainerFluid === true ? "container-fluid" : "container"
@@ -225,7 +225,7 @@ block body
           .alert.alert-info= t("No aliases exist yet")
         else
           if isSANB(ctx.query.new) && validator.isEmail(ctx.query.new) && ctx.query.new.endsWith(`@${domain.name}`)
-            .alert.alert-success
+            .alert.alert-success.remove-on-table-ajax-form-reloaded
               ul.list-inline.mb-0
                 li.list-inline-item.align-middle
                   != t('You successfully created a new alias: <code class="alert-link text-decoration-underline">%s</code>', ctx.query.new)
@@ -237,8 +237,9 @@ block body
             action=ctx.path,
             method="GET",
             data-table="#table-aliases",
-            data-search-params="q"
+            data-search-params="q,new"
           )
+            input(type='hidden', name='new', value='')
             .input-group.mb-3
               input#input-keyword-search.form-control(
                 type="text",

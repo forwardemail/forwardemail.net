@@ -7231,5 +7231,13 @@
   "our About page": "Névjegy oldalunkat",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Mi az <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "alias-specifikus generált jelszónak kell lennie."
+  "must be an alias-specific generated password.": "alias-specifikus generált jelszónak kell lennie.",
+  "Create Alias": "Alias létrehozása",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "A címzetteknek sortörés/szóköz/vesszővel elválasztott listában kell szerepelniük érvényes e-mail címekkel, teljes képzésű domain nevekkel (\"FQDN\"), IP-címekkel és/vagy webhook URL-ekkel. Automatikusan eltávolítjuk az ismétlődő bejegyzéseket, és érvényesítést hajtunk végre, amikor az alábbi \"Alias létrehozása\" gombra kattint.",
+  "Quick Add": "Gyors hozzáadás",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "A &quot; <span class=\"notranslate\">%s</span> &quot; álnév még nem létezik.",
+  "Create this alias now": "Hozza létre ezt az aliast most",
+  "Create alias": "Alias létrehozása",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Nem található találat a(z) &quot; <span class=\"notranslate\">%s</span> &quot; kifejezésre.",
+  "Instantly create alias": "Azonnal hozzon létre aliast"
 }

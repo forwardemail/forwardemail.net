@@ -4,7 +4,13 @@ if breadcrumbs.length > 1
       each breadcrumb, i in breadcrumbs
         if i === breadcrumbs.length - 1
           li.breadcrumb-item.active(aria-current="page")
-            = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+            if _.isObject(breadcrumb) && breadcrumb.href
+              a.text-themed(
+                href=_.isObject(breadcrumb) ? breadcrumb.href : `/${breadcrumbs.slice(0, i + 1).join("/")}/`
+              )
+                = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
+            else
+              = _.isObject(breadcrumb) ? breadcrumb.name : t(titleize(humanize(breadcrumb)))
         else
           li.breadcrumb-item
             a.text-themed(

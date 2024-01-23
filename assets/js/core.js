@@ -258,6 +258,10 @@ $body.on('submit.ajaxForm', 'form.ajax-form', ajaxForm);
 $body.on('click', 'a.ajax-form', ajaxForm);
 
 window.addEventListener('tableAjaxFormReloaded', renderDayjs);
+window.addEventListener('tableAjaxFormReloaded', function () {
+  // remove any elements that have `remove-on-table-ajax-form-reloaded`
+  $('.remove-on-table-ajax-form-reloaded').remove();
+});
 
 // handle popstate
 $(window).on('popstate', handleFormOnPopstate);

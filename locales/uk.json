@@ -7231,5 +7231,13 @@
   "our About page": "наша сторінка «Про».",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Що таке <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "Девід Хайнемейєр Ганссон",
-  "must be an alias-specific generated password.": "має бути згенерованим паролем, специфічним для псевдоніма."
+  "must be an alias-specific generated password.": "має бути згенерованим паролем, специфічним для псевдоніма.",
+  "Create Alias": "Створити псевдонім",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Одержувачі мають бути розділеними розривом рядка/пробілом/комою списком дійсних електронних адрес, повних доменних імен (FQDN), IP-адрес і/або URL-адрес вебхуку. Ми автоматично видалимо повторювані записи для вас і виконаємо перевірку, коли ви натиснете «Створити псевдонім» нижче.",
+  "Quick Add": "Швидке додавання",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "Псевдонім &quot; <span class=\"notranslate\">%s</span> &quot; ще не існує.",
+  "Create this alias now": "Створіть цей псевдонім зараз",
+  "Create alias": "Створити псевдонім",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Не знайдено результатів для &quot; <span class=\"notranslate\">%s</span> &quot;.",
+  "Instantly create alias": "Миттєво створити псевдонім"
 }

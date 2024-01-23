@@ -6987,5 +6987,13 @@
   "our About page": "our About page",
   "What is <span class=\"notranslate\">Forward Email</span>?": "What is <span class=\"notranslate\">Forward Email</span>?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "must be an alias-specific generated password."
+  "must be an alias-specific generated password.": "must be an alias-specific generated password.",
+  "Create Alias": "Create Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.",
+  "Quick Add": "Quick Add",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.",
+  "Create this alias now": "Create this alias now",
+  "Create alias": "Create alias",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "No results were found for \"<span class=\"notranslate\">%s</span>\".",
+  "Instantly create alias": "Instantly create alias"
 }

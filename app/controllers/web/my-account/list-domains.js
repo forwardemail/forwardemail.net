@@ -135,6 +135,17 @@ async function listDomains(ctx) {
     ctx.query.limit + ctx.paginate.skip
   );
 
+  //
+  // set breadcrumbs
+  //
+  ctx.state.breadcrumbs = [
+    'my-account',
+    {
+      name: ctx.state.t('Domains'),
+      href: ctx.state.l('/my-account/domains')
+    }
+  ];
+
   if (ctx.accepts('html'))
     return ctx.render('my-account/domains', {
       allDomains,

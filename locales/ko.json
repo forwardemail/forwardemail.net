@@ -7231,5 +7231,13 @@
   "our About page": "우리의 정보 페이지",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> 이란 무엇입니까?",
   "David Heinemeier Hansson": "데이비드 하이네마이어 한손",
-  "must be an alias-specific generated password.": "별칭별로 생성된 비밀번호여야 합니다."
+  "must be an alias-specific generated password.": "별칭별로 생성된 비밀번호여야 합니다.",
+  "Create Alias": "별칭 만들기",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "수신자는 줄바꿈/공백/쉼표로 구분된 유효한 이메일 주소, 정규화된 도메인 이름(\"FQDN\"), IP 주소 및/또는 웹훅 URL의 목록이어야 합니다. 아래의 \"별칭 만들기\"를 클릭하면 중복된 항목이 자동으로 제거되고 유효성 검사가 수행됩니다.",
+  "Quick Add": "빠른 추가",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "별칭 &quot; <span class=\"notranslate\">%s</span> &quot;이(가) 아직 존재하지 않습니다.",
+  "Create this alias now": "지금 이 별칭 만들기",
+  "Create alias": "별칭 만들기",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "&quot; <span class=\"notranslate\">%s</span> &quot;에 대한 결과를 찾을 수 없습니다.",
+  "Instantly create alias": "즉시 별칭 만들기"
 }

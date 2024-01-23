@@ -7231,5 +7231,13 @@
   "our About page": "Hakkında sayfamız",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> Nedir?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "takma ada özel oluşturulmuş bir şifre olmalıdır."
+  "must be an alias-specific generated password.": "takma ada özel oluşturulmuş bir şifre olmalıdır.",
+  "Create Alias": "Takma Ad Oluştur",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Alıcılar, geçerli e-posta adreslerinin, tam nitelikli alan adlarının (\"FQDN\"), IP adreslerinin ve/veya web kancası URL'lerinin satır sonu/boşluk/virgülle ayrılmış bir listesi olmalıdır. Sizin için yinelenen girişleri otomatik olarak kaldıracağız ve aşağıdaki \"Takma Ad Oluştur\"u tıkladığınızda doğrulama işlemini gerçekleştireceğiz.",
+  "Quick Add": "Hızlı Ekle",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "&quot; <span class=\"notranslate\">%s</span> &quot; takma adı henüz mevcut değil.",
+  "Create this alias now": "Bu takma adı şimdi oluşturun",
+  "Create alias": "Takma ad oluştur",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "&quot; <span class=\"notranslate\">%s</span> &quot; için sonuç bulunamadı.",
+  "Instantly create alias": "Anında takma ad oluşturun"
 }

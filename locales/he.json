@@ -5197,5 +5197,17 @@
   "What is <span class=\"notranslate\">Forward Email</span>?": "מה זה <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "דוד היינמאייר הנסון",
   "OTP Enabled": "OTP מופעל",
-  "must be an alias-specific generated password.": "חייבת להיות סיסמה שנוצרת בכינוי ספציפי."
+  "must be an alias-specific generated password.": "חייבת להיות סיסמה שנוצרת בכינוי ספציפי.",
+  "Need to add a domain?": "צריך להוסיף דומיין?",
+  "Create Alias": "צור כינוי",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "הנמענים חייבים להיות רשימה מופרדת בשורות/רווחים/פסיקים של כתובות דוא\"ל חוקיות, שמות דומיין מלאים (\"FQDN\"), כתובות IP ו/או כתובות URL של חיבור לאינטרנט. אנו נסיר עבורך ערכים כפולים באופן אוטומטי ונבצע אימות כאשר תלחץ על \"צור כינוי\" למטה.",
+  "Important Note:": "הערה חשובה:",
+  "Set the <span class=\"notranslate\">\"Proxy status\"</span> in Cloudflare to <span class=\"notranslate\">\"DNS only\"</span> and <strong class=\"text-decoration-underline\">not</strong> <span class=\"notranslate\">\"Proxied\"</span>.": "הגדר את <span class=\"notranslate\">&quot;Proxy status&quot;</span> ב-Cloudflare ל <span class=\"notranslate\">&quot;DNS only&quot;</span> <strong class=\"text-decoration-underline\">ולא</strong> <span class=\"notranslate\">&quot;Proxied&quot;</span> .",
+  "Quick Add": "הוסף מהיר",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "הכינוי &quot; <span class=\"notranslate\">%s</span> &quot; עדיין לא קיים.",
+  "Create this alias now": "צור את הכינוי הזה עכשיו",
+  "Create alias": "צור כינוי",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "לא נמצאו תוצאות עבור &quot; <span class=\"notranslate\">%s</span> &quot;.",
+  "Instantly create alias": "צור באופן מיידי כינוי",
+  "Filtered for:": "מסונן עבור:"
 }

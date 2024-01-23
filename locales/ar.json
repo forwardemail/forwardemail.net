@@ -7231,5 +7231,13 @@
   "our About page": "صفحتنا حول",
   "What is <span class=\"notranslate\">Forward Email</span>?": "ما هو <span class=\"notranslate\">Forward Email</span> ؟",
   "David Heinemeier Hansson": "ديفيد هاينماير هانسون",
-  "must be an alias-specific generated password.": "يجب أن تكون كلمة مرور تم إنشاؤها خاصة بالاسم المستعار."
+  "must be an alias-specific generated password.": "يجب أن تكون كلمة مرور تم إنشاؤها خاصة بالاسم المستعار.",
+  "Create Alias": "إنشاء اسم مستعار",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "يجب أن يكون المستلمون عبارة عن قائمة مفصولة بفواصل أسطر/مسافات/فواصل لعناوين البريد الإلكتروني الصالحة، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\")، وعناوين IP، و/أو عناوين URL لخطاف الويب. سنقوم تلقائيًا بإزالة الإدخالات المكررة لك وإجراء التحقق من الصحة عند النقر فوق \"إنشاء اسم مستعار\" أدناه.",
+  "Quick Add": "إضافة سريعة",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "الاسم المستعار &quot; <span class=\"notranslate\">%s</span> &quot; غير موجود بعد.",
+  "Create this alias now": "قم بإنشاء هذا الاسم المستعار الآن",
+  "Create alias": "إنشاء اسم مستعار",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "لم يتم العثور على نتائج لـ &quot; <span class=\"notranslate\">%s</span> &quot;.",
+  "Instantly create alias": "إنشاء اسم مستعار على الفور"
 }

@@ -7078,5 +7078,13 @@
   "our About page": "Tietoja-sivultamme",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Mikä on <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "on oltava aliaskohtainen luotu salasana."
+  "must be an alias-specific generated password.": "on oltava aliaskohtainen luotu salasana.",
+  "Create Alias": "Luo alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Vastaanottajien on oltava rivinvaihdolla/välilyönnillä/pilkuilla erotettu luettelo kelvollisista sähköpostiosoitteista, täysin kelvollisista verkkotunnusten nimistä (\"FQDN\"), IP-osoitteista ja/tai webhook-URL-osoitteista. Poistamme automaattisesti päällekkäiset merkinnät puolestasi ja suoritamme vahvistuksen, kun napsautat \"Luo alias\" alla.",
+  "Quick Add": "Pikalisäys",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "Alias &quot; <span class=\"notranslate\">%s</span> &quot; ei ole vielä olemassa.",
+  "Create this alias now": "Luo tämä alias nyt",
+  "Create alias": "Luo alias",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Ei tuloksia haulle <span class=\"notranslate\">%s</span> .",
+  "Instantly create alias": "Luo alias välittömästi"
 }

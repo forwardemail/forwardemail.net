@@ -18,7 +18,7 @@ if alias
           i.fa.fa-dice
       input#input-alias-name.form-control.border-themed(
         required,
-        value=alias ? alias.name : "",
+        value=alias ? alias.name : (domain && domain.aliases.length === 0 && isSANB(ctx.query.q)) ? striptags(ctx.query.q).split('@')[0].toLowerCase().trim() : "",
         name="name",
         autocomplete="off",
         placeholder="",
@@ -34,6 +34,9 @@ if alias
             = `@${domain.name}`
           else
             i.fa.fa-at
+      if domain
+        .input-group-append
+          button.btn.btn-success(type="submit")= t("Create Alias")
     ul.list-inline
       li.list-inline-item.small.text-black.text-themed-50= t('Use an asterisk "*" for a catch-all alias.')
       if !domain || !domain.is_global
@@ -42,25 +45,28 @@ if alias
     .form-group.col-md-6
       label(for="select-alias-domain")
         = t("Domain Name")
-      select#select-alias-domain.form-control(required, name="domain")
-        each domain, i in allDomains || domains
-          option(
-            value=domain.id,
-            selected=domainQuery && domainQuery === domain.name
-          )
-            = domain.name
-            if !domain.plan || domain.plan === 'free'
-              = " "
-              = "("
-              if user.plan === 'free'
-                = t("Upgrade plan")
-              else
-                = t("Switch domain plan")
-              = ")"
-            if domain.is_global
-              = " ("
-              = t("Vanity Domain")
-              = ")"
+      .input-group
+        select#select-alias-domain.form-control(required, name="domain")
+          each domain, i in allDomains || domains
+            option(
+              value=domain.id,
+              selected=domainQuery && domainQuery === domain.name
+            )
+              = domain.name
+              if !domain.plan || domain.plan === 'free'
+                = " "
+                = "("
+                if user.plan === 'free'
+                  = t("Upgrade plan")
+                else
+                  = t("Switch domain plan")
+                = ")"
+              if domain.is_global
+                = " ("
+                = t("Vanity Domain")
+                = ")"
+        .input-group-append
+          button.btn.btn-success(type="submit")= t("Create Alias")
       ul.list-inline.form-text
         if user.plan === 'free'
           li.list-inline-item
@@ -71,7 +77,7 @@ if alias
               = " "
               = t("Upgrade plan")
         li.list-inline-item
-          a.btn.btn-sm.btn-success(
+          a.btn.btn-sm.btn-dark(
             href=l("/my-account/domains/new"),
             role="button",
             data-toggle="modal-anchor",
@@ -106,7 +112,7 @@ if !domain || !domain.is_global
     span.text-muted= t("(optional)")
   textarea#textarea-alias-recipients.form-control(name="recipients", rows=1)= alias && Array.isArray(alias.recipients) ? alias.recipients.join(", ") : user.email
   p.form-text.small.text-black.text-themed-50
-    = t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Continue" below.')
+    = t('Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names ("FQDN"), IP addresses, and/or webhook URL\'s.  We will automatically remove duplicate entries for you and perform validation when you click "Create Alias" below.')
     = " "
     = t("We do not support forwarding recursively more than one level deep. If you forward recursively more than one level deep, then your desired configuration may not work as intended.")
 .form-group

@@ -6924,5 +6924,13 @@
   "our About page": "我们的关于页面",
   "What is <span class=\"notranslate\">Forward Email</span>?": "什么是<span class=\"notranslate\">Forward Email</span> ？",
   "David Heinemeier Hansson": "大卫·海涅迈尔·汉森",
-  "must be an alias-specific generated password.": "必须是特定于别名的生成密码。"
+  "must be an alias-specific generated password.": "必须是特定于别名的生成密码。",
+  "Create Alias": "创建别名",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "收件人必须是以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名（“FQDN”）、IP 地址和/或 Webhook URL 列表。当您单击下面的“创建别名”时，我们将自动为您删除重复的条目并执行验证。",
+  "Quick Add": "快速添加",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "别名“ <span class=\"notranslate\">%s</span> ”尚不存在。",
+  "Create this alias now": "立即创建此别名",
+  "Create alias": "创建别名",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "未找到“ <span class=\"notranslate\">%s</span> ”的结果。",
+  "Instantly create alias": "立即创建别名"
 }

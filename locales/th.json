@@ -7231,5 +7231,13 @@
   "our About page": "หน้าเกี่ยวกับของเรา",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span> คืออะไร?",
   "David Heinemeier Hansson": "เดวิด ไฮเนอไมเออร์ แฮนส์สัน",
-  "must be an alias-specific generated password.": "ต้องเป็นรหัสผ่านที่สร้างขึ้นเฉพาะนามแฝง"
+  "must be an alias-specific generated password.": "ต้องเป็นรหัสผ่านที่สร้างขึ้นเฉพาะนามแฝง",
+  "Create Alias": "สร้างนามแฝง",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "ผู้รับต้องเป็นรายการที่อยู่อีเมลที่ถูกต้อง ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (\"FQDN\") ที่อยู่ IP และ/หรือ URL ของเว็บฮุค โดยคั่นด้วยเครื่องหมายบรรทัด/ช่องว่าง/ด้วยเครื่องหมายจุลภาค เราจะลบรายการที่ซ้ำกันให้คุณโดยอัตโนมัติและดำเนินการตรวจสอบความถูกต้องเมื่อคุณคลิก \"สร้างนามแฝง\" ด้านล่าง",
+  "Quick Add": "เพิ่มด่วน",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "นามแฝง &quot; <span class=\"notranslate\">%s</span> &quot; ยังไม่มีอยู่",
+  "Create this alias now": "สร้างนามแฝงนี้ทันที",
+  "Create alias": "สร้างนามแฝง",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "ไม่พบผลลัพธ์สำหรับ &quot; <span class=\"notranslate\">%s</span> &quot;",
+  "Instantly create alias": "สร้างนามแฝงได้ทันที"
 }

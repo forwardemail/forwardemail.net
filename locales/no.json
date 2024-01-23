@@ -7236,5 +7236,13 @@
   "our About page": "vår Om-side",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Hva er <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "må være et aliasspesifikt generert passord."
+  "must be an alias-specific generated password.": "må være et aliasspesifikt generert passord.",
+  "Create Alias": "Opprett alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Mottakere må være en linjeskift/mellomrom/kommaseparert liste over gyldige e-postadresser, fullt kvalifiserte domenenavn (\"FQDN\"), IP-adresser og/eller webhook-URLer. Vi vil automatisk fjerne dupliserte oppføringer for deg og utføre validering når du klikker på \"Opprett alias\" nedenfor.",
+  "Quick Add": "Rask Legg til",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "Aliaset &quot; <span class=\"notranslate\">%s</span> &quot; eksisterer ikke ennå.",
+  "Create this alias now": "Opprett dette aliaset nå",
+  "Create alias": "Opprett alias",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Ingen resultater ble funnet for &quot; <span class=\"notranslate\">%s</span> &quot;.",
+  "Instantly create alias": "Opprett alias umiddelbart"
 }

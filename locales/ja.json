@@ -7231,5 +7231,13 @@
   "our About page": "私たちの概要ページ",
   "What is <span class=\"notranslate\">Forward Email</span>?": "<span class=\"notranslate\">Forward Email</span>は何ですか?",
   "David Heinemeier Hansson": "デビッド・ハイネマイヤー・ハンソン",
-  "must be an alias-specific generated password.": "エイリアス固有に生成されたパスワードである必要があります。"
+  "must be an alias-specific generated password.": "エイリアス固有に生成されたパスワードである必要があります。",
+  "Create Alias": "エイリアスの作成",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "受信者は、有効な電子メール アドレス、完全修飾ドメイン名 (「FQDN」)、IP アドレス、Webhook URL の改行/スペース/カンマ区切りのリストである必要があります。以下の [エイリアスの作成] をクリックすると、重複したエントリが自動的に削除され、検証が実行されます。",
+  "Quick Add": "クイック追加",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "エイリアス &quot; <span class=\"notranslate\">%s</span> &quot; はまだ存在しません。",
+  "Create this alias now": "このエイリアスを今すぐ作成します",
+  "Create alias": "エイリアスの作成",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "「 <span class=\"notranslate\">%s</span> 」の結果が見つかりませんでした。",
+  "Instantly create alias": "エイリアスを即座に作成"
 }

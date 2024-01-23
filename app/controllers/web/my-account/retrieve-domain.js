@@ -474,7 +474,10 @@ async function retrieveDomain(ctx, next) {
     }
 
     ctx.state.meta.title = ctx.state.t(`Aliases ${META_TITLE_AFFIX}`);
-    ctx.state.breadcrumbs.push('aliases');
+    ctx.state.breadcrumbs.push({
+      name: ctx.state.t('Aliases'),
+      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
+    });
   } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/advanced-settings`

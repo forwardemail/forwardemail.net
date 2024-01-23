@@ -7231,5 +7231,13 @@
   "our About page": "halaman Tentang kami",
   "What is <span class=\"notranslate\">Forward Email</span>?": "Apa itu <span class=\"notranslate\">Forward Email</span> ?",
   "David Heinemeier Hansson": "David Heinemeier Hansson",
-  "must be an alias-specific generated password.": "harus berupa kata sandi yang dibuat khusus alias."
+  "must be an alias-specific generated password.": "harus berupa kata sandi yang dibuat khusus alias.",
+  "Create Alias": "Buat Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Create Alias\" below.": "Penerima harus berupa daftar alamat email valid yang dipisahkan baris/spasi/koma, nama domain yang sepenuhnya memenuhi syarat (\"FQDN\"), alamat IP, dan/atau URL webhook. Kami akan secara otomatis menghapus entri duplikat untuk Anda dan melakukan validasi ketika Anda mengklik \"Buat Alias\" di bawah.",
+  "Quick Add": "Tambah Cepat",
+  "The alias \"<span class=\"notranslate\">%s</span>\" does not exist yet.": "Alias &quot; <span class=\"notranslate\">%s</span> &quot; belum ada.",
+  "Create this alias now": "Buat alias ini sekarang",
+  "Create alias": "Buat alias",
+  "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Tidak ada hasil yang ditemukan untuk &quot; <span class=\"notranslate\">%s</span> &quot;.",
+  "Instantly create alias": "Buat alias secara instan"
 }
