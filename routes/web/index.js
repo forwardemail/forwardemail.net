@@ -19,6 +19,7 @@ const pug = require('pug');
 const puppeteer = require('puppeteer');
 const render = require('koa-views-render');
 const revHash = require('rev-hash');
+const { gzip } = require('node-gzip');
 const { parse } = require('node-html-parser');
 
 // dynamically import mermaid cli
@@ -39,6 +40,8 @@ const rateLimit = require('#helpers/rate-limit');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { developerDocs, nsProviders, platforms } = require('#config/utilities');
 const { web } = require('#controllers');
+
+const MAX_AGE = ms('1y') / 1000;
 
 const filePath = path.join(config.views.root, '_tti.pug');
 
@@ -74,6 +77,10 @@ router
 
       if (global.mermaid && global.mermaid[hash]) {
         ctx.type = 'image/png';
+        ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
+        // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
+        ctx.set('Content-Encoding', 'gzip');
+        ctx.res.removeHeader('Content-Length');
         ctx.body = global.mermaid[hash];
         return;
       }
@@ -81,13 +88,17 @@ router
       // attempt to find in redis cache a buffer
       try {
         const buffer = await pTimeout(
-          ctx.client.getBuffer(`buffer:${hash}`),
+          ctx.client.getBuffer(`buffer-gzip-mermaid:${hash}`),
           1000
         );
         if (buffer) {
           if (!global.mermaid) global.mermaid = {};
           global.mermaid[hash] = buffer;
           ctx.type = 'image/png';
+          ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
+          // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
+          ctx.set('Content-Encoding', 'gzip');
+          ctx.res.removeHeader('Content-Length');
           ctx.body = buffer;
           return;
         }
@@ -111,13 +122,18 @@ router
         },
         backgroundColor: ctx.query.theme === 'default' ? 'white' : 'transparent'
       });
+      const compressed = await gzip(svg);
       if (!global.mermaid) global.mermaid = {};
-      global.mermaid[hash] = svg;
+      global.mermaid[hash] = compressed;
       ctx.type = 'image/png';
+      ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
+      // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
+      ctx.set('Content-Encoding', 'gzip');
+      ctx.res.removeHeader('Content-Length');
       ctx.body = svg;
       // store buffer in cache
       try {
-        await ctx.client.set(`buffer:${hash}`, svg);
+        await ctx.client.set(`buffer-gzip-mermaid:${hash}`, compressed);
       } catch (err) {
         ctx.logger.error(err);
       }

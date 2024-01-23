@@ -6,6 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
+const nodeGzip = require('node-gzip');
 const pTimeout = require('p-timeout');
 const safeStringify = require('fast-safe-stringify');
 
@@ -21,12 +22,16 @@ module.exports = (client) => ({
   async get(key) {
     try {
       let [buffer, data] = await pTimeout(
-        Promise.all([client.getBuffer(`buffer:${key}`), client.get(key)]),
+        Promise.all([client.getBuffer(`buffer-gzip:${key}`), client.get(key)]),
         1000
       );
       if (!data) return;
       data = JSON.parse(data);
-      if (buffer) data.body = buffer;
+      if (buffer) {
+        data.body = await nodeGzip.ungzip(buffer);
+        data.gzip = buffer;
+      }
+
       return data;
     } catch (err) {
       err.key = key;
@@ -41,24 +46,18 @@ module.exports = (client) => ({
     //
     try {
       if (Buffer.isBuffer(value.body)) {
-        const { body, ...data } = value;
-        await pTimeout(
-          client.mset(
-            new Map([
-              [
-                `buffer:${key}`,
-                body,
-                ...(maxAge > 0 ? ['EX', maxAge] : ['EX', MAX_AGE])
-              ],
-              [
-                key,
-                safeStringify(data),
-                ...(maxAge > 0 ? ['EX', maxAge] : ['EX', MAX_AGE])
-              ]
-            ])
-          ),
-          1000
+        let { body, gzip, ...data } = value;
+        if (!gzip) gzip = await nodeGzip.gzip(body);
+        const pipeline = client.pipeline();
+        pipeline.mset(
+          new Map([
+            [`buffer-gzip:${key}`, gzip],
+            [key, safeStringify(data)]
+          ])
         );
+        pipeline.expire(`buffer-gzip:${key}`, maxAge > 0 ? maxAge : MAX_AGE);
+        pipeline.expire(key, maxAge > 0 ? maxAge : MAX_AGE);
+        await pTimeout(pipeline.exec(), 1000);
       } else {
         if (maxAge <= 0)
           await pTimeout(
