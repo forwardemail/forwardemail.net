@@ -199,7 +199,8 @@ async function createDomainBilling(ctx) {
         //       (but we're adding it here just as a safeguard)
         success_url: `${config.urls.web}${ctx.path}/?${
           isMakePayment || isEnableAutoRenew ? '' : `plan=${plan}&`
-        }session_id={CHECKOUT_SESSION_ID}`
+        }session_id={CHECKOUT_SESSION_ID}`,
+        allow_promotion_codes: true
       };
 
       //
