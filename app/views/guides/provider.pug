@@ -94,7 +94,7 @@ block body
             )
     .row
       .col-12
-        .card.position-relative.mt-3
+        .card.position-relative.mt-3.no-search
           if provider && provider.name && provider.url
             .position-absolute.w-100.text-right
               a.badge.badge-pill.badge-primary.mt-3.mr-3(
@@ -159,7 +159,7 @@ block body
                   = " "
                   = t("Browse our list of providers")
       .col-12.mt-3
-        .card.position-relative
+        .card.position-relative.no-search
           .position-absolute.w-100.text-right
             span.badge.badge-pill.badge-danger.mt-3.mr-3
               i.fa.fa-times
@@ -368,7 +368,7 @@ block body
             strong= t("Notice of Non-Affiliation and Disclaimer:")
             = " "
             != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', provider.name, provider.name)
-  .container.py-3
+  .container.py-3.no-search
     .position-relative
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.d-flex

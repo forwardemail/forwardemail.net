@@ -359,6 +359,10 @@ function keyup() {
 
 $body.on('keyup', '.verification-form', debounce(keyup, 200));
 
+$body.on('shown.bs.modal', '#modal-search', function () {
+  $(this).find('input[type="search"]:visible').focus();
+});
+
 //
 // any modals with embedded <iframe> we can assume need reset
 // (this also supports lazyframe lazy loaded videos)

@@ -15,12 +15,17 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
 const delay = require('delay');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const splitLines = require('split-lines');
 const { XMLParser } = require('fast-xml-parser');
+const { convert } = require('html-to-text');
+const { parse } = require('node-html-parser');
 
 const RetryClient = require('#helpers/retry-client');
+const SearchResults = require('#models/search-results');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
@@ -40,6 +45,7 @@ const client = new RetryClient(config.urls.web, {
 
 graceful.listen();
 
+// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose(logger);
 
@@ -57,6 +63,7 @@ graceful.listen();
     const result = parser.parse(xml, true);
 
     for (const url of result.urlset.url) {
+      // if (!url.loc.includes('/en/')) continue;
       // crawl the page for caching support and localization
       {
         const path = url.loc.replace(config.urls.web, '');
@@ -68,8 +75,153 @@ graceful.listen();
         });
 
         // eslint-disable-next-line no-await-in-loop
-        await body.text();
-        // body.destroy();
+        const text = await body.text();
+
+        const document = parse(text);
+
+        // remove <nav> and <footer> and all modals
+        for (const el of document.querySelectorAll(
+          'nav, footer, .modal, .fixed-bottom, .no-search'
+        )) {
+          el.remove();
+        }
+
+        const title = document.querySelector('title').rawText;
+        const content = document
+          .querySelector('meta[name="description"]')
+          .getAttribute('content');
+        const locale = document.querySelector('html').getAttribute('lang');
+
+        SearchResults.findOneAndUpdate(
+          {
+            href: url.loc
+          },
+          {
+            href: url.loc,
+            title,
+            content,
+            locale
+          },
+          {
+            upsert: true
+          }
+        )
+          .then()
+          .catch((err) => logger.error(err));
+
+        for (const header of document.querySelectorAll('h1,h2,h3,h4,h5,h6')) {
+          let content = '';
+
+          let href = url.loc;
+          let id;
+
+          id = header.getAttribute('id');
+          if (!isSANB(id) || id === 'top') id = null;
+          if (!id) {
+            const a = header.querySelector('a');
+            if (a) {
+              id = a.getAttribute('id');
+              if (!isSANB(id) || id === 'top') id = null;
+            }
+          }
+
+          if (!id) {
+            // find closest parent header
+            const number = Number.parseInt(
+              header.rawTagName.replace('h', ''),
+              10
+            );
+            if (number !== 1) {
+              const closest = header.closest(`h${number - 1}`);
+              if (closest) {
+                id = closest.getAttribute('id');
+                if (!isSANB(id) || id === 'top') id = null;
+                if (!id) {
+                  const anchor = closest.querySelector('a');
+                  if (anchor) {
+                    const id = anchor.getAttribute('id');
+                    if (isSANB(id) && id !== 'top') href += `#${id}`;
+                  }
+                }
+              }
+            }
+          }
+
+          if (id) {
+            href += `#${id}`;
+            href += `:~:text=${encodeURIComponent(header.text)}`;
+          } else {
+            href += `#:~:text=${encodeURIComponent(header.text)}`;
+          }
+
+          let node = header;
+          while (
+            node.nextElementSibling &&
+            !['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(
+              node.nextElementSibling.rawTagName
+            )
+          ) {
+            node = node.nextElementSibling;
+            content += _.compact(
+              splitLines(
+                convert(node.outerHTML, {
+                  wordwrap: false,
+                  linkBrackets: false,
+                  selectors: [
+                    ...[1, 2, 3, 4, 5, 6].map((i) => ({
+                      selector: `h${i}`,
+                      format: 'block',
+                      options: { uppercase: false }
+                    })),
+                    { selector: 'form', format: 'skip' },
+                    { selector: 'pre', format: 'skip' },
+                    { selector: 'img', format: 'skip' },
+                    { selector: 'svg', format: 'skip' },
+                    { selector: 'hr', format: 'skip' },
+                    { selector: 'ul', options: { itemPrefix: ' ' } },
+                    {
+                      selector: 'a',
+                      options: {
+                        hideLinkHrefIfSameAsText: true,
+                        ignoreHref: true,
+                        baseUrl: config.urls.web,
+                        linkBrackets: false
+                      }
+                    }
+                  ]
+                }).trim()
+              )
+            ).join(' ');
+          }
+
+          // <https://stackoverflow.com/a/64875801>
+          content = content
+            .replace(/\s\s+/g, ' ')
+            // .replace(/\s*([,.!?:;]+)(?!\s*$)\s*/g, '$1 ')
+            .trim();
+
+          if (content) {
+            SearchResults.findOneAndUpdate(
+              {
+                href,
+                title,
+                header: header.text
+              },
+              {
+                href,
+                title,
+                header: header.text,
+                content,
+                locale
+              },
+              {
+                upsert: true
+              }
+            )
+              .then()
+              .catch((err) => logger.error(err));
+          }
+        }
       }
 
       // crawl the page + .png for social open graph image caching

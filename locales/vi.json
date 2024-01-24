@@ -4709,5 +4709,9 @@
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Không tìm thấy kết quả nào cho &quot; <span class=\"notranslate\">%s</span> &quot;.",
   "Instantly create alias": "Tạo bí danh ngay lập tức",
   "Disabled": "Tàn tật",
-  "Filtered for:": "Đã lọc cho:"
+  "Filtered for:": "Đã lọc cho:",
+  "Search for anything:": "Tìm kiếm bất cứ điều gì:",
+  "search results": "kết quả tìm kiếm",
+  "Read article": "Đọc bài viết",
+  "Popular Searches": "Tìm kiếm phổ biến"
 }

@@ -4701,5 +4701,9 @@
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Aucun résultat n&#39;a été trouvé pour &quot; <span class=\"notranslate\">%s</span> &quot;.",
   "Instantly create alias": "Créez instantanément un alias",
   "Disabled": "Désactivé",
-  "Filtered for:": "Filtré pour :"
+  "Filtered for:": "Filtré pour :",
+  "Search for anything:": "Recherchez n'importe quoi :",
+  "search results": "Résultats de recherche",
+  "Read article": "Lire l'article",
+  "Popular Searches": "Recherches populaires"
 }

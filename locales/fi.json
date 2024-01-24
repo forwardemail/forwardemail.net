@@ -7086,5 +7086,9 @@
   "Create this alias now": "Luo tämä alias nyt",
   "Create alias": "Luo alias",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Ei tuloksia haulle <span class=\"notranslate\">%s</span> .",
-  "Instantly create alias": "Luo alias välittömästi"
+  "Instantly create alias": "Luo alias välittömästi",
+  "Search for anything:": "Etsi mitä tahansa:",
+  "search results": "Hakutulokset",
+  "Read article": "Lue artikkeli",
+  "Popular Searches": "Suositut haut"
 }

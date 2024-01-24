@@ -11,7 +11,7 @@ block body
             h1= t("Free Startup and Developer Email Tools List")
             p!= t("Listed below are free email resources and tools for startups and developers.")
             include _author
-      .row.mt-3
+      .row.mt-3.no-search
         - const tools = [];
         - const list = ["/blog/docs/best-quantum-safe-encrypted-email-service", "/guides", "/blogs/docs", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
         each item in list

@@ -4,7 +4,7 @@ extends layout
 
 mixin renderCard(platform, provider)
   - const isEmailClients = ctx.pathWithoutLocale.endsWith("-email-clients");
-  .card.rounded-lg.position-relative.d-inline-block.mb-3
+  .card.rounded-lg.position-relative.d-inline-block.mb-3.no-search
     if provider.starred || provider.language
       .position-absolute.w-100.text-right.lead.d-none.d-xl-block
         if provider.starred
@@ -184,7 +184,7 @@ block body
                 = " "
                 != t('Download and install your favorite &rarr; and then <a href="%s" target="_blank" class="alert-link text-decoration-underline">click here to follow instructions</a>.', l("/faq#do-you-support-receiving-email-with-imap"))
         .row
-          .col-12
+          .col-12.no-search
             h2.text-center.py-3.py-md-5.mb-0(
               id=isEmailClients ? "email-client-screenshots" : "email-server-screenshots"
             )!= isEmailClients ? t("Email Client Screenshots") : t("Email Server Screenshots")
@@ -198,7 +198,7 @@ block body
               each provider in providers
                 +renderCard(platform, provider)
         .row.mt-1
-          .col-12
+          .col-12.no-search
             h2.text-center.py-3.py-md-5.mb-0(
               id=isEmailClients ? "email-client-comparison" : "email-server-comparison"
             )!= isEmailClients ? t("Email Client Comparison") : t("Email Server Comparison")
@@ -397,7 +397,9 @@ block body
                   strong= t("Notice of Non-Affiliation and Disclaimer:")
                   = " "
                   != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(platforms), arrayJoinConjunction(platforms))
-  .bg-dark.text-white.py-3.d-block.overflow-hidden(data-ignore-hash-change)
+  .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
+    data-ignore-hash-change
+  )
     .container.text-center
       .row
         .col-12

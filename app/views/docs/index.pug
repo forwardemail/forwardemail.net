@@ -11,7 +11,7 @@ block body
             h1= t("Free Email Developer Tools and Resources")
             p!= t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.")
             include ../_author
-      .row.mt-3
+      .row.mt-3.no-search
         - const tools = [];
         - const list = ["/email-api", "/free-email-webhooks", "/email-forwarding-regex-pattern-filter"];
         each item in list

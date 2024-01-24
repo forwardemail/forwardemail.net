@@ -1,0 +1,24 @@
+mixin renderCard(result)
+  - const renderText = function(str) { const text = str.length > 200 ? str.substring(0, 200) + '...' : str; return highlightWords({ text, query: ctx.query.q, matchExactly: true }).map(obj => obj.match ? `<span class="font-weight-bold text-primary text-decoration-underline">${obj.text}</span>` : obj.text).join(' '); }
+  .card.rounded-lg.mb-3
+    .card-body
+      h2.h5.card-title!= renderText(result.header || result.title)
+      if result.header
+        h3.h6.card-subtitle.mb-2.text-muted!= renderText(result.title)
+      p.card-text.mb-0!= renderText(result.content)
+      a.stretched-link(
+        title=striptags(result.header || result.title),
+        href=result.href
+      )
+        span.sr-only.mt-3= t("Read article")
+
+p.lead.text-center
+  = results.length
+  = " "
+  = results.length === 1 ? t("search result") : t("search results")
+  = " "
+  = t("for")
+  = " "
+  a.font-weight-bold(href=ctx.url)= ctx.query.q
+each result in results
+  +renderCard(result)

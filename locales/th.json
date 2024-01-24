@@ -7239,5 +7239,9 @@
   "Create this alias now": "สร้างนามแฝงนี้ทันที",
   "Create alias": "สร้างนามแฝง",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "ไม่พบผลลัพธ์สำหรับ &quot; <span class=\"notranslate\">%s</span> &quot;",
-  "Instantly create alias": "สร้างนามแฝงได้ทันที"
+  "Instantly create alias": "สร้างนามแฝงได้ทันที",
+  "Search for anything:": "ค้นหาอะไรก็ได้:",
+  "search results": "ผลการค้นหา",
+  "Read article": "อ่านบทความ",
+  "Popular Searches": "การค้นหายอดนิยม"
 }

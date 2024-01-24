@@ -7239,5 +7239,9 @@
   "Create this alias now": "지금 이 별칭 만들기",
   "Create alias": "별칭 만들기",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "&quot; <span class=\"notranslate\">%s</span> &quot;에 대한 결과를 찾을 수 없습니다.",
-  "Instantly create alias": "즉시 별칭 만들기"
+  "Instantly create alias": "즉시 별칭 만들기",
+  "Search for anything:": "무엇이든 검색하세요:",
+  "search results": "검색 결과",
+  "Read article": "기사 읽기",
+  "Popular Searches": "인기 검색어"
 }

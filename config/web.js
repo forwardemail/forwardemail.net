@@ -187,6 +187,7 @@ module.exports = (redis) => ({
           '/js/(.*)',
           '/fonts/(.*)',
           '/browserconfig.xml',
+          '/opensearch.xml',
           '/robots.txt',
           '/site.webmanifest'
         ]

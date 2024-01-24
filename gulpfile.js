@@ -712,7 +712,8 @@ async function sri() {
         '!build/**/*.{css,js}',
         '!build/fonts/**/*',
         '!build/robots.txt',
-        '!build/browserconfig.xml'
+        '!build/browserconfig.xml',
+        '!build/opensearch.xml'
       ],
       { base: config.buildBase }
     )

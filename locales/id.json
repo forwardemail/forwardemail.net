@@ -7239,5 +7239,9 @@
   "Create this alias now": "Buat alias ini sekarang",
   "Create alias": "Buat alias",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Tidak ada hasil yang ditemukan untuk &quot; <span class=\"notranslate\">%s</span> &quot;.",
-  "Instantly create alias": "Buat alias secara instan"
+  "Instantly create alias": "Buat alias secara instan",
+  "Search for anything:": "Telusuri apa saja:",
+  "search results": "Hasil Pencarian",
+  "Read article": "Baca artikel",
+  "Popular Searches": "Pencarian Populer"
 }

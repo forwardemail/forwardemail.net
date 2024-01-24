@@ -11,7 +11,7 @@ block body
             h1= t("Free Email Forwarding and Hosting Setup Guides")
             p!= t("Listed below are setup guides for email forwarding and hosting.")
             include ../_author
-      .row.mt-3
+      .row.mt-3.no-search
         - const providers = [...nsProviders];
         - providers.unshift({ name: "Send Mail As with Gmail", slug: "send-mail-as-gmail-custom-domain", video: "https://youtu.be/MEheS8gM4Xs" });
         - providers.unshift({ name: "Send Email with Custom Domain", slug: "send-email-with-custom-domain-smtp" });

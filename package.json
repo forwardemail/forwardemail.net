@@ -120,6 +120,7 @@
     "gulp-rename": "2.0.0",
     "gulp-replace": "1.1.4",
     "hasha": "5.2.2",
+    "highlight-words": "1.2.2",
     "highlight.js": "11.9.0",
     "html-entities": "2.4.0",
     "html-to-text": "8.2.1",

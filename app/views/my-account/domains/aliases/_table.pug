@@ -162,7 +162,7 @@ p.text-center.d-lg-none
         td(colspan=6)
           .alert.alert-warning.mb-0.text-center
             ul.list-inline.mb-0
-              - const str = striptags(ctx.query.q).split('@')[0].toLowerCase().trim();
+              - const str = striptags(ctx.query.q).split("@")[0].toLowerCase().trim();
               li.list-inline-item!= t('No results were found for "<span class="notranslate">%s</span>".', str)
               li.list-inline-item
                 form.ajax-form.mb-0(
@@ -171,7 +171,9 @@ p.text-center.d-lg-none
                 )
                   input(type="hidden", name="name", value=str)
                   input(type="hidden", name="recipients", value=user.email)
-                  button.btn.btn-success.font-weight-bold.text-uppercase(type="submit")
+                  button.btn.btn-success.font-weight-bold.text-uppercase(
+                    type="submit"
+                  )
                     i.fas.fa-bolt.align-middle
                     = " "
                     = t("Instantly create alias")

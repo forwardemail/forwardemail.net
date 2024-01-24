@@ -7239,5 +7239,9 @@
   "Create this alias now": "このエイリアスを今すぐ作成します",
   "Create alias": "エイリアスの作成",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "「 <span class=\"notranslate\">%s</span> 」の結果が見つかりませんでした。",
-  "Instantly create alias": "エイリアスを即座に作成"
+  "Instantly create alias": "エイリアスを即座に作成",
+  "Search for anything:": "何かを検索します:",
+  "search results": "の検索結果",
+  "Read article": "記事を読む",
+  "Popular Searches": "人気の検索"
 }

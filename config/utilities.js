@@ -14,6 +14,7 @@ const arrayJoinConjunction = require('array-join-conjunction');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
+const highlightWords = require('highlight-words').default;
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
 const isBot = require('isbot');
@@ -1062,5 +1063,6 @@ module.exports = {
   platforms,
   arrayJoinConjunction,
   convert: convertFn,
-  getServersOrClientsList
+  getServersOrClientsList,
+  highlightWords
 };

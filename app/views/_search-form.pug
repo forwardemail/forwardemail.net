@@ -1,0 +1,24 @@
+form.d-block.d-md-none(action=l("/search"), method="GET")
+  .input-group.input-group-sm
+    .input-group-prepend
+      span.input-group-text
+        i.fa.fa.fa-search
+    input#input-search.form-control.form-control-sm(type="search", name="q", value=ctx.query.q)
+    .input-group-append
+      button.btn.btn-success.btn-sm(type="submit")= t("Search")
+form.d-none.d-md-block(action=l("/search"), method="GET")
+  .input-group.input-group-lg
+    .input-group-prepend
+      span.input-group-text
+        i.fa.fa.fa-search
+    input#input-search.form-control.form-control-lg(type="search", name="q", value=ctx.query.q)
+    .input-group-append
+      button.btn.btn-success.btn-lg(type="submit")= t("Search")
+ul.list-inline.mt-3.text-center.mb-0
+  li.list-inline-item
+    strong.small
+      = t("Popular Searches")
+      = ":"
+  each str in ['DKIM', 'SPF', 'DMARC', 'IMAP', 'API']
+    li.list-inline-item
+      a.badge.badge-primary(href=l(`/search?q=${str}`))= str

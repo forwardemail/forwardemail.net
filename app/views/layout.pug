@@ -17,6 +17,15 @@ html.h-100.no-js(
         meta(name="description", content=striptags(convert(meta.description)))
       meta(name="viewport", content="width=device-width, initial-scale=1")
 
+      //- search
+      //- <https://stackoverflow.com/q/44189748>
+      link(
+        rel="search",
+        type="application/opensearchdescription+xml",
+        title="Forward Email",
+        href="/opensearch.xml"
+      )
+
       //- canonical
       link(rel="canonical", href=`${config.urls.web}${ctx.path}`)
 

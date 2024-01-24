@@ -7239,5 +7239,9 @@
   "Create this alias now": "قم بإنشاء هذا الاسم المستعار الآن",
   "Create alias": "إنشاء اسم مستعار",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "لم يتم العثور على نتائج لـ &quot; <span class=\"notranslate\">%s</span> &quot;.",
-  "Instantly create alias": "إنشاء اسم مستعار على الفور"
+  "Instantly create alias": "إنشاء اسم مستعار على الفور",
+  "Search for anything:": "البحث عن أي شيء:",
+  "search results": "نتائج البحث",
+  "Read article": "اقرأ المقال",
+  "Popular Searches": "عمليات البحث الشعبية"
 }

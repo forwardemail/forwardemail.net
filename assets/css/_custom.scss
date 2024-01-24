@@ -277,7 +277,7 @@ a, .markdown-body a {
 }
 
 .text-sans-serif {
-  font-family: $font-family-sans-serif;
+  font-family: $font-family-sans-serif !important;
 }
 
 .border-05rem {

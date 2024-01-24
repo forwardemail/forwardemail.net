@@ -1,7 +1,7 @@
 extends layout
 
 mixin renderCard(alternative)
-  .card.rounded-lg.position-relative.d-inline-block.mb-3
+  .card.rounded-lg.position-relative.d-inline-block.mb-3.no-search
     .position-absolute.w-100.text-right.lead.d-none.d-xl-block
       if alternative.name === "Forward Email"
         span.badge.badge-success.mr-3.mt-3
@@ -186,7 +186,7 @@ block body
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best private email service.', l("/"))
             else
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email service alternative.', l("/"))
-      .row
+      .row.no-search
         .col-12
           #email-service-comparison.text-center.py-3.py-md-5.mb-0
             h2
@@ -807,7 +807,7 @@ block body
                         else
                           = alternatives[1][key] ? emoji("white_check_mark") : emoji("x")
     if !comparison
-      table.table.table-hover.table-bordered.mb-0.bg-white.bg-themed(
+      table.table.table-hover.table-bordered.mb-0.bg-white.bg-themed.no-search(
         data-toggle="table",
         data-sticky-header,
         data-sticky-header-offset-y="58.61"
@@ -1179,7 +1179,7 @@ block body
                       = alternative[key] ? t("Yes") : t("No")
                     else
                       = alternative[key] ? emoji("white_check_mark") : emoji("x")
-    .container
+    .container.no-search
       .row
         .col
           h2#email-service-screenshots.text-center.py-3.py-md-5.mb-0
@@ -1240,7 +1240,9 @@ block body
                 strong= t("Notice of Non-Affiliation and Disclaimer:")
                 = " "
                 != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalalternatives.map((p) => p.name)), arrayJoinConjunction(externalalternatives.map((p) => p.name)))
-  .bg-dark.text-white.py-3.d-block.overflow-hidden(data-ignore-hash-change)
+  .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
+    data-ignore-hash-change
+  )
     .container.text-center
       .row
         .col-12

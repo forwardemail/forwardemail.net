@@ -7239,5 +7239,9 @@
   "Create this alias now": "Створіть цей псевдонім зараз",
   "Create alias": "Створити псевдонім",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Не знайдено результатів для &quot; <span class=\"notranslate\">%s</span> &quot;.",
-  "Instantly create alias": "Миттєво створити псевдонім"
+  "Instantly create alias": "Миттєво створити псевдонім",
+  "Search for anything:": "Шукати будь-що:",
+  "search results": "Результати пошуку",
+  "Read article": "Прочитати статтю",
+  "Popular Searches": "Популярні пошукові запити"
 }

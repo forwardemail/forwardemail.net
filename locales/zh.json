@@ -6932,5 +6932,9 @@
   "Create this alias now": "立即创建此别名",
   "Create alias": "创建别名",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "未找到“ <span class=\"notranslate\">%s</span> ”的结果。",
-  "Instantly create alias": "立即创建别名"
+  "Instantly create alias": "立即创建别名",
+  "Search for anything:": "搜索任何内容：",
+  "search results": "搜索结果",
+  "Read article": "阅读文章",
+  "Popular Searches": "热门搜索"
 }

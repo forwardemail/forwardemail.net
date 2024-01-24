@@ -1,0 +1,12 @@
+<!--
+ Copyright (c) Forward Email LLC
+ SPDX-License-Identifier: BUSL-1.1
+-->
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Forward Email</ShortName>
+  <Description>Search Forward Email</Description>
+  <Url type="text/html" method="GET" template="https://forwardemail.net/search?q={searchTerms}" />
+  <Image width="16" height="16" type="image/x-icon">https://forwardemail.net/favicon.ico</Image>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>https://forwardemail.net/search</moz:SearchForm>
+</OpenSearchDescription>

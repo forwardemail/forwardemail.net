@@ -7239,5 +7239,9 @@
   "Create this alias now": "Bu takma adı şimdi oluşturun",
   "Create alias": "Takma ad oluştur",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "&quot; <span class=\"notranslate\">%s</span> &quot; için sonuç bulunamadı.",
-  "Instantly create alias": "Anında takma ad oluşturun"
+  "Instantly create alias": "Anında takma ad oluşturun",
+  "Search for anything:": "Herhangi bir şeyi arayın:",
+  "search results": "Arama Sonuçları",
+  "Read article": "Makaleyi okuyun",
+  "Popular Searches": "popüler aramalar"
 }

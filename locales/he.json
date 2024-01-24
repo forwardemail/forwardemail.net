@@ -5209,5 +5209,9 @@
   "Create alias": "צור כינוי",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "לא נמצאו תוצאות עבור &quot; <span class=\"notranslate\">%s</span> &quot;.",
   "Instantly create alias": "צור באופן מיידי כינוי",
-  "Filtered for:": "מסונן עבור:"
+  "Filtered for:": "מסונן עבור:",
+  "Search for anything:": "חפש כל דבר:",
+  "search results": "תוצאות חיפוש",
+  "Read article": "קרא מאמר",
+  "Popular Searches": "חיפושים פופולריים"
 }

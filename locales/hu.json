@@ -7239,5 +7239,9 @@
   "Create this alias now": "Hozza létre ezt az aliast most",
   "Create alias": "Alias létrehozása",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Nem található találat a(z) &quot; <span class=\"notranslate\">%s</span> &quot; kifejezésre.",
-  "Instantly create alias": "Azonnal hozzon létre aliast"
+  "Instantly create alias": "Azonnal hozzon létre aliast",
+  "Search for anything:": "Keressen bármit:",
+  "search results": "Keresési eredmények",
+  "Read article": "Olvassa el a cikket",
+  "Popular Searches": "Népszerű keresések"
 }

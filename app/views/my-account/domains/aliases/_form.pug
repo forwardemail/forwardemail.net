@@ -18,7 +18,7 @@ if alias
           i.fa.fa-dice
       input#input-alias-name.form-control.border-themed(
         required,
-        value=alias ? alias.name : (domain && domain.aliases && domain.aliases.length === 0 && isSANB(ctx.query.q)) ? striptags(ctx.query.q).split('@')[0].toLowerCase().trim() : "",
+        value=alias ? alias.name : domain && domain.aliases && domain.aliases.length === 0 && isSANB(ctx.query.q) ? striptags(ctx.query.q).split("@")[0].toLowerCase().trim() : "",
         name="name",
         autocomplete="off",
         placeholder="",

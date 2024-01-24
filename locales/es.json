@@ -7237,5 +7237,9 @@
   "Create this alias now": "Crea este alias ahora",
   "Create alias": "Crear alias",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "No se encontraron resultados para &quot; <span class=\"notranslate\">%s</span> &quot;.",
-  "Instantly create alias": "Crear alias instantáneamente"
+  "Instantly create alias": "Crear alias instantáneamente",
+  "Search for anything:": "Busca cualquier cosa:",
+  "search results": "Resultados de la búsqueda",
+  "Read article": "Lee el artículo",
+  "Popular Searches": "Búsquedas populares"
 }

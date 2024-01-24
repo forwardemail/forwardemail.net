@@ -7239,5 +7239,9 @@
   "Create this alias now": "Skapa detta alias nu",
   "Create alias": "Skapa alias",
   "No results were found for \"<span class=\"notranslate\">%s</span>\".": "Inga resultat hittades för &quot; <span class=\"notranslate\">%s</span> &quot;.",
-  "Instantly create alias": "Skapa omedelbart alias"
+  "Instantly create alias": "Skapa omedelbart alias",
+  "Search for anything:": "Sök efter vad som helst:",
+  "search results": "sökresultat",
+  "Read article": "Läs artikeln",
+  "Popular Searches": "Populära sökningar"
 }

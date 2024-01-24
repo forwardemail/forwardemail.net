@@ -1,0 +1,16 @@
+extends layout
+
+block body
+  div(
+    class=results.length > 0 ? "bg-dark text-white border-bottom border-themed" : "min-vh-100 d-flex flex-column bg-dark text-white"
+  )
+    .container(class=results.length > 0 ? "py-3 py-md-4 py-lg-5" : "my-auto")
+      .row
+        .col-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3.text-center
+          h1.h3.text-sans-serif.mb-3!= t("Search for anything:")
+          include _search-form
+  if results.length > 0
+    .container.py-3.py-md-4.py-lg-5
+      .row
+        .col-12
+          include _search-results
