@@ -37,6 +37,17 @@ async function search(ctx) {
       position: 'top'
     });
 
+  const title = `${results.length} ${
+    results.length === 1
+      ? ctx.state.t('search result')
+      : ctx.state.t('search results')
+  } ${ctx.state.t('for')} "${ctx.query.q}"`;
+
+  ctx.state.meta = {
+    title,
+    description: title
+  };
+
   if (ctx.accepts('html')) return ctx.render('search', { results });
 
   return ctx.render('_search-results', { results });
