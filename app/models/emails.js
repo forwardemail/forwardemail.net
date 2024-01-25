@@ -631,6 +631,20 @@ Emails.post('save', async function (email) {
     gridFsFileId = email.message._id;
   }
 
+  // update content type and transfer encoding headers
+  headers.add(
+    'X-Original-Content-Type',
+    headers.getFirst('Content-Type') || ''
+  );
+  headers.add(
+    'X-Original-Content-Transfer-Encoding',
+    headers.getFirst('Content-Transfer-Encoding') || ''
+  );
+  headers.remove('Content-Type');
+  headers.remove('Content-Transfer-Encoding');
+  headers.add('Content-Type', 'text/plain; charset=us-ascii');
+  headers.add('Content-Transfer-Encoding', '7bit');
+
   // update the existing message stored
   email.message = Buffer.concat([
     headers.build(),
