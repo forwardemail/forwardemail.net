@@ -388,6 +388,32 @@ block body
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
 
+          //- Outbound SMTP Retention
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              h2.h6.card-header= t("Outbound SMTP Retention Period")
+              .card-body
+                +planRequired(false)
+                p.card-text
+                  != t("Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.")
+                .form-group
+                  input#input-retention-days.form-control(
+                    type="number",
+                    min=0,
+                    max=30,
+                    name="retention_days",
+                    value=domain && typeof domain.retention_days === "number" ? domain.retention_days : 0
+                  )
+                  p.form-text.small.text-black.text-themed-50!= t("Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(type="submit")= t("Save")
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=l(`/my-account/domains/${domain.name}/allowlist`),

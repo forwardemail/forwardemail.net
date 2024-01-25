@@ -3,7 +3,11 @@ form.d-block.d-md-none(action=l("/search"), method="GET")
     .input-group-prepend
       span.input-group-text
         i.fa.fa.fa-search
-    input#input-search.form-control.form-control-sm(type="search", name="q", value=ctx.query.q)
+    input#input-search.form-control.form-control-sm(
+      type="search",
+      name="q",
+      value=ctx.query.q
+    )
     .input-group-append
       button.btn.btn-success.btn-sm(type="submit")= t("Search")
 form.d-none.d-md-block(action=l("/search"), method="GET")
@@ -11,7 +15,11 @@ form.d-none.d-md-block(action=l("/search"), method="GET")
     .input-group-prepend
       span.input-group-text
         i.fa.fa.fa-search
-    input#input-search.form-control.form-control-lg(type="search", name="q", value=ctx.query.q)
+    input#input-search.form-control.form-control-lg(
+      type="search",
+      name="q",
+      value=ctx.query.q
+    )
     .input-group-append
       button.btn.btn-success.btn-lg(type="submit")= t("Search")
 ul.list-inline.mt-3.text-center.mb-0

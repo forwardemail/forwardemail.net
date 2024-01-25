@@ -7243,5 +7243,18 @@
   "Search for anything:": "Telusuri apa saja:",
   "search results": "Hasil Pencarian",
   "Read article": "Baca artikel",
-  "Popular Searches": "Pencarian Populer"
+  "Popular Searches": "Pencarian Populer",
+  "Outbound SMTP Retention Period": "Periode Retensi SMTP Keluar",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Setelah email SMTP keluar berhasil terkirim atau mengalami error permanen, kami akan menyunting dan menghapus isi pesan setelah jumlah hari penyimpanan yang dikonfigurasi di bawah.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Masukkan angka antara 0-30 yang sesuai dengan jumlah hari retensi. Nol menunjukkan bahwa pesan tersebut akan segera dihapus.",
+  "Retention days is more than maximum allowed value (30).": "Hari retensi lebih dari nilai maksimum yang diperbolehkan (30).",
+  "Integer between": "Bilangan bulat antara",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "yang sesuai dengan jumlah hari retensi untuk menyimpan email SMTP keluar setelah berhasil terkirim atau mengalami kesalahan permanen. Defaultnya adalah",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", yang berarti email SMTP keluar akan segera dihapus dan disunting demi keamanan Anda.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Perhatikan bahwa setelah email berhasil terkirim atau mengalami kesalahan permanen, maka kami akan menyunting dan menghapus isi pesan.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Jika Anda ingin mengonfigurasi isi pesan email SMTP keluar agar dipertahankan lebih lama dari default 0 hari (setelah pengiriman berhasil atau kesalahan permanen), buka Pengaturan Lanjutan untuk domain Anda dan masukkan nilai di antara",
+  ". Some users enjoy using the": ". Beberapa pengguna senang menggunakan",
+  "My Account > Emails": "Akun Saya > Email",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "fitur pratinjau untuk melihat bagaimana email mereka dirender, oleh karena itu kami mendukung periode penyimpanan yang dapat dikonfigurasi.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Dapatkan <span class=\"notranslate\">you@domain.com</span>"
 }

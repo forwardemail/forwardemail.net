@@ -5215,5 +5215,18 @@
   "Read article": "קרא מאמר",
   "Popular Searches": "חיפושים פופולריים",
   "中文 (zhōngwén)": "סינית (zhōngwén)",
-  "Čeština": "צ'כית"
+  "Čeština": "צ'כית",
+  "Outbound SMTP Retention Period": "תקופת שמירת SMTP יוצאת",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "ברגע שהודעת דוא\"ל SMTP יוצאת נשלחה בהצלחה או תופיע שגיאות לצמיתות, אנו נבטל וננקה את גוף ההודעה לאחר מספר ימי השמירה שהוגדר להלן.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "הזן מספר בין 0-30 המתאים למספר הימים לשמירה. אפס מציין שההודעה תוסר מיד.",
+  "Retention days is more than maximum allowed value (30).": "ימי השמירה הם יותר מהערך המרבי המותר (30).",
+  "Integer between": "מספר שלם בין",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "שמתאים למספר ימי השמירה לאחסון הודעות דוא\"ל SMTP יוצאות לאחר מסירה מוצלחת או שגיאה קבועה. ברירת מחדל ל",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", מה שאומר שהודעות דוא\"ל SMTP יוצאות נמחקות ומבוטלות מיד למען אבטחתך.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "שים לב שברגע שהודעת אימייל נשלחה בהצלחה או תופיע שגיאות לצמיתות, אנו נבטל וננקה את גוף ההודעה.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "אם תרצה להגדיר את גוף הודעת הדואר האלקטרוני היוצא שלך מסוג SMTP כך שיישמר יותר מברירת המחדל של 0 ימים (לאחר מסירה מוצלחת או שגיאה קבועה), עבור אל הגדרות מתקדמות עבור הדומיין שלך והזן ערך בין",
+  ". Some users enjoy using the": ". חלק מהמשתמשים נהנים להשתמש ב-",
+  "My Account > Emails": "החשבון שלי > אימיילים",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "תכונת תצוגה מקדימה כדי לראות כיצד כתובות האימייל שלהם מעובדות, לכן אנו תומכים בתקופת שמירה הניתנת להגדרה.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "קבל <span class=\"notranslate\">you@domain.com</span>"
 }

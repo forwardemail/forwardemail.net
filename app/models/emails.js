@@ -13,6 +13,7 @@ const SpamScanner = require('spamscanner');
 const _ = require('lodash');
 const addressParser = require('nodemailer/lib/addressparser');
 const bytes = require('bytes');
+const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
@@ -52,8 +53,6 @@ const HUMAN_MAX_BYTES = '50MB';
 const MAX_BYTES = bytes(HUMAN_MAX_BYTES);
 const BYTES_15MB = bytes('15MB');
 
-// TODO: bucket.delete(email.message); when we delete 30d+ older messages
-
 const transporter = nodemailer.createTransport({
   streamTransport: true,
   buffer: true,
@@ -69,6 +68,10 @@ const scanner = new SpamScanner({
 
 const Emails = new mongoose.Schema(
   {
+    is_redacted: {
+      type: Boolean,
+      default: false
+    },
     //
     // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
     // <https://github.com/Automattic/mongoose/blob/b2af0fe4a74aa39eaf3088447b4bb8feeab49342/test/timestamps.test.js#L123-L137>
@@ -225,6 +228,14 @@ const Emails = new mongoose.Schema(
     }
   }
 );
+
+Emails.virtual('is_redacting')
+  .get(function () {
+    return this.__is_redacting;
+  })
+  .set(function (isRedacting) {
+    this.__is_redacting = boolean(isRedacting);
+  });
 
 Emails.plugin(mongooseCommonPlugin, {
   object: 'email',
@@ -519,7 +530,7 @@ Emails.pre('save', async function (next) {
 Emails.pre('save', async function (next) {
   try {
     // immutable message (to edit a message you need to create a new email)
-    if (!this.isNew) return next();
+    if (!this.isNew && !this.is_redacting) return next();
 
     // ensure message exists and is a buffer
     if (!Buffer.isBuffer(this.message))
@@ -548,6 +559,99 @@ Emails.pre('save', async function (next) {
     next();
   } catch (err) {
     next(err);
+  }
+});
+
+// if message was deleted then cleanup grid fs
+Emails.post('deleteOne', async function (email) {
+  if (
+    !email?.message?._id ||
+    !mongoose.isObjectIdOrHexString(email.message._id)
+  )
+    return;
+  try {
+    // cleanup grid fs
+    const bucket = new mongoose.mongo.GridFSBucket(email.constructor.db);
+    await bucket.delete(email.message._id);
+  } catch (err) {
+    err.email = email;
+    logger.error(err);
+  }
+});
+
+//
+// if the message was successfully sent then redact the message
+// and delete/cleanup gridfs storage if it was used
+//
+Emails.post('save', async function (email) {
+  if (
+    email.is_redacted ||
+    ['pending', 'queued', 'deferred'].includes(email.status)
+  )
+    return;
+
+  const domain = await Domains.findById(email.domain);
+  if (!domain)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST', i18n.config.defaultLocale)
+    );
+
+  // return early if it hasn't passed the user's retention days yet
+  if (
+    typeof domain.retention_days === 'number' &&
+    Number.isFinite(domain.retention_days) &&
+    domain.retention_days > 0 &&
+    dayjs(email.created_at)
+      .add(domain.retention_days, 'days')
+      .toDate()
+      .getTime() > Date.now()
+  )
+    return;
+
+  // redact the body but retain headers (so our team can curate spam/abuse)
+  const splitter = new Splitter();
+  const joiner = new Joiner();
+  let headers;
+  splitter.on('data', (data) => {
+    if (data.type !== 'node' || data.root !== true) return;
+    const headerLines = Buffer.concat(data._headersLines, data._headerlen);
+    headers = new Headers(headerLines, { Iconv });
+  });
+  const existingMessage = await email.constructor.getMessage(email.message);
+  await getStream.buffer(
+    intoStream(existingMessage).pipe(splitter).pipe(joiner)
+  );
+
+  // store reference to old message grid fs id
+  let gridFsFileId;
+  if (
+    email?.message?._id &&
+    mongoose.isObjectIdOrHexString(email.message._id)
+  ) {
+    gridFsFileId = email.message._id;
+  }
+
+  // update the existing message stored
+  email.message = Buffer.concat([
+    headers.build(),
+    Buffer.from(
+      'This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.'
+    )
+  ]);
+  email.is_redacting = true; // virtual helper to rewrite message
+  email.is_redacted = true; // so this isn't a recursive loop on save() call
+  await email.save();
+
+  // delete the old message stored
+  if (gridFsFileId) {
+    try {
+      // cleanup grid fs
+      const bucket = new mongoose.mongo.GridFSBucket(email.constructor.db);
+      await bucket.delete(gridFsFileId);
+    } catch (err) {
+      err.email = email;
+      logger.error(err);
+    }
   }
 });
 

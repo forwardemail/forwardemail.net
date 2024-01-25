@@ -202,6 +202,13 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  retention_days: {
+    type: Number,
+    min: 0,
+    max: 30,
+    default: 0
+  },
+
   // booleans for lookup optimizations
   has_regex: { type: Boolean, default: true },
   has_catchall: { type: Boolean, default: true },

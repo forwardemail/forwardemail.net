@@ -7243,5 +7243,18 @@
   "Search for anything:": "البحث عن أي شيء:",
   "search results": "نتائج البحث",
   "Read article": "اقرأ المقال",
-  "Popular Searches": "عمليات البحث الشعبية"
+  "Popular Searches": "عمليات البحث الشعبية",
+  "Outbound SMTP Retention Period": "فترة الاحتفاظ بـ SMTP الصادرة",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "بمجرد تسليم بريد SMTP الصادر بنجاح أو حدوث أخطاء دائمة، فسنقوم بتنقيح نص الرسالة وإزالته بعد عدد أيام الاحتفاظ التي تم تكوينها أدناه.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "أدخل رقمًا بين 0-30 يتوافق مع عدد أيام الاحتفاظ. يشير الصفر إلى أنه ستتم إزالة الرسالة على الفور.",
+  "Retention days is more than maximum allowed value (30).": "أيام الاحتفاظ أكثر من الحد الأقصى للقيمة المسموح بها (30).",
+  "Integer between": "عدد صحيح بين",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "يتوافق مع عدد أيام الاحتفاظ لتخزين رسائل البريد الإلكتروني SMTP الصادرة بمجرد تسليمها بنجاح أو حدوث خطأ دائم فيها. الافتراضات ل",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "، مما يعني أنه تتم إزالة رسائل البريد الإلكتروني SMTP الصادرة وتنقيحها على الفور من أجل أمانك.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "لاحظ أنه بمجرد تسليم رسالة البريد الإلكتروني بنجاح أو حدوث أخطاء دائمة، فسنقوم بتنقيح نص الرسالة وإزالته.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "إذا كنت ترغب في تكوين نص رسالة البريد الإلكتروني SMTP الصادرة ليتم الاحتفاظ بها لفترة أطول من 0 يوم (بعد التسليم بنجاح أو حدوث خطأ دائم)، فانتقل إلى الإعدادات المتقدمة للمجال الخاص بك وأدخل قيمة بين",
+  ". Some users enjoy using the": ". يستمتع بعض المستخدمين باستخدام",
+  "My Account > Emails": "حسابي > رسائل البريد الإلكتروني",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "ميزة المعاينة لمعرفة كيفية عرض رسائل البريد الإلكتروني الخاصة بهم، وبالتالي فإننا ندعم فترة احتفاظ قابلة للتكوين.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "احصل على <span class=\"notranslate\">you@domain.com</span>"
 }

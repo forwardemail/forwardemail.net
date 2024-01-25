@@ -7243,5 +7243,18 @@
   "Search for anything:": "무엇이든 검색하세요:",
   "search results": "검색 결과",
   "Read article": "기사 읽기",
-  "Popular Searches": "인기 검색어"
+  "Popular Searches": "인기 검색어",
+  "Outbound SMTP Retention Period": "아웃바운드 SMTP 보관 기간",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "아웃바운드 SMTP 이메일이 성공적으로 전달되거나 영구적으로 오류가 발생하면 아래에 구성된 보존 일수 이후 메시지 본문을 수정하고 제거합니다.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "보존 일수에 해당하는 0~30 사이의 숫자를 입력합니다. 0은 메시지가 즉시 제거됨을 나타냅니다.",
+  "Retention days is more than maximum allowed value (30).": "보존 일수가 최대 허용 값(30)을 초과합니다.",
+  "Integer between": "사이의 정수",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "이는 성공적으로 전달되었거나 영구적으로 오류가 발생한 아웃바운드 SMTP 이메일을 저장하는 보존 일수에 해당합니다. 기본값은",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "즉, 보안을 위해 아웃바운드 SMTP 이메일이 즉시 제거되고 수정된다는 의미입니다.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "이메일이 성공적으로 전달되거나 영구적으로 오류가 발생하면 메시지 본문을 수정하고 제거합니다.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "아웃바운드 SMTP 이메일 메시지 본문이 기본값인 0일(성공적으로 전달되거나 영구적인 오류가 발생한 후)보다 오래 보관되도록 구성하려면 도메인의 고급 설정으로 이동하여 사이의 값을 입력하세요.",
+  ". Some users enjoy using the": ". 일부 사용자는 다음을 즐겨 사용합니다.",
+  "My Account > Emails": "내 계정 > 이메일",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "미리보기 기능을 통해 이메일이 어떻게 렌더링되는지 확인할 수 있으므로 구성 가능한 보존 기간을 지원합니다.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> 받기"
 }

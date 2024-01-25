@@ -6281,5 +6281,18 @@
   "Search for anything:": "Nach etwas suchen:",
   "search results": "Suchergebnisse",
   "Read article": "Artikel lesen",
-  "Popular Searches": "beliebte Suchanfragen"
+  "Popular Searches": "beliebte Suchanfragen",
+  "Outbound SMTP Retention Period": "Aufbewahrungsfrist für ausgehenden SMTP",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Sobald eine ausgehende SMTP-E-Mail erfolgreich zugestellt wurde oder dauerhaft fehlerhaft ist, schwärzen und löschen wir den Nachrichtentext nach der unten konfigurierten Anzahl von Aufbewahrungstagen.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Geben Sie eine Zahl zwischen 0 und 30 ein, die der Anzahl der Tage für die Aufbewahrung entspricht. Null bedeutet, dass die Nachricht sofort entfernt wird.",
+  "Retention days is more than maximum allowed value (30).": "Die Aufbewahrungstage liegen über dem maximal zulässigen Wert (30).",
+  "Integer between": "Ganzzahl zwischen",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "Dies entspricht der Anzahl der Aufbewahrungstage für die Speicherung ausgehender SMTP-E-Mails nach erfolgreicher Zustellung oder dauerhaftem Fehler. Standardmäßig ist",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "Das bedeutet, dass ausgehende SMTP-E-Mails zu Ihrer Sicherheit sofort gelöscht und geschwärzt werden.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Beachten Sie, dass wir den Nachrichtentext schwärzen und löschen, sobald eine E-Mail erfolgreich zugestellt wurde oder dauerhaft fehlerhaft ist.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Wenn Sie den Nachrichtentext Ihrer ausgehenden SMTP-E-Mail so konfigurieren möchten, dass er länger als standardmäßig 0 Tage aufbewahrt wird (nach erfolgreicher Zustellung oder dauerhaftem Fehler), gehen Sie zu den erweiterten Einstellungen für Ihre Domain und geben Sie einen Wert zwischen ein",
+  ". Some users enjoy using the": ". Einige Benutzer verwenden gerne das",
+  "My Account > Emails": "Mein Konto > E-Mails",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "Vorschaufunktion, um zu sehen, wie ihre E-Mails gerendert werden. Daher unterstützen wir einen konfigurierbaren Aufbewahrungszeitraum.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Holen Sie sich <span class=\"notranslate\">you@domain.com</span>"
 }

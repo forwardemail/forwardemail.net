@@ -7243,5 +7243,18 @@
   "Search for anything:": "何かを検索します:",
   "search results": "の検索結果",
   "Read article": "記事を読む",
-  "Popular Searches": "人気の検索"
+  "Popular Searches": "人気の検索",
+  "Outbound SMTP Retention Period": "アウトバウンド SMTP の保存期間",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "アウトバウンド SMTP 電子メールが正常に配信されるか、永続的なエラーが発生すると、以下で設定された保存日数が経過した後、メッセージ本文が編集され、削除されます。",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "保持日数に対応する 0 ～ 30 の数値を入力します。ゼロは、メッセージがすぐに削除されることを示します。",
+  "Retention days is more than maximum allowed value (30).": "保存日数が最大許容値 (30) を超えています。",
+  "Integer between": "間の整数",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "これは、送信 SMTP 電子メールが正常に配信されたか、永続的にエラーが発生した後に保存する保存日数に相当します。デフォルトは",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "これは、セキュリティのために、送信 SMTP 電子メールがすぐに削除され、編集されることを意味します。",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "電子メールが正常に配信されるか、永久的なエラーが発生すると、メッセージ本文が編集され、削除されることに注意してください。",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "送信 SMTP 電子メール メッセージ本文をデフォルトの 0 日 (正常に配信または永続的なエラーが発生した後) よりも長く保持するように構成したい場合は、ドメインの詳細設定に移動し、次の範囲の値を入力します。",
+  ". Some users enjoy using the": "。一部のユーザーは、",
+  "My Account > Emails": "マイアカウント > メール",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "プレビュー機能を使用すると、電子メールがどのようにレンダリングされるかを確認できるため、構成可能な保存期間がサポートされます。",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span>を取得してください"
 }

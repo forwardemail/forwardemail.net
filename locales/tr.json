@@ -7243,5 +7243,18 @@
   "Search for anything:": "Herhangi bir şeyi arayın:",
   "search results": "Arama Sonuçları",
   "Read article": "Makaleyi okuyun",
-  "Popular Searches": "popüler aramalar"
+  "Popular Searches": "popüler aramalar",
+  "Outbound SMTP Retention Period": "Giden SMTP Saklama Süresi",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Giden bir SMTP e-postası başarılı bir şekilde teslim edildiğinde veya kalıcı hatalar oluştuğunda, aşağıda yapılandırılan saklama günlerinin sayısı sonrasında ileti gövdesini düzeltip temizleyeceğiz.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Saklama günlerinin sayısına karşılık gelen 0-30 arasında bir sayı girin. Sıfır, mesajın hemen kaldırılacağını belirtir.",
+  "Retention days is more than maximum allowed value (30).": "Saklama gün sayısı izin verilen maksimum değerden (30) fazla.",
+  "Integer between": "Arasındaki tamsayı",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "Bu, başarılı bir şekilde teslim edildiğinde veya kalıcı olarak hata verildiğinde, giden SMTP e-postalarının saklanacağı saklama günlerinin sayısına karşılık gelir. Varsayılanlar",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "Bu, güvenliğiniz için giden SMTP e-postalarının derhal silineceği ve düzenleneceği anlamına gelir.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Bir e-posta başarılı bir şekilde teslim edildiğinde veya kalıcı hatalar oluştuğunda, mesaj metnini düzenleyip temizleyeceğimizi unutmayın.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Giden SMTP e-posta iletinizin gövdesini varsayılan 0 günden daha uzun süre tutulacak şekilde yapılandırmak istiyorsanız (başarılı teslimat veya kalıcı hata sonrasında), alan adınız için Gelişmiş Ayarlar'a gidin ve arasında bir değer girin.",
+  ". Some users enjoy using the": ". Bazı kullanıcılar bu uygulamayı kullanmaktan hoşlanırlar.",
+  "My Account > Emails": "Hesabım > E-postalar",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "e-postalarının nasıl oluşturulduğunu görmek için önizleme özelliği; bu nedenle, yapılandırılabilir bir saklama süresini destekliyoruz.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> edinin"
 }

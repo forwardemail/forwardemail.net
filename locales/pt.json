@@ -7243,5 +7243,18 @@
   "Search for anything:": "Pesquise qualquer coisa:",
   "search results": "Procurar Resultados",
   "Read article": "Leia o artigo",
-  "Popular Searches": "Pesquisas populares"
+  "Popular Searches": "Pesquisas populares",
+  "Outbound SMTP Retention Period": "Período de retenção de SMTP de saída",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Depois que um e-mail SMTP de saída for entregue com êxito ou apresentar erros permanentes, redigiremos e limparemos o corpo da mensagem após o número de dias de retenção configurado abaixo.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Insira um número entre 0 e 30 que corresponda ao número de dias de retenção. Zero indica que a mensagem será removida imediatamente.",
+  "Retention days is more than maximum allowed value (30).": "Os dias de retenção são superiores ao valor máximo permitido (30).",
+  "Integer between": "Número inteiro entre",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "que corresponde ao número de dias de retenção para armazenar e-mails SMTP de saída, uma vez entregues com êxito ou com erros permanentes. O padrão é",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", o que significa que os e-mails SMTP de saída são eliminados e editados imediatamente para sua segurança.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Observe que quando um e-mail for entregue com sucesso ou apresentar erros permanentes, redigiremos e limparemos o corpo da mensagem.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Se desejar configurar o corpo da mensagem de e-mail SMTP de saída para ser retido por mais tempo do que o padrão de 0 dias (após entrega bem-sucedida ou erro permanente), vá para Configurações avançadas do seu domínio e insira um valor entre",
+  ". Some users enjoy using the": ". Alguns usuários gostam de usar o",
+  "My Account > Emails": "Minha conta > E-mails",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "recurso de visualização para ver como seus e-mails são renderizados, portanto, oferecemos suporte a um período de retenção configurável.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Obtenha <span class=\"notranslate\">you@domain.com</span>"
 }

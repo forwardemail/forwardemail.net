@@ -6981,5 +6981,18 @@
   "Search for anything:": "Søg efter hvad som helst:",
   "search results": "Søgeresultater",
   "Read article": "Læs artiklen",
-  "Popular Searches": "Populære søgninger"
+  "Popular Searches": "Populære søgninger",
+  "Outbound SMTP Retention Period": "Udgående SMTP-opbevaringsperiode",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Når en udgående SMTP-e-mail er leveret med succes eller permanent fejl, vil vi fjerne og slette meddelelsesteksten efter det antal dages opbevaring, der er konfigureret nedenfor.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Indtast et tal mellem 0-30, der svarer til antallet af dage for opbevaring. Nul angiver, at meddelelsen vil blive fjernet med det samme.",
+  "Retention days is more than maximum allowed value (30).": "Retentionsdage er mere end den maksimalt tilladte værdi (30).",
+  "Integer between": "Heltal mellem",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "der svarer til antallet af opbevaringsdage til at gemme udgående SMTP-e-mails, når de er leveret med succes eller permanent fejlbehæftet. Standard til",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", hvilket betyder, at udgående SMTP-e-mails slettes og slettes med det samme for din sikkerhed.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Bemærk, at når en e-mail er leveret med succes eller permanent fejl, så vil vi fjerne og slette meddelelsesteksten.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Hvis du gerne vil konfigurere din udgående SMTP-e-mail-beskedtekst til at blive bevaret længere end standardværdien på 0 dage (efter vellykket levering eller permanent fejl), skal du gå til Avancerede indstillinger for dit domæne og indtaste en værdi mellem",
+  ". Some users enjoy using the": ". Nogle brugere nyder at bruge",
+  "My Account > Emails": "Min konto > E-mails",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "preview-funktion for at se, hvordan deres e-mails gengives, derfor understøtter vi en konfigurerbar opbevaringsperiode.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Få <span class=\"notranslate\">you@domain.com</span>"
 }

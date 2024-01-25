@@ -4715,5 +4715,18 @@
   "Read article": "Đọc bài viết",
   "Popular Searches": "Tìm kiếm phổ biến",
   "中文 (zhōngwén)": "Tiếng Trung (zhōngwén)",
-  "Čeština": "tiếng Séc"
+  "Čeština": "tiếng Séc",
+  "Outbound SMTP Retention Period": "Thời gian lưu giữ SMTP gửi đi",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Sau khi email SMTP gửi đi được gửi thành công hoặc bị lỗi vĩnh viễn, chúng tôi sẽ sắp xếp lại và xóa nội dung thư sau số ngày lưu giữ được định cấu hình bên dưới.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Nhập một số từ 0-30 tương ứng với số ngày lưu giữ. Số 0 cho biết tin nhắn sẽ bị xóa ngay lập tức.",
+  "Retention days is more than maximum allowed value (30).": "Số ngày lưu giữ lớn hơn giá trị tối đa cho phép (30).",
+  "Integer between": "Số nguyên giữa",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "tương ứng với số ngày lưu giữ để lưu trữ các email SMTP gửi đi sau khi được gửi thành công hoặc bị lỗi vĩnh viễn. Mặc định là",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", điều đó có nghĩa là các email SMTP gửi đi sẽ bị xóa và xử lý lại ngay lập tức để bảo mật cho bạn.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Lưu ý rằng sau khi email được gửi thành công hoặc bị lỗi vĩnh viễn, chúng tôi sẽ biên tập lại và xóa nội dung thư.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Nếu bạn muốn định cấu hình nội dung thư email SMTP gửi đi của mình để được lưu giữ lâu hơn mặc định là 0 ngày (sau khi gửi thành công hoặc lỗi vĩnh viễn), hãy đi tới Cài đặt nâng cao cho miền của bạn và nhập giá trị trong khoảng",
+  ". Some users enjoy using the": ". Một số người dùng thích sử dụng",
+  "My Account > Emails": "Tài khoản của tôi > Email",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "tính năng xem trước để xem email của họ được hiển thị như thế nào, do đó chúng tôi hỗ trợ khoảng thời gian lưu giữ có thể định cấu hình.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Nhận <span class=\"notranslate\">you@domain.com</span>"
 }

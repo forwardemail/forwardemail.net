@@ -33,11 +33,13 @@ graceful.listen();
 (async () => {
   await setupMongoose(logger);
 
+  // TODO: move bucket to root
+  const bucket = new mongoose.mongo.GridFSBucket(Emails.db);
+
   try {
     for await (const email of Emails.find({
       created_at: { $lt: Date.now() - ms(config.emailRetention) }
     })
-      .select('_id')
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
@@ -49,7 +51,63 @@ graceful.listen();
           }
         );
       } catch (err) {
+        err.email = email;
         logger.error(err);
+      }
+
+      // we already have a post delete hook
+      // but this is an additional safeguard
+      if (
+        email?.message?._id &&
+        mongoose.isObjectIdOrHexString(email.message._id)
+      ) {
+        try {
+          // message: {
+          //    _id: ObjectId('xxxxxxx'),
+          //    length: 43396560,
+          //    chunkSize: 261120,
+          //    uploadDate: ISODate('xxxxxx'),
+          //    filename: 'xxxxxxx.eml',
+          //    contentType: 'message/rfc822'
+          //  },
+          await bucket.delete(email.message._id);
+        } catch (err) {
+          err.email = email;
+          logger.error(err);
+        }
+      }
+    }
+
+    // delete files and chunks that are > 60 days old
+    // (safeguard in case emails removed but chunks and files weren't)
+    // (while still supporting scheduled date sending, e.g. 30 days out)
+    for await (const file of Emails.db.collection('fs.files').find({})) {
+      if (new Date(file.uploadDate).getTime() < Date.now() - ms('60d')) {
+        // remove it and delete from bucket
+        try {
+          await bucket.delete(file._id);
+        } catch (err) {
+          err.file = file;
+          logger.error(err);
+        }
+      }
+    }
+
+    // delete chunks without references to files
+    for await (const chunk of Emails.db.collection('fs.chunks').find({})) {
+      const count = await Emails.db.collection('fs.files').countDocuments({
+        _id: chunk.files_id
+      });
+      if (count === 0) {
+        // delete this chunk
+        try {
+          await Emails.db.collection('fs.chunks').deleteOne({
+            _id: chunk._id
+          });
+        } catch (err) {
+          err.chunk = chunk;
+          logger.error(err);
+        }
       }
     }
   } catch (err) {

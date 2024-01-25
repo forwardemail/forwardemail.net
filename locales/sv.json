@@ -7243,5 +7243,18 @@
   "Search for anything:": "Sök efter vad som helst:",
   "search results": "sökresultat",
   "Read article": "Läs artikeln",
-  "Popular Searches": "Populära sökningar"
+  "Popular Searches": "Populära sökningar",
+  "Outbound SMTP Retention Period": "Utgående SMTP-lagringsperiod",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "När ett utgående SMTP-e-postmeddelande har levererats eller permanent uppstår fel, kommer vi att redigera och rensa meddelandetexten efter det antal dagars lagring som konfigurerats nedan.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Ange ett tal mellan 0-30 som motsvarar antalet dagar för lagring. Noll anger att meddelandet kommer att tas bort omedelbart.",
+  "Retention days is more than maximum allowed value (30).": "Retentionsdagar är fler än det högsta tillåtna värdet (30).",
+  "Integer between": "Heltal mellan",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "som motsvarar antalet lagringsdagar för att lagra utgående SMTP-e-postmeddelanden när de väl har levererats eller blivit permanenta felaktiga. Standard till",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", vilket innebär att utgående SMTP-e-postmeddelanden rensas och redigeras omedelbart för din säkerhet.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Observera att när ett e-postmeddelande väl har levererats eller permanent uppstår fel kommer vi att redigera och rensa meddelandetexten.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Om du vill konfigurera ditt utgående SMTP-e-postmeddelande så att det behålls längre än standardvärdet på 0 dagar (efter framgångsrik leverans eller permanent fel), gå sedan till Avancerade inställningar för din domän och ange ett värde mellan",
+  ". Some users enjoy using the": ". Vissa användare tycker om att använda",
+  "My Account > Emails": "Mitt konto > E-post",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "förhandsgranskningsfunktionen för att se hur deras e-postmeddelanden renderas, därför stöder vi en konfigurerbar lagringsperiod.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Skaffa <span class=\"notranslate\">you@domain.com</span>"
 }

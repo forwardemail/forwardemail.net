@@ -7090,5 +7090,18 @@
   "Search for anything:": "Etsi mitä tahansa:",
   "search results": "Hakutulokset",
   "Read article": "Lue artikkeli",
-  "Popular Searches": "Suositut haut"
+  "Popular Searches": "Suositut haut",
+  "Outbound SMTP Retention Period": "Lähtevän SMTP:n säilytysjakso",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Kun lähtevä SMTP-sähköposti on toimitettu onnistuneesti tai siinä on pysyvä virhe, poistamme ja tyhjennämme viestin tekstin alla määritetyn säilytyspäivien jälkeen.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Anna numero väliltä 0–30, joka vastaa säilytyspäivien määrää. Nolla tarkoittaa, että viesti poistetaan välittömästi.",
+  "Retention days is more than maximum allowed value (30).": "Säilytyspäiviä on suurempi kuin suurin sallittu arvo (30).",
+  "Integer between": "Kokonaisluku välillä",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "joka vastaa lähtevien SMTP-sähköpostien säilytyspäivien määrää, kun ne on toimitettu onnistuneesti tai niissä on pysyvä virhe. Oletuksena",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", mikä tarkoittaa, että lähtevät SMTP-sähköpostit tyhjennetään ja poistetaan välittömästi turvallisuutesi vuoksi.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Huomaa, että kun sähköposti on toimitettu onnistuneesti tai siinä on pysyvästi virheitä, poistamme ja tyhjennämme viestin tekstin.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Jos haluat määrittää lähtevän SMTP-sähköpostiviestin tekstiosan säilytettäväksi pidempään kuin oletusarvo 0 päivää (onnistuneen toimituksen tai pysyvän virheen jälkeen), siirry verkkotunnuksesi Lisäasetuksiin ja anna arvo välillä",
+  ". Some users enjoy using the": ". Jotkut käyttäjät nauttivat sen käytöstä",
+  "My Account > Emails": "Oma tili > Sähköpostit",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "esikatseluominaisuus nähdäksesi, kuinka heidän sähköpostinsa hahmonnetaan, joten tuemme määritettävää säilytysaikaa.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Hanki <span class=\"notranslate\">you@domain.com</span>"
 }

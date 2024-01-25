@@ -7243,5 +7243,18 @@
   "Search for anything:": "ค้นหาอะไรก็ได้:",
   "search results": "ผลการค้นหา",
   "Read article": "อ่านบทความ",
-  "Popular Searches": "การค้นหายอดนิยม"
+  "Popular Searches": "การค้นหายอดนิยม",
+  "Outbound SMTP Retention Period": "ระยะเวลาการเก็บรักษา SMTP ขาออก",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "เมื่อส่งอีเมล SMTP ขาออกสำเร็จหรือมีข้อผิดพลาดอย่างถาวร เราจะแก้ไขและล้างเนื้อหาข้อความหลังจากครบจำนวนวันของการเก็บรักษาที่กำหนดค่าไว้ด้านล่าง",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "ป้อนตัวเลขระหว่าง 0-30 ที่ตรงกับจำนวนวันที่จะเก็บรักษา ศูนย์ระบุว่าข้อความจะถูกลบออกทันที",
+  "Retention days is more than maximum allowed value (30).": "วันเก็บรักษามากกว่าค่าสูงสุดที่อนุญาต (30)",
+  "Integer between": "จำนวนเต็มระหว่าง",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "ที่สอดคล้องกับจำนวนวันเก็บรักษาเพื่อจัดเก็บอีเมล SMTP ขาออกเมื่อส่งสำเร็จหรือเกิดข้อผิดพลาดถาวร ค่าเริ่มต้นเป็น",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "ซึ่งหมายความว่าอีเมล SMTP ขาออกจะถูกล้างและแก้ไขทันทีเพื่อความปลอดภัยของคุณ",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "โปรดทราบว่าเมื่อส่งอีเมลสำเร็จหรือมีข้อผิดพลาดอย่างถาวร เราจะแก้ไขและล้างเนื้อหาข้อความ",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "หากคุณต้องการกำหนดค่าเนื้อหาข้อความอีเมล SMTP ขาออกให้เก็บไว้นานกว่าค่าเริ่มต้น 0 วัน (หลังจากจัดส่งสำเร็จหรือมีข้อผิดพลาดถาวร) ให้ไปที่การตั้งค่าขั้นสูงสำหรับโดเมนของคุณแล้วป้อนค่าระหว่าง",
+  ". Some users enjoy using the": ". ผู้ใช้บางคนสนุกกับการใช้",
+  "My Account > Emails": "บัญชีของฉัน > อีเมล",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "คุณสมบัติแสดงตัวอย่างเพื่อดูว่าอีเมลของพวกเขาแสดงผลอย่างไร ดังนั้นเราจึงรองรับระยะเวลาการเก็บรักษาที่กำหนดค่าได้",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "รับ <span class=\"notranslate\">you@domain.com</span>"
 }

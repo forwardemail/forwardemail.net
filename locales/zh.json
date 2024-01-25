@@ -6936,5 +6936,18 @@
   "Search for anything:": "搜索任何内容：",
   "search results": "搜索结果",
   "Read article": "阅读文章",
-  "Popular Searches": "热门搜索"
+  "Popular Searches": "热门搜索",
+  "Outbound SMTP Retention Period": "出站 SMTP 保留期",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "一旦出站 SMTP 电子邮件成功传送或永久错误，我们将在下面配置的保留天数后编辑并清除邮件正文。",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "输入 0-30 之间的数字，该数字对应于保留天数。零表示该消息将被立即删除。",
+  "Retention days is more than maximum allowed value (30).": "保留天数超过最大允许值 (30)。",
+  "Integer between": "之间的整数",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "对应于成功发送或永久出错后存储出站 SMTP 电子邮件的保留天数。默认为",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": "，这意味着为了您的安全，出站 SMTP 电子邮件将被立即清除和编辑。",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "请注意，一旦电子邮件成功发送或永久错误，我们将编辑并清除邮件正文。",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "如果您希望将出站 SMTP 电子邮件正文的保留时间配置为长于默认值 0 天（成功发送或出现永久错误后），请转至您的域的高级设置并输入介于",
+  ". Some users enjoy using the": "。一些用户喜欢使用",
+  "My Account > Emails": "我的帐户 > 电子邮件",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "预览功能可以查看他们的电子邮件如何呈现，因此我们支持可配置的保留期。",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "获取<span class=\"notranslate\">you@domain.com</span>"
 }

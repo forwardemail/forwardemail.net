@@ -7243,5 +7243,18 @@
   "Search for anything:": "Zoek naar iets:",
   "search results": "Zoekresultaten",
   "Read article": "Lees artikel",
-  "Popular Searches": "populaire zoekopdrachten"
+  "Popular Searches": "populaire zoekopdrachten",
+  "Outbound SMTP Retention Period": "Uitgaande SMTP-bewaarperiode",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Zodra een uitgaande SMTP-e-mail succesvol is afgeleverd of er sprake is van permanente fouten, zullen we de berichttekst redigeren en opschonen na het hieronder geconfigureerde aantal bewaardagen.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Voer een getal tussen 0-30 in dat overeenkomt met het aantal dagen voor retentie. Nul geeft aan dat het bericht onmiddellijk wordt verwijderd.",
+  "Retention days is more than maximum allowed value (30).": "Retentiedagen zijn meer dan de maximaal toegestane waarde (30).",
+  "Integer between": "Geheel getal tussen",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "dat komt overeen met het aantal bewaardagen voor het opslaan van uitgaande SMTP-e-mails zodra ze succesvol zijn afgeleverd of als er een permanente fout is opgetreden. Standaard ingesteld op",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", wat betekent dat uitgaande SMTP-e-mails voor uw veiligheid onmiddellijk worden verwijderd en geredigeerd.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Houd er rekening mee dat zodra een e-mail succesvol is afgeleverd of er sprake is van permanente fouten, we de berichttekst zullen redigeren en verwijderen.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Als u wilt configureren dat de tekst van uw uitgaande SMTP-e-mailbericht langer dan de standaardwaarde van 0 dagen wordt bewaard (na succesvolle bezorging of permanente fout), ga dan naar Geavanceerde instellingen voor uw domein en voer een waarde in tussen",
+  ". Some users enjoy using the": ". Sommige gebruikers vinden het leuk om de",
+  "My Account > Emails": "Mijn account > E-mails",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "preview-functie om te zien hoe hun e-mails worden weergegeven, daarom ondersteunen we een configureerbare bewaarperiode.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Ontvang <span class=\"notranslate\">you@domain.com</span>"
 }

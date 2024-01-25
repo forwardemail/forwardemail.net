@@ -7243,5 +7243,18 @@
   "Search for anything:": "Ищите что угодно:",
   "search results": "результаты поиска",
   "Read article": "Читать статью",
-  "Popular Searches": "Популярные запросы"
+  "Popular Searches": "Популярные запросы",
+  "Outbound SMTP Retention Period": "Срок хранения исходящего SMTP",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Как только исходящая электронная почта SMTP будет успешно доставлена или возникнет постоянная ошибка, мы отредактируем и очистим тело сообщения после количества дней хранения, настроенного ниже.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Введите число от 0 до 30, соответствующее количеству дней хранения. Ноль означает, что сообщение будет удалено немедленно.",
+  "Retention days is more than maximum allowed value (30).": "Количество дней хранения превышает максимально допустимое значение (30).",
+  "Integer between": "Целое число между",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "это соответствует количеству дней хранения исходящих сообщений электронной почты SMTP после успешной доставки или постоянной ошибки. По умолчанию",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", что означает, что исходящие электронные письма SMTP немедленно очищаются и редактируются в целях вашей безопасности.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Обратите внимание: как только электронное письмо будет успешно доставлено или произойдет постоянная ошибка, мы отредактируем и очистим тело сообщения.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Если вы хотите, чтобы тело исходящего сообщения электронной почты SMTP сохранялось дольше, чем 0 дней по умолчанию (после успешной доставки или постоянной ошибки), перейдите в Дополнительные настройки для своего домена и введите значение между",
+  ". Some users enjoy using the": ". Некоторым пользователям нравится использовать",
+  "My Account > Emails": "Моя учетная запись > Электронная почта",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "функция предварительного просмотра, чтобы увидеть, как отображаются их электронные письма, поэтому мы поддерживаем настраиваемый период хранения.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Получить <span class=\"notranslate\">you@domain.com</span>"
 }

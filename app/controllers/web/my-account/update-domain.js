@@ -26,6 +26,19 @@ async function updateDomain(ctx, next) {
     else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
   }
 
+  // Domain message retention period for outbound SMTP emails
+  if (typeof ctx.request.body.retention_days === 'number') {
+    ctx.state.domain.retention_days = Number.parseInt(
+      ctx.request.body.retention_days,
+      10
+    );
+  } else if (typeof ctx.request.body.retention_days === 'string') {
+    ctx.state.domain.retention_days = Number.parseInt(
+      ctx.request.body.retention_days,
+      10
+    );
+  }
+
   // Boolean settings for spam and requiring recipient verification
   if (ctx.api) {
     // require paid plan (note that the API middleware already does this)

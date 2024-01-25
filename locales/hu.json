@@ -7243,5 +7243,18 @@
   "Search for anything:": "Keressen bármit:",
   "search results": "Keresési eredmények",
   "Read article": "Olvassa el a cikket",
-  "Popular Searches": "Népszerű keresések"
+  "Popular Searches": "Népszerű keresések",
+  "Outbound SMTP Retention Period": "Kimenő SMTP megőrzési időszak",
+  "Once an outbound SMTP email is successfully delivered or permanently errors, then we will redact and purge the message body after the number of days of retention configured below.": "Ha egy kimenő SMTP e-mailt sikeresen kézbesítettünk, vagy véglegesen hibázik, akkor az alább konfigurált megőrzési napok száma után szerkesztjük és töröljük az üzenet törzsét.",
+  "Enter a number between 0-30 that corresponds to the number of days for retention. Zero indicates that the message will be removed immediately.": "Adjon meg egy 0 és 30 közötti számot, amely megfelel a megőrzési napok számának. A nulla azt jelzi, hogy az üzenet azonnal törlésre kerül.",
+  "Retention days is more than maximum allowed value (30).": "A megőrzési napok több mint a megengedett maximális érték (30).",
+  "Integer between": "Egész szám között",
+  "that corresponds to the number of retention days to store outbound SMTP emails once successfully delivered or permanently errored.  Defaults to": "amely megfelel a sikeres kézbesítés vagy véglegesen hibázott kimenő SMTP e-mailek tárolására szolgáló megőrzési napok számának. Alapértelmezés szerint",
+  ", which means that outbound SMTP emails are purged and redacted immediately for your security.": ", ami azt jelenti, hogy a kimenő SMTP e-maileket a rendszer az Ön biztonsága érdekében azonnal törli és szerkeszti.",
+  "Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.": "Vegye figyelembe, hogy ha egy e-mailt sikeresen kézbesítettünk, vagy véglegesen hibázik, akkor szerkesztjük és töröljük az üzenet törzsét.",
+  "If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between": "Ha azt szeretné beállítani, hogy a kimenő SMTP e-mail üzenet törzse az alapértelmezett 0 napnál tovább megmaradjon (sikeres kézbesítés vagy állandó hiba után), akkor lépjen be a domain Speciális beállításaiba, és adjon meg egy értéket",
+  ". Some users enjoy using the": ". Egyes felhasználók szívesen használják a",
+  "My Account > Emails": "Saját fiók > E-mailek",
+  "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "előnézeti funkció, hogy megtudja, hogyan jelennek meg az e-mailjeik, ezért támogatjuk a konfigurálható megőrzési időszakot.",
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Get <span class=\"notranslate\">you@domain.com</span>"
 }
