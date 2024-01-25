@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
 const SearchResults = require('#models/search-results');
 
 async function search(ctx) {
+  if (isSANB(ctx.query.q) && ctx.query.q.length > 50)
+    return ctx.throw(Boom.badRequest(ctx.translate('NO_RESULTS_FOUND')));
+
   const results = isSANB(ctx.query.q)
     ? await SearchResults.find(
         {
@@ -50,7 +54,7 @@ async function search(ctx) {
 
   if (ctx.accepts('html')) return ctx.render('search', { results });
 
-  return ctx.render('_search-results', { results });
+  ctx.body = results;
 }
 
 module.exports = search;
