@@ -41,6 +41,8 @@ block body
                   i.fa.fa-fw.fa-remove
                   = " "
                   = t("Remove")
+        if email.is_redacted
+          .alert.alert-success= t("This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.")
         h3.h5= t("Status")
         p.lead= titleize(humanize(email.status))
         h3.h5= t("SMTP Envelope")
