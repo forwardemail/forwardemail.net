@@ -473,6 +473,7 @@ module.exports = (redis) => ({
 
       // TODO: make https://status.forwardemail.net into an env var and replace it everywhere with ripgrep
       if (
+        config.env !== 'test' &&
         typeof ACTIVE_GITHUB_ISSUES === 'object' &&
         Array.isArray(ACTIVE_GITHUB_ISSUES.data) &&
         ACTIVE_GITHUB_ISSUES.data.length > 0
@@ -533,6 +534,7 @@ module.exports = (redis) => ({
       if (
         ctx.method === 'GET' &&
         ctx.accepts('html') &&
+        config.env !== 'test' &&
         (isMongooseDown || isRedisDown)
       ) {
         ctx.state.statusOutage = true;

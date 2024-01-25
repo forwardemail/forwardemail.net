@@ -402,7 +402,7 @@ footer.mt-auto
                 data-placement="bottom"
               )= t("Security Policy")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
-              if !isBot(ctx.get('User-Agent'))
+              if !isBot(ctx.get('User-Agent')) && config.env !== 'test'
                 li: a.d-block.text-white.py-2.py-md-0(
                   href="https://status.forwardemail.net/",
                   target="_blank",
