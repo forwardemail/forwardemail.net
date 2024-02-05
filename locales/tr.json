@@ -7256,5 +7256,20 @@
   ". Some users enjoy using the": ". Bazı kullanıcılar bu uygulamayı kullanmaktan hoşlanırlar.",
   "My Account > Emails": "Hesabım > E-postalar",
   "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "e-postalarının nasıl oluşturulduğunu görmek için önizleme özelliği; bu nedenle, yapılandırılabilir bir saklama süresini destekliyoruz.",
-  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> edinin"
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> edinin",
+  "Calendar": "Takvim",
+  "Calendar does not exist.": "Takvim mevcut değil.",
+  "Event ID already exists within the same calendar.": "Etkinlik Kimliği aynı takvimde zaten mevcut.",
+  "Event does not exist.": "Etkinlik mevcut değil.",
+  "In February 2024,": "In February 2024,",
+  "we added calendar (CalDAV) support": "we added calendar (CalDAV) support",
+  "Do you support calendars (CalDAV)?": "Do you support calendars (CalDAV)?",
+  "Yes, as of February 2, 2024 we have added this feature.  Our server is": "Yes, as of February 2, 2024 we have added this feature.  Our server is",
+  "To configure your calendar, use the CalDAV URL of:": "To configure your calendar, use the CalDAV URL of:",
+  "(be sure to replace": "(be sure to replace",
+  "with your alias)": "with your alias)",
+  "It supports both IPv4 and IPv6 and is available over port": "It supports both IPv4 and IPv6 and is available over port",
+  "In order to use calendar support, the": "In order to use calendar support, the",
+  "user": "user",
+  "password": "password"
 }

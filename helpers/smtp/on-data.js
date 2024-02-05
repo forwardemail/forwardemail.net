@@ -330,6 +330,9 @@ async function onData(stream, _session, fn) {
     // if for any reason there isn't a user then throw an error
     if (!user) throw new TypeError('User does not exist');
 
+    //
+    // TODO: this should probably be moved to after `queue()` is invoked
+    //
     if (!adminExists) {
       // rate limit to X emails per day by domain id then denylist
       {

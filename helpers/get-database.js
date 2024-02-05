@@ -12,6 +12,8 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
 
+const Calendars = require('#models/calendars');
+const CalendarEvents = require('#models/calendar-events');
 const Attachments = require('#models/attachments');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -121,9 +123,13 @@ async function getDatabase(
   )
     return session.db;
 
-  // instance must be either IMAP, POP3, or SQLite
-  if (!['IMAP', 'POP3', 'SQLite'].includes(instance?.constructor?.name))
-    throw new TypeError('Instance must be either IMAP, POP3, or SQLite');
+  // instance must be either IMAP, POP3, SQLite, or CalDAV
+  if (
+    !['IMAP', 'POP3', 'SQLite', 'CalDAV'].includes(instance?.constructor?.name)
+  )
+    throw new TypeError(
+      'Instance must be either IMAP, POP3, SQLite, or CalDAV'
+    );
 
   // safeguard
   if (!mongoose.isObjectIdOrHexString(alias?.id))
@@ -536,7 +542,9 @@ async function getDatabase(
       Mailboxes,
       Messages,
       Threads,
-      Attachments
+      Attachments,
+      Calendars,
+      CalendarEvents
     });
 
     if (commands.length > 0) {

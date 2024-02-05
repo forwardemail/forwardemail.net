@@ -50,4 +50,6 @@ In November 2023, we launched our [**encrypted mailbox storage**](/blog/docs/bes
 
 In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [passkeys and WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [time to inbox](/#tti) monitoring, and [OpenPGP for IMAP Storage](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
+In February 2024, [we added calendar (CalDAV) support](/faq#do-you-support-calendars-caldav).
+
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

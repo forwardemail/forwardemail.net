@@ -91,7 +91,7 @@ async function onAuth(auth, session, fn) {
 
     domainName = punycode.toUnicode(domainName);
 
-    // password must be a 24 character long generated string
+    // password must be valid
     if (
       typeof auth.password !== 'string' ||
       !isSANB(auth.password) ||
@@ -149,7 +149,7 @@ async function onAuth(auth, session, fn) {
     })
       .populate(
         'members.user',
-        `id group plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        `id group plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} timezone`
       )
       .select('+tokens.hash +tokens.salt')
       .lean()
@@ -166,7 +166,7 @@ async function onAuth(auth, session, fn) {
       })
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField}`
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
@@ -357,6 +357,16 @@ async function onAuth(auth, session, fn) {
 
     // prepare user object for `session.user`
     // <https://github.com/nodemailer/wildduck/issues/510>
+    let timeZone = 'America/Chicago';
+    if (alias?.user?.timezone) {
+      timeZone = alias.user.timezone;
+    } else {
+      const adminMember = domain.members.find(
+        (m) => m.group === 'admin' && m?.user?.timezone
+      );
+      if (adminMember) timeZone = adminMember.timezone;
+    }
+
     const user = {
       // support domain-wide catch-all by conditionally checking `alias` below:
       id: alias ? alias.id : domain.id,
@@ -370,6 +380,10 @@ async function onAuth(auth, session, fn) {
             storage_location: alias.storage_location
           }
         : {}),
+      [config.lastLocaleField]:
+        alias && alias.user && alias.user[config.lastLocaleField]
+          ? alias.user[config.lastLocaleField]
+          : i18n.config.defaultLocale,
       domain_id: domain.id,
       domain_name: domain.name,
       // safeguard to encrypt in-memory
@@ -391,7 +405,9 @@ async function onAuth(auth, session, fn) {
       // NOTE: this field will refresh in `refreshSession` helper
       locale,
       // NOTE: this field will refresh in `refreshSession` helper
-      owner_full_email: to
+      owner_full_email: to,
+      // NOTE: this gets updated every time user logs in a browser and loads a page
+      timezone: timeZone
     };
 
     //

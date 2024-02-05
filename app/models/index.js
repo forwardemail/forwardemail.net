@@ -19,6 +19,8 @@ const Threads = require('./threads');
 const Journals = require('./journals');
 const TemporaryMessages = require('./temporary-messages');
 const SearchResults = require('./search-results');
+const Calendars = require('./calendars');
+const CalendarEvents = require('./calendar-events');
 
 module.exports = {
   Attachments,
@@ -36,5 +38,7 @@ module.exports = {
   Threads,
   Journals,
   TemporaryMessages,
-  SearchResults
+  SearchResults,
+  Calendars,
+  CalendarEvents
 };

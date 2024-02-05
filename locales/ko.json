@@ -7256,5 +7256,20 @@
   ". Some users enjoy using the": ". 일부 사용자는 다음을 즐겨 사용합니다.",
   "My Account > Emails": "내 계정 > 이메일",
   "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "미리보기 기능을 통해 이메일이 어떻게 렌더링되는지 확인할 수 있으므로 구성 가능한 보존 기간을 지원합니다.",
-  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> 받기"
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span> 받기",
+  "Calendar": "달력",
+  "Calendar does not exist.": "캘린더가 존재하지 않습니다.",
+  "Event ID already exists within the same calendar.": "동일한 캘린더 내에 이벤트 ID가 이미 존재합니다.",
+  "Event does not exist.": "이벤트가 존재하지 않습니다.",
+  "In February 2024,": "In February 2024,",
+  "we added calendar (CalDAV) support": "we added calendar (CalDAV) support",
+  "Do you support calendars (CalDAV)?": "Do you support calendars (CalDAV)?",
+  "Yes, as of February 2, 2024 we have added this feature.  Our server is": "Yes, as of February 2, 2024 we have added this feature.  Our server is",
+  "To configure your calendar, use the CalDAV URL of:": "To configure your calendar, use the CalDAV URL of:",
+  "(be sure to replace": "(be sure to replace",
+  "with your alias)": "with your alias)",
+  "It supports both IPv4 and IPv6 and is available over port": "It supports both IPv4 and IPv6 and is available over port",
+  "In order to use calendar support, the": "In order to use calendar support, the",
+  "user": "user",
+  "password": "password"
 }

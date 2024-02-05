@@ -546,6 +546,32 @@ $(window).keydown((ev) => {
 });
 
 //
+// if the user is logged in then update their timezone
+// (this is used for default calendar timezone creation)
+// (and way more accurate, fast, and license permissive than relying on maxmind/geoip/ip2location)
+//
+if (window.USER && window.USER.id && window.USER.email) {
+  try {
+    // <https://stackoverflow.com/a/34602679>
+    const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
+    if (timeZone)
+      superagent
+        .post(`/${window.LOCALE}/my-account/timezone`)
+        .set({
+          Accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        })
+        .timeout(1000 * 30)
+        .retry(3)
+        .send({ timeZone })
+        .then()
+        .catch((err) => console.error(err));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+//
 // webauthn support
 //
 if (window.PublicKeyCredential) {

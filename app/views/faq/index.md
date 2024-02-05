@@ -20,6 +20,7 @@
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
 * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
 * [Do you support POP3](#do-you-support-pop3)
+* [Do you support calendars (CalDAV)?](#do-you-support-calendars-caldav)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -1180,6 +1181,22 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
 </div>
 
 </div>
+
+
+## Do you support calendars (CalDAV)?
+
+Yes, as of February 2, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net/dav/principals/user@example.com` (be sure to replace `user@example.com` with your alias)
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login    | Example                    | Description                                                                                                                                                                               |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
+
+In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
 
 
 ## How to Send Mail As using Gmail

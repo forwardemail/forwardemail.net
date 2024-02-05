@@ -18,7 +18,6 @@ table.table.table-hover.table-bordered.table-sm
         each log in logs
           tr
             //- TODO: show webhook response
-            //- TODO: show bounces + additional insight
             td.align-middle
               ul.list-unstyled.mb-0
                 li
@@ -94,6 +93,20 @@ table.table.table-hover.table-bordered.table-sm
                           = "An unexpected internal server error has occurred"
                         else
                           != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+                      if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0
+                        ul
+                          each bounce in log.err.bounces
+                            li
+                              span.badge.badge-dark.mr-1= bounce.address
+                              i.fa.fa-angle-right.mr-1
+                              if bounce.recipient && bounce.recipient.to
+                                if Array.isArray(bounce.recipient.to)
+                                  each to in bounce.recipient.to
+                                    span.badge.badge-danger.mr-1= to
+                                else
+                                  span.badge.badge-danger.mr-1= bounce.recipient.to
+                              if bounce.err && bounce.err.message
+                                span.text-monospace!= ansiHTML(bounce.err.message)
             td.align-middle.text-center
               ul.list-inline.mb-0
                 li.list-inline-item

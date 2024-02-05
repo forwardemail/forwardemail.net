@@ -461,6 +461,7 @@ router
     web.myAccount.resendEmailChange
   )
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
+  .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
   .get(
     '/security',

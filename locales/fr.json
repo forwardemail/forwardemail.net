@@ -4720,5 +4720,20 @@
   ". Some users enjoy using the": ". Certains utilisateurs aiment utiliser le",
   "My Account > Emails": "Mon compte > E-mails",
   "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "fonctionnalité de prévisualisation pour voir comment leurs e-mails sont rendus, nous prenons donc en charge une période de conservation configurable.",
-  "Get <span class=\"notranslate\">you@domain.com</span>": "Obtenez <span class=\"notranslate\">you@domain.com</span>"
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Obtenez <span class=\"notranslate\">you@domain.com</span>",
+  "Calendar": "Calendrier",
+  "Calendar does not exist.": "Le calendrier n'existe pas.",
+  "Event ID already exists within the same calendar.": "L'ID d'événement existe déjà dans le même calendrier.",
+  "Event does not exist.": "L'événement n'existe pas.",
+  "In February 2024,": "In February 2024,",
+  "we added calendar (CalDAV) support": "we added calendar (CalDAV) support",
+  "Do you support calendars (CalDAV)?": "Do you support calendars (CalDAV)?",
+  "Yes, as of February 2, 2024 we have added this feature.  Our server is": "Yes, as of February 2, 2024 we have added this feature.  Our server is",
+  "To configure your calendar, use the CalDAV URL of:": "To configure your calendar, use the CalDAV URL of:",
+  "(be sure to replace": "(be sure to replace",
+  "with your alias)": "with your alias)",
+  "It supports both IPv4 and IPv6 and is available over port": "It supports both IPv4 and IPv6 and is available over port",
+  "In order to use calendar support, the": "In order to use calendar support, the",
+  "user": "user",
+  "password": "password"
 }

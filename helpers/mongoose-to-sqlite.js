@@ -1550,7 +1550,8 @@ function parseSchema(Model, modelName = '') {
           default_value = 'CURRENT_TIMESTAMP';
         }
 
-        getter = (v) => (typeof v === 'undefined' ? new Date() : new Date(v));
+        getter = (v) =>
+          typeof v === 'undefined' || v === null ? v : new Date(v);
         setter = (v) => {
           if (v instanceof Date) return v.toISOString();
           throw new TypeError('Must be a date');

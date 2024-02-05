@@ -40,10 +40,11 @@ const IMAP_COMMANDS = new Set([
   'UNSUBSCRIBE'
 ]);
 
+// eslint-disable-next-line complexity
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
-  if (command !== 'POP3' && !IMAP_COMMANDS.has(command))
+  if (command !== 'POP3' && !IMAP_COMMANDS.has(command) && command !== 'CALDAV')
     throw new Error('Invalid command');
 
   // check if server is in the process of shutting down
@@ -53,7 +54,8 @@ async function refreshSession(session, command) {
   // check if socket is still connected
   if (
     this?.constructor?.name !== 'SQLite' &&
-    this?.constructor?.name !== 'POP3'
+    this?.constructor?.name !== 'POP3' &&
+    this?.constructor?.name !== 'CalDAV'
   ) {
     const socket = (session.socket && session.socket._parent) || session.socket;
     if (!socket || socket?.destroyed || socket?.readyState !== 'open')
@@ -151,7 +153,8 @@ async function refreshSession(session, command) {
   );
 
   // fire notifications if any (e.g. initial creation of databases)
-  this.server.notifier.fire(session.user.alias_id);
+  if (this?.constructor?.name !== 'CalDAV')
+    this.server.notifier.fire(session.user.alias_id);
 
   //
   // if and only if we're not an instance of SQLite

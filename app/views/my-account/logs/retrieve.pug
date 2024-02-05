@@ -74,6 +74,20 @@ block body
                 = "An unexpected internal server error has occurred"
               else
                 != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
+            if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0
+              ul
+                each bounce in log.err.bounces
+                  li
+                    span.badge.badge-dark.mr-1= bounce.address
+                    i.fa.fa-angle-right.mr-1
+                    if bounce.recipient && bounce.recipient.to
+                      if Array.isArray(bounce.recipient.to)
+                        each to in bounce.recipient.to
+                          span.badge.badge-danger.mr-1= to
+                      else
+                        span.badge.badge-danger.mr-1= bounce.recipient.to
+                    if bounce.err && bounce.err.message
+                      span.text-monospace!= ansiHTML(bounce.err.message)
         if _.isObject(log.meta) && _.isObject(log.meta.session) && _.isObject(log.meta.session.headers) && !_.isEmpty(log.meta.session.headers)
           h3.h5= t("Message Headers")
           table.table.table-hover.table-bordered.table-striped

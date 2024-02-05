@@ -20,6 +20,10 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  CALENDAR: 'Calendar',
+  CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
+  EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',
+  EVENT_DOES_NOT_EXIST: 'Event does not exist.',
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
   FAILED_TO_PROCESS_PUBLIC_KEY: 'Failed to process public key.',
   FAILED_TO_VERIFY_PUBLIC_KEY: 'Failed to verify public key.',

@@ -19,6 +19,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const safeStringify = require('fast-safe-stringify');
 const sanitizeHtml = require('sanitize-html');
 const striptags = require('striptags');
+const timezones = require('timezones-list');
 const validator = require('validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
@@ -109,6 +110,13 @@ Passkey.plugin(mongooseCommonPlugin, {
 });
 
 const Users = new mongoose.Schema({
+  // Timezone
+  // (automatically updated client-side via POST /my-account/timezone)
+  timezone: {
+    type: String,
+    default: 'America/Chicago',
+    enum: timezones.default.map((tz) => tz.tzCode)
+  },
   // Passkeys
   passkeys: [Passkey],
   // Plan

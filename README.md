@@ -156,14 +156,15 @@ Once you have followed [Requirements](#requirements), you should now have all th
 
 You can start any of the services using our pre-built commands to make it easy.  Note that all of these pre-built commands are using [nps](https://github.com/sezna/nps) and [ttab](https://github.com/mklement0/ttab) (it will automatically open a new tab in terminal for you!).
 
-| Service Name | Command          | Default Development Port | Development Preview URL |
-| ------------ | ---------------- | :----------------------: | ----------------------- |
-| Web          | `npm start web`  |          `3000`          | <http://localhost:3000> |
-| API          | `npm start api`  |          `4000`          | <http://localhost:4000> |
-| Bree         | `npm start bree` |           None           | None                    |
-| SMTP         | `npm start smtp` |          `2432`          | `telnet localhost 2432` |
-| IMAP         | `npm start imap` |          `2113`          | `telnet localhost 2113` |
-| POP3         | `npm start pop3` |          `2115`          | `telnet localhost 2115` |
+| Service Name | Command            | Default Development Port | Development Preview URL |
+| ------------ | ------------------ | :----------------------: | ----------------------- |
+| Web          | `npm start web`    |          `3000`          | <http://localhost:3000> |
+| API          | `npm start api`    |          `4000`          | <http://localhost:4000> |
+| Bree         | `npm start bree`   |           None           | None                    |
+| SMTP         | `npm start smtp`   |          `2432`          | `telnet localhost 2432` |
+| IMAP         | `npm start imap`   |          `2113`          | `telnet localhost 2113` |
+| POP3         | `npm start pop3`   |          `2115`          | `telnet localhost 2115` |
+| SQLite       | `npm start sqlite` |          `3456`          | `telnet localhost 3456` |
 
 You can test the local SMTP, IMAP, and POP3 servers using [Thunderbird](), `telnet`, or `openssl`.  Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
 

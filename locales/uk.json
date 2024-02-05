@@ -7256,5 +7256,20 @@
   ". Some users enjoy using the": ". Деякі користувачі із задоволенням використовують",
   "My Account > Emails": "Мій обліковий запис > Електронні листи",
   "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "функція попереднього перегляду, щоб побачити, як відображаються їхні електронні листи, тому ми підтримуємо настроюваний період зберігання.",
-  "Get <span class=\"notranslate\">you@domain.com</span>": "Отримати <span class=\"notranslate\">you@domain.com</span>"
+  "Get <span class=\"notranslate\">you@domain.com</span>": "Отримати <span class=\"notranslate\">you@domain.com</span>",
+  "Calendar": "Календар",
+  "Calendar does not exist.": "Календар не існує.",
+  "Event ID already exists within the same calendar.": "Ідентифікатор події вже існує в тому самому календарі.",
+  "Event does not exist.": "Подія не існує.",
+  "In February 2024,": "In February 2024,",
+  "we added calendar (CalDAV) support": "we added calendar (CalDAV) support",
+  "Do you support calendars (CalDAV)?": "Do you support calendars (CalDAV)?",
+  "Yes, as of February 2, 2024 we have added this feature.  Our server is": "Yes, as of February 2, 2024 we have added this feature.  Our server is",
+  "To configure your calendar, use the CalDAV URL of:": "To configure your calendar, use the CalDAV URL of:",
+  "(be sure to replace": "(be sure to replace",
+  "with your alias)": "with your alias)",
+  "It supports both IPv4 and IPv6 and is available over port": "It supports both IPv4 and IPv6 and is available over port",
+  "In order to use calendar support, the": "In order to use calendar support, the",
+  "user": "user",
+  "password": "password"
 }

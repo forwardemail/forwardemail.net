@@ -7256,5 +7256,20 @@
   ". Some users enjoy using the": "。一部のユーザーは、",
   "My Account > Emails": "マイアカウント > メール",
   "preview feature to see how their emails are rendered, therefore we support a configurable retention period.": "プレビュー機能を使用すると、電子メールがどのようにレンダリングされるかを確認できるため、構成可能な保存期間がサポートされます。",
-  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span>を取得してください"
+  "Get <span class=\"notranslate\">you@domain.com</span>": "<span class=\"notranslate\">you@domain.com</span>を取得してください",
+  "Calendar": "カレンダー",
+  "Calendar does not exist.": "カレンダーが存在しません。",
+  "Event ID already exists within the same calendar.": "イベント ID は同じカレンダー内にすでに存在します。",
+  "Event does not exist.": "イベントは存在しません。",
+  "In February 2024,": "In February 2024,",
+  "we added calendar (CalDAV) support": "we added calendar (CalDAV) support",
+  "Do you support calendars (CalDAV)?": "Do you support calendars (CalDAV)?",
+  "Yes, as of February 2, 2024 we have added this feature.  Our server is": "Yes, as of February 2, 2024 we have added this feature.  Our server is",
+  "To configure your calendar, use the CalDAV URL of:": "To configure your calendar, use the CalDAV URL of:",
+  "(be sure to replace": "(be sure to replace",
+  "with your alias)": "with your alias)",
+  "It supports both IPv4 and IPv6 and is available over port": "It supports both IPv4 and IPv6 and is available over port",
+  "In order to use calendar support, the": "In order to use calendar support, the",
+  "user": "user",
+  "password": "password"
 }

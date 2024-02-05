@@ -29,6 +29,7 @@ const parseErr = require('parse-err');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
+const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
 const { simpleParser } = require('mailparser');
 
@@ -649,7 +650,12 @@ Emails.post('save', async function (email) {
   email.message = Buffer.concat([
     headers.build(),
     Buffer.from(
-      'This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.'
+      convert(
+        'This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.',
+        {
+          wordwrap: 60
+        }
+      )
     )
   ]);
   email.is_redacting = true; // virtual helper to rewrite message
