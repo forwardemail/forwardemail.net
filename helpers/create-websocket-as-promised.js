@@ -66,6 +66,7 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/pladaria/reconnecting-websocket#update-url>
   const wsp = new WebSocketAsPromised(url, {
     createWebSocket(url) {
+      logger.info('creating url', { url });
       // TODO: prevent duplicate RWS instances
       // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>
       // return new partysocket.WebSocket(url, [], {
