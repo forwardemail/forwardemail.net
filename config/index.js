@@ -209,7 +209,7 @@ const config = {
         : []
   },
 
-  maxQuotaPerAlias: config.env === 'test' ? bytes('1GB') : bytes('10GB'),
+  maxQuotaPerAlias: env.NODE_ENV === 'test' ? bytes('1GB') : bytes('10GB'),
 
   // <https://github.com/nodemailer/wildduck/issues/512>
   maxMailboxes: 10000,
