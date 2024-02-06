@@ -62,10 +62,13 @@ function createWebSocketAsPromised(options = {}) {
   const port = options.port || env.SQLITE_PORT;
   const url = `${protocol}://${auth}@${host}:${port}`;
 
+  logger.info('initial url', { url });
+
   // TODO: implement round robin URL provider
   // <https://github.com/pladaria/reconnecting-websocket#update-url>
   const wsp = new WebSocketAsPromised(url, {
-    createWebSocket(url) {
+    // createWebSocket(url) {
+    createWebSocket() {
       logger.info('creating url', { url });
       // TODO: prevent duplicate RWS instances
       // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>

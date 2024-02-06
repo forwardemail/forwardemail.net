@@ -820,6 +820,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
               logger.info('address', { address });
 
+              // TODO: pending PR in wkd-client package
+              // <https://github.com/openpgpjs/wkd-client/issues/3>
+              // <https://github.com/openpgpjs/wkd-client/pull/4>
               const binaryKey = await wkd.lookup({
                 email: address
               });
