@@ -157,11 +157,12 @@ async function refreshSession(session, command) {
     this.server.notifier.fire(session.user.alias_id);
 
   //
-  // if and only if we're not an instance of SQLite
+  // if and only if we're not an instance of IMAP
   // (otherwise this would result in recursion)
   //
   // prevent circular dep (otherwise we could do instanceof)
   if (
+    config.env !== 'test' &&
     this?.constructor?.name !== 'IMAP' && //
     // NOTE: this takes 100ms+ so we put it in onAuth instead running in the background
     //       (if a message gets delivered to tmp then it will notify IMAP connections already)
