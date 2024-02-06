@@ -364,6 +364,10 @@ test('calendarMultiGet should be able to get information about multiple calendar
     headers: t.context.authHeaders
   });
 
+  t.log('objectUrl1', objectUrl1);
+  t.log('objectUrl2', objectUrl2);
+  t.log('objectUrl3', objectUrl3);
+  t.log('calendarObjects', calendarObjects);
   t.true(calendarObjects.length > 0);
 
   const deleteResult1 = await deleteObject({
@@ -381,8 +385,11 @@ test('calendarMultiGet should be able to get information about multiple calendar
     headers: t.context.authHeaders
   });
 
+  t.log('deleteResult1', deleteResult1);
   t.true(deleteResult1.ok);
+  t.log('deleteResult2', deleteResult2);
   t.true(deleteResult2.ok);
+  t.log('deleteResult3', deleteResult3);
   t.true(deleteResult3.ok);
 });
 
