@@ -932,6 +932,7 @@ test('automatic openpgp support', async (t) => {
     client
   });
 
+  t.log('info', info);
   t.true(info[0].pgp);
 });
 

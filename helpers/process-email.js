@@ -818,13 +818,19 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 });
               };
 
+              logger.info('address', { address });
+
               const binaryKey = await wkd.lookup({
                 email: address
               });
 
+              logger.info('binaryKey', { binaryKey });
+
               const publicKey = await readKey({
                 binaryKey
               });
+
+              logger.info('publicKey', { publicKey });
 
               if (publicKey) {
                 try {
@@ -876,7 +882,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 }
               }
             } catch (err) {
-              logger.debug(err, {
+              logger.fatal(err, {
                 user: email.user,
                 email: email._id,
                 domains: [email.domain],
