@@ -60,7 +60,7 @@ function createWebSocketAsPromised(options = {}) {
   const auth = `${encrypt(env.API_SECRETS[0])}:`;
   const host = options.host || env.SQLITE_HOST;
   const port = options.port || env.SQLITE_PORT;
-  const url = `${protocol}://${auth}@${host}:${port}`;
+  const url = `${protocol}://${host}:${port}`;
 
   logger.info('initial url', { url });
 
@@ -77,7 +77,9 @@ function createWebSocketAsPromised(options = {}) {
         // <https://github.com/pladaria/reconnecting-websocket#available-options>
         // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
         WebSocket: createWebSocketClass({
-          maxPayload: 0 // disable max payload size
+          maxPayload: 0, // disable max payload size
+          auth,
+          rejectUnauthorized: config.env !== 'production'
         }),
         debug: config.env === 'development'
       });
