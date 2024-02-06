@@ -73,10 +73,13 @@ function createWebSocketAsPromised(options = {}) {
       typeof env.API_SECRETS[0] === 'string'
   );
 
+  console.log('URL CREATED', url);
+
   // TODO: implement round robin URL provider
   // <https://github.com/pladaria/reconnecting-websocket#update-url>
   const wsp = new WebSocketAsPromised(url, {
     createWebSocket(url) {
+      console.log('creating url', url, 'stack', new Error('uhoh').stack);
       logger.info('creating url', { url, protocol, auth, host, port });
       // TODO: prevent duplicate RWS instances
       // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>
