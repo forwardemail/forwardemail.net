@@ -62,11 +62,22 @@ function createWebSocketAsPromised(options = {}) {
   const port = options.port || env.SQLITE_PORT;
   const url = `${protocol}://${auth}@${host}:${port}`;
 
+  // TODO: for some reason it's masking `protocol` as `***`
+  console.log('WS PROTOCOL', protocol);
+  console.log('WS HOST', host);
+  console.log('WS PORT', port);
+  console.log(
+    'HAS SECRET',
+    env.API_SECRETS &&
+      env.API_SECRETS.length === 1 &&
+      typeof env.API_SECRETS[0] === 'string'
+  );
+
   // TODO: implement round robin URL provider
   // <https://github.com/pladaria/reconnecting-websocket#update-url>
   const wsp = new WebSocketAsPromised(url, {
     createWebSocket(url) {
-      logger.info('creating url', { url });
+      logger.info('creating url', { url, protocol, auth, host, port });
       // TODO: prevent duplicate RWS instances
       // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>
       // return new partysocket.WebSocket(url, [], {
