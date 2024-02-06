@@ -1185,7 +1185,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
 
 ## Do you support calendars (CalDAV)?
 
-Yes, as of February 2, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
 **To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net/dav/principals/user@example.com` (be sure to replace `user@example.com` with your alias)
 
