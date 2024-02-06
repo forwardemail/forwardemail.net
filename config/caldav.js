@@ -734,6 +734,17 @@ module.exports = {
   logger,
   i18n,
   hookBeforeRoutes(app, config) {
+    // respond with 200 for requests to /
+    // (e.g. this is used by status page monitoring)
+    app.use((ctx, next) => {
+      if (ctx.path === '/' && ['GET', 'HEAD', 'OPTIONS'].includes(ctx.method)) {
+        ctx.body = 'OK';
+        return;
+      }
+
+      return next();
+    });
+
     // this is the magic where we define caldav implementation
     app.use((ctx, next) => {
       const caldav = new CalDAV(ctx, config.sqlitePort);

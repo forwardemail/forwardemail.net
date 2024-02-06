@@ -24,8 +24,15 @@
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'API_HOST') }}"
-
-- hosts: web:api
+- hosts: caldav
+  name: CalDAV Hostname
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'CALDAV_HOST') }}"
+- hosts: web:api:caldav
   name: HTTP
   become: true
   become_user: root

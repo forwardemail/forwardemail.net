@@ -14,6 +14,12 @@
         dest: "{{ lookup('env', 'PWD') }}/ecosystem-api.json"
       delegate_to: localhost
 
+    - name: Create ecosystem-caldav.json
+      template:
+        src: "{{ playbook_dir }}/templates/ecosystem-caldav.json.j2"
+        dest: "{{ lookup('env', 'PWD') }}/ecosystem-caldav.json"
+      delegate_to: localhost
+
     - name: Create ecosystem-bree.json
       template:
         src: "{{ playbook_dir }}/templates/ecosystem-bree.json.j2"
