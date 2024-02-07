@@ -28,7 +28,7 @@ async function redirectToPortal(ctx) {
     const session = await stripe.billingPortal.sessions.create({
       customer: ctx.state.user[config.userFields.stripeCustomerID],
       return_url: `${config.urls.web}${ctx.state.l('/my-account/billing')}`,
-      locale: ctx.locale
+      locale: config.STRIPE_LOCALES.has(ctx.locale) ? ctx.locale : 'auto'
     });
 
     if (!session) throw ctx.translateError('UNKNOWN_ERROR');

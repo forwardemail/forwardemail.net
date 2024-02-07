@@ -26,6 +26,14 @@ const {
 // <https://github.com/sebbo2002/ical-generator/blob/fd502c537bf1a1e2bb5ae3579815921715fac190/src/calendar.ts#L15-L27>
 const Calendars = new mongoose.Schema(
   {
+    // via `ctx.state.params.calendarId` from `caldav-adapter`
+    calendarId: {
+      type: String,
+      required: true,
+      index: true,
+      unique: true
+    },
+
     prodId: {
       type: String,
       default: '//forwardemail.net//caldav//EN'

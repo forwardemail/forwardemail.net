@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "IPv4 と IPv6 の両方をサポートし、ポート経由で使用できます。",
   "In order to use calendar support, the": "カレンダー サポートを使用するには、",
   "user": "ユーザー",
-  "password": "パスワード"
+  "password": "パスワード",
+  "My Account - Timezone": "私のアカウント - タイムゾーン",
+  "Update Alias": "エイリアスの更新",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "受信者は、有効な電子メール アドレス、完全修飾ドメイン名 (「FQDN」)、IP アドレス、Webhook URL の改行/スペース/カンマ区切りのリストである必要があります。以下の [エイリアスの更新] をクリックすると、重複したエントリが自動的に削除され、検証が実行されます。"
 }

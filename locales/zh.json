@@ -6964,5 +6964,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "它支持 IPv4 和 IPv6，并且可通过端口使用",
   "In order to use calendar support, the": "为了使用日历支持，",
   "user": "用户",
-  "password": "密码"
+  "password": "密码",
+  "My Account - Timezone": "我的帐户 - 时区",
+  "Update Alias": "更新别名",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "收件人必须是以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名（“FQDN”）、IP 地址和/或 Webhook URL 列表。当您点击下面的“更新别名”时，我们将自动为您删除重复的条目并执行验证。"
 }

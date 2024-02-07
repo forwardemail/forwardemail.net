@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Támogatja az IPv4-et és az IPv6-ot is, és porton keresztül is elérhető",
   "In order to use calendar support, the": "A naptártámogatás használatához a",
   "user": "felhasználó",
-  "password": "Jelszó"
+  "password": "Jelszó",
+  "My Account - Timezone": "Saját fiók – Időzóna",
+  "Update Alias": "Alias frissítése",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "A címzetteknek sortörés/szóköz/vesszővel elválasztott listában kell szerepelniük érvényes e-mail címekkel, teljes képzésű domain nevekkel (\"FQDN\"), IP-címekkel és/vagy webhook URL-ekkel. Automatikusan eltávolítjuk az ismétlődő bejegyzéseket, és érvényesítést hajtunk végre, amikor az alábbi \"Alias frissítése\" gombra kattint."
 }

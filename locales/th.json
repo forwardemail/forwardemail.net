@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "รองรับทั้ง IPv4 และ IPv6 และพร้อมใช้งานผ่านพอร์ต",
   "In order to use calendar support, the": "หากต้องการใช้การสนับสนุนปฏิทิน",
   "user": "ผู้ใช้",
-  "password": "รหัสผ่าน"
+  "password": "รหัสผ่าน",
+  "My Account - Timezone": "บัญชีของฉัน - เขตเวลา",
+  "Update Alias": "อัพเดตนามแฝง",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "ผู้รับต้องเป็นรายการที่อยู่อีเมลที่ถูกต้อง ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (\"FQDN\") ที่อยู่ IP และ/หรือ URL ของเว็บฮุค โดยคั่นด้วยเครื่องหมายบรรทัด/ช่องว่าง/ด้วยเครื่องหมายจุลภาค เราจะลบรายการที่ซ้ำกันให้คุณโดยอัตโนมัติและดำเนินการตรวจสอบความถูกต้องเมื่อคุณคลิก \"อัปเดตนามแฝง\" ด้านล่าง"
 }

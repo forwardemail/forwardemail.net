@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Hem IPv4 hem de IPv6'yı destekler ve bağlantı noktası üzerinden kullanılabilir",
   "In order to use calendar support, the": "Takvim desteğini kullanmak için",
   "user": "kullanıcı",
-  "password": "şifre"
+  "password": "şifre",
+  "My Account - Timezone": "Hesabım - Saat Dilimi",
+  "Update Alias": "Takma Adı Güncelle",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Alıcılar, geçerli e-posta adreslerinin, tam nitelikli alan adlarının (\"FQDN\"), IP adreslerinin ve/veya web kancası URL'lerinin satır sonu/boşluk/virgülle ayrılmış bir listesi olmalıdır. Sizin için yinelenen girişleri otomatik olarak kaldıracağız ve aşağıdaki \"Takma Adı Güncelle\"ye tıkladığınızda doğrulama gerçekleştireceğiz."
 }

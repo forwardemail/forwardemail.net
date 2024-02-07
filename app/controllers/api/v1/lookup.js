@@ -172,7 +172,7 @@ async function lookup(ctx) {
             domain.plan === 'enhanced_protection'
               ? { $in: ['team', 'enhanced_protection'] }
               : domain.plan,
-          [config.userFields.hasVerifiedEmail]: true,
+          // [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
           // plan expired 30 day grace window
           [config.userFields.planExpiresAt]: {
@@ -188,7 +188,7 @@ async function lookup(ctx) {
             domain.plan === 'enhanced_protection'
               ? { $in: ['team', 'enhanced_protection'] }
               : domain.plan,
-          [config.userFields.hasVerifiedEmail]: true,
+          // [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
           [config.userFields.planExpiresAt]: {
             $lt: new Date()

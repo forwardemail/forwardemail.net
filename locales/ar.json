@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "وهو يدعم كلاً من IPv4 وIPv6 ومتوفر عبر المنفذ",
   "In order to use calendar support, the": "من أجل استخدام دعم التقويم، فإن",
   "user": "مستخدم",
-  "password": "كلمة المرور"
+  "password": "كلمة المرور",
+  "My Account - Timezone": "حسابي - المنطقة الزمنية",
+  "Update Alias": "تحديث الاسم المستعار",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "يجب أن يكون المستلمون عبارة عن قائمة مفصولة بفواصل أسطر/مسافات/فواصل لعناوين البريد الإلكتروني الصالحة، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\")، وعناوين IP، و/أو عناوين URL لخطاف الويب. سنقوم تلقائيًا بإزالة الإدخالات المكررة لك وإجراء التحقق من الصحة عند النقر فوق \"تحديث الاسم المستعار\" أدناه."
 }

@@ -159,7 +159,7 @@ if breadcrumbs.length > 1
                     = t("Add Domain")
                     = " "
                     i.fa.fa-angle-double-right.align-middle
-                if domains.length > 0
+                if domains.length > 0 || isSANB(ctx.query.q)
                   li.list-inline-item.mb-1
                     a.btn.btn-dark(
                       href=l("/my-account/domains/aliases/new"),
@@ -170,7 +170,7 @@ if breadcrumbs.length > 1
                       = t("Add Alias")
                       = " "
                       i.fa.fa-angle-double-right.align-middle
-                if domains.length > 0
+                if domains.length > 0 || isSANB(ctx.query.q)
                   li.list-inline-item.mb-1
                     if user.plan === 'free'
                       button.btn.btn-dark(

@@ -191,7 +191,7 @@ async function createDomainBilling(ctx) {
             description
           }
         ],
-        locale: ctx.locale,
+        locale: config.STRIPE_LOCALES.has(ctx.locale) ? ctx.locale : 'auto',
         cancel_url: `${config.urls.web}${ctx.path}${
           isMakePayment || isEnableAutoRenew ? '' : `/?plan=${plan}`
         }`,

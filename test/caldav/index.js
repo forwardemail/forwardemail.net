@@ -32,6 +32,7 @@ const {
   DAVNamespace,
   getBasicAuthHeaders,
   createAccount,
+  makeCalendar,
   fetchCalendars,
   calendarMultiGet,
   deleteObject,
@@ -293,12 +294,35 @@ test('createAccount should be able to create account', async (t) => {
 });
 
 test('fetchCalendars should be able to fetch calendars', async (t) => {
-  const calendars = await fetchCalendars({
-    account: t.context.account,
+  {
+    const calendars = await fetchCalendars({
+      account: t.context.account,
+      headers: t.context.authHeaders
+    });
+    t.is(calendars.length, 1);
+  }
+
+  t.log('t.context.account', t.context.account);
+  const result = await makeCalendar({
+    url: t.context.serverUrl,
+    props: {
+      [`${DAVNamespaceShort.DAV}:displayname`]: 'test',
+      [`${DAVNamespaceShort.CALDAV}:calendar-timezone`]: 'America/Los_Angeles',
+      [`${DAVNamespaceShort.CALDAV}:calendar-description`]:
+        'some calendar description'
+    },
     headers: t.context.authHeaders
   });
-  t.true(calendars.length > 0);
-  t.true(calendars.every((c) => c.url.length > 0));
+  t.log('makeCalendar result', result);
+
+  {
+    const calendars = await fetchCalendars({
+      account: t.context.account,
+      headers: t.context.authHeaders
+    });
+    t.is(calendars.length, 2);
+    t.true(calendars.every((c) => c.url.length > 0));
+  }
 });
 
 test('calendarMultiGet should be able to get information about multiple calendar objects', async (t) => {

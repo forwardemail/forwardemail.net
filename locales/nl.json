@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Het ondersteunt zowel IPv4 als IPv6 en is beschikbaar via poort",
   "In order to use calendar support, the": "Om agenda-ondersteuning te gebruiken, moet de",
   "user": "gebruiker",
-  "password": "wachtwoord"
+  "password": "wachtwoord",
+  "My Account - Timezone": "Mijn account - Tijdzone",
+  "Update Alias": "Alias bijwerken",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Ontvangers moeten een door regeleinden/spaties/komma's gescheiden lijst zijn met geldige e-mailadressen, volledig gekwalificeerde domeinnamen (\"FQDN\"), IP-adressen en/of webhook-URL's. We zullen dubbele vermeldingen automatisch voor u verwijderen en een validatie uitvoeren wanneer u hieronder op 'Alias bijwerken' klikt."
 }

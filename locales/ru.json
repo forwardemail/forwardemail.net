@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Он поддерживает как IPv4, так и IPv6 и доступен через порт.",
   "In order to use calendar support, the": "Чтобы использовать поддержку календаря,",
   "user": "пользователь",
-  "password": "пароль"
+  "password": "пароль",
+  "My Account - Timezone": "Моя учетная запись – часовой пояс",
+  "Update Alias": "Обновить псевдоним",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Получатели должны представлять собой список действительных адресов электронной почты, разделенных разрывом строки/пробелом/запятой, полные доменные имена («FQDN»), IP-адреса и/или URL-адреса веб-перехватчиков. Мы автоматически удалим повторяющиеся записи и выполним проверку, когда вы нажмете «Обновить псевдоним» ниже."
 }

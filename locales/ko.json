@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "IPv4와 IPv6를 모두 지원하며 포트를 통해 사용할 수 있습니다.",
   "In order to use calendar support, the": "캘린더 지원을 이용하려면",
   "user": "사용자",
-  "password": "비밀번호"
+  "password": "비밀번호",
+  "My Account - Timezone": "내 계정 - 시간대",
+  "Update Alias": "별칭 업데이트",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "수신자는 줄바꿈/공백/쉼표로 구분된 유효한 이메일 주소, 정규화된 도메인 이름(\"FQDN\"), IP 주소 및/또는 웹훅 URL의 목록이어야 합니다. 아래의 \"별칭 업데이트\"를 클릭하면 중복된 항목이 자동으로 제거되고 유효성 검사가 수행됩니다."
 }

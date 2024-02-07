@@ -5243,5 +5243,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך יציאה",
   "In order to use calendar support, the": "על מנת להשתמש בתמיכה ביומן, ה",
   "user": "מִשׁתַמֵשׁ",
-  "password": "סיסמה"
+  "password": "סיסמה",
+  "My Account - Timezone": "החשבון שלי - אזור זמן",
+  "Update Alias": "עדכן כינוי",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "הנמענים חייבים להיות רשימה מופרדת בשורות/רווחים/פסיקים של כתובות דוא\"ל חוקיות, שמות דומיין מלאים (\"FQDN\"), כתובות IP ו/או כתובות URL של חיבור לאינטרנט. אנו נסיר עבורך ערכים כפולים באופן אוטומטי ונבצע אימות כאשר תלחץ על \"עדכן כינוי\" למטה."
 }

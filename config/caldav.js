@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
+
 const Boom = require('@hapi/boom');
 const Lock = require('ioredfour');
 const _ = require('lodash');
@@ -200,8 +202,6 @@ function bumpSyncToken(synctoken) {
 // TODO: move this to `caldav-server.js` similar to `imap-server.js` (?)
 // <https://github.com/sedenardi/node-caldav-adapter/issues/14>
 
-// TODO: need to support createCalendar
-
 //
 // CalDAV
 // <https://www.rfc-editor.org/rfc/rfc4791>
@@ -210,6 +210,7 @@ class CalDAV {
   constructor(ctx, wspPort) {
     this.ctx = ctx;
     this.authenticate = this.authenticate.bind(this);
+    this.createCalendar = this.createCalendar.bind(this);
     this.getCalendar = this.getCalendar.bind(this);
     // this.updateCalendar = this.updateCalendar.bind(this);
     this.getCalendarsForPrincipal = this.getCalendarsForPrincipal.bind(this);
@@ -268,6 +269,10 @@ class CalDAV {
         ctx.state.session
       );
 
+      // caldav related user properties
+      user.principalId = user.username;
+      user.principalName = user.username; // .toUpperCase()
+
       // set user in session and state
       ctx.state.user = user;
       ctx.state.session.user = user;
@@ -280,54 +285,92 @@ class CalDAV {
       // connect to db
       await refreshSession.call(this, ctx.state.session, 'CALDAV');
 
-      // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
-      const calendar = await Calendars.findOne(this, ctx.state.session, {});
-      if (!calendar) {
-        await Calendars.create({
-          // db virtual helper
-          instance: this,
-          session: ctx.state.session,
-
-          // calendar obj
-          name: ctx.translate('CALENDAR'),
-          description: config.urls.web,
-          prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
-          //
-          // NOTE: instead of using timezone from IP we use
-          //       their last time zone set in a browser session
-          //       (this is way more accurate and faster)
-          //
-          //       here were some alternatives though during R&D:
-          //       * <https://github.com/runk/node-maxmind>
-          //       * <https://github.com/evansiroky/node-geo-tz>
-          //       * <https://github.com/safing/mmdbmeld>
-          //       * <https://github.com/sapics/ip-location-db>
-          //
-          timezone: ctx.state.session.user.timezone,
-          url: config.urls.web,
-          readonly: false,
-          synctoken: `${config.urls.web}/ns/sync-token/1`
-        });
-      }
-
-      logger.debug('calendar', { calendar });
-
-      return {
-        ...user,
+      // ensure that the default calendar exists
+      await this.getCalendar({
+        calendarId: user.username,
         principalId: user.username,
-        principalName: user.username // .toUpperCase()
-      };
+        user
+      });
+
+      return user;
     } catch (err) {
       logger.error(err);
       throw Boom.unauthorized(err);
     }
   }
 
+  async createCalendar({ name, description, timezone }) {
+    logger.debug('createCalendar', {
+      name,
+      description,
+      timezone,
+      params: this.ctx.state.params
+    });
+    name = name || this.ctx.state.params.calendarId || randomUUID();
+    const calendarId = this.ctx.state.params.calendarId || name;
+    return Calendars.create({
+      // db virtual helper
+      instance: this,
+      session: this.ctx.state.session,
+
+      // calendarId
+      calendarId,
+
+      // calendar obj
+      name,
+      description: description || config.urls.web,
+      prodId: `//forwardemail.net//caldav//${this.ctx.locale.toUpperCase()}`,
+      timezone: timezone || this.ctx.state.session.user.timezone,
+      url: config.urls.web,
+      readonly: false,
+      synctoken: `${config.urls.web}/ns/sync-token/1`
+    });
+  }
+
+  // https://caldav.forwardemail.net/dav/support@forwardemail.net/default
   async getCalendar({ calendarId, principalId, user }) {
     logger.debug('getCalendar', { calendarId, principalId, user });
-    const calendar = await Calendars.findOne(this, this.ctx.state.session, {
-      _id: new mongoose.Types.ObjectId(calendarId)
-    });
+
+    let calendar;
+    if (mongoose.isObjectIdOrHexString(calendarId))
+      calendar = await Calendars.findOne(this, this.ctx.state.session, {
+        _id: new mongoose.Types.ObjectId(calendarId)
+      });
+    if (!calendar)
+      calendar = await Calendars.findOne(this, this.ctx.state.session, {
+        calendarId
+      });
+    if (!calendar)
+      calendar = await Calendars.create({
+        // db virtual helper
+        instance: this,
+        session: this.ctx.state.session,
+
+        // calendarId
+        calendarId,
+
+        // calendar obj
+        // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
+        name: this.ctx.translate('CALENDAR'),
+        description: config.urls.web,
+        prodId: `//forwardemail.net//caldav//${this.ctx.locale.toUpperCase()}`,
+        //
+        // NOTE: instead of using timezone from IP we use
+        //       their last time zone set in a browser session
+        //       (this is way more accurate and faster)
+        //
+        //       here were some alternatives though during R&D:
+        //       * <https://github.com/runk/node-maxmind>
+        //       * <https://github.com/evansiroky/node-geo-tz>
+        //       * <https://github.com/safing/mmdbmeld>
+        //       * <https://github.com/sapics/ip-location-db>
+        //
+        timezone: this.ctx.state.session.user.timezone,
+        url: config.urls.web,
+        readonly: false,
+        synctoken: `${config.urls.web}/ns/sync-token/1`
+      });
+
     return calendar;
   }
 
@@ -337,6 +380,9 @@ class CalDAV {
   // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/example/data.js#L111-L120>
   //
 
+  // https://caldav.forwardemail.net/dav/support@forwardemail.net <--- both of these would do the same
+  // https://caldav.forwardemail.net/dav/calendars <--- both of these would do the same
+  // NOTE: in the future we could do readonly and sharing here with auth permissioning system
   async getCalendarsForPrincipal({ principalId, user }) {
     logger.debug('getCalendarsForPrincipal', { principalId, user });
     return Calendars.find(this, this.ctx.state.session, {});
@@ -350,8 +396,10 @@ class CalDAV {
       fullData
     });
 
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
+
     return CalendarEvents.find(this, this.ctx.state.session, {
-      calendar: new mongoose.Types.ObjectId(calendarId)
+      calendar: calendar._id
     });
   }
 
@@ -372,10 +420,12 @@ class CalDAV {
       fullData
     });
 
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
+
     // TODO: incorporate database date query instead of this in-memory filtering
     // TODO: we could do partial query for not recurring and b/w and then has recurring and after
     const events = await CalendarEvents.find(this, this.ctx.state.session, {
-      calendar: new mongoose.Types.ObjectId(calendarId)
+      calendar: calendar._id
     });
 
     const filtered = [];
@@ -443,9 +493,11 @@ class CalDAV {
       fullData
     });
 
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
+
     const event = await CalendarEvents.findOne(this, this.ctx.state.session, {
       eventId,
-      calendar: new mongoose.Types.ObjectId(calendarId)
+      calendar: calendar._id
     });
 
     return event;
@@ -465,12 +517,8 @@ class CalDAV {
       event,
       user
     });
-    const calendar = await Calendars.findOne(this, this.ctx.state.session, {
-      _id: new mongoose.Types.ObjectId(calendarId)
-    });
 
-    if (!calendar)
-      throw Boom.badRequest(this.ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
 
     // check if there is an event with same calendar ID already
     const exists = await CalendarEvents.findOne(this, this.ctx.state.session, {
@@ -542,17 +590,17 @@ class CalDAV {
       event,
       user
     });
-    const calendar = await Calendars.findOne(this, this.ctx.state.session, {
-      _id: new mongoose.Types.ObjectId(calendarId)
-    });
-    if (!calendar)
-      throw Boom.badRequest(this.ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
+
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
+
     let e = await CalendarEvents.findOne(this, this.ctx.state.session, {
       eventId,
-      calendar: new mongoose.Types.ObjectId(calendarId)
+      calendar: calendar._id
     });
+
     if (!e)
       throw Boom.badRequest(this.ctx.translateError('EVENT_DOES_NOT_EXIST'));
+
     await Calendars.findByIdAndUpdate(
       this,
       this.ctx.state.session,
@@ -608,20 +656,12 @@ class CalDAV {
 
   async deleteEvent({ eventId, principalId, calendarId, user }) {
     logger.debug('deleteEvent', { eventId, principalId, calendarId, user });
-    const calendar = await Calendars.findOne(this, this.ctx.state.session, {
-      _id: new mongoose.Types.ObjectId(calendarId)
-    });
 
-    if (!calendar) {
-      await CalendarEvents.deleteOne(this, this.ctx.state.session, {
-        eventId
-      });
-      return;
-    }
+    const calendar = await this.getCalendar({ calendarId, principalId, user });
 
     const event = await CalendarEvents.findOne(this, this.ctx.state.session, {
       eventId,
-      calendar: new mongoose.Types.ObjectId(calendarId)
+      calendar: calendar._id
     });
 
     if (event) {
@@ -766,6 +806,7 @@ module.exports = {
         logEnabled: config.env !== 'production',
         logLevel: 'debug',
         data: {
+          createCalendar: caldav.createCalendar,
           getCalendar: caldav.getCalendar,
           getCalendarsForPrincipal: caldav.getCalendarsForPrincipal,
           getEventsForCalendar: caldav.getEventsForCalendar,

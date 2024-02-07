@@ -14,16 +14,17 @@ const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
+const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
-const { fetch, Agent } = require('undici');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
+const { fetch, Agent } = require('undici');
 const { isEmail } = require('validator');
 const { readKey } = require('openpgp');
 
@@ -698,6 +699,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     const results = await pMap(
       addresses,
+      // eslint-disable-next-line complexity
       async (address) => {
         const to = [address];
         const target = address.split('@')[1];
@@ -826,6 +828,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
               const binaryKey = await wkd.lookup({
                 email: address
               });
+
+              // TODO: this is a temporary fix until the PR above is merged
+              // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
+              const str = new TextDecoder().decode(binaryKey);
+              if (str && isHTML(str))
+                throw new Error('Invalid WKD lookup HTML result');
 
               logger.info('binaryKey', { binaryKey });
 

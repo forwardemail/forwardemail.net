@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Ini mendukung IPv4 dan IPv6 dan tersedia melalui port",
   "In order to use calendar support, the": "Untuk menggunakan dukungan kalender,",
   "user": "pengguna",
-  "password": "kata sandi"
+  "password": "kata sandi",
+  "My Account - Timezone": "Akun Saya - Zona Waktu",
+  "Update Alias": "Perbarui Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Penerima harus berupa daftar alamat email valid yang dipisahkan baris/spasi/koma, nama domain yang sepenuhnya memenuhi syarat (\"FQDN\"), alamat IP, dan/atau URL webhook. Kami akan secara otomatis menghapus entri duplikat untuk Anda dan melakukan validasi ketika Anda mengklik \"Perbarui Alias\" di bawah."
 }

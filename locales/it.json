@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Supporta sia IPv4 che IPv6 ed è disponibile su porta",
   "In order to use calendar support, the": "Per utilizzare il supporto del calendario, il file",
   "user": "utente",
-  "password": "parola d'ordine"
+  "password": "parola d'ordine",
+  "My Account - Timezone": "Il mio account - Fuso orario",
+  "Update Alias": "Aggiorna Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "I destinatari devono essere un elenco separato da interruzioni di riga/spazi/virgole di indirizzi email validi, nomi di dominio completi (\"FQDN\"), indirizzi IP e/o URL webhook. Rimuoveremo automaticamente le voci duplicate ed eseguiremo la convalida quando fai clic su \"Aggiorna alias\" di seguito."
 }

@@ -6309,5 +6309,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Es unterstützt sowohl IPv4 als auch IPv6 und ist über den Port verfügbar",
   "In order to use calendar support, the": "Um die Kalenderunterstützung nutzen zu können, muss die",
   "user": "Benutzer",
-  "password": "Passwort"
+  "password": "Passwort",
+  "My Account - Timezone": "Mein Konto – Zeitzone",
+  "Update Alias": "Alias aktualisieren",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Bei den Empfängern muss es sich um eine durch Zeilenumbrüche, Leerzeichen und Kommas getrennte Liste gültiger E-Mail-Adressen, vollqualifizierter Domänennamen („FQDN“), IP-Adressen und/oder Webhook-URLs handeln. Wir entfernen automatisch doppelte Einträge für Sie und führen eine Validierung durch, wenn Sie unten auf „Alias aktualisieren“ klicken."
 }

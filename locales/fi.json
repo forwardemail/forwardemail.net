@@ -7118,5 +7118,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Se tukee sekä IPv4- että IPv6-protokollaa ja on saatavana portin kautta",
   "In order to use calendar support, the": "Jotta voit käyttää kalenteritukea,",
   "user": "käyttäjä",
-  "password": "Salasana"
+  "password": "Salasana",
+  "My Account - Timezone": "Oma tili - Aikavyöhyke",
+  "Update Alias": "Päivitä alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Vastaanottajien on oltava rivinvaihdolla/välilyönnillä/pilkuilla erotettu luettelo kelvollisista sähköpostiosoitteista, täysin kelvollisista verkkotunnusten nimistä (\"FQDN\"), IP-osoitteista ja/tai webhook-URL-osoitteista. Poistamme automaattisesti päällekkäiset merkinnät puolestasi ja suoritamme vahvistuksen, kun napsautat alla olevaa \"Päivitä alias\" -painiketta."
 }

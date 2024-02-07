@@ -7271,5 +7271,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Podporuje IPv4 i IPv6 a je k dispozici přes port",
   "In order to use calendar support, the": "Chcete-li používat podporu kalendáře,",
   "user": "uživatel",
-  "password": "Heslo"
+  "password": "Heslo",
+  "My Account - Timezone": "Můj účet – časové pásmo",
+  "Update Alias": "Aktualizujte alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Příjemci musí obsahovat seznam platných e-mailových adres, plně kvalifikovaných názvů domén (\"FQDN\"), IP adres a/nebo webových adres URL oddělených čárkami/mezera/čárkami. Po kliknutí na „Aktualizovat alias“ níže za vás automaticky odstraníme duplicitní záznamy a provedeme ověření."
 }

@@ -158,26 +158,28 @@ p.text-center.d-lg-none
           scope="col"
         )= t("Quick Links")
     tbody
-      if domain && domain.aliases && domain.aliases.length === 0
-        td(colspan=6)
-          .alert.alert-warning.mb-0.text-center
-            ul.list-inline.mb-0
-              - const str = striptags(ctx.query.q).split("@")[0].toLowerCase().trim();
-              li.list-inline-item!= t('No results were found for "<span class="notranslate">%s</span>".', str)
-              li.list-inline-item
-                form.ajax-form.mb-0(
-                  action=l(`/my-account/domains/${domain.name}/aliases/new`),
-                  method="POST"
-                )
-                  input(type="hidden", name="name", value=str)
-                  input(type="hidden", name="recipients", value=user.email)
-                  button.btn.btn-success.font-weight-bold.text-uppercase(
-                    type="submit"
+      if domain && domain.aliases && (domain.aliases.length === 0 || (isSANB(ctx.query.q) && !domain.aliases.find(a => a.name === ctx.query.q.split('@')[0].toLowerCase().trim())))
+        tr
+          td(colspan=6)
+            .alert.alert-warning.mb-0.text-center
+              ul.list-inline.mb-0
+                - const str = striptags(ctx.query.q).split("@")[0].toLowerCase().trim();
+                li.list-inline-item!= t('No results were found for "<span class="notranslate">%s</span>".', str)
+                li.list-inline-item
+                  form.ajax-form.mb-0(
+                    action=l(`/my-account/domains/${domain.name}/aliases/new`),
+                    method="POST"
                   )
-                    i.fas.fa-bolt.align-middle
-                    = " "
-                    = t("Instantly create alias")
-      else if domain && domain.aliases
+                    input(type="hidden", name="name", value=str)
+                    input(type="hidden", name="is_enabled", value="true")
+                    input(type="hidden", name="recipients", value=user.email)
+                    button.btn.btn-success.font-weight-bold.text-uppercase(
+                      type="submit"
+                    )
+                      i.fas.fa-bolt.align-middle
+                      = " "
+                      = t("Instantly create alias")
+      if domain && domain.aliases && domain.aliases.length > 0
         each alias in domain.aliases
           tr
             td.align-middle

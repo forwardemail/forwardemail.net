@@ -4743,5 +4743,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Nó hỗ trợ cả IPv4 và IPv6 và có sẵn qua cổng",
   "In order to use calendar support, the": "Để sử dụng hỗ trợ lịch,",
   "user": "người dùng",
-  "password": "mật khẩu"
+  "password": "mật khẩu",
+  "My Account - Timezone": "Tài khoản của tôi - Múi giờ",
+  "Update Alias": "Cập nhật bí danh",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Người nhận phải là danh sách các địa chỉ email hợp lệ được phân tách bằng dấu cách/dấu cách/dấu phẩy, tên miền đủ điều kiện (\"FQDN\"), địa chỉ IP và/hoặc URL webhook. Chúng tôi sẽ tự động xóa các mục trùng lặp cho bạn và thực hiện xác thực khi bạn nhấp vào \"Cập nhật bí danh\" bên dưới."
 }

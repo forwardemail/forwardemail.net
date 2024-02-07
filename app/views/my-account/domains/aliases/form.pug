@@ -25,7 +25,11 @@ block body
           .card-body
             form.ajax-form(action=ctx.path, method="POST")
               include _form
-              button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Create Alias")
+              button.btn.btn-success.btn-block.btn-lg(type="submit")
+                if alias
+                  = t("Update Alias")
+                else
+                  = t("Create Alias")
     if domain
       .row.text-center.my-5
         .col

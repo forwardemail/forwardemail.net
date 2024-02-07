@@ -7009,5 +7009,8 @@
   "It supports both IPv4 and IPv6 and is available over port": "Den understøtter både IPv4 og IPv6 og er tilgængelig over port",
   "In order to use calendar support, the": "For at bruge kalenderunderstøttelse skal",
   "user": "bruger",
-  "password": "adgangskode"
+  "password": "adgangskode",
+  "My Account - Timezone": "Min konto - Tidszone",
+  "Update Alias": "Opdater Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Modtagere skal være en linjeskift/mellemrum/kommasepareret liste over gyldige e-mailadresser, fuldt kvalificerede domænenavne (\"FQDN\"), IP-adresser og/eller webhook-URL'er. Vi fjerner automatisk duplikerede poster for dig og udfører validering, når du klikker på \"Opdater Alias\" nedenfor."
 }
