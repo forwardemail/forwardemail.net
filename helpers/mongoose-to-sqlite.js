@@ -1685,6 +1685,19 @@ function parseSchema(Model, modelName = '') {
           check
         ]).join(' ')
       );
+      //
+      // NOTE: the column won't have a unique constraint (since you can't add a constraint on an existing table)
+      //       however we still add a unique index which will have the same effect
+      //       <https://stackoverflow.com/a/10071366>
+      //       <https://stackoverflow.com/questions/15497985/how-to-add-unique-constraint-to-existing-table-in-sqlite>
+      //
+      alterStatement = `ALTER TABLE ${name} ADD ${_.compact([
+        `"${key}"`,
+        data_type.toUpperCase(),
+        _default,
+        is_nullable ? '' : 'NOT NULL',
+        check
+      ]).join(' ')}`;
     } else if (!is_nullable && !_default) {
       otherKeys.push(
         _.compact([
