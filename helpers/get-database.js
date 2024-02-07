@@ -556,6 +556,20 @@ async function getDatabase(
         } catch (err) {
           err.isCodeBug = true;
           logger.fatal(err, { command, alias, session });
+          // migration support in case existing rows
+          if (
+            err.message.includes(
+              'Cannot add a NOT NULL column with default value NULL'
+            ) &&
+            command.endsWith(' NOT NULL')
+          ) {
+            try {
+              db.prepare(command.replace(' NOT NULL', '')).run();
+            } catch (err) {
+              err.isCodeBug = true;
+              logger.fatal(err, { command, alias, session });
+            }
+          }
         }
       }
     }

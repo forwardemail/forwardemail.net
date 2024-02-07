@@ -219,6 +219,20 @@ async function getTemporaryDatabase(payload) {
       } catch (err) {
         err.isCodeBug = true;
         logger.fatal(err, { command });
+        // migration support in case existing rows
+        if (
+          err.message.includes(
+            'Cannot add a NOT NULL column with default value NULL'
+          ) &&
+          command.endsWith(' NOT NULL')
+        ) {
+          try {
+            tmpDb.prepare(command.replace(' NOT NULL', '')).run();
+          } catch (err) {
+            err.isCodeBug = true;
+            logger.fatal(err, { command });
+          }
+        }
       }
     }
   }
