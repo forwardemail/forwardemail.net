@@ -267,7 +267,7 @@
     "wildduck": "1.42.0",
     "wkhtmltopdf": "0.4.0",
     "ws": "8.16.0",
-    "zone-mta": "3.9.1"
+    "zone-mta": "3.9.2"
   },
   "devDependencies": {
     "@babel/cli": "7.23.9",
