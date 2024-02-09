@@ -7027,5 +7027,15 @@
   "password": "password",
   "My Account - Timezone": "My Account - Timezone",
   "Update Alias": "Update Alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.",
+  "Do you support calendars (CalDAV)": "Do you support calendars (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – see",
+  "for SSL/TLS and": "for SSL/TLS and",
+  "Preferred": "Preferred",
+  "for SSL/TLS.": "for SSL/TLS.",
+  "or TLS (STARTTLS)": "or TLS (STARTTLS)",
+  "for SSL/TLS (or)": "for SSL/TLS (or)",
+  "for TLS (STARTTLS)": "for TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS)."
 }

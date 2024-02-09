@@ -6312,5 +6312,15 @@
   "password": "Passwort",
   "My Account - Timezone": "Mein Konto – Zeitzone",
   "Update Alias": "Alias aktualisieren",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Bei den Empfängern muss es sich um eine durch Zeilenumbrüche, Leerzeichen und Kommas getrennte Liste gültiger E-Mail-Adressen, vollqualifizierter Domänennamen („FQDN“), IP-Adressen und/oder Webhook-URLs handeln. Wir entfernen automatisch doppelte Einträge für Sie und führen eine Validierung durch, wenn Sie unten auf „Alias aktualisieren“ klicken."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Bei den Empfängern muss es sich um eine durch Zeilenumbrüche, Leerzeichen und Kommas getrennte Liste gültiger E-Mail-Adressen, vollqualifizierter Domänennamen („FQDN“), IP-Adressen und/oder Webhook-URLs handeln. Wir entfernen automatisch doppelte Einträge für Sie und führen eine Validierung durch, wenn Sie unten auf „Alias aktualisieren“ klicken.",
+  "Do you support calendars (CalDAV)": "Unterstützen Sie Kalender (CalDAV)?",
+  "(SSL/TLS) – see": "(SSL/TLS) – siehe",
+  "for SSL/TLS and": "für SSL/TLS und",
+  "Preferred": "Bevorzugt",
+  "for SSL/TLS.": "für SSL/TLS.",
+  "or TLS (STARTTLS)": "oder TLS (STARTTLS)",
+  "for SSL/TLS (or)": "für SSL/TLS (oder)",
+  "for TLS (STARTTLS)": "für TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Unsere Logik ist Dummy-sicher und wird auch bei SSL/TLS-Fehlern, Verbindungsproblemen und mehr erneut versuchen. Das Ziel des Dummy-Proofing besteht darin, die Zustellbarkeit einer Weiterleitungskonfiguration für alle Empfänger zu maximieren.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Andernfalls, wenn der Empfänger eine E-Mail-Adresse ist, versuchen wir, die E-Mail mit opportunistischem TLS zu senden (wir versuchen, STARTTLS zu verwenden, wenn es auf dem Mailserver des Empfängers verfügbar ist). Wenn beim Versuch, die E-Mail zu senden, ein SSL/TLS-Fehler auftritt, versuchen wir, die E-Mail ohne TLS (ohne Verwendung von STARTTLS) zu senden."
 }

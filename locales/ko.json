@@ -7274,5 +7274,15 @@
   "password": "비밀번호",
   "My Account - Timezone": "내 계정 - 시간대",
   "Update Alias": "별칭 업데이트",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "수신자는 줄바꿈/공백/쉼표로 구분된 유효한 이메일 주소, 정규화된 도메인 이름(\"FQDN\"), IP 주소 및/또는 웹훅 URL의 목록이어야 합니다. 아래의 \"별칭 업데이트\"를 클릭하면 중복된 항목이 자동으로 제거되고 유효성 검사가 수행됩니다."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "수신자는 줄바꿈/공백/쉼표로 구분된 유효한 이메일 주소, 정규화된 도메인 이름(\"FQDN\"), IP 주소 및/또는 웹훅 URL의 목록이어야 합니다. 아래의 \"별칭 업데이트\"를 클릭하면 중복된 항목이 자동으로 제거되고 유효성 검사가 수행됩니다.",
+  "Do you support calendars (CalDAV)": "캘린더(CalDAV)를 지원합니까?",
+  "(SSL/TLS) – see": "(SSL/TLS) – 참조",
+  "for SSL/TLS and": "SSL/TLS의 경우 및",
+  "Preferred": "우선의",
+  "for SSL/TLS.": "SSL/TLS용.",
+  "or TLS (STARTTLS)": "또는 TLS(STARTTLS)",
+  "for SSL/TLS (or)": "SSL/TLS의 경우(또는)",
+  "for TLS (STARTTLS)": "TLS의 경우(STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "우리의 논리는 더미 방지형이며 SSL/TLS 오류, 연결 문제 등에 대해서도 재시도합니다. 더미 교정의 목표는 전달 구성의 모든 수신자에 대한 전달 가능성을 최대화하는 것입니다.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "그렇지 않고 수신자가 이메일 주소인 경우 기회적 TLS를 사용하여 이메일 전송을 시도합니다(수신자 메일 서버에서 사용 가능한 경우 STARTTLS 사용을 시도합니다). 이메일 전송을 시도하는 동안 SSL/TLS 오류가 발생하면 TLS 없이(STARTTLS를 사용하지 않고) 이메일 전송을 시도합니다."
 }

@@ -7274,5 +7274,15 @@
   "password": "รหัสผ่าน",
   "My Account - Timezone": "บัญชีของฉัน - เขตเวลา",
   "Update Alias": "อัพเดตนามแฝง",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "ผู้รับต้องเป็นรายการที่อยู่อีเมลที่ถูกต้อง ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (\"FQDN\") ที่อยู่ IP และ/หรือ URL ของเว็บฮุค โดยคั่นด้วยเครื่องหมายบรรทัด/ช่องว่าง/ด้วยเครื่องหมายจุลภาค เราจะลบรายการที่ซ้ำกันให้คุณโดยอัตโนมัติและดำเนินการตรวจสอบความถูกต้องเมื่อคุณคลิก \"อัปเดตนามแฝง\" ด้านล่าง"
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "ผู้รับต้องเป็นรายการที่อยู่อีเมลที่ถูกต้อง ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (\"FQDN\") ที่อยู่ IP และ/หรือ URL ของเว็บฮุค โดยคั่นด้วยเครื่องหมายบรรทัด/ช่องว่าง/ด้วยเครื่องหมายจุลภาค เราจะลบรายการที่ซ้ำกันให้คุณโดยอัตโนมัติและดำเนินการตรวจสอบความถูกต้องเมื่อคุณคลิก \"อัปเดตนามแฝง\" ด้านล่าง",
+  "Do you support calendars (CalDAV)": "คุณรองรับปฏิทิน (CalDAV) หรือไม่",
+  "(SSL/TLS) – see": "(SSL/TLS) – ดู",
+  "for SSL/TLS and": "สำหรับ SSL/TLS และ",
+  "Preferred": "ที่ต้องการ",
+  "for SSL/TLS.": "สำหรับ SSL/TLS",
+  "or TLS (STARTTLS)": "หรือ TLS (STARTTLS)",
+  "for SSL/TLS (or)": "สำหรับ SSL/TLS (หรือ)",
+  "for TLS (STARTTLS)": "สำหรับ TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "ตรรกะของเรานั้นไม่จำลอง และจะลองอีกครั้งหากพบข้อผิดพลาด SSL/TLS ปัญหาการเชื่อมต่อ และอื่นๆ เป้าหมายของการป้องกันจำลองคือการเพิ่มความสามารถในการส่งสูงสุดให้กับผู้รับทั้งหมดสำหรับการกำหนดค่าการส่งต่อ",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "มิฉะนั้น หากผู้รับเป็นที่อยู่อีเมล เราจะพยายามส่งอีเมลด้วย TLS ที่ฉวยโอกาส (เราพยายามใช้ STARTTLS หากมีอยู่บนเซิร์ฟเวอร์อีเมลของผู้รับ) หากเกิดข้อผิดพลาด SSL/TLS ขณะพยายามส่งอีเมล เราจะพยายามส่งอีเมลโดยไม่มี TLS (โดยไม่ต้องใช้ STARTTLS)"
 }

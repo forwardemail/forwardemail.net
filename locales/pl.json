@@ -7274,5 +7274,15 @@
   "password": "hasło",
   "My Account - Timezone": "Moje konto — strefa czasowa",
   "Update Alias": "Zaktualizuj alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Adresatami musi być rozdzielona liniami/spacjami/przecinkami lista prawidłowych adresów e-mail, w pełni kwalifikowanych nazw domen („FQDN”), adresów IP i/lub adresów URL webhooków. Automatycznie usuniemy dla Ciebie zduplikowane wpisy i przeprowadzimy weryfikację, gdy klikniesz „Aktualizuj alias” poniżej."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Adresatami musi być rozdzielona liniami/spacjami/przecinkami lista prawidłowych adresów e-mail, w pełni kwalifikowanych nazw domen („FQDN”), adresów IP i/lub adresów URL webhooków. Automatycznie usuniemy dla Ciebie zduplikowane wpisy i przeprowadzimy weryfikację, gdy klikniesz „Aktualizuj alias” poniżej.",
+  "Do you support calendars (CalDAV)": "Czy obsługujecie kalendarze (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – patrz",
+  "for SSL/TLS and": "dla SSL/TLS i",
+  "Preferred": "Preferowane",
+  "for SSL/TLS.": "dla protokołu SSL/TLS.",
+  "or TLS (STARTTLS)": "lub TLS (STARTTLS)",
+  "for SSL/TLS (or)": "dla SSL/TLS (lub)",
+  "for TLS (STARTTLS)": "dla TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Nasza logika jest fałszywa i będzie również ponawiać próby w przypadku błędów SSL/TLS, problemów z połączeniem i nie tylko. Celem stosowania zabezpieczeń fikcyjnych jest maksymalizacja dostarczalności do wszystkich odbiorców w przypadku konfiguracji przekazywania.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "W przeciwnym razie, jeśli odbiorcą jest adres e-mail, spróbujemy wysłać wiadomość e-mail za pomocą oportunistycznego TLS (próbujemy użyć STARTTLS, jeśli jest on dostępny na serwerze pocztowym odbiorcy). Jeśli podczas próby wysłania wiadomości e-mail wystąpi błąd protokołu SSL/TLS, podejmiemy próbę wysłania wiadomości bez protokołu TLS (bez użycia STARTTLS)."
 }

@@ -7274,5 +7274,15 @@
   "password": "Jelszó",
   "My Account - Timezone": "Saját fiók – Időzóna",
   "Update Alias": "Alias frissítése",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "A címzetteknek sortörés/szóköz/vesszővel elválasztott listában kell szerepelniük érvényes e-mail címekkel, teljes képzésű domain nevekkel (\"FQDN\"), IP-címekkel és/vagy webhook URL-ekkel. Automatikusan eltávolítjuk az ismétlődő bejegyzéseket, és érvényesítést hajtunk végre, amikor az alábbi \"Alias frissítése\" gombra kattint."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "A címzetteknek sortörés/szóköz/vesszővel elválasztott listában kell szerepelniük érvényes e-mail címekkel, teljes képzésű domain nevekkel (\"FQDN\"), IP-címekkel és/vagy webhook URL-ekkel. Automatikusan eltávolítjuk az ismétlődő bejegyzéseket, és érvényesítést hajtunk végre, amikor az alábbi \"Alias frissítése\" gombra kattint.",
+  "Do you support calendars (CalDAV)": "Támogatod a naptárakat (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – lásd",
+  "for SSL/TLS and": "SSL/TLS-hez és",
+  "Preferred": "Előnyben részesített",
+  "for SSL/TLS.": "SSL/TLS esetén.",
+  "or TLS (STARTTLS)": "vagy TLS (STARTTLS)",
+  "for SSL/TLS (or)": "SSL/TLS esetén (vagy)",
+  "for TLS (STARTTLS)": "TLS-hez (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Logikánk álbiztos, és újra próbálkozik SSL/TLS hibák, csatlakozási problémák és egyebek esetén. Az ál-ellenőrzéssel az a cél, hogy maximalizálja a kézbesítést az összes címzett számára a továbbítási konfigurációhoz.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Ellenkező esetben, ha a címzett e-mail cím, akkor az e-mailt opportunista TLS-sel próbáljuk elküldeni (a STARTTLS-t megpróbáljuk használni, ha az elérhető a címzett levelezőszerverén). Ha SSL/TLS hiba történik az e-mail küldése közben, akkor megpróbáljuk elküldeni az e-mailt TLS nélkül (STARTTLS használata nélkül)."
 }

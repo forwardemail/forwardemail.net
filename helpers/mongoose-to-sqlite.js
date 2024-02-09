@@ -218,7 +218,13 @@ async function updateMany(
     }
 
     // release lock if options.lock not set
-    if (lock) await releaseLock(instance, session.db, lock);
+    if (lock) {
+      try {
+        await releaseLock(instance, session.db, lock);
+      } catch (err) {
+        logger.fatal(err, { lock });
+      }
+    }
 
     // throw error if any
     if (err) throw err;
@@ -359,7 +365,13 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   }
 
   // release lock if options.lock not set
-  if (lock) await releaseLock(instance, session.db, lock);
+  if (lock) {
+    try {
+      await releaseLock(instance, session.db, lock);
+    } catch (err) {
+      logger.fatal(err, { lock });
+    }
+  }
 
   // throw error if any
   if (err) throw err;
@@ -440,7 +452,13 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   }
 
   // release lock if options.lock not set
-  if (lock) await releaseLock(instance, session.db, lock);
+  if (lock) {
+    try {
+      await releaseLock(instance, session.db, lock);
+    } catch (err) {
+      logger.fatal(err, { lock });
+    }
+  }
 
   // throw error if any
   if (err) throw err;
@@ -701,7 +719,13 @@ async function $__handleSave(options = {}, fn) {
     }
 
     // release lock if options.lock not set
-    if (lock) await releaseLock(this.instance, this.session.db, lock);
+    if (lock) {
+      try {
+        await releaseLock(this.instance, this.session.db, lock);
+      } catch (err) {
+        logger.fatal(err, { lock });
+      }
+    }
 
     // throw error if any
     if (err) throw err;
@@ -924,7 +948,13 @@ async function findOneAndUpdate(
     }
 
     // release lock if options.lock not set
-    if (lock) await releaseLock(instance, session.db, lock);
+    if (lock) {
+      try {
+        await releaseLock(instance, session.db, lock);
+      } catch (err) {
+        logger.fatal(err, { lock });
+      }
+    }
 
     // throw error if any
     if (err) throw err;
@@ -1353,8 +1383,14 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
         }
 
         // release lock if options.lock not set
-        // eslint-disable-next-line no-await-in-loop
-        if (lock) await releaseLock(instance, session.db, lock);
+        if (lock) {
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            await releaseLock(instance, session.db, lock);
+          } catch (err) {
+            logger.fatal(err, { lock });
+          }
+        }
 
         // throw error if any
         if (err) throw err;

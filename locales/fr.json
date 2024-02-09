@@ -4738,5 +4738,15 @@
   "password": "mot de passe",
   "My Account - Timezone": "Mon compte - Fuseau horaire",
   "Update Alias": "Mettre à jour l'alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Les destinataires doivent être une liste d'adresses e-mail valides, de noms de domaine complets (« FQDN »), d'adresses IP et/ou d'URL de webhook, séparées par des sauts de ligne/espaces/virgules. Nous supprimerons automatiquement les entrées en double pour vous et effectuerons la validation lorsque vous cliquerez sur « Mettre à jour l'alias » ci-dessous."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Les destinataires doivent être une liste d'adresses e-mail valides, de noms de domaine complets (« FQDN »), d'adresses IP et/ou d'URL de webhook, séparées par des sauts de ligne/espaces/virgules. Nous supprimerons automatiquement les entrées en double pour vous et effectuerons la validation lorsque vous cliquerez sur « Mettre à jour l'alias » ci-dessous.",
+  "Do you support calendars (CalDAV)": "Prenez-vous en charge les calendriers (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – voir",
+  "for SSL/TLS and": "pour SSL/TLS et",
+  "Preferred": "Préféré",
+  "for SSL/TLS.": "pour SSL/TLS.",
+  "or TLS (STARTTLS)": "ou TLS (STARTTLS)",
+  "for SSL/TLS (or)": "pour SSL/TLS (ou)",
+  "for TLS (STARTTLS)": "pour TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Notre logique est à l'épreuve des erreurs et elle réessayera également en cas d'erreurs SSL/TLS, de problèmes de connexion, etc. L’objectif de la vérification factice est de maximiser la délivrabilité à tous les destinataires pour une configuration de transfert.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Sinon, si le destinataire est une adresse e-mail, alors nous tenterons d'envoyer l'e-mail avec TLS opportuniste (nous essayons d'utiliser STARTTLS s'il est disponible sur le serveur de messagerie du destinataire). Si une erreur SSL/TLS se produit lors de la tentative d'envoi de l'e-mail, nous tenterons d'envoyer l'e-mail sans TLS (sans utiliser STARTTLS)."
 }

@@ -6,6 +6,7 @@
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
 
@@ -27,6 +28,8 @@ async function retrieveAliases(ctx, next) {
               ? {
                   $eq: '*'
                 }
+              : isEmail(ctx.query.q)
+              ? { $eq: ctx.query.q.toLowerCase() }
               : {
                   $regex: _.escapeRegExp(ctx.query.q.trim().split('@')[0]),
                   $options: 'i'

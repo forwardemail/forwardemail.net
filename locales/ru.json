@@ -7274,5 +7274,15 @@
   "password": "пароль",
   "My Account - Timezone": "Моя учетная запись – часовой пояс",
   "Update Alias": "Обновить псевдоним",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Получатели должны представлять собой список действительных адресов электронной почты, разделенных разрывом строки/пробелом/запятой, полные доменные имена («FQDN»), IP-адреса и/или URL-адреса веб-перехватчиков. Мы автоматически удалим повторяющиеся записи и выполним проверку, когда вы нажмете «Обновить псевдоним» ниже."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Получатели должны представлять собой список действительных адресов электронной почты, разделенных разрывом строки/пробелом/запятой, полные доменные имена («FQDN»), IP-адреса и/или URL-адреса веб-перехватчиков. Мы автоматически удалим повторяющиеся записи и выполним проверку, когда вы нажмете «Обновить псевдоним» ниже.",
+  "Do you support calendars (CalDAV)": "Поддерживаете ли вы календари (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – см.",
+  "for SSL/TLS and": "для SSL/TLS и",
+  "Preferred": "Предпочтительный",
+  "for SSL/TLS.": "для SSL/TLS.",
+  "or TLS (STARTTLS)": "или TLS (STARTTLS)",
+  "for SSL/TLS (or)": "для SSL/TLS (или)",
+  "for TLS (STARTTLS)": "для TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Наша логика защищена от ложных срабатываний, и она также будет повторять попытки при ошибках SSL/TLS, проблемах с подключением и т. д. Целью фиктивной проверки является максимизация доставки всем получателям для конфигурации пересылки.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "В противном случае, если получателем является адрес электронной почты, мы попытаемся отправить электронное письмо с уступающим TLS (мы пытаемся использовать STARTTLS, если он доступен на почтовом сервере получателя). Если при попытке отправки электронного письма возникает ошибка SSL/TLS, мы попытаемся отправить электронное письмо без TLS (без использования STARTTLS)."
 }

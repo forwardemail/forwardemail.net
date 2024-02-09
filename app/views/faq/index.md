@@ -20,7 +20,7 @@
 * [Do you support receiving email with IMAP](#do-you-support-receiving-email-with-imap)
 * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
 * [Do you support POP3](#do-you-support-pop3)
-* [Do you support calendars (CalDAV)?](#do-you-support-calendars-caldav)
+* [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -846,7 +846,7 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 5. When prompted for SMTP server name, enter `smtp.forwardemail.net`
 
-6. When prompted for SMTP server port, enter `587` (TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
+6. When prompted for SMTP server port, enter `465` (SSL/TLS) – see [alternate SMTP ports](/faq#what-are-your-smtp-server-configuration-settings) if necessary
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
@@ -883,12 +883,12 @@ We rate limit users and domains to 300 outbound SMTP messages per 1 day. This av
 
 Our server is `smtp.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) – and `465` and `2465` for SSL.
+It supports both IPv4 and IPv6 and is available over ports `465` and `2465` for SSL/TLS and `587`, `2587`, `2525`, and `25` for TLS (STARTTLS).
 
 |                             Protocol                             | Hostname                |            Ports            |        IPv4        |        IPv6        |
 | :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
+|                      `SSL/TLS` **Preferred**                     | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: |
 | `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `smtp.forwardemail.net` | `587`, `2587`, `2525`, `25` | :white_check_mark: | :white_check_mark: |
-|                               `SSL`                              | `smtp.forwardemail.net` |        `465`, `2465`        | :white_check_mark: | :white_check_mark: |
 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -904,11 +904,11 @@ Please refer to [Do you support sending email with SMTP](#do-you-support-sending
 
 Our server is `imap.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for TLS (STARTTLS).
+It supports both IPv4 and IPv6 and is available over ports `993` and `2993` for SSL/TLS.
 
-|                             Protocol                             | Hostname                |     Ports     |        IPv4        |        IPv6        |
-| :--------------------------------------------------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
+|         Protocol        | Hostname                |     Ports     |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Preferred** | `imap.forwardemail.net` | `993`, `2993` | :white_check_mark: | :white_check_mark: |
 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -924,11 +924,11 @@ Please refer to [Do you support receiving email with IMAP](#do-you-support-recei
 
 Our server is `pop3.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for TLS (STARTTLS).
+It supports both IPv4 and IPv6 and is available over ports `995` and `2995` for SSL/TLS.
 
-|                             Protocol                             | Hostname                |     Ports     |        IPv4        |        IPv6        |
-| :--------------------------------------------------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
-| `TLS` ([STARTTLS](https://wikipedia.org/wiki/Opportunistic_TLS)) | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
+|         Protocol        | Hostname                |     Ports     |        IPv4        |        IPv6        |
+| :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
+| `SSL/TLS` **Preferred** | `pop3.forwardemail.net` | `995`, `2995` | :white_check_mark: | :white_check_mark: |
 
 | Login    | Example                    | Description                                                                                                                                                                               |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -990,7 +990,7 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 
 4. When prompted for IMAP server name, enter `imap.forwardemail.net`
 
-5. When prompted for IMAP server port, enter `993` (TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
+5. When prompted for IMAP server port, enter `993` (SSL/TLS) – see [alternate IMAP ports](/faq#what-are-your-imap-server-configuration-settings) if necessary
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
@@ -1155,7 +1155,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
 
 4. When prompted for POP3 server name, enter `pop3.forwardemail.net`
 
-5. When prompted for POP3 server port, enter `995` (TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
+5. When prompted for POP3 server port, enter `995` (SSL/TLS) – see [alternate POP3 ports](/faq#what-are-your-pop3-server-configuration-settings) if necessary
    <div class="alert my-3 alert-warning">
      <i class="fa fa-info-circle font-weight-bold"></i>
      <strong class="font-weight-bold">
@@ -1183,7 +1183,7 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
 </div>
 
 
-## Do you support calendars (CalDAV)?
+## Do you support calendars (CalDAV)
 
 Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
@@ -1409,10 +1409,10 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
   <span>If you are using Thunderbird, then ensure "Connection security" is set to "SSL/TLS" and Authentication method is set to "Normal password".</span>
 </div>
 
-| Type |         Hostname        |         Protocol        |                                       Ports                                       |
-| :--: | :---------------------: | :---------------------: | :-------------------------------------------------------------------------------: |
-| IMAP | `imap.forwardemail.net` |      TLS (STARTTLS)     |                                  `993` and `2993`                                 |
-| SMTP | `smtp.forwardemail.net` | TLS (STARTTLS) (or) SSL | `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) (or) `465` and `2465` for SSL. |
+| Type |         Hostname        |                 Protocol                |                                         Ports                                        |
+| :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
+| IMAP | `imap.forwardemail.net` |          SSL/TLS **Preferred**          |                                   `993` and `2993`                                   |
+| SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
 
 
 ## How do I import and migrate my existing mailbox
@@ -1577,11 +1577,11 @@ Note that we will do a "Friendly-From" rewrite on the emails if and only if the 
 
 We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 
-Our logic is dummy-proof and it will also retry for TLS/SSL errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
+Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.
 
 If the recipient is a webhook, then we will permit a 60 second timeout for the request to complete with up to 3 retries (so 4 requests total before a failure).  Note that we correctly parse error codes 408, 413, and 429 and map them to a SMTP response code of 421.
 
-Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL or TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
+Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).
 
 If any DNS or connection errors occur, then we will return to the `DATA` command a SMTP response code of 421, otherwise if there are >= 500 level errors, then bounces will be sent.
 

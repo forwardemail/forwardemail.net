@@ -7274,5 +7274,15 @@
   "password": "パスワード",
   "My Account - Timezone": "私のアカウント - タイムゾーン",
   "Update Alias": "エイリアスの更新",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "受信者は、有効な電子メール アドレス、完全修飾ドメイン名 (「FQDN」)、IP アドレス、Webhook URL の改行/スペース/カンマ区切りのリストである必要があります。以下の [エイリアスの更新] をクリックすると、重複したエントリが自動的に削除され、検証が実行されます。"
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "受信者は、有効な電子メール アドレス、完全修飾ドメイン名 (「FQDN」)、IP アドレス、Webhook URL の改行/スペース/カンマ区切りのリストである必要があります。以下の [エイリアスの更新] をクリックすると、重複したエントリが自動的に削除され、検証が実行されます。",
+  "Do you support calendars (CalDAV)": "カレンダー (CalDAV) をサポートしていますか?",
+  "(SSL/TLS) – see": "(SSL/TLS) – を参照",
+  "for SSL/TLS and": "SSL/TLS および",
+  "Preferred": "好ましい",
+  "for SSL/TLS.": "SSL/TLSの場合。",
+  "or TLS (STARTTLS)": "または TLS (STARTTLS)",
+  "for SSL/TLS (or)": "SSL/TLS 用 (または)",
+  "for TLS (STARTTLS)": "TLS (STARTTLS) 用",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "私たちのロジックはダミープルーフであり、SSL/TLS エラーや接続の問題などに対しても再試行します。ダミープルーフの目標は、転送構成のすべての受信者への配信可能性を最大化することです。",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "それ以外の場合、受信者が電子メール アドレスの場合は、opportunistic TLS を使用して電子メールの送信を試みます (受信者のメール サーバーで使用可能な場合は STARTTLS の使用を試みます)。電子メールの送信中に SSL/TLS エラーが発生した場合は、TLS を使用せずに (STARTTLS を使用せずに) 電子メールの送信を試みます。"
 }

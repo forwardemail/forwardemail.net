@@ -5246,5 +5246,15 @@
   "password": "סיסמה",
   "My Account - Timezone": "החשבון שלי - אזור זמן",
   "Update Alias": "עדכן כינוי",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "הנמענים חייבים להיות רשימה מופרדת בשורות/רווחים/פסיקים של כתובות דוא\"ל חוקיות, שמות דומיין מלאים (\"FQDN\"), כתובות IP ו/או כתובות URL של חיבור לאינטרנט. אנו נסיר עבורך ערכים כפולים באופן אוטומטי ונבצע אימות כאשר תלחץ על \"עדכן כינוי\" למטה."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "הנמענים חייבים להיות רשימה מופרדת בשורות/רווחים/פסיקים של כתובות דוא\"ל חוקיות, שמות דומיין מלאים (\"FQDN\"), כתובות IP ו/או כתובות URL של חיבור לאינטרנט. אנו נסיר עבורך ערכים כפולים באופן אוטומטי ונבצע אימות כאשר תלחץ על \"עדכן כינוי\" למטה.",
+  "Do you support calendars (CalDAV)": "האם אתה תומך ביומנים (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) - ראה",
+  "for SSL/TLS and": "עבור SSL/TLS ו",
+  "Preferred": "מועדף",
+  "for SSL/TLS.": "עבור SSL/TLS.",
+  "or TLS (STARTTLS)": "או TLS (STARTTLS)",
+  "for SSL/TLS (or)": "עבור SSL/TLS (או)",
+  "for TLS (STARTTLS)": "עבור TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "ההיגיון שלנו חסין דמה והוא גם ינסה שוב לשגיאות SSL/TLS, בעיות חיבור ועוד. המטרה עם הוכחת דמה היא למקסם את יכולת המסירה לכל הנמענים עבור תצורת העברה.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "אחרת, אם הנמען הוא כתובת אימייל, ננסה לשלוח את המייל עם TLS אופורטוניסטי (אנו מנסים להשתמש ב-STARTTLS אם הוא זמין בשרת הדואר הנמען). אם מתרחשת שגיאת SSL/TLS בעת ניסיון לשלוח את האימייל, ננסה לשלוח את האימייל ללא TLS (ללא שימוש ב-STARTTLS)."
 }

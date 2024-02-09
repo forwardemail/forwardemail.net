@@ -7279,5 +7279,15 @@
   "password": "passord",
   "My Account - Timezone": "Min konto - Tidssone",
   "Update Alias": "Oppdater alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Mottakere må være en linjeskift/mellomrom/kommaseparert liste over gyldige e-postadresser, fullt kvalifiserte domenenavn (\"FQDN\"), IP-adresser og/eller webhook-URLer. Vi vil automatisk fjerne dupliserte oppføringer for deg og utføre validering når du klikker på \"Oppdater alias\" nedenfor."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Mottakere må være en linjeskift/mellomrom/kommaseparert liste over gyldige e-postadresser, fullt kvalifiserte domenenavn (\"FQDN\"), IP-adresser og/eller webhook-URLer. Vi vil automatisk fjerne dupliserte oppføringer for deg og utføre validering når du klikker på \"Oppdater alias\" nedenfor.",
+  "Do you support calendars (CalDAV)": "Støtter du kalendere (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – se",
+  "for SSL/TLS and": "for SSL/TLS og",
+  "Preferred": "Foretrukket",
+  "for SSL/TLS.": "for SSL/TLS.",
+  "or TLS (STARTTLS)": "eller TLS (STARTTLS)",
+  "for SSL/TLS (or)": "for SSL/TLS (eller)",
+  "for TLS (STARTTLS)": "for TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Vår logikk er dummy-sikker, og den vil også prøve på nytt for SSL/TLS-feil, tilkoblingsproblemer og mer. Målet med dummy-proofing er å maksimere leveringsevnen til alle mottakere for en videresendingskonfigurasjon.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Ellers hvis mottakeren er en e-postadresse, vil vi forsøke å sende e-posten med opportunistisk TLS (vi prøver å bruke STARTTLS hvis det er tilgjengelig på mottakerens e-postserver). Hvis det oppstår en SSL/TLS-feil under forsøk på å sende e-posten, vil vi forsøke å sende e-posten uten TLS (uten å bruke STARTTLS)."
 }

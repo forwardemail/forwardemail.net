@@ -4746,5 +4746,15 @@
   "password": "mật khẩu",
   "My Account - Timezone": "Tài khoản của tôi - Múi giờ",
   "Update Alias": "Cập nhật bí danh",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Người nhận phải là danh sách các địa chỉ email hợp lệ được phân tách bằng dấu cách/dấu cách/dấu phẩy, tên miền đủ điều kiện (\"FQDN\"), địa chỉ IP và/hoặc URL webhook. Chúng tôi sẽ tự động xóa các mục trùng lặp cho bạn và thực hiện xác thực khi bạn nhấp vào \"Cập nhật bí danh\" bên dưới."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Người nhận phải là danh sách các địa chỉ email hợp lệ được phân tách bằng dấu cách/dấu cách/dấu phẩy, tên miền đủ điều kiện (\"FQDN\"), địa chỉ IP và/hoặc URL webhook. Chúng tôi sẽ tự động xóa các mục trùng lặp cho bạn và thực hiện xác thực khi bạn nhấp vào \"Cập nhật bí danh\" bên dưới.",
+  "Do you support calendars (CalDAV)": "Bạn có hỗ trợ lịch (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – xem",
+  "for SSL/TLS and": "cho SSL/TLS và",
+  "Preferred": "Ưu tiên",
+  "for SSL/TLS.": "cho SSL/TLS.",
+  "or TLS (STARTTLS)": "hoặc TLS (BẮT ĐẦU)",
+  "for SSL/TLS (or)": "cho SSL/TLS (hoặc)",
+  "for TLS (STARTTLS)": "cho TLS (BẮT ĐẦU)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Logic của chúng tôi có khả năng chống giả và nó cũng sẽ thử lại các lỗi SSL/TLS, sự cố kết nối, v.v. Mục tiêu của việc chống giả là tối đa hóa khả năng gửi tới tất cả người nhận đối với cấu hình chuyển tiếp.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Ngược lại, nếu người nhận là một địa chỉ email thì chúng tôi sẽ cố gắng gửi email bằng TLS cơ hội (chúng tôi cố gắng sử dụng STARTTLS nếu nó có sẵn trên máy chủ thư của người nhận). Nếu xảy ra lỗi SSL/TLS khi cố gắng gửi email thì chúng tôi sẽ cố gắng gửi email mà không cần TLS (không sử dụng STARTTLS)."
 }

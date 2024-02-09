@@ -7274,5 +7274,15 @@
   "password": "parola d'ordine",
   "My Account - Timezone": "Il mio account - Fuso orario",
   "Update Alias": "Aggiorna Alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "I destinatari devono essere un elenco separato da interruzioni di riga/spazi/virgole di indirizzi email validi, nomi di dominio completi (\"FQDN\"), indirizzi IP e/o URL webhook. Rimuoveremo automaticamente le voci duplicate ed eseguiremo la convalida quando fai clic su \"Aggiorna alias\" di seguito."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "I destinatari devono essere un elenco separato da interruzioni di riga/spazi/virgole di indirizzi email validi, nomi di dominio completi (\"FQDN\"), indirizzi IP e/o URL webhook. Rimuoveremo automaticamente le voci duplicate ed eseguiremo la convalida quando fai clic su \"Aggiorna alias\" di seguito.",
+  "Do you support calendars (CalDAV)": "Supporti i calendari (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – vedere",
+  "for SSL/TLS and": "per SSL/TLS e",
+  "Preferred": "Preferito",
+  "for SSL/TLS.": "per SSL/TLS.",
+  "or TLS (STARTTLS)": "o TLS (STARTTLS)",
+  "for SSL/TLS (or)": "per SSL/TLS (o)",
+  "for TLS (STARTTLS)": "per TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "La nostra logica è a prova di manichino e riproverà anche in caso di errori SSL/TLS, problemi di connessione e altro. L'obiettivo della verifica fittizia è massimizzare la consegna a tutti i destinatari per una configurazione di inoltro.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Altrimenti, se il destinatario è un indirizzo email, proveremo a inviare l'email con TLS opportunistico (tentiamo di utilizzare STARTTLS se è disponibile sul server di posta del destinatario). Se si verifica un errore SSL/TLS durante il tentativo di inviare l'e-mail, proveremo a inviare l'e-mail senza TLS (senza utilizzare STARTTLS)."
 }

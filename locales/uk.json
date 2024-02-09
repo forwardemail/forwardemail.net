@@ -7274,5 +7274,15 @@
   "password": "пароль",
   "My Account - Timezone": "Мій обліковий запис - часовий пояс",
   "Update Alias": "Оновити псевдонім",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Одержувачі мають бути розділеними розривом рядка/пробілом/комою списком дійсних електронних адрес, повних доменних імен (FQDN), IP-адрес і/або URL-адрес вебхуку. Ми автоматично видалимо для вас повторювані записи та виконаємо перевірку, коли ви натиснете «Оновити псевдонім» нижче."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Одержувачі мають бути розділеними розривом рядка/пробілом/комою списком дійсних електронних адрес, повних доменних імен (FQDN), IP-адрес і/або URL-адрес вебхуку. Ми автоматично видалимо для вас повторювані записи та виконаємо перевірку, коли ви натиснете «Оновити псевдонім» нижче.",
+  "Do you support calendars (CalDAV)": "Чи підтримуєте ви календарі (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – див",
+  "for SSL/TLS and": "для SSL/TLS і",
+  "Preferred": "Бажано",
+  "for SSL/TLS.": "для SSL/TLS.",
+  "or TLS (STARTTLS)": "або TLS (STARTTLS)",
+  "for SSL/TLS (or)": "для SSL/TLS (або)",
+  "for TLS (STARTTLS)": "для TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Наша логіка захищена від помилок, і вона також повторюватиме спроби, якщо виникають помилки SSL/TLS, проблеми з підключенням тощо. Метою фіктивної перевірки є максимізація доставки всім одержувачам для конфігурації пересилання.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "В іншому випадку, якщо одержувач є адресою електронної пошти, ми спробуємо надіслати електронний лист за допомогою опортуністичної TLS (ми намагаємося використовувати STARTTLS, якщо він доступний на поштовому сервері одержувача). Якщо під час спроби надіслати електронний лист виникає помилка SSL/TLS, ми спробуємо надіслати електронний лист без TLS (без використання STARTTLS)."
 }

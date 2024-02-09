@@ -253,9 +253,18 @@ block body
             include ./_table
     .row.text-center.my-5
       .col
-        a.btn.btn-outline-secondary(
-          href=l(domain.group === "admin" ? `/my-account/domains/${domain.name}` : "/my-account/domains")
-        )
-          i.fa.fa-angle-double-left
-          = " "
-          = domain.group === "admin" ? t("Back to Domain") : t("Back to Domains")
+        ul.list-inline.mb-0
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(domain.group === "admin" ? `/my-account/domains/${domain.name}` : "/my-account/domains")
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = domain.group === "admin" ? t("Back to Domain") : t("Back to Domains")
+          li.list-inline-item
+            a.btn.btn-outline-secondary(
+              href=l(`/my-account/domains/${domain.name}/aliases`)
+            )
+              i.fa.fa-angle-double-left
+              = " "
+              = t("Back to Aliases")

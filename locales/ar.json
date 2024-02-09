@@ -7274,5 +7274,15 @@
   "password": "كلمة المرور",
   "My Account - Timezone": "حسابي - المنطقة الزمنية",
   "Update Alias": "تحديث الاسم المستعار",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "يجب أن يكون المستلمون عبارة عن قائمة مفصولة بفواصل أسطر/مسافات/فواصل لعناوين البريد الإلكتروني الصالحة، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\")، وعناوين IP، و/أو عناوين URL لخطاف الويب. سنقوم تلقائيًا بإزالة الإدخالات المكررة لك وإجراء التحقق من الصحة عند النقر فوق \"تحديث الاسم المستعار\" أدناه."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "يجب أن يكون المستلمون عبارة عن قائمة مفصولة بفواصل أسطر/مسافات/فواصل لعناوين البريد الإلكتروني الصالحة، وأسماء النطاقات المؤهلة بالكامل (\"FQDN\")، وعناوين IP، و/أو عناوين URL لخطاف الويب. سنقوم تلقائيًا بإزالة الإدخالات المكررة لك وإجراء التحقق من الصحة عند النقر فوق \"تحديث الاسم المستعار\" أدناه.",
+  "Do you support calendars (CalDAV)": "هل تدعم التقويمات (CalDAV)؟",
+  "(SSL/TLS) – see": "(SSL/TLS) – انظر",
+  "for SSL/TLS and": "لـ SSL/TLS و",
+  "Preferred": "يفضل",
+  "for SSL/TLS.": "لSSL/TLS.",
+  "or TLS (STARTTLS)": "أو TLS (STARTTLS)",
+  "for SSL/TLS (or)": "لـ SSL/TLS (أو)",
+  "for TLS (STARTTLS)": "لـ TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "منطقنا مقاوم للوهم وسيقوم أيضًا بإعادة المحاولة بحثًا عن أخطاء SSL/TLS ومشكلات الاتصال والمزيد. الهدف من التدقيق الوهمي هو زيادة إمكانية التسليم إلى أقصى حد لجميع المستلمين لتكوين إعادة التوجيه.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "بخلاف ذلك، إذا كان المستلم عنوان بريد إلكتروني، فسنحاول إرسال البريد الإلكتروني باستخدام TLS الانتهازي (نحاول استخدام STARTTLS إذا كان متاحًا على خادم بريد المستلم). إذا حدث خطأ SSL/TLS أثناء محاولة إرسال البريد الإلكتروني، فسنحاول إرسال البريد الإلكتروني بدون TLS (بدون استخدام STARTTLS)."
 }

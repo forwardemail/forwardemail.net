@@ -7274,5 +7274,15 @@
   "password": "şifre",
   "My Account - Timezone": "Hesabım - Saat Dilimi",
   "Update Alias": "Takma Adı Güncelle",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Alıcılar, geçerli e-posta adreslerinin, tam nitelikli alan adlarının (\"FQDN\"), IP adreslerinin ve/veya web kancası URL'lerinin satır sonu/boşluk/virgülle ayrılmış bir listesi olmalıdır. Sizin için yinelenen girişleri otomatik olarak kaldıracağız ve aşağıdaki \"Takma Adı Güncelle\"ye tıkladığınızda doğrulama gerçekleştireceğiz."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Alıcılar, geçerli e-posta adreslerinin, tam nitelikli alan adlarının (\"FQDN\"), IP adreslerinin ve/veya web kancası URL'lerinin satır sonu/boşluk/virgülle ayrılmış bir listesi olmalıdır. Sizin için yinelenen girişleri otomatik olarak kaldıracağız ve aşağıdaki \"Takma Adı Güncelle\"ye tıkladığınızda doğrulama gerçekleştireceğiz.",
+  "Do you support calendars (CalDAV)": "Takvimleri destekliyor musunuz (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – bkz.",
+  "for SSL/TLS and": "SSL/TLS için ve",
+  "Preferred": "Tercihli",
+  "for SSL/TLS.": "SSL/TLS için.",
+  "or TLS (STARTTLS)": "veya TLS (STARTTLS)",
+  "for SSL/TLS (or)": "SSL/TLS için (veya)",
+  "for TLS (STARTTLS)": "TLS için (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Mantığımız sahte korumalıdır ve ayrıca SSL/TLS hataları, bağlantı sorunları ve daha fazlasını yeniden deneyecektir. Sahte provanın amacı, bir iletme yapılandırması için tüm alıcılara teslim edilebilirliği en üst düzeye çıkarmaktır.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Aksi takdirde, alıcı bir e-posta adresi ise, e-postayı fırsatçı TLS ile göndermeye çalışırız (alıcı posta sunucusunda mevcutsa STARTTLS'yi kullanmaya çalışırız). E-postayı göndermeye çalışırken bir SSL/TLS hatası oluşursa, e-postayı TLS olmadan (STARTTLS kullanmadan) göndermeye çalışırız."
 }

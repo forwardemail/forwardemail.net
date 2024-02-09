@@ -7274,5 +7274,15 @@
   "password": "wachtwoord",
   "My Account - Timezone": "Mijn account - Tijdzone",
   "Update Alias": "Alias bijwerken",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Ontvangers moeten een door regeleinden/spaties/komma's gescheiden lijst zijn met geldige e-mailadressen, volledig gekwalificeerde domeinnamen (\"FQDN\"), IP-adressen en/of webhook-URL's. We zullen dubbele vermeldingen automatisch voor u verwijderen en een validatie uitvoeren wanneer u hieronder op 'Alias bijwerken' klikt."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Ontvangers moeten een door regeleinden/spaties/komma's gescheiden lijst zijn met geldige e-mailadressen, volledig gekwalificeerde domeinnamen (\"FQDN\"), IP-adressen en/of webhook-URL's. We zullen dubbele vermeldingen automatisch voor u verwijderen en een validatie uitvoeren wanneer u hieronder op 'Alias bijwerken' klikt.",
+  "Do you support calendars (CalDAV)": "Ondersteunt u kalenders (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – zie",
+  "for SSL/TLS and": "voor SSL/TLS en",
+  "Preferred": "Voorkeur",
+  "for SSL/TLS.": "voor SSL/TLS.",
+  "or TLS (STARTTLS)": "of TLS (STARTTLS)",
+  "for SSL/TLS (or)": "voor SSL/TLS (of)",
+  "for TLS (STARTTLS)": "voor TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Onze logica is dummy-proof en zal ook opnieuw proberen bij SSL/TLS-fouten, verbindingsproblemen en meer. Het doel van dummy-proofing is om de bezorgbaarheid voor alle ontvangers voor een doorstuurconfiguratie te maximaliseren.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Anders, als de ontvanger een e-mailadres is, zullen we proberen de e-mail te verzenden met opportunistische TLS (we proberen STARTTLS te gebruiken als dit beschikbaar is op de ontvangende mailserver). Als er een SSL/TLS-fout optreedt tijdens een poging om de e-mail te verzenden, zullen we proberen de e-mail te verzenden zonder TLS (zonder STARTTLS te gebruiken)."
 }

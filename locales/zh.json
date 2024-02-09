@@ -6967,5 +6967,15 @@
   "password": "密码",
   "My Account - Timezone": "我的帐户 - 时区",
   "Update Alias": "更新别名",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "收件人必须是以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名（“FQDN”）、IP 地址和/或 Webhook URL 列表。当您点击下面的“更新别名”时，我们将自动为您删除重复的条目并执行验证。"
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "收件人必须是以换行符/空格/逗号分隔的有效电子邮件地址、完全限定域名（“FQDN”）、IP 地址和/或 Webhook URL 列表。当您点击下面的“更新别名”时，我们将自动为您删除重复的条目并执行验证。",
+  "Do you support calendars (CalDAV)": "您支持日历 (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – 参见",
+  "for SSL/TLS and": "对于 SSL/TLS 和",
+  "Preferred": "首选",
+  "for SSL/TLS.": "对于 SSL/TLS。",
+  "or TLS (STARTTLS)": "或 TLS (STARTTLS)",
+  "for SSL/TLS (or)": "对于 SSL/TLS（或）",
+  "for TLS (STARTTLS)": "对于 TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "我们的逻辑是防伪的，它还会重试 SSL/TLS 错误、连接问题等。虚拟验证的目标是最大限度地提高转发配置对所有收件人的交付能力。",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "否则，如果收件人是电子邮件地址，那么我们将尝试使用机会 TLS 发送电子邮件（如果收件人邮件服务器上可用，我们会尝试使用 STARTTLS）。如果尝试发送电子邮件时发生 SSL/TLS 错误，我们将尝试在不使用 TLS 的情况下发送电子邮件（不使用 STARTTLS）。"
 }

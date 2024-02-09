@@ -7274,5 +7274,15 @@
   "password": "kata sandi",
   "My Account - Timezone": "Akun Saya - Zona Waktu",
   "Update Alias": "Perbarui Alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Penerima harus berupa daftar alamat email valid yang dipisahkan baris/spasi/koma, nama domain yang sepenuhnya memenuhi syarat (\"FQDN\"), alamat IP, dan/atau URL webhook. Kami akan secara otomatis menghapus entri duplikat untuk Anda dan melakukan validasi ketika Anda mengklik \"Perbarui Alias\" di bawah."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Penerima harus berupa daftar alamat email valid yang dipisahkan baris/spasi/koma, nama domain yang sepenuhnya memenuhi syarat (\"FQDN\"), alamat IP, dan/atau URL webhook. Kami akan secara otomatis menghapus entri duplikat untuk Anda dan melakukan validasi ketika Anda mengklik \"Perbarui Alias\" di bawah.",
+  "Do you support calendars (CalDAV)": "Apakah Anda mendukung kalender (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – lihat",
+  "for SSL/TLS and": "untuk SSL/TLS dan",
+  "Preferred": "Lebih disukai",
+  "for SSL/TLS.": "untuk SSL/TLS.",
+  "or TLS (STARTTLS)": "atau TLS (MULAITLS)",
+  "for SSL/TLS (or)": "untuk SSL/TLS (atau)",
+  "for TLS (STARTTLS)": "untuk TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Logika kami anti dummy dan juga akan mencoba lagi untuk kesalahan SSL/TLS, masalah koneksi, dan banyak lagi. Tujuan dari pemeriksaan dummy adalah untuk memaksimalkan kemampuan pengiriman ke semua penerima untuk konfigurasi penerusan.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Sebaliknya jika penerima adalah alamat email, maka kami akan mencoba mengirim email dengan TLS oportunistik (kami mencoba menggunakan STARTTLS jika tersedia di server email penerima). Jika terjadi kesalahan SSL/TLS saat mencoba mengirim email, maka kami akan mencoba mengirim email tanpa TLS (tanpa menggunakan STARTTLS)."
 }

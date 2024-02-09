@@ -106,7 +106,14 @@ function getQueryResponse(query, message, options = {}, instance, session) {
 
       case 'envelope': {
         if (message.envelope) {
-          value = message.envelope;
+          //
+          // NOTE: this is an edge case because of how we store envelopes
+          // <https://github.com/nodemailer/wildduck/issues/618#issuecomment-1933139110>
+          //
+          value = message.envelope.map((a) =>
+            a instanceof Date ? a.toISOString() : a
+          );
+
           // cast invalidly stored In-Reply-To (8) and Message-ID (9) to strings
           for (const index of [9, 10]) {
             if (value[index] && Array.isArray(value[index])) {

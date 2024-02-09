@@ -7121,5 +7121,15 @@
   "password": "Salasana",
   "My Account - Timezone": "Oma tili - Aikavyöhyke",
   "Update Alias": "Päivitä alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Vastaanottajien on oltava rivinvaihdolla/välilyönnillä/pilkuilla erotettu luettelo kelvollisista sähköpostiosoitteista, täysin kelvollisista verkkotunnusten nimistä (\"FQDN\"), IP-osoitteista ja/tai webhook-URL-osoitteista. Poistamme automaattisesti päällekkäiset merkinnät puolestasi ja suoritamme vahvistuksen, kun napsautat alla olevaa \"Päivitä alias\" -painiketta."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Vastaanottajien on oltava rivinvaihdolla/välilyönnillä/pilkuilla erotettu luettelo kelvollisista sähköpostiosoitteista, täysin kelvollisista verkkotunnusten nimistä (\"FQDN\"), IP-osoitteista ja/tai webhook-URL-osoitteista. Poistamme automaattisesti päällekkäiset merkinnät puolestasi ja suoritamme vahvistuksen, kun napsautat alla olevaa \"Päivitä alias\" -painiketta.",
+  "Do you support calendars (CalDAV)": "Tuetko kalentereita (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – katso",
+  "for SSL/TLS and": "SSL/TLS:lle ja",
+  "Preferred": "Suositeltava",
+  "for SSL/TLS.": "SSL/TLS:lle.",
+  "or TLS (STARTTLS)": "tai TLS (STARTTLS)",
+  "for SSL/TLS (or)": "SSL/TLS (tai)",
+  "for TLS (STARTTLS)": "TLS:lle (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Logiikkamme on tekosuojattu, ja se yrittää myös uudelleen SSL/TLS-virheiden, yhteysongelmien ja muiden varalta. Valevarmuuden tavoitteena on maksimoida edelleenlähetyskokoonpanon toimitettavuus kaikille vastaanottajille.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Muussa tapauksessa, jos vastaanottaja on sähköpostiosoite, yritämme lähettää sähköpostin opportunistisella TLS:llä (yritämme käyttää STARTTLS:ää, jos se on saatavilla vastaanottajan sähköpostipalvelimella). Jos SSL/TLS-virhe ilmenee yritettäessä lähettää sähköpostia, yritämme lähettää sähköpostin ilman TLS:ää (ilman STARTTLS:ää)."
 }

@@ -7274,5 +7274,15 @@
   "password": "Heslo",
   "My Account - Timezone": "Můj účet – časové pásmo",
   "Update Alias": "Aktualizujte alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Příjemci musí obsahovat seznam platných e-mailových adres, plně kvalifikovaných názvů domén (\"FQDN\"), IP adres a/nebo webových adres URL oddělených čárkami/mezera/čárkami. Po kliknutí na „Aktualizovat alias“ níže za vás automaticky odstraníme duplicitní záznamy a provedeme ověření."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Příjemci musí obsahovat seznam platných e-mailových adres, plně kvalifikovaných názvů domén (\"FQDN\"), IP adres a/nebo webových adres URL oddělených čárkami/mezera/čárkami. Po kliknutí na „Aktualizovat alias“ níže za vás automaticky odstraníme duplicitní záznamy a provedeme ověření.",
+  "Do you support calendars (CalDAV)": "Podporujete kalendáře (CalDAV)",
+  "(SSL/TLS) – see": "(SSL/TLS) – viz",
+  "for SSL/TLS and": "pro SSL/TLS a",
+  "Preferred": "Preferováno",
+  "for SSL/TLS.": "pro SSL/TLS.",
+  "or TLS (STARTTLS)": "nebo TLS (STARTTLS)",
+  "for SSL/TLS (or)": "pro SSL/TLS (nebo)",
+  "for TLS (STARTTLS)": "pro TLS (STARTTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Naše logika je fiktivní a bude se také opakovat pro chyby SSL/TLS, problémy s připojením a další. Cílem dummy-proofingu je maximalizovat doručitelnost pro všechny příjemce konfigurace předávání.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "Pokud je příjemcem e-mailová adresa, pokusíme se odeslat e-mail s příležitostným protokolem TLS (pokusíme se použít STARTTLS, pokud je na poštovním serveru příjemce k dispozici). Pokud při pokusu o odeslání e-mailu dojde k chybě SSL/TLS, pokusíme se odeslat e-mail bez TLS (bez použití STARTTLS)."
 }

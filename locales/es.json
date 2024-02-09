@@ -7272,5 +7272,15 @@
   "password": "contraseña",
   "My Account - Timezone": "Mi cuenta - Zona horaria",
   "Update Alias": "Actualizar alias",
-  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Los destinatarios deben ser una lista separada por saltos de línea, espacios o comas de direcciones de correo electrónico válidas, nombres de dominio completos (\"FQDN\"), direcciones IP y/o URL de webhook. Eliminaremos automáticamente las entradas duplicadas y realizaremos la validación cuando haga clic en \"Actualizar alias\" a continuación."
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Los destinatarios deben ser una lista separada por saltos de línea, espacios o comas de direcciones de correo electrónico válidas, nombres de dominio completos (\"FQDN\"), direcciones IP y/o URL de webhook. Eliminaremos automáticamente las entradas duplicadas y realizaremos la validación cuando haga clic en \"Actualizar alias\" a continuación.",
+  "Do you support calendars (CalDAV)": "¿Admite calendarios (CalDAV)?",
+  "(SSL/TLS) – see": "(SSL/TLS) – ver",
+  "for SSL/TLS and": "para SSL/TLS y",
+  "Preferred": "Privilegiado",
+  "for SSL/TLS.": "para SSL/TLS.",
+  "or TLS (STARTTLS)": "o TLS (INICIOTLS)",
+  "for SSL/TLS (or)": "para SSL/TLS (o)",
+  "for TLS (STARTTLS)": "para TLS (INICIOTLS)",
+  "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "Nuestra lógica es a prueba de falsificaciones y también reintentará errores SSL/TLS, problemas de conexión y más. El objetivo de la prueba ficticia es maximizar la capacidad de entrega a todos los destinatarios para una configuración de reenvío.",
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "De lo contrario, si el destinatario es una dirección de correo electrónico, intentaremos enviar el correo electrónico con TLS oportunista (intentamos utilizar STARTTLS si está disponible en el servidor de correo del destinatario). Si se produce un error de SSL/TLS al intentar enviar el correo electrónico, intentaremos enviar el correo electrónico sin TLS (sin utilizar STARTTLS)."
 }

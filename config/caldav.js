@@ -286,11 +286,13 @@ class CalDAV {
       await refreshSession.call(this, ctx.state.session, 'CALDAV');
 
       // ensure that the default calendar exists
-      await this.getCalendar({
+      const defaultCalendar = await this.getCalendar({
         calendarId: user.username,
         principalId: user.username,
         user
       });
+
+      logger.debug('defaultCalendar', { defaultCalendar });
 
       return user;
     } catch (err) {
@@ -370,6 +372,8 @@ class CalDAV {
         readonly: false,
         synctoken: `${config.urls.web}/ns/sync-token/1`
       });
+
+    logger.debug('getCalendar result', { calendar });
 
     return calendar;
   }
@@ -576,6 +580,74 @@ class CalDAV {
       categories: event.categories
     };
 
+    //
+    // TODO: if user logs into CalDAV and does not have SMTP enabled and verified
+    //       then send the user an email and notify them that calendar invites
+    //       will not get automatically emailed until they set this up properly
+    //       at https://forwardemail.net/my-account/domains/yourdomain.com/verify-smtp
+    //
+
+    // NOTE: here is Thunderbird's implementation of itip
+    //       <https://github.com/mozilla/releases-comm-central/blob/0b146e856d83fc7189a6e79800871916fc00e725/calendar/base/modules/utils/calItipUtils.sys.mjs#L31>
+
+    // TODO: ensure we have support for all these RFC's down the road
+    //       <https://stackoverflow.com/a/36344164>
+    //       <https://github.com/nextcloud/calendar/wiki/Developer-Resources#rfcs>
+
+    //
+    // TODO: actually send invites via email and attach ics file
+    //       <https://datatracker.ietf.org/doc/html/rfc6047#section-2.5>
+    //       <https://sabre.io/dav/scheduling/>
+    //       <https://datatracker.ietf.org/doc/html/rfc6047>
+    //
+    // X-MOZ-SEND-INVITATIONS:TRUE
+    // X-MOZ-SEND-INVITATIONS-UNDISCLOSED:FALSE
+    //
+    // if SCHEDULE-AGENT=CLIENT then do not send invite
+    //
+    // From: user1@example.com
+    // To: user2@example.com
+    // Subject: Phone Conference
+    // Mime-Version: 1.0
+    // Date: Wed, 07 May 2008 21:30:25 +0400
+    // Message-ID: <4821E731.5040506@laptop1.example.com>
+    // Content-Type: text/calendar; method=REQUEST; charset=UTF-8
+    // Content-Transfer-Encoding: quoted-printable
+    //
+    // BEGIN:VCALENDAR
+    // PRODID:-//Example/ExampleCalendarClient//EN
+    // METHOD:REQUEST
+    // VERSION:2.0
+    // BEGIN:VEVENT
+    // ORGANIZER:mailto:user1@example.com
+    // ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:user1@example.com
+    // ATTENDEE;RSVP=YES;CUTYPE=INDIVIDUAL:mailto:user2@example.com
+    // DTSTAMP:20080507T170000Z
+    // DTSTART:20080701T160000Z
+    // DTEND:20080701T163000Z
+    // SUMMARY:Phone call to discuss your last visit
+    // DESCRIPTION:=D1=82=D1=8B =D0=BA=D0=B0=D0=BA - =D0=B4=D0=BE=D0=
+    //  =B2=D0=BE=D0=BB=D0=B5=D0=BD =D0=BF=D0=BE=D0=B5=D0=B7=D0=B4=D0=BA=D0
+    //  =BE=D0=B9?
+    // UID:calsvr.example.com-8739701987387998
+    // SEQUENCE:0
+    // STATUS:TENTATIVE
+    // END:VEVENT
+    // END:VCALENDAR
+    //
+
+    //
+    // NOTE: see this thread from nextcloud regarding description
+    //       and the issues (and cleanup necessary) that was done to support Thunderbird and other clients
+    //
+    //       <https://github.com/nextcloud/calendar/issues/3863>
+    //       <https://github.com/nextcloud/tasks/issues/2239>
+    //       <https://github.com/nextcloud/calendar/pull/3924>
+    //       <https://github.com/nextcloud/tasks/pull/2240/commits/cb87ab1b5ca3abdfa012e26fbe85827275f4cb66>
+    //       <https://github.com/nextcloud/calendar/issues/3234>
+    //       <https://github.com/nextcloud/server/pull/41370>
+    //
+
     logger.debug('create calendar event', { calendarEvent });
 
     return CalendarEvents.create(calendarEvent);
@@ -687,6 +759,11 @@ class CalDAV {
   async buildICS(event, calendar) {
     logger.debug('buildICS', { event, calendar });
 
+    // TODO: add support for alarms
+    // TODO: preserve DESCRIPTION;ALTREP
+
+    // TODO: remove the conditional below once we update caldav-adapter
+
     //
     // TODO: until this PR is merged this is a temporary fix
     //       to ensure that VALARM data is returned in calendar response objects
@@ -786,7 +863,7 @@ module.exports = {
     });
 
     // this is the magic where we define caldav implementation
-    app.use((ctx, next) => {
+    app.use(async (ctx, next) => {
       const caldav = new CalDAV(ctx, config.sqlitePort);
       logger.debug('new request', {
         method: ctx.request.method,
@@ -795,31 +872,38 @@ module.exports = {
         type: ctx.request.type,
         req: ctx.req
       });
-      return caldavAdapter({
-        authenticate: caldav.authenticate,
-        authRealm: 'forwardemail/caldav',
-        caldavRoot: '/',
-        calendarRoot: 'dav',
-        principalRoot: 'principals',
-        // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/src/koa.ts#L130-L131>
-        disableWellKnown: false,
-        logEnabled: config.env !== 'production',
-        logLevel: 'debug',
-        data: {
-          createCalendar: caldav.createCalendar,
-          getCalendar: caldav.getCalendar,
-          getCalendarsForPrincipal: caldav.getCalendarsForPrincipal,
-          getEventsForCalendar: caldav.getEventsForCalendar,
-          getEventsByDate: caldav.getEventsByDate,
-          getEvent: caldav.getEvent,
-          createEvent: caldav.createEvent,
-          updateEvent: caldav.updateEvent,
-          deleteEvent: caldav.deleteEvent,
-          buildICS: caldav.buildICS,
-          getCalendarId: caldav.getCalendarId,
-          getETag: caldav.getETag
-        }
-      })(ctx, next);
+      // TODO: remove this try/catch in the future (useful for debugging)
+      try {
+        const val = await caldavAdapter({
+          authenticate: caldav.authenticate,
+          authRealm: 'forwardemail/caldav',
+          caldavRoot: '/',
+          calendarRoot: 'dav',
+          principalRoot: 'principals',
+          // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/src/koa.ts#L130-L131>
+          disableWellKnown: false,
+          logEnabled: config.env !== 'production',
+          logLevel: 'debug',
+          data: {
+            createCalendar: caldav.createCalendar,
+            getCalendar: caldav.getCalendar,
+            getCalendarsForPrincipal: caldav.getCalendarsForPrincipal,
+            getEventsForCalendar: caldav.getEventsForCalendar,
+            getEventsByDate: caldav.getEventsByDate,
+            getEvent: caldav.getEvent,
+            createEvent: caldav.createEvent,
+            updateEvent: caldav.updateEvent,
+            deleteEvent: caldav.deleteEvent,
+            buildICS: caldav.buildICS,
+            getCalendarId: caldav.getCalendarId,
+            getETag: caldav.getETag
+          }
+        })(ctx, next);
+        return val;
+      } catch (err) {
+        logger.error(err);
+        throw err;
+      }
     });
   },
   hookBeforeSetup(app) {
