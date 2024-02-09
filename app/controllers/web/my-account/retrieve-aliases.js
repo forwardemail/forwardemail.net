@@ -28,8 +28,9 @@ async function retrieveAliases(ctx, next) {
               ? {
                   $eq: '*'
                 }
-              : isEmail(ctx.query.q)
-              ? { $eq: ctx.query.q.toLowerCase() }
+              : isEmail(ctx.query.q) &&
+                ctx.query.q.endsWith(`@${ctx.state.domain.name}`)
+              ? { $eq: ctx.query.q.split('@')[0] }
               : {
                   $regex: _.escapeRegExp(ctx.query.q.trim().split('@')[0]),
                   $options: 'i'
