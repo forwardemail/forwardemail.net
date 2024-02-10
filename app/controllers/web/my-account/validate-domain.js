@@ -107,38 +107,38 @@ async function validateDomain(ctx, next) {
 
   ctx.state.recipients = [];
 
-  if (isSANB(ctx.request.body.catchall)) {
-    if (ctx.request.body.catchall === 'true') {
-      ctx.request.body.catchall = true;
-    } else if (ctx.request.body.catchall === 'false') {
-      ctx.request.body.catchall = false;
+  if (ctx.api) {
+    if (isSANB(ctx.request.body.catchall)) {
+      if (ctx.request.body.catchall === 'false') {
+        ctx.request.body.catchall = false;
+      } else if (ctx.request.body.catchall === 'true') {
+        ctx.state.recipients.push(ctx.state.user.email);
+      } else {
+        const rcpts = _.compact(
+          _.uniq(
+            _.map(
+              splitLines(ctx.request.body.catchall)
+                .join(' ')
+                .split(',')
+                .join(' ')
+                .split(' '),
+              (recipient) => recipient.trim()
+            )
+          )
+        ).filter((val) => isEmail(val));
+        // if no recipients parsed then throw error
+        if (rcpts.length === 0)
+          return ctx.throw(
+            Boom.badRequest(ctx.translateError('ALIAS_MUST_HAVE_ONE_RECIPIENT'))
+          );
+
+        ctx.state.recipients.push(...rcpts);
+      }
+    } else if (ctx.request.body.catchall === true) {
+      ctx.state.recipients.push(ctx.state.user.email);
     }
-  } else if (!_.isBoolean(ctx.request.body.catchall)) {
-    ctx.request.body.catchall = true;
-  }
-
-  if (ctx.api && isSANB(ctx.request.body.catchall)) {
-    const rcpts = _.compact(
-      _.uniq(
-        _.map(
-          splitLines(ctx.request.body.catchall)
-            .join(' ')
-            .split(',')
-            .join(' ')
-            .split(' '),
-          (recipient) => recipient.trim()
-        )
-      )
-    ).filter((val) => isEmail(val));
-
-    // if no recipients parsed then throw error
-    if (rcpts.length === 0)
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('ALIAS_MUST_HAVE_ONE_RECIPIENT'))
-      );
-
-    ctx.state.recipients = rcpts;
   } else {
+    ctx.request.body.catchall = true;
     ctx.state.recipients.push(ctx.state.user.email);
   }
 

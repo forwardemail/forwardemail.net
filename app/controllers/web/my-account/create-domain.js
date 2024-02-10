@@ -4,7 +4,6 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const { boolean } = require('boolean');
 
 const toObject = require('#helpers/to-object');
@@ -25,11 +24,7 @@ async function createDomain(ctx, next) {
     });
 
     // create a default alias for the user pointing to the user or recipients
-    if (
-      boolean(ctx.api) &&
-      _.isBoolean(ctx.request.body.catchall) &&
-      !ctx.request.body.catchall
-    ) {
+    if (boolean(ctx.api) && ctx.request.body.catchall === false) {
       // create domain without any aliases yet!
       ctx.logger.info('created domain without aliases', {
         domain: ctx.state.domain
