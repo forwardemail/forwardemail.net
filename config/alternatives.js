@@ -453,7 +453,7 @@ const obj = {
     // e2ee
     false,
     // openpgp
-    '<a target="_blank" rel="noopener noreferrer" href="https://www.fastmail.com/blog/why-we-dont-offer-pgp/">Fastmail does not support PGP</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.fastmail.com/blog/why-we-dont-offer-pgp/">Fastmail does support PGP, but not in their webmail; see this blog post for insight</a>',
     // wkd
     false,
     // hardenize (on root domain)
@@ -986,7 +986,7 @@ const obj = {
     // e2ee
     false,
     // openpgp
-    '<a target="_blank" rel="noopener noreferrer" href="https://kb.mailbox.org/en/business/security-privacy-article/an-introduction-to-mailbox-org-guard">Supported although they require you to upload your private keys, which is a security issue</a>',
+    '<a target="_blank" rel="noopener noreferrer" href="https://kb.mailbox.org/en/business/security-privacy-article/an-introduction-to-mailbox-org-guard">Supported although they require you to upload your private keys, which is a security issue</a>; also see this blog post for <a href="https://kb.mailbox.org/en/private/e-mail-article/your-encrypted-mailbox/" target="_blank" rel="noopener noreferrer">uploading public keys</a>.',
     // wkd
     false,
     // hardenize (on root domain)
