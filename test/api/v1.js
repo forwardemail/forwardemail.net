@@ -863,6 +863,79 @@ test('smtp outbound spam block detection', async (t) => {
   await delay(1000);
 });
 
+test('create domain without catchall', async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  await factory.create('payment', {
+    user: user._id,
+    amount: 300,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    duration: ms('30d'),
+    plan: user.plan,
+    kind: 'one-time'
+  });
+
+  await user.save();
+
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain1.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain2.com',
+        catchall: false
+      });
+
+    t.is(res.status, 200);
+  }
+
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain3.com',
+        catchall: '0'
+      });
+
+    t.is(res.status, 200);
+  }
+
+  const res = await t.context.api
+    .post('/v1/domains')
+    .auth(user[config.userFields.apiToken])
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .send({
+      domain: 'testdomain4.com',
+      catchall: 0
+    });
+
+  t.is(res.status, 200);
+});
+
 test('lists emails', async (t) => {
   const user = await factory.create('user', {
     plan: 'enhanced_protection',

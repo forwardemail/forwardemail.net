@@ -109,7 +109,8 @@ async function validateDomain(ctx, next) {
 
   if (ctx.api) {
     if (isSANB(ctx.request.body.catchall)) {
-      if (ctx.request.body.catchall === 'false') {
+      // some API libraries like Guzzle convert false to "0"
+      if (['false', '0', 0].includes(ctx.request.body.catchall)) {
         ctx.request.body.catchall = false;
       } else if (ctx.request.body.catchall === 'true') {
         ctx.state.recipients.push(ctx.state.user.email);
