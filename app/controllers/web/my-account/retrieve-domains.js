@@ -146,13 +146,15 @@ async function retrieveDomains(ctx, next) {
     ctx.state.domains.map(async (d) => {
       if (d.is_global || d.plan === 'free') return d;
       try {
-        const [storageUsed, storageUsedByAliases] = await Promise.all([
-          Domains.getStorageUsed(d._id, ctx.locale),
-          Domains.getStorageUsed(d._id, ctx.locale, true)
-        ]);
+        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
+          await Promise.all([
+            Domains.getStorageUsed(d._id, ctx.locale),
+            Domains.getStorageUsed(d._id, ctx.locale, true),
+            Domains.getMaxQuota(d._id)
+          ]);
         d.storage_used = storageUsed;
         d.storage_used_by_aliases = storageUsedByAliases;
-        d.storage_quota = config.maxQuotaPerAlias;
+        d.storage_quota = maxQuotaPerAlias;
       } catch (err) {
         ctx.logger.fatal(err);
       }

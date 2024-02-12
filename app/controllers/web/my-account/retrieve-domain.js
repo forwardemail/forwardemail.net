@@ -400,13 +400,15 @@ async function retrieveDomain(ctx, next) {
 
       // get storage quota for the domain
       try {
-        const [storageUsed, storageUsedByAliases] = await Promise.all([
-          Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
-          Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true)
-        ]);
+        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
+          await Promise.all([
+            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
+            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true),
+            Domains.getMaxQuota(ctx.state.domain._id)
+          ]);
         ctx.state.domain.storage_used = storageUsed;
         ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
-        ctx.state.domain.storage_quota = config.maxQuotaPerAlias;
+        ctx.state.domain.storage_quota = maxQuotaPerAlias;
       } catch (err) {
         ctx.logger.fatal(err);
       }

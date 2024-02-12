@@ -43,6 +43,7 @@ const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
@@ -959,8 +960,10 @@ async function parsePayload(data, ws) {
                 );
               }
 
-              const exceedsQuota =
-                storageUsed + byteLength > config.maxQuotaPerAlias;
+              const maxQuotaPerAlias = await Domains.getMaxQuota(
+                alias.domain.id
+              );
+              const exceedsQuota = storageUsed + byteLength > maxQuotaPerAlias;
 
               if (exceedsQuota) {
                 const err = new TypeError(
@@ -1415,8 +1418,12 @@ async function parsePayload(data, ws) {
         });
         const diskSpace = await checkDiskSpace(storagePath);
 
+        const maxQuotaPerAlias = await Domains.getMaxQuota(
+          payload.session.user.domain_id
+        );
+
         // slight 2x overhead for backups
-        const spaceRequired = config.maxQuotaPerAlias * 2;
+        const spaceRequired = maxQuotaPerAlias * 2;
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
@@ -1832,7 +1839,10 @@ async function parsePayload(data, ws) {
         const diskSpace = await checkDiskSpace(storagePath);
 
         // slight 2x overhead for backups
-        const spaceRequired = config.maxQuotaPerAlias * 2;
+        const maxQuotaPerAlias = await Domains.getMaxQuota(
+          payload.session.user.domain_id
+        );
+        const spaceRequired = maxQuotaPerAlias * 2;
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(

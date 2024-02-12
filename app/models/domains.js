@@ -11,6 +11,7 @@ const { promisify } = require('node:util');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
+const bytes = require('bytes');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
@@ -1998,6 +1999,90 @@ async function ensureUserHasValidPlan(user, locale) {
 }
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
+
+async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
+  const domain = await this.findById(_id)
+    .populate(
+      'members.user',
+      `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
+    )
+    .lean()
+    .exec();
+
+  if (!domain) {
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
+    );
+  }
+
+  if (!domain)
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
+    );
+
+  // Safeguard to not check storage used for global domains
+  if (domain.is_global) {
+    throw new TypeError('Global domains not supported for storage');
+  }
+
+  // Safeguard for storage to only be used on paid plans
+  if (domain.plan === 'free') {
+    throw Boom.badRequest(
+      i18n.translateError(
+        'DOMAIN_PLAN_UPGRADE_REQUIRED',
+        locale,
+        domain.name,
+        i18n.translate('ENHANCED_PROTECTION', locale),
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+      )
+    );
+  }
+
+  // If we're on non-team plan, then there should only be one member (safeguard)
+  if (domain.plan !== 'team' && domain.members.length > 1) {
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one member`
+    );
+  }
+
+  // Filter out a domain's members without actual users
+  const adminMembers = domain.members.filter(
+    (member) =>
+      _.isObject(member.user) &&
+      !member.user[config.userFields.isBanned] &&
+      member.group === 'admin' &&
+      mongoose.isObjectIdOrHexString(member.user._id)
+  );
+
+  if (adminMembers.length === 0) {
+    throw Boom.notFound(
+      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
+    );
+  }
+
+  // If we're on non-team plan, then there should only be one admin (safeguard)
+  if (domain.plan !== 'team' && adminMembers.length > 1) {
+    throw new TypeError(
+      `Domain ${domain.name} (${domain.id}) has more than one admin`
+    );
+  }
+
+  // go through all admins and get the max value
+  const max = _.max(
+    adminMembers.map((member) =>
+      typeof member.user[config.userFields.maxQuotaPerAlias] === 'number'
+        ? member.user[config.userFields.maxQuotaPerAlias]
+        : config.maxQuotaPerAlias
+    )
+  );
+
+  //
+  // NOTE: hard-coded max of 100 GB (safeguard)
+  //
+  return _.clamp(max, config.maxQuotaPerAlias, bytes('100GB'));
+}
+
+Domains.statics.getMaxQuota = getMaxQuota;
 
 async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   let storageUsed = 0;

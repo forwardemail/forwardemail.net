@@ -27,6 +27,7 @@ const { convert } = require('html-to-text');
 const email = require('../email');
 const isCodeBug = require('../is-code-bug');
 
+const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -325,7 +326,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
-    const exceedsQuota = storageUsed + size > config.maxQuotaPerAlias;
+    const maxQuotaPerAlias = await Domains.getMaxQuota(session.user.domain_id);
+
+    const exceedsQuota = storageUsed + size > maxQuotaPerAlias;
     if (exceedsQuota)
       throw new IMAPError(
         i18n.translate(

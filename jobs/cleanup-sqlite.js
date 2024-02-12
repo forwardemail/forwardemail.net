@@ -255,10 +255,13 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           if (!alias.has_imap || !alias.is_enabled) return;
 
           // eslint-disable-next-line no-await-in-loop
-          const storageUsed = await Aliases.getStorageUsed(alias);
+          const [storageUsed, maxQuotaPerAlias] = await Promise.all([
+            Aliases.getStorageUsed(alias),
+            Domains.getMaxQuota(alias.domain)
+          ]);
 
           const percentageUsed = Math.round(
-            (storageUsed / config.maxQuotaPerAlias) * 100
+            (storageUsed / maxQuotaPerAlias) * 100
           );
 
           // find closest threshold
@@ -308,7 +311,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             locale,
             percentageUsed,
             prettyBytes(storageUsed),
-            prettyBytes(config.maxQuotaPerAlias),
+            prettyBytes(maxQuotaPerAlias),
             `${config.urls.web}/${locale}/my-account/billing`
           );
 

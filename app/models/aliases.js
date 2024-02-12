@@ -681,9 +681,13 @@ Aliases.statics.isOverQuota = async function (alias, size = 0) {
   // TODO: allow users to purchase more storage (tied to their user.storage_quota)
   //       but this is only relative here if the user is an admin of their aliases domain
 
+  const maxQuotaPerAlias = await Domains.getMaxQuota(
+    alias?.domain?._id || alias.domain
+  );
+
   // TODO: if user is on team plan then check if any other user is on team plan
   //       and multiply that user count by the max quota (pooling concept for teams)
-  const isOverQuota = storageUsed + size > config.maxQuotaPerAlias;
+  const isOverQuota = storageUsed + size > maxQuotaPerAlias;
 
   // log fatal error to admins (so they will get notified by email/text)
   if (isOverQuota)
@@ -691,7 +695,7 @@ Aliases.statics.isOverQuota = async function (alias, size = 0) {
       new TypeError(
         `Alias ${alias.id} is over quota (${prettyBytes(
           storageUsed + size
-        )}/${prettyBytes(config.maxQuotaPerAlias)})`
+        )}/${prettyBytes(maxQuotaPerAlias)})`
       )
     );
 

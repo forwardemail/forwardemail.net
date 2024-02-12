@@ -145,6 +145,11 @@ const Users = new mongoose.Schema({
 // Additional variable based properties to add to the schema
 const object = {};
 
+object[config.userFields.maxQuotaPerAlias] = {
+  type: Number,
+  default: config.maxQuotaPerAlias
+};
+
 object[config.userFields.smtpLimit] = {
   type: Number,
   default: config.smtpLimitMessages,

@@ -467,7 +467,8 @@ const config = {
     companyVAT: 'company_vat',
     hasDenylistRequests: 'has_denylist_requests',
     approvedDomains: 'approved_domains',
-    smtpLimit: 'smtp_limit'
+    smtpLimit: 'smtp_limit',
+    maxQuotaPerAlias: 'max_quota_per_alias'
   },
 
   // dynamic otp routes

@@ -16,7 +16,7 @@
  */
 
 const Aliases = require('#models/aliases');
-const config = require('#config');
+const Domains = require('#models/domains');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onGetQuota(path, session, fn) {
@@ -46,15 +46,18 @@ async function onGetQuota(path, session, fn) {
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 
-    const storageUsed = await Aliases.getStorageUsed({
-      id: session.user.alias_id,
-      domain: session.user.domain_id,
-      locale: session.user.locale
-    });
+    const [storageUsed, maxQuotaPerAlias] = await Promise.all([
+      Aliases.getStorageUsed({
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      }),
+      Domains.getMaxQuota(session.user.domain_id)
+    ]);
 
     fn(null, {
       root: '',
-      quota: config.maxQuotaPerAlias,
+      quota: maxQuotaPerAlias,
       storageUsed
     });
   } catch (err) {

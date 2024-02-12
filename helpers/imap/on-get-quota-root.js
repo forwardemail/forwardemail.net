@@ -14,9 +14,9 @@
  */
 
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
-const config = require('#config');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
@@ -57,15 +57,18 @@ async function onGetQuotaRoot(path, session, fn) {
         }
       );
 
-    const storageUsed = await Aliases.getStorageUsed({
-      id: session.user.alias_id,
-      domain: session.user.domain_id,
-      locale: session.user.locale
-    });
+    const [storageUsed, maxQuotaPerAlias] = await Promise.all([
+      Aliases.getStorageUsed({
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      }),
+      Domains.getMaxQuota(session.user.domain_id)
+    ]);
 
     fn(null, {
       root: '',
-      quota: config.maxQuotaPerAlias,
+      quota: maxQuotaPerAlias,
       storageUsed
     });
   } catch (err) {
