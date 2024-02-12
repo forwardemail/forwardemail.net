@@ -368,7 +368,9 @@ async function generateOpenGraphImage(ctx, next) {
       const compressed = await gzip(svg);
       ctx.body = compressed;
       ctx.client
-        .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
+        // NOTE: this takes up too much space so we set TTL to 1 hour
+        // .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
+        .set(key, compressed.toString('hex'), 'PX', ms('1h'))
         .then()
         .catch((err) => ctx.logger.fatal(err));
     } else {
@@ -387,7 +389,9 @@ async function generateOpenGraphImage(ctx, next) {
       const compressed = await gzip(buffer);
       ctx.body = compressed;
       ctx.client
-        .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
+        // NOTE: this takes up too much space so we set TTL to 1 hour
+        // .set(key, compressed.toString('hex'), 'EX', MAX_AGE)
+        .set(key, compressed.toString('hex'), 'PX', ms('1h'))
         .then()
         .catch((err) => ctx.logger.fatal(err));
     }

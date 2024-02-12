@@ -7284,5 +7284,9 @@
   "for SSL/TLS (or)": "SSL/TLS 用 (または)",
   "for TLS (STARTTLS)": "TLS (STARTTLS) 用",
   "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "私たちのロジックはダミープルーフであり、SSL/TLS エラーや接続の問題などに対しても再試行します。ダミープルーフの目標は、転送構成のすべての受信者への配信可能性を最大化することです。",
-  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "それ以外の場合、受信者が電子メール アドレスの場合は、opportunistic TLS を使用して電子メールの送信を試みます (受信者のメール サーバーで使用可能な場合は STARTTLS の使用を試みます)。電子メールの送信中に SSL/TLS エラーが発生した場合は、TLS を使用せずに (STARTTLS を使用せずに) 電子メールの送信を試みます。"
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "それ以外の場合、受信者が電子メール アドレスの場合は、opportunistic TLS を使用して電子メールの送信を試みます (受信者のメール サーバーで使用可能な場合は STARTTLS の使用を試みます)。電子メールの送信中に SSL/TLS エラーが発生した場合は、TLS を使用せずに (STARTTLS を使用せずに) 電子メールの送信を試みます。",
+  "Does your provider limit TXT records to 255 characters?": "プロバイダーは TXT レコードを 255 文字に制限していますか?",
+  "Please use the exact values below to support a 2048-bit DKIM key.": "2048 ビット DKIM キーをサポートするには、以下の正確な値を使用してください。",
+  "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "以下の各値は、同じ<span class=\"notranslate\">Name/Host/Alias</span>を持つ独自の TXT レコードとして入力する必要があります。",
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
 }

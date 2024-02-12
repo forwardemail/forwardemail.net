@@ -215,8 +215,6 @@ async function generateAliasPassword(ctx) {
         ctx.logger.fatal(err);
       }
     } else {
-      // save alias
-      await alias.save();
       // create new mailbox
       const wsp = createWebSocketAsPromised();
       await wsp.request({
@@ -238,6 +236,9 @@ async function generateAliasPassword(ctx) {
           }
         }
       });
+
+      // save alias
+      await alias.save();
 
       // close websocket
       try {

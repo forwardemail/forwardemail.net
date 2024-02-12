@@ -1480,6 +1480,7 @@ function parseSchema(Model, modelName = '') {
 
   const uniques = ['"_id"'];
   const otherKeys = [];
+  const other_keys = [];
   const foreignKeys = [];
   const mapping = {
     _id: {
@@ -1720,6 +1721,7 @@ function parseSchema(Model, modelName = '') {
     // add string here
     if (is_unique) {
       uniques.push(`"${key}"`);
+      other_keys.push(key);
       otherKeys.push(
         _.compact([
           `"${key}"`,
@@ -1752,6 +1754,7 @@ function parseSchema(Model, modelName = '') {
           check
         ]).join(' ')
       );
+      other_keys.push(key);
     } else if (_default && data_type === 'date') {
       otherKeys.push(
         _.compact([
@@ -1762,6 +1765,7 @@ function parseSchema(Model, modelName = '') {
           check
         ]).join(' ')
       );
+      other_keys.push(key);
     } else {
       alterStatement = `ALTER TABLE ${name} ADD ${_.compact([
         `"${key}"`,
@@ -1858,7 +1862,11 @@ function parseSchema(Model, modelName = '') {
       setter,
 
       // FTS5 support
-      fts5
+      fts5,
+
+      // arbitrary array used for table creation
+      // (see `helpers/migrate-schema.js` for usage)
+      other_keys
     };
   }
 

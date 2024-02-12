@@ -187,15 +187,20 @@ async function migrateSchema(db, session, tables) {
 
       // add columns
       for (const key of Object.keys(tables[table].mapping)) {
-        if (tables[table].mapping[key].alterStatement)
+        const mapped = tables[table].mapping[key];
+        // TODO: some columns get created in the createStatement
+        //       so we don't want to add them if they already exist
+        //       (basically all the cases where `otherKeys.push` is invoked)
+        //       (in the `helpers/mongoose-to-sqlite.js` mapping setup)
+        if (mapped.alterStatement && !mapped.other_keys.includes(key))
           commands.push(tables[table].mapping[key].alterStatement);
+
         // TODO: conditionally add indexes using `indexList[table]`
-        if (tables[table].mapping[key].indexStatement)
-          commands.push(tables[table].mapping[key].indexStatement);
+        if (mapped.indexStatement) commands.push(mapped.indexStatement);
         // conditionally add FTS5
-        if (tables[table].mapping[key].fts5) {
+        if (mapped.fts5) {
           const exists = hasFTS5Already(db, table);
-          if (!exists) commands.push(...tables[table].mapping[key].fts5);
+          if (!exists) commands.push(...mapped.fts5);
         }
       }
 
@@ -215,8 +220,10 @@ async function migrateSchema(db, session, tables) {
       const column = columnInfoByKey[key];
       if (!column) {
         // we don't run ALTER TABLE commands unless we need to
-        if (tables[table].mapping[key].alterStatement)
+        if (tables[table].mapping[key].alterStatement) {
           commands.push(tables[table].mapping[key].alterStatement);
+        }
+
         // TODO: conditionally add indexes using `indexList[table]`
         if (tables[table].mapping[key].indexStatement)
           commands.push(tables[table].mapping[key].indexStatement);

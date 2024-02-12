@@ -761,6 +761,12 @@ test('onUnsubscribe', async (t) => {
   t.is(await t.context.imapFlow.mailboxUnsubscribe('unsubscribe'), true);
 });
 
+test('LIST', async (t) => {
+  const result = await t.context.imapFlow.exec('LIST', ['', '*']);
+  t.log('result', result);
+  t.is(result.response.command, 'OK');
+});
+
 test('onGetQuotaRoot', async (t) => {
   // creates unique user/domain/alias for quota
   // (otherwise would interfere with other tests)

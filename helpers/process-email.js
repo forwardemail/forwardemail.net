@@ -893,12 +893,21 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 }
               }
             } catch (err) {
-              logger.fatal(err, {
-                user: email.user,
-                email: email._id,
-                domains: [email.domain],
-                session: createSession(email)
-              });
+              if (err.message === 'fetch failed') {
+                logger.debug(err, {
+                  user: email.user,
+                  email: email._id,
+                  domains: [email.domain],
+                  session: createSession(email)
+                });
+              } else {
+                logger.fatal(err, {
+                  user: email.user,
+                  email: email._id,
+                  domains: [email.domain],
+                  session: createSession(email)
+                });
+              }
               /*
               // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
               if (

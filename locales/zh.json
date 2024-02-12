@@ -6977,5 +6977,9 @@
   "for SSL/TLS (or)": "对于 SSL/TLS（或）",
   "for TLS (STARTTLS)": "对于 TLS (STARTTLS)",
   "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "我们的逻辑是防伪的，它还会重试 SSL/TLS 错误、连接问题等。虚拟验证的目标是最大限度地提高转发配置对所有收件人的交付能力。",
-  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "否则，如果收件人是电子邮件地址，那么我们将尝试使用机会 TLS 发送电子邮件（如果收件人邮件服务器上可用，我们会尝试使用 STARTTLS）。如果尝试发送电子邮件时发生 SSL/TLS 错误，我们将尝试在不使用 TLS 的情况下发送电子邮件（不使用 STARTTLS）。"
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "否则，如果收件人是电子邮件地址，那么我们将尝试使用机会 TLS 发送电子邮件（如果收件人邮件服务器上可用，我们会尝试使用 STARTTLS）。如果尝试发送电子邮件时发生 SSL/TLS 错误，我们将尝试在不使用 TLS 的情况下发送电子邮件（不使用 STARTTLS）。",
+  "Does your provider limit TXT records to 255 characters?": "您的提供商是否将 TXT 记录限制为 255 个字符？",
+  "Please use the exact values below to support a 2048-bit DKIM key.": "请使用下面的确切值来支持 2048 位 DKIM 密钥。",
+  "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "下面的每个值都需要作为其自己的 TXT 记录输入，并具有相同的<span class=\"notranslate\">Name/Host/Alias</span> 。",
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
 }

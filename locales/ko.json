@@ -7284,5 +7284,9 @@
   "for SSL/TLS (or)": "SSL/TLS의 경우(또는)",
   "for TLS (STARTTLS)": "TLS의 경우(STARTTLS)",
   "Our logic is dummy-proof and it will also retry for SSL/TLS errors, connection issues, and more.  The goal with dummy-proofing is to maximize deliverability to all recipients for a forwarding configuration.": "우리의 논리는 더미 방지형이며 SSL/TLS 오류, 연결 문제 등에 대해서도 재시도합니다. 더미 교정의 목표는 전달 구성의 모든 수신자에 대한 전달 가능성을 최대화하는 것입니다.",
-  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "그렇지 않고 수신자가 이메일 주소인 경우 기회적 TLS를 사용하여 이메일 전송을 시도합니다(수신자 메일 서버에서 사용 가능한 경우 STARTTLS 사용을 시도합니다). 이메일 전송을 시도하는 동안 SSL/TLS 오류가 발생하면 TLS 없이(STARTTLS를 사용하지 않고) 이메일 전송을 시도합니다."
+  "Otherwise if the recipient is an email address, then we will attempt to send the email with opportunistic TLS (we attempt to use STARTTLS if it is available on the recipient mail server).  If a SSL/TLS error occurs while attempting to send the email, then we will attempt to send the email without TLS (without using STARTTLS).": "그렇지 않고 수신자가 이메일 주소인 경우 기회적 TLS를 사용하여 이메일 전송을 시도합니다(수신자 메일 서버에서 사용 가능한 경우 STARTTLS 사용을 시도합니다). 이메일 전송을 시도하는 동안 SSL/TLS 오류가 발생하면 TLS 없이(STARTTLS를 사용하지 않고) 이메일 전송을 시도합니다.",
+  "Does your provider limit TXT records to 255 characters?": "공급자가 TXT 레코드를 255자로 제한합니까?",
+  "Please use the exact values below to support a 2048-bit DKIM key.": "2048비트 DKIM 키를 지원하려면 아래의 정확한 값을 사용하세요.",
+  "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "아래의 각 값은 동일한 <span class=\"notranslate\">Name/Host/Alias</span> 사용하여 자체 TXT 레코드로 입력해야 합니다.",
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
 }
