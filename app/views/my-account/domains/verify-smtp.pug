@@ -292,7 +292,7 @@ block body
                             else
                               = t("We did not detect that your provider supports TXT records longer than 255 characters, however if it does, then you can combine these two strings together.")
                         //- legacy support for route53 users that signed up and their dkim record has 2048 default
-                        if splitDKIM || (provider.slug === 'amazon-route-53' && str.length >= 250)
+                        if splitDKIM || (provider && provider.slug === 'amazon-route-53' && str.length >= 250)
                           - const index = Math.floor(str.length / 2);
                           code#copy-dkim-part-1.d-block.text-break.small= str.slice(0, index)
                           if !domain.has_dkim_record
