@@ -461,6 +461,10 @@ router
     web.myAccount.resendEmailChange
   )
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
+  .get('/timezone', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect('/my-account');
+  })
   .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
   .get(

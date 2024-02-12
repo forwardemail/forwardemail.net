@@ -8,7 +8,12 @@
  */
 
 const mongoose = require('mongoose');
-const timezones = require('timezones-list');
+// TODO: note there is no validation right now for timezones
+//       (nor is there validation in user model for `user.timezone`)
+//       however in the future we could use this library:
+//       <https://github.com/vvo/tzdb>
+//       and map the lookup alias from groups, e.g. Asia/Calcutta
+//
 const validationErrorTransform = require('mongoose-validation-error-transform');
 const { isURL } = require('validator');
 
@@ -46,9 +51,7 @@ const Calendars = new mongoose.Schema(
     description: String,
     timezone: {
       type: String,
-      required: true,
-      // TODO: add `Etc/UTC` timezone to this list
-      enum: timezones.default.map((tz) => tz.tzCode)
+      required: true
     },
     source: String,
     url: {
