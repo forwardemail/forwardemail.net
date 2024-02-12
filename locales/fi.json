@@ -7135,5 +7135,7 @@
   "Does your provider limit TXT records to 255 characters?": "Rajoittaako palveluntarjoajasi TXT-tietueet 255 merkkiin?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Käytä alla olevia tarkkoja arvoja tukeaksesi 2048-bittistä DKIM-avainta.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Jokainen alla oleva arvo on syötettävä omaksi TXT-tietuekseen, jolla on sama <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Tietosuoja ensin päästä päähän salattu sähköposti (HUOM: tämä yritys ei enää toimi ja sulkee palvelun elokuussa 2024)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Olet käyttänyt <strong class=\"notranslate\">%d</strong> päivittäisestä <strong class=\"notranslate\">%d</strong> lähtevän SMTP-viestin rajasta.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Lähtevät SMTP-sähköpostit näkyvät alla – <a href=\"%s\" class=\"alert-link\">napsauta tätä</a> määrittääksesi sähköpostiohjelmasi vastaanottamaan sähköpostia."
 }

@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "Ограничивает ли ваш провайдер записи TXT 255 символами?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Используйте приведенные ниже точные значения для поддержки 2048-битного ключа DKIM.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Каждое значение ниже необходимо вводить как отдельную запись TXT с тем же <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Электронная почта со сквозным шифрованием, обеспечивающая конфиденциальность (ПРИМЕЧАНИЕ: эта компания больше не занимается бизнесом и прекратит работу в августе 2024 г.)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Вы использовали <strong class=\"notranslate\">%d</strong> из дневного лимита исходящих SMTP-сообщений <strong class=\"notranslate\">%d</strong> .",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Исходящие электронные письма SMTP показаны ниже. <a href=\"%s\" class=\"alert-link\">Нажмите здесь</a> , чтобы настроить почтовый клиент для получения электронной почты."
 }

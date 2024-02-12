@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "Czy Twój dostawca ogranicza rekordy TXT do 255 znaków?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Aby obsługiwać 2048-bitowy klucz DKIM, użyj dokładnych wartości poniżej.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Każdą wartość poniżej należy wprowadzić jako własny rekord TXT z tą samą <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Kompleksowo zaszyfrowana poczta e-mail zapewniająca prywatność (UWAGA: ta firma nie prowadzi już działalności i zakończy usługę w sierpniu 2024 r.)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Wykorzystałeś <strong class=\"notranslate\">%d</strong> z dziennego limitu <strong class=\"notranslate\">%d</strong> wychodzących wiadomości SMTP.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Wychodzące wiadomości e-mail SMTP są pokazane poniżej – <a href=\"%s\" class=\"alert-link\">kliknij tutaj,</a> aby skonfigurować klienta poczty e-mail do odbierania wiadomości e-mail."
 }

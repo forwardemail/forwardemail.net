@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "공급자가 TXT 레코드를 255자로 제한합니까?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "2048비트 DKIM 키를 지원하려면 아래의 정확한 값을 사용하세요.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "아래의 각 값은 동일한 <span class=\"notranslate\">Name/Host/Alias</span> 사용하여 자체 TXT 레코드로 입력해야 합니다.",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "개인 정보 보호를 최우선으로 하는 엔드투엔드 암호화 이메일(참고: 이 회사는 더 이상 영업하지 않으며 2024년 8월에 서비스를 종료합니다.)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "일일 한도인 <strong class=\"notranslate\">%d</strong> 아웃바운드 SMTP 메시지 중 <strong class=\"notranslate\">%d</strong> 를 사용했습니다.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "아웃바운드 SMTP 이메일은 아래와 같습니다. 이메일을 수신하도록 이메일 클라이언트를 설정하려면 <a href=\"%s\" class=\"alert-link\">여기를 클릭하세요</a> ."
 }

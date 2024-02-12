@@ -9,11 +9,13 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
+const config = require('#config');
 const { Domains, Emails, Aliases } = require('#models');
 
+// eslint-disable-next-line complexity
 async function listEmails(ctx) {
   // user must be domain admin or alias owner of the email
-  const [domains, aliases, goodDomains] = await Promise.all([
+  const [domains, aliases, goodDomains, count] = await Promise.all([
     Domains.distinct('_id', {
       has_smtp: true,
       is_smtp_suspended: false,
@@ -30,8 +32,13 @@ async function listEmails(ctx) {
     Domains.distinct('_id', {
       has_smtp: true,
       is_smtp_suspended: false
-    })
+    }),
+    ctx.client.zcard(`${config.smtpLimitNamespace}:${ctx.state.user.id}`)
   ]);
+
+  ctx.state.dailySMTPLimit =
+    ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+  ctx.state.dailySMTPMessages = count;
 
   // TODO: status filter
 

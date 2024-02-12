@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "Beperkt uw provider TXT-records tot 255 tekens?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Gebruik de exacte waarden hieronder om een 2048-bit DKIM-sleutel te ondersteunen.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Elke onderstaande waarde moet worden ingevoerd als een eigen TXT-record met dezelfde <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end gecodeerde e-mail (LET OP: dit bedrijf bestaat niet meer en beëindigt de service in augustus 2024)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "U heeft <strong class=\"notranslate\">%d</strong> van uw dagelijkse limiet van <strong class=\"notranslate\">%d</strong> uitgaande SMTP-berichten verbruikt.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Uitgaande SMTP-e-mails worden hieronder weergegeven. <a href=\"%s\" class=\"alert-link\">Klik hier</a> om uw e-mailclient in te stellen om e-mail te ontvangen."
 }

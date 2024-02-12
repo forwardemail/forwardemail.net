@@ -1176,9 +1176,11 @@ Emails.statics.queue = async function (
     headers[key] = value;
   }
 
-  const status = _.isDate(domain.smtp_suspended_sent_at) ? 'pending' : 'queued';
+  const status =
+    _.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true
+      ? 'pending'
+      : 'queued';
 
-  // TODO: encrypt and compress message
   const email = await this.create({
     alias: !options.catchall && alias ? alias._id : undefined,
     domain: domain._id,

@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "Omezuje váš poskytovatel záznamy TXT na 255 znaků?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Pro podporu 2048bitového klíče DKIM použijte prosím přesné hodnoty níže.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Každá níže uvedená hodnota musí být zadána jako vlastní záznam TXT se stejným <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "End-to-end šifrovaný e-mail s důrazem na ochranu soukromí (POZNÁMKA: tato společnost již nepůsobí a v srpnu 2024 ukončí provoz)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Využili jste <strong class=\"notranslate\">%d</strong> ze svého denního limitu <strong class=\"notranslate\">%d</strong> odchozích zpráv SMTP.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Odchozí e-maily SMTP jsou zobrazeny níže – <a href=\"%s\" class=\"alert-link\">kliknutím sem</a> nastavíte e-mailového klienta pro příjem e-mailů."
 }

@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "هل يقوم مزود الخدمة الخاص بك بتحديد سجلات TXT بـ 255 حرفًا؟",
   "Please use the exact values below to support a 2048-bit DKIM key.": "الرجاء استخدام القيم الدقيقة أدناه لدعم مفتاح DKIM بحجم 2048 بت.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "يجب إدخال كل قيمة أدناه كسجل TXT خاص بها بنفس <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "بريد إلكتروني مشفر وشامل للخصوصية أولاً (ملاحظة: لم تعد هذه الشركة تعمل وتم إيقاف الخدمة في أغسطس 2024)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "لقد استخدمت <strong class=\"notranslate\">%d</strong> من الحد اليومي الذي يبلغ <strong class=\"notranslate\">%d</strong> من رسائل SMTP الصادرة.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "تظهر أدناه رسائل البريد الإلكتروني الصادرة عبر SMTP - <a href=\"%s\" class=\"alert-link\">انقر هنا</a> لإعداد عميل البريد الإلكتروني الخاص بك لتلقي البريد الإلكتروني."
 }

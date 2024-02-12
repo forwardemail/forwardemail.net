@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "O seu provedor limita os registros TXT a 255 caracteres?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Use os valores exatos abaixo para oferecer suporte a uma chave DKIM de 2.048 bits.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Cada valor abaixo precisa ser inserido como seu próprio registro TXT com o mesmo <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "E-mail criptografado de ponta a ponta com privacidade (NOTA: esta empresa não está mais no mercado e encerrará o serviço em agosto de 2024)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Você usou <strong class=\"notranslate\">%d</strong> do seu limite diário de <strong class=\"notranslate\">%d</strong> mensagens SMTP de saída.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "E-mails SMTP de saída são mostrados abaixo – <a href=\"%s\" class=\"alert-link\">clique aqui</a> para configurar seu cliente de e-mail para receber e-mails."
 }

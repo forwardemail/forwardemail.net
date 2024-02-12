@@ -332,29 +332,29 @@ async function onData(stream, _session, fn) {
 
     //
     // TODO: this should probably be moved to after `queue()` is invoked
+    //       (we could use `zcard(key)` like we do in list emails controller)
     //
+    const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
     if (!adminExists) {
       // rate limit to X emails per day by domain id then denylist
       {
-        const limit = await this.rateLimiter.get({
-          id: domain.id,
-          max: user[config.userFields.smtpLimit] || config.smtpLimitMessages
-        });
-
+        const count = await this.client.zcard(
+          `${config.smtpLimitNamespace}:${domain.id}`
+        );
         // return 550 error code
-        if (!limit.remaining)
+        if (count >= max)
           throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
       }
 
       // rate limit to X emails per day by alias user id then denylist
-      const limit = await this.rateLimiter.get({
-        id: user.id,
-        max: user[config.userFields.smtpLimit] || config.smtpLimitMessages
-      });
-
-      // return 550 error code
-      if (!limit.remaining)
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      {
+        const count = await this.client.zcard(
+          `${config.smtpLimitNamespace}:${user.id}`
+        );
+        // return 550 error code
+        if (count >= max)
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      }
     }
 
     // queue the email
@@ -367,8 +367,46 @@ async function onData(stream, _session, fn) {
       domain,
       user,
       date: new Date(session.arrivalDate),
-      catchall: typeof session?.user?.alias_id !== 'string'
+      catchall: typeof session?.user?.alias_id !== 'string',
+      isPending: true
     });
+
+    if (!adminExists) {
+      try {
+        // rate limit to X emails per day by domain id then denylist
+        {
+          const limit = await this.rateLimiter.get({
+            id: domain.id,
+            max
+          });
+
+          // return 550 error code
+          if (!limit.remaining)
+            throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
+
+        // rate limit to X emails per day by alias user id then denylist
+        const limit = await this.rateLimiter.get({
+          id: user.id,
+          max
+        });
+
+        // return 550 error code
+        if (!limit.remaining)
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      } catch (err) {
+        // remove the job from the queue
+        Emails.findByIdAndRemove(email._id)
+          .then()
+          .catch((err) => logger.fatal(err));
+        throw err;
+      }
+    }
+
+    if (!_.isDate(domain.smtp_suspended_sent_at)) {
+      email.status = 'queued';
+      await email.save();
+    }
 
     // TODO: implement credit system
 

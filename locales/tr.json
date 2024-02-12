@@ -7288,5 +7288,7 @@
   "Does your provider limit TXT records to 255 characters?": "Sağlayıcınız TXT kayıtlarını 255 karakterle sınırlıyor mu?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "2048 bitlik bir DKIM anahtarını desteklemek için lütfen aşağıdaki tam değerleri kullanın.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Aşağıdaki her değerin aynı <span class=\"notranslate\">Name/Host/Alias</span> ile kendi TXT kaydı olarak girilmesi gerekir.",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Gizlilik öncelikli uçtan uca şifrelenmiş e-posta (NOT: bu şirket artık faaliyette değil ve Ağustos 2024'te hizmetini kapatacak)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Günlük <strong class=\"notranslate\">%d</strong> giden SMTP ileti sınırınızdan <strong class=\"notranslate\">%d</strong> tanesini kullandınız.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Giden SMTP e-postaları aşağıda gösterilmektedir; e-posta istemcinizi e-posta alacak şekilde ayarlamak için <a href=\"%s\" class=\"alert-link\">burayı tıklayın</a> ."
 }

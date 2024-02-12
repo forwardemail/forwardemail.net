@@ -5,6 +5,9 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
+        if typeof dailySMTPMessages === 'number'
+          .alert.alert-primary!= t('You have used <strong class="notranslate">%d</strong> out of your daily limit of <strong class="notranslate">%d</strong> outbound SMTP messages.', dailySMTPMessages, dailySMTPLimit)
+        .alert.alert-warning!= t('Outbound SMTP emails are shown below &ndash; <a href="%s" class="alert-link">click here</a> to setup your email client to receive email.', l("/faq#do-you-support-receiving-email-with-imap"))
         if isSANB(ctx.query.domain)
           h4
             = t("Filtered for:")

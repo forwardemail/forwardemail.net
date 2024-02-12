@@ -7026,5 +7026,7 @@
   "Does your provider limit TXT records to 255 characters?": "Begrænser din udbyder TXT-poster til 255 tegn?",
   "Please use the exact values below to support a 2048-bit DKIM key.": "Brug venligst de nøjagtige værdier nedenfor for at understøtte en 2048-bit DKIM-nøgle.",
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Hver værdi nedenfor skal indtastes som sin egen TXT-post med samme <span class=\"notranslate\">Name/Host/Alias</span> .",
-  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)"
+  "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end krypteret e-mail (BEMÆRK: denne virksomhed er ikke længere i drift og lukker ned i august 2024)",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Du har brugt <strong class=\"notranslate\">%d</strong> ud af din daglige grænse på <strong class=\"notranslate\">%d</strong> udgående SMTP-meddelelser.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Udgående SMTP-e-mails er vist nedenfor – <a href=\"%s\" class=\"alert-link\">klik her</a> for at konfigurere din e-mail-klient til at modtage e-mail."
 }
