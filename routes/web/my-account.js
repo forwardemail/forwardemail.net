@@ -463,7 +463,7 @@ router
   .put('/profile/cancel-email-change', web.myAccount.cancelEmailChange)
   .get('/timezone', (ctx) => {
     ctx.status = 301;
-    ctx.redirect('/my-account');
+    ctx.redirect(ctx.state.l('/my-account'));
   })
   .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
