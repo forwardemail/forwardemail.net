@@ -7290,5 +7290,6 @@
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Setiap nilai di bawah harus dimasukkan sebagai data TXT tersendiri dengan <span class=\"notranslate\">Name/Host/Alias</span> yang sama.",
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Email terenkripsi end-to-end yang mengutamakan privasi (CATATAN: perusahaan ini tidak lagi beroperasi dan menutup layanan pada Agustus 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Anda telah menggunakan <strong class=\"notranslate\">%d</strong> dari batas harian <strong class=\"notranslate\">%d</strong> pesan SMTP keluar.",
-  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Email SMTP keluar ditampilkan di bawah – <a href=\"%s\" class=\"alert-link\">klik di sini</a> untuk menyiapkan klien email Anda untuk menerima email."
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Email SMTP keluar ditampilkan di bawah – <a href=\"%s\" class=\"alert-link\">klik di sini</a> untuk menyiapkan klien email Anda untuk menerima email.",
+  "in step 2 above": "pada langkah 2 di atas"
 }

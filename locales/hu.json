@@ -7290,5 +7290,6 @@
   "Each value below needs to be entered as its own TXT record with the same <span class=\"notranslate\">Name/Host/Alias</span>.": "Minden alábbi értéket saját TXT rekordként kell megadni, ugyanazzal <span class=\"notranslate\">Name/Host/Alias</span> névvel.",
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Az adatvédelem elsőrendű, végpontok közötti titkosított e-mail (MEGJEGYZÉS: ez a cég már nem működik, és 2024 augusztusában leállítja a szolgáltatást)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Felhasználta <strong class=\"notranslate\">%d</strong> a napi <strong class=\"notranslate\">%d</strong> kimenő SMTP üzenet korlátból.",
-  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "A kimenő SMTP e-mailek az alábbiakban láthatók – <a href=\"%s\" class=\"alert-link\">kattintson ide</a> , hogy beállítsa e-mail kliensét e-mailek fogadására."
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "A kimenő SMTP e-mailek az alábbiakban láthatók – <a href=\"%s\" class=\"alert-link\">kattintson ide</a> , hogy beállítsa e-mail kliensét e-mailek fogadására.",
+  "in step 2 above": "a fenti 2. lépésben"
 }
