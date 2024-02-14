@@ -120,6 +120,9 @@ function transformEventForICal(event) {
   //
   if (
     event.ical &&
+    // NOTE: funambol is arbitrary and not also added in built ICS output
+    // <https://github.com/sebbo2002/ical-generator/blob/9190c842f4e9aa9ac8fd598983303cb95e3cf76b/src/event.ts#L1653-L1654>
+    //
     (event.ical.includes('X-FUNAMBOL-ALLDAY:1') ||
       event.ical.includes('X-MICROSOFT-CDO-ALLDAYEVENT:TRUE') ||
       event.ical.includes('X-MICROSOFT-MSNCALENDAR-ALLDAYEVENT:TRUE'))
@@ -146,15 +149,21 @@ function transformEventForICal(event) {
     // <https://github.com/sebbo2002/ical-generator/blob/dcf28ab313c3d53db4d50da021873d699b5b3030/src/event.ts#L146-L157>
     repeating,
 
+    //
+    // NOTE: for any values that were stored with
+    //       `storeParameter` they can be either a String
+    //       or an object such as `{  }`, see this link for insight:
+    //       <https://github.com/jens-maus/node-ical/blob/b4008a752136d8e2164519022aedc35ada8e10c3/ical.js#L635-L657>
+    //
+    //       if the value stored is a string then we use that value
+    //       otherwise if it was an object then we'll rewrite it after
+    //       (parsed from the original ICS file that was sent over)
+    //
     summary: event.summary || undefined,
     location: event.location || undefined,
     description: event.description || undefined,
     organizer: event.organizer || undefined,
-    attendees: event.attendee
-      ? Array.isArray(event.attendee)
-        ? event.attendee
-        : [event.attendee]
-      : undefined,
+    attendees: event.attendee || undefined,
 
     // TODO: not yet supported by node-ical
     //       <https://github.com/jens-maus/node-ical/pull/299>
@@ -164,18 +173,32 @@ function transformEventForICal(event) {
     status: event.status || undefined,
     busystatus: event.freebusy || undefined,
 
-    // NOTE: not yet supportedi by node-ical
+    // NOTE: not yet supported by node-ical
     priority,
 
     url: event.url || undefined,
 
-    // TODO: not yet supported node-ical
+    // NOTE: not yet supported by node-ical
     attachments: undefined,
 
+    // TODO: enforce strings for below types
     transparency: event.transparency || undefined,
     created: event.created || null,
     lastModified: event.lastmodified || null,
-    x: event.x || undefined
+
+    //
+    // TODO: we can remove event.x from the model and
+    //       just add all the X- prefixes back to calendar event object
+    //       after buildICS is invoked (we also will have to do on a per recurrence basis too)
+    //       (except for a few, such as X-MICROSOFT-CDO-BUSYSTATUS, X-APPLE-STRUCTURED-LOCATION, etc)
+    //       <https://github.com/sebbo2002/ical-generator/blob/9190c842f4e9aa9ac8fd598983303cb95e3cf76b/src/event.ts#L1838>
+    //
+    //       event.x = [
+    //         { key: 'X-SOMETHING', value: 'SOMEVALUE' },
+    //         ...
+    //       ]
+    //
+    x: undefined
   };
 }
 
@@ -825,6 +848,16 @@ class CalDAV {
       x: calendar.x || []
     };
     const cal = ical(icalObject);
+    // console.log('cal', cal);
+    // TODO: rewrite here
+    // SUMMARY
+    // LOCATION
+    // DESCRIPTION
+    // ORGANIZER
+    // ATTENDEE
+    // alarms
+    // attachments
+    //
     return cal.toString(); // this already invokes `foldLines`
   }
 

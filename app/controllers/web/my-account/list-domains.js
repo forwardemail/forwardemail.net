@@ -135,6 +135,28 @@ async function listDomains(ctx) {
     ctx.query.limit + ctx.paginate.skip
   );
 
+  // get storage quota for each domain
+  domains = await Promise.all(
+    domains.map(async (d) => {
+      if (d.is_global || d.plan === 'free') return d;
+      try {
+        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
+          await Promise.all([
+            Domains.getStorageUsed(d._id, ctx.locale),
+            Domains.getStorageUsed(d._id, ctx.locale, true),
+            Domains.getMaxQuota(d._id)
+          ]);
+        d.storage_used = storageUsed;
+        d.storage_used_by_aliases = storageUsedByAliases;
+        d.storage_quota = maxQuotaPerAlias;
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+
+      return d;
+    })
+  );
+
   //
   // set breadcrumbs
   //

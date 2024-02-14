@@ -141,6 +141,12 @@ async function retrieveDomains(ctx, next) {
 
   if (ctx.api) return next();
 
+  //
+  // NOTE: we can't have this here because it's incredibly slow
+  //       (e.g. when you have 2000+ domains)
+  //       (this was moved to list-domains controller)
+  //
+  /*
   // get storage quota for each domain
   ctx.state.domains = await Promise.all(
     ctx.state.domains.map(async (d) => {
@@ -162,6 +168,7 @@ async function retrieveDomains(ctx, next) {
       return d;
     })
   );
+  */
 
   // as part of onboarding redirect users to create a new domain right away
   if (

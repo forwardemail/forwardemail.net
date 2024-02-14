@@ -67,20 +67,26 @@ const CalendarEvents = new mongoose.Schema(
       type: String,
       enum: [null, 'PUBLIC', 'PRIVATE', 'CONFIDENTIAL']
     },
-    summary: String,
+    summary: mongoose.Schema.Types.Mixed,
     start: Date,
     datetype: {
       type: String,
       enum: [null, 'date-time', 'date']
     },
     end: Date,
-    location: String,
-    description: String,
+    location: mongoose.Schema.Types.Mixed,
+    description: mongoose.Schema.Types.Mixed,
     url: {
       type: String,
-      validator: (v) => isURL(v, { require_tld: false })
+      validator: (v) =>
+        v === null ||
+        v === undefined ||
+        isURL(v, { require_tld: false, require_valid_protocol: false })
     },
-    completion: String,
+
+    // TODO: PERCENT-COMPLETE is Number between 0 and 100
+    completion: mongoose.Schema.Types.Mixed,
+
     created: Date,
     lastmodified: Date,
 
@@ -120,8 +126,13 @@ const CalendarEvents = new mongoose.Schema(
 
     // TODO: output the data types below and enforce them stricter
 
+    // COMPLETED
     completed: mongoose.Schema.Types.Mixed,
-    freebusy: mongoose.Schema.Types.Mixed,
+
+    freebusy: {
+      type: String,
+      enum: [null, 'FREE', 'TENTATIVE', 'BUSY', 'OOF']
+    },
 
     categories: [String]
 
