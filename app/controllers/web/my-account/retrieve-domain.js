@@ -399,18 +399,20 @@ async function retrieveDomain(ctx, next) {
       ctx.state.domain.group = member.group;
 
       // get storage quota for the domain
-      try {
-        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
-          await Promise.all([
-            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
-            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true),
-            Domains.getMaxQuota(ctx.state.domain._id)
-          ]);
-        ctx.state.domain.storage_used = storageUsed;
-        ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
-        ctx.state.domain.storage_quota = maxQuotaPerAlias;
-      } catch (err) {
-        ctx.logger.fatal(err);
+      if (!ctx.state.domain.is_global && ctx.state.domain.plan !== 'free') {
+        try {
+          const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
+            await Promise.all([
+              Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
+              Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true),
+              Domains.getMaxQuota(ctx.state.domain._id)
+            ]);
+          ctx.state.domain.storage_used = storageUsed;
+          ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
+          ctx.state.domain.storage_quota = maxQuotaPerAlias;
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
       }
 
       //
@@ -481,7 +483,11 @@ async function retrieveDomain(ctx, next) {
       href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
     });
 
-    if (ctx.method === 'GET') {
+    if (
+      ctx.method === 'GET' &&
+      !ctx.state.domain.is_global &&
+      ctx.state.domain.plan !== 'free'
+    ) {
       // get storage quota for the domain
       try {
         const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
