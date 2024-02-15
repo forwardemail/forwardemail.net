@@ -186,19 +186,11 @@ function transformEventForICal(event) {
     created: event.created || null,
     lastModified: event.lastmodified || null,
 
-    //
-    // TODO: we can remove event.x from the model and
-    //       just add all the X- prefixes back to calendar event object
-    //       after buildICS is invoked (we also will have to do on a per recurrence basis too)
-    //       (except for a few, such as X-MICROSOFT-CDO-BUSYSTATUS, X-APPLE-STRUCTURED-LOCATION, etc)
-    //       <https://github.com/sebbo2002/ical-generator/blob/9190c842f4e9aa9ac8fd598983303cb95e3cf76b/src/event.ts#L1838>
-    //
-    //       event.x = [
-    //         { key: 'X-SOMETHING', value: 'SOMEVALUE' },
-    //         ...
-    //       ]
-    //
-    x: undefined
+    // event.x = [
+    //   { key: 'X-SOMETHING', value: 'SOMEVALUE' },
+    //   ...
+    // ]
+    x: event.x || []
   };
 }
 
@@ -217,6 +209,24 @@ function bumpSyncToken(synctoken) {
 
 // TODO: add scheduling support
 // <https://github.com/sedenardi/node-caldav-adapter/blob/3acc55fcb615adc8cc394b7c63dbc702a498d591/README.md?plain=1#L253-L255>
+//
+// 3.2.1. Organizer Scheduling Object Resources
+//
+// An "Organizer" can create, modify, or remove a scheduling object resource, subject to access privileges,
+// preconditions, and the restrictions defined in Section 4.1 of [RFC4791]. These operations are each described
+// next, and how they are invoked via HTTP requests is described in Section 3.2.3.
+//
+// The "Organizer" of a calendar component can also be an "Attendee" of that calendar component.
+// In such cases, the server MUST NOT send a scheduling message to the "Attendee" that matches the "Organizer".
+//
+// The server SHOULD reject any attempt to set the "PARTSTAT" iCalendar property parameter value of the
+// "ATTENDEE" iCalendar property of other users in the calendar object resource to a value other than
+// "NEEDS-ACTION" if the "SCHEDULE-AGENT" property parameter value is not present or set to the value "SERVER".
+//
+// The server MAY reject attempts to create a scheduling object resource that specifies a "UID"
+// property value already specified in a scheduling object resource contained in another calendar
+// collection of the "Organizer".
+//
 
 // TODO: submit PR to include Forward Email in this list
 // <https://github.com/natelindev/tsdav/blob/c884cbc006f049c16f5c5c5bc964f1c7c83a9c01/docs/docs/intro.md?plain=1#L11>
@@ -828,6 +838,30 @@ class CalDAV {
       }
     }
 
+    const x = [];
+    if (event.ical) {
+      const parsedICS = await ical.async.parseICS(event.ical);
+      const calendarObject = parsedICS.find((obj) => obj.type === 'VCALENDAR');
+      for (const key of Object.keys(calendarObject)) {
+        if (key === key.toUpperCase()) {
+          const value =
+            typeof event[key] === 'object' &&
+            event[key] !== null &&
+            typeof event[key].val === 'string'
+              ? event[key].val
+              : typeof event[key] === 'string'
+              ? event[key]
+              : undefined;
+          if (value) {
+            x.push({
+              key: `X-${key}`,
+              value
+            });
+          }
+        }
+      }
+    }
+
     const icalObject = {
       description: calendar.description,
       events,
@@ -845,7 +879,7 @@ class CalDAV {
       // NOTE: we submitted a core bug fix but led us to set a default of `[]`
       //       <https://github.com/sebbo2002/ical-generator/pull/563>
       //
-      x: calendar.x || []
+      x
     };
     const cal = ical(icalObject);
     // console.log('cal', cal);

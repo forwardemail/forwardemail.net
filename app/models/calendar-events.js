@@ -134,10 +134,16 @@ const CalendarEvents = new mongoose.Schema(
       enum: [null, 'FREE', 'TENTATIVE', 'BUSY', 'OOF']
     },
 
-    categories: [String]
+    categories: [String],
 
     // TODO: `alarms` is not yet implemented (?)
     // <https://github.com/jens-maus/node-ical/issues/298>
+
+    // x = [
+    //   { key: 'X-SOMETHING', value: 'SOMEVALUE' },
+    //   ...
+    // ]
+    x: mongoose.Schema.Types.Mixed
   },
   dummySchemaOptions
 );

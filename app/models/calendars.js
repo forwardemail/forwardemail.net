@@ -68,8 +68,10 @@ const Calendars = new mongoose.Schema(
     // events: mongoose.Schema.Types.Mixed,
     //
 
-    // TODO: console.log these at some point
-    // `X-` meta arbitrary properties
+    // x = [
+    //   { key: 'X-SOMETHING', value: 'SOMEVALUE' },
+    //   ...
+    // ]
     x: mongoose.Schema.Types.Mixed,
 
     //
