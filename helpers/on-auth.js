@@ -316,12 +316,12 @@ async function onAuth(auth, session, fn) {
       return m.group === 'admin' && m?.user?.group === 'admin';
     });
 
-    // ensure we don't have more than 30 connections per alias
+    // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
     const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
     const count = await this.client.incrby(key, 0);
     if (count < 0) await this.client.del(key); // safeguard
-    else if (!adminExists && count > 30) {
+    else if (!adminExists && count > 60) {
       // early monitoring for admins (probably remove this later once it becomes a burden)
       const err = new TypeError(
         `Too many concurrent connections from ${
