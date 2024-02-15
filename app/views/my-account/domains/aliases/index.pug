@@ -44,19 +44,19 @@ block body
                 td SMTP
                 td: span.markdown-body: code= "smtp.forwardemail.net"
                 td
-                  = "TLS (STARTTLS)"
+                  = "SSL/TLS"
                   .hr-text.d-flex.text-secondary.align-items-center= t("or")
-                  = "SSL"
+                  = "TLS (STARTTLS)"
                 td
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 465
+                    li: span.markdown-body: code= 2465
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
                   ul.list-unstyled
                     li: span.markdown-body: code= 587
                     li: span.markdown-body: code= 2587
                     li: span.markdown-body: code= 2525
                     li: span.markdown-body: code= 25
-                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
-                  ul.list-unstyled
-                    li: span.markdown-body: code= 465
-                    li: span.markdown-body: code= 2465
           hr
           h2.h4= t("Do you have any developer resources?")
           a.btn.btn-lg.btn-dark(href=l("/blog/docs"), target="_blank")= t("Free Email Developer Tools and Resources")
@@ -166,7 +166,7 @@ block body
               tr
                 td IMAP
                 td: span.markdown-body: code= "imap.forwardemail.net"
-                td TLS (STARTTLS)
+                td SSL/TLS
                 td
                   ul.list-unstyled
                     li: span.markdown-body: code= 993
@@ -175,19 +175,19 @@ block body
                 td SMTP
                 td: span.markdown-body: code= "smtp.forwardemail.net"
                 td
-                  = "TLS (STARTTLS)"
+                  = "SSL/TLS"
                   .hr-text.d-flex.text-secondary.align-items-center= t("or")
-                  = "SSL"
+                  = "TLS (STARTTLS)"
                 td
+                  ul.list-unstyled
+                    li: span.markdown-body: code= 465
+                    li: span.markdown-body: code= 2465
+                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
                   ul.list-unstyled
                     li: span.markdown-body: code= 587
                     li: span.markdown-body: code= 2587
                     li: span.markdown-body: code= 2525
                     li: span.markdown-body: code= 25
-                  .hr-text.d-flex.text-secondary.align-items-center= t("or")
-                  ul.list-unstyled
-                    li: span.markdown-body: code= 465
-                    li: span.markdown-body: code= 2465
           hr
           h2.h4= t("How do I import and migrate my existing mailbox?")
           a.btn.btn-lg.btn-dark(
