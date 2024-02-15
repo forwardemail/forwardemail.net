@@ -340,7 +340,7 @@ p.text-center.d-lg-none
                   class=alias.is_enabled ? "text-success" : "text-danger"
                 )
                   i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
-                code= `${alias.name}@${domain.name}`
+                code.text-break= `${alias.name}@${domain.name}`
               //- on mobile we need to render this different
               .d-lg-none.p-2
                 .small
