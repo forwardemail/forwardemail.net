@@ -480,6 +480,23 @@ async function retrieveDomain(ctx, next) {
       name: ctx.state.t('Aliases'),
       href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
     });
+
+    if (ctx.method === 'GET') {
+      // get storage quota for the domain
+      try {
+        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
+          await Promise.all([
+            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale),
+            Domains.getStorageUsed(ctx.state.domain._id, ctx.locale, true),
+            Domains.getMaxQuota(ctx.state.domain._id)
+          ]);
+        ctx.state.domain.storage_used = storageUsed;
+        ctx.state.domain.storage_used_by_aliases = storageUsedByAliases;
+        ctx.state.domain.storage_quota = maxQuotaPerAlias;
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
+    }
   } else if (
     ctx.pathWithoutLocale ===
     `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
