@@ -312,19 +312,28 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
-    // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
-    // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
-    try {
-      await refreshSession.call(this, session, 'OPEN');
-    } catch (err) {
-      err.isCodeBug = true;
-      this.logger.fatal(err);
-    }
-
     // if any of the domain admins are admins then don't rate limit concurrent connections
     const adminExists = domain.members.some((m) => {
       return m.group === 'admin' && m?.user?.group === 'admin';
     });
+
+    // this also ensures that at least one admin has a verified email address
+    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+    const to = [];
+
+    // set default locale for translation for the session
+    let locale = i18n.config.defaultLocale;
+    locale =
+      alias && alias.user[config.lastLocaleField]
+        ? alias.user[config.lastLocaleField]
+        : obj.locale;
+
+    if (alias && alias.user.email) {
+      to.push(alias.user.email);
+    } else {
+      to.push(...obj.to);
+    }
 
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
@@ -350,24 +359,6 @@ async function onAuth(auth, session, fn) {
 
       // increase counter for alias by 1 (with ttl safeguard)
       await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
-    }
-
-    const to = [];
-
-    // this also ensures that at least one admin has a verified email address
-    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-
-    // set default locale for translation for the session
-    let locale = i18n.config.defaultLocale;
-    locale =
-      alias && alias.user[config.lastLocaleField]
-        ? alias.user[config.lastLocaleField]
-        : obj.locale;
-
-    if (alias && alias.user.email) {
-      to.push(alias.user.email);
-    } else {
-      to.push(...obj.to);
     }
 
     // prepare user object for `session.user`
@@ -424,6 +415,23 @@ async function onAuth(auth, session, fn) {
       // NOTE: this gets updated every time user logs in a browser and loads a page
       timezone: timeZone
     };
+
+    // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
+    // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
+    try {
+      await refreshSession.call(
+        this,
+        {
+          ...session,
+          user
+        },
+        'OPEN'
+      );
+    } catch (err) {
+      // TODO: if an error occurs then decrease connection by 1
+      err.isCodeBug = true;
+      this.logger.fatal(err);
+    }
 
     //
     // sync with tmp db in the background
