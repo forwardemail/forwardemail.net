@@ -327,14 +327,13 @@ class IMAPNotifier extends EventEmitter {
     }
 
     // decrease # connections for this alias and domain
-    const key = `connections_${config.env}:${data.session.user.alias_id}`;
-    const domainKey = `connections_${config.env}:${data.session.user.domain_id}`;
+    const key = `connections_${config.env}:${
+      data.session.user.alias_id || data.session.user.domain_id
+    }`;
     this.publisher
       .pipeline()
       .decr(key)
       .pexpire(key, ms('1h'))
-      .decr(domainKey)
-      .pexpire(domainKey, ms('1h'))
       .exec()
       .then()
       .catch((err) => logger.fatal(err));

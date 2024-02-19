@@ -7,17 +7,14 @@ const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const Lock = require('ioredfour');
-const _ = require('lodash');
 const caldavAdapter = require('caldav-adapter');
-const dayjs = require('dayjs-with-plugins');
 const etag = require('etag');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const mongoose = require('mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
-const { default: ical } = require('ical-generator');
-const { rrulestr, Frequency } = require('rrule');
+const { rrulestr } = require('rrule');
 
 const env = require('./env');
 
@@ -51,147 +48,6 @@ async function onAuthPromise(auth, session) {
       resolve(user);
     });
   });
-}
-
-// TODO: note there is a bug with node-ical with recurring event timezone parsing
-// <https://github.com/jens-maus/node-ical/pull/231>
-
-// eslint-disable-next-line complexity
-function transformEventForICal(event) {
-  let repeating = null;
-  let hasRepeating = false;
-  let priority;
-
-  const lines = [];
-  // TODO: RRULE parsing needs to occur between VEVENT blocks
-  for (const line of splitLines(event.ical)) {
-    if (line.startsWith('RRULE:')) hasRepeating = true;
-    if (RRULES.some((rrule) => line.startsWith(`${rrule}:`))) lines.push(line);
-    if (line.startsWith('PRIORITY:') && /\d+/.test(line))
-      priority = Number.parseInt(line.match(/\d+/)[0], 10);
-  }
-
-  if (lines.length > 0 && hasRepeating) {
-    const rruleSet = rrulestr(lines.join('\n'));
-    // <https://github.com/jkbrzt/rrule/blob/9f2061febeeb363d03352efe33d30c33073a0242/src/rrule.ts#L37-L57>
-    if (
-      typeof rruleSet === 'object' &&
-      typeof rruleSet.options === 'object' &&
-      !_.isEmpty(rruleSet.options)
-    ) {
-      const { options } = rruleSet;
-      repeating = {
-        freq: Frequency[options.freq],
-        count: options.count || undefined,
-        interval: options.interval || undefined,
-        until: options.until || undefined,
-        // <https://github.com/jkbrzt/rrule/blob/9f2061febeeb363d03352efe33d30c33073a0242/src/optionstostring.ts#L44>
-        byDay: options.byweekday || undefined,
-        byMonth: options.bymonth || undefined,
-        byMonthDay: options.bymonthday || undefined,
-        bySetPos: options.bysetpos || undefined,
-        exclude:
-          typeof rruleSet.exdates === 'function'
-            ? rruleSet.exdates()
-            : undefined,
-        startOfWeek: options.wkst || undefined
-      };
-    }
-  }
-
-  let timezone;
-  if (event.ical && event.ical.includes('TZID='))
-    timezone = event.ical.split('TZID=')[1].split(':')[0].trim();
-
-  let allDay = Boolean(
-    _.isDate(event.start) &&
-      _.isDate(event.end) &&
-      dayjs(event.start).startOf('day').toDate().getTime() ===
-        event.start.getTime() &&
-      dayjs(event.start).endOf('day')
-  );
-
-  //
-  // this adds arbitrary boolean support detection for all day flag
-  //
-  // X-FUNAMBOL-ALLDAY:1
-  // X-MICROSOFT-CDO-ALLDAYEVENT:TRUE
-  // X-MICROSOFT-MSNCALENDAR-ALLDAYEVENT:TRUE
-  //
-  if (
-    event.ical &&
-    // NOTE: funambol is arbitrary and not also added in built ICS output
-    // <https://github.com/sebbo2002/ical-generator/blob/9190c842f4e9aa9ac8fd598983303cb95e3cf76b/src/event.ts#L1653-L1654>
-    //
-    (event.ical.includes('X-FUNAMBOL-ALLDAY:1') ||
-      event.ical.includes('X-MICROSOFT-CDO-ALLDAYEVENT:TRUE') ||
-      event.ical.includes('X-MICROSOFT-MSNCALENDAR-ALLDAYEVENT:TRUE'))
-  )
-    allDay = true;
-
-  return {
-    id: event.uid,
-    sequence: event.sequence || undefined,
-    start: event.start || undefined,
-    end: event.end || undefined,
-    recurrenceId: event.recurrenceid || undefined,
-    timezone,
-    stamp: event.dtstamp || undefined,
-
-    // `allDay` (Boolean)
-    allDay,
-
-    // `floating` (Boolean)
-    // floating events are considered floating if the event doesn't have a timezone (?)
-    // usually this is only set for `UNTIL` and appends timezone "Z"
-    floating: timezone ? event.datetype !== 'date-time' : false,
-
-    // <https://github.com/sebbo2002/ical-generator/blob/dcf28ab313c3d53db4d50da021873d699b5b3030/src/event.ts#L146-L157>
-    repeating,
-
-    //
-    // NOTE: for any values that were stored with
-    //       `storeParameter` they can be either a String
-    //       or an object such as `{  }`, see this link for insight:
-    //       <https://github.com/jens-maus/node-ical/blob/b4008a752136d8e2164519022aedc35ada8e10c3/ical.js#L635-L657>
-    //
-    //       if the value stored is a string then we use that value
-    //       otherwise if it was an object then we'll rewrite it after
-    //       (parsed from the original ICS file that was sent over)
-    //
-    summary: event.summary || undefined,
-    location: event.location || undefined,
-    description: event.description || undefined,
-    organizer: event.organizer || undefined,
-    attendees: event.attendee || undefined,
-
-    // TODO: not yet supported by node-ical
-    //       <https://github.com/jens-maus/node-ical/pull/299>
-    alarms: undefined,
-
-    categories: event.categories || undefined,
-    status: event.status || undefined,
-    busystatus: event.freebusy || undefined,
-
-    // NOTE: not yet supported by node-ical
-    priority,
-
-    url: event.url || undefined,
-
-    // NOTE: not yet supported by node-ical
-    attachments: undefined,
-
-    // TODO: enforce strings for below types
-    transparency: event.transparency || undefined,
-    created: event.created || null,
-    lastModified: event.lastmodified || null,
-
-    // event.x = [
-    //   { key: 'X-SOMETHING', value: 'SOMEVALUE' },
-    //   ...
-    // ]
-    x: event.x || []
-  };
 }
 
 function bumpSyncToken(synctoken) {
@@ -789,110 +645,14 @@ class CalDAV {
     return event;
   }
 
+  //
+  // NOTE: originally we used ical-generator to rebuild the ICS file
+  //       however it wasn't in conformity with the RFC specification
+  //       and after finding numerous issues we decided to simply re-use the existing ICS file
+  //
   async buildICS(event, calendar) {
     logger.debug('buildICS', { event, calendar });
-
-    // TODO: add support for alarms
-    // TODO: preserve DESCRIPTION;ALTREP
-
-    // TODO: remove the conditional below once we update caldav-adapter
-
-    //
-    // TODO: until this PR is merged this is a temporary fix
-    //       to ensure that VALARM data is returned in calendar response objects
-    //       <https://github.com/jens-maus/node-ical/pull/299>
-    //
-    if (event.ical && event.ical.includes('VALARM')) {
-      const err = new Error('VALARM data detected');
-      err.event = event;
-      err.calendar = calendar;
-      logger.error(err, { event, calendar });
-      return event.ical;
-    }
-
-    // TODO: push and transform according to
-    // <https://github.com/sebbo2002/ical-generator/blob/dcf28ab313c3d53db4d50da021873d699b5b3030/src/event.ts#L179-L213>
-    // <https://github.com/jens-maus/node-ical/blob/b4008a752136d8e2164519022aedc35ada8e10c3/node-ical.d.ts#L65-L94>
-    const events = [];
-    events.push(transformEventForICal(event));
-    if (Array.isArray(events.recurrences))
-      events.push(...events.recurrences.map((r) => transformEventForICal(r)));
-    let timezone;
-    if (
-      event.ical &&
-      event.ical.includes('BEGIN:VTIMEZONE') &&
-      event.ical.includes('END:VTIMEZONE')
-    ) {
-      const str = event.ical
-        .split('BEGIN:VTIMEZONE')[1]
-        .split('END:VTIMEZONE')[0]
-        .trim();
-      if (str.includes('TZID:')) {
-        const lines = splitLines(str);
-        for (const line of lines) {
-          if (line.startsWith('TZID:')) {
-            timezone = line.split('TZID:')[1].split(':')[0].trim();
-            break;
-          }
-        }
-      }
-    }
-
-    const x = [];
-    if (event.ical) {
-      const parsedICS = await ical.async.parseICS(event.ical);
-      const calendarObject = parsedICS.find((obj) => obj.type === 'VCALENDAR');
-      for (const key of Object.keys(calendarObject)) {
-        if (key === key.toUpperCase()) {
-          const value =
-            typeof event[key] === 'object' &&
-            event[key] !== null &&
-            typeof event[key].val === 'string'
-              ? event[key].val
-              : typeof event[key] === 'string'
-              ? event[key]
-              : undefined;
-          if (value) {
-            x.push({
-              key: `X-${key}`,
-              value
-            });
-          }
-        }
-      }
-    }
-
-    const icalObject = {
-      description: calendar.description,
-      events,
-      // TODO: implement `method`
-      // <https://github.com/sebbo2002/ical-generator/blob/dcf28ab313c3d53db4d50da021873d699b5b3030/src/calendar.ts#L63-L72>
-      // method: null,
-      name: calendar.name,
-      prodId: calendar.prodId,
-      scale: calendar.scale,
-      source: calendar.source,
-      timezone,
-      ttl: calendar.ttl,
-      url: calendar.url,
-      //
-      // NOTE: we submitted a core bug fix but led us to set a default of `[]`
-      //       <https://github.com/sebbo2002/ical-generator/pull/563>
-      //
-      x
-    };
-    const cal = ical(icalObject);
-    // console.log('cal', cal);
-    // TODO: rewrite here
-    // SUMMARY
-    // LOCATION
-    // DESCRIPTION
-    // ORGANIZER
-    // ATTENDEE
-    // alarms
-    // attachments
-    //
-    return cal.toString(); // this already invokes `foldLines`
+    return event.ical;
   }
 
   getCalendarId(calendar) {

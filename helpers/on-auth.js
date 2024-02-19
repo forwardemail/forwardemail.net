@@ -318,24 +318,29 @@ async function onAuth(auth, session, fn) {
 
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
-    const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
-    const count = await this.client.incrby(key, 0);
-    if (count < 0) await this.client.del(key); // safeguard
-    else if (!adminExists && count > 60) {
-      // early monitoring for admins (probably remove this later once it becomes a burden)
-      const err = new TypeError(
-        `Too many concurrent connections from ${
-          alias ? `${alias.name}@${domain.name}` : domain.name
-        } with key "${key}"`
-      );
-      this.logger.error(err, { session });
-      throw new SMTPError('Too many concurrent connections', {
-        responseCode: 421
-      });
-    }
+    //
+    // NOTE: this is only for non-DAV servers
+    //
+    if (this?.constructor?.name !== 'CalDAV') {
+      const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
+      const count = await this.client.incrby(key, 0);
+      if (count < 0) await this.client.del(key); // safeguard
+      else if (!adminExists && count > 60) {
+        // early monitoring for admins (probably remove this later once it becomes a burden)
+        const err = new TypeError(
+          `Too many concurrent connections from ${
+            alias ? `${alias.name}@${domain.name}` : domain.name
+          } with key "${key}"`
+        );
+        this.logger.error(err, { session });
+        throw new SMTPError('Too many concurrent connections', {
+          responseCode: 421
+        });
+      }
 
-    // increase counter for alias by 1 (with ttl safeguard)
-    await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
+      // increase counter for alias by 1 (with ttl safeguard)
+      await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
+    }
 
     const to = [];
 

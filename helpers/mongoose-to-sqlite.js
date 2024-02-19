@@ -1404,7 +1404,7 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
       }
     } catch (err) {
       err.op = op;
-      logger.fatal(err, { session, op });
+      logger.debug(err, { session, op });
     }
   }
 }

@@ -128,7 +128,7 @@
     "html-to-text": "8.2.1",
     "htmlhint": "1.1.4",
     "humanize-string": "2",
-    "ical-generator": "6.0.1",
+    "ical.js": "1.5.0",
     "iconv": "3.0.1",
     "imapflow": "1.0.150",
     "into-stream": "6.0.0",
