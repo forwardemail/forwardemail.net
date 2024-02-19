@@ -143,7 +143,6 @@ async function generateAliasPassword(ctx) {
     if (isSANB(ctx.request.body.password)) {
       // change password on existing sqlite file using supplied password and new password
       const wsp = createWebSocketAsPromised();
-
       await wsp.request({
         action: 'rekey',
         new_password: encrypt(pass),
@@ -177,14 +176,6 @@ async function generateAliasPassword(ctx) {
     } else if (ctx.request.body.is_override === 'true') {
       // reset existing mailbox and create new mailbox
       const wsp = createWebSocketAsPromised();
-
-      // close websocket
-      try {
-        wsp.close();
-      } catch (err) {
-        ctx.logger.fatal(err);
-      }
-
       await wsp.request({
         action: 'reset',
         session: {
@@ -217,8 +208,30 @@ async function generateAliasPassword(ctx) {
     } else {
       // create new mailbox
       const wsp = createWebSocketAsPromised();
+      /*
+      // NOTE: we're just using reset here as a safeguard
       await wsp.request({
         action: 'setup',
+        session: {
+          user: {
+            id: alias.id,
+            username: `${alias.name}@${ctx.state.domain.name}`,
+            alias_id: alias.id,
+            alias_name: alias.name,
+            domain_id: ctx.state.domain.id,
+            domain_name: ctx.state.domain.name,
+            password: encrypt(pass),
+            storage_location: alias.storage_location,
+            alias_has_pgp: alias.has_pgp,
+            alias_public_key: alias.public_key,
+            locale: ctx.locale,
+            owner_full_email: ctx.state.user.email
+          }
+        }
+      });
+      */
+      await wsp.request({
+        action: 'reset',
         session: {
           user: {
             id: alias.id,

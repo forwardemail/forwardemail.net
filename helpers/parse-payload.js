@@ -1688,7 +1688,6 @@ async function parsePayload(data, ws) {
 
       // leverages `payload.new_password` to rekey existing
       case 'rekey': {
-        lock = await acquireLock(this, db);
         if (!isSANB(payload.new_password))
           throw new TypeError('New password missing');
         //
@@ -1770,7 +1769,7 @@ async function parsePayload(data, ws) {
               storage_location: payload.session.user.storage_location
             },
             payload.session,
-            lock,
+            lock || payload?.lock,
             false,
             tmp
           );
@@ -1854,7 +1853,7 @@ async function parsePayload(data, ws) {
         try {
           await fs.promises.unlink(storagePath);
         } catch (err) {
-          logger.fatal(err, { payload });
+          logger.warn(err, { payload });
         }
 
         db = await getDatabase(

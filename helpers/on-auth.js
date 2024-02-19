@@ -30,6 +30,7 @@ const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/smtp/on-connect');
+const refreshSession = require('#helpers/refresh-session');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const onConnectPromise = pify(onConnect);
@@ -310,6 +311,15 @@ async function onAuth(auth, session, fn) {
 
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
+
+    // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
+    // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
+    try {
+      await refreshSession.call(this, session, 'OPEN');
+    } catch (err) {
+      err.isCodeBug = true;
+      this.logger.fatal(err);
+    }
 
     // if any of the domain admins are admins then don't rate limit concurrent connections
     const adminExists = domain.members.some((m) => {

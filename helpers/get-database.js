@@ -217,12 +217,13 @@ async function getDatabase(
         return db;
       }
 
-      // note that this will throw an error if it parses one
-      await instance.wsp.request({
-        action: 'setup',
-        lock: existingLock,
-        session: { user: session.user }
-      });
+      // TODO: why is this here?  we shouldn't ever try to setup a sqlite db without user action
+      //       (this is most likely a debugging artifact)
+      // await instance.wsp.request({
+      //   action: 'setup',
+      //   lock: existingLock,
+      //   session: { user: session.user }
+      // });
 
       // if rclone was not enabled then return early
       if (!env.SQLITE_RCLONE_ENABLED) {
