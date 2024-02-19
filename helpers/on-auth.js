@@ -338,9 +338,15 @@ async function onAuth(auth, session, fn) {
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
     //
-    // NOTE: this is only for non-DAV servers
+    // NOTE: this is only for non-DAV and non POP3 servers
+    //       (it doesn't apply to POP3 until this is GH issue is resolved)
+    //       <https://github.com/nodemailer/wildduck/issues/629>
     //
-    if (this?.constructor?.name !== 'CalDAV') {
+    if (
+      this?.constructor?.name !== 'CalDAV' &&
+      this.server &&
+      !(this.server instanceof POP3Server)
+    ) {
       const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
       const count = await this.client.incrby(key, 0);
       if (count < 0) await this.client.del(key); // safeguard

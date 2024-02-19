@@ -55,7 +55,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 192512;
+const INITIAL_DB_SIZE = 200704;
 
 subscriber.setMaxListeners(0);
 
@@ -134,7 +134,6 @@ test.beforeEach(async (t) => {
 
   const pass = await alias.createToken();
   t.context.pass = pass;
-  t.context.alias = await alias.save();
 
   // spoof session
   t.context.session = {
@@ -153,6 +152,13 @@ test.beforeEach(async (t) => {
       owner_full_email: `${alias.name}@${domain.name}`
     }
   };
+
+  await wsp.request({
+    action: 'reset',
+    session: t.context.session
+  });
+
+  t.context.alias = await alias.save();
 
   // spoof dns records
   const map = new Map();
@@ -263,19 +269,6 @@ test('onAppend with private PGP', async (t) => {
   });
 
   const pass = await alias.createToken();
-  await alias.save();
-
-  const { publicKey } = await openpgp.generateKey({
-    type: 'ecc', // Type of the key, defaults to ECC
-    curve: 'curve25519', // ECC curve name, defaults to curve25519
-    userIDs: [{ name: '', email: `${alias.name}@${domain.name}` }], // you can pass multiple user IDs
-    passphrase: 'super long and hard to guess secret', // protects the private key
-    format: 'armored' // output key format, defaults to 'armored' (other options: 'binary' or 'object')
-  });
-
-  alias.has_pgp = true;
-  alias.public_key = publicKey;
-  await alias.save();
 
   const session = {
     user: {
@@ -293,6 +286,28 @@ test('onAppend with private PGP', async (t) => {
       owner_full_email: `${alias.name}@${domain.name}`
     }
   };
+
+  await t.context.wsp.request({
+    action: 'reset',
+    session
+  });
+
+  await alias.save();
+
+  const { publicKey } = await openpgp.generateKey({
+    type: 'ecc', // Type of the key, defaults to ECC
+    curve: 'curve25519', // ECC curve name, defaults to curve25519
+    userIDs: [{ name: '', email: `${alias.name}@${domain.name}` }], // you can pass multiple user IDs
+    passphrase: 'super long and hard to guess secret', // protects the private key
+    format: 'armored' // output key format, defaults to 'armored' (other options: 'binary' or 'object')
+  });
+
+  alias.has_pgp = true;
+  alias.public_key = publicKey;
+  await alias.save();
+
+  session.user.alias_has_pgp = alias.has_pgp;
+  session.user.alias_public_key = alias.public_key;
 
   await getDatabase(t.context.imap, alias, session);
 
@@ -801,6 +816,29 @@ test('onGetQuotaRoot', async (t) => {
   });
 
   const pass = await alias.createToken();
+
+  const session = {
+    user: {
+      id: alias.id,
+      username: `${alias.name}@${domain.name}`,
+      alias_id: alias.id,
+      alias_name: alias.name,
+      domain_id: domain.id,
+      domain_name: domain.name,
+      password: encrypt(pass),
+      storage_location: alias.storage_location,
+      alias_has_pgp: alias.has_pgp,
+      alias_public_key: alias.public_key,
+      locale: 'en',
+      owner_full_email: `${alias.name}@${domain.name}`
+    }
+  };
+
+  await t.context.wsp.request({
+    action: 'reset',
+    session
+  });
+
   await alias.save();
 
   // spoof dns records
@@ -848,8 +886,7 @@ test('onGetQuotaRoot', async (t) => {
     t.is(quota.storage.status, '0%');
     t.log('quota', quota);
     t.log('quota.storage.usage', quota.storage.usage);
-    if (![200704, INITIAL_DB_SIZE].includes(quota.storage.usage))
-      t.fail('Quota storage is off');
+    t.is(quota.storage.usage, 4096);
     // TODO: figure out why INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
     //   path: 'INBOX',
@@ -918,23 +955,6 @@ ZXhhbXBsZQo=
     ['\\Seen'],
     new Date()
   );
-
-  const session = {
-    user: {
-      id: alias.id,
-      username: `${alias.name}@${domain.name}`,
-      alias_id: alias.id,
-      alias_name: alias.name,
-      domain_id: domain.id,
-      domain_name: domain.name,
-      password: encrypt(pass),
-      storage_location: alias.storage_location,
-      alias_has_pgp: alias.has_pgp,
-      alias_public_key: alias.public_key,
-      locale: 'en',
-      owner_full_email: `${alias.name}@${domain.name}`
-    }
-  };
 
   await getDatabase(t.context.imap, alias, session);
 

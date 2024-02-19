@@ -1356,6 +1356,7 @@ async function parsePayload(data, ws) {
                       lock: payload?.lock
                     });
                   } catch (err) {
+                    err.isCodeBug = true;
                     logger.fatal(err, { payload });
                   }
 
@@ -1457,6 +1458,7 @@ async function parsePayload(data, ws) {
             lock: payload?.lock
           });
         } catch (err) {
+          err.isCodeBug = true;
           this.logger.fatal(err, { payload });
         }
 
@@ -1812,6 +1814,19 @@ async function parsePayload(data, ws) {
           }
         }
 
+        // update storage
+        try {
+          await this.wsp.request.call(this, {
+            action: 'size',
+            timeout: ms('5s'),
+            alias_id: payload.session.user.alias_id,
+            lock: payload?.lock
+          });
+        } catch (err) {
+          err.isCodeBug = true;
+          this.logger.fatal(err, { payload });
+        }
+
         if (err) throw err;
 
         response = {
@@ -1866,6 +1881,19 @@ async function parsePayload(data, ws) {
           payload.session,
           lock
         );
+
+        // update storage
+        try {
+          await this.wsp.request.call(this, {
+            action: 'size',
+            timeout: ms('5s'),
+            alias_id: payload.session.user.alias_id,
+            lock
+          });
+        } catch (err) {
+          err.isCodeBug = true;
+          this.logger.fatal(err, { payload });
+        }
 
         response = {
           id: payload.id,

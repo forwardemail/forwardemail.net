@@ -666,15 +666,19 @@ if (window.PublicKeyCredential) {
         typeof webauthnResponse.body !== 'object' ||
         webauthnResponse.body === null ||
         typeof webauthnResponse.body.redirectTo !== 'string'
-      )
+      ) {
+        console.error('invalid response', webauthnResponse);
         throw new Error(
           response.statusText ||
             response.text ||
             'Invalid response, please try again'
         );
+      }
 
       window.location.href = webauthnResponse.body.redirectTo;
     } catch (err) {
+      console.error(err);
+      logger.fatal(err);
       spinner.hide();
       Swal.fire(window._types.error, err.message, 'error');
     }
@@ -687,6 +691,8 @@ if (window.PublicKeyCredential) {
       spinner.show();
 
       const response = await sendRequest({}, '/auth/webauthn/challenge');
+
+      console.log('response', response);
 
       // Prepare a message if the body is not accurate
       if (
@@ -706,6 +712,8 @@ if (window.PublicKeyCredential) {
         }
       });
 
+      console.log('credential', credential);
+
       const body = {
         id: credential.id,
         response: {
@@ -723,6 +731,8 @@ if (window.PublicKeyCredential) {
       if (credential.authenticatorAttachment)
         body.authenticatorAttachment = credential.authenticatorAttachment;
 
+      console.log('sending body to /auth/webauthn/ok', body);
+
       // send post request to /auth/webauthn
       const webauthnResponse = await sendRequest(body, '/auth/webauthn/ok');
 
@@ -739,6 +749,8 @@ if (window.PublicKeyCredential) {
 
       window.location.href = webauthnResponse.body.redirectTo;
     } catch (err) {
+      console.error(err);
+      logger.fatal(err);
       spinner.hide();
       Swal.fire(window._types.error, err.message, 'error');
     }

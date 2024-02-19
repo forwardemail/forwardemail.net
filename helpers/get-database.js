@@ -180,6 +180,12 @@ async function getDatabase(
       )
         throw new TypeError('WebSocketAsPromised instance required');
 
+      // TODO: newlyCreated logic should get called early
+      //       (since we don't call "setup" below)
+      //       (`return getDatabase` always gets hit for readonly instances)
+      //       (and therefore this conditional should probably be removed)
+      //       (or a check instead of "setup" like "exists" should be invoked)
+
       //
       // if we already recursively called this function from
       // a successful webhook response, then that must mean something
@@ -217,13 +223,26 @@ async function getDatabase(
         return db;
       }
 
-      // TODO: why is this here?  we shouldn't ever try to setup a sqlite db without user action
-      //       (this is most likely a debugging artifact)
-      // await instance.wsp.request({
-      //   action: 'setup',
-      //   lock: existingLock,
-      //   session: { user: session.user }
-      // });
+      /*
+      const err = new TypeError(
+        'Database was not initialized with Generate Password'
+      );
+      err.alias = alias;
+      err.session = session;
+      err.dbFilePath = dbFilePath;
+      throw err;
+
+      //
+      // NOTE: the below was commented out as it could be an edge case in production
+      //       (it was mainly used for local testing, but we updated local tests)
+      //       (to invoke methods used in generate alias password to setup db properly)
+      /*
+      await instance.wsp.request({
+        action: 'setup',
+        lock: existingLock,
+        session: { user: session.user }
+      });
+      */
 
       // if rclone was not enabled then return early
       if (!env.SQLITE_RCLONE_ENABLED) {
