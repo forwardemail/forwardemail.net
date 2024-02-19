@@ -16,12 +16,14 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
+const pMap = require('p-map');
 const { isEmail } = require('validator');
 
 const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
+const config = require('#config');
 const Users = require('#models/users');
 const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
@@ -68,44 +70,46 @@ graceful.listen();
   const badAlias = [];
   const notActive = [];
 
-  for (const line of lines.slice(1)) {
-    // Alias Full, Target Email
-    const [fullAlias, targetEmail] = line.split(',');
+  await pMap(
+    lines.slice(1),
+    async (line) => {
+      // Alias Full, Target Email
+      const [targetEmail, fullAlias] = line.split(',');
 
-    if (!isEmail(fullAlias)) {
-      badAlias.push(line);
-      continue;
-    }
+      if (!isEmail(fullAlias)) {
+        badAlias.push(line);
+        return;
+      }
 
-    const name = fullAlias.split('@')[0].trim().toLowerCase();
+      const name = fullAlias.split('@')[0].trim().toLowerCase();
 
-    const recipient = targetEmail.toLowerCase().trim();
+      const recipient = targetEmail.toLowerCase().trim();
 
-    if (!isEmail(recipient)) {
-      badAlias.push(line);
-      continue;
-    }
+      if (!isEmail(recipient)) {
+        badAlias.push(line);
+        return;
+      }
 
-    const recipients = [recipient];
+      const recipients = [recipient];
 
-    // eslint-disable-next-line no-await-in-loop
-    const exists = await Aliases.exists({
-      user: user._id,
-      domain: domain._id,
-      name
-    });
+      const exists = await Aliases.exists({
+        user: user._id,
+        domain: domain._id,
+        name
+      });
 
-    if (exists) continue;
+      if (exists) return;
 
-    // eslint-disable-next-line no-await-in-loop
-    await Aliases.create({
-      user: user._id,
-      domain: domain._id,
-      name,
-      recipients,
-      is_enabled: true
-    });
-  }
+      await Aliases.create({
+        user: user._id,
+        domain: domain._id,
+        name,
+        recipients,
+        is_enabled: true
+      });
+    },
+    { concurrency: config.concurrency }
+  );
 
   console.log('--------------------------');
   console.log('badAlias');
