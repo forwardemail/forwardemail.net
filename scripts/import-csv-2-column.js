@@ -76,7 +76,12 @@ graceful.listen();
       // Alias Full, Target Email
       const [targetEmail, fullAlias] = line.split(',');
 
-      if (!isEmail(fullAlias)) {
+      if (
+        typeof fullAlias !== 'string' ||
+        !isEmail(fullAlias) ||
+        typeof targetEmail !== 'string' ||
+        !isEmail(targetEmail)
+      ) {
         badAlias.push(line);
         return;
       }
