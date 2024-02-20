@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Email terenkripsi end-to-end yang mengutamakan privasi (CATATAN: perusahaan ini tidak lagi beroperasi dan menutup layanan pada Agustus 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Anda telah menggunakan <strong class=\"notranslate\">%d</strong> dari batas harian <strong class=\"notranslate\">%d</strong> pesan SMTP keluar.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Email SMTP keluar ditampilkan di bawah – <a href=\"%s\" class=\"alert-link\">klik di sini</a> untuk menyiapkan klien email Anda untuk menerima email.",
-  "in step 2 above": "pada langkah 2 di atas"
+  "in step 2 above": "pada langkah 2 di atas",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "dibuat setiap hari. Anda juga dapat meminta cadangan baru kapan saja atau mengunduh cadangan terbaru dari",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Cadangan terkompresi dari kotak surat terenkripsi Anda dibuat setiap hari. Anda juga dapat langsung meminta cadangan baru atau mengunduh cadangan terbaru kapan saja dari",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Untuk pencadangan, kami cukup memperoleh kunci tulis, menjalankan pos pemeriksaan WAL melalui",
+  ", and then copy the file.": ", lalu salin file tersebut.",
+  "Backups are stored if no existing backup is detected or if the": "Cadangan disimpan jika tidak ada cadangan yang terdeteksi atau jika",
+  "Acquire a write lock.": "Dapatkan kunci tulis.",
+  "Run a WAL checkpoint via": "Jalankan pos pemeriksaan WAL melalui",
+  "Copy the file to a temporarily location.": "Salin file ke lokasi sementara.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Pastikan file yang disalin dapat dibuka dengan kata sandi terenkripsi (safeguard/dummyproofing).",
+  "Previously we ran the SQLite": "Sebelumnya kami menjalankan SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "perintah setiap jam selama pemrosesan perintah IMAP, yang memanfaatkan kata sandi terenkripsi Anda dari koneksi IMAP dalam memori.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Namun pendekatan ini terlalu intensif memori, dan menyebabkan kesalahan kehabisan memori dalam produksi kotak surat besar.",
+  "Additionally": "Selain itu",
+  "was better than": "lebih baik dari"
 }

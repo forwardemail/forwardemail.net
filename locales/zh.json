@@ -6984,5 +6984,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "隐私第一的端到端加密电子邮件（注：该公司不再营业并于 2024 年 8 月关闭服务）",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "您已使用<strong class=\"notranslate\">%d</strong>出站 SMTP 邮件，超出每日限制<strong class=\"notranslate\">%d</strong>条。",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "出站 SMTP 电子邮件如下所示 -<a href=\"%s\" class=\"alert-link\">单击此处</a>设置您的电子邮件客户端以接收电子邮件。",
-  "in step 2 above": "在上面的步骤 2 中"
+  "in step 2 above": "在上面的步骤 2 中",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "是每天制作的。您还可以随时请求新的备份或从以下位置下载最新的备份",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "每天都会对您的加密邮箱进行压缩备份。您还可以立即请求新的备份或随时下载最新的备份",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "对于备份，我们只需获取写锁，通过以下方式运行 WAL 检查点",
+  ", and then copy the file.": "，然后复制该文件。",
+  "Backups are stored if no existing backup is detected or if the": "如果未检测到现有备份或者如果",
+  "Acquire a write lock.": "获取写锁。",
+  "Run a WAL checkpoint via": "通过运行 WAL 检查点",
+  "Copy the file to a temporarily location.": "将文件复制到临时位置。",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "确保可以使用加密密码打开复制的文件（安全/虚拟验证）。",
+  "Previously we ran the SQLite": "之前我们运行了 SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "在 IMAP 命令处理期间每小时执行一次命令，这会利用内存中 IMAP 连接中的加密密码。",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "然而，这种方法的内存消耗太大，并且会在大型邮箱的生产中导致内存不足错误。",
+  "Additionally": "此外",
+  "was better than": "比"
 }

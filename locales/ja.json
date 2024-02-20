@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "プライバシーを最優先したエンドツーエンドの暗号化メール (注: この会社は既に事業を停止しており、2024 年 8 月にサービスを終了します)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "1 日あたりの送信 SMTP メッセージ数<strong class=\"notranslate\">%d</strong> d 個の制限のうち、 <strong class=\"notranslate\">%d</strong>を使用しました。",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "アウトバウンド SMTP 電子メールを以下に示します。電子メールを受信できるように電子メール クライアントを設定するには、<a href=\"%s\" class=\"alert-link\">ここをクリックしてください</a>。",
-  "in step 2 above": "上記のステップ2で"
+  "in step 2 above": "上記のステップ2で",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "毎日作られています。いつでも新しいバックアップをリクエストしたり、次のサイトから最新のバックアップをダウンロードしたりすることもできます。",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "暗号化されたメールボックスの圧縮バックアップは毎日作成されます。また、いつでも新しいバックアップを即座にリクエストしたり、最新のバックアップをダウンロードしたりできます。",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "バックアップの場合は、単純に書き込みロックを取得し、WAL チェックポイントを実行します。",
+  ", and then copy the file.": "をクリックしてファイルをコピーします。",
+  "Backups are stored if no existing backup is detected or if the": "バックアップは、既存のバックアップが検出されない場合、または",
+  "Acquire a write lock.": "書き込みロックを取得します。",
+  "Run a WAL checkpoint via": "WAL チェックポイントを実行するには、",
+  "Copy the file to a temporarily location.": "ファイルを一時的な場所にコピーします。",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "コピーしたファイルが暗号化されたパスワード (セーフガード/ダミープルーフ) で開けることを確認します。",
+  "Previously we ran the SQLite": "以前は SQLite を実行しました",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "IMAP コマンド処理中に 1 時間ごとにコマンドを実行します。これは、メモリ内の IMAP 接続からの暗号化されたパスワードを利用します。",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "ただし、このアプローチはメモリを大量に消費するため、大規模なメールボックスの実稼働環境でメモリ不足エラーが発生していました。",
+  "Additionally": "さらに",
+  "was better than": "よりも良かった"
 }

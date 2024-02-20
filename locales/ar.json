@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "بريد إلكتروني مشفر وشامل للخصوصية أولاً (ملاحظة: لم تعد هذه الشركة تعمل وتم إيقاف الخدمة في أغسطس 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "لقد استخدمت <strong class=\"notranslate\">%d</strong> من الحد اليومي الذي يبلغ <strong class=\"notranslate\">%d</strong> من رسائل SMTP الصادرة.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "تظهر أدناه رسائل البريد الإلكتروني الصادرة عبر SMTP - <a href=\"%s\" class=\"alert-link\">انقر هنا</a> لإعداد عميل البريد الإلكتروني الخاص بك لتلقي البريد الإلكتروني.",
-  "in step 2 above": "في الخطوة 2 أعلاه"
+  "in step 2 above": "في الخطوة 2 أعلاه",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "مصنوعة يوميا. يمكنك أيضًا طلب نسخة احتياطية جديدة في أي وقت أو تنزيل أحدث نسخة احتياطية من",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "يتم عمل نسخ احتياطية مضغوطة لصناديق البريد المشفرة الخاصة بك يوميًا. يمكنك أيضًا طلب نسخة احتياطية جديدة على الفور أو تنزيل أحدث نسخة احتياطية في أي وقت من",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "بالنسبة للنسخ الاحتياطية، فإننا ببساطة نحصل على قفل الكتابة، ونقوم بتشغيل نقطة تفتيش WAL من خلاله",
+  ", and then copy the file.": "، ثم قم بنسخ الملف.",
+  "Backups are stored if no existing backup is detected or if the": "يتم تخزين النسخ الاحتياطية في حالة عدم اكتشاف نسخة احتياطية موجودة أو في حالة ظهور خطأ",
+  "Acquire a write lock.": "الحصول على قفل الكتابة.",
+  "Run a WAL checkpoint via": "قم بتشغيل نقطة تفتيش WAL عبر",
+  "Copy the file to a temporarily location.": "انسخ الملف إلى مكان مؤقت.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "تأكد من إمكانية فتح الملف المنسوخ باستخدام كلمة المرور المشفرة (الحماية/الحماية من الدمى).",
+  "Previously we ran the SQLite": "في السابق قمنا بتشغيل SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "الأمر كل ساعة أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "ومع ذلك، كان هذا الأسلوب يستهلك الكثير من الذاكرة، وكان يتسبب في حدوث أخطاء في نفاد الذاكرة أثناء إنتاج صناديق البريد الكبيرة.",
+  "Additionally": "بالإضافة إلى ذلك",
+  "was better than": "كان أفضل من"
 }

@@ -4763,5 +4763,19 @@
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Vous avez utilisé <strong class=\"notranslate\">%d</strong> hors de votre limite quotidienne de <strong class=\"notranslate\">%d</strong> messages SMTP sortants.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Les e-mails SMTP sortants sont affichés ci-dessous – <a href=\"%s\" class=\"alert-link\">cliquez ici</a> pour configurer votre client de messagerie pour recevoir des e-mails.",
   "in step 2 above": "à l'étape 2 ci-dessus",
-  "Storage used by other aliases": "Storage used by other aliases"
+  "Storage used by other aliases": "Stockage utilisé par d'autres alias",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "sont réalisés quotidiennement. Vous pouvez également demander une nouvelle sauvegarde à tout moment ou télécharger la dernière sauvegarde depuis",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Des sauvegardes compressées de vos boîtes mail chiffrées sont effectuées quotidiennement. Vous pouvez également demander instantanément une nouvelle sauvegarde ou télécharger la dernière sauvegarde à tout moment depuis",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Pour les sauvegardes, nous acquérons simplement un verrou en écriture, exécutons un point de contrôle WAL via",
+  ", and then copy the file.": ", puis copiez le fichier.",
+  "Backups are stored if no existing backup is detected or if the": "Les sauvegardes sont stockées si aucune sauvegarde existante n'est détectée ou si le",
+  "Acquire a write lock.": "Obtenez un verrou en écriture.",
+  "Run a WAL checkpoint via": "Exécutez un point de contrôle WAL via",
+  "Copy the file to a temporarily location.": "Copiez le fichier dans un emplacement temporaire.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Assurez-vous que le fichier copié peut être ouvert avec le mot de passe crypté (sauvegarde/dummyproofing).",
+  "Previously we ran the SQLite": "Auparavant, nous utilisions SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "commande toutes les heures pendant le traitement des commandes IMAP, qui exploite votre mot de passe crypté à partir d’une connexion IMAP en mémoire.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Cependant, cette approche était trop gourmande en mémoire et provoquait des erreurs de mémoire insuffisante en production pour les grandes boîtes aux lettres.",
+  "Additionally": "En plus",
+  "was better than": "était mieux que"
 }

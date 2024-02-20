@@ -88,7 +88,7 @@ We are the only 100% open-source and privacy-focused email service provider that
          IMAP->>You: Success!
      ```
 
-5. [Compressed backups of your encrypted mailboxes](#backups) are made hourly.  You can also request a new backup at any time or download the latest backup from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.
+5. [Compressed backups of your encrypted mailboxes](#backups) are made daily.  You can also request a new backup at any time or download the latest backup from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.  If you decide to switch to another email service, then you can easily migrate, download, export, and purge your mailboxes and backups at anytime.
 
 
 ## Technologies
@@ -176,24 +176,33 @@ We accomplish two-way communication with [WebSockets](https://developer.mozilla.
 
 ### Backups
 
-> **tldr;** Compressed backups of your encrypted mailboxes are made every hour.  You can also instantly request a new backup or download the latest backup at anytime from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.
+> **tldr;** Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases.
 
-For backups, we simply run the SQLite `VACUUM INTO` command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash has changed on the file as compared to the most recent backup.
+For backups, we simply acquire a write lock, run a WAL checkpoint via `wal_checkpoint(PASSIVE)`, and then copy the file.
 
-Note that we use the `VACUUM INTO` command as opposed to the built-in `backup` command because if a page is modified during a `backup` command operation, then it has to start over.  The `VACUUM INTO` command will take a snapshot.  See these comments on [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) and [Hacker News](https://news.ycombinator.com/item?id=31387556) for more insight.
-
-Additionally we use `VACUUM INTO` as opposed to `backup`, because the `backup` command would leave the database unencrypted for a brief period until `rekey` is invoked (see this GitHub [comment](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) for insight).
+Backups are stored if no existing backup is detected or if the [SHA-256](https://en.wikipedia.org/wiki/SHA-2) hash has changed on the file as compared to the most recent backup.
 
 The Secondary will instruct the Primary over the `WebSocket` connection to execute the backup – and the Primary will then receive the command to do so and will subsequently:
 
 1. Connect to your encrypted mailbox.
-2. Run the `VACUUM INTO` SQLite command.
-3. Compress the resulting backup file with `gzip`.
-4. Upload it to Cloudflare R2 for storage (or your own provider if specified).
+2. Acquire a write lock.
+3. Run a WAL checkpoint via `wal_checkpoint(PASSIVE)`.
+4. Copy the file to a temporarily location.
+5. Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).
+6. Compress the resulting backup file with `gzip`.
+7. Upload it to Cloudflare R2 for storage (or your own provider if specified).
 
 Remember that your mailboxes are encrypted – and while we have IP restrictions and other authentication measures in place for WebSocket communication – in the event of a bad actor, you can rest assured that unless the WebSocket payload has your IMAP password, it cannot open your database.
 
 Only one backup is stored per mailbox at this time, but in the future we may offer point-in-time-recovery ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)").
+
+Previously we ran the SQLite `VACUUM INTO` command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.
+
+However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.
+
+The `VACUUM INTO` command as opposed to the built-in `backup` command because if a page is modified during a `backup` command operation, then it has to start over.  The `VACUUM INTO` command will take a snapshot.  See these comments on [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) and [Hacker News](https://news.ycombinator.com/item?id=31387556) for more insight.
+
+Additionally `VACUUM INTO` was better than `backup`, because the `backup` command would leave the database unencrypted for a brief period until `rekey` is invoked (see this GitHub [comment](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) for insight).
 
 ### Search
 

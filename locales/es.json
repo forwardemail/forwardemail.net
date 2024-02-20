@@ -7289,5 +7289,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Correo electrónico cifrado de extremo a extremo que prioriza la privacidad (NOTA: esta empresa ya no opera y cerrará el servicio en agosto de 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Has utilizado <strong class=\"notranslate\">%d</strong> de tu límite diario de <strong class=\"notranslate\">%d</strong> mensajes SMTP salientes.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Los correos electrónicos SMTP salientes se muestran a continuación: <a href=\"%s\" class=\"alert-link\">haga clic aquí</a> para configurar su cliente de correo electrónico para recibir correo electrónico.",
-  "in step 2 above": "en el paso 2 anterior"
+  "in step 2 above": "en el paso 2 anterior",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "se hacen diariamente. También puede solicitar una nueva copia de seguridad en cualquier momento o descargar la última copia de seguridad desde",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Diariamente se realizan copias de seguridad comprimidas de sus buzones de correo cifrados. También puede solicitar instantáneamente una nueva copia de seguridad o descargar la última copia de seguridad en cualquier momento desde",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Para las copias de seguridad, simplemente adquirimos un bloqueo de escritura, ejecutamos un punto de control WAL a través de",
+  ", and then copy the file.": "y luego copie el archivo.",
+  "Backups are stored if no existing backup is detected or if the": "Las copias de seguridad se almacenan si no se detecta ninguna copia de seguridad existente o si el",
+  "Acquire a write lock.": "Adquirir un bloqueo de escritura.",
+  "Run a WAL checkpoint via": "Ejecute un punto de control WAL a través de",
+  "Copy the file to a temporarily location.": "Copie el archivo a una ubicación temporal.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Asegúrese de que el archivo copiado se pueda abrir con la contraseña cifrada (protección/protección falsa).",
+  "Previously we ran the SQLite": "Anteriormente ejecutamos el SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "comando cada hora durante el procesamiento del comando IMAP, que aprovecha su contraseña cifrada desde una conexión IMAP en memoria.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Sin embargo, este enfoque consumía demasiada memoria y provocaba errores de falta de memoria en producción para buzones de correo grandes.",
+  "Additionally": "Además",
+  "was better than": "fue mejor que"
 }

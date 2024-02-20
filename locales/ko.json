@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "개인 정보 보호를 최우선으로 하는 엔드투엔드 암호화 이메일(참고: 이 회사는 더 이상 영업하지 않으며 2024년 8월에 서비스를 종료합니다.)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "일일 한도인 <strong class=\"notranslate\">%d</strong> 아웃바운드 SMTP 메시지 중 <strong class=\"notranslate\">%d</strong> 를 사용했습니다.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "아웃바운드 SMTP 이메일은 아래와 같습니다. 이메일을 수신하도록 이메일 클라이언트를 설정하려면 <a href=\"%s\" class=\"alert-link\">여기를 클릭하세요</a> .",
-  "in step 2 above": "위의 2단계에서"
+  "in step 2 above": "위의 2단계에서",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "매일 만들어집니다. 언제든지 새 백업을 요청하거나 다음에서 최신 백업을 다운로드할 수도 있습니다.",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "암호화된 사서함의 압축 백업은 매일 이루어집니다. 또한 언제든지 다음 사이트에서 즉시 새 백업을 요청하거나 최신 백업을 다운로드할 수 있습니다.",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "백업의 경우 간단히 쓰기 잠금을 획득하고 다음을 통해 WAL 체크포인트를 실행합니다.",
+  ", and then copy the file.": "를 클릭한 다음 파일을 복사합니다.",
+  "Backups are stored if no existing backup is detected or if the": "기존 백업이 감지되지 않거나",
+  "Acquire a write lock.": "쓰기 잠금을 획득합니다.",
+  "Run a WAL checkpoint via": "다음을 통해 WAL 체크포인트를 실행하세요.",
+  "Copy the file to a temporarily location.": "파일을 임시 위치에 복사합니다.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "복사된 파일이 암호화된 비밀번호(보호/더미 방지)로 열 수 있는지 확인하세요.",
+  "Previously we ran the SQLite": "이전에는 SQLite를 실행했습니다.",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "IMAP 명령 처리 중에 매시간 명령을 실행합니다. 이는 메모리 내 IMAP 연결에서 암호화된 비밀번호를 활용합니다.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "그러나 이 접근 방식은 메모리를 너무 많이 사용하여 대규모 사서함을 생산할 때 메모리 부족 오류를 발생시켰습니다.",
+  "Additionally": "추가적으로",
+  "was better than": "보다 나았다"
 }

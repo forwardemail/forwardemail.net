@@ -7062,5 +7062,19 @@
   "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> has sent you a password to use for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</p><p><a href=\"%s\" rel=\"noopener noreferrer\" class=\"font-weight-bold text-decoration-underline\" target=\"_blank\">Click this link</a> and immediately follow the instructions.</p>",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.",
-  "in step 2 above": "in step 2 above"
+  "in step 2 above": "in step 2 above",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "are made daily.  You can also request a new backup at any time or download the latest backup from",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "For backups, we simply acquire a write lock, run a WAL checkpoint via",
+  ", and then copy the file.": ", and then copy the file.",
+  "Backups are stored if no existing backup is detected or if the": "Backups are stored if no existing backup is detected or if the",
+  "Acquire a write lock.": "Acquire a write lock.",
+  "Run a WAL checkpoint via": "Run a WAL checkpoint via",
+  "Copy the file to a temporarily location.": "Copy the file to a temporarily location.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).",
+  "Previously we ran the SQLite": "Previously we ran the SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.",
+  "Additionally": "Additionally",
+  "was better than": "was better than"
 }

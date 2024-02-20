@@ -4769,5 +4769,19 @@
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Bạn đã sử dụng <strong class=\"notranslate\">%d</strong> trong số giới hạn hàng ngày của <strong class=\"notranslate\">%d</strong> thư SMTP gửi đi.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Email SMTP gửi đi được hiển thị bên dưới - <a href=\"%s\" class=\"alert-link\">nhấp vào đây</a> để thiết lập ứng dụng email khách của bạn để nhận email.",
   "in step 2 above": "ở bước 2 ở trên",
-  "Storage used by other aliases": "Storage used by other aliases"
+  "Storage used by other aliases": "Bộ nhớ được sử dụng bởi các bí danh khác",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "được thực hiện hàng ngày. Bạn cũng có thể yêu cầu bản sao lưu mới bất kỳ lúc nào hoặc tải xuống bản sao lưu mới nhất từ ",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Bản sao lưu nén của hộp thư được mã hóa của bạn được thực hiện hàng ngày. Bạn cũng có thể yêu cầu ngay bản sao lưu mới hoặc tải xuống bản sao lưu mới nhất bất kỳ lúc nào từ",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Để sao lưu, chúng tôi chỉ cần lấy khóa ghi, chạy điểm kiểm tra WAL thông qua",
+  ", and then copy the file.": ", sau đó sao chép tệp.",
+  "Backups are stored if no existing backup is detected or if the": "Các bản sao lưu được lưu trữ nếu không phát hiện thấy bản sao lưu hiện có hoặc nếu",
+  "Acquire a write lock.": "Có được một khóa ghi.",
+  "Run a WAL checkpoint via": "Chạy điểm kiểm tra WAL thông qua",
+  "Copy the file to a temporarily location.": "Sao chép tập tin vào một vị trí tạm thời.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Đảm bảo rằng tệp đã sao chép có thể được mở bằng mật khẩu được mã hóa (bảo vệ/chống giả).",
+  "Previously we ran the SQLite": "Trước đây chúng tôi đã chạy SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "lệnh mỗi giờ trong quá trình xử lý lệnh IMAP, tận dụng mật khẩu được mã hóa của bạn từ kết nối IMAP trong bộ nhớ.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Tuy nhiên, cách tiếp cận này tiêu tốn quá nhiều bộ nhớ và gây ra lỗi hết bộ nhớ trong quá trình sản xuất các hộp thư lớn.",
+  "Additionally": "Ngoài ra",
+  "was better than": "đã tốt hơn"
 }

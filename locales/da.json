@@ -7029,5 +7029,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end krypteret e-mail (BEMÆRK: denne virksomhed er ikke længere i drift og lukker ned i august 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Du har brugt <strong class=\"notranslate\">%d</strong> ud af din daglige grænse på <strong class=\"notranslate\">%d</strong> udgående SMTP-meddelelser.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Udgående SMTP-e-mails er vist nedenfor – <a href=\"%s\" class=\"alert-link\">klik her</a> for at konfigurere din e-mail-klient til at modtage e-mail.",
-  "in step 2 above": "i trin 2 ovenfor"
+  "in step 2 above": "i trin 2 ovenfor",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "laves dagligt. Du kan også til enhver tid anmode om en ny backup eller downloade den seneste backup fra",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Komprimerede sikkerhedskopier af dine krypterede postkasser laves dagligt. Du kan også øjeblikkeligt anmode om en ny backup eller downloade den seneste backup når som helst fra",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Til backups anskaffer vi blot en skrivelås, kører et WAL checkpoint via",
+  ", and then copy the file.": ", og kopier derefter filen.",
+  "Backups are stored if no existing backup is detected or if the": "Sikkerhedskopier gemmes, hvis der ikke findes nogen eksisterende sikkerhedskopi, eller hvis",
+  "Acquire a write lock.": "Anskaf en skrivelås.",
+  "Run a WAL checkpoint via": "Kør et WAL-kontrolpunkt via",
+  "Copy the file to a temporarily location.": "Kopier filen til en midlertidig placering.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Sørg for, at den kopierede fil kan åbnes med den krypterede adgangskode (safeguard/dummyproofing).",
+  "Previously we ran the SQLite": "Tidligere kørte vi SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "kommando hver time under IMAP-kommandobehandling, som udnytter din krypterede adgangskode fra en IMAP-forbindelse i hukommelsen.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Denne tilgang var imidlertid for hukommelsesintensiv og forårsagede fejl i hukommelsen i produktionen til store postkasser.",
+  "Additionally": "Derudover",
+  "was better than": "var bedre end"
 }

@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Gizlilik öncelikli uçtan uca şifrelenmiş e-posta (NOT: bu şirket artık faaliyette değil ve Ağustos 2024'te hizmetini kapatacak)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Günlük <strong class=\"notranslate\">%d</strong> giden SMTP ileti sınırınızdan <strong class=\"notranslate\">%d</strong> tanesini kullandınız.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Giden SMTP e-postaları aşağıda gösterilmektedir; e-posta istemcinizi e-posta alacak şekilde ayarlamak için <a href=\"%s\" class=\"alert-link\">burayı tıklayın</a> .",
-  "in step 2 above": "yukarıdaki 2. adımda"
+  "in step 2 above": "yukarıdaki 2. adımda",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "günlük olarak yapılmaktadır. Ayrıca istediğiniz zaman yeni bir yedekleme talep edebilir veya en son yedeği şuradan indirebilirsiniz:",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Şifrelenmiş posta kutularınızın sıkıştırılmış yedeklemeleri günlük olarak yapılır. Ayrıca anında yeni bir yedekleme talebinde bulunabilir veya istediğiniz zaman en son yedeği indirebilirsiniz.",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Yedeklemeler için basitçe bir yazma kilidi alıyoruz, aracılığıyla bir WAL kontrol noktası çalıştırıyoruz",
+  ", and then copy the file.": "ve ardından dosyayı kopyalayın.",
+  "Backups are stored if no existing backup is detected or if the": "Yedeklemeler, mevcut bir yedekleme algılanmazsa veya",
+  "Acquire a write lock.": "Bir yazma kilidi edinin.",
+  "Run a WAL checkpoint via": "Bir WAL kontrol noktası çalıştırın",
+  "Copy the file to a temporarily location.": "Dosyayı geçici bir konuma kopyalayın.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Kopyalanan dosyanın şifrelenmiş parolayla (koruma/göstergelik önleme) açılabildiğinden emin olun.",
+  "Previously we ran the SQLite": "Daha önce SQLite'ı çalıştırmıştık",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "Bellek içi bir IMAP bağlantısından şifrelenmiş parolanızdan yararlanan IMAP komut işleme sırasında her saat başı komut verin.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Ancak bu yaklaşım bellek açısından çok yoğundu ve büyük posta kutuları için üretimde yetersiz bellek hatalarına neden oluyordu.",
+  "Additionally": "bunlara ek olarak",
+  "was better than": "bundan daha iyiydi"
 }

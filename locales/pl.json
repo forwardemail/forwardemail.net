@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Kompleksowo zaszyfrowana poczta e-mail zapewniająca prywatność (UWAGA: ta firma nie prowadzi już działalności i zakończy usługę w sierpniu 2024 r.)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Wykorzystałeś <strong class=\"notranslate\">%d</strong> z dziennego limitu <strong class=\"notranslate\">%d</strong> wychodzących wiadomości SMTP.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Wychodzące wiadomości e-mail SMTP są pokazane poniżej – <a href=\"%s\" class=\"alert-link\">kliknij tutaj,</a> aby skonfigurować klienta poczty e-mail do odbierania wiadomości e-mail.",
-  "in step 2 above": "w kroku 2 powyżej"
+  "in step 2 above": "w kroku 2 powyżej",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "są robione codziennie. Możesz także w dowolnym momencie poprosić o utworzenie nowej kopii zapasowej lub pobrać najnowszą kopię zapasową z witryny",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Skompresowane kopie zapasowe zaszyfrowanych skrzynek pocztowych są tworzone codziennie. Możesz także natychmiast poprosić o nową kopię zapasową lub pobrać najnowszą kopię zapasową w dowolnym momencie ze strony",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "W przypadku kopii zapasowych po prostu uzyskujemy blokadę zapisu, uruchamiamy punkt kontrolny WAL",
+  ", and then copy the file.": ", a następnie skopiuj plik.",
+  "Backups are stored if no existing backup is detected or if the": "Kopie zapasowe są przechowywane, jeśli nie zostanie wykryta żadna istniejąca kopia zapasowa lub jeśli",
+  "Acquire a write lock.": "Zdobądź blokadę zapisu.",
+  "Run a WAL checkpoint via": "Uruchom punkt kontrolny WAL poprzez",
+  "Copy the file to a temporarily location.": "Skopiuj plik do tymczasowej lokalizacji.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Upewnij się, że skopiowany plik można otworzyć za pomocą zaszyfrowanego hasła (zabezpieczenie/zabezpieczenie fikcyjne).",
+  "Previously we ran the SQLite": "Poprzednio uruchamialiśmy SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "polecenie co godzinę podczas przetwarzania poleceń IMAP, które wykorzystuje zaszyfrowane hasło z połączenia IMAP w pamięci.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Jednak to podejście wymagało zbyt dużego wykorzystania pamięci i powodowało błędy związane z brakiem pamięci w produkcji dużych skrzynek pocztowych.",
+  "Additionally": "Dodatkowo",
+  "was better than": "było lepsze niż"
 }

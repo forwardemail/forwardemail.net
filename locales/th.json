@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "อีเมลเข้ารหัสจากต้นทางถึงปลายทางเพื่อความเป็นส่วนตัวเป็นอันดับแรก (หมายเหตุ: บริษัทนี้ไม่ได้อยู่ในธุรกิจอีกต่อไปและจะปิดให้บริการในเดือนสิงหาคม 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "คุณได้ใช้ <strong class=\"notranslate\">%d</strong> จากขีดจำกัดรายวันของข้อความ SMTP ขาออก <strong class=\"notranslate\">%d</strong> รายการแล้ว",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "อีเมล SMTP ขาออกแสดงอยู่ด้านล่าง – <a href=\"%s\" class=\"alert-link\">คลิกที่นี่</a> เพื่อตั้งค่าไคลเอนต์อีเมลของคุณให้รับอีเมล",
-  "in step 2 above": "ในขั้นตอนที่ 2 ข้างต้น"
+  "in step 2 above": "ในขั้นตอนที่ 2 ข้างต้น",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "จะทำทุกวัน คุณยังสามารถขอข้อมูลสำรองใหม่ได้ตลอดเวลาหรือดาวน์โหลดข้อมูลสำรองล่าสุดได้จาก",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "การสำรองข้อมูลกล่องจดหมายที่เข้ารหัสของคุณจะถูกบีบอัดทุกวัน คุณยังสามารถขอข้อมูลสำรองใหม่ได้ทันทีหรือดาวน์โหลดข้อมูลสำรองล่าสุดได้ตลอดเวลาจาก",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "สำหรับการสำรองข้อมูล เราเพียงแค่ได้รับการล็อคการเขียน เรียกใช้จุดตรวจสอบ WAL ผ่าน",
+  ", and then copy the file.": "แล้วคัดลอกไฟล์",
+  "Backups are stored if no existing backup is detected or if the": "ข้อมูลสำรองจะถูกจัดเก็บหากตรวจไม่พบข้อมูลสำรองที่มีอยู่หรือหาก",
+  "Acquire a write lock.": "รับล็อคการเขียน",
+  "Run a WAL checkpoint via": "ดำเนินการจุดตรวจ WAL ผ่าน",
+  "Copy the file to a temporarily location.": "คัดลอกไฟล์ไปยังตำแหน่งชั่วคราว",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "ตรวจสอบให้แน่ใจว่าไฟล์ที่คัดลอกสามารถเปิดได้ด้วยรหัสผ่านที่เข้ารหัส (การป้องกัน/การป้องกันจำลอง)",
+  "Previously we ran the SQLite": "ก่อนหน้านี้เรารัน SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "คำสั่งทุกชั่วโมงในระหว่างการประมวลผลคำสั่ง IMAP ซึ่งใช้ประโยชน์จากรหัสผ่านที่เข้ารหัสของคุณจากการเชื่อมต่อ IMAP ในหน่วยความจำ",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "อย่างไรก็ตาม วิธีการนี้มีหน่วยความจำมากเกินไป และทำให้เกิดข้อผิดพลาดหน่วยความจำไม่เพียงพอในการผลิตสำหรับกล่องจดหมายขนาดใหญ่",
+  "Additionally": "นอกจากนี้",
+  "was better than": "ดีกว่า"
 }

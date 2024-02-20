@@ -5264,5 +5264,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "דוא\"ל מוצפן מקצה לקצה (הערה: חברה זו כבר לא פעילה וסוגרת את השירות באוגוסט 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "השתמשת ב- <strong class=\"notranslate\">%d</strong> מתוך המגבלה היומית שלך של <strong class=\"notranslate\">%d</strong> הודעות SMTP יוצאות.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "הודעות דוא&quot;ל SMTP יוצאות מוצגות למטה - <a href=\"%s\" class=\"alert-link\">לחץ כאן</a> כדי להגדיר את לקוח הדוא&quot;ל שלך לקבלת דוא&quot;ל.",
-  "in step 2 above": "בשלב 2 למעלה"
+  "in step 2 above": "בשלב 2 למעלה",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "נעשים מדי יום. אתה יכול גם לבקש גיבוי חדש בכל עת או להוריד את הגיבוי האחרון מ",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "גיבויים דחוסים של תיבות הדואר המוצפנות שלך מבוצעים מדי יום. אתה יכול גם לבקש גיבוי חדש באופן מיידי או להוריד את הגיבוי האחרון בכל עת מ",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "עבור גיבויים, אנו פשוט רוכשים נעילת כתיבה, מפעילים נקודת ביקורת WAL באמצעות",
+  ", and then copy the file.": ", ולאחר מכן העתק את הקובץ.",
+  "Backups are stored if no existing backup is detected or if the": "גיבויים מאוחסנים אם לא מזוהה גיבוי קיים או אם",
+  "Acquire a write lock.": "רכשו מנעול כתיבה.",
+  "Run a WAL checkpoint via": "הפעל מחסום WAL באמצעות",
+  "Copy the file to a temporarily location.": "העתק את הקובץ למיקום זמני.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "ודא שניתן לפתוח את הקובץ המועתק באמצעות הסיסמה המוצפנת (הגנה/הגנת דמה).",
+  "Previously we ran the SQLite": "בעבר הרצנו את SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "פקודה כל שעה במהלך עיבוד פקודות IMAP, הממנף את הסיסמה המוצפנת שלך מחיבור IMAP בזיכרון.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "עם זאת, גישה זו הייתה אינטנסיבית מדי בזיכרון, וגרמה לשגיאות מתוך זיכרון בייצור עבור תיבות דואר גדולות.",
+  "Additionally": "בנוסף",
+  "was better than": "היה טוב יותר מ"
 }

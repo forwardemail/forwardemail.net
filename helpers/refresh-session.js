@@ -183,13 +183,13 @@ async function refreshSession(session, command) {
     session.backupInProgress = true;
     setTimeout(() => {
       //
-      // hourly backups
+      // daily backups
       //
-      const oneHourAgo = dayjs().subtract(1, 'hour').toDate();
+      const oneDayAgo = dayjs().subtract(1, 'day').toDate();
       const now = new Date();
       if (
         !_.isDate(alias.imap_backup_at) ||
-        new Date(alias.imap_backup_at).getTime() <= oneHourAgo.getTime()
+        new Date(alias.imap_backup_at).getTime() <= oneDayAgo.getTime()
       ) {
         Aliases.findOneAndUpdate(
           {
@@ -197,7 +197,7 @@ async function refreshSession(session, command) {
             imap_backup_at: _.isDate(alias.imap_backup_at)
               ? {
                   $exists: true,
-                  $lte: oneHourAgo
+                  $lte: oneDayAgo
                 }
               : {
                   $exists: false

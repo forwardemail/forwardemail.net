@@ -7138,5 +7138,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Tietosuoja ensin päästä päähän salattu sähköposti (HUOM: tämä yritys ei enää toimi ja sulkee palvelun elokuussa 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Olet käyttänyt <strong class=\"notranslate\">%d</strong> päivittäisestä <strong class=\"notranslate\">%d</strong> lähtevän SMTP-viestin rajasta.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Lähtevät SMTP-sähköpostit näkyvät alla – <a href=\"%s\" class=\"alert-link\">napsauta tätä</a> määrittääksesi sähköpostiohjelmasi vastaanottamaan sähköpostia.",
-  "in step 2 above": "yllä olevassa vaiheessa 2"
+  "in step 2 above": "yllä olevassa vaiheessa 2",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "tehdään päivittäin. Voit myös pyytää uutta varmuuskopiota milloin tahansa tai ladata uusimman varmuuskopion osoitteesta",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Pakatut varmuuskopiot salatuista postilaatikoistasi tehdään päivittäin. Voit myös pyytää välittömästi uuden varmuuskopion tai ladata uusimman varmuuskopion milloin tahansa osoitteesta",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Varmuuskopioita varten hankimme yksinkertaisesti kirjoituslukon ja suoritamme WAL-tarkistuspisteen kautta",
+  ", and then copy the file.": "ja kopioi tiedosto.",
+  "Backups are stored if no existing backup is detected or if the": "Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos",
+  "Acquire a write lock.": "Hanki kirjoituslukko.",
+  "Run a WAL checkpoint via": "Suorita WAL-tarkastuspiste kautta",
+  "Copy the file to a temporarily location.": "Kopioi tiedosto tilapäiseen paikkaan.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Varmista, että kopioitu tiedosto voidaan avata salatulla salasanalla (suojaus/tyhjennys).",
+  "Previously we ran the SQLite": "Aiemmin käytimme SQLitea",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "komento joka tunti IMAP-komennon käsittelyn aikana, mikä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Tämä lähestymistapa oli kuitenkin liian muistiintensiivinen ja aiheutti muistin loppumisvirheitä suurten postilaatikoiden tuotannossa.",
+  "Additionally": "Lisäksi",
+  "was better than": "oli parempi kuin"
 }

@@ -7291,5 +7291,19 @@
   "Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)": "Privacy-first end-to-end gecodeerde e-mail (LET OP: dit bedrijf bestaat niet meer en beëindigt de service in augustus 2024)",
   "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "U heeft <strong class=\"notranslate\">%d</strong> van uw dagelijkse limiet van <strong class=\"notranslate\">%d</strong> uitgaande SMTP-berichten verbruikt.",
   "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Uitgaande SMTP-e-mails worden hieronder weergegeven. <a href=\"%s\" class=\"alert-link\">Klik hier</a> om uw e-mailclient in te stellen om e-mail te ontvangen.",
-  "in step 2 above": "in stap 2 hierboven"
+  "in step 2 above": "in stap 2 hierboven",
+  "are made daily.  You can also request a new backup at any time or download the latest backup from": "worden dagelijks gemaakt. U kunt ook op elk moment een nieuwe back-up aanvragen of de nieuwste back-up downloaden van",
+  "Compressed backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Er worden dagelijks gecomprimeerde back-ups gemaakt van uw gecodeerde mailboxen. U kunt ook direct een nieuwe back-up aanvragen of op elk gewenst moment de nieuwste back-up downloaden",
+  "For backups, we simply acquire a write lock, run a WAL checkpoint via": "Voor back-ups verkrijgen we eenvoudigweg een schrijfvergrendeling en voeren we een WAL-controlepunt uit via",
+  ", and then copy the file.": "en kopieer vervolgens het bestand.",
+  "Backups are stored if no existing backup is detected or if the": "Back-ups worden opgeslagen als er geen bestaande back-up wordt gedetecteerd of als de",
+  "Acquire a write lock.": "Schaf een schrijfvergrendeling aan.",
+  "Run a WAL checkpoint via": "Voer een WAL-controlepunt uit via",
+  "Copy the file to a temporarily location.": "Kopieer het bestand naar een tijdelijke locatie.",
+  "Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).": "Zorg ervoor dat het gekopieerde bestand kan worden geopend met het gecodeerde wachtwoord (safeguard/dummyproofing).",
+  "Previously we ran the SQLite": "Voorheen draaiden we de SQLite",
+  "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "commando elk uur tijdens IMAP-opdrachtverwerking, waarbij gebruik wordt gemaakt van uw gecodeerde wachtwoord via een IMAP-verbinding in het geheugen.",
+  "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Deze aanpak was echter te geheugenintensief en veroorzaakte fouten in het geheugen bij de productie van grote mailboxen.",
+  "Additionally": "Aanvullend",
+  "was better than": "was beter dan"
 }
