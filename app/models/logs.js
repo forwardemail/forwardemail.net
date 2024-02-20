@@ -731,7 +731,12 @@ Logs.pre('save', async function (next) {
   // only run this if the document was new
   // or if it was run from the parse-logs job
   // (which sets `skip_duplicate_check = true`)
-  if (!this.isNew || this.skip_duplicate_check) return next();
+  if (
+    !this.isNew ||
+    this.skip_duplicate_check ||
+    this?.err?.code === 'SQLITE_CORRUPT'
+  )
+    return next();
 
   try {
     const exists = await this.constructor.exists({
