@@ -7305,5 +7305,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "příkaz každou hodinu během zpracování příkazů IMAP, který využívá vaše šifrované heslo z připojení IMAP v paměti.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Tento přístup byl však příliš náročný na paměť a způsoboval chyby způsobené nedostatkem paměti při výrobě velkých poštovních schránek.",
   "Additionally": "dodatečně",
-  "was better than": "bylo lepší než"
+  "was better than": "bylo lepší než",
+  "Backups of your encrypted mailboxes": "Zálohy vašich šifrovaných poštovních schránek",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Zálohy vašich šifrovaných poštovních schránek se provádějí denně. Můžete také okamžitě požádat o novou zálohu nebo si kdykoli stáhnout nejnovější zálohu",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "příkaz každý den během zpracování příkazů IMAP, které využívá vaše zašifrované heslo z připojení IMAP v paměti. Zálohy se ukládají, pokud není detekována žádná existující záloha nebo pokud"
 }

@@ -7305,5 +7305,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "щогодини під час обробки команди IMAP, яка використовує ваш зашифрований пароль із з’єднання IMAP у пам’яті.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Однак цей підхід був надто інтенсивним для використання пам’яті та спричиняв помилки пам’яті у виробництві для великих поштових скриньок.",
   "Additionally": "Додатково",
-  "was better than": "було краще ніж"
+  "was better than": "було краще ніж",
+  "Backups of your encrypted mailboxes": "Резервні копії ваших зашифрованих поштових скриньок",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Резервні копії ваших зашифрованих поштових скриньок створюються щодня. Ви також можете миттєво запросити нову резервну копію або завантажити останню резервну копію в будь-який час з",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "щодня під час обробки команди IMAP, яка використовує ваш зашифрований пароль із з’єднання IMAP у пам’яті. Резервні копії зберігаються, якщо існуюча резервна копія не виявлена або якщо"
 }

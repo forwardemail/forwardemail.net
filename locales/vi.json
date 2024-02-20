@@ -4783,5 +4783,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "lệnh mỗi giờ trong quá trình xử lý lệnh IMAP, tận dụng mật khẩu được mã hóa của bạn từ kết nối IMAP trong bộ nhớ.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Tuy nhiên, cách tiếp cận này tiêu tốn quá nhiều bộ nhớ và gây ra lỗi hết bộ nhớ trong quá trình sản xuất các hộp thư lớn.",
   "Additionally": "Ngoài ra",
-  "was better than": "đã tốt hơn"
+  "was better than": "đã tốt hơn",
+  "Backups of your encrypted mailboxes": "Sao lưu các hộp thư được mã hóa của bạn",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Việc sao lưu các hộp thư mã hóa của bạn được thực hiện hàng ngày. Bạn cũng có thể yêu cầu ngay bản sao lưu mới hoặc tải xuống bản sao lưu mới nhất bất kỳ lúc nào từ",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "lệnh mỗi ngày trong quá trình xử lý lệnh IMAP, tận dụng mật khẩu được mã hóa của bạn từ kết nối IMAP trong bộ nhớ. Các bản sao lưu được lưu trữ nếu không phát hiện thấy bản sao lưu hiện có hoặc nếu"
 }

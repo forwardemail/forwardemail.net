@@ -55,7 +55,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 196608;
+const INITIAL_DB_SIZE = 200704;
 
 subscriber.setMaxListeners(0);
 
@@ -887,11 +887,11 @@ test('onGetQuotaRoot', async (t) => {
     t.log('quota', quota);
     t.log('quota.storage.usage', quota.storage.usage);
     t.is(quota.storage.usage, 4096);
-    // TODO: figure out why INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 196608)
+    // TODO: figure out why INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
     //   path: 'INBOX',
     //   storage: {
-    //     usage: INITIAL_DB_SIZE, // isCI ? 196608 : INITIAL_DB_SIZE,
+    //     usage: INITIAL_DB_SIZE, // isCI ? 200704 : INITIAL_DB_SIZE,
     //     limit: config.maxQuotaPerAlias,
     //     status: '0%'
     //   }
@@ -911,12 +911,12 @@ test('onGetQuotaRoot', async (t) => {
       alias_id: alias.id
     });
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, 196608);
+    t.is(storageUsed, 200704);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: 196608,
+        usage: 200704,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -976,13 +976,13 @@ ZXhhbXBsZQo=
     //   uid: append.uid
     // });
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, 196608);
+    t.is(storageUsed, 200704);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
         // message size is rounded to nearest 1024 bytes
-        usage: 196608,
+        usage: 200704,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -1001,7 +1001,7 @@ test('onGetQuota', async (t) => {
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: 196608, // INITIAL_DB_SIZE,
+      usage: 200704, // INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }

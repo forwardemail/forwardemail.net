@@ -7305,5 +7305,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "คำสั่งทุกชั่วโมงในระหว่างการประมวลผลคำสั่ง IMAP ซึ่งใช้ประโยชน์จากรหัสผ่านที่เข้ารหัสของคุณจากการเชื่อมต่อ IMAP ในหน่วยความจำ",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "อย่างไรก็ตาม วิธีการนี้มีหน่วยความจำมากเกินไป และทำให้เกิดข้อผิดพลาดหน่วยความจำไม่เพียงพอในการผลิตสำหรับกล่องจดหมายขนาดใหญ่",
   "Additionally": "นอกจากนี้",
-  "was better than": "ดีกว่า"
+  "was better than": "ดีกว่า",
+  "Backups of your encrypted mailboxes": "การสำรองข้อมูลกล่องจดหมายที่เข้ารหัสของคุณ",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "มีการสำรองข้อมูลกล่องจดหมายที่เข้ารหัสของคุณทุกวัน คุณยังสามารถขอข้อมูลสำรองใหม่ได้ทันทีหรือดาวน์โหลดข้อมูลสำรองล่าสุดได้ตลอดเวลาจาก",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "คำสั่งทุกวันระหว่างการประมวลผลคำสั่ง IMAP ซึ่งใช้ประโยชน์จากรหัสผ่านที่เข้ารหัสของคุณจากการเชื่อมต่อ IMAP ในหน่วยความจำ ข้อมูลสำรองจะถูกจัดเก็บหากตรวจไม่พบข้อมูลสำรองที่มีอยู่หรือหาก"
 }

@@ -6998,5 +6998,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "在 IMAP 命令处理期间每小时执行一次命令，这会利用内存中 IMAP 连接中的加密密码。",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "然而，这种方法的内存消耗太大，并且会在大型邮箱的生产中导致内存不足错误。",
   "Additionally": "此外",
-  "was better than": "比"
+  "was better than": "比",
+  "Backups of your encrypted mailboxes": "加密邮箱的备份",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "每天都会备份您的加密邮箱。您还可以立即请求新的备份或随时下载最新的备份",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "在 IMAP 命令处理期间每天执行命令，该命令利用内存中 IMAP 连接中的加密密码。如果未检测到现有备份或者如果"
 }

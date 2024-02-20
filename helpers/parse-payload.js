@@ -7,7 +7,6 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
-const { createGzip } = require('node:zlib');
 const { isIP } = require('node:net');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
@@ -753,13 +752,9 @@ async function parsePayload(data, ws) {
         // run a checkpoint to copy over wal to db
         tmpDb.pragma('wal_checkpoint(PASSIVE)');
 
-        //
-        // NOTE: we no longer run VACUUM because we already have
-        //       autovacuum enabled and this is incredibly
-        //       memory intensive on larger mailboxes
-        //
+        // TODO: vacuum into instead (same for elsewhere)
         // vacuum temporary database
-        // tmpDb.prepare('VACUUM').run();
+        tmpDb.prepare('VACUUM').run();
 
         // TODO: unlock the temporary database
 
@@ -770,17 +765,12 @@ async function parsePayload(data, ws) {
           logger.fatal(err, { payload });
         }
 
-        //
-        // NOTE: we no longer run VACUUM because we already have
-        //       autovacuum enabled and this is incredibly
-        //       memory intensive on larger mailboxes
-        //
         // vacuum database
-        // await this.wsp.request.call(this, {
-        //   action: 'vacuum',
-        //   timeout: ms('5m'),
-        //   session: { user: payload.session.user }
-        // });
+        await this.wsp.request.call(this, {
+          action: 'vacuum',
+          timeout: ms('5m'),
+          session: { user: payload.session.user }
+        });
 
         response = {
           id: payload.id,
@@ -1518,6 +1508,7 @@ async function parsePayload(data, ws) {
           // run a checkpoint to copy over wal to db
           db.pragma('wal_checkpoint(PASSIVE)');
 
+          // TODO: vacuum into instead (same for elsewhere)
           // vacuum database
           db.prepare('VACUUM').run();
         }
@@ -1762,10 +1753,9 @@ async function parsePayload(data, ws) {
         db.pragma('wal_checkpoint(PASSIVE)');
 
         // create backup
-        // NOTE: we don't use `VACUUM INTO` anymore because it is extremely memory intensive
-        // const results = db.exec(`VACUUM INTO '${tmp}'`);
-        // logger.debug('results', { results });
-        await fs.promises.copyFile(storagePath, tmp);
+        const results = db.exec(`VACUUM INTO '${tmp}'`);
+
+        logger.debug('results', { results });
 
         let backup = true;
         let err;
@@ -1917,7 +1907,7 @@ async function parsePayload(data, ws) {
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
 
-        // only allow one backup at a time
+        // only allow one backup at a time and once every hour
         const backupLock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}-backup`,
           ms('30m'), // expires after 30m
@@ -1964,7 +1954,7 @@ async function parsePayload(data, ws) {
             _.camelCase(payload.session.user.storage_location)
           )}`;
 
-          const key = `${payload.session.user.alias_id}.sqlite.gz`;
+          const key = `${payload.session.user.alias_id}.sqlite`;
 
           if (config.env !== 'test') {
             let res;
@@ -2015,11 +2005,9 @@ async function parsePayload(data, ws) {
           db.pragma('wal_checkpoint(PASSIVE)');
 
           // create backup
-          // NOTE: we don't use `VACUUM INTO` anymore because it is extremely memory intensive
-          // const results = db.exec(`VACUUM INTO '${tmp}'`);
-          // logger.debug('results', { results });
-          await fs.promises.copyFile(storagePath, tmp);
+          const results = db.exec(`VACUUM INTO '${tmp}'`);
 
+          logger.debug('results', { results });
           backup = true;
 
           // open the backup to ensure that encryption still valid
@@ -2061,24 +2049,12 @@ async function parsePayload(data, ws) {
             if (err.name !== 'NotFound') throw err;
           }
 
-          // gzip the backup
-          // await S3.send(
-          //   new PutObjectCommand({
-          //     ACL: 'private',
-          //     Body: fs.createReadStream(tmp).pipe(createGzip()),
-          //     Bucket: bucket,
-          //     Key: key,
-          //     Metadata: {
-          //       hash
-          //     }
-          //   })
-          // );
           const upload = new Upload({
             client: S3,
             params: {
               Bucket: bucket,
               Key: key,
-              Body: fs.createReadStream(tmp).pipe(createGzip()),
+              Body: fs.createReadStream(tmp),
               Metadata: { hash }
             }
           });

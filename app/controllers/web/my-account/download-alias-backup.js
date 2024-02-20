@@ -195,7 +195,7 @@ async function downloadAliasBackup(ctx) {
           Bucket: `${config.env}-${dashify(
             _.camelCase(alias.storage_location)
           )}`,
-          Key: `${alias.id}.sqlite.gz`
+          Key: `${alias.id}.sqlite`
         }),
         { expiresIn: 3600 }
       );

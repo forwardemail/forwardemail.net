@@ -7303,5 +7303,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "comando cada hora durante el procesamiento del comando IMAP, que aprovecha su contraseña cifrada desde una conexión IMAP en memoria.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Sin embargo, este enfoque consumía demasiada memoria y provocaba errores de falta de memoria en producción para buzones de correo grandes.",
   "Additionally": "Además",
-  "was better than": "fue mejor que"
+  "was better than": "fue mejor que",
+  "Backups of your encrypted mailboxes": "Copias de seguridad de sus buzones de correo cifrados",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Diariamente se realizan copias de seguridad de sus buzones de correo cifrados. También puede solicitar instantáneamente una nueva copia de seguridad o descargar la última copia de seguridad en cualquier momento desde",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "comando todos los días durante el procesamiento del comando IMAP, que aprovecha su contraseña cifrada desde una conexión IMAP en memoria. Las copias de seguridad se almacenan si no se detecta ninguna copia de seguridad existente o si el"
 }

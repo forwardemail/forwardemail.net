@@ -220,19 +220,15 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
               throw err;
             }
 
-            //
-            // NOTE: we no longer run VACUUM because we already have
-            //       autovacuum enabled and this is incredibly
-            //       memory intensive on larger mailboxes
-            //
-            // await wsp.request(
-            //   {
-            //     action: 'vacuum',
-            //     timeout: ms('5m'),
-            //     session: { user }
-            //   },
-            //   0
-            // );
+            // eslint-disable-next-line no-await-in-loop
+            await wsp.request(
+              {
+                action: 'vacuum',
+                timeout: ms('5m'),
+                session: { user }
+              },
+              0
+            );
           } catch (err) {
             logger.error(err);
           }

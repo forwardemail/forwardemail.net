@@ -7043,5 +7043,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "kommando hver time under IMAP-kommandobehandling, som udnytter din krypterede adgangskode fra en IMAP-forbindelse i hukommelsen.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Denne tilgang var imidlertid for hukommelsesintensiv og forårsagede fejl i hukommelsen i produktionen til store postkasser.",
   "Additionally": "Derudover",
-  "was better than": "var bedre end"
+  "was better than": "var bedre end",
+  "Backups of your encrypted mailboxes": "Sikkerhedskopier af dine krypterede postkasser",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Sikkerhedskopier af dine krypterede postkasser laves dagligt. Du kan også øjeblikkeligt anmode om en ny backup eller downloade den seneste backup når som helst fra",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "kommando hver dag under IMAP-kommandobehandling, som udnytter din krypterede adgangskode fra en IMAP-forbindelse i hukommelsen. Sikkerhedskopier gemmes, hvis der ikke findes nogen eksisterende sikkerhedskopi, eller hvis"
 }

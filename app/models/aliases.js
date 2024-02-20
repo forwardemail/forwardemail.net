@@ -114,7 +114,7 @@ const Aliases = new mongoose.Schema({
   //       - $id-tmp-wal.sqlite (WAL)
   //       - $id-tmp-shm.sqlite (SHM)
   //
-  //       - $id.sqlite.gz (R2 backup) <--- excluded for now
+  //       - $id.sqlite (R2 backup) <--- excluded for now
   //
   storage_used: {
     type: Number,

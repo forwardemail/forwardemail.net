@@ -7305,5 +7305,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "الأمر كل ساعة أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "ومع ذلك، كان هذا الأسلوب يستهلك الكثير من الذاكرة، وكان يتسبب في حدوث أخطاء في نفاد الذاكرة أثناء إنتاج صناديق البريد الكبيرة.",
   "Additionally": "بالإضافة إلى ذلك",
-  "was better than": "كان أفضل من"
+  "was better than": "كان أفضل من",
+  "Backups of your encrypted mailboxes": "النسخ الاحتياطية لصناديق البريد المشفرة الخاصة بك",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "يتم عمل نسخ احتياطية لصناديق البريد المشفرة الخاصة بك يوميًا. يمكنك أيضًا طلب نسخة احتياطية جديدة على الفور أو تنزيل أحدث نسخة احتياطية في أي وقت من",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "الأمر كل يوم أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة. يتم تخزين النسخ الاحتياطية في حالة عدم اكتشاف نسخة احتياطية موجودة أو في حالة ظهور خطأ"
 }

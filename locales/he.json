@@ -5278,5 +5278,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "פקודה כל שעה במהלך עיבוד פקודות IMAP, הממנף את הסיסמה המוצפנת שלך מחיבור IMAP בזיכרון.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "עם זאת, גישה זו הייתה אינטנסיבית מדי בזיכרון, וגרמה לשגיאות מתוך זיכרון בייצור עבור תיבות דואר גדולות.",
   "Additionally": "בנוסף",
-  "was better than": "היה טוב יותר מ"
+  "was better than": "היה טוב יותר מ",
+  "Backups of your encrypted mailboxes": "גיבויים של תיבות הדואר המוצפנות שלך",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "גיבויים של תיבות הדואר המוצפנות שלך נעשים מדי יום. אתה יכול גם לבקש גיבוי חדש באופן מיידי או להוריד את הגיבוי האחרון בכל עת מ",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "פקודה כל יום במהלך עיבוד פקודות IMAP, הממנף את הסיסמה המוצפנת שלך מחיבור IMAP בזיכרון. גיבויים מאוחסנים אם לא מזוהה גיבוי קיים או אם"
 }

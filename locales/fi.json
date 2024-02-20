@@ -7152,5 +7152,8 @@
   "command every hour during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.": "komento joka tunti IMAP-komennon käsittelyn aikana, mikä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä.",
   "However this approach was too memory intensive, and was causing out of memory errors in production for large mailboxes.": "Tämä lähestymistapa oli kuitenkin liian muistiintensiivinen ja aiheutti muistin loppumisvirheitä suurten postilaatikoiden tuotannossa.",
   "Additionally": "Lisäksi",
-  "was better than": "oli parempi kuin"
+  "was better than": "oli parempi kuin",
+  "Backups of your encrypted mailboxes": "Varmuuskopiot salatuista postilaatikoistasi",
+  "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Varmuuskopiot salatuista postilaatikoistasi tehdään päivittäin. Voit myös pyytää välittömästi uuden varmuuskopion tai ladata uusimman varmuuskopion milloin tahansa osoitteesta",
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "komento joka päivä IMAP-komentokäsittelyn aikana, mikä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä. Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos"
 }
