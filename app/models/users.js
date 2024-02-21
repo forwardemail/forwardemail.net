@@ -463,6 +463,9 @@ Users.pre('validate', async function (next) {
 // Plan expires at should get updated everytime the user is saved
 Users.pre('save', async function (next) {
   const user = this;
+  // If user has a paid plan then consider their email verified
+  if (user.plan !== 'free') user[config.userFields.hasVerifiedEmail] = true;
+
   // If user is on the free plan then return early
   if (user.plan === 'free') {
     user[config.userFields.planExpiresAt] = new Date(
