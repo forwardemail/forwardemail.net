@@ -7001,5 +7001,6 @@
   "was better than": "比",
   "Backups of your encrypted mailboxes": "加密邮箱的备份",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "每天都会备份您的加密邮箱。您还可以立即请求新的备份或随时下载最新的备份",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "在 IMAP 命令处理期间每天执行命令，该命令利用内存中 IMAP 连接中的加密密码。如果未检测到现有备份或者如果"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "在 IMAP 命令处理期间每天执行命令，该命令利用内存中 IMAP 连接中的加密密码。如果未检测到现有备份或者如果",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "如果您使用我们的 SMTP 服务器进行身份验证，则您的用户名是<code class=\"notranslate\">*@%s</code> 。"
 }

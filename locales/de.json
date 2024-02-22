@@ -6346,5 +6346,6 @@
   "was better than": "war besser als",
   "Backups of your encrypted mailboxes": "Backups Ihrer verschlüsselten Postfächer",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Es werden täglich Backups Ihrer verschlüsselten Postfächer erstellt. Sie können auch sofort ein neues Backup anfordern oder jederzeit das neueste Backup herunterladen",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Befehl jeden Tag während der IMAP-Befehlsverarbeitung, die Ihr verschlüsseltes Passwort aus einer speicherinternen IMAP-Verbindung nutzt. Backups werden gespeichert, wenn kein vorhandenes Backup erkannt wird oder wenn die"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Befehl jeden Tag während der IMAP-Befehlsverarbeitung, die Ihr verschlüsseltes Passwort aus einer speicherinternen IMAP-Verbindung nutzt. Backups werden gespeichert, wenn kein vorhandenes Backup erkannt wird oder wenn die",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Wenn Sie sich bei unserem SMTP-Server authentifizieren, lautet Ihr Benutzername <code class=\"notranslate\">*@%s</code> ."
 }

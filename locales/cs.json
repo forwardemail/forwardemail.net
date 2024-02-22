@@ -7308,5 +7308,6 @@
   "was better than": "bylo lepší než",
   "Backups of your encrypted mailboxes": "Zálohy vašich šifrovaných poštovních schránek",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Zálohy vašich šifrovaných poštovních schránek se provádějí denně. Můžete také okamžitě požádat o novou zálohu nebo si kdykoli stáhnout nejnovější zálohu",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "příkaz každý den během zpracování příkazů IMAP, které využívá vaše zašifrované heslo z připojení IMAP v paměti. Zálohy se ukládají, pokud není detekována žádná existující záloha nebo pokud"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "příkaz každý den během zpracování příkazů IMAP, které využívá vaše zašifrované heslo z připojení IMAP v paměti. Zálohy se ukládají, pokud není detekována žádná existující záloha nebo pokud",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Pokud se ověříte pomocí našeho serveru SMTP, pak je vaše uživatelské jméno <code class=\"notranslate\">*@%s</code> ."
 }

@@ -7308,5 +7308,6 @@
   "was better than": "よりも良かった",
   "Backups of your encrypted mailboxes": "暗号化されたメールボックスのバックアップ",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "暗号化されたメールボックスのバックアップは毎日作成されます。また、いつでも新しいバックアップを即座にリクエストしたり、最新のバックアップをダウンロードしたりできます。",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "IMAP コマンド処理中に毎日コマンドを実行します。これは、メモリ内の IMAP 接続からの暗号化されたパスワードを利用します。バックアップは、既存のバックアップが検出されない場合、または"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "IMAP コマンド処理中に毎日コマンドを実行します。これは、メモリ内の IMAP 接続からの暗号化されたパスワードを利用します。バックアップは、既存のバックアップが検出されない場合、または",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "SMTP サーバーで認証する場合、ユーザー名は<code class=\"notranslate\">*@%s</code>です。"
 }

@@ -7308,5 +7308,6 @@
   "was better than": "было лучше, чем",
   "Backups of your encrypted mailboxes": "Резервные копии ваших зашифрованных почтовых ящиков",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Резервные копии ваших зашифрованных почтовых ящиков создаются ежедневно. Вы также можете мгновенно запросить новую резервную копию или загрузить последнюю резервную копию в любое время с",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "команду каждый день во время обработки команд IMAP, которая использует ваш зашифрованный пароль из соединения IMAP в памяти. Резервные копии сохраняются, если существующая резервная копия не обнаружена или если"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "команду каждый день во время обработки команд IMAP, которая использует ваш зашифрованный пароль из соединения IMAP в памяти. Резервные копии сохраняются, если существующая резервная копия не обнаружена или если",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Если вы проходите аутентификацию на нашем SMTP-сервере, ваше имя пользователя — <code class=\"notranslate\">*@%s</code> ."
 }

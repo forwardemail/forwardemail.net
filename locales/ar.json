@@ -7308,5 +7308,6 @@
   "was better than": "كان أفضل من",
   "Backups of your encrypted mailboxes": "النسخ الاحتياطية لصناديق البريد المشفرة الخاصة بك",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "يتم عمل نسخ احتياطية لصناديق البريد المشفرة الخاصة بك يوميًا. يمكنك أيضًا طلب نسخة احتياطية جديدة على الفور أو تنزيل أحدث نسخة احتياطية في أي وقت من",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "الأمر كل يوم أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة. يتم تخزين النسخ الاحتياطية في حالة عدم اكتشاف نسخة احتياطية موجودة أو في حالة ظهور خطأ"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "الأمر كل يوم أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة. يتم تخزين النسخ الاحتياطية في حالة عدم اكتشاف نسخة احتياطية موجودة أو في حالة ظهور خطأ",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "إذا قمت بالمصادقة مع خادم SMTP الخاص بنا، فسيكون اسم المستخدم الخاص بك هو <code class=\"notranslate\">*@%s</code> ."
 }

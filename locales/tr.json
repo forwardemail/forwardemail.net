@@ -7308,5 +7308,6 @@
   "was better than": "bundan daha iyiydi",
   "Backups of your encrypted mailboxes": "Şifrelenmiş posta kutularınızın yedekleri",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Şifrelenmiş mail kutularınızın yedekleri günlük olarak yapılmaktadır. Ayrıca anında yeni bir yedekleme talebinde bulunabilir veya istediğiniz zaman en son yedeği indirebilirsiniz.",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Bellek içi bir IMAP bağlantısından şifrelenmiş parolanızdan yararlanan IMAP komut işleme sırasında her gün komut verin. Yedeklemeler, mevcut bir yedekleme algılanmazsa veya"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Bellek içi bir IMAP bağlantısından şifrelenmiş parolanızdan yararlanan IMAP komut işleme sırasında her gün komut verin. Yedeklemeler, mevcut bir yedekleme algılanmazsa veya",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "SMTP sunucumuzla kimlik doğrulaması yapıyorsanız kullanıcı adınız <code class=\"notranslate\">*@%s</code> olur."
 }

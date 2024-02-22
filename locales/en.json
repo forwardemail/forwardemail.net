@@ -7079,5 +7079,6 @@
   "was better than": "was better than",
   "Backups of your encrypted mailboxes": "Backups of your encrypted mailboxes",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>."
 }

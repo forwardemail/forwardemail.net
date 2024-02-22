@@ -7155,5 +7155,6 @@
   "was better than": "oli parempi kuin",
   "Backups of your encrypted mailboxes": "Varmuuskopiot salatuista postilaatikoistasi",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Varmuuskopiot salatuista postilaatikoistasi tehdään päivittäin. Voit myös pyytää välittömästi uuden varmuuskopion tai ladata uusimman varmuuskopion milloin tahansa osoitteesta",
-  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "komento joka päivä IMAP-komentokäsittelyn aikana, mikä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä. Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos"
+  "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "komento joka päivä IMAP-komentokäsittelyn aikana, mikä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä. Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos",
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Jos todennat SMTP-palvelimellamme, käyttäjänimesi on <code class=\"notranslate\">*@%s</code> ."
 }
