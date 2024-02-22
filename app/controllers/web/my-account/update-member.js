@@ -37,6 +37,10 @@ async function updateMember(ctx, next) {
 
   const isCurrentUserBeingUpdated = member.user.id === ctx.state.user.id;
 
+  //
+  // NOTE: this list is already filtered for the given user
+  //       (but we kept this here as a safeguard)
+  //
   const aliases = ctx.state.domain.aliases.filter(
     (alias) => alias.user && alias.user.id === member.user.id
   );

@@ -5,6 +5,7 @@
 
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const paginate = require('koa-ctx-paginate');
 const { isEmail } = require('validator');
 
@@ -97,20 +98,28 @@ async function retrieveAliases(ctx, next) {
     }
   }
 
+  if (isSANB(ctx.params.member_id)) {
+    query.$and.push({
+      user: new mongoose.Types.ObjectId(ctx.params.member_id)
+    });
+  }
+
   if (query.$and.length === 1) query = query.$and[0];
 
   // safeguard
   if (!query || _.isEmpty(query)) throw new TypeError('Invalid query');
 
   if (
-    ctx.api ||
-    ctx.pathWithoutLocale.startsWith(
-      `/my-account/domains/${ctx.state.domain.id}/members/`
-    ) ||
-    ctx.pathWithoutLocale.startsWith(
-      `/my-account/domains/${ctx.state.domain.name}/members/`
-    )
+    (ctx.api && !ctx.state.domain.is_catchall_regex_disabled) ||
+    (isSANB(ctx.params.member_id) &&
+      (ctx.pathWithoutLocale.startsWith(
+        `/my-account/domains/${ctx.state.domain.id}/members/`
+      ) ||
+        ctx.pathWithoutLocale.startsWith(
+          `/my-account/domains/${ctx.state.domain.name}/members/`
+        )))
   ) {
+    // TODO: major optimization issue here
     // eslint-disable-next-line unicorn/no-array-callback-reference
     ctx.state.domain.aliases = await Aliases.find(query)
       .populate(
