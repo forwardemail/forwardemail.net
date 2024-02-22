@@ -20,7 +20,7 @@ const locales = require('#config/locales');
 // <https://stackoverflow.com/a/44096051>
 const timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-const models = { Users, Domains, Aliases };
+const models = { Users, Domains };
 const loadedLocales = {};
 
 for (const locale of locales) {
@@ -436,9 +436,9 @@ async function getBody(ctx) {
                       [config.userFields.hasVerifiedEmail]: true,
                       [config.userFields.isBanned]: false
                     }
-                  : name === 'Aliases'
-                  ? {}
-                  : // TODO: replace queries like this with boolean `is_banned`
+                  : // : name === 'Aliases'
+                  // ? {}
+                  // : // TODO: replace queries like this with boolean `is_banned`
                   // ? { user: { $nin: bannedUserIds } }
                   name === 'Domains'
                   ? { 'members.user': { $nin: bannedUserIds } }
