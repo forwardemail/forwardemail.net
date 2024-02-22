@@ -185,7 +185,9 @@ async function getBody(ctx) {
       'members.user': { $nin: bannedUserIds },
       has_mx_record: true
     }),
-    Aliases.countDocuments({ user: { $nin: bannedUserIds } }),
+    // TODO: replace queries like this with boolean `is_banned`
+    // Aliases.countDocuments({ user: { $nin: bannedUserIds } }),
+    Aliases.estimatedDocumentCount(),
     Users.countDocuments({
       $or: [
         { [config.userFields.stripeSubscriptionID]: { $exists: true } },
@@ -435,8 +437,10 @@ async function getBody(ctx) {
                       [config.userFields.isBanned]: false
                     }
                   : name === 'Aliases'
-                  ? { user: { $nin: bannedUserIds } }
-                  : name === 'Domains'
+                  ? {}
+                  : // TODO: replace queries like this with boolean `is_banned`
+                  // ? { user: { $nin: bannedUserIds } }
+                  name === 'Domains'
                   ? { 'members.user': { $nin: bannedUserIds } }
                   : {})
               }

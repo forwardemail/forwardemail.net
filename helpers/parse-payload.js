@@ -1910,7 +1910,7 @@ async function parsePayload(data, ws) {
         // only allow one backup at a time and once every hour
         const backupLock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}-backup`,
-          ms('30m'), // expires after 30m
+          ms('1h'), // expires after 1h
           ms('10s') // wait for 10s
         );
 
@@ -1998,9 +1998,6 @@ async function parsePayload(data, ws) {
           //       so instead we use the VACUUM INTO command with the `tmp` path
           //
 
-          // lock database if not already locked
-          if (!payload?.lock) lock = await acquireLock(this, db);
-
           // run a checkpoint to copy over wal to db
           db.pragma('wal_checkpoint(PASSIVE)');
 
@@ -2019,7 +2016,7 @@ async function parsePayload(data, ws) {
               storage_location: payload.session.user.storage_location
             },
             payload.session,
-            lock,
+            null,
             false,
             tmp
           );
