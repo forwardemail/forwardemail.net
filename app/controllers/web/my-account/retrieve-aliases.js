@@ -22,9 +22,22 @@ async function retrieveAliases(ctx, next) {
 
   if (isSANB(ctx.query.q)) {
     if (ctx.state.domain.is_catchall_regex_disabled) {
-      query.$and.push({
-        name: ctx.query.q.split('@')[0].trim().toLowerCase()
-      });
+      if (isEmail(ctx.query.q)) {
+        query.$and.push({
+          $or: [
+            {
+              name: ctx.query.q.split('@')[0].trim().toLowerCase()
+            },
+            {
+              recipients: ctx.query.q.trim().toLowerCase()
+            }
+          ]
+        });
+      } else {
+        query.$and.push({
+          name: ctx.query.q.split('@')[0].trim().toLowerCase()
+        });
+      }
     } else {
       query.$and.push({
         $or: [

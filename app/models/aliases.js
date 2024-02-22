@@ -208,6 +208,7 @@ const Aliases = new mongoose.Schema({
   ],
   recipients: [
     {
+      index: true,
       type: String,
       trim: true,
       // must be IP or FQDN or email
