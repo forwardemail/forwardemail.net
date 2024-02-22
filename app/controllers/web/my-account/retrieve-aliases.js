@@ -20,66 +20,87 @@ async function retrieveAliases(ctx, next) {
       : { $and: [{ domain: ctx.state.domain._id, user: ctx.state.user._id }] };
 
   if (isSANB(ctx.query.q)) {
-    query.$and.push({
-      $or: [
-        {
-          name:
-            ctx.query.q.trim() === '*'
-              ? {
-                  $eq: '*'
-                }
-              : isEmail(ctx.query.q) &&
-                ctx.query.q.endsWith(`@${ctx.state.domain.name}`)
-              ? { $eq: ctx.query.q.split('@')[0] }
-              : {
-                  $regex: _.escapeRegExp(ctx.query.q.trim().split('@')[0]),
-                  $options: 'i'
-                }
-        },
-        {
-          description: {
-            $regex: _.escapeRegExp(ctx.query.q.trim()),
-            $options: 'i'
+    if (ctx.state.domain.is_catchall_regex_disabled) {
+      query.$and.push({
+        name: ctx.query.q.split('@')[0].trim().toLowerCase()
+      });
+    } else {
+      query.$and.push({
+        $or: [
+          {
+            name:
+              ctx.query.q.trim() === '*'
+                ? {
+                    $eq: '*'
+                  }
+                : isEmail(ctx.query.q) &&
+                  ctx.query.q.endsWith(`@${ctx.state.domain.name}`)
+                ? { $eq: ctx.query.q.split('@')[0] }
+                : {
+                    $regex: _.escapeRegExp(ctx.query.q.trim().split('@')[0]),
+                    $options: 'i'
+                  }
+          },
+          {
+            description: {
+              $regex: _.escapeRegExp(ctx.query.q.trim()),
+              $options: 'i'
+            }
+          },
+          {
+            labels: {
+              $regex: _.escapeRegExp(ctx.query.q.trim()),
+              $options: 'i'
+            }
+          },
+          {
+            recipients: {
+              $regex: _.escapeRegExp(ctx.query.q.trim()),
+              $options: 'i'
+            }
           }
-        },
-        {
-          labels: {
-            $regex: _.escapeRegExp(ctx.query.q.trim()),
-            $options: 'i'
-          }
-        },
-        {
-          recipients: {
-            $regex: _.escapeRegExp(ctx.query.q.trim()),
-            $options: 'i'
-          }
-        }
-      ]
-    });
+        ]
+      });
+    }
   }
 
   //
   // search functionality (with RegExp support)
   //
   if (isSANB(ctx.query.name)) {
-    query.$and.push({
-      name: {
-        $regex: _.escapeRegExp(ctx.query.name.trim().split('@')[0]),
-        $options: 'i'
-      }
-    });
+    if (ctx.state.domain.is_catchall_regex_disabled) {
+      query.$and.push({
+        name: ctx.query.name.split('@')[0].trim().toLowerCase()
+      });
+    } else {
+      query.$and.push({
+        name: {
+          $regex: _.escapeRegExp(ctx.query.name.trim().split('@')[0]),
+          $options: 'i'
+        }
+      });
+    }
   }
 
   if (isSANB(ctx.query.recipient)) {
-    query.$and.push({
-      recipients: {
-        $regex: _.escapeRegExp(ctx.query.recipient.trim()),
-        $options: 'i'
-      }
-    });
+    if (ctx.state.domain.is_catchall_regex_disabled) {
+      query.$and.push({
+        recipient: ctx.query.recipient.trim().toLowerCase()
+      });
+    } else {
+      query.$and.push({
+        recipients: {
+          $regex: _.escapeRegExp(ctx.query.recipient.trim()),
+          $options: 'i'
+        }
+      });
+    }
   }
 
   if (query.$and.length === 1) query = query.$and[0];
+
+  // safeguard
+  if (!query || _.isEmpty(query)) throw new TypeError('Invalid query');
 
   if (
     ctx.api ||

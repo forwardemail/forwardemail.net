@@ -244,7 +244,7 @@ const Domains = new mongoose.Schema({
     default: true
   },
 
-  // On larger domains with 10K+ aliases (or global domains)
+  // On larger domains with 1K+ aliases (or global domains)
   // we prohibit catch-all aliases
   is_catchall_regex_disabled: {
     type: Boolean,
@@ -964,6 +964,15 @@ Domains.pre('save', async function (next) {
   try {
     if (typeof conn?.models?.Aliases?.aggregate !== 'function')
       throw new TypeError('Aliases model is not ready');
+
+    const count = await conn.models.Aliases.countDocuments({
+      domain: this._id
+    });
+
+    if (count >= 1000 || this.is_global) {
+      this.is_catchall_regex_disabled = true;
+      return next();
+    }
 
     const names = await conn.models.Aliases.distinct('name', {
       domain: this._id
