@@ -30,7 +30,6 @@ const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const onConnect = require('#helpers/smtp/on-connect');
-const refreshSession = require('#helpers/refresh-session');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const onConnectPromise = pify(onConnect);
@@ -424,6 +423,7 @@ async function onAuth(auth, session, fn) {
 
     // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
     // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
+    /*
     try {
       await refreshSession.call(
         this,
@@ -438,6 +438,7 @@ async function onAuth(auth, session, fn) {
       err.isCodeBug = true;
       this.logger.fatal(err);
     }
+    */
 
     //
     // sync with tmp db in the background
