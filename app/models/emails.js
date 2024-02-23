@@ -1008,7 +1008,9 @@ Emails.statics.queue = async function (
       i18n.translateError(
         'INVALID_FROM_HEADER',
         locale,
-        `${!options.catchall && alias ? alias.name : '*'}@${domain.name}`
+        `${!options.catchall && alias ? alias.name : '*'}@${domain.name}`,
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
       )
     );
 
@@ -1031,7 +1033,9 @@ Emails.statics.queue = async function (
       i18n.translateError(
         'INVALID_FROM_HEADER',
         locale,
-        `${alias.name}@${domain.name}`
+        `${alias.name}@${domain.name}`,
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
+        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
       )
     );
 

@@ -98,6 +98,7 @@ We provide email hosting and email forwarding service to notable users such as:
 
 * Netflix
 * Disney Ad Sales
+* jQuery
 * Government of South Australia
 * Government of Dominican Republic
 * The University of Maryland

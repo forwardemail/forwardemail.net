@@ -8,6 +8,7 @@ require('#config/env');
 
 const process = require('node:process');
 const fs = require('node:fs');
+const path = require('node:path');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
@@ -16,14 +17,14 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
-const pMap = require('p-map');
+const splitLines = require('split-lines');
 const { isEmail } = require('validator');
 
 const mongoose = require('mongoose');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 
-const config = require('#config');
+// const config = require('#config');
 const Users = require('#models/users');
 const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
@@ -65,68 +66,217 @@ graceful.listen();
 
   const file = await fs.promises.readFile(process.env.FILE_PATH, 'utf8');
 
-  const lines = file.split('\n');
+  const lines = splitLines(file)
+    .map((s) => s.trim())
+    .filter((s) => isSANB(s));
+
+  console.log('lines', lines);
 
   const badAlias = [];
-  const notActive = [];
+  let aliases = [];
+  const cleanup = [];
 
-  await pMap(
-    lines.slice(1),
-    async (line) => {
-      // Alias Full, Target Email
-      const [targetEmail, fullAlias] = line.split(',');
+  for (let line of lines) {
+    line = line.trim();
 
-      if (
-        typeof fullAlias !== 'string' ||
-        !isEmail(fullAlias) ||
-        typeof targetEmail !== 'string' ||
-        !isEmail(targetEmail)
-      ) {
-        badAlias.push(line);
-        return;
-      }
+    if (!isSANB(line) || line === '"') continue;
 
-      const name = fullAlias.split('@')[0].trim().toLowerCase();
+    const originalLine = line;
 
-      const recipient = targetEmail.toLowerCase().trim();
+    // replace prefix "."
+    if (line.startsWith('.')) line = line.slice(1);
 
-      if (!isEmail(recipient)) {
-        badAlias.push(line);
-        return;
-      }
+    // replace affix ".," with ","
+    line = line.replace(/\.,/g, ',');
 
-      const recipients = [recipient];
+    // remove quotes and apostrophes
+    line = line.replace(/['"]+/g, '');
 
-      const exists = await Aliases.exists({
-        user: user._id,
-        domain: domain._id,
-        name
-      });
+    // replace double ".." with "."
+    line = line.replace(/\.\./g, '.');
 
-      if (exists) return;
+    // replace ".@" with "@"
+    line = line.replace(/\.@/g, '@');
 
-      await Aliases.create({
-        user: user._id,
-        domain: domain._id,
-        name,
-        recipients,
-        is_enabled: true
-      });
-    },
-    { concurrency: config.concurrency }
+    // replace ">," with ","
+    line = line.replace(/>,/g, ',');
+
+    // Alias Full, Target Email
+    const [targetEmail, fullAlias] = line.split(',');
+
+    if (
+      typeof fullAlias !== 'string' ||
+      !isEmail(fullAlias) ||
+      typeof targetEmail !== 'string' ||
+      !isEmail(targetEmail)
+    ) {
+      badAlias.push(originalLine);
+      continue;
+    }
+
+    const name = fullAlias.split('@')[0].trim().toLowerCase();
+
+    const recipient = targetEmail.toLowerCase().trim();
+
+    if (!isEmail(recipient)) {
+      badAlias.push(originalLine);
+      continue;
+    }
+
+    if (originalLine !== line) {
+      cleanup.push({ before: originalLine, after: line });
+    }
+
+    aliases.push({
+      name,
+      recipient
+    });
+
+    /*
+    const recipients = [recipient];
+    const exists = await Aliases.exists({
+      user: user._id,
+      domain: domain._id,
+      name
+    });
+
+    if (exists) return;
+
+    await Aliases.create({
+      user: user._id,
+      domain: domain._id,
+      name,
+      recipients,
+      is_enabled: true
+    });
+    */
+  }
+
+  console.log('total import', aliases.length);
+
+  console.log('badAlias', badAlias.length);
+  fs.writeFileSync(
+    path.join(__dirname, 'bad-lines.csv'),
+    lines.slice(0, 1) + badAlias.join('\n')
   );
 
-  console.log('--------------------------');
-  console.log('badAlias');
-  console.log(lines.slice(0, 1));
-  console.log(badAlias.join('\n'));
-  console.log('--------------------------');
+  console.log('---- cleanup ----', cleanup.length);
+  fs.writeFileSync(
+    path.join(__dirname, 'cleanup.json'),
+    JSON.stringify(cleanup, null, 2)
+  );
 
-  console.log('--------------------------');
-  console.log('notActive');
-  console.log(lines.slice(0, 1));
-  console.log(notActive.join('\n'));
-  console.log('--------------------------');
+  // filter out alias names that already exist
+  const existingNames = await Aliases.distinct('name', {
+    domain: domain._id
+  });
+
+  console.log('existingNames', existingNames.length);
+
+  const EXISTING_NAMES = new Set(existingNames);
+
+  console.log('BEFORE NEW ALIASES', aliases.length);
+
+  aliases = aliases.filter((a) => !EXISTING_NAMES.has(a.name));
+
+  console.log('AFTER NEW ALIASES', aliases.length);
+
+  console.time('insert db');
+  const results = await Aliases.collection.bulkWrite(
+    aliases.map((a) => {
+      const doc = new Aliases({
+        user: user._id,
+        domain: domain._id,
+        name: a.name,
+        recipients: [a.recipient],
+        is_enabled: true
+      }).toObject({
+        bson: true,
+        transform: false,
+        virtuals: true,
+        getters: true,
+        _skipDepopulateTopLevel: true,
+        depopulate: true,
+        flattenDecimals: false,
+        useProjection: false
+      });
+
+      doc.id = doc._id.toString();
+      doc.object = 'alias';
+      const now = new Date();
+      doc.created_at = now;
+      doc.updated_at = now;
+
+      return {
+        insertOne: doc
+      };
+    }),
+    {
+      writeConcern: {
+        w: 'majority',
+        wtimeout: 60000
+      },
+      ordered: false
+    }
+  );
+
+  console.timeEnd('insert db');
+  console.log('results', results);
+
+  /*
+  const bulk = Aliases.collection.initializeUnorderedBulkOp();
+  for (const alias of aliases) {
+    const doc = new Aliases({
+      user: user._id,
+      domain: domain._id,
+      name: alias.name,
+      recipients: [alias.recipient],
+      is_enabled: true
+    }).toObject({
+      bson: true,
+      transform: false,
+      virtuals: true,
+      getters: true,
+      _skipDepopulateTopLevel: true,
+      depopulate: true,
+      flattenDecimals: false,
+      useProjection: false
+    });
+
+    doc.object = 'alias';
+    const now = new Date();
+    doc.created_at = now;
+    doc.updated_at = now;
+
+    bulk.insert(doc);
+  }
+
+  const results = await bulk.execute();
+  console.log('results', results);
+  */
+
+  console.time('extra check');
+  const bulk2 = Aliases.collection.initializeUnorderedBulkOp();
+  for await (const alias of Aliases.find({
+    domain: domain._id,
+    id: { $exists: false }
+  })
+    .select('_id')
+    .lean()
+    .cursor()
+    .addCursorFlag('noCursorTimeout', true)) {
+    console.log('alias', alias);
+    bulk2
+      .find({
+        _id: alias._id
+      })
+      .updateOne({ $set: { id: alias._id.toString() } });
+  }
+
+  const results2 = await bulk2.execute();
+
+  console.timeEnd('extra check');
+  console.log('results2', results2);
 
   process.exit(0);
 })();

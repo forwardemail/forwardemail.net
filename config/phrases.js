@@ -133,7 +133,7 @@ module.exports = {
   INVALID_SPF_RESULT: 'Invalid SPF result.',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   INVALID_FROM_HEADER:
-    'From header must be equal to <span class="notranslate">%s</span>',
+    'From header must be equal to <span class="notranslate">%s</span> (or) you can use a domain-wide catch-all password at <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
   INVALID_CATCHALL_FROM_HEADER:
     'From header must end with <span class="notranslate">%s</span>',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',

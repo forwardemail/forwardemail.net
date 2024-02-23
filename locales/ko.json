@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "암호화된 사서함 백업",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "암호화된 사서함의 백업은 매일 이루어집니다. 또한 언제든지 다음 사이트에서 즉시 새 백업을 요청하거나 최신 백업을 다운로드할 수 있습니다.",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "IMAP 명령 처리 중에 매일 명령을 실행합니다. 이는 메모리 내 IMAP 연결에서 암호화된 비밀번호를 활용합니다. 기존 백업이 감지되지 않거나",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "당사의 SMTP 서버로 인증하는 경우 사용자 이름은 <code class=\"notranslate\">*@%s</code> 입니다."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "당사의 SMTP 서버로 인증하는 경우 사용자 이름은 <code class=\"notranslate\">*@%s</code> 입니다.",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "From 헤더는 <span class=\"notranslate\">%s</span> 과(와) 같아야 합니다. 또는 <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a> 에서 도메인 전체 포괄 비밀번호를 사용할 수 있습니다.",
+  "jQuery": "jQuery"
 }

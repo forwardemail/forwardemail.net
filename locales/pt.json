@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "Backups de suas caixas de correio criptografadas",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Os backups de suas caixas de correio criptografadas são feitos diariamente. Você também pode solicitar instantaneamente um novo backup ou baixar o backup mais recente a qualquer momento em",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "comando todos os dias durante o processamento do comando IMAP, que aproveita sua senha criptografada de uma conexão IMAP na memória. Os backups são armazenados se nenhum backup existente for detectado ou se o",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Se você se autenticar em nosso servidor SMTP, seu nome de usuário será <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Se você se autenticar em nosso servidor SMTP, seu nome de usuário será <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Do cabeçalho deve ser igual a <span class=\"notranslate\">%s</span> (ou) você pode usar uma senha abrangente para todo o domínio em <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }

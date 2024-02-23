@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "Biztonsági másolatok a titkosított postafiókokról",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "A titkosított postafiókokról naponta biztonsági másolatot készítenek. Ezenkívül bármikor azonnal kérhet új biztonsági másolatot, vagy letöltheti a legújabb biztonsági másolatot a webhelyről",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "parancsot minden nap az IMAP-parancsfeldolgozás során, amely a memóriában lévő IMAP-kapcsolatból származó titkosított jelszót használja fel. A biztonsági mentéseket a rendszer tárolja, ha nem észlel meglévő biztonsági másolatot, vagy ha a",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Ha az SMTP szerverünkkel hitelesít, akkor a felhasználóneve <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Ha az SMTP szerverünkkel hitelesít, akkor a felhasználóneve <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "A fejléctől egyenlőnek kell lennie <span class=\"notranslate\">%s</span> értékkel (vagy) használhat egy tartományszintű összesítő jelszót a <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a> címen",
+  "jQuery": "jQuery"
 }

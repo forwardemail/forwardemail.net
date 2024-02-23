@@ -5282,5 +5282,7 @@
   "Backups of your encrypted mailboxes": "גיבויים של תיבות הדואר המוצפנות שלך",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "גיבויים של תיבות הדואר המוצפנות שלך נעשים מדי יום. אתה יכול גם לבקש גיבוי חדש באופן מיידי או להוריד את הגיבוי האחרון בכל עת מ",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "פקודה כל יום במהלך עיבוד פקודות IMAP, הממנף את הסיסמה המוצפנת שלך מחיבור IMAP בזיכרון. גיבויים מאוחסנים אם לא מזוהה גיבוי קיים או אם",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "אם אתה מאמת עם שרת ה-SMTP שלנו, שם המשתמש שלך הוא <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "אם אתה מאמת עם שרת ה-SMTP שלנו, שם המשתמש שלך הוא <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "הכותרת מהכותרת חייבת להיות שווה ל- <span class=\"notranslate\">%s</span> (או) אתה יכול להשתמש בסיסמת תוסף לכל הדומיין ב- <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }

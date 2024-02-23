@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "Cadangan kotak surat terenkripsi Anda",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Cadangan kotak surat terenkripsi Anda dibuat setiap hari. Anda juga dapat langsung meminta cadangan baru atau mengunduh cadangan terbaru kapan saja dari",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "perintah setiap hari selama pemrosesan perintah IMAP, yang memanfaatkan kata sandi terenkripsi Anda dari koneksi IMAP dalam memori. Cadangan disimpan jika tidak ada cadangan yang terdeteksi atau jika",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Jika Anda mengautentikasi dengan server SMTP kami, maka nama pengguna Anda adalah <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Jika Anda mengautentikasi dengan server SMTP kami, maka nama pengguna Anda adalah <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Dari header harus sama dengan <span class=\"notranslate\">%s</span> (atau) Anda dapat menggunakan kata sandi umum domain di <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }

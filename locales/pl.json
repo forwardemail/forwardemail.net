@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "Kopie zapasowe zaszyfrowanych skrzynek pocztowych",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Kopie zapasowe zaszyfrowanych skrzynek pocztowych są tworzone codziennie. Możesz także natychmiast poprosić o nową kopię zapasową lub pobrać najnowszą kopię zapasową w dowolnym momencie ze strony",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "polecenie codziennie podczas przetwarzania poleceń IMAP, które wykorzystuje zaszyfrowane hasło z połączenia IMAP w pamięci. Kopie zapasowe są przechowywane, jeśli nie zostanie wykryta żadna istniejąca kopia zapasowa lub jeśli",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Jeśli uwierzytelnisz się za pomocą naszego serwera SMTP, Twoja nazwa użytkownika to <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Jeśli uwierzytelnisz się za pomocą naszego serwera SMTP, Twoja nazwa użytkownika to <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Od nagłówka musi być równy <span class=\"notranslate\">%s</span> (lub) możesz użyć hasła typu catch-all w całej domenie w <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }

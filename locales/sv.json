@@ -7309,5 +7309,7 @@
   "Backups of your encrypted mailboxes": "Säkerhetskopiering av dina krypterade postlådor",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Säkerhetskopieringar av dina krypterade brevlådor görs dagligen. Du kan också omedelbart begära en ny säkerhetskopia eller ladda ner den senaste säkerhetskopian när som helst från",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "kommando varje dag under IMAP-kommandobehandling, som utnyttjar ditt krypterade lösenord från en IMAP-anslutning i minnet. Säkerhetskopieringar lagras om ingen befintlig säkerhetskopia upptäcks eller om",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Om du autentiserar med vår SMTP-server är ditt användarnamn <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Om du autentiserar med vår SMTP-server är ditt användarnamn <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Från huvudet måste vara lika med <span class=\"notranslate\">%s</span> (eller) du kan använda ett domänomfattande catch-all-lösenord på <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }

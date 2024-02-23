@@ -4787,5 +4787,7 @@
   "Backups of your encrypted mailboxes": "Sao lưu các hộp thư được mã hóa của bạn",
   "Backups of your encrypted mailboxes are made daily.  You can also instantly request a new backup or download the latest backup at anytime from": "Việc sao lưu các hộp thư mã hóa của bạn được thực hiện hàng ngày. Bạn cũng có thể yêu cầu ngay bản sao lưu mới hoặc tải xuống bản sao lưu mới nhất bất kỳ lúc nào từ",
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "lệnh mỗi ngày trong quá trình xử lý lệnh IMAP, tận dụng mật khẩu được mã hóa của bạn từ kết nối IMAP trong bộ nhớ. Các bản sao lưu được lưu trữ nếu không phát hiện thấy bản sao lưu hiện có hoặc nếu",
-  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Nếu bạn xác thực bằng máy chủ SMTP của chúng tôi thì tên người dùng của bạn là <code class=\"notranslate\">*@%s</code> ."
+  "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Nếu bạn xác thực bằng máy chủ SMTP của chúng tôi thì tên người dùng của bạn là <code class=\"notranslate\">*@%s</code> .",
+  "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Tiêu đề từ phải bằng <span class=\"notranslate\">%s</span> (hoặc) bạn có thể sử dụng mật khẩu toàn miền tại <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
+  "jQuery": "jQuery"
 }
