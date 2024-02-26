@@ -89,7 +89,7 @@
     "bufferutil": "4.0.8",
     "bytes": "3.1.2",
     "cabin": "13.2.5",
-    "caldav-adapter": "5.0.1",
+    "caldav-adapter": "6.0.0",
     "capitalize": "2.0.4",
     "captain-hook": "0.0.3",
     "check-disk-space": "3.4.0",
@@ -263,7 +263,7 @@
     "validator": "13.11.0",
     "web-resource-inliner": "6.0.1",
     "websocket-as-promised": "2.0.1",
-    "wildduck": "1.42.1",
+    "wildduck": "1.42.2",
     "wkhtmltopdf": "0.4.0",
     "ws": "8.16.0",
     "zone-mta": "3.9.4"
