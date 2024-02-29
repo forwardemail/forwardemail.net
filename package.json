@@ -183,7 +183,7 @@
     "mx-connect": "1.5.3",
     "node-gzip": "1.1.2",
     "node-html-parser": "6.1.12",
-    "node-ical": "0.17.2",
+    "node-ical": "0.18.0",
     "node-os-utils": "1.3.7",
     "nodemailer": "6.9.10",
     "numeral": "2.0.6",
