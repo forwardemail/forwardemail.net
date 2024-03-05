@@ -123,7 +123,7 @@ async function retrieveAliases(ctx, next) {
   if (!query || _.isEmpty(query)) throw new TypeError('Invalid query');
 
   if (
-    (ctx.api && !ctx.state.domain.is_catchall_regex_disabled) ||
+    ctx.api ||
     (isSANB(ctx.params.member_id) &&
       (ctx.pathWithoutLocale.startsWith(
         `/my-account/domains/${ctx.state.domain.id}/members/`
@@ -147,6 +147,7 @@ async function retrieveAliases(ctx, next) {
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Aliases.find(query)
         .limit(ctx.query.limit)
+        // TODO: ctx.paginate.skip -> paginate is undefined (need to check where ctx.paginate is used)
         .skip(ctx.paginate.skip)
         .sort(ctx.query.sort || 'name')
         .populate(
