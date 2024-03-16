@@ -1284,6 +1284,7 @@ const config = {
     'gl',
     'id',
     'ie',
+    'il',
     'im',
     'in',
     'io',

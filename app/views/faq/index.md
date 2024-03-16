@@ -2335,6 +2335,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">gl</code></li>
   <li class="list-inline-item"><code class="notranslate">id</code></li>
   <li class="list-inline-item"><code class="notranslate">ie</code></li>
+  <li class="list-inline-item"><code class="notranslate">il</code></li>
   <li class="list-inline-item"><code class="notranslate">im</code></li>
   <li class="list-inline-item"><code class="notranslate">in</code></li>
   <li class="list-inline-item"><code class="notranslate">io</code></li>
