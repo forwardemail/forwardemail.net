@@ -256,7 +256,7 @@
     "twilio": "4.22.0",
     "typed.js": "2.1.0",
     "uncaught": "0.0.5",
-    "undici": "6.6.2",
+    "undici": "6.11.1",
     "url-parse": "1.5.10",
     "url-regex-safe": "4.0.0",
     "utf-8-validate": "6.0.3",
