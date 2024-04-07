@@ -26,6 +26,19 @@ const Inquiries = new mongoose.Schema({
   is_denylist: {
     type: Boolean,
     default: false
+  },
+  is_resolved: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  references: {
+    type: Array,
+    required: false
+  },
+  subject: {
+    type: String,
+    required: false
   }
 });
 

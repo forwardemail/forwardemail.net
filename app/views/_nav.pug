@@ -595,6 +595,10 @@ nav.navbar(class=navbarClasses.join(" "))
                         href=l("/admin/domains")
                       )= t("Domains")
                       a.dropdown-item(
+                        class=ctx.pathWithoutLocale.startsWith("/admin/inquiries") ? "active" : "",
+                        href=l("/admin/inquiries")
+                      )= t("Inquiries")
+                      a.dropdown-item(
                         class=ctx.pathWithoutLocale.startsWith("/admin/emails") ? "active" : "",
                         href=l("/admin/emails")
                       )= t("Emails")

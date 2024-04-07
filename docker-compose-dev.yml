@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    env_file:
+      - .env
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+    - redis-data:/data
+    env_file:
+      - .env
+
+volumes:
+  mongodb-data:
+  redis-data:

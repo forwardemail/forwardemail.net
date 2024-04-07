@@ -1,0 +1,102 @@
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th.text-center.align-middle(scope="col")= t("Selected")
+        th(scope="col")
+          +sortHeader('email', null, '#table-inquiries')
+        th.text-center.align-middle(scope="col")= t("Message")
+        th(scope="col")
+          +sortHeader('plan', null, '#table-inquiries')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-inquiries')
+        th(scope="col")
+          +sortHeader('updated_at', 'Updated', '#table-inquiries')
+        if passport && passport.otp
+          th(scope="col")
+            +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-inquiries')
+        th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if inquiries.length === 0
+        td.alert.alert-info= t("No inquiries exist for that search.")
+      else
+        each inquiry in inquiries
+          tr
+            td.align-middle.text-center
+              .form-group.form-check.form-check-inline.mb-0
+                  input#is-inquiry-selected.form-check-input(
+                    type="checkbox",
+                    name="is_inquiry_selected",
+                    value=inquiry.id
+                  )
+            td.align-middle
+              a(
+                href=`mailto:${inquiry.email}`,
+                target="_blank",
+                rel="noopener noreferrer"
+              )= inquiry.email
+            td.align-middle
+              =inquiry.message
+            td.align-middle
+              =inquiry.plan
+            td.align-middle.dayjs(
+              data-time=new Date(inquiry.created_at).getTime()
+            )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
+            td.align-middle.dayjs(
+              data-time=new Date(inquiry.updated_at).getTime()
+            )= dayjs(inquiry.updated_at).format("M/D/YY h:mm A z")
+            td.align-middle
+              .btn-group(role="group", aria-label=t("Actions"))
+                a.btn.btn-secondary(
+                  href=l(`/admin/inquiries/${inquiry.id}`),
+                  data-toggle="tooltip",
+                  data-title=t("Edit")
+                ): i.fa.fa-fw.fa-edit
+                form.ajax-form.confirm-prompt.btn-group(
+                  action=l(`/admin/inquiries/${inquiry.id}`),
+                  method="POST",
+                  autocomplete="off"
+                )
+                  input(type="hidden", name="_method", value="DELETE")
+                  button.btn.btn-danger(
+                    type="submit",
+                    data-toggle="tooltip",
+                    data-title=t("Remove")
+                  ): i.fa.fa-fw.fa-remove
+  button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
+  #bulk-reply-modal.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="modal-bulk-reply-title",
+      aria-hidden="true"
+    )
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .text-center
+              form.form-group
+                label(for="bulk-reply-message")
+                 h5= t("Message")
+                  = " "
+                textarea#textarea-bulk-reply-message.form-control(
+                  name="bulk-reply-message",
+                  maxlength=300,
+                  rows=8
+                )
+                p.form-text.small.text-black.text-themed-50= t("Message has a max of 300 characters.")
+                button.btn.btn-lg.btn-block.btn-primary(type='button' id='submit-bulk-reply')
+                  i.fa.fa-edit
+                  = " "
+                  = t("Submit Bulk Reply")
++paginate('#table-inquiries')

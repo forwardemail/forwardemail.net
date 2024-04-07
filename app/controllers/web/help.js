@@ -43,7 +43,7 @@ async function help(ctx) {
 
     ctx.logger.debug('created inquiry', { inquiry });
 
-    await email({
+    const emaild = await email({
       template: 'inquiry',
       message: {
         to: ctx.state.user[config.userFields.fullEmail],
@@ -55,6 +55,15 @@ async function help(ctx) {
         inquiry
       }
     });
+
+    const { subject } = JSON.parse(emaild.message);
+
+    await Inquiries.findOneAndUpdate(
+      { id: inquiry.id },
+      {
+        $set: { references: [emaild.messageId], subject }
+      }
+    );
 
     const message = ctx.translate('SUPPORT_REQUEST_SENT');
     if (ctx.accepts('html')) {
