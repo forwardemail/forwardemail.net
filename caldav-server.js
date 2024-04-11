@@ -646,7 +646,6 @@ class CalDAV extends API {
     let err;
     try {
       // parse `ctx.request.body` for VCALENDAR and all VEVENT's
-      console.log('YOYO', ctx.request.body);
       const comp = new ICAL.Component(ICAL.parse(ctx.request.body));
       if (!comp) throw new TypeError('Component not parsed');
 
@@ -703,8 +702,6 @@ class CalDAV extends API {
         synctoken: bumpSyncToken(calendar.synctoken)
       };
 
-      console.log('update', update);
-
       calendar = await Calendars.findByIdAndUpdate(
         this,
         ctx.state.session,
@@ -716,8 +713,6 @@ class CalDAV extends API {
           lock
         }
       );
-
-      console.log('updated calendar', calendar);
 
       //
       // NOTE: this isn't the safest way to do this (instead should only conditionally delete and update)
@@ -734,8 +729,6 @@ class CalDAV extends API {
           lock
         }
       );
-
-      console.log('deleted', deleted);
 
       // create new VEVENTS
       if (vevents.length > 0) {
@@ -758,8 +751,6 @@ class CalDAV extends API {
           });
         }
 
-        console.log('eventIdToEvents', eventIdToEvents);
-
         for (const eventId of Object.keys(eventIdToEvents)) {
           // eslint-disable-next-line no-await-in-loop
           const ical = await this.buildICS(
@@ -767,7 +758,6 @@ class CalDAV extends API {
             eventIdToEvents[eventId],
             calendar
           );
-          console.log('built ICAL', ical);
           events.push({
             // db virtual helper
             instance: this,
@@ -781,15 +771,11 @@ class CalDAV extends API {
           });
         }
 
-        console.log('events', events);
-
         const createdEvents = await CalendarEvents.create(
           this,
           ctx.state.session,
           events
         );
-
-        console.log('createdEvents', createdEvents);
       }
 
       return calendar;
@@ -1139,7 +1125,7 @@ class CalDAV extends API {
     e.isNew = false;
 
     // TODO: is this not updating?
-    console.log('UPDATING BODY', ctx.request.body);
+    // console.log('UPDATING BODY', ctx.request.body);
 
     e.ical = ctx.request.body;
 
@@ -1268,8 +1254,6 @@ class CalDAV extends API {
           comp.addSubcomponent(vevent);
         }
       }
-
-      console.log('STRINGIFIED', comp.toString());
 
       return comp.toString();
     }
