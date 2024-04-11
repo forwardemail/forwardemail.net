@@ -969,7 +969,7 @@ Domains.pre('save', async function (next) {
       domain: this._id
     });
 
-    if (count >= 1000 || this.is_global) {
+    if (count >= 10000 || this.is_global) {
       this.is_catchall_regex_disabled = true;
       return next();
     }

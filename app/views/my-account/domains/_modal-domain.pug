@@ -16,7 +16,7 @@
             input#input-domain.form-control.form-control-lg(
               required,
               name="domain",
-              autocomplete="off",
+              autocomplete=config.env === "test" ? "off" : randomstring(),
               placeholder="example.com",
               autocorrect="off",
               spellcheck="false",

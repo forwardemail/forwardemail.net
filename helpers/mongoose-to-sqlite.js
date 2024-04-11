@@ -329,9 +329,11 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
-  if (!_.isEmpty(options)) {
-    throw new TypeError('Options not yet supported');
-  }
+  if (
+    !_.isEmpty(options) &&
+    !Object.keys(options).every((key) => key === 'lock')
+  )
+    throw new TypeError('Only lock option supported');
 
   const sql = builder.build({
     type: 'remove',

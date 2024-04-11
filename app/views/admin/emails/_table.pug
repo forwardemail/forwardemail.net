@@ -92,7 +92,7 @@ table.table.table-hover.table-bordered.table-sm
                     form.ajax-form.confirm-prompt(
                       action=l(`/admin/emails/${email.id}`),
                       method="POST",
-                      autocomplete="off"
+                      autocomplete=config.env === "test" ? "off" : randomstring()
                     )
                       input(type="hidden", name="_method", value="PUT")
                       button.btn.btn-success.btn-sm(
@@ -110,7 +110,7 @@ table.table.table-hover.table-bordered.table-sm
                     form.ajax-form.confirm-prompt(
                       action=l(`/admin/emails/${email.id}`),
                       method="POST",
-                      autocomplete="off"
+                      autocomplete=config.env === "test" ? "off" : randomstring()
                     )
                       input(type="hidden", name="_method", value="DELETE")
                       button.btn.btn-danger.btn-sm(

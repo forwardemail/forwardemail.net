@@ -263,15 +263,27 @@ async function remove(ctx) {
     if (isIP(ctx.state.q)) {
       // del ip
       await ctx.client.del(`denylist:${ctx.state.q}`);
+      // add ip
+      await ctx.client.set(`allowlist:${ctx.state.q}`, true);
     } else {
       // del email and/or domain
       await ctx.client.del(`denylist:${ctx.state.q}`);
       // del root domain
-      if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain)
+      if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain) {
         await ctx.client.del(`denylist:${ctx.state.rootDomain}`);
+        await ctx.client.set(`allowlist:${ctx.state.rootDomain}`, true);
+      }
+
       // if it was an email then delete the combo
-      if (isEmail(ctx.state.q) && ctx.state.rootDomain)
+      if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
+        await ctx.client.del(`denylist:${ctx.state.q}`);
         await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
+        await ctx.client.set(`allowlist:${ctx.state.q}`);
+        await ctx.client.set(
+          `allowlist:${ctx.state.rootDomain}:${ctx.state.q}`,
+          true
+        );
+      }
     }
   } catch (err) {
     ctx.logger.fatal(err);

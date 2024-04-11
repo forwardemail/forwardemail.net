@@ -16,7 +16,7 @@ block body
                   type="password",
                   name="old_password",
                   required,
-                  autocomplete="off"
+                  autocomplete=config.env === "test" ? "off" : randomstring()
                 )
                 label(for="input-old-password")= t("Confirm old password")
             .form-group.floating-label
@@ -24,7 +24,7 @@ block body
                 type="password",
                 name="password",
                 required,
-                autocomplete="off"
+                autocomplete=config.env === "test" ? "off" : randomstring()
               )
               label(for="input-password")= t("Set new password")
             .form-group.floating-label
@@ -32,7 +32,7 @@ block body
                 type="password",
                 name="confirm_password",
                 required,
-                autocomplete="off"
+                autocomplete=config.env === "test" ? "off" : randomstring()
               )
               label(for="input-confirm-password")= t("Confirm new password")
           .modal-footer.text-right

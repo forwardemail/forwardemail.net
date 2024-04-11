@@ -7311,5 +7311,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "الأمر كل يوم أثناء معالجة أوامر IMAP، مما يعزز كلمة المرور المشفرة من اتصال IMAP في الذاكرة. يتم تخزين النسخ الاحتياطية في حالة عدم اكتشاف نسخة احتياطية موجودة أو في حالة ظهور خطأ",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "إذا قمت بالمصادقة مع خادم SMTP الخاص بنا، فسيكون اسم المستخدم الخاص بك هو <code class=\"notranslate\">*@%s</code> .",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "يجب أن يكون الرأس مساويًا لـ <span class=\"notranslate\">%s</span> (أو) يمكنك استخدام كلمة مرور استقبال الرسائل الخاطئة على مستوى المجال في <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
-  "jQuery": "مسج"
+  "jQuery": "مسج",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

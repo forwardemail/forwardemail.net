@@ -34,6 +34,7 @@ const validator = require('validator');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
+const { randomstring } = require('@sidoshi/random-string');
 
 const json = (string, replacer = null, space = 2) =>
   JSON.stringify(string, replacer, space);
@@ -1064,5 +1065,6 @@ module.exports = {
   arrayJoinConjunction,
   convert: convertFn,
   getServersOrClientsList,
-  highlightWords
+  highlightWords,
+  randomstring
 };

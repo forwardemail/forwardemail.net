@@ -570,8 +570,25 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // verify DKIM
     // <https://github.com/postalsys/mailauth/issues/48>
-    if (!dkim || !dkimAlignedMatch)
+
+    // TODO: https://github.com/postalsys/mailauth/issues/58
+    let bodyHashIssue = false;
+    if (
+      dkim.results &&
+      dkim.results.some(
+        (r) =>
+          r.status?.comment === 'body hash did not verify' &&
+          r.signingDomain === domain.name &&
+          r.selector === domain.dkim_key_selector &&
+          (r.status?.aligned === domain.name ||
+            r.status?.aligned === parseRootDomain(domain.name))
+      )
+    )
+      bodyHashIssue = true;
+
+    if (!bodyHashIssue && (!dkim || !dkimAlignedMatch)) {
       throw Boom.badRequest(i18n.translateError('INVALID_DKIM_SIGNATURE'));
+    }
 
     // verify SPF
     if (

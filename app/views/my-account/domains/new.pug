@@ -37,7 +37,7 @@ block body
                 required,
                 value=isSANB(ctx.query.domain) && isFQDN(ctx.query.domain) ? ctx.query.domain : "",
                 name="domain",
-                autocomplete="off",
+                autocomplete=config.env === "test" ? "off" : randomstring(),
                 placeholder="example.com",
                 autocorrect="off",
                 spellcheck="false",

@@ -220,7 +220,7 @@ p.text-center.d-lg-none
                             required=!_.isDate(alias.imap_backup_at),
                             type="password",
                             placeholder=" ",
-                            autocomplete="off"
+                            autocomplete=config.env === "test" ? "off" : randomstring()
                           )
                           label(for=`input-backup-password-${alias.id}`)= t("Password")
                         if _.isDate(alias.imap_backup_at)
@@ -274,7 +274,7 @@ p.text-center.d-lg-none
                             input.form-control.form-control-lg(
                               id=`input-emailed-instructions-${alias.id}`,
                               type="email",
-                              autocomplete="off",
+                              autocomplete=config.env === "test" ? "off" : randomstring(),
                               name="emailed_instructions",
                               placeholder="name@example.com"
                             )
@@ -290,7 +290,7 @@ p.text-center.d-lg-none
                               name="new_password",
                               type="password",
                               placeholder=" ",
-                              autocomplete="off"
+                              autocomplete=config.env === "test" ? "off" : randomstring()
                             )
                             label(for=`input-new-password-${alias.id}`)= t("New Password")
                           p.alert.alert-primary.small
@@ -305,7 +305,7 @@ p.text-center.d-lg-none
                                 name="password",
                                 type="password",
                                 placeholder=" ",
-                                autocomplete="off"
+                                autocomplete=config.env === "test" ? "off" : randomstring()
                               )
                               label(for=`input-password-${alias.id}`)= t("Password")
                             p.alert.alert-primary.small

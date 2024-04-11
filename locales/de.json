@@ -6349,5 +6349,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Befehl jeden Tag während der IMAP-Befehlsverarbeitung, die Ihr verschlüsseltes Passwort aus einer speicherinternen IMAP-Verbindung nutzt. Backups werden gespeichert, wenn kein vorhandenes Backup erkannt wird oder wenn die",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Wenn Sie sich bei unserem SMTP-Server authentifizieren, lautet Ihr Benutzername <code class=\"notranslate\">*@%s</code> .",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "From-Header muss gleich <span class=\"notranslate\">%s</span> sein (oder) Sie können bei <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a> ein domänenweites Catch-All-Passwort verwenden",
-  "jQuery": "jQuery"
+  "jQuery": "jQuery",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

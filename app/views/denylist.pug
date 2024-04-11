@@ -40,7 +40,7 @@ block body
                 value=isSANB(ctx.query.q) && ctx.query.q !== "true" ? ctx.query.q : "",
                 readonly=isSANB(ctx.query.q) && !isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== "true",
                 placeholder=" ",
-                autocomplete="off"
+                autocomplete=config.env === "test" ? "off" : randomstring()
               )
               label(for="input-q")
                 if isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== 'true')

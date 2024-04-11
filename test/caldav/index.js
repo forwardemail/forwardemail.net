@@ -6,7 +6,6 @@
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 
-const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -19,12 +18,14 @@ const splitLines = require('split-lines');
 const { factory } = require('factory-girl');
 
 const utils = require('../utils');
+const CalDAV = require('../../caldav-server');
 const SQLite = require('../../sqlite-server');
 
-const config = require('#config');
 const Users = require('#models/users');
 const calDAVConfig = require('#config/caldav');
+const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
@@ -87,10 +88,15 @@ test.beforeEach(async (t) => {
   const sqlite = new SQLite({ client, subscriber });
   await sqlite.listen(sqlitePort);
 
-  const calDAV = new API(
+  const wsp = createWebSocketAsPromised({
+    port: sqlitePort
+  });
+  t.context.wsp = wsp;
+
+  const calDAV = new CalDAV(
     {
       ...calDAVConfig,
-      sqlitePort,
+      wsp,
       port,
       redis: client
     },

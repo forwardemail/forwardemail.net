@@ -998,7 +998,7 @@ async function parsePayload(data, ws) {
                 // 1) Senders that we consider to be "trusted" as a source of truth
                 //    (e.g. gmail.com, microsoft.com, apple.com) are limited to sending 100 GB per day.
                 // 2) Senders that are allowlisted are limited to sending 10 GB per day.
-                // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                 // 4) We have a specific limit per Sender and yourdomain.com of 1 GB and/or 1000 messages daily.
 
                 // check current size and message count for sender
@@ -1042,8 +1042,8 @@ async function parsePayload(data, ws) {
                         err.payload = payload;
                         throw err;
                       }
-                      // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
-                    } else if (size >= bytes('1GB') || count >= 300) {
+                      // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
+                    } else if (size >= bytes('1GB') || count >= 1000) {
                       const err = new SMTPError(
                         `#3 ${sender} limited with current of ${prettyBytes(
                           size
@@ -1054,8 +1054,8 @@ async function parsePayload(data, ws) {
                       throw err;
                     }
                   }
-                } else if (size >= bytes('1GB') || count >= 300) {
-                  // 3) All other Senders are limited to sending 1 GB and/or 300 messages per day.
+                } else if (size >= bytes('1GB') || count >= 1000) {
+                  // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                   const err = new SMTPError(
                     `#3 ${sender} limited with current of ${prettyBytes(
                       size

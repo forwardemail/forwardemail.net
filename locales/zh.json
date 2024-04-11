@@ -7004,5 +7004,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "在 IMAP 命令处理期间每天执行命令，该命令利用内存中 IMAP 连接中的加密密码。如果未检测到现有备份或者如果",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "如果您使用我们的 SMTP 服务器进行身份验证，则您的用户名是<code class=\"notranslate\">*@%s</code> 。",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "From 标头必须等于<span class=\"notranslate\">%s</span> （或者）您可以在<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>处使用域范围的通用密码",
-  "jQuery": "jQuery"
+  "jQuery": "jQuery",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

@@ -7311,5 +7311,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "Bellek içi bir IMAP bağlantısından şifrelenmiş parolanızdan yararlanan IMAP komut işleme sırasında her gün komut verin. Yedeklemeler, mevcut bir yedekleme algılanmazsa veya",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "SMTP sunucumuzla kimlik doğrulaması yapıyorsanız kullanıcı adınız <code class=\"notranslate\">*@%s</code> olur.",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Başlıktan <span class=\"notranslate\">%s</span> değerine eşit olmalıdır (veya) <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a> adresinde alan adı genelinde tümünü kapsayan bir şifre kullanabilirsiniz",
-  "jQuery": "jQuery"
+  "jQuery": "jQuery",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

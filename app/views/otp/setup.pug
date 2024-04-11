@@ -37,14 +37,14 @@ block body
           form(
             action=ctx.path,
             method="POST",
-            autocomplete="off",
+            autocomplete=config.env === "test" ? "off" : randomstring(),
             class=user[config.userFields.otpRecoveryKeys] ? false : "confirm-prompt"
           )
             if user[config.userFields.hasSetPassword]
               .form-group.floating-label.mt-4
                 input#input-password.form-control.form-control-lg(
                   type="password",
-                  autocomplete="off",
+                  autocomplete=config.env === "test" ? "off" : randomstring(),
                   name="password",
                   required
                 )

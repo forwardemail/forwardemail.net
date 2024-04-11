@@ -29,12 +29,16 @@ block body
       h1.my-3.py-3.text-center= t("Two-Factor Check")
       .row
         .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
-          form.ajax-form(action=ctx.path, method="POST", autocomplete="off")
+          form.ajax-form(
+            action=ctx.path,
+            method="POST",
+            autocomplete=config.env === "test" ? "off" : randomstring()
+          )
             .form-group.floating-label
               input#input-text.form-control.form-control-lg(
                 type="text",
                 autofocus,
-                autocomplete="off",
+                autocomplete=config.env === "test" ? "off" : randomstring(),
                 name="passcode",
                 placeholder=" "
               )

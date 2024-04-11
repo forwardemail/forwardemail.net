@@ -10,23 +10,42 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
 const ip = require('ip');
 
-const calDAVConfig = require('#config/caldav');
+const CalDAV = require('./caldav-server');
 const Users = require('#models/users');
+const calDAVConfig = require('#config/caldav');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+const setupMongoose = require('#helpers/setup-mongoose');
 
-const calDAV = new API(calDAVConfig, Users);
+const wsp = createWebSocketAsPromised();
+
+const calDAV = new CalDAV(
+  {
+    ...calDAVConfig,
+    wsp
+  },
+  Users
+);
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [calDAV.server],
   redisClients: [calDAV.client],
-  logger
+  logger,
+  customHandlers: [
+    // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
+    () => {
+      try {
+        wsp.close();
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
+  ]
 });
 graceful.listen();
 monitorServer();

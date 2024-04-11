@@ -7311,5 +7311,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "คำสั่งทุกวันระหว่างการประมวลผลคำสั่ง IMAP ซึ่งใช้ประโยชน์จากรหัสผ่านที่เข้ารหัสของคุณจากการเชื่อมต่อ IMAP ในหน่วยความจำ ข้อมูลสำรองจะถูกจัดเก็บหากตรวจไม่พบข้อมูลสำรองที่มีอยู่หรือหาก",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "หากคุณตรวจสอบสิทธิ์กับเซิร์ฟเวอร์ SMTP ของเรา ชื่อผู้ใช้ของคุณคือ <code class=\"notranslate\">*@%s</code>",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "จากส่วนหัวต้องเท่ากับ <span class=\"notranslate\">%s</span> (หรือ) คุณสามารถใช้รหัสผ่านที่รับทั่วทั้งโดเมนได้ที่ <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
-  "jQuery": "jQuery"
+  "jQuery": "jQuery",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

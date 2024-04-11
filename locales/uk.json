@@ -7311,5 +7311,7 @@
   "command every day during IMAP command processing, which leverages your encrypted password from an in-memory IMAP connection.  Backups are stored if no existing backup is detected or if the": "щодня під час обробки команди IMAP, яка використовує ваш зашифрований пароль із з’єднання IMAP у пам’яті. Резервні копії зберігаються, якщо існуюча резервна копія не виявлена або якщо",
   "If you authenticate with our SMTP server, then your username is <code class=\"notranslate\">*@%s</code>.": "Якщо ви пройшли автентифікацію за допомогою нашого SMTP-сервера, тоді ваше ім’я користувача <code class=\"notranslate\">*@%s</code> .",
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "Заголовок From має дорівнювати <span class=\"notranslate\">%s</span> (або) ви можете використовувати пароль загального доступу для всього домену на <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
-  "jQuery": "jQuery"
+  "jQuery": "jQuery",
+  "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
 }

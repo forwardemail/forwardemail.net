@@ -5,8 +5,10 @@
 
 const web = require('./web');
 const api = require('./api');
+const caldav = require('./caldav');
 
 module.exports = {
   web,
-  api
+  api,
+  caldav
 };

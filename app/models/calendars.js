@@ -20,8 +20,6 @@ const { isURL } = require('validator');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const config = require('#config');
-
 const {
   dummyProofModel,
   dummySchemaOptions,
@@ -58,7 +56,12 @@ const Calendars = new mongoose.Schema(
       type: String,
       validator: (v) => isURL(v, { require_tld: false })
     },
-    scale: String,
+    // (e.g. Gregorian)
+    scale: {
+      type: String,
+      default: 'Gregorian'
+    },
+    // refresh-interval
     ttl: Number,
 
     //
@@ -113,7 +116,7 @@ const Calendars = new mongoose.Schema(
       type: String,
       required: true,
       lowercase: true,
-      validate: (v) => isURL(v, { require_tld: config.env !== 'production' })
+      validate: (v) => isURL(v, { require_tld: false }) // require_tld: config.env === 'production'
     }
   },
   dummySchemaOptions

@@ -325,6 +325,7 @@ async function onMove(mailboxId, update, session, fn) {
           });
         } else {
           this.logger.fatal(new Error('failed to delete old message'), {
+            results,
             mailboxId,
             update,
             session

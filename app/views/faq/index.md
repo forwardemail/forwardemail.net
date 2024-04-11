@@ -1626,7 +1626,7 @@ This list is maintained [as an open-source project on GitHub](https://github.com
 
 ## Do you have an allowlist
 
-Yes, we have a [list of domain name extensions](/#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
+Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
 All emails, domains, and recipients from customers on paid plans are automatically added to our allowlist.
 
@@ -2453,7 +2453,7 @@ Our MX servers have daily limits for inbound mail received for [encrypted IMAP s
 * We have general limits that apply to all `Senders` across our service regardless of recipient:
   * `Senders` that we consider to be "trusted" as a source of truth (e.g. `gmail.com`, `microsoft.com`, `apple.com`) are limited to sending 100 GB per day.
   * `Senders` that are [allowlisted](#do-you-have-an-allowlist) are limited to sending 10 GB per day.
-  * All other `Senders` are limited to sending 1 GB and/or 300 messages per day.
+  * All other `Senders` are limited to sending 1 GB and/or 1000 messages per day.
 * We have a specific limit per `Sender` and `yourdomain.com` of 1 GB and/or 1000 messages daily.
 
 The MX servers also limit messages being forwarded to one or more recipients through rate limiting – but this only applies to `Senders` not on the [allowlist](#do-you-have-an-allowlist):

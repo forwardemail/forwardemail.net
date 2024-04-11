@@ -110,7 +110,7 @@ block body
               form#form-billing(
                 action=ctx.path,
                 method="POST",
-                autocomplete="off"
+                autocomplete=config.env === "test" ? "off" : randomstring()
               )
                 if !isMakePayment && !isEnableAutoRenew
                   input(type="hidden", name="plan", value=ctx.query.plan)

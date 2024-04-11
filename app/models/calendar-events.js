@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-const ical = require('node-ical');
+const ICAL = require('ical.js');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const validationErrorTransform = require('mongoose-validation-error-transform');
-const { isURL } = require('validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -23,6 +22,7 @@ const {
 // <https://github.com/jens-maus/node-ical/pull/231>
 const CalendarEvents = new mongoose.Schema(
   {
+    /*
     // <https://github.com/jens-maus/node-ical/blob/228ee19ed8af5177ab5139c82c32a15d5179f228/node-ical.d.ts#L153>
     method: {
       type: String,
@@ -38,6 +38,7 @@ const CalendarEvents = new mongoose.Schema(
         'DECLINECOUNTER'
       ]
     },
+    */
 
     // via `ctx.state.params.eventId` from `caldav-adapter`
     eventId: {
@@ -46,18 +47,21 @@ const CalendarEvents = new mongoose.Schema(
       index: true
     },
 
+    /*
     // <https://github.com/jens-maus/node-ical/blob/228ee19ed8af5177ab5139c82c32a15d5179f228/node-ical.d.ts#L65-L94>
     dtstamp: Date,
     uid: {
       type: String,
       required: true
     },
+    */
     calendar: {
       type: mongoose.Schema.ObjectId,
       ref: Calendars,
       required: true,
       index: true
     },
+    /*
     sequence: String,
     transparency: {
       type: String,
@@ -106,6 +110,7 @@ const CalendarEvents = new mongoose.Schema(
     organizer: mongoose.Schema.Types.Mixed,
     geo: mongoose.Schema.Types.Mixed,
     recurrenceid: mongoose.Schema.Types.Mixed,
+    */
 
     ical: {
       type: String,
@@ -116,16 +121,30 @@ const CalendarEvents = new mongoose.Schema(
         //   vcalendar: { type: 'VCALENDAR' }
         // }
         if (!isSANB(ics)) return false;
-        const events = await ical.async.parseICS(ics);
-        return Object.keys(events).some(
-          (key) =>
-            typeof events[key] === 'object' && events[key].type === 'VEVENT'
-        );
+
+        // safeguard in case library isn't working for some reason
+        const parsed = ICAL.parse(ics);
+        if (!parsed || parsed.length === 0) {
+          const err = new TypeError('ICAL.parse was not successful');
+          err.parsed = parsed;
+          throw err;
+        }
+
+        const comp = new ICAL.Component(parsed);
+        if (!comp) throw new TypeError('ICAL.Component was not successful');
+
+        const vevent = comp.getFirstSubcomponent('vevent');
+
+        if (!vevent)
+          throw new TypeError('comp.getFirstSubcomponent was not successful');
+
+        return true;
       }
-    },
+    }
 
     // TODO: output the data types below and enforce them stricter
 
+    /*
     // COMPLETED
     completed: mongoose.Schema.Types.Mixed,
 
@@ -144,6 +163,7 @@ const CalendarEvents = new mongoose.Schema(
     //   ...
     // ]
     x: mongoose.Schema.Types.Mixed
+    */
   },
   dummySchemaOptions
 );

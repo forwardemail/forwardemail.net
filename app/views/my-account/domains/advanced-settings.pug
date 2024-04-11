@@ -75,7 +75,7 @@ block body
                     name="new_password",
                     type="password",
                     placeholder=" ",
-                    autocomplete="off"
+                    autocomplete=config.env === "test" ? "off" : randomstring()
                   )
                   label(for="input-new-password")= t("New Password")
                 p.alert.alert-primary.small
@@ -200,7 +200,7 @@ block body
                 input#input-invite-email.form-control(
                   required,
                   disabled=isTeamDisabled,
-                  autocomplete="off",
+                  autocomplete=config.env === "test" ? "off" : randomstring(),
                   name="email",
                   type="email",
                   placeholder="name@example.com"
@@ -780,7 +780,7 @@ block body
                   input#input-custom-verification-name.form-control.form-control-lg(
                     value=domain.custom_verification && isSANB(domain.custom_verification.name) ? domain.custom_verification.name : "",
                     name="custom_verification_name",
-                    autocomplete="off",
+                    autocomplete=config.env === "test" ? "off" : randomstring(),
                     placeholder="Sender name",
                     autocorrect="off",
                     spellcheck="false",
@@ -809,7 +809,7 @@ block body
                   input#input-custom-verification-subject.form-control.form-control-lg(
                     value=domain.custom_verification && isSANB(domain.custom_verification.subject) ? domain.custom_verification.subject : "",
                     name="custom_verification_subject",
-                    autocomplete="off",
+                    autocomplete=config.env === "test" ? "off" : randomstring(),
                     placeholder="Subject line",
                     autocorrect="off",
                     spellcheck="false",
@@ -824,7 +824,7 @@ block body
                   input#input-custom-verification-redirect.form-control.form-control-lg(
                     value=domain.custom_verification && isSANB(domain.custom_verification.redirect) ? domain.custom_verification.redirect : "",
                     name="custom_verification_redirect",
-                    autocomplete="off",
+                    autocomplete=config.env === "test" ? "off" : randomstring(),
                     placeholder="Verification redirect link",
                     autocorrect="off",
                     spellcheck="false",

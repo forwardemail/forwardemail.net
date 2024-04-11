@@ -80,7 +80,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 6. Clone your fork locally (replace `forwardemail` with your username):
 
    ```sh
-   git@github.com:forwardemail/forwardemail.net.git
+   git clone git@github.com:forwardemail/forwardemail.net.git
    cd forwardemail.net
    ```
 
@@ -118,7 +118,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 5. Clone your fork locally (replace `forwardemail` with your username):
 
    ```sh
-   git@github.com:forwardemail/forwardemail.net.git
+   git clone git@github.com:forwardemail/forwardemail.net.git
    cd forwardemail.net
    ```
 
