@@ -910,7 +910,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 }
               }
             } catch (err) {
-              if (err.message === 'fetch failed') {
+              if (
+                err.message === 'fetch failed' ||
+                err.message.includes('Direct WKD lookup failed')
+              ) {
                 logger.debug(err, {
                   user: email.user,
                   email: email._id,
