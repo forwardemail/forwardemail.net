@@ -730,6 +730,13 @@ class CalDAV extends API {
         }
       );
 
+      logger.debug('deleted events', {
+        deleted,
+        principalId,
+        calendarId,
+        user
+      });
+
       // create new VEVENTS
       if (vevents.length > 0) {
         const events = [];
@@ -776,6 +783,13 @@ class CalDAV extends API {
           ctx.state.session,
           events
         );
+
+        logger.debug('created events', {
+          createdEvents,
+          principalId,
+          calendarId,
+          user
+        });
       }
 
       return calendar;
