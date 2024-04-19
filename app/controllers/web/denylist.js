@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const { boolean } = require('boolean');
 const { isEmail, isIP } = require('validator');
 
@@ -264,24 +265,37 @@ async function remove(ctx) {
       // del ip
       await ctx.client.del(`denylist:${ctx.state.q}`);
       // add ip
-      await ctx.client.set(`allowlist:${ctx.state.q}`, true);
+      await ctx.client.set(`allowlist:${ctx.state.q}`, 'true', 'PX', ms('30d'));
     } else {
       // del email and/or domain
       await ctx.client.del(`denylist:${ctx.state.q}`);
+      await ctx.client.set(`allowlist:${ctx.state.q}`, 'true', 'PX', ms('30d'));
       // del root domain
       if (ctx.state.rootDomain && ctx.state.q !== ctx.state.rootDomain) {
         await ctx.client.del(`denylist:${ctx.state.rootDomain}`);
-        await ctx.client.set(`allowlist:${ctx.state.rootDomain}`, true);
+        await ctx.client.set(
+          `allowlist:${ctx.state.rootDomain}`,
+          'true',
+          'PX',
+          ms('30d')
+        );
       }
 
       // if it was an email then delete the combo
       if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
         await ctx.client.del(`denylist:${ctx.state.q}`);
         await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
-        await ctx.client.set(`allowlist:${ctx.state.q}`);
+        await ctx.client.set(
+          `allowlist:${ctx.state.q}`,
+          'true',
+          'PX',
+          ms('30d')
+        );
         await ctx.client.set(
           `allowlist:${ctx.state.rootDomain}:${ctx.state.q}`,
-          true
+          'true',
+          'PX',
+          ms('30d')
         );
       }
     }

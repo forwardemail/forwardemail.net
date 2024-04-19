@@ -25,9 +25,6 @@ function toArrayBuffer(buffer) {
   );
 }
 
-// arbitrary comment to trigger re-cache
-(() => {})();
-
 // load jQuery and Bootstrap
 // <https://stackoverflow.com/a/34340392>
 // <https://github.com/FezVrasta/popper.js/issues/287#issuecomment-321887784>

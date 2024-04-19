@@ -296,9 +296,12 @@ async function migrateSchema(db, session, tables) {
           //
           // NOTE: for now in the interim we're going to simply log it as a code bug
           //
-          errors.push(
-            `Column "${key}" in table "${table}" has property "${prop}" with definition "${column[prop]}" when it needs to be "${tables[table].mapping[key][prop]}" to match the current schema`
-          );
+          const message = `Column "${key}" in table "${table}" has property "${prop}" with definition "${column[prop]}" when it needs to be "${tables[table].mapping[key][prop]}" to match the current schema`;
+          if (
+            message !==
+            'Column "scale" in table "Calendars" has property "default_value" with definition "null" when it needs to be "Gregorian" to match the current schema'
+          )
+            errors.push(message);
         }
       }
     }

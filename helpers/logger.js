@@ -310,6 +310,13 @@ for (const level of logger.config.levels) {
     if (hash) meta.app.hash = hash;
 
     if (
+      meta?.ignore_hook === true ||
+      err?.is_duplicate_log === true ||
+      err?.ignoreHook === true
+    )
+      meta[silentSymbol] = true;
+
+    if (
       meta.is_http &&
       meta.response &&
       meta.response.status_code &&
