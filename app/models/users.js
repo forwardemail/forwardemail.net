@@ -1050,6 +1050,9 @@ Users.pre('save', async function (next) {
       }
 
       await conn.models.Aliases.create({
+        // virtual to assist in preventing lookup
+        is_new_user: true,
+
         user: this._id,
         domain: domain._id,
         name: this[fields.ubuntuUsername].toLowerCase(),

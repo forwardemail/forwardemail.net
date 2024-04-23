@@ -364,6 +364,14 @@ Aliases.plugin(mongooseCommonPlugin, {
   defaultLocale: i18n.getLocale()
 });
 
+Aliases.virtual('is_new_user')
+  .get(function () {
+    return this.__is_new_user;
+  })
+  .set(function (isNewUser) {
+    this.__is_new_user = boolean(isNewUser);
+  });
+
 Aliases.virtual('is_update')
   .get(function () {
     return this.__is_update;
@@ -409,7 +417,7 @@ Aliases.pre('save', async function (next) {
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
       );
 
-    if (!user)
+    if (!user && !alias.is_new_user)
       throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
 
     // filter out a domain's members without actual users
@@ -468,13 +476,17 @@ Aliases.pre('save', async function (next) {
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     // determine the domain membership for the user
-    let member = domain.members.find((member) => member.user.id === user.id);
+    let member = domain.members.find((member) =>
+      user
+        ? member.user.id === user.id
+        : member.user.id === alias.user.toString()
+    );
 
     if (!member && domain.is_global)
       member = {
         user: {
-          _id: user._id,
-          id: user.id
+          _id: user ? user._id : alias.user,
+          id: user ? user.id : alias.user.toString()
         },
         group: 'user'
       };
@@ -529,7 +541,7 @@ Aliases.pre('save', async function (next) {
 
       // if user is not admin of the domain and it is a global domain
       // then the user can only have up to 5 aliases at a time on the domain
-      if (domain.is_global) {
+      if (domain.is_global && !alias.is_new_user && user) {
         // user must be on a paid plan to use a global domain
         if (user.plan === 'free' && !alias.is_update) {
           const domainIds = await Domains.distinct('_id', {
