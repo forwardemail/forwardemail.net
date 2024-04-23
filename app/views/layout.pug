@@ -56,22 +56,40 @@ html.h-100.no-js(
         integrity=manifest("img/apple-touch-icon.png", "integrity"),
         crossorigin="anonymous"
       )
-      link(
-        rel="icon",
-        type="image/png",
-        href=manifest("img/favicon-32x32.png"),
-        sizes="32x32",
-        integrity=manifest("img/favicon-32x32.png", "integrity"),
-        crossorigin="anonymous"
-      )
-      link(
-        rel="icon",
-        type="image/png",
-        href=manifest("img/favicon-16x16.png"),
-        sizes="16x16",
-        integrity=manifest("img/favicon-16x16.png", "integrity"),
-        crossorigin="anonymous"
-      )
+      if ctx.pathWithoutLocale.startsWith('/ubuntu') || (domain && domain.name && domain.name === 'ubuntu.com')
+        link(
+          rel="icon",
+          type="image/png",
+          href=manifest("img/ubuntu-favicon-32x32.png"),
+          sizes="32x32",
+          integrity=manifest("img/ubuntu-favicon-32x32.png", "integrity"),
+          crossorigin="anonymous"
+        )
+        link(
+          rel="icon",
+          type="image/png",
+          href=manifest("img/ubuntu-favicon-16x16.png"),
+          sizes="16x16",
+          integrity=manifest("img/ubuntu-favicon-16x16.png", "integrity"),
+          crossorigin="anonymous"
+        )
+      else
+        link(
+          rel="icon",
+          type="image/png",
+          href=manifest("img/favicon-32x32.png"),
+          sizes="32x32",
+          integrity=manifest("img/favicon-32x32.png", "integrity"),
+          crossorigin="anonymous"
+        )
+        link(
+          rel="icon",
+          type="image/png",
+          href=manifest("img/favicon-16x16.png"),
+          sizes="16x16",
+          integrity=manifest("img/favicon-16x16.png", "integrity"),
+          crossorigin="anonymous"
+        )
       //- href=manifest("site.webmanifest"),
       //- integrity=manifest("site.webmanifest", "integrity"),
       link(rel="manifest", href="/site.webmanifest", crossorigin="anonymous")

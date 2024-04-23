@@ -177,7 +177,11 @@ module.exports = function (config) {
       'Reset your account password to regain access to your account.'
     ],
     '/reset-password': ['Reset Password', 'Confirm your password reset token.'],
-    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.']
+    '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.'],
+    '/ubuntu': [
+      'Canonical Ubuntu - Email Forwarding',
+      'Log in with your Ubuntu account.'
+    ]
   };
 
   // guides for each provider

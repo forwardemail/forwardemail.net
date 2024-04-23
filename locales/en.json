@@ -7085,5 +7085,17 @@
   "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>": "From header must be equal to <span class=\"notranslate\">%s</span> (or) you can use a domain-wide catch-all password at <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">%s</a>",
   "Synctoken was invalid; please contact us if necessary.": "Synctoken was invalid; please contact us if necessary.",
   "Not Acceptable": "Not Acceptable",
-  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day."
+  "are limited to sending 1 GB and/or 1000 messages per day.": "are limited to sending 1 GB and/or 1000 messages per day.",
+  "Your Ubuntu Email Address": "Your Ubuntu Email Address",
+  "We do not support this authentication provider.": "We do not support this authentication provider.",
+  "Login to Ubuntu": "Login to Ubuntu",
+  "Ubuntu Email Forwarding": "Ubuntu Email Forwarding",
+  "Canonical Ubuntu": "Canonical Ubuntu",
+  "Log in with your Ubuntu Account": "Log in with your Ubuntu Account",
+  "Manage email forwarding for your @ubuntu.com email address.": "Manage email forwarding for your @ubuntu.com email address.",
+  "Your Ubuntu Account Email": "Your Ubuntu Account Email",
+  "Ubuntu Email": "Ubuntu Email",
+  "Log in with your Ubuntu account.": "Log in with your Ubuntu account.",
+  "Log in with your Ubuntu account": "Log in with your Ubuntu account",
+  "Canonical Ubuntu - Email Forwarding": "Canonical Ubuntu - Email Forwarding"
 }

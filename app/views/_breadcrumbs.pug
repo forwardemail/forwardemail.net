@@ -108,16 +108,17 @@ if breadcrumbs.length > 1
                     != t('Import <span class="notranslate">TXT</span> Records')
                     = " "
                     i.fa.fa-cloud-download-alt
-            li.list-inline-item.mb-1
-              a.btn.btn-dark(
-                href=l(`/my-account/domains/${domain.name}/aliases/new`),
-                role="button",
-                data-toggle="modal-anchor",
-                data-target="#modal-alias"
-              )
-                = t("Add Alias")
-                = " "
-                i.fa.fa-angle-double-right.align-middle
+            if domain.name !== 'ubuntu.com' || domain.group === 'admin'
+              li.list-inline-item.mb-1
+                a.btn.btn-dark(
+                  href=l(`/my-account/domains/${domain.name}/aliases/new`),
+                  role="button",
+                  data-toggle="modal-anchor",
+                  data-target="#modal-alias"
+                )
+                  = t("Add Alias")
+                  = " "
+                  i.fa.fa-angle-double-right.align-middle
         else
           case ctx.pathWithoutLocale
             when '/my-account/logs'

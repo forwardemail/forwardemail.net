@@ -255,7 +255,11 @@ module.exports = (redis) => ({
             ],
             'report-uri': reportUri || null,
             'base-uri': ["'self'"],
-            'form-action': ["'self'", 'https://www.anrdoezrs.net']
+            'form-action': [
+              "'self'",
+              'https://www.anrdoezrs.net',
+              'https://login.ubuntu.com'
+            ]
           }
         }
       : null,

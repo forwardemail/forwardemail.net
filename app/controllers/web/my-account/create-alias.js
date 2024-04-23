@@ -21,6 +21,22 @@ async function createAlias(ctx, next) {
         Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'))
       );
 
+    //
+    // if the domain is ubuntu.com and the user is in the user group
+    // then don't allow them to create aliases (only manage/delete their own)
+    //
+    if (ctx.state.domain.name === 'ubuntu.com') {
+      const member = ctx.state.domain.members.find(
+        (member) => member.user && member.user.id === ctx.state.user.id
+      );
+
+      if (!member)
+        return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+
+      if (member.group === 'user')
+        return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
+    }
+
     try {
       ctx.state.alias = await Aliases.create({
         ...ctx.state.body,

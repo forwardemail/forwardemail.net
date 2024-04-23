@@ -233,6 +233,11 @@ if (process.env.NODE_ENV === 'production') {
       name: 'translate-markdown',
       interval: '30m',
       timeout: 0
+    },
+    {
+      name: 'ubuntu-sync-memberships',
+      interval: '1h',
+      timeout: 0
     }
   );
 }

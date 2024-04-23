@@ -512,6 +512,9 @@ const config = {
       githubProfileID: 'github_profile_id',
       githubAccessToken: 'github_access_token',
       githubRefreshToken: 'github_refresh_token',
+      // ubuntu
+      ubuntuProfileID: 'ubuntu_profile_id',
+      ubuntuUsername: 'ubuntu_username',
       // otp
       otpToken: 'otp_token',
       otpEnabled: 'otp_enabled'

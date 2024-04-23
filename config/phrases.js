@@ -20,6 +20,15 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  UBUNTU_NOT_ALLOWED_EMAIL: 'You cannot use an @ubuntu.com email address as a forwarding recipient email address.',
+  UBUNTU_PERMISSIONS: 'You can only read or manage your existing @ubuntu.com aliases, not create new ones.',
+  UBUNTU_MAX_LIMIT: 'You cannot have more than 3 aliases for the @ubuntu.com domain.',
+  UBUNTU_INVALID_USERNAME:
+    'Ubuntu username was missing or not detected, please try again later.',
+  UBUNTU_API_RESPONSE_INVALID:
+    'Invalid response from Ubuntu Launchpad API, please try again later.',
+  UBUNTU_INVALID_GROUP:
+    'You must be a member of the Launchpad.net group ~ubuntumembers to get access to an @ubuntu.com email address.',
   CALENDAR: 'Calendar',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',

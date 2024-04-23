@@ -3,7 +3,7 @@ form.d-block.d-md-none(action=l("/search"), method="GET")
     .input-group-prepend
       span.input-group-text
         i.fa.fa.fa-search
-    input#input-search.form-control.form-control-sm(
+    input#input-search-sm.form-control.form-control-sm(
       type="search",
       name="q",
       value=ctx.query.q
@@ -15,7 +15,7 @@ form.d-none.d-md-block(action=l("/search"), method="GET")
     .input-group-prepend
       span.input-group-text
         i.fa.fa.fa-search
-    input#input-search.form-control.form-control-lg(
+    input#input-search-md.form-control.form-control-lg(
       type="search",
       name="q",
       value=ctx.query.q

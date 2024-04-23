@@ -398,6 +398,15 @@ object[fields.githubProfileID] = {
 };
 object[fields.githubAccessToken] = String;
 object[fields.githubRefreshToken] = String;
+// ubuntu
+object[fields.ubuntuProfileID] = {
+  type: String,
+  index: true
+};
+object[fields.ubuntuUsername] = {
+  type: String,
+  index: true
+};
 
 object[fields.otpEnabled] = {
   type: Boolean,
@@ -886,6 +895,175 @@ Users.pre('save', function (next) {
   }
 
   next();
+});
+
+//
+// when ubuntu users sign in we need to check their membership
+// (and probably need some automated job that checks this for active memberships)
+//
+Users.pre('save', async function (next) {
+  if (!isSANB(this[fields.ubuntuProfileID])) return next();
+  try {
+    if (!isSANB(this[fields.ubuntuUsername])) {
+      const error = Boom.badRequest(
+        i18n.api.t({
+          phrase: config.i18n.phrases.UBUNTU_INVAILD_USERNAME,
+          locale: this[config.lastLocaleField]
+        })
+      );
+      error.no_translate = true;
+      throw error;
+    }
+
+    const response = await retryRequest(
+      `https://api.launchpad.net/1.0/~${
+        this[fields.ubuntuUsername]
+      }/memberships_details`
+    );
+
+    const json = await response.body.json();
+
+    if (
+      !_.isObject(json) ||
+      !_.isNumber(json.start) ||
+      !_.isNumber(json.total_size) ||
+      !_.isArray(json.entries)
+    ) {
+      const error = Boom.badRequest(
+        i18n.api.t({
+          phrase: config.i18n.phrases.UBUNTU_API_RESPONSE_INVALID,
+          locale: this[config.lastLocaleField]
+        })
+      );
+      error.no_translate = true;
+      throw error;
+    }
+
+    // TODO: support pagination for users that have paginated memberships
+
+    if (
+      _.isEmpty(json.entries) ||
+      json.total_size === 0 ||
+      !json.entries.some(
+        (entry) =>
+          entry.team_link === 'https://api.launchpad.net/1.0/~ubuntumembers'
+      )
+    ) {
+      const error = Boom.badRequest(
+        i18n.api.t({
+          phrase: config.i18n.phrases.UBUNTU_INVALID_GROUP,
+          locale: this[config.lastLocaleField]
+        })
+      );
+      error.no_translate = true;
+      throw error;
+    }
+
+    /*
+    {
+      "start": 0,
+      "total_size": 5,
+      "entries": [
+        {
+          "self_link": "https://api.launchpad.net/1.0/~some-team/+member/nickname",
+          "web_link": "https://launchpad.net/~some-team/+member/nickname",
+          "resource_type_link": "https://api.launchpad.net/1.0/#team_membership",
+          "team_link": "https://api.launchpad.net/1.0/~some-team",
+          "member_link": "https://api.launchpad.net/1.0/~nickname",
+          "last_changed_by_link": "https://api.launchpad.net/1.0/~some-nickname",
+          "date_joined": "2016-09-19T08:24:53.878044+00:00",
+          "date_expires": null,
+          "last_change_comment": "some comment",
+          "status": "Administrator",
+          "http_etag": "\"some-etag\""
+        },
+        ...
+      ],
+      "resource_type_link": "https://api.launchpad.net/1.0/#team_membership-page-resource"
+    }
+    */
+
+    //
+    // now we need to find the @ubuntu.com domain
+    // and create the user their alias if not already exists
+    //
+    const adminIds = await this.constructor.distinct('_id', {
+      group: 'admin'
+    });
+
+    const domain = await conn.models.Domains.findOne({
+      name: 'ubuntu.com',
+      plan: 'team',
+      'members.user': {
+        $in: adminIds
+      }
+    })
+      .lean()
+      .exec();
+
+    if (!domain) {
+      const error = Boom.badRequest(
+        i18n.api.t({
+          phrase: config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE,
+          locale: this[config.lastLocaleField]
+        })
+      );
+      error.no_translate = true;
+      throw error;
+    }
+
+    //
+    // otherwise check that the domain includes this user id
+    // and if not, then add it to the group as a user
+    //
+    const match = domain.members.find(
+      (m) => m.user.toString() === this._id.toString()
+    );
+    if (!match) {
+      domain.members.push({
+        user: this._id,
+        group: 'user'
+      });
+      await domain.save();
+    }
+
+    // now check that if the alias already exists and is owned by this user
+    const alias = await conn.models.Aliases.findOne({
+      user: this._id,
+      domain: domain._id,
+      name: this[fields.ubuntuUsername].toLowerCase()
+    });
+
+    // if not, then create it, but only if there aren't already 3+ aliases owned by this user
+    if (!alias) {
+      const count = await conn.models.Aliases.countDocuments({
+        user: this._id,
+        domain: domain._id
+      });
+      if (count > 3) {
+        const error = Boom.badRequest(
+          i18n.api.t({
+            phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
+            locale: this[config.lastLocaleField]
+          })
+        );
+        error.no_translate = true;
+        throw error;
+      }
+
+      await conn.models.Aliases.create({
+        user: this._id,
+        domain: domain._id,
+        name: this[fields.ubuntuUsername].toLowerCase(),
+        recipients: [this.email],
+        locale: this[config.lastLocaleField]
+      });
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 Users.postCreate((user, next) => {

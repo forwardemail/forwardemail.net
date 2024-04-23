@@ -160,6 +160,7 @@ localeRouter
 
     return next();
   })
+  .get('/ubuntu', render('ubuntu'))
   .get('/search', web.search)
   // svg dynamically generated og images
   .get('(.*).(png|svg|jpeg)', web.generateOpenGraphImage)

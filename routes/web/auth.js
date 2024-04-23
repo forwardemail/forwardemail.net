@@ -87,6 +87,9 @@ router
         : next()
   )
   .get('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
+  .post('/ubuntu', (ctx, next) =>
+    ctx.passport.authenticate('ubuntu')(ctx, next)
+  )
   .post('/:provider/ok', web.auth.catchError, callbackCheck, callbackRedirect)
   .get('/google/consent', web.auth.catchError, (ctx, next) =>
     ctx.passport && ctx.passport.authenticate
