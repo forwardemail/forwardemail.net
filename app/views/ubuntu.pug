@@ -13,13 +13,13 @@ block body
             img(
               src=manifest("img/ubuntu.svg"),
               width=274,
-              height=100
+              height=100,
               alt=t("Canonical Ubuntu")
             )
           h1.h2.ubuntu-font.my-3= t("Log in with your Ubuntu account")
           .alert.alert-info.ubuntu-font
             = t("Manage email forwarding for your @ubuntu.com email address.")
-          form(action='/auth/ubuntu', method="POST")
+          form(action="/auth/ubuntu", method="POST")
             .form-group.floating-label
               input#input-email.form-control.form-control-lg.ubuntu-font(
                 type="email",
@@ -29,5 +29,5 @@ block body
                 value="name@example.com",
                 placeholder="name@example.com"
               )
-              label(for="input-email").ubuntu-font= t("Your Ubuntu Account Email")
+              label.ubuntu-font(for="input-email")= t("Your Ubuntu Account Email")
             button.btn.btn-dark.btn-lg.ubuntu-font(type="submit")= t("Continue")

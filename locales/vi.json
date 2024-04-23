@@ -4809,5 +4809,5 @@
   "Ubuntu username was missing or not detected, please try again later.": "Tên người dùng Ubuntu bị thiếu hoặc không được phát hiện, vui lòng thử lại sau.",
   "Invalid response from Ubuntu Launchpad API, please try again later.": "Phản hồi không hợp lệ từ API Ubuntu Launchpad, vui lòng thử lại sau.",
   "You must be a member of the Launchpad.net group ~ubuntumembers to get access to an @ubuntu.com email address.": "Bạn phải là thành viên của nhóm Launchpad.net ~ubuntumembers để có quyền truy cập vào địa chỉ email @ubuntu.com.",
-  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:"
+  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "Bạn <strong>phải xóa</strong> các bản ghi <span class=\"notranslate\">%d</span> này <strong class=\"text-decoration-underline\">trước khi tiếp tục</strong> :"
 }

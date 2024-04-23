@@ -10,6 +10,7 @@ const slug = require('speakingurl');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
+const { isEmail } = require('validator');
 
 // eslint-disable-next-line complexity
 function validateAlias(ctx, next) {
@@ -117,8 +118,13 @@ function validateAlias(ctx, next) {
     if (member.group === 'user' && body.has_imap)
       return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
 
-    if (_.isArray(body.recipients) && body.recipients.some(r => isEmail(r) && r.endsWith('@ubuntu.com')))
-      return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL')));
+    if (
+      _.isArray(body.recipients) &&
+      body.recipients.some((r) => isEmail(r) && r.endsWith('@ubuntu.com'))
+    )
+      return ctx.throw(
+        Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))
+      );
   }
 
   ctx.state.body = body;

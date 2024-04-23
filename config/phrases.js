@@ -20,9 +20,12 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
-  UBUNTU_NOT_ALLOWED_EMAIL: 'You cannot use an @ubuntu.com email address as a forwarding recipient email address.',
-  UBUNTU_PERMISSIONS: 'You can only read or manage your existing @ubuntu.com aliases, not create new ones.',
-  UBUNTU_MAX_LIMIT: 'You cannot have more than 3 aliases for the @ubuntu.com domain.',
+  UBUNTU_NOT_ALLOWED_EMAIL:
+    'You cannot use an @ubuntu.com email address as a forwarding recipient email address.',
+  UBUNTU_PERMISSIONS:
+    'You can only read or manage your existing @ubuntu.com aliases, not create new ones.',
+  UBUNTU_MAX_LIMIT:
+    'You cannot have more than 3 aliases for the @ubuntu.com domain.',
   UBUNTU_INVALID_USERNAME:
     'Ubuntu username was missing or not detected, please try again later.',
   UBUNTU_API_RESPONSE_INVALID:

@@ -4803,5 +4803,5 @@
   "Ubuntu username was missing or not detected, please try again later.": "Le nom d'utilisateur Ubuntu était manquant ou n'était pas détecté, veuillez réessayer plus tard.",
   "Invalid response from Ubuntu Launchpad API, please try again later.": "Réponse invalide de l'API Ubuntu Launchpad, veuillez réessayer plus tard.",
   "You must be a member of the Launchpad.net group ~ubuntumembers to get access to an @ubuntu.com email address.": "Vous devez être membre du groupe Launchpad.net ~ubuntumembers pour accéder à une adresse e-mail @ubuntu.com.",
-  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:"
+  "You <strong>must delete</strong> these <span class=\"notranslate\">%d</span> records <strong class=\"text-decoration-underline\">before you continue</strong>:": "Vous <strong>devez supprimer</strong> ces <span class=\"notranslate\">%d</span> enregistrements <strong class=\"text-decoration-underline\">avant de continuer</strong> :"
 }

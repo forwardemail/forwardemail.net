@@ -34,7 +34,9 @@ async function createAlias(ctx, next) {
         return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
 
       if (member.group === 'user')
-        return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
+        return ctx.throw(
+          Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'))
+        );
     }
 
     try {
