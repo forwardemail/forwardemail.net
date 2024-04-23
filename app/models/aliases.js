@@ -482,7 +482,7 @@ Aliases.pre('save', async function (next) {
         : member.user.id === alias.user.toString()
     );
 
-    if (!member && domain.is_global)
+    if (!member && (alias.is_new_user || domain.is_global))
       member = {
         user: {
           _id: user ? user._id : alias.user,
@@ -491,6 +491,10 @@ Aliases.pre('save', async function (next) {
         group: 'user'
       };
 
+    //
+    // NOTE: because the user model has a pre save hook that adds a domain member
+    //       but populate above is trying to populate it, we can assume it's new
+    //
     if (!member)
       throw Boom.notFound(i18n.translateError('INVALID_MEMBER', alias.locale));
 
