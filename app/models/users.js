@@ -997,9 +997,7 @@ Users.pre('save', async function (next) {
       'members.user': {
         $in: adminIds
       }
-    })
-      .lean()
-      .exec();
+    });
 
     if (!domain) {
       const error = Boom.badRequest(
