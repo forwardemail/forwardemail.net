@@ -4836,7 +4836,7 @@
   "Enter Your Ubuntu One Email Address": "Nhập địa chỉ email Ubuntu One của bạn",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Quản lý địa chỉ email <span class=\"notranslate\">@%s</span> của bạn",
   "What is your Ubuntu One login?": "Thông tin đăng nhập Ubuntu One của bạn là gì?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Bạn phải là thành viên của một nhóm Launchpad cụ thể để có quyền truy cập. Các nhóm được hỗ trợ bao gồm ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members và ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Bạn phải là thành viên của một nhóm Launchpad cụ thể để có quyền truy cập. Các nhóm được hỗ trợ bao gồm ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members và ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Đăng nhập bằng Ubuntu One",
   "470,000+ custom domain names": "Hơn 470.000 tên miền tùy chỉnh",
   "You cannot use that email address as a forwarding recipient.": "Bạn không thể sử dụng địa chỉ email đó làm người nhận chuyển tiếp.",

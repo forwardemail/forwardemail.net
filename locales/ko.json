@@ -7357,7 +7357,7 @@
   "Enter Your Ubuntu One Email Address": "Ubuntu One 이메일 주소를 입력하세요",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "<span class=\"notranslate\">@%s</span> 이메일 주소를 관리하세요",
   "What is your Ubuntu One login?": "귀하의 Ubuntu One 로그인은 무엇입니까?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "액세스하려면 특정 Launchpad 그룹의 구성원이어야 합니다. 지원되는 그룹에는 ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members 및 ~ubuntustudio가 포함됩니다.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "액세스하려면 특정 Launchpad 그룹의 구성원이어야 합니다. 지원되는 그룹에는 ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members 및 ~ubuntustudio-core가 포함됩니다.",
   "Log in with Ubuntu One": "Ubuntu One으로 로그인",
   "470,000+ custom domain names": "470,000개 이상의 사용자 정의 도메인 이름",
   "You cannot use that email address as a forwarding recipient.": "해당 이메일 주소를 전달 수신자로 사용할 수 없습니다.",

@@ -7357,7 +7357,7 @@
   "Enter Your Ubuntu One Email Address": "Masukkan Alamat Email Ubuntu One Anda",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Kelola alamat email <span class=\"notranslate\">@%s</span> Anda",
   "What is your Ubuntu One login?": "Apa login Ubuntu One Anda?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Anda harus menjadi anggota grup Launchpad tertentu untuk mendapatkan akses. Grup yang didukung termasuk ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, dan ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Anda harus menjadi anggota grup Launchpad tertentu untuk mendapatkan akses. Grup yang didukung termasuk ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, dan ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Masuk dengan Ubuntu One",
   "470,000+ custom domain names": "470.000+ nama domain khusus",
   "You cannot use that email address as a forwarding recipient.": "Anda tidak dapat menggunakan alamat email tersebut sebagai penerima penerusan.",

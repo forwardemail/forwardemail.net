@@ -947,7 +947,7 @@ Users.pre('save', async function (next) {
       'kubuntu.org': '~kubuntu-members',
       'lubuntu.me': '~lubuntu-members',
       'edubuntu.org': '~edubuntu-members',
-      'ubuntustudio.com': '~ubuntustudio'
+      'ubuntustudio.com': '~ubuntustudio-core'
     };
 
     let hasMatch = !_.isEmpty(json.entries) && json.total_size !== 0;

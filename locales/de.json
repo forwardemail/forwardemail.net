@@ -6395,7 +6395,7 @@
   "Enter Your Ubuntu One Email Address": "Geben Sie Ihre Ubuntu One-E-Mail-Adresse ein",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Verwalten Sie Ihre <span class=\"notranslate\">@%s</span> E-Mail-Adresse",
   "What is your Ubuntu One login?": "Wie lautet Ihr Ubuntu One-Login?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Sie müssen Mitglied einer bestimmten Launchpad-Gruppe sein, um Zugriff zu erhalten. Zu den unterstützten Gruppen gehören ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members und ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Sie müssen Mitglied einer bestimmten Launchpad-Gruppe sein, um Zugriff zu erhalten. Zu den unterstützten Gruppen gehören ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members und ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Mit Ubuntu One anmelden",
   "470,000+ custom domain names": "Über 470.000 benutzerdefinierte Domänennamen",
   "You cannot use that email address as a forwarding recipient.": "Sie können diese E-Mail-Adresse nicht als Weiterleitungsempfänger verwenden.",

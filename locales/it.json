@@ -7357,7 +7357,7 @@
   "Enter Your Ubuntu One Email Address": "Inserisci il tuo indirizzo email Ubuntu One",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Gestisci il tuo indirizzo email <span class=\"notranslate\">@%s</span>",
   "What is your Ubuntu One login?": "Qual è il tuo login Ubuntu One?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Devi essere membro di un gruppo Launchpad specifico per ottenere l'accesso. I gruppi supportati includono ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members e ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Devi essere membro di un gruppo Launchpad specifico per ottenere l'accesso. I gruppi supportati includono ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members e ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Accedi con Ubuntu One",
   "470,000+ custom domain names": "Oltre 470.000 nomi di dominio personalizzati",
   "You cannot use that email address as a forwarding recipient.": "Non puoi utilizzare quell'indirizzo email come destinatario dell'inoltro.",

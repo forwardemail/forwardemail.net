@@ -7204,7 +7204,7 @@
   "Enter Your Ubuntu One Email Address": "Anna Ubuntu One -sähköpostiosoitteesi",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Hallinnoi <span class=\"notranslate\">@%s</span> sähköpostiosoitettasi",
   "What is your Ubuntu One login?": "Mikä on Ubuntu One -kirjautumistunnuksesi?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Sinun on oltava tietyn Launchpad-ryhmän jäsen saadaksesi pääsyn. Tuettuja ryhmiä ovat ~ubuntumembers, ~kubuntu-jäsenet, ~lubuntu-jäsenet, ~edubuntu-jäsenet ja ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Sinun on oltava tietyn Launchpad-ryhmän jäsen saadaksesi pääsyn. Tuettuja ryhmiä ovat ~ubuntumembers, ~kubuntu-jäsenet, ~lubuntu-jäsenet, ~edubuntu-jäsenet ja ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Kirjaudu sisään Ubuntu Onella",
   "470,000+ custom domain names": "Yli 470 000 mukautettua verkkotunnusta",
   "You cannot use that email address as a forwarding recipient.": "Et voi käyttää kyseistä sähköpostiosoitetta edelleenlähetyksen vastaanottajana.",

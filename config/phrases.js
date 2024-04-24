@@ -30,7 +30,7 @@ module.exports = {
   UBUNTU_API_RESPONSE_INVALID:
     'Invalid response from Launchpad API, please try again later.',
   UBUNTU_INVALID_GROUP:
-    'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.',
+    'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.',
   CALENDAR: 'Calendar',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',

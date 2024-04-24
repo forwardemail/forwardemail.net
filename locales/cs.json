@@ -7357,7 +7357,7 @@
   "Enter Your Ubuntu One Email Address": "Zadejte svou e-mailovou adresu Ubuntu One",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Spravujte svou e-mailovou adresu <span class=\"notranslate\">@%s</span>",
   "What is your Ubuntu One login?": "Jaké jsou vaše přihlašovací údaje pro Ubuntu One?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "Abyste získali přístup, musíte být členem konkrétní skupiny Launchpadu. Mezi podporované skupiny patří ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members a ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "Abyste získali přístup, musíte být členem konkrétní skupiny Launchpadu. Mezi podporované skupiny patří ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members a ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Přihlaste se pomocí Ubuntu One",
   "470,000+ custom domain names": "Více než 470 000 vlastních doménových jmen",
   "You cannot use that email address as a forwarding recipient.": "Tuto e-mailovou adresu nemůžete použít jako příjemce pro přeposílání.",

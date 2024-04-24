@@ -7050,7 +7050,7 @@
   "Enter Your Ubuntu One Email Address": "输入你的 Ubuntu One 电子邮件地址",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "管理您的<span class=\"notranslate\">@%s</span>电子邮件地址",
   "What is your Ubuntu One login?": "您的 Ubuntu One 登录信息是什么？",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "您必须是特定 Launchpad 组的成员才能获得访问权限。受支持的组包括 ~ubuntumembers、~kubuntu-members、~lubuntu-members、~edubuntu-members 和 ~ubuntustudio。",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "您必须是特定 Launchpad 组的成员才能获得访问权限。受支持的组包括 ~ubuntumembers、~kubuntu-members、~lubuntu-members、~edubuntu-members 和 ~ubuntustudio-core。",
   "Log in with Ubuntu One": "使用 Ubuntu One 登录",
   "470,000+ custom domain names": "470,000+ 个自定义域名",
   "You cannot use that email address as a forwarding recipient.": "您不能使用该电子邮件地址作为转发收件人。",

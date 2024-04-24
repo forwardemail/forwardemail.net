@@ -7124,7 +7124,7 @@
   "Enter Your Ubuntu One Email Address": "Enter Your Ubuntu One Email Address",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "Manage your <span class=\"notranslate\">@%s</span> email address",
   "What is your Ubuntu One login?": "What is your Ubuntu One login?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Log in with Ubuntu One",
   "470,000+ custom domain names": "470,000+ custom domain names"
 }

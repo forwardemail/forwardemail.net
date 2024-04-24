@@ -5330,7 +5330,7 @@
   "Enter Your Ubuntu One Email Address": "הזן את כתובת הדוא\"ל שלך ב-Ubuntu One",
   "Manage your <span class=\"notranslate\">@%s</span> email address": "נהל את כתובת הדוא&quot;ל שלך <span class=\"notranslate\">@%s</span>",
   "What is your Ubuntu One login?": "מהי הכניסה שלך ל-Ubuntu One?",
-  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio.": "עליך להיות חבר בקבוצת Launchpad ספציפית כדי לקבל גישה. הקבוצות הנתמכות כוללות ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members ו~ubuntustudio.",
+  "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "עליך להיות חבר בקבוצת Launchpad ספציפית כדי לקבל גישה. הקבוצות הנתמכות כוללות ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members ו~ubuntustudio-core.",
   "Log in with Ubuntu One": "התחבר עם Ubuntu One",
   "470,000+ custom domain names": "470,000+ שמות דומיין מותאמים אישית",
   "You cannot use that email address as a forwarding recipient.": "אינך יכול להשתמש בכתובת הדוא\"ל הזו כנמען העברה.",
