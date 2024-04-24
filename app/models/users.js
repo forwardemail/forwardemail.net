@@ -941,14 +941,115 @@ Users.pre('save', async function (next) {
 
     // TODO: support pagination for users that have paginated memberships
 
-    if (
-      _.isEmpty(json.entries) ||
-      json.total_size === 0 ||
-      !json.entries.some(
-        (entry) =>
-          entry.team_link === 'https://api.launchpad.net/1.0/~ubuntumembers'
-      )
-    ) {
+    // TODO: move this to config index and rewrite everywhere else to re-use
+    const mapping = {
+      'ubuntu.com': '~ubuntumembers',
+      'kubuntu.org': '~kubuntu-members',
+      'lubuntu.me': '~lubuntu-members',
+      'edubuntu.org': '~edubuntu-members',
+      'ubuntustudio.com': '~ubuntustudio'
+    };
+
+    let hasMatch = !_.isEmpty(json.entries) && json.total_size !== 0;
+
+    //
+    // now we need to find the @ubuntu.com domain
+    // and create the user their alias if not already exists
+    //
+    const adminIds = await this.constructor.distinct('_id', {
+      group: 'admin'
+    });
+
+    if (!hasMatch) {
+      for (const domainName of Object.keys(mapping)) {
+        if (
+          json.entries.some(
+            (entry) =>
+              entry.team_link ===
+              `https://api.launchpad.net/1.0/${mapping[domainName]}`
+          )
+        ) {
+          hasMatch = true;
+
+          // eslint-disable-next-line no-await-in-loop
+          const domain = await conn.models.Domains.findOne({
+            name: domainName,
+            plan: 'team',
+            'members.user': {
+              $in: adminIds
+            }
+          });
+
+          if (!domain) {
+            const error = Boom.badRequest(
+              i18n.api.t({
+                phrase: config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE,
+                locale: this[config.lastLocaleField]
+              })
+            );
+            error.no_translate = true;
+            throw error;
+          }
+
+          //
+          // otherwise check that the domain includes this user id
+          // and if not, then add it to the group as a user
+          //
+          const match = domain.members.find(
+            (m) => m.user.toString() === this._id.toString()
+          );
+          if (!match) {
+            domain.members.push({
+              user: this._id,
+              group: 'user'
+            });
+            // eslint-disable-next-line no-await-in-loop
+            await domain.save();
+          }
+
+          // now check that if the alias already exists and is owned by this user
+          // eslint-disable-next-line no-await-in-loop
+          const alias = await conn.models.Aliases.findOne({
+            user: this._id,
+            domain: domain._id,
+            name: this[fields.ubuntuUsername].toLowerCase()
+          });
+
+          // if not, then create it, but only if there aren't already 3+ aliases owned by this user
+          if (!alias) {
+            // eslint-disable-next-line no-await-in-loop
+            const count = await conn.models.Aliases.countDocuments({
+              user: this._id,
+              domain: domain._id
+            });
+            if (count > 3) {
+              const error = Boom.badRequest(
+                i18n.api.t({
+                  phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
+                  locale: this[config.lastLocaleField]
+                })
+              );
+              error.no_translate = true;
+              throw error;
+            }
+
+            // eslint-disable-next-line no-await-in-loop
+            await conn.models.Aliases.create({
+              // virtual to assist in preventing lookup
+              is_new_user: true,
+
+              user: this._id,
+              domain: domain._id,
+              name: this[fields.ubuntuUsername].toLowerCase(),
+              recipients: [this.email],
+              locale: this[config.lastLocaleField]
+            });
+          }
+        }
+      }
+    }
+
+    if (!hasMatch) {
       const error = Boom.badRequest(
         i18n.api.t({
           phrase: config.i18n.phrases.UBUNTU_INVALID_GROUP,
@@ -982,84 +1083,6 @@ Users.pre('save', async function (next) {
       "resource_type_link": "https://api.launchpad.net/1.0/#team_membership-page-resource"
     }
     */
-
-    //
-    // now we need to find the @ubuntu.com domain
-    // and create the user their alias if not already exists
-    //
-    const adminIds = await this.constructor.distinct('_id', {
-      group: 'admin'
-    });
-
-    const domain = await conn.models.Domains.findOne({
-      name: 'ubuntu.com',
-      plan: 'team',
-      'members.user': {
-        $in: adminIds
-      }
-    });
-
-    if (!domain) {
-      const error = Boom.badRequest(
-        i18n.api.t({
-          phrase: config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE,
-          locale: this[config.lastLocaleField]
-        })
-      );
-      error.no_translate = true;
-      throw error;
-    }
-
-    //
-    // otherwise check that the domain includes this user id
-    // and if not, then add it to the group as a user
-    //
-    const match = domain.members.find(
-      (m) => m.user.toString() === this._id.toString()
-    );
-    if (!match) {
-      domain.members.push({
-        user: this._id,
-        group: 'user'
-      });
-      await domain.save();
-    }
-
-    // now check that if the alias already exists and is owned by this user
-    const alias = await conn.models.Aliases.findOne({
-      user: this._id,
-      domain: domain._id,
-      name: this[fields.ubuntuUsername].toLowerCase()
-    });
-
-    // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-    if (!alias) {
-      const count = await conn.models.Aliases.countDocuments({
-        user: this._id,
-        domain: domain._id
-      });
-      if (count > 3) {
-        const error = Boom.badRequest(
-          i18n.api.t({
-            phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
-            locale: this[config.lastLocaleField]
-          })
-        );
-        error.no_translate = true;
-        throw error;
-      }
-
-      await conn.models.Aliases.create({
-        // virtual to assist in preventing lookup
-        is_new_user: true,
-
-        user: this._id,
-        domain: domain._id,
-        name: this[fields.ubuntuUsername].toLowerCase(),
-        recipients: [this.email],
-        locale: this[config.lastLocaleField]
-      });
-    }
 
     next();
   } catch (err) {

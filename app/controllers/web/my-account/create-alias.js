@@ -25,7 +25,15 @@ async function createAlias(ctx, next) {
     // if the domain is ubuntu.com and the user is in the user group
     // then don't allow them to create aliases (only manage/delete their own)
     //
-    if (ctx.state.domain.name === 'ubuntu.com') {
+    if (
+      [
+        'ubuntu.com',
+        'kubuntu.org',
+        'lubuntu.me',
+        'edubuntu.org',
+        'ubuntustudio.com'
+      ].includes(ctx.state.domain.name)
+    ) {
       const member = ctx.state.domain.members.find(
         (member) => member.user && member.user.id === ctx.state.user.id
       );

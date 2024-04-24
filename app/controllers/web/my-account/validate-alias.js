@@ -107,7 +107,15 @@ function validateAlias(ctx, next) {
   // if the domain is ubuntu.com and the user is in the user group
   // then don't allow them to enable IMAP
   //
-  if (ctx.state.domain.name === 'ubuntu.com') {
+  if (
+    [
+      'ubuntu.com',
+      'kubuntu.org',
+      'lubuntu.me',
+      'edubuntu.org',
+      'ubuntustudio.com'
+    ].includes(ctx.state.domain.name)
+  ) {
     const member = ctx.state.domain.members.find(
       (member) => member.user && member.user.id === ctx.state.user.id
     );
@@ -120,7 +128,9 @@ function validateAlias(ctx, next) {
 
     if (
       _.isArray(body.recipients) &&
-      body.recipients.some((r) => isEmail(r) && r.endsWith('@ubuntu.com'))
+      body.recipients.some(
+        (r) => isEmail(r) && r.endsWith(`@${ctx.state.domain.name}`)
+      )
     )
       return ctx.throw(
         Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))

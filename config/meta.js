@@ -179,8 +179,24 @@ module.exports = function (config) {
     '/reset-password': ['Reset Password', 'Confirm your password reset token.'],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.'],
     '/ubuntu': [
-      'Canonical Ubuntu - Email Forwarding',
-      'Log in with your Ubuntu account.'
+      'Ubuntu @ubuntu.com email',
+      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @ubuntu.com email address.'
+    ],
+    '/kubuntu': [
+      'Kubuntu @kubuntu.org email',
+      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @kubuntu.org email address.'
+    ],
+    '/lubuntu': [
+      'Lubuntu @lubuntu.me email',
+      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @lubuntu.me email address.'
+    ],
+    '/edubuntu': [
+      'Edubuntu @edubuntu.org email',
+      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @edubuntu.org email address.'
+    ],
+    '/ubuntu-studio': [
+      'Ubuntu Studio @ubuntustudio.com email',
+      'Log in with your Ubuntu One account to manage email forwarding and SMTP for your @ubuntustudio.com email address.'
     ]
   };
 

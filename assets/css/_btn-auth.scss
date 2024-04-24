@@ -118,6 +118,10 @@ $roboto: 'Roboto-Medium', $font-family-sans-serif;
   }
 }
 
+.btn-ubuntu {
+  @include button-variant(#e95320, darken(#e95320, 10%));
+}
+
 @media (prefers-color-scheme: dark) {
   .btn-auth {
     color: #1F1F1F !important;

@@ -56,21 +56,21 @@ html.h-100.no-js(
         integrity=manifest("img/apple-touch-icon.png", "integrity"),
         crossorigin="anonymous"
       )
-      if ctx.pathWithoutLocale.startsWith('/ubuntu') || (domain && domain.name && domain.name === 'ubuntu.com')
+      if (domain && domain.name && ['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com'].includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         link(
           rel="icon",
           type="image/png",
-          href=manifest("img/ubuntu-favicon-32x32.png"),
+          href=manifest("img/ubuntu-one-favicon-32x32.png"),
           sizes="32x32",
-          integrity=manifest("img/ubuntu-favicon-32x32.png", "integrity"),
+          integrity=manifest("img/ubuntu-one-favicon-32x32.png", "integrity"),
           crossorigin="anonymous"
         )
         link(
           rel="icon",
           type="image/png",
-          href=manifest("img/ubuntu-favicon-16x16.png"),
+          href=manifest("img/ubuntu-one-favicon-16x16.png"),
           sizes="16x16",
-          integrity=manifest("img/ubuntu-favicon-16x16.png", "integrity"),
+          integrity=manifest("img/ubuntu-one-favicon-16x16.png", "integrity"),
           crossorigin="anonymous"
         )
       else
@@ -296,7 +296,8 @@ html.h-100.no-js(
   body.d-flex.flex-column.min-h-100.app(
     role="document",
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
-    data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false
+    data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
+    class=(domain && domain.name && ["ubuntu.com", "kubuntu.org", "lubuntu.me", "edubuntu.org", "ubuntustudio.com"].includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);

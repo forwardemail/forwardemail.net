@@ -99,4 +99,8 @@ $input-disabled-bg:                     $dark;
   @import 'node_modules/highlight.js/scss/github-dark';
   @import 'swal2-dark';
   @import 'swal2';
+
+  .btn-ubuntu {
+    @include button-variant(#e95320, darken(#e95320, 10%));
+  }
 }

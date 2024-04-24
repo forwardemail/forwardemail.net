@@ -5,29 +5,52 @@ block body
     .container.text-center.py-3.py-md-4.py-lg-5.my-auto
       .row
         .col-md-6.offset-md-3
+          - let variant = "";
+          - let variantDomain = "";
+          if ctx.pathWithoutLocale === '/ubuntu'
+            //- ~ubuntumembers
+            - variant = "Ubuntu";
+            - variantDomain = "ubuntu.com";
+          else if ctx.pathWithoutLocale === '/kubuntu'
+            //- ~kubuntu-members
+            - variant = "Kubuntu";
+            - variantDomain = "kubuntu.org";
+          else if ctx.pathWithoutLocale === '/lubuntu'
+            //- ~lubuntu-members
+            - variant = "Lubuntu";
+            - variantDomain = "lubuntu.me";
+          else if ctx.pathWithoutLocale === '/edubuntu'
+            //- ~edubuntu-members
+            - variant = "Edubuntu";
+            - variantDomain = "edubuntu.org";
+          else if ctx.pathWithoutLocale === '/ubuntu-studio'
+            //- ~ubuntustudio
+            - variant = "Ubuntu Studio";
+            - variantDomain = "ubuntustudio.com";
           picture
             source(
-              srcset=manifest("img/ubuntu-dark.svg"),
+              srcset=manifest(`img/${dashify(variant.toLowerCase())}-dark.svg`),
               media="(prefers-color-scheme: dark)"
             )
             img(
-              src=manifest("img/ubuntu.svg"),
-              width=274,
-              height=100,
-              alt=t("Canonical Ubuntu")
+              src=manifest(`img/${dashify(variant.toLowerCase())}.svg`),
+              width=200,
+              alt=variant
             )
-          h1.h2.ubuntu-font.my-3= t("Log in with your Ubuntu account")
-          .alert.alert-info.ubuntu-font
-            = t("Manage email forwarding for your @ubuntu.com email address.")
+          h1.h5.ubuntu-font.my-3!= t('Manage your <span class="notranslate">@%s</span> email address', variantDomain)
           form(action="/auth/ubuntu", method="POST")
-            .form-group.floating-label
-              input#input-email.form-control.form-control-lg.ubuntu-font(
-                type="email",
-                autofocus,
-                autocomplete="email",
-                name="email",
-                value="name@example.com",
-                placeholder="name@example.com"
-              )
-              label.ubuntu-font(for="input-email")= t("Your Ubuntu Account Email")
-            button.btn.btn-dark.btn-lg.ubuntu-font(type="submit")= t("Continue")
+            //-.
+              .form-group.floating-label
+                input#input-email.form-control.form-control-lg.ubuntu-font(
+                  type="email",
+                  autocomplete="email",
+                  name="email",
+                  placeholder=" "
+                )
+                label.ubuntu-font(for="input-email")= t("Enter your Ubuntu One email")
+            button.btn.btn-ubuntu.btn-block.btn-lg.ubuntu-font.d-block(
+              type="submit"
+            )
+              i.fab.fa-ubuntu
+              = " "
+              = t("Log in with Ubuntu One")

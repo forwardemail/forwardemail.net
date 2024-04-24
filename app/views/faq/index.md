@@ -96,6 +96,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 We provide email hosting and email forwarding service to notable users such as:
 
+* The Linux Foundation
 * Netflix
 * Disney Ad Sales
 * jQuery
@@ -104,7 +105,7 @@ We provide email hosting and email forwarding service to notable users such as:
 * The University of Maryland
 * The University of Washington
 * David Heinemeier Hansson
-* 430,000+ custom domain names
+* 470,000+ custom domain names
 
 You can learn more about Forward Email on [our About page](/about).
 

@@ -43,16 +43,27 @@ graceful.listen();
       group: 'admin'
     });
 
-    let domain = await Domains.findOne({
-      name: 'ubuntu.com',
-      plan: 'team',
-      'members.user': {
-        $in: adminIds
-      }
-    });
+    const mapping = {
+      'ubuntu.com': '~ubuntumembers',
+      'kubuntu.org': '~kubuntu-members',
+      'lubuntu.me': '~lubuntu-members',
+      'edubuntu.org': '~edubuntu-members',
+      'ubuntustudio.com': '~ubuntustudio'
+    };
 
-    if (!domain)
-      throw new Error(config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE);
+    for (const domainName of Object.keys(mapping)) {
+      // eslint-disable-next-line no-await-in-loop
+      const domain = await Domains.findOne({
+        name: domainName,
+        plan: 'team',
+        'members.user': {
+          $in: adminIds
+        }
+      });
+
+      if (!domain)
+        throw new Error(config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE);
+    }
 
     //
     // go through all ubuntu members and then lookup their profile
@@ -95,65 +106,73 @@ graceful.listen();
       )
         throw new Error(config.i18n.phrases.UBUNTU_API_RESPONSE_INVALID);
 
-      if (
-        json.entries.some(
-          (entry) =>
-            entry.team_link === 'https://api.launchpad.net/1.0/~ubuntumembers'
-        )
-      ) {
-        // continue early if the user is still a member
-        continue;
+      let hasMatch = false;
+
+      for (const domainName of Object.keys(mapping)) {
+        if (
+          json.entries.some(
+            (entry) =>
+              entry.team_link ===
+              `https://api.launchpad.net/1.0/${mapping[domainName]}`
+          )
+        ) {
+          // continue early if the user is still a member
+          hasMatch = true;
+          continue;
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const domain = await Domains.findOne({
+          name: domainName,
+          plan: 'team',
+          'members.user': {
+            $in: adminIds
+          }
+        });
+
+        if (!domain)
+          throw new Error(config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE);
+
+        //
+        // remove from member group (if they are not an admin)
+        //
+        const match = domain.members.find(
+          (m) => m.user.toString() === user._id.toString()
+        );
+
+        if (match && match.group === 'user') {
+          domain.members = domain.members.filter(
+            (m) => m.user.toString() !== user._id.toString()
+          );
+          // eslint-disable-next-line no-await-in-loop
+          await domain.save();
+          //
+          // and disable any existing aliases
+          //
+          // eslint-disable-next-line no-await-in-loop
+          await Aliases.findAndUpdate(
+            {
+              user: user._id,
+              domain: domain._id
+            },
+            {
+              $set: {
+                is_enabled: false
+              }
+            },
+            {
+              multi: true
+            }
+          );
+        }
       }
 
-      // otherwise disassociate the user
-      delete user[config.passport.fields.ubuntuProfileID];
-      delete user[config.passport.fields.ubuntuUsername];
-      // eslint-disable-next-line no-await-in-loop
-      await user.save();
-
-      // eslint-disable-next-line no-await-in-loop
-      domain = await Domains.findOne({
-        name: 'ubuntu.com',
-        plan: 'team',
-        'members.user': {
-          $in: adminIds
-        }
-      });
-
-      if (!domain)
-        throw new Error(config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE);
-
-      //
-      // remove from member group (if they are not an admin)
-      //
-      const match = domain.members.find(
-        (m) => m.user.toString() === user._id.toString()
-      );
-
-      if (match && match.group === 'user') {
-        domain.members = domain.members.filter(
-          (m) => m.user.toString() !== user._id.toString()
-        );
+      if (!hasMatch) {
+        // otherwise disassociate the user
+        delete user[config.passport.fields.ubuntuProfileID];
+        delete user[config.passport.fields.ubuntuUsername];
         // eslint-disable-next-line no-await-in-loop
-        await domain.save();
-        //
-        // and disable any existing aliases
-        //
-        // eslint-disable-next-line no-await-in-loop
-        await Aliases.findAndUpdate(
-          {
-            user: user._id,
-            domain: domain._id
-          },
-          {
-            $set: {
-              is_enabled: false
-            }
-          },
-          {
-            multi: true
-          }
-        );
+        await user.save();
       }
 
       // artificial 1s delay to prevent rate limiting

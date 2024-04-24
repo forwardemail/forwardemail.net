@@ -160,7 +160,14 @@ localeRouter
 
     return next();
   })
+
+  // ubuntu one
   .get('/ubuntu', render('ubuntu'))
+  .get('/kubuntu', render('ubuntu'))
+  .get('/lubuntu', render('ubuntu'))
+  .get('/edubuntu', render('ubuntu'))
+  .get('/ubuntu-studio', render('ubuntu'))
+
   .get('/search', web.search)
   // svg dynamically generated og images
   .get('(.*).(png|svg|jpeg)', web.generateOpenGraphImage)
