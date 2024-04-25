@@ -136,7 +136,9 @@ const Payments = new mongoose.Schema({
       'sepa_debit',
       'sofort',
       'us_bank_account',
-      'wechat_pay'
+      'wechat_pay',
+      'cashapp',
+      'amazon_pay'
     ]
   },
   // this is the duration of time added
