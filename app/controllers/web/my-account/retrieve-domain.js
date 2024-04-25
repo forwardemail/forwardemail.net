@@ -215,7 +215,7 @@ async function retrieveDomain(ctx, next) {
             )
           ) {
             const existingMX = records.filter(
-              (record) => !EXCHANGES.includes(record.exchange)
+              (record) => !EXCHANGES.includes(record.exchange.toLowerCase())
             );
             if (existingMX.length > 0) {
               ctx.state.hasExistingMX = true;
