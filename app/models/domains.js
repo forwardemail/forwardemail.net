@@ -1593,7 +1593,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
         const results = await resolver.resolveMx(domain.name, {
           purgeCache: true
         });
-        const exchanges = results.map((result) => result.exchange.toLowerCase());
+        const exchanges = results.map((result) =>
+          result.exchange.toLowerCase()
+        );
         const hasOtherExchanges = exchanges.some(
           (exchange) => !config.exchanges.includes(exchange)
         );
