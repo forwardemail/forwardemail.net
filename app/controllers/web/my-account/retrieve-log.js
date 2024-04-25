@@ -76,7 +76,7 @@ async function retrieveLog(ctx, next) {
   // TODO: ensure that `log.meta.session.envelope.mailFrom.address` is valid
   // (logged in user must either be alias owner or domain admin)
   //
-  if (log.email) {
+  if (log?.email || log?.meta?.email) {
     // validation safeguard
     if (
       !isSANB(log.meta.session.envelope.mailFrom.address) ||
@@ -124,7 +124,11 @@ async function retrieveLog(ctx, next) {
   //
   // filter recipients (iff `email` not set)
   //
-  if (!log.email && Array.isArray(log?.meta?.session?.envelope?.rcptTo))
+  if (
+    !log.email &&
+    !log?.meta?.email &&
+    Array.isArray(log?.meta?.session?.envelope?.rcptTo)
+  )
     log.meta.session.envelope.rcptTo = log.meta.session.envelope.rcptTo.filter(
       (rcpt) => {
         // get the portion without the "+" symbol since aliases don't permit use of "+" (automatic support)
@@ -167,7 +171,11 @@ async function retrieveLog(ctx, next) {
     );
 
   // check recipient length after filtering
-  if (log.meta.session.envelope.rcptTo.length === 0)
+  if (
+    !log.email &&
+    !log?.meta?.email &&
+    log.meta.session.envelope.rcptTo.length === 0
+  )
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   ctx.state.log = log;
