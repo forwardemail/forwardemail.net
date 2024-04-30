@@ -20,6 +20,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  SMTP_RATE_LIMIT_EXCEEDED:
+    'You have exceeded your daily SMTP outbound rate limit.',
   UBUNTU_NOT_ALLOWED_EMAIL:
     'You cannot use that email address as a forwarding recipient.',
   UBUNTU_PERMISSIONS:

@@ -4843,5 +4843,6 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "Bạn chỉ có thể đọc hoặc quản lý các bí danh hiện có của mình và không có quyền tạo bí danh mới.",
   "You cannot have more than 3 aliases for this domain.": "Bạn không thể có nhiều hơn 3 bí danh cho tên miền này.",
   "Launchpad username was missing or not detected, please try again later.": "Tên người dùng Launchpad bị thiếu hoặc không được phát hiện, vui lòng thử lại sau.",
-  "Invalid response from Launchpad API, please try again later.": "Phản hồi không hợp lệ từ API Launchpad, vui lòng thử lại sau."
+  "Invalid response from Launchpad API, please try again later.": "Phản hồi không hợp lệ từ API Launchpad, vui lòng thử lại sau.",
+  "You have exceeded your daily SMTP outbound rate limit.": "Bạn đã vượt quá giới hạn tốc độ gửi đi SMTP hàng ngày của mình."
 }

@@ -8,9 +8,9 @@ const punycode = require('node:punycode');
 const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
 
-const SMTPError = require('#helpers/smtp-error');
+// const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
-const config = require('#config');
+// const config = require('#config');
 const env = require('#config/env');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -60,6 +60,10 @@ async function onConnect(session, fn) {
       session.allowlistValue = rootDomain || session.remoteAddress;
     } else {
       //
+      // NOTE: because there are too many false positives with actual users
+      //       we're not going to do denylist/silent/backscatter lookup anymore
+      /*
+      //
       // prevent connections from backscatter, silent ban, and denylist
       //
       const arr = [
@@ -89,6 +93,7 @@ async function onConnect(session, fn) {
           { ignoreHook: true }
         );
       }
+      */
     }
 
     fn();

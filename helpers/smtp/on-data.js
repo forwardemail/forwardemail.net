@@ -5,6 +5,7 @@
 
 const _ = require('lodash');
 const bytes = require('bytes');
+const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
@@ -18,15 +19,55 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const Users = require('#models/users');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
+const emailHelper = require('#helpers/email');
 const env = require('#config/env');
+const i18n = require('#helpers/i18n');
+const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
-const isValidPassword = require('#helpers/is-valid-password');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
+
+async function sendRateLimitEmail(user) {
+  // if the user received rate limit email in past 30d
+  if (
+    _.isDate(user.smtp_rate_limit_sent_at) &&
+    dayjs().isBefore(dayjs(user.smtp_rate_limit_sent_at).add(30, 'days'))
+  ) {
+    logger.info('user was already rate limited');
+    return;
+  }
+
+  await emailHelper({
+    template: 'alert',
+    message: {
+      to: user[config.userFields.fullEmail],
+      bcc: config.email.message.from,
+      locale: user[config.lastLocaleField],
+      subject: i18n.translate(
+        'SMTP_RATE_LIMIT_EXCEEDED',
+        user[config.lastLocaleField]
+      )
+    },
+    locals: {
+      locale: user[config.lastLocaleField],
+      message: i18n.translate(
+        'SMTP_RATE_LIMIT_EXCEEDED',
+        user[config.lastLocaleField]
+      )
+    }
+  });
+
+  // otherwise send the user an email and update the user record
+  await Users.findByIdAndUpdate(user._id, {
+    $set: {
+      smtp_rate_limit_sent_at: new Date()
+    }
+  });
+}
 
 //
 // NOTE: we can merge SMTP/FE codebase in future and simply check if auth disabled
@@ -80,7 +121,7 @@ async function onData(stream, _session, fn) {
       })
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
@@ -106,7 +147,7 @@ async function onData(stream, _session, fn) {
     })
       .populate(
         'members.user',
-        `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
       )
       .select('+tokens +tokens.hash +tokens.salt')
       .exec();
@@ -342,8 +383,13 @@ async function onData(stream, _session, fn) {
           `${config.smtpLimitNamespace}:${domain.id}`
         );
         // return 550 error code
-        if (count >= max)
+        if (count >= max) {
+          // send one-time email alert to admin + user
+          sendRateLimitEmail(user)
+            .then()
+            .catch((err) => logger.fatal(err, { session }));
           throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
       }
 
       // rate limit to X emails per day by alias user id then denylist
@@ -352,8 +398,13 @@ async function onData(stream, _session, fn) {
           `${config.smtpLimitNamespace}:${user.id}`
         );
         // return 550 error code
-        if (count >= max)
+        if (count >= max) {
+          // send one-time email alert to admin + user
+          sendRateLimitEmail(user)
+            .then()
+            .catch((err) => logger.fatal(err, { session }));
           throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
       }
     }
 

@@ -7369,5 +7369,6 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "Du kan bare lese eller administrere dine eksisterende aliaser, og du har ikke tillatelse til å opprette nye.",
   "You cannot have more than 3 aliases for this domain.": "Du kan ikke ha mer enn 3 aliaser for dette domenet.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad-brukernavnet manglet eller ble ikke oppdaget. Prøv igjen senere.",
-  "Invalid response from Launchpad API, please try again later.": "Ugyldig svar fra Launchpad API. Prøv igjen senere."
+  "Invalid response from Launchpad API, please try again later.": "Ugyldig svar fra Launchpad API. Prøv igjen senere.",
+  "You have exceeded your daily SMTP outbound rate limit.": "Du har overskredet den daglige grensen for utgående SMTP-hastighet."
 }

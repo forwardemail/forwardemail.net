@@ -7364,5 +7364,6 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "기존 별칭을 읽거나 관리할 수만 있고 새 별칭을 만들 수 있는 권한은 없습니다.",
   "You cannot have more than 3 aliases for this domain.": "이 도메인에는 3개 이상의 별칭을 사용할 수 없습니다.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad 사용자 이름이 누락되었거나 감지되지 않았습니다. 나중에 다시 시도해 주세요.",
-  "Invalid response from Launchpad API, please try again later.": "Launchpad API의 응답이 잘못되었습니다. 나중에 다시 시도해 주세요."
+  "Invalid response from Launchpad API, please try again later.": "Launchpad API의 응답이 잘못되었습니다. 나중에 다시 시도해 주세요.",
+  "You have exceeded your daily SMTP outbound rate limit.": "일일 SMTP 아웃바운드 속도 제한을 초과했습니다."
 }

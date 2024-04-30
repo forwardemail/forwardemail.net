@@ -64,6 +64,7 @@ const changeModulusLength = require('./change-modulus-length');
 const checkVerifiedEmail = require('./check-verified-email');
 const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 const updateTimezone = require('./update-timezone');
+const uploadAliasMbox = require('./upload-alias-mbox');
 
 module.exports = {
   cancelEmailChange,
@@ -126,5 +127,6 @@ module.exports = {
   changeModulusLength,
   checkVerifiedEmail,
   updateAllowlistAndDenylist,
-  updateTimezone
+  updateTimezone,
+  uploadAliasMbox
 };

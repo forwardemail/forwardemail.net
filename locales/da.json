@@ -3790,5 +3790,20 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "Du kan kun læse eller administrere dine eksisterende aliaser og har ikke tilladelse til at oprette nye.",
   "You cannot have more than 3 aliases for this domain.": "Du kan ikke have mere end 3 aliaser for dette domæne.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad-brugernavnet manglede eller blev ikke fundet, prøv venligst igen senere.",
-  "Invalid response from Launchpad API, please try again later.": "Ugyldigt svar fra Launchpad API. Prøv venligst igen senere."
+  "Invalid response from Launchpad API, please try again later.": "Ugyldigt svar fra Launchpad API. Prøv venligst igen senere.",
+  "Admin - Emails": "Admin - E-mails",
+  "Search for emails": "Søg efter e-mails",
+  "See <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> for more insight.": "Se <a class=\"notranslate\" href=\"https://github.com/mongodb-js/query-parser\" target=\"_blank\" rel=\"noopener noreferrer\">mongodb-query-parser</a> for mere indsigt.",
+  "Basic search": "Grundlæggende søgning",
+  "This splits by space and requires an equals sign for values. You can use quotes and also escape quotes in values. Numbers and Booleans are parsed too.": "Dette opdeles efter mellemrum og kræver et lighedstegn for værdier. Du kan bruge citater og også undslippe citater i værdier. Tal og booleaner analyseres også.",
+  "ID": "ID",
+  "Updated": "Opdateret",
+  "Status": "Status",
+  "Subject": "Emne",
+  "No emails exist for that search.": "Der findes ingen e-mails til den søgning.",
+  "You have used <strong class=\"notranslate\">%d</strong> out of your daily limit of <strong class=\"notranslate\">%d</strong> outbound SMTP messages.": "Du har brugt <strong class=\"notranslate\">%d</strong> ud af din daglige grænse på <strong class=\"notranslate\">%d</strong> udgående SMTP-meddelelser.",
+  "Outbound SMTP emails are shown below &ndash; <a href=\"%s\" class=\"alert-link\">click here</a> to setup your email client to receive email.": "Udgående SMTP-e-mails er vist nedenfor – <a href=\"%s\" class=\"alert-link\">klik her</a> for at konfigurere din e-mail-klient til at modtage e-mail.",
+  "Email": "E-mail",
+  "No emails have been stored yet.  Please check back later.": "Ingen e-mails er blevet gemt endnu. Kom venligst tilbage senere.",
+  "You have exceeded your daily SMTP outbound rate limit.": "Du har overskredet din daglige grænse for udgående SMTP-hastighed."
 }

@@ -7364,5 +7364,6 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "Csak a meglévő álneveit olvashatja vagy kezelheti, újak létrehozására nincs engedélye.",
   "You cannot have more than 3 aliases for this domain.": "Ehhez a domainhez legfeljebb 3 alias lehet.",
   "Launchpad username was missing or not detected, please try again later.": "Az indítópult-felhasználónév hiányzik vagy nem észlelhető. Kérjük, próbálja újra később.",
-  "Invalid response from Launchpad API, please try again later.": "Érvénytelen válasz a Launchpad API-tól, próbálkozzon újra később."
+  "Invalid response from Launchpad API, please try again later.": "Érvénytelen válasz a Launchpad API-tól, próbálkozzon újra később.",
+  "You have exceeded your daily SMTP outbound rate limit.": "Túllépte a napi SMTP kimenő sebességkorlátot."
 }

@@ -7364,5 +7364,6 @@
   "You can only read or manage your existing aliases, and do not have permission to create new ones.": "يمكنك فقط قراءة الأسماء المستعارة الحالية أو إدارتها، وليس لديك إذن بإنشاء أسماء جديدة.",
   "You cannot have more than 3 aliases for this domain.": "لا يمكن أن يكون لديك أكثر من 3 أسماء مستعارة لهذا المجال.",
   "Launchpad username was missing or not detected, please try again later.": "اسم مستخدم Launchpad مفقود أو لم يتم اكتشافه، يرجى المحاولة مرة أخرى لاحقًا.",
-  "Invalid response from Launchpad API, please try again later.": "استجابة غير صالحة من Launchpad API، يرجى المحاولة مرة أخرى لاحقًا."
+  "Invalid response from Launchpad API, please try again later.": "استجابة غير صالحة من Launchpad API، يرجى المحاولة مرة أخرى لاحقًا.",
+  "You have exceeded your daily SMTP outbound rate limit.": "لقد تجاوزت حد معدل الصادر اليومي لـ SMTP."
 }

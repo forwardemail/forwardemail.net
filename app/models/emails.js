@@ -224,6 +224,7 @@ const Emails = new mongoose.Schema(
     rejectedErrors: [mongoose.Schema.Types.Mixed]
   },
   {
+    versionKey: false,
     writeConcern: {
       w: 'majority'
     }

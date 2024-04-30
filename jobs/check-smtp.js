@@ -60,8 +60,7 @@ const DNS_RETRY_CODES = new Set([
   // 'ENODATA',
   'ENOMEM',
   'ENONAME',
-  // NOTE: ENOTFOUND indicates the domain doesn't exist
-  //       (and we don't want to send emails to people that didn't even register it yet)
+  // NOTE: ENOTFOUND indicates the record doesn't exist
   'ENOTFOUND',
   'ENOTIMP',
   'ENOTINITIALIZED',

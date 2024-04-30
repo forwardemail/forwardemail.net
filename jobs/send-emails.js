@@ -44,7 +44,8 @@ const graceful = new Graceful({
 });
 
 const queue = new PQueue({
-  concurrency: config.concurrency * 16
+  concurrency: Math.round(config.smtpMaxQueue / 2)
+  // concurrency: config.concurrency * 30
   // timeout: config.smtpQueueTimeout
 });
 
@@ -74,11 +75,11 @@ async function sendEmails() {
 
   if (queue.size >= config.smtpMaxQueue) {
     logger.info(`queue has more than ${config.smtpMaxQueue} tasks`);
-    // wait 1 second
-    await delay(1000);
-    // queue more messages once finished processing
-    return sendEmails();
+    await delay(5000);
+    return;
   }
+
+  // TODO: capacity/recipient issues should be hard 550 bounce for outbound
 
   const now = new Date();
   const limit = config.smtpMaxQueue - queue.size;
@@ -199,43 +200,59 @@ async function sendEmails() {
     // return early if the job was already cancelled
     if (isCancelled) break;
     // TODO: implement queue on a per-target/provider basis (e.g. 10 at once to Cox addresses)
-    queue.add(() => processEmail({ email, resolver, client }), {
-      // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
-      // priority: email.priority || 0
-    });
+    queue.add(
+      async () => {
+        try {
+          await processEmail({ email, resolver, client });
+        } catch (err) {
+          logger.error(err, { email });
+        }
+      },
+      {
+        // TODO: if the email was admin owned domain then priority higher (see email pre-save hook)
+        // priority: email.priority || 0
+      }
+    );
   }
 
-  // wait 1 second
-  await delay(1000);
-
-  // queue more messages once finished processing
-  return sendEmails();
+  await delay(5000);
 }
 
 (async () => {
   await setupMongoose(logger);
 
-  try {
-    await sendEmails();
-  } catch (err) {
-    await logger.error(err);
+  (async function startRecursion() {
+    if (isCancelled) {
+      if (parentPort) parentPort.postMessage('done');
+      else process.exit(0);
+      return;
+    }
 
-    await emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: 'Send emails had an error'
-      },
-      locals: {
-        message: `<pre><code>${JSON.stringify(
-          parseErr(err),
-          null,
-          2
-        )}</code></pre>`
-      }
-    });
+    try {
+      await sendEmails();
+    } catch (err) {
+      logger.error(err);
 
-    if (parentPort) parentPort.postMessage('done');
-    else process.exit(0);
-  }
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: 'Send emails had an error'
+        },
+        locals: {
+          message: `<pre><code>${JSON.stringify(
+            parseErr(err),
+            null,
+            2
+          )}</code></pre>`
+        }
+      })
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      await delay(5000);
+    }
+
+    startRecursion();
+  })();
 })();

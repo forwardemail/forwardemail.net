@@ -188,8 +188,8 @@ const config = {
   },
   defaultModulusLength: 1024,
   defaultStoragePath: env.SQLITE_STORAGE_PATH,
-  // 60 items (50 MB * 60 = 3000 MB = 3 GB)
-  smtpMaxQueue: 60,
+  // 100 items (50 MB * 100 = 5000 MB = 5 GB)
+  smtpMaxQueue: 100,
   smtpQueueTimeout: ms('180s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
