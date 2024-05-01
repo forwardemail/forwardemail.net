@@ -1,0 +1,4 @@
+- if (inquiry.subject)
+  = inquiry.subject
+- else
+  = `${emoji(user.plan === "free" ? "mega" : "star")} ${user.plan === "free" ? "" : "Premium Support: "}${t("Your Help Request")} #${new Date(inquiry.created_at).getTime()}`

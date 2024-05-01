@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center= t("Your Help Request")
+          .card-body.p-0
+            //- replace line breaks with <br>
+            .p-3
+              .card-text.text-monospace.small!= splitLines(response.message).join("<br />")
+          .card-footer.text-center.small.text-muted
+            strong= t("Have attachments?")
+            = " "
+            = t("Reply to this email with them.")

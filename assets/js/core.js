@@ -830,3 +830,71 @@ window.addEventListener(
   'resize',
   setViewportProperty(document.documentElement)
 );
+
+function handleBulkReply() {
+  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
+  const ids = checkboxes
+    .map(function () {
+      return $(this).val();
+    })
+    .get();
+
+  if (ids.length === 0) {
+    Swal.fire(window._types.error, 'No inquiries selected.', 'error');
+    return;
+  }
+
+  if (ids.length === 1) {
+    const { origin, pathname } = window.location;
+    const redirectUrl = `${origin}${pathname}/${ids[0]}`;
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  $('#bulk-reply-modal').modal('show');
+}
+
+async function handleSubmitBulkReply() {
+  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
+  const ids = checkboxes
+    .map(function () {
+      return $(this).val();
+    })
+    .get();
+
+  const message = $('#textarea-bulk-reply-message').val();
+
+  try {
+    spinner.show();
+
+    const url = `${window.location.pathname}/bulk`;
+    const response = await sendRequest({ ids, message }, url);
+
+    if (response.err) throw response.err;
+
+    if (
+      typeof response.body !== 'object' ||
+      response.body === null ||
+      typeof response.body.challenge !== 'string'
+    )
+      throw new Error(
+        response.statusText ||
+          response.text ||
+          'Invalid response, please try again'
+      );
+
+    spinner.hide();
+    Swal.fire(
+      window._types.error,
+      `Successfully replied to ${ids.length} inquiries!`,
+      'success'
+    );
+  } catch (err) {
+    console.error(err);
+    spinner.hide();
+    Swal.fire(window._types.error, err.message, 'error');
+  }
+}
+
+$('#table-inquiries').on('click', '#bulk-reply-button', handleBulkReply);
+$('#table-inquiries').on('click', '#submit-bulk-reply', handleSubmitBulkReply);

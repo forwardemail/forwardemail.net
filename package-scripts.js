@@ -13,15 +13,15 @@ module.exports = {
 
     webAndWatch: series.nps('build', 'web', 'watch'),
 
-    bree: 'ttab -G nodemon bree.js',
-    api: 'ttab -G nodemon api.js',
-    web: 'ttab -G nodemon web.js',
-    smtp: 'ttab -G SMTP_ALLOW_INSECURE_AUTH=true SMTP_PORT=2432 nodemon smtp.js',
-    imap: 'ttab -G IMAP_PORT=2113 nodemon imap.js',
-    pop3: 'ttab -G POP3_PORT=2115 nodemon pop3.js',
-    sqlite: 'ttab -G nodemon sqlite.js',
+    bree: 'nodemon bree.js',
+    api: 'nodemon api.js',
+    web: 'nodemon web.js',
+    smtp: 'SMTP_ALLOW_INSECURE_AUTH=true SMTP_PORT=2432 nodemon smtp.js',
+    imap: 'IMAP_PORT=2113 nodemon imap.js',
+    pop3: 'POP3_PORT=2115 nodemon pop3.js',
+    sqlite: 'nodemon sqlite.js',
 
-    watch: 'ttab -G gulp watch',
+    watch: 'gulp watch',
     clean: 'gulp clean',
     build: 'gulp build',
     buildTest: 'NODE_ENV=test gulp build',

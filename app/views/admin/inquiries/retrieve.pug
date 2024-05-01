@@ -1,0 +1,27 @@
+extends ../../layout
+
+block body
+  .container.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+          .card.border-themed
+            .card-body
+              .form-group.floating-label
+                label.read-only-message.text-muted= result.message
+              .form-group.floating-label
+                textarea#input-message.form-control(
+                  rows="8",
+                  required,
+                  maxlength=config.supportRequestMaxLength,
+                  name="message",
+                  placeholder=t("Write your response")
+                )
+                label(for="input-message")= t("Reply")
+            .card-footer
+              button.btn.btn-block.btn-primary.btn-lg(
+                type="submit",
+                data-toggle="tooltip",
+                data-placement="bottom"
+              )= t("Send reply")

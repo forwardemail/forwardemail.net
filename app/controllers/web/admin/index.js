@@ -10,6 +10,7 @@ const logs = require('./logs');
 const allowlist = require('./allowlist');
 const denylist = require('./denylist');
 const emails = require('./emails');
+const inquiries = require('./inquiries');
 
 module.exports = {
   dashboard,
@@ -18,5 +19,6 @@ module.exports = {
   logs,
   allowlist,
   denylist,
-  emails
+  emails,
+  inquiries
 };
