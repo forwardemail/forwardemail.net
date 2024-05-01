@@ -287,7 +287,7 @@ async function onData(stream, _session, fn) {
       // now that we have `tokenUsed` we can perform a lookup on `tokenUsed.user`
       user = await Users.findById(tokenUsed.user)
         .select(
-          `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit}`
+          `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
         )
         .lean()
         .exec();
