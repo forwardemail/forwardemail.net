@@ -14,7 +14,9 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const pMap = require('p-map');
+const sharedConfig = require('@ladjs/shared-config');
 
 const mongoose = require('mongoose');
 const config = require('#config');
@@ -23,9 +25,12 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Aliases, Users, Domains } = require('#models');
 
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 const concurrency = Math.round(os.cpus().length * 2);
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -220,10 +225,9 @@ async function mapper(alias) {
 
   logger.info('starting lowercase job');
 
+  // TODO: this would need optimized in the future if we ran it
   try {
-    const bannedUserIds = await Users.distinct('_id', {
-      [config.userFields.isBanned]: true
-    });
+    const bannedUserIds = await Users.getBannedUserIdSet(client);
     const ids = await Aliases.distinct('_id', {
       user: { $nin: bannedUserIds }
     });

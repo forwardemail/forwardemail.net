@@ -20,7 +20,6 @@ const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
 const mongoose = require('mongoose');
 
-const config = require('#config');
 const email = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -128,9 +127,14 @@ async function mapper(upgradeReminder) {
   try {
     logger.info('starting upgrade reminder emails');
 
-    const bannedUserEmails = await Users.distinct('email', {
-      [config.userFields.isBanned]: true
-    });
+    const bannedUserIdSet = await Users.getBannedUserIdSet(client);
+
+    const bannedUserEmails = [];
+    for (const id of bannedUserIdSet) {
+      // eslint-disable-next-line no-await-in-loop
+      const user = await Users.findById(id);
+      if (user && user.email) bannedUserEmails.push(user.email);
+    }
 
     let upgradeReminders = await UpgradeReminders.aggregate([
       {

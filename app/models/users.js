@@ -1107,21 +1107,24 @@ Users.index(
   }
 );
 
-async function getBannedUserIdSet(ctx) {
+async function getBannedUserIdSet(client) {
   let bannedUserIds = [];
-  // TODO: uncomment this once redis performance gets better in prod
-  // bannedUserIds = await ctx.client.get('banned_user_ids');
-  if (bannedUserIds.length > 0) {
+  bannedUserIds = await client.get('banned_user_ids');
+  if (
+    bannedUserIds &&
+    typeof bannedUserIds === 'string' &&
+    bannedUserIds.length > 0
+  ) {
     bannedUserIds = new Set(JSON.parse(bannedUserIds));
   } else {
     bannedUserIds = await this.distinct('id', {
       [config.userFields.isBanned]: true
     });
-    ctx.client
+    client
       .set('banned_user_ids', safeStringify(bannedUserIds), 'PX', ms('1h'))
       .then()
       .catch((err) => {
-        ctx.logger.fatal(err);
+        logger.fatal(err);
       });
     bannedUserIds = new Set(bannedUserIds);
   }

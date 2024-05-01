@@ -94,6 +94,9 @@ graceful.listen();
     logger.info('executing pipeline');
     await pipeline.exec();
 
+    // clear banned cache
+    await client.del('banned_user_ids');
+
     logger.info(JSON.stringify(emails, null, 2));
   } catch (err) {
     await logger.error(err);

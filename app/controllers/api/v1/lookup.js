@@ -41,7 +41,7 @@ async function lookup(ctx) {
     return;
   }
 
-  const bannedUserIdSet = await Users.getBannedUserIdSet(ctx);
+  const bannedUserIdSet = await Users.getBannedUserIdSet(ctx.client);
 
   const username = isSANB(ctx.query.username)
     ? ctx.query.username.toLowerCase()

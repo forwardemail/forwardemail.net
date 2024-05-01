@@ -13,8 +13,10 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const Stripe = require('stripe');
 const dayjs = require('dayjs-with-plugins');
+const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
 const env = require('#config/env');
@@ -26,10 +28,13 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { paypalAgent } = require('#helpers/paypal');
 
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -188,25 +193,18 @@ graceful.listen();
       }
     }
 
-    // cancel subscriptions for banned users
-    const bannedUsersWithSubscriptions = await Users.find({
-      $or: [
-        {
-          [config.userFields.isBanned]: true,
-          [config.userFields.paypalSubscriptionID]: {
-            $exists: true
-          }
-        },
-        {
-          [config.userFields.isBanned]: true,
-          [config.userFields.stripeSubscriptionID]: {
-            $exists: true
-          }
-        }
-      ]
-    });
+    const bannedUserIdSet = await Users.getBannedUserIdSet(client);
 
-    for (const user of bannedUsersWithSubscriptions) {
+    // cancel subscriptions for banned users
+    for (const id of bannedUserIdSet) {
+      // eslint-disable-next-line no-await-in-loop
+      const user = await Users.findById(id);
+      if (!user) continue;
+      if (
+        !user[config.userFields.paypalSubscriptionID] &&
+        !user[config.userFields.stripeSubscriptionID]
+      )
+        continue;
       // paypal
       if (user[config.userFields.paypalSubscriptionID]) {
         try {

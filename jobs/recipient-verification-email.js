@@ -14,9 +14,11 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const pMap = require('p-map');
 const shortID = require('mongodb-short-id');
+const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
 const config = require('#config');
@@ -27,10 +29,13 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains, Aliases } = require('#models');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
 const concurrency = os.cpus().length;
 
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -170,22 +175,23 @@ async function mapper(alias) {
 
     logger.info('starting recipient verification emails');
 
-    const [bannedUserIds, paidDomainIds] = await Promise.all([
-      Users.distinct('_id', {
-        [config.userFields.isBanned]: true
-      }),
-      Domains.distinct('_id', {
-        plan: { $ne: 'free' },
-        has_mx_record: true,
-        has_txt_record: true
-      })
-    ]);
+    const bannedUserIdSet = await Users.getBannedUserIdSet(client);
+
+    const paidDomainIds = await Domains.distinct('_id', {
+      plan: { $ne: 'free' },
+      has_mx_record: true,
+      has_txt_record: true
+    });
 
     const aliases = await Aliases.aggregate([
       {
         $match: {
           has_recipient_verification: true,
-          user: { $nin: bannedUserIds },
+          user: {
+            $nin: [...bannedUserIdSet].map(
+              (id) => new mongoose.Types.ObjectId(id)
+            )
+          },
           domain: { $in: paidDomainIds }
         }
       },
