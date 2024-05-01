@@ -49,7 +49,8 @@ const Journals = new mongoose.Schema(
       type: Date
     },
     modseq: {
-      type: Number
+      type: Number,
+      index: true
     },
     command: {
       type: String,

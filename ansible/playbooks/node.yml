@@ -66,6 +66,7 @@
       args:
          executable: /bin/bash
       when: not pm2_result.stat.exists
+    # TODO: probably should remove this or make it 12-24
     - name: Reload pm2 every 4 hours
       become: true
       become_user: deploy
