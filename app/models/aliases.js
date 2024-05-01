@@ -118,7 +118,8 @@ const Aliases = new mongoose.Schema({
   //
   storage_used: {
     type: Number,
-    default: 0
+    default: 0,
+    index: true
   },
   // this is an object that looks like:
   // {
