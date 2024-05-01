@@ -7365,5 +7365,16 @@
   "You cannot have more than 3 aliases for this domain.": "Для этого домена не может быть более трех псевдонимов.",
   "Launchpad username was missing or not detected, please try again later.": "Имя пользователя Launchpad отсутствует или не обнаружено. Повторите попытку позже.",
   "Invalid response from Launchpad API, please try again later.": "Неверный ответ от API Launchpad. Повторите попытку позже.",
-  "You have exceeded your daily SMTP outbound rate limit.": "Вы превысили дневной лимит исходящей скорости SMTP."
+  "You have exceeded your daily SMTP outbound rate limit.": "Вы превысили дневной лимит исходящей скорости SMTP.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }

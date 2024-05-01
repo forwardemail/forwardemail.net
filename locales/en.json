@@ -7127,5 +7127,17 @@
   "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.": "You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.",
   "Log in with Ubuntu One": "Log in with Ubuntu One",
   "470,000+ custom domain names": "470,000+ custom domain names",
-  "You have exceeded your daily SMTP outbound rate limit.": "You have exceeded your daily SMTP outbound rate limit."
+  "You have exceeded your daily SMTP outbound rate limit.": "You have exceeded your daily SMTP outbound rate limit.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, ",
+  "We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href=\"mailto:support@forwardemail.net\">support@forwardemail.net</a>.": "We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href=\"mailto:support@forwardemail.net\">support@forwardemail.net</a>."
 }

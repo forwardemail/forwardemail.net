@@ -8,7 +8,7 @@ const paginate = require('koa-ctx-paginate');
 
 const { Inquiries, Users } = require('#models');
 const config = require('#config');
-const email = require('#helpers/email');
+const emailHelper = require('#helpers/email');
 
 async function list(ctx) {
   let $sort = { created_at: -1 };
@@ -91,7 +91,7 @@ async function remove(ctx) {
   const inquiry = await Inquiries.findById(ctx.params.id);
   if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
 
-  await Inquiries.deleteOne({ _id: inquiry.id });
+  await Inquiries.findById({ id: inquiry.id });
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -116,7 +116,7 @@ async function reply(ctx) {
 
   const { message } = ctx.request.body;
 
-  await email({
+  await emailHelper({
     template: 'inquiry-response',
     message: {
       to: user[config.userFields.fullEmail],
@@ -132,12 +132,9 @@ async function reply(ctx) {
     }
   });
 
-  await Inquiries.findOneAndUpdate(
-    { id: inquiry.id },
-    {
-      $set: { is_resolved: true }
-    }
-  );
+  await Inquiries.findByIdAndUpdate(inquiry._id, {
+    $set: { is_resolved: true }
+  });
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -172,7 +169,7 @@ async function bulkReply(ctx) {
       // in bulk to a previous message then let's skip the email
       if (!repliedTo.has(user)) {
         // eslint-disable-next-line no-await-in-loop
-        await email({
+        await emailHelper({
           template: 'inquiry-response',
           message: {
             to: user[config.userFields.fullEmail],
@@ -190,19 +187,27 @@ async function bulkReply(ctx) {
       }
 
       // eslint-disable-next-line no-await-in-loop
-      await Inquiries.findOneAndUpdate(
-        { id: inquiry.id },
-        {
-          $set: { is_resolved: true }
-        }
-      );
+      await Inquiries.findByIdAndUpdate(inquiry._id, {
+        $set: { is_resolved: true }
+      });
 
       repliedTo.add(user);
     }
-  } catch (err) {
-    ctx.flash('error', `Error replying: ${err.message}`);
-    return;
+  } catch {
+    throw Boom.badImplementation(
+      ctx.translateError('INQUIRY_RESPONSE_BULK_REPLY_ERROR')
+    );
   }
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: `Successfully replied to ${repliedTo.size} inquiries!`,
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
 
   if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
   else ctx.body = { redirectTo: '/admin/inquiries' };

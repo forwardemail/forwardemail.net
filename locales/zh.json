@@ -7058,5 +7058,16 @@
   "You cannot have more than 3 aliases for this domain.": "此域名的别名不能超过 3 个。",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad 用户名缺失或未被检测到，请稍后重试。",
   "Invalid response from Launchpad API, please try again later.": "Launchpad API 的响应无效，请稍后重试。",
-  "You have exceeded your daily SMTP outbound rate limit.": "您已超出每日 SMTP 出站速率限制。"
+  "You have exceeded your daily SMTP outbound rate limit.": "您已超出每日 SMTP 出站速率限制。",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }

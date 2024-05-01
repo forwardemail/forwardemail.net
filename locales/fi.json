@@ -7212,5 +7212,16 @@
   "You cannot have more than 3 aliases for this domain.": "Sinulla voi olla enintään 3 aliasta tälle verkkotunnukselle.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad-käyttäjänimi puuttui tai sitä ei havaittu. Yritä myöhemmin uudelleen.",
   "Invalid response from Launchpad API, please try again later.": "Virheellinen vastaus Launchpad API:lta, yritä myöhemmin uudelleen.",
-  "You have exceeded your daily SMTP outbound rate limit.": "Olet ylittänyt päivittäisen lähtevän SMTP-nopeusrajan."
+  "You have exceeded your daily SMTP outbound rate limit.": "Olet ylittänyt päivittäisen lähtevän SMTP-nopeusrajan.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }

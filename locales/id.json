@@ -7365,5 +7365,16 @@
   "You cannot have more than 3 aliases for this domain.": "Anda tidak boleh memiliki lebih dari 3 alias untuk domain ini.",
   "Launchpad username was missing or not detected, please try again later.": "Nama pengguna Launchpad hilang atau tidak terdeteksi, silakan coba lagi nanti.",
   "Invalid response from Launchpad API, please try again later.": "Respons tidak valid dari Launchpad API, silakan coba lagi nanti.",
-  "You have exceeded your daily SMTP outbound rate limit.": "Anda telah melampaui batas kecepatan keluar SMTP harian."
+  "You have exceeded your daily SMTP outbound rate limit.": "Anda telah melampaui batas kecepatan keluar SMTP harian.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }
