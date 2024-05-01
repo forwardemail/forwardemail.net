@@ -25,6 +25,16 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Journals = new mongoose.Schema(
   {
+    //
+    // NOTE: `mongoose-common-plugin` will automatically set `timestamps` for us
+    // <https://github.com/Automattic/mongoose/blob/b2af0fe4a74aa39eaf3088447b4bb8feeab49342/test/timestamps.test.js#L123-L137>
+    //
+    created_at: {
+      type: Date,
+      // <https://github.com/nodemailer/wildduck/blob/7ee5d06520f7e84ab3b1097d73bf6479f83206ab/indexes.yaml#L560-L566>
+      expires: '3h',
+      index: true
+    },
     mailbox: {
       type: mongoose.Schema.ObjectId,
       ref: Mailboxes,

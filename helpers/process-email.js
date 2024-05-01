@@ -91,7 +91,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       throw new Error('Email status must be queued');
   } catch (err) {
     // create log
-    logger.error(err, meta);
+    logger.debug(err, meta);
     return;
   }
 
