@@ -358,7 +358,7 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
-    rateLimit(20, 'generate alias password'),
+    rateLimit(50, 'generate alias password'),
     web.myAccount.generateAliasPassword
   )
   .post(
