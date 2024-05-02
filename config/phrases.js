@@ -218,6 +218,7 @@ module.exports = {
     'You cannot download a backup for a catch-all or regex.',
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
+  INVALID_INQUIRY: 'Inquiry does not exist.',
   INVALID_USER: 'User does not exist.',
   INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',
@@ -307,6 +308,8 @@ module.exports = {
   SIGNED_OUT: 'You have successfully signed out.',
   PENDING_RECOVERY_VERIFICATION_SUCCESS:
     'Your email has been successfully verified. You should receive a support email from an admin within the next 3-5 business days.',
+  INQUIRY_RESPONSE_BULK_REPLY_ERROR:
+    'An error occurred while attempting to send bulk reply. Please try again.',
   SUPPORT_REQUEST_ERROR:
     'We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href="mailto:support@forwardemail.net">support@forwardemail.net</a>.',
   SUPPORT_REQUEST_LIMIT:
@@ -551,6 +554,7 @@ module.exports = {
     '<strong class="text-danger">Your vanity domain aliases are disabled due to past due payment.</strong> Please <a href="%s">%s</a> to re-enable them. As of January 1, 2023, we require vanity domain aliases to be on paid plans. We sent notifications in advance of this new policy starting in November 2022. If you no longer use vanity domain aliases, then disable or remove them from <a href="/my-account/domains">Domains</a> &rarr; Vanity Domain &rarr; Aliases.',
   PAST_DUE_REQUIRED_ONE_TIME:
     'Your account is <strong class="notranslate">%s</strong> past due. You must pay this amount before you can enable auto-renew.',
+  YOUR_HELP_REQUEST: 'Your Help Request',
   AND: 'and',
   PLAN_MORE_THAN_TWO_YEARS_FROM_EXPIRY:
     'You cannot start a subscription nor enable auto-renew more than two years from your plan\'s current expiration date of <span class="notranslate">%s</span>.  Please try again <span class="notranslate">%s</span>.',

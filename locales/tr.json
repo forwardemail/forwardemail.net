@@ -7365,5 +7365,16 @@
   "You cannot have more than 3 aliases for this domain.": "Bu alan adı için 3'ten fazla takma adınız olamaz.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad kullanıcı adı eksik veya algılanamadı, lütfen daha sonra tekrar deneyin.",
   "Invalid response from Launchpad API, please try again later.": "Launchpad API'sinden geçersiz yanıt. Lütfen daha sonra tekrar deneyin.",
-  "You have exceeded your daily SMTP outbound rate limit.": "Günlük SMTP giden hız sınırınızı aştınız."
+  "You have exceeded your daily SMTP outbound rate limit.": "Günlük SMTP giden hız sınırınızı aştınız.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }

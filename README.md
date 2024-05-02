@@ -154,7 +154,7 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 
 Once you have followed [Requirements](#requirements), you should now have all the dependencies, repository, and npm packages installed.
 
-You can start any of the services using our pre-built commands to make it easy.  Note that all of these pre-built commands are using [nps](https://github.com/sezna/nps) and [ttab](https://github.com/mklement0/ttab) (it will automatically open a new tab in terminal for you!).
+You can start any of the services using our pre-built commands to make it easy.  Note that all of these pre-built commands are using [nps](https://github.com/sezna/nps).
 
 | Service Name | Command            | Default Development Port | Development Preview URL |
 | ------------ | ------------------ | :----------------------: | ----------------------- |

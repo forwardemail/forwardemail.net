@@ -5,12 +5,28 @@ block content
     .row
       .col-12
         .card.border-dark.d-block
-          h1.h5.card-header.text-center= t("Your Help Request")
+          h1.h5.card-header.text-center= "Your Help Request"
           .card-body.p-0
-            //- replace line breaks with <br>
             .p-3
-              .card-text.text-monospace.small!= splitLines(response.message).join("<br />")
+              .card-text
+                = "Hi there, "
+                br
+                br
+                != splitLines(response.message).join("<br />")
+                br
+                br
+                = "Thank you,"
+                br
+                br
+                = "Forward Email"
+                br
+                a(href="https://forwardemail.net") https://forwardemail.net
+                br
+                br
+                = "P.S. Happy with our efforts? Write us a review @ "
+                br
+                a(href="https://www.trustpilot.com/review/forwardemail.net") https://www.trustpilot.com/review/forwardemail.net
           .card-footer.text-center.small.text-muted
-            strong= t("Have attachments?")
+            strong= "Have attachments?"
             = " "
-            = t("Reply to this email with them.")
+            = "Reply to this email with them."

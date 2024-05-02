@@ -7370,5 +7370,16 @@
   "You cannot have more than 3 aliases for this domain.": "Du kan ikke ha mer enn 3 aliaser for dette domenet.",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad-brukernavnet manglet eller ble ikke oppdaget. Prøv igjen senere.",
   "Invalid response from Launchpad API, please try again later.": "Ugyldig svar fra Launchpad API. Prøv igjen senere.",
-  "You have exceeded your daily SMTP outbound rate limit.": "Du har overskredet den daglige grensen for utgående SMTP-hastighet."
+  "You have exceeded your daily SMTP outbound rate limit.": "Du har overskredet den daglige grensen for utgående SMTP-hastighet.",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }

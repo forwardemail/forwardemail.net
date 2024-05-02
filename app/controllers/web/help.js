@@ -8,7 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
-const email = require('#helpers/email');
+const emailHelper = require('#helpers/email');
 const { Domains, Inquiries } = require('#models');
 const config = require('#config');
 
@@ -43,7 +43,15 @@ async function help(ctx) {
 
     ctx.logger.debug('created inquiry', { inquiry });
 
-    const emaild = await email({
+    const user = ctx.state.user.toObject();
+
+    const emoji = ctx.state.emoji(user.plan === 'free' ? 'mega' : 'star');
+    const createdAt = new Date(inquiry.created_at).getTime();
+    const subject = `${emoji} ${
+      user.plan === 'free' ? '' : 'Premium Support: '
+    }${ctx.translate('YOUR_HELP_REQUEST')} #${createdAt}`;
+
+    const email = await emailHelper({
       template: 'inquiry',
       message: {
         to: ctx.state.user[config.userFields.fullEmail],
@@ -52,16 +60,15 @@ async function help(ctx) {
       locals: {
         user: ctx.state.user.toObject(),
         domains,
-        inquiry
+        inquiry,
+        subject
       }
     });
-
-    const { subject } = JSON.parse(emaild.message);
 
     await Inquiries.findOneAndUpdate(
       { id: inquiry.id },
       {
-        $set: { references: [emaild.messageId], subject }
+        $set: { references: [email.messageId], subject }
       }
     );
 

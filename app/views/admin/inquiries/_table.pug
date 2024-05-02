@@ -15,9 +15,6 @@ include ../../_pagination
           +sortHeader('created_at', 'Created', '#table-inquiries')
         th(scope="col")
           +sortHeader('updated_at', 'Updated', '#table-inquiries')
-        if passport && passport.otp
-          th(scope="col")
-            +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-inquiries')
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if inquiries.length === 0
@@ -27,11 +24,11 @@ include ../../_pagination
           tr
             td.align-middle.text-center
               .form-group.form-check.form-check-inline.mb-0
-                  input#is-inquiry-selected.form-check-input(
-                    type="checkbox",
-                    name="is_inquiry_selected",
-                    value=inquiry.id
-                  )
+                input#is-inquiry-selected.form-check-input(
+                  type="checkbox",
+                  name="is_inquiry_selected",
+                  value=inquiry.id
+                )
             td.align-middle
               a(
                 href=`mailto:${inquiry.email}`,
@@ -39,9 +36,9 @@ include ../../_pagination
                 rel="noopener noreferrer"
               )= inquiry.email
             td.align-middle
-              =inquiry.message
+              = inquiry.message
             td.align-middle
-              =inquiry.plan
+              = inquiry.plan
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
             )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
@@ -68,35 +65,31 @@ include ../../_pagination
                   ): i.fa.fa-fw.fa-remove
   button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
   #bulk-reply-modal.modal.fade(
-      tabindex="-1",
-      role="dialog",
-      aria-labelledby="modal-bulk-reply-title",
-      aria-hidden="true"
-    )
-      .modal-dialog(role="document")
-        .modal-content
-          .modal-header.text-center.d-block
-            h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
-            button.close(
-              type="button",
-              data-dismiss="modal",
-              aria-label="Close"
-            )
-              span(aria-hidden="true") &times;
-          .modal-body
-            .text-center
-              form.form-group
-                label(for="bulk-reply-message")
-                 h5= t("Message")
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-bulk-reply-title",
+    aria-hidden="true"
+  )
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          .text-center
+            form.form-group
+              label(for="bulk-reply-message")
+                h5= t("Message")
                   = " "
-                textarea#textarea-bulk-reply-message.form-control(
-                  name="bulk-reply-message",
-                  maxlength=300,
-                  rows=8
-                )
-                p.form-text.small.text-black.text-themed-50= t("Message has a max of 300 characters.")
-                button.btn.btn-lg.btn-block.btn-primary(type='button' id='submit-bulk-reply')
-                  i.fa.fa-edit
-                  = " "
-                  = t("Submit Bulk Reply")
+              textarea#textarea-bulk-reply-message.form-control(
+                name="bulk-reply-message",
+                rows=8
+              )
+              button#submit-bulk-reply.btn.btn-lg.btn-block.btn-primary.mt-3(
+                type="button"
+              )
+                i.fa.fa-edit
+                = " "
+                = t("Submit Bulk Reply")
 +paginate('#table-inquiries')

@@ -870,25 +870,14 @@ async function handleSubmitBulkReply() {
     const url = `${window.location.pathname}/bulk`;
     const response = await sendRequest({ ids, message }, url);
 
-    if (response.err) throw response.err;
-
-    if (
-      typeof response.body !== 'object' ||
-      response.body === null ||
-      typeof response.body.challenge !== 'string'
-    )
-      throw new Error(
-        response.statusText ||
-          response.text ||
-          'Invalid response, please try again'
-      );
+    if (response.err) {
+      console.log('error in response', { response });
+      throw response.err;
+    }
 
     spinner.hide();
-    Swal.fire(
-      window._types.error,
-      `Successfully replied to ${ids.length} inquiries!`,
-      'success'
-    );
+
+    $('#bulk-reply-modal').modal('hide');
   } catch (err) {
     console.error(err);
     spinner.hide();

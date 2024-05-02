@@ -7365,5 +7365,16 @@
   "You cannot have more than 3 aliases for this domain.": "このドメインには 3 つ以上のエイリアスを設定することはできません。",
   "Launchpad username was missing or not detected, please try again later.": "Launchpad のユーザー名が見つからないか、検出されませんでした。後でもう一度お試しください。",
   "Invalid response from Launchpad API, please try again later.": "Launchpad API からの応答が無効です。後でもう一度お試しください。",
-  "You have exceeded your daily SMTP outbound rate limit.": "1 日の SMTP 送信レート制限を超えました。"
+  "You have exceeded your daily SMTP outbound rate limit.": "1 日の SMTP 送信レート制限を超えました。",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Inquiries": "Inquiries",
+  "Selected": "Selected",
+  "Bulk Reply": "Bulk Reply",
+  "Submit Bulk Reply": "Submit Bulk Reply",
+  "P.S. Happy with our efforts? Write us a review @": "P.S. Happy with our efforts? Write us a review @",
+  "P.S. Happy with our efforts? Write us a review @ ": "P.S. Happy with our efforts? Write us a review @ ",
+  "Hi there,": "Hi there,",
+  "No inquiries exist for that search.": "No inquiries exist for that search.",
+  "Thank you,": "Thank you,",
+  "Hi there, ": "Hi there, "
 }
