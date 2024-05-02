@@ -874,7 +874,7 @@ test('onGetQuotaRoot', async (t) => {
     await delay(ms('1s'));
     await t.context.wsp.request({
       action: 'size',
-      timeout: ms('5s'),
+      timeout: ms('15s'),
       alias_id: alias.id
     });
 
@@ -907,7 +907,7 @@ test('onGetQuotaRoot', async (t) => {
     await delay(ms('1s'));
     await t.context.wsp.request({
       action: 'size',
-      timeout: ms('5s'),
+      timeout: ms('15s'),
       alias_id: alias.id
     });
     const storageUsed = await Aliases.getStorageUsed(alias);
@@ -968,7 +968,7 @@ ZXhhbXBsZQo=
     await delay(ms('1s'));
     await t.context.wsp.request({
       action: 'size',
-      timeout: ms('5s'),
+      timeout: ms('15s'),
       alias_id: alias.id
     });
     // const message = await Messages.findOne(t.context.imap, session, {
@@ -994,7 +994,7 @@ test('onGetQuota', async (t) => {
   await delay(ms('1s'));
   await t.context.wsp.request({
     action: 'size',
-    timeout: ms('5s'),
+    timeout: ms('15s'),
     alias_id: t.context.alias.id
   });
   const quota = await t.context.imapFlow.getQuota();
@@ -1179,7 +1179,7 @@ ZXhhbXBsZQo=
 
   t.true(res);
 
-  if (!data) await pWaitFor(() => Boolean(data), { timeout: ms('5s') });
+  if (!data) await pWaitFor(() => Boolean(data), { timeout: ms('15s') });
 
   t.is(data.path, 'expunge');
   t.is(data.vanished, false);

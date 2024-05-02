@@ -107,7 +107,7 @@ router
       }
 
       if (!parseMMD)
-        await pWaitFor(() => Boolean(parseMMD), { timeout: ms('5s') });
+        await pWaitFor(() => Boolean(parseMMD), { timeout: ms('15s') });
 
       browser = await puppeteer.launch();
       const svg = await parseMMD(browser, code, 'png', {

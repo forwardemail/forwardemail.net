@@ -210,7 +210,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
                 } catch {}
               },
               multiArgs: true,
-              timeout: ms('5s')
+              timeout: ms('10s')
             });
             const user = JSON.parse(response);
             if (typeof user.password !== 'string') {
@@ -238,7 +238,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           await wsp.request(
             {
               action: 'size',
-              timeout: ms('5s'),
+              timeout: ms('15s'),
               alias_id: id
             },
             0

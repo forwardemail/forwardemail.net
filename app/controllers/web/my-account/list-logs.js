@@ -24,7 +24,7 @@ const getLogsCsv = require('#helpers/get-logs-csv');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const { Aliases, Logs } = require('#models');
 
-const THIRTY_SECONDS = ms('30s');
+const SIXTY_SECONDS = ms('60s');
 
 // eslint-disable-next-line complexity
 async function listLogs(ctx) {
@@ -398,9 +398,9 @@ async function listLogs(ctx) {
       .skip(ctx.paginate.skip)
       .sort(ctx.query.sort || '-created_at')
       .lean()
-      .maxTimeMS(THIRTY_SECONDS)
+      .maxTimeMS(SIXTY_SECONDS)
       .exec(),
-    Logs.countDocuments(query).maxTimeMS(THIRTY_SECONDS)
+    Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS)
   ]);
   ctx.state.logs = logs;
   ctx.state.itemCount = itemCount;

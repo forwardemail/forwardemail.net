@@ -488,7 +488,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     try {
       const size = await this.wsp.request({
         action: 'size',
-        timeout: ms('5s'),
+        timeout: ms('15s'),
         alias_id: session.user.alias_id
       });
       this.logger.debug('size updated', size);

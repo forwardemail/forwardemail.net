@@ -14,7 +14,7 @@ class RetryClient extends undici.Client {
     super(opts);
 
     const timeout =
-      typeof opts?.timeout === 'number' ? opts.timeout : ms('30s');
+      typeof opts?.timeout === 'number' ? opts.timeout : ms('60s');
     const retries = typeof opts?.retries === 'number' ? opts.retries : 3;
 
     // exponential retry backoff (2, 4, 8)

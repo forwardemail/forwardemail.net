@@ -729,7 +729,7 @@ async function parsePayload(data, ws) {
                   // eslint-disable-next-line no-await-in-loop
                   await this.wsp.request.call(this, {
                     action: 'size',
-                    timeout: ms('5s'),
+                    timeout: ms('15s'),
                     alias_id: payload.session.user.alias_id,
                     lock: payload?.lock
                   });
@@ -1122,7 +1122,7 @@ async function parsePayload(data, ws) {
                     } catch {}
                   },
                   multiArgs: true,
-                  timeout: ms('5s')
+                  timeout: ms('15s')
                 });
 
                 const user = JSON.parse(response);
@@ -1350,7 +1350,7 @@ async function parsePayload(data, ws) {
                   try {
                     await this.wsp.request.call(this, {
                       action: 'size',
-                      timeout: ms('5s'),
+                      timeout: ms('15s'),
                       alias_id: alias.id,
                       lock: payload?.lock
                     });
@@ -1452,7 +1452,7 @@ async function parsePayload(data, ws) {
         try {
           await this.wsp.request.call(this, {
             action: 'size',
-            timeout: ms('5s'),
+            timeout: ms('15s'),
             alias_id: payload.session.user.alias_id,
             lock: payload?.lock
           });
@@ -1817,7 +1817,7 @@ async function parsePayload(data, ws) {
         try {
           await this.wsp.request.call(this, {
             action: 'size',
-            timeout: ms('5s'),
+            timeout: ms('15s'),
             alias_id: payload.session.user.alias_id,
             lock: payload?.lock
           });
@@ -1885,7 +1885,7 @@ async function parsePayload(data, ws) {
         try {
           await this.wsp.request.call(this, {
             action: 'size',
-            timeout: ms('5s'),
+            timeout: ms('15s'),
             alias_id: payload.session.user.alias_id,
             lock
           });

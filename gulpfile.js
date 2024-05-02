@@ -311,7 +311,8 @@ function pug() {
 }
 
 async function img() {
-  if (!imagemin) await pWaitFor(() => Boolean(imagemin), { timeout: ms('5s') });
+  if (!imagemin)
+    await pWaitFor(() => Boolean(imagemin), { timeout: ms('15s') });
   let stream = src('assets/img/**/*', {
     base: config.assetsBase,
     since: lastRun(img)

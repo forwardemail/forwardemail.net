@@ -290,7 +290,7 @@ const config = {
   removedEmailDomain: env.REMOVED_EMAIL_DOMAIN,
 
   // SQLite busy_timeout value (how long we should wait for locking too)
-  busyTimeout: ms('10s'),
+  busyTimeout: ms('15s'),
 
   // server
   env: env.NODE_ENV.toLowerCase(),

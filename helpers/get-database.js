@@ -681,7 +681,7 @@ async function getDatabase(
     try {
       if (lock) await releaseLock(instance, db, lock);
     } catch (err) {
-      logger.fatal(err, { alias, session });
+      logger.debug(err, { alias, session });
     }
 
     // if alias db size was 0 then we should update it
@@ -693,7 +693,7 @@ async function getDatabase(
       if (storageUsed === 0) {
         const size = await instance.wsp.request({
           action: 'size',
-          timeout: ms('5s'),
+          timeout: ms('15s'),
           alias_id: alias.id
         });
         logger.debug('updating size', { size, alias, session });
@@ -741,7 +741,7 @@ function retryGetDatabase(...args) {
     },
     {
       retries: 2,
-      minTimeout: ms('5s'),
+      minTimeout: ms('15s'),
       onFailedAttempt(err) {
         if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return;
         if (isTimeoutError(err)) return;

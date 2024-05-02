@@ -43,7 +43,7 @@ async function acquireLock(instance, db) {
 
   if (!id) throw new TypeError('No alias ID or DB name found');
 
-  const lock = await instance.lock.waitAcquireLock(id, ms('15s'), ms('30s'));
+  const lock = await instance.lock.waitAcquireLock(id, ms('30s'), ms('60s'));
 
   if (!lock.success)
     throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));

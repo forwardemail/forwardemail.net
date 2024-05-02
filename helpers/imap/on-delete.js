@@ -181,7 +181,7 @@ async function onDelete(path, session, fn) {
     try {
       await this.wsp.request({
         action: 'size',
-        timeout: ms('5s'),
+        timeout: ms('15s'),
         alias_id: session.user.alias_id
       });
     } catch (err) {

@@ -325,7 +325,7 @@ async function processEvent(ctx, event) {
       });
       if (!user) throw new Error('User did not exist for customer');
       // artificially wait 5s for refund to process
-      await delay(ms('5s'));
+      await delay(ms('15s'));
       //
       // NOTE: this re-uses the payment intent mapper that is also used
       //       in the job for `sync-stripe-payments` which syncs payments

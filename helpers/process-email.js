@@ -817,12 +817,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
               wkd._fetch = (url) => {
                 return fetch(url, {
                   signal: AbortSignal.timeout(
-                    config.env === 'test' ? ms('2s') : ms('5s')
+                    config.env === 'test' ? ms('2s') : ms('30s')
                   ),
                   dispatcher: new Agent({
-                    headersTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
-                    connectTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
-                    bodyTimeout: config.env === 'test' ? ms('2s') : ms('5s'),
+                    headersTimeout:
+                      config.env === 'test' ? ms('2s') : ms('30s'),
+                    connectTimeout:
+                      config.env === 'test' ? ms('2s') : ms('30s'),
+                    bodyTimeout: config.env === 'test' ? ms('2s') : ms('30s'),
                     connect: {
                       lookup(hostname, options, fn) {
                         resolver

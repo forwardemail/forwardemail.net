@@ -210,7 +210,7 @@ function createWebSocketAsPromised(options = {}) {
   // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
   wsp._interval = setInterval(() => {
     if (wsp.isOpened) wsp.send('ping');
-  }, ms('30s'));
+  }, ms('60s'));
 
   wsp.onClose.addListener(
     () => {
