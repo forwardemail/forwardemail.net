@@ -7374,5 +7374,6 @@
   "Thank you,": "Gracias,",
   "Hi there, ": "Hola,",
   "Inquiry does not exist.": "La consulta no existe.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Se produjo un error al intentar enviar una respuesta masiva. Inténtalo de nuevo."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Se produjo un error al intentar enviar una respuesta masiva. Inténtalo de nuevo.",
+  "Resolve": "Resolve"
 }

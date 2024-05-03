@@ -7223,5 +7223,6 @@
   "Thank you,": "Kiitos,",
   "Hi there, ": "Hei siellä,",
   "Inquiry does not exist.": "Kyselyä ei ole olemassa.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Joukkovastauksen lähettämisessä tapahtui virhe. Yritä uudelleen."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Joukkovastauksen lähettämisessä tapahtui virhe. Yritä uudelleen.",
+  "Resolve": "Resolve"
 }

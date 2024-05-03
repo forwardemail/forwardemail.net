@@ -7376,5 +7376,6 @@
   "Thank you,": "Teşekkür ederim,",
   "Hi there, ": "Merhaba,",
   "Inquiry does not exist.": "Sorgulama mevcut değil.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Toplu yanıt gönderilmeye çalışılırken bir hata oluştu. Lütfen tekrar deneyin."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Toplu yanıt gönderilmeye çalışılırken bir hata oluştu. Lütfen tekrar deneyin.",
+  "Resolve": "Resolve"
 }

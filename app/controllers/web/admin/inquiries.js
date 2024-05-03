@@ -87,11 +87,13 @@ async function retrieve(ctx) {
   return ctx.render('admin/inquiries/retrieve');
 }
 
-async function remove(ctx) {
+async function resolve(ctx) {
   const inquiry = await Inquiries.findById(ctx.params.id);
   if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
 
-  await Inquiries.findById({ id: inquiry.id });
+  await Inquiries.findByIdAndUpdate(inquiry._id, {
+    $set: { is_resolved: true }
+  });
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -213,4 +215,4 @@ async function bulkReply(ctx) {
   else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
-module.exports = { list, retrieve, remove, reply, bulkReply };
+module.exports = { list, retrieve, resolve, reply, bulkReply };

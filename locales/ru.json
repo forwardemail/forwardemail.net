@@ -7376,5 +7376,6 @@
   "Thank you,": "Спасибо,",
   "Hi there, ": "Всем привет,",
   "Inquiry does not exist.": "Опрос не существует.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Произошла ошибка при попытке отправить массовый ответ. Пожалуйста, попробуйте еще раз."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Произошла ошибка при попытке отправить массовый ответ. Пожалуйста, попробуйте еще раз.",
+  "Resolve": "Resolve"
 }

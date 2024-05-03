@@ -3849,5 +3849,7 @@
   "Hi there, ": "Hej,",
   "Thank you,": "Tak skal du have,",
   "Inquiry does not exist.": "Forespørgsel eksisterer ikke.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Der opstod en fejl under forsøg på at sende massesvar. Prøv igen."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Der opstod en fejl under forsøg på at sende massesvar. Prøv igen.",
+  "Resolve": "Resolve",
+  "Request Time-out": "Request Time-out"
 }

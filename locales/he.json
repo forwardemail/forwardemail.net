@@ -5366,5 +5366,6 @@
   "Hi there, ": "שלום שם,",
   "Thank you,": "תודה,",
   "Inquiry does not exist.": "חקירה לא קיימת.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "אירעה שגיאה בעת ניסיון לשלוח תשובה בכמות גדולה. בבקשה נסה שוב."
+  "An error occurred while attempting to send bulk reply. Please try again.": "אירעה שגיאה בעת ניסיון לשלוח תשובה בכמות גדולה. בבקשה נסה שוב.",
+  "Resolve": "Resolve"
 }

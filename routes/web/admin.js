@@ -57,7 +57,7 @@ router
   .get('/inquiries/:id', web.admin.inquiries.retrieve)
   .post('/inquiries/bulk', web.admin.inquiries.bulkReply)
   .post('/inquiries/:id', web.admin.inquiries.reply)
-  .delete('/inquiries/:id', web.admin.inquiries.remove)
+  .put('/inquiries/:id', web.admin.inquiries.resolve)
 
   // domains
   .get('/domains', paginate.middleware(10, 50), web.admin.domains.list)

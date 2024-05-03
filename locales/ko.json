@@ -7376,5 +7376,6 @@
   "Thank you,": "감사합니다,",
   "Hi there, ": "안녕하세요,",
   "Inquiry does not exist.": "문의가 존재하지 않습니다.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "대량 답장을 보내는 동안 오류가 발생했습니다. 다시 시도해 주세요."
+  "An error occurred while attempting to send bulk reply. Please try again.": "대량 답장을 보내는 동안 오류가 발생했습니다. 다시 시도해 주세요.",
+  "Resolve": "Resolve"
 }
