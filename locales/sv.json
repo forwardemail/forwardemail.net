@@ -7376,5 +7376,6 @@
   "Thank you,": "Tack,",
   "Hi there, ": "Hallå där,",
   "Inquiry does not exist.": "Förfrågan finns inte.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Ett fel uppstod vid försök att skicka masssvar. Var god försök igen."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Ett fel uppstod vid försök att skicka masssvar. Var god försök igen.",
+  "Resolve": "Resolve"
 }

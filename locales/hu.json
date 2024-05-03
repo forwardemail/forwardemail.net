@@ -7376,5 +7376,6 @@
   "Thank you,": "Köszönöm,",
   "Hi there, ": "Szia,",
   "Inquiry does not exist.": "A lekérdezés nem létezik.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Hiba történt a tömeges válasz küldése közben. Kérlek próbáld újra."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Hiba történt a tömeges válasz küldése közben. Kérlek próbáld újra.",
+  "Resolve": "Resolve"
 }

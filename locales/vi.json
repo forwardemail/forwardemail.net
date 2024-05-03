@@ -4873,5 +4873,6 @@
   "Hi there, ": "Chào bạn,",
   "Thank you,": "Cảm ơn,",
   "Inquiry does not exist.": "Yêu cầu không tồn tại.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Đã xảy ra lỗi khi cố gắng gửi thư trả lời hàng loạt. Vui lòng thử lại."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Đã xảy ra lỗi khi cố gắng gửi thư trả lời hàng loạt. Vui lòng thử lại.",
+  "Resolve": "Resolve"
 }

@@ -31,14 +31,14 @@ include ../../_pagination
                 )
             td.align-middle
               a(
-                href=`mailto:${inquiry.email}`,
+                href=l(`/admin/users?mongodb_query={ email: "${user.email}" }`),
                 target="_blank",
                 rel="noopener noreferrer"
               )= inquiry.email
             td.align-middle
               = inquiry.message
             td.align-middle
-              = inquiry.plan
+              = titleize(humanize(inquiry.plan))
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
             )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
@@ -47,7 +47,7 @@ include ../../_pagination
             )= dayjs(inquiry.updated_at).format("M/D/YY h:mm A z")
             td.align-middle
               .btn-group(role="group", aria-label=t("Actions"))
-                a.btn.btn-secondary(
+                a.btn.btn-primary(
                   href=l(`/admin/inquiries/${inquiry.id}`),
                   data-toggle="tooltip",
                   data-title=t("Edit")
@@ -57,12 +57,12 @@ include ../../_pagination
                   method="POST",
                   autocomplete="off"
                 )
-                  input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-danger(
+                  input(type="hidden", name="_method", value="PUT")
+                  button.btn.btn-secondary(
                     type="submit",
                     data-toggle="tooltip",
-                    data-title=t("Remove")
-                  ): i.fa.fa-fw.fa-remove
+                    data-title=t("Resolve")
+                  ): i.fa.fa-fw.fa-regular.fa-check-circle
   button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
   #bulk-reply-modal.modal.fade(
     tabindex="-1",

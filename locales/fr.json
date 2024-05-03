@@ -4867,5 +4867,6 @@
   "Hi there, ": "Salut,",
   "Thank you,": "Merci,",
   "Inquiry does not exist.": "L'enquête n'existe pas.",
-  "An error occurred while attempting to send bulk reply. Please try again.": "Une erreur s'est produite lors de la tentative d'envoi d'une réponse groupée. Veuillez réessayer."
+  "An error occurred while attempting to send bulk reply. Please try again.": "Une erreur s'est produite lors de la tentative d'envoi d'une réponse groupée. Veuillez réessayer.",
+  "Resolve": "Resolve"
 }

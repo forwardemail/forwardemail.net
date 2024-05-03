@@ -7376,5 +7376,6 @@
   "Thank you,": "ขอบคุณ,",
   "Hi there, ": "สวัสดี,",
   "Inquiry does not exist.": "ไม่มีการสอบถามข้อมูล",
-  "An error occurred while attempting to send bulk reply. Please try again.": "เกิดข้อผิดพลาดขณะพยายามส่งการตอบกลับจำนวนมาก กรุณาลองอีกครั้ง."
+  "An error occurred while attempting to send bulk reply. Please try again.": "เกิดข้อผิดพลาดขณะพยายามส่งการตอบกลับจำนวนมาก กรุณาลองอีกครั้ง.",
+  "Resolve": "Resolve"
 }

@@ -7376,5 +7376,6 @@
   "Thank you,": "ありがとう、",
   "Hi there, ": "やあ、 ",
   "Inquiry does not exist.": "問い合わせが存在しません。",
-  "An error occurred while attempting to send bulk reply. Please try again.": "一括返信の送信中にエラーが発生しました。もう一度お試しください。"
+  "An error occurred while attempting to send bulk reply. Please try again.": "一括返信の送信中にエラーが発生しました。もう一度お試しください。",
+  "Resolve": "Resolve"
 }
