@@ -4,6 +4,7 @@
  */
 
 const fs = require('node:fs');
+const os = require('node:os');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -26,6 +27,8 @@ const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
+
+const HOSTNAME = os.hostname();
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -160,7 +163,7 @@ async function getDatabase(
   //
   if (readonly) {
     let exists = false;
-    if (env.SQLITE_RCLONE_ENABLED) {
+    if (env.SQLITE_RCLONE_ENABLED && HOSTNAME === env.IMAP_HOST) {
       try {
         const stats = await fs.promises.stat(dbFilePath);
         if (stats.isFile()) exists = true;
@@ -192,7 +195,7 @@ async function getDatabase(
       // is wrong with the local file system or rclone mount
       //
       if (newlyCreated) {
-        if (env.SQLITE_RCLONE_ENABLED) {
+        if (env.SQLITE_RCLONE_ENABLED && HOSTNAME === env.IMAP_HOST) {
           const err = new TypeError(
             'Newly created and still having readonly issues'
           );
