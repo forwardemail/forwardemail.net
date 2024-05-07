@@ -3,6 +3,7 @@
     {
       "name": "sqlite",
       "script": "sqlite.js",
+      "max_memory_restart": "8G",
       "wait_ready": true,
       "exec_mode": "cluster",
       "instances": "max",
