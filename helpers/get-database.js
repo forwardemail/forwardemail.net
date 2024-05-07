@@ -128,7 +128,10 @@ async function getDatabase(
 
   // instance must be either IMAP, POP3, SQLite, or CalDAV
   if (
-    !['IMAP', 'POP3', 'SQLite', 'CalDAV'].includes(instance?.constructor?.name)
+    !['IMAP', 'POP3', 'SQLite', 'CalDAV'].includes(
+      instance?.constructor?.name
+    ) &&
+    HOSTNAME !== env.SQLITE_HOST
   )
     throw new TypeError(
       'Instance must be either IMAP, POP3, SQLite, or CalDAV'
