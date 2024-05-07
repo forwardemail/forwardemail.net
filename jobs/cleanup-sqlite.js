@@ -29,11 +29,11 @@ const sharedConfig = require('@ladjs/shared-config');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
-const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const wsp = require('#helpers/wsp-server');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
@@ -80,8 +80,6 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
   await setupMongoose(logger);
 
   subscriber.subscribe('sqlite_auth_response');
-
-  const wsp = createWebSocketAsPromised();
 
   try {
     if (isCancelled) return;
@@ -366,12 +364,6 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         )}</code></pre>`
       }
     });
-  }
-
-  try {
-    wsp.close();
-  } catch (err) {
-    logger.fatal(err);
   }
 
   if (parentPort) parentPort.postMessage('done');

@@ -15,6 +15,7 @@
     {
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
+      "max_memory_restart": "8G",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
