@@ -182,7 +182,8 @@ async function getDatabase(
 
       if (
         instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-        (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')])
+        (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+        !instance[Symbol.for('isWSP')]
       )
         throw new TypeError('WebSocketAsPromised instance required');
 
