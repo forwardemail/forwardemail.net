@@ -2120,7 +2120,7 @@ async function parsePayload(data, ws) {
 
     if (db && db.open && typeof db.close === 'function') {
       try {
-        db.pragma('optimize');
+        if (typeof db.pragma === 'function') db.pragma('optimize');
         db.close();
       } catch (err) {
         logger.fatal(err, { payload });
