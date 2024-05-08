@@ -16,6 +16,7 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Lock = require('ioredfour');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
@@ -46,6 +47,12 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client, subscriber],
   logger
+});
+
+// bind in order for locking to work
+wsp.lock = new Lock({
+  redis: client,
+  namespace: config.imapLockNamespace
 });
 
 // store boolean if the job is cancelled
