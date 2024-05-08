@@ -90,6 +90,7 @@ const REGEX_MAIL_DISPOSABLE_INBOX = new RE2(
 //
 // TODO: this should be moved to redis or its own package under forwardemail or @ladjs
 //
+/*
 const disposableDomains = new Set();
 
 async function crawlDisposable() {
@@ -110,6 +111,7 @@ async function crawlDisposable() {
     logger.error(err);
   }
 }
+*/
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
 
@@ -1691,9 +1693,9 @@ function getNameRestrictions(domainName) {
   const isGood = config.goodDomains.some((ext) =>
     rootDomain.endsWith(`.${ext}`)
   );
-  const isDisposable =
-    REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain) ||
-    disposableDomains.has(rootDomain);
+  const isDisposable = REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain);
+  // REGEX_MAIL_DISPOSABLE_INBOX.test(rootDomain) ||
+  // disposableDomains.has(rootDomain);
   // NOTE: this also takes into account `nic.ext` for registrars
   const isRestricted = config.restrictedDomains.some(
     (ext) =>
@@ -2225,5 +2227,5 @@ Domains.statics.getStorageUsed = getStorageUsed;
 
 module.exports = conn.model('Domains', Domains);
 
-setInterval(crawlDisposable, ms('1d'));
-crawlDisposable();
+// setInterval(crawlDisposable, ms('1d'));
+// crawlDisposable();

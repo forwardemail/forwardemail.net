@@ -674,28 +674,28 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 //
 // TODO: this should be moved to redis or its own package under forwardemail or @ladjs
 //
-const disposableDomains = new Set();
-async function crawlDisposable() {
-  try {
-    const response = await retryRequest(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
-    );
+// const disposableDomains = new Set();
+// async function crawlDisposable() {
+//   try {
+//     const response = await retryRequest(
+//       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+//     );
+//
+//     const json = await response.body.json();
+//     if (!Array.isArray(json) || json.length === 0) {
+//       throw new Error('Disposable did not crawl data.');
+//     }
+//
+//     for (const d of json) {
+//       disposableDomains.add(d);
+//     }
+//   } catch (err) {
+//     logger.error(err);
+//   }
+// }
 
-    const json = await response.body.json();
-    if (!Array.isArray(json) || json.length === 0) {
-      throw new Error('Disposable did not crawl data.');
-    }
-
-    for (const d of json) {
-      disposableDomains.add(d);
-    }
-  } catch (err) {
-    logger.error(err);
-  }
-}
-
-setInterval(crawlDisposable, ms('1d'));
-crawlDisposable();
+// setInterval(crawlDisposable, ms('1d'));
+// crawlDisposable();
 
 // This ensures that `email` was already validated, trimmed, lowercased
 Users.pre('save', async function (next) {
@@ -705,6 +705,7 @@ Users.pre('save', async function (next) {
     return next();
   }
 
+  /*
   const domain = this.email.split('@')[1];
   if (disposableDomains.size === 0) {
     await crawlDisposable();
@@ -720,6 +721,7 @@ Users.pre('save', async function (next) {
     error.no_translate = true;
     return next(error);
   }
+  */
 
   // TODO: prevent user from signing up with one of our global vanity names
   next();
