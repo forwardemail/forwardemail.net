@@ -157,7 +157,7 @@
     "lazyload": "2.0.0-rc.2",
     "libmime": "5.3.5",
     "lodash": "4.17.21",
-    "mailauth": "4.6.5",
+    "mailauth": "4.6.6",
     "mailparser": "3.7.0",
     "mailsplit": "5.4.0",
     "mandarin": "5.0.6",
@@ -180,7 +180,7 @@
     "mongoose-validation-error-transform": "0.0.6",
     "ms": "2.1.3",
     "multer": "2.0.0-rc.4",
-    "mx-connect": "1.5.3",
+    "mx-connect": "1.5.4",
     "node-gzip": "1.1.2",
     "node-html-parser": "6.1.13",
     "node-os-utils": "1.3.7",
@@ -265,7 +265,7 @@
     "wildduck": "1.42.1",
     "wkhtmltopdf": "0.4.0",
     "ws": "8.16.0",
-    "zone-mta": "3.9.5"
+    "zone-mta": "3.9.6"
   },
   "devDependencies": {
     "@babel/cli": "7.23.9",
