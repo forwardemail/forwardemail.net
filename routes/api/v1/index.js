@@ -294,4 +294,7 @@ router
     api.v1.aliases.retrieve
   );
 
+// inquiries
+router.post('/inquiries', api.v1.inquiries.create);
+
 module.exports = router;

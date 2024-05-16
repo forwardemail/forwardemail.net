@@ -877,7 +877,7 @@ async function handleSubmitBulkReply() {
 
     spinner.hide();
 
-    $('#bulk-reply-modal').modal('hide');
+    location.reload(true);
   } catch (err) {
     console.error(err);
     spinner.hide();

@@ -39,6 +39,16 @@ const Inquiries = new mongoose.Schema({
   subject: {
     type: String,
     required: false
+  },
+  attachments: {
+    type: Array,
+    required: false,
+    default: []
+  },
+  is_webhook: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 

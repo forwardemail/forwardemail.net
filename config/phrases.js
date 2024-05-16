@@ -219,6 +219,9 @@ module.exports = {
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_INQUIRY: 'Inquiry does not exist.',
+  INVALID_INQUIRY_WEBHOOK_EMAIL:
+    'Invalid inquiry webhook email. Requires support@ emails.',
+  INVALID_INQUIRY_WEBHOOK_PAYLOAD: 'Invalid inquiry webhook payload.',
   INVALID_USER: 'User does not exist.',
   INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',
