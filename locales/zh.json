@@ -7070,5 +7070,6 @@
   "Hi there, ": "你好呀， ",
   "Inquiry does not exist.": "询价不存在。",
   "An error occurred while attempting to send bulk reply. Please try again.": "尝试发送批量回复时出错。请重试。",
-  "Resolve": "Resolve"
+  "Resolve": "解决",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "请注意，为了维护 IP 信誉并确保可传递性，我们针对每个域设置了手动审核流程，以批准出站 SMTP。这通常需要不到 24 小时的时间，大多数请求会在 1-2 小时内得到处理。在不久的将来，我们的目标是通过额外的垃圾邮件控制和警报使此过程即时完成。此过程可确保您的电子邮件到达收件箱，并且您的邮件不会被标记为垃圾邮件。"
 }

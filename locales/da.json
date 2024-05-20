@@ -3850,6 +3850,20 @@
   "Thank you,": "Tak skal du have,",
   "Inquiry does not exist.": "Forespørgsel eksisterer ikke.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Der opstod en fejl under forsøg på at sende massesvar. Prøv igen.",
-  "Resolve": "Resolve",
-  "Request Time-out": "Request Time-out"
+  "Resolve": "Beslutte",
+  "Request Time-out": "Bed om pause",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Bemærk venligst, at for at vedligeholde IP-omdømme og sikre leveringsdygtighed har vi en manuel gennemgangsproces på et per-domæne grundlag for udgående SMTP-godkendelse. Dette tager typisk mindre end 24 timer, hvor de fleste anmodninger efterkommes inden for 1-2 timer. I den nærmeste fremtid sigter vi mod at gøre denne proces øjeblikkelig med yderligere spamkontroller og advarsler. Denne proces sikrer, at dine e-mails når indbakken, og at dine beskeder ikke bliver markeret som spam.",
+  "<strong>Warning:</strong> This removes the current password for this alias.": "<strong>Warning:</strong> This removes the current password for this alias.",
+  "Need to email instructions to someone?": "Need to email instructions to someone?",
+  "Leave blank to get password instantly.": "Leave blank to get password instantly.",
+  "Enter a strong new password:": "Enter a strong new password:",
+  "New Password": "New Password",
+  "Leave blank to use our strong and random 24-character password generator.": "Leave blank to use our strong and random 24-character password generator.",
+  "Enter current password to keep existing mailbox and messages:": "Enter current password to keep existing mailbox and messages:",
+  "This will <a href=\"%s\" class=\"alert-link\" target=\"_blank\">re-encrypt your mailbox</a> with a new password.": "This will <a href=\"%s\" class=\"alert-link\" target=\"_blank\">re-encrypt your mailbox</a> with a new password.",
+  "Don't remember your current password? If you check this, then we'll delete the entire mailbox and all messages for this alias. <strong>We recommend that you download the latest backup before proceeding.</strong>": "Don't remember your current password? If you check this, then we'll delete the entire mailbox and all messages for this alias. <strong>We recommend that you download the latest backup before proceeding.</strong>",
+  "Leave blank to download backup from:": "Leave blank to download backup from:",
+  "Add Alias | Forward Email": "Add Alias | Forward Email",
+  "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
+  "Review Alias": "Review Alias"
 }

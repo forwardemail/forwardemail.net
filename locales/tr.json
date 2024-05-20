@@ -7377,5 +7377,6 @@
   "Hi there, ": "Merhaba,",
   "Inquiry does not exist.": "Sorgulama mevcut değil.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Toplu yanıt gönderilmeye çalışılırken bir hata oluştu. Lütfen tekrar deneyin.",
-  "Resolve": "Resolve"
+  "Resolve": "çözmek",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "IP itibarını korumak ve teslim edilebilirliği sağlamak amacıyla, giden SMTP onayı için alan bazında manuel inceleme sürecimiz olduğunu lütfen unutmayın. Bu genellikle 24 saatten kısa sürer ve çoğu istek 1-2 saat içinde yerine getirilir. Yakın gelecekte ek spam kontrolleri ve uyarılarla bu süreci hızlandırmayı hedefliyoruz. Bu işlem, e-postalarınızın gelen kutunuza ulaşmasını ve mesajlarınızın spam olarak işaretlenmemesini sağlar."
 }

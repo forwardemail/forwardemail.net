@@ -861,6 +861,16 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 8. **Save your settings and send your first test email** – if you are having issues, then please <a href="/help">contact us</a>
 
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+  </span>
+</div>
+
 <div class="text-center my-3 my-md-5">
   <div class="alert my-3 alert-success d-inline-block">
     <i class="fa fa-check-circle font-weight-bold"></i>

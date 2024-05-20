@@ -7377,5 +7377,6 @@
   "Hi there, ": "Ahoj,",
   "Inquiry does not exist.": "Dotaz neexistuje.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Při pokusu o odeslání hromadné odpovědi došlo k chybě. Prosím zkuste to znovu.",
-  "Resolve": "Resolve"
+  "Resolve": "Odhodlání",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Vezměte prosím na vědomí, že abychom zachovali reputaci IP a zajistili doručitelnost, máme manuální proces kontroly pro každou doménu pro odchozí schválení SMTP. Obvykle to trvá méně než 24 hodin, přičemž většina žádostí je vyřízena do 1–2 hodin. V blízké budoucnosti se snažíme, aby byl tento proces okamžitý s dalšími kontrolami spamu a upozorněním. Tento proces zajišťuje, že se vaše e-maily dostanou do doručené pošty a vaše zprávy nebudou označeny jako spam."
 }

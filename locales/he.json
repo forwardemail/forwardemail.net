@@ -5367,5 +5367,6 @@
   "Thank you,": "תודה,",
   "Inquiry does not exist.": "חקירה לא קיימת.",
   "An error occurred while attempting to send bulk reply. Please try again.": "אירעה שגיאה בעת ניסיון לשלוח תשובה בכמות גדולה. בבקשה נסה שוב.",
-  "Resolve": "Resolve"
+  "Resolve": "לִפְתוֹר",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "שים לב שכדי לשמור על מוניטין IP ולהבטיח יכולת מסירה, יש לנו תהליך סקירה ידני על בסיס דומיין לאישור SMTP יוצא. זה לוקח בדרך כלל פחות מ-24 שעות, כאשר רוב הבקשות מכובדות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך את התהליך הזה למיידי עם בקרות ספאם והתראות נוספות. תהליך זה מבטיח שהודעות הדוא\"ל שלך יגיעו לתיבת הדואר הנכנס וההודעות שלך לא יסומנו כדואר זבל."
 }

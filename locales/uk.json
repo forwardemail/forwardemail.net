@@ -7377,5 +7377,6 @@
   "Hi there, ": "Привіт,",
   "Inquiry does not exist.": "Запит не існує.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Під час спроби надіслати масову відповідь сталася помилка. Будь ласка спробуйте ще раз.",
-  "Resolve": "Resolve"
+  "Resolve": "Вирішити",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Будь ласка, зверніть увагу, що для підтримки репутації IP-адреси та забезпечення доставки ми використовуємо ручний процес перевірки для кожного домену для схвалення вихідного SMTP. Зазвичай це займає менше 24 годин, більшість запитів виконується протягом 1-2 годин. Найближчим часом ми плануємо зробити цей процес миттєвим за допомогою додаткового контролю спаму та сповіщень. Цей процес гарантує, що ваші електронні листи потраплять до папки \"Вхідні\", а ваші повідомлення не позначатимуться як спам."
 }

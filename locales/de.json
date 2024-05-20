@@ -6415,5 +6415,6 @@
   "Hi there, ": "Hallo, ",
   "Inquiry does not exist.": "Anfrage existiert nicht.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Beim Senden einer Massenantwort ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
-  "Resolve": "Resolve"
+  "Resolve": "Lösen",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Bitte beachten Sie, dass wir zur Aufrechterhaltung der IP-Reputation und Gewährleistung der Zustellbarkeit einen manuellen Überprüfungsprozess auf Domänenbasis für die Genehmigung ausgehender SMTP-Nachrichten durchführen. Dies dauert normalerweise weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft möchten wir diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort durchführen. Dieser Prozess stellt sicher, dass Ihre E-Mails den Posteingang erreichen und Ihre Nachrichten nicht als Spam markiert werden."
 }

@@ -7377,5 +7377,6 @@
   "Hi there, ": "Ciao,",
   "Inquiry does not exist.": "La richiesta non esiste.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Si è verificato un errore durante il tentativo di inviare una risposta collettiva. Per favore riprova.",
-  "Resolve": "Resolve"
+  "Resolve": "Risolvere",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Tieni presente che, al fine di preservare la reputazione dell'IP e garantire la consegna, disponiamo di un processo di revisione manuale su base dominio per l'approvazione SMTP in uscita. In genere, questa operazione richiede meno di 24 ore e la maggior parte delle richieste viene soddisfatta entro 1-2 ore. Nel prossimo futuro miriamo a rendere questo processo istantaneo con ulteriori controlli e avvisi antispam. Questo processo garantisce che le tue email raggiungano la posta in arrivo e che i tuoi messaggi non vengano contrassegnati come spam."
 }

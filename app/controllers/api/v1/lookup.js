@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -43,7 +45,7 @@ async function lookup(ctx) {
 
   const bannedUserIdSet = await Users.getBannedUserIdSet(ctx.client);
 
-  const username = isSANB(ctx.query.username)
+  let username = isSANB(ctx.query.username)
     ? ctx.query.username.toLowerCase()
     : false;
 
@@ -99,6 +101,32 @@ async function lookup(ctx) {
     )
     .lean()
     .exec();
+
+  //
+  // NOTE: we are doing it this way for backwards compatibility for now
+  //       (in the future we should probably just to `toUnicode` some users already converted so this supports legacy)
+  //       (e.g. some users have aliases starting with "xn--" right now which means they already realized this bug)
+  //
+  // if there were no aliases found but a `username` was passed
+  // then we can attempt to convert ASCII to Unicode and perform a lookup
+  if (aliases.length === 0 && username) {
+    try {
+      if (punycode.toUnicode(username) !== username) {
+        aliases = await Aliases.find({
+          domain: domain._id,
+          name: punycode.toUnicode(username)
+        })
+          .select(
+            'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+          )
+          .lean()
+          .exec();
+        if (aliases.length > 0) username = punycode.toUnicode(username);
+      }
+    } catch (err) {
+      ctx.logger.debug(err);
+    }
+  }
 
   if (aliases.length === 0) {
     ctx.body = {};

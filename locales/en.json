@@ -7138,5 +7138,6 @@
   "Thank you,": "Thank you,",
   "Hi there, ": "Hi there, ",
   "We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href=\"mailto:support@forwardemail.net\">support@forwardemail.net</a>.": "We were unable to send your help request.  We have been alerted of this problem.  Please try again or directly email <a href=\"mailto:support@forwardemail.net\">support@forwardemail.net</a>.",
-  "Resolve": "Resolve"
+  "Resolve": "Resolve",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam."
 }

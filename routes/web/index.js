@@ -122,6 +122,10 @@ router
         },
         backgroundColor: ctx.query.theme === 'default' ? 'white' : 'transparent'
       });
+      browser
+        .close()
+        .then()
+        .catch((err) => ctx.logger.error(err));
       const compressed = await gzip(svg);
       if (!global.mermaid) global.mermaid = {};
       global.mermaid[hash] = compressed;

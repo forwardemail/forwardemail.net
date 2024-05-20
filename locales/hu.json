@@ -7377,5 +7377,6 @@
   "Hi there, ": "Szia,",
   "Inquiry does not exist.": "A lekérdezés nem létezik.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Hiba történt a tömeges válasz küldése közben. Kérlek próbáld újra.",
-  "Resolve": "Resolve"
+  "Resolve": "Elhatározás",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Kérjük, vegye figyelembe, hogy az IP hírnevének megőrzése és a szállíthatóság biztosítása érdekében manuális ellenőrzési folyamatot végzünk domainenként a kimenő SMTP jóváhagyásához. Ez általában kevesebb, mint 24 órát vesz igénybe, és a legtöbb kérést 1-2 órán belül teljesítik. A közeljövőben arra törekszünk, hogy ezt a folyamatot azonnalivá tegyük további spamkezelésekkel és riasztásokkal. Ez a folyamat biztosítja, hogy e-mailjei eljussanak a beérkező levelek mappájába, és az üzenetek ne legyenek spamként megjelölve."
 }

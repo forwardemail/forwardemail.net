@@ -4868,5 +4868,6 @@
   "Thank you,": "Merci,",
   "Inquiry does not exist.": "L'enquête n'existe pas.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Une erreur s'est produite lors de la tentative d'envoi d'une réponse groupée. Veuillez réessayer.",
-  "Resolve": "Resolve"
+  "Resolve": "Résoudre",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Veuillez noter que afin de maintenir la réputation IP et d'assurer la délivrabilité, nous avons un processus d'examen manuel par domaine pour l'approbation SMTP sortante. Cela prend généralement moins de 24 heures, la plupart des demandes étant honorées dans un délai d'une à deux heures. Dans un avenir proche, nous visons à rendre ce processus instantané grâce à des contrôles et des alertes supplémentaires contre le spam. Ce processus garantit que vos e-mails arrivent dans la boîte de réception et que vos messages ne sont pas marqués comme spam."
 }

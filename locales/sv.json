@@ -7377,5 +7377,6 @@
   "Hi there, ": "Hallå där,",
   "Inquiry does not exist.": "Förfrågan finns inte.",
   "An error occurred while attempting to send bulk reply. Please try again.": "Ett fel uppstod vid försök att skicka masssvar. Var god försök igen.",
-  "Resolve": "Resolve"
+  "Resolve": "Lösa",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "Observera att för att upprätthålla IP-rykte och säkerställa leveransbarhet har vi en manuell granskningsprocess per domän för utgående SMTP-godkännande. Detta tar vanligtvis mindre än 24 timmar, och de flesta förfrågningar besvaras inom 1-2 timmar. Inom en snar framtid siktar vi på att göra denna process omedelbar med ytterligare spamkontroller och varningar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost."
 }

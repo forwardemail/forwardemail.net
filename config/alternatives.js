@@ -2632,71 +2632,82 @@ for (const name of Object.keys(obj)) {
 }
 
 (async () => {
-  const browser = await puppeteer.launch();
+  let browser;
+  try {
+    browser = await puppeteer.launch();
 
-  for (const a of alternatives) {
-    // name, description, pricing, storage (string)
-    for (const k of ['name', 'description', 'pricing', 'storage']) {
-      if (!isSANB(a[k]) && typeof a[k] !== 'boolean')
-        throw new Error(`${JSON.stringify(a)} missing "${k}"`);
-    }
+    for (const a of alternatives) {
+      // name, description, pricing, storage (string)
+      for (const k of ['name', 'description', 'pricing', 'storage']) {
+        if (!isSANB(a[k]) && typeof a[k] !== 'boolean')
+          throw new Error(`${JSON.stringify(a)} missing "${k}"`);
+      }
 
-    // website (url)
-    if (!isURL(a.website)) throw new Error(`${a.name} missing "website"`);
+      // website (url)
+      if (!isURL(a.website)) throw new Error(`${a.name} missing "website"`);
 
-    // screenshot (valid image path)
-    const p = path.join(
-      __dirname,
-      '..',
-      'assets',
-      'img',
-      'alternatives',
-      `${slug(a.name)}.webp`
-    );
-    if (!fs.existsSync(p)) {
-      console.error(`${a.name} missing valid "screenshot" at ${p}`);
-      // eslint-disable-next-line no-await-in-loop
-      const page = await browser.newPage();
-      // eslint-disable-next-line no-await-in-loop
-      await page.setViewport({
-        width: 1366,
-        height: 768,
-        deviceScaleFactor: 2
-      });
-      // eslint-disable-next-line no-await-in-loop
-      await page.goto(a.website);
-      try {
+      // screenshot (valid image path)
+      const p = path.join(
+        __dirname,
+        '..',
+        'assets',
+        'img',
+        'alternatives',
+        `${slug(a.name)}.webp`
+      );
+      if (!fs.existsSync(p)) {
+        console.error(`${a.name} missing valid "screenshot" at ${p}`);
         // eslint-disable-next-line no-await-in-loop
-        await page.screenshot({
-          path: p
+        const page = await browser.newPage();
+        // eslint-disable-next-line no-await-in-loop
+        await page.setViewport({
+          width: 1366,
+          height: 768,
+          deviceScaleFactor: 2
         });
-      } catch (err) {
-        console.error(err);
+        // eslint-disable-next-line no-await-in-loop
+        await page.goto(a.website);
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await page.screenshot({
+            path: p
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // unlimited_domains, unlimited_aliases, smtp, imap, pop3, api, openpgp, wkd (boolean | string)
+      for (const k of [
+        'unlimited_domains',
+        'unlimited_aliases',
+        'smtp',
+        'imap',
+        'pop3',
+        'api',
+        'e2ee',
+        'openpgp',
+        'wkd',
+        'hardenize',
+        'internetnl_site',
+        'internetnl_mail',
+        'ssl_labs'
+      ]) {
+        if (!isSANB(a[k]) && typeof a[k] !== 'boolean')
+          throw new Error(
+            `${a.name} missing valid string or boolean for "${k}"`
+          );
       }
     }
-
-    // unlimited_domains, unlimited_aliases, smtp, imap, pop3, api, openpgp, wkd (boolean | string)
-    for (const k of [
-      'unlimited_domains',
-      'unlimited_aliases',
-      'smtp',
-      'imap',
-      'pop3',
-      'api',
-      'e2ee',
-      'openpgp',
-      'wkd',
-      'hardenize',
-      'internetnl_site',
-      'internetnl_mail',
-      'ssl_labs'
-    ]) {
-      if (!isSANB(a[k]) && typeof a[k] !== 'boolean')
-        throw new Error(`${a.name} missing valid string or boolean for "${k}"`);
-    }
+  } catch (err) {
+    console.error(err);
   }
 
-  await browser.close();
+  if (browser)
+    browser
+      .close()
+      .then()
+      .catch((err) => console.error(err));
 })();
 
 // add points

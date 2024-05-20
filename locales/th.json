@@ -7377,5 +7377,6 @@
   "Hi there, ": "สวัสดี,",
   "Inquiry does not exist.": "ไม่มีการสอบถามข้อมูล",
   "An error occurred while attempting to send bulk reply. Please try again.": "เกิดข้อผิดพลาดขณะพยายามส่งการตอบกลับจำนวนมาก กรุณาลองอีกครั้ง.",
-  "Resolve": "Resolve"
+  "Resolve": "แก้ไข",
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "โปรดทราบว่าเพื่อรักษาชื่อเสียงของ IP และรับประกันความสามารถในการส่งมอบ เรามีกระบวนการตรวจสอบโดยเจ้าหน้าที่ในแต่ละโดเมนสำหรับการอนุมัติ SMTP ขาออก โดยทั่วไปจะใช้เวลาไม่ถึง 24 ชั่วโมง โดยคำขอส่วนใหญ่จะได้รับการดำเนินการภายใน 1-2 ชั่วโมง ในอนาคตอันใกล้นี้ เรามุ่งมั่นที่จะทำให้กระบวนการนี้เกิดขึ้นทันทีด้วยการควบคุมและการแจ้งเตือนสแปมเพิ่มเติม กระบวนการนี้ช่วยให้แน่ใจว่าอีเมลของคุณไปถึงกล่องจดหมายและข้อความของคุณจะไม่ถูกทำเครื่องหมายว่าเป็นสแปม"
 }
