@@ -23,7 +23,7 @@ async function list(ctx) {
     };
   }
 
-  query.$or.push({ is_resolved: { $exists: false } }, { is_resolved: false });
+  query.$or.push({ is_resolved: false });
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {

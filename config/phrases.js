@@ -222,6 +222,8 @@ module.exports = {
   INVALID_INQUIRY_WEBHOOK_EMAIL:
     'Invalid inquiry webhook email. Requires support@ emails.',
   INVALID_INQUIRY_WEBHOOK_PAYLOAD: 'Invalid inquiry webhook payload.',
+  INVALID_INQUIRY_WEBHOOK_REQUEST:
+    'Webhook request did not originate from a valid hostname',
   INVALID_USER: 'User does not exist.',
   INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',

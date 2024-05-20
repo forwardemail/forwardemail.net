@@ -30,7 +30,8 @@ const Inquiries = new mongoose.Schema({
   is_resolved: {
     type: Boolean,
     required: false,
-    default: false
+    default: false,
+    index: true
   },
   references: {
     type: Array,

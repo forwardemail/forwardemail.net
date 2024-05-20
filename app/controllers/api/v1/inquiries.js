@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
+const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
 
 function findSubject(headers) {
@@ -23,6 +24,14 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   ctx.logger.info('creating inquiry from webhook');
+
+  // TODO: Add support for webhook payload signature:
+  // https://stackoverflow.com/questions/68885086/how-to-create-signed-webhook-requests-in-nodejs/68885281#68885281
+  if (
+    !ctx.allowlistValue ||
+    ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
+  )
+    throw Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'));
 
   const { attachments, headerLines, messageId, session, text } = body;
   if (!session)
@@ -44,8 +53,8 @@ async function create(ctx) {
   const references = [messageId];
   const subject = findSubject(headerLines);
 
-  const is_resolved = false;
-  const is_webhook = true;
+  const isResolved = false;
+  const isWebhook = true;
 
   let inquiry;
   try {
@@ -56,10 +65,10 @@ async function create(ctx) {
       user,
       message,
       is_denylist: user.is_denylist,
-      is_resolved,
+      is_resolved: isResolved,
       references,
       subject,
-      is_webhook,
+      is_webhook: isWebhook,
       attachments
     });
   } catch (err) {
