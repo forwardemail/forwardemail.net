@@ -109,23 +109,21 @@ async function lookup(ctx) {
   //
   // if there were no aliases found but a `username` was passed
   // then we can attempt to convert ASCII to Unicode and perform a lookup
-  if (aliases.length === 0 && username) {
-    try {
-      if (punycode.toUnicode(username) !== username) {
-        aliases = await Aliases.find({
-          domain: domain._id,
-          name: punycode.toUnicode(username)
-        })
-          .select(
-            'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
-          )
-          .lean()
-          .exec();
-        if (aliases.length > 0) username = punycode.toUnicode(username);
-      }
-    } catch (err) {
-      ctx.logger.debug(err);
-    }
+  if (
+    aliases.length === 0 &&
+    username &&
+    punycode.toUnicode(username) !== username
+  ) {
+    aliases = await Aliases.find({
+      domain: domain._id,
+      name: punycode.toUnicode(username)
+    })
+      .select(
+        'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+      )
+      .lean()
+      .exec();
+    if (aliases.length > 0) username = punycode.toUnicode(username);
   }
 
   if (aliases.length === 0) {
@@ -337,7 +335,8 @@ async function lookup(ctx) {
       for (const recipient of alias.recipients) {
         if (!isEmail(recipient)) continue;
         const [rcptName, rcptDomain] = recipient.split('@');
-        if (rcptName !== username) continue;
+        if (rcptName !== username && rcptName !== punycode.toUnicode(username))
+          continue;
         if (rcptDomain !== domain.name) continue;
         const id = aliasIdsWithIMAPByName[rcptName];
         if (!id) continue;
@@ -483,7 +482,10 @@ async function lookup(ctx) {
         }
 
         if (regex) {
-          if (regex.test(username)) {
+          if (
+            regex.test(username) ||
+            regex.test(punycode.toUnicode(username))
+          ) {
             pushToBody(alias);
           }
 
@@ -492,7 +494,8 @@ async function lookup(ctx) {
       }
     }
 
-    if (username !== alias.name) continue;
+    if (username !== alias.name && punycode.toUnicode(username) !== alias.name)
+      continue;
     pushToBody(alias);
   }
 
