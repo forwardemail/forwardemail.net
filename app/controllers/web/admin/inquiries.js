@@ -52,12 +52,7 @@ async function list(ctx) {
         }
       },
       {
-        $unwind: '$user'
-      },
-      {
-        $match: {
-          'user.email': { $regex: String(ctx.query.q || ''), $options: 'i' }
-        }
+        $unwind: { path: '$user', preserveNullAndEmptyArrays: true }
       },
       {
         $project: {
@@ -65,8 +60,16 @@ async function list(ctx) {
           message: 1,
           created_at: 1,
           updated_at: 1,
-          email: '$user.email',
-          plan: '$user.plan'
+          email: { $ifNull: ['$user.email', '$sender_email'] },
+          plan: { $ifNull: ['$user.plan', null] }
+        }
+      },
+      {
+        $match: {
+          $or: [
+            { email: { $regex: String(ctx.query.q || ''), $options: 'i' } },
+            { plan: { $regex: String(ctx.query.q || ''), $options: 'i' } }
+          ]
         }
       },
       {
@@ -136,21 +139,29 @@ async function reply(ctx) {
   if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
 
   const user = await Users.findById(inquiry.user);
-  if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+  if (!user) {
+    ctx.logger.warn('no user found, trying sender_email');
+    if (!inquiry.sender_email)
+      throw Boom.notFound(ctx.translateError('INVALID_USER'));
+  }
+
+  // rely on historical user.email or fall back to newer sender_email
+  // for those sending direct emails instead of creating an inquiry
+  const email = user?.email ?? inquiry.sender_email;
 
   const { message } = ctx.request.body;
 
   await emailHelper({
     template: 'inquiry-response',
     message: {
-      to: user[config.userFields.fullEmail],
+      to: email,
       cc: config.email.message.from,
       inReplyTo: inquiry.references[0],
       references: inquiry.references,
       subject: inquiry.subject
     },
     locals: {
-      user: user.toObject(),
+      user: { email },
       inquiry,
       response: { message }
     }
@@ -187,23 +198,31 @@ async function bulkReply(ctx) {
 
       // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(inquiry.user);
-      if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+      if (!user) {
+        ctx.logger.warn('no user found, trying sender_email');
+        if (!inquiry.sender_email)
+          throw Boom.notFound(ctx.translateError('INVALID_USER'));
+      }
+
+      // rely on historical user.email or fall back to newer sender_email
+      // for those sending direct emails instead of creating an inquiry
+      const email = user?.email ?? inquiry.sender_email;
 
       // if the user has multiple inquiries and we've just responded
       // in bulk to a previous message then let's skip the email
-      if (!repliedTo.has(user)) {
+      if (!repliedTo.has(email)) {
         // eslint-disable-next-line no-await-in-loop
         await emailHelper({
           template: 'inquiry-response',
           message: {
-            to: user[config.userFields.fullEmail],
+            to: email,
             cc: config.email.message.from,
             inReplyTo: inquiry.references[0],
             references: inquiry.references,
             subject: inquiry.subject
           },
           locals: {
-            user: user.toObject(),
+            user: { email },
             inquiry,
             response: { message }
           }
@@ -215,7 +234,7 @@ async function bulkReply(ctx) {
         $set: { is_resolved: true }
       });
 
-      repliedTo.add(user);
+      repliedTo.add(email);
     }
   } catch {
     throw Boom.badImplementation(
