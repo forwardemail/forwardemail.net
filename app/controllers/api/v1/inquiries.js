@@ -59,10 +59,11 @@ async function create(ctx) {
   let inquiry;
   try {
     const user = await Users.findOne({ email: sender });
-    if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+    if (!user) ctx.logger.warn(`account not found for ${sender}`);
 
     inquiry = await Inquiries.create({
       user,
+      sender_email: sender,
       message,
       is_denylist: user.is_denylist,
       is_resolved: isResolved,

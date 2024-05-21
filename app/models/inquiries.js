@@ -17,6 +17,10 @@ const Inquiries = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Users'
   },
+  sender_email: {
+    type: String,
+    required: false
+  },
   message: {
     type: String,
     required: true,
