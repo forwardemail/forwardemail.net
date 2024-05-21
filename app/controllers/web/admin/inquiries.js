@@ -4,13 +4,17 @@
  */
 
 const Boom = require('@hapi/boom');
+const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const parser = require('mongodb-query-parser');
 
 const { Inquiries, Users } = require('#models');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 
 async function list(ctx) {
+  let query = { $or: [] };
+
   let $sort = { created_at: -1 };
   if (ctx.query.sort) {
     const order = ctx.query.sort.startsWith('-') ? -1 : 1;
@@ -19,11 +23,24 @@ async function list(ctx) {
     };
   }
 
+  query.$or.push({ is_resolved: false });
+
+  if (isSANB(ctx.query.mongodb_query)) {
+    try {
+      query = parser.parseFilter(ctx.query.mongodb_query);
+      if (!query || Object.keys(query).length === 0)
+        throw new Error('Query was not parsed propery');
+    } catch (err) {
+      ctx.logger.warn(err);
+      return ctx.throw(Boom.badRequest(err.message));
+    }
+  }
+
   const [inquiries, itemCount] = await Promise.all([
     Inquiries.aggregate([
       {
         $match: {
-          $or: [{ is_resolved: { $exists: false } }, { is_resolved: false }]
+          ...query
         }
       },
       {
@@ -36,6 +53,11 @@ async function list(ctx) {
       },
       {
         $unwind: '$user'
+      },
+      {
+        $match: {
+          'user.email': { $regex: String(ctx.query.q || ''), $options: 'i' }
+        }
       },
       {
         $project: {
@@ -57,7 +79,7 @@ async function list(ctx) {
         $limit: ctx.query.limit
       }
     ]).exec(),
-    Inquiries.countDocuments()
+    Inquiries.countDocuments(query)
   ]);
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);

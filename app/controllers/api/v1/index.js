@@ -7,6 +7,7 @@ const aliases = require('./aliases');
 const apple = require('./apple');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');
+const inquiries = require('./inquiries');
 const log = require('./log');
 const lookup = require('./lookup');
 const maxForwardedAddresses = require('./max-forwarded-addresses');
@@ -26,6 +27,7 @@ module.exports = {
   apple,
   domains,
   enforcePaidPlan,
+  inquiries,
   log,
   lookup,
   maxForwardedAddresses,
