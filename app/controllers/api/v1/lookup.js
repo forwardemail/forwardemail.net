@@ -137,27 +137,22 @@ async function lookup(ctx) {
   //
   if (domain.is_global) {
     // TODO: implement caching here
-    const validUserIds = await Users.distinct(
-      'id',
-      {
-        $or: [
-          // get all paid users with expiration is >= 30 days ago
-          {
-            plan: { $in: ['enhanced_protection', 'team'] },
-            [config.userFields.planExpiresAt]: {
-              $gte: dayjs().subtract(30, 'days').toDate()
-            }
-          },
-          // get all admin users
-          {
-            group: 'admin'
+    // TODO: maxTimeMS: 30000
+    const validUserIds = await Users.distinct('id', {
+      $or: [
+        // get all paid users with expiration is >= 30 days ago
+        {
+          plan: { $in: ['enhanced_protection', 'team'] },
+          [config.userFields.planExpiresAt]: {
+            $gte: dayjs().subtract(30, 'days').toDate()
           }
-        ]
-      },
-      {
-        maxTimeMS: 30000
-      }
-    );
+        },
+        // get all admin users
+        {
+          group: 'admin'
+        }
+      ]
+    });
 
     const validUserIdSet = new Set(validUserIds);
 
