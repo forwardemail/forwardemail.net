@@ -295,6 +295,6 @@ router
   );
 
 // inquiries
-router.post('/inquiries', api.v1.inquiries.create);
+// router.post('/inquiries', api.v1.inquiries.create);
 
 module.exports = router;
