@@ -69,7 +69,9 @@ graceful.listen();
           }
         }
       }
-    ]);
+    ]).option({
+      maxTimeMS: 30000
+    });
 
     // sort results by duration (reversed) and filtered for duration >= 2m
     results = _.sortBy(results, 'duration').reverse();

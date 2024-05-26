@@ -136,21 +136,28 @@ async function lookup(ctx) {
   // that belong to users with a non-banned and paid account
   //
   if (domain.is_global) {
-    const validUserIds = await Users.distinct('id', {
-      $or: [
-        // get all paid users with expiration is >= 30 days ago
-        {
-          plan: { $in: ['enhanced_protection', 'team'] },
-          [config.userFields.planExpiresAt]: {
-            $gte: dayjs().subtract(30, 'days').toDate()
+    // TODO: implement caching here
+    const validUserIds = await Users.distinct(
+      'id',
+      {
+        $or: [
+          // get all paid users with expiration is >= 30 days ago
+          {
+            plan: { $in: ['enhanced_protection', 'team'] },
+            [config.userFields.planExpiresAt]: {
+              $gte: dayjs().subtract(30, 'days').toDate()
+            }
+          },
+          // get all admin users
+          {
+            group: 'admin'
           }
-        },
-        // get all admin users
-        {
-          group: 'admin'
-        }
-      ]
-    });
+        ]
+      },
+      {
+        maxTimeMS: 30000
+      }
+    );
 
     const validUserIdSet = new Set(validUserIds);
 

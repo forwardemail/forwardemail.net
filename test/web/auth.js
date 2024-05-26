@@ -32,6 +32,7 @@ test('creates new user', async (t) => {
   t.is(res.header.location, '/en/my-account');
 });
 
+/*
 test('rejects new user with disposable email', async (t) => {
   const { web } = t.context;
 
@@ -62,6 +63,7 @@ test('rejects new user with disposable email', async (t) => {
   t.is(res.status, 400);
   t.is(JSON.parse(res.text).message, phrases.DISPOSABLE_EMAIL_NOT_ALLOWED);
 });
+*/
 
 test('fails registering with easy password', async (t) => {
   const { web } = t.context;

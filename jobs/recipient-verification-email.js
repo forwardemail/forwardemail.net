@@ -238,7 +238,9 @@ async function mapper(alias) {
       {
         $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
       }
-    ]);
+    ]).option({
+      maxTimeMS: 30000
+    });
 
     if (aliases.length > 0) {
       const pendingRecipients = await pMap(aliases, mapper, { concurrency });

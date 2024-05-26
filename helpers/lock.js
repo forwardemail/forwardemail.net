@@ -45,8 +45,13 @@ async function acquireLock(instance, db) {
 
   const lock = await instance.lock.waitAcquireLock(id, ms('30s'), ms('60s'));
 
-  if (!lock.success)
-    throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+  if (!lock.success) {
+    const err = new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+    err.lock = lock;
+    err.db = db;
+    err.instance = instance;
+    throw err;
+  }
 
   // update existing in-memory lock used for SQLite server
   db.lock = lock;
@@ -63,7 +68,12 @@ async function releaseLock(instance, db, lock) {
   if (!result.success) {
     // update existing in-memory lock used for SQLite server
     if (db && db.lock && db.lock.id === result.id) db.lock = result;
-    throw new IMAPError(i18n.translate('IMAP_RELEASE_LOCK_FAILED'));
+    const err = new IMAPError(i18n.translate('IMAP_RELEASE_LOCK_FAILED'));
+    err.result = result;
+    err.lock = lock;
+    err.db = db;
+    err.instance = instance;
+    throw err;
   }
 
   // update existing in-memory lock used for SQLite server
