@@ -66,15 +66,22 @@
       args:
          executable: /bin/bash
       when: not pm2_result.stat.exists
-    # TODO: probably should remove this or make it 12-24
-    - name: Reload pm2 every 4 hours
+    - name: Cleanup tmp
       become: true
       become_user: deploy
       cron:
-        name: "reload"
-        hour: "*/4"
+        name: "cleanup-tmp"
+        hour: "*"
         minute: "0"
-        job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
+        job: "/home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1"
+    # - name: Reload pm2 every 4 hours
+    #   become: true
+    #   become_user: deploy
+    #   cron:
+    #     name: "reload"
+    #     hour: "*/4"
+    #     minute: "0"
+    #     job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
     - name: Check if pnpm exists
       stat:
         path: /home/deploy/n/bin/pnpm
