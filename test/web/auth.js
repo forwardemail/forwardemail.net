@@ -7,7 +7,7 @@ const util = require('node:util');
 
 const cryptoRandomString = require('crypto-random-string');
 const test = require('ava');
-const { request, errors } = require('undici');
+// const { request, errors } = require('undici');
 const { factory } = require('factory-girl');
 
 const utils = require('../utils');
