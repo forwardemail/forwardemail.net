@@ -1480,6 +1480,7 @@ async function parsePayload(data, ws) {
           new Date(alias.last_vacuum_at).getTime() <
             dayjs().subtract(1, 'day').toDate().getTime()
         ) {
+          logger.debug('vacuuming', { alias });
           //
           // NOTE: we store this immediately instead of after success
           //       in case multiple connections are authenticated at the same time
@@ -1511,6 +1512,8 @@ async function parsePayload(data, ws) {
           // TODO: vacuum into instead (same for elsewhere)
           // vacuum database
           db.prepare('VACUUM').run();
+        } else {
+          logger.debug('no vacuum to run', { alias });
         }
 
         response = {

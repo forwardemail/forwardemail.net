@@ -23,6 +23,9 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const config = require('#config');
 const { email, logger } = require('#helpers');
 const { Users, Payments } = require('#models');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

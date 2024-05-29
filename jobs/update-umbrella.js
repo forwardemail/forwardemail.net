@@ -16,7 +16,7 @@ const Redis = require('@ladjs/redis');
 const Tangerine = require('tangerine');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
+const getDmarcRecord = require('@forwardemail/mailauth/lib/dmarc/get-dmarc-record');
 const got = require('got');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -34,6 +34,9 @@ const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');

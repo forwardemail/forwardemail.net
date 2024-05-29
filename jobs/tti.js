@@ -34,6 +34,9 @@ const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);

@@ -243,6 +243,25 @@ async function hook(err, message, meta) {
 for (const level of logger.config.levels) {
   // eslint-disable-next-line complexity
   logger.pre(level, function (err, message, meta) {
+    //
+    // NOTE: we delete `err.response` from object since PayPal adds it
+    // (otherwise we get a cyclic dependency BSONError error)
+    //
+    // node_modules/.pnpm/paypal-rest-sdk@1.8.1/node_modules/paypal-rest-sdk/lib/client.js
+    // 122-                    name: 'Invalid JSON Response Received, JSON Parse Error.'
+    // 123-                };
+    // 124:                err.response = response;
+    // 125-                err.httpStatusCode = res.statusCode;
+    // 126-                response = null;
+    // --
+    // 131-                // response contains the full json description of the error
+    // 132-                // that PayPal returns and information link
+    // 133:                err.response = response;
+    // 134-                if (process.env.PAYPAL_DEBUG) {
+    // 135-                    err.response_stringified = JSON.stringify(response);
+    //
+    if (err && err.httpStatusCode) delete err.response;
+
     // clone the data so that we don't mutate it
     // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
     // <https://github.com/ungap/structured-clone>

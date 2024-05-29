@@ -36,6 +36,9 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const wsp = require('#helpers/wsp-server');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
@@ -195,10 +198,18 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       await pMap(
         ids,
         async (id) => {
-          logger.info('cleanup', id);
+          logger.debug('cleanup', { id });
 
           // ensure ID is hex string
           if (!mongoose.isObjectIdOrHexString(id)) return;
+
+          // ensure alias still exists
+          let alias = await Aliases.findOne({ id });
+
+          if (!alias) {
+            logger.debug('alias no longer exists', { id });
+            return;
+          }
 
           try {
             //
@@ -255,10 +266,12 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             );
 
             // get total storage used for an alias (includes across all relevant domains/aliases)
+            alias = await Aliases.findOne({ id });
 
-            const alias = await Aliases.findOne({ id });
-
-            if (!alias) return;
+            if (!alias) {
+              logger.debug('alias no longer exists', { id });
+              return;
+            }
 
             // if the alias did not have imap or it was not enabled
             // then we can return early since the check is not useful
@@ -305,7 +318,6 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             if (!domain) return;
 
             // get recipients and the majority favored locale
-
             const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
               domain
             );
@@ -347,6 +359,19 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             alias.markModified('storage_thresholds_sent_at');
 
             await alias.save();
+
+            // set threshold object for all aliases that belong to this domain with same user
+            await Aliases.updateMany(
+              {
+                user: alias.user,
+                domain: alias.domain
+              },
+              {
+                $set: {
+                  storage_thresholds_sent_at: alias.storage_thresholds_sent_at
+                }
+              }
+            );
           } catch (err) {
             logger.error(err);
             // commented out as a safeguard

@@ -22,6 +22,9 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const { Users } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
 const config = require('#config');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

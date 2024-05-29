@@ -17,7 +17,6 @@ const crypto = require('node:crypto');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const MessageHandler = require('wildduck/lib/message-handler');
-const WebSocketAsPromised = require('websocket-as-promised');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
@@ -67,11 +66,11 @@ async function getThreadId(instance, session, subject, mimeTree) {
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');

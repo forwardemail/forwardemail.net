@@ -32,6 +32,9 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

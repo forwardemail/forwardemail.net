@@ -27,6 +27,9 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { Users, Domains } = require('#models');
 const createTangerine = require('#helpers/create-tangerine');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const concurrency = config.env === 'development' ? 1 : os.cpus().length;
 

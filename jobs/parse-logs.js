@@ -21,6 +21,9 @@ const Logs = require('#models/logs');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const graceful = new Graceful({
   mongooses: [mongoose],

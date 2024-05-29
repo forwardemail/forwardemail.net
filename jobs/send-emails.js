@@ -31,6 +31,9 @@ const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
+const monitorServer = require('#helpers/monitor-server');
+
+monitorServer();
 
 const IP_ADDRESS = ip.address();
 const breeSharedConfig = sharedConfig('BREE');

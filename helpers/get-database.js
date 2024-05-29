@@ -148,7 +148,8 @@ async function getDatabase(
   // <https://www.sqlite.org/c3ref/open.html>
   // <https://github.com/knex/knex/issues/1287>
   let readonly = true;
-  if (instance?.constructor?.name === 'SQLite') readonly = false;
+  if (instance?.constructor?.name === 'SQLite' || HOSTNAME === env.SQLITE_HOST)
+    readonly = false;
 
   //
   // we will substitute global with the unique bucket configuration hash
@@ -561,7 +562,7 @@ async function getDatabase(
         err.code !== 'SQLITE_ERROR' ||
         !err.message.startsWith('no such table:')
       )
-        instance.logger.fatal(err, { session });
+        logger.fatal(err, { session });
     }
 
     // migrate schema
@@ -649,18 +650,21 @@ async function getDatabase(
                 existingLock?.success ? existingLock : lock
               );
             } catch (err) {
-              instance.logger.fatal(err, { session });
+              logger.fatal(err, { session });
             }
           })
         );
       }
     } catch (err) {
-      instance.logger.fatal(err, { session });
+      logger.fatal(err, { session });
     }
 
     // remove messages in Junk/Trash folder that are >= 30 days old
     try {
       const mailboxes = await Mailboxes.find(instance, session, {
+        path: {
+          $in: ['Trash', 'Junk']
+        },
         specialUse: {
           $in: ['\\Trash', '\\Junk']
         }
@@ -671,7 +675,7 @@ async function getDatabase(
       // (as we've done below by simply mapping and returning `id` vs `_id`)
       await Messages.deleteMany(instance, session, {
         mailbox: {
-          $in: mailboxes.map((m) => m.id)
+          $in: mailboxes.map((m) => m._id.toString())
         },
         exp: true,
         rdate: {
@@ -679,7 +683,7 @@ async function getDatabase(
         }
       });
     } catch (err) {
-      instance.logger.fatal(err, { session });
+      logger.fatal(err, { session });
     }
 
     // TODO: delete orphaned attachments (those without messages that reference them)

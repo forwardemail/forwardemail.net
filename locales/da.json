@@ -3865,5 +3865,16 @@
   "Leave blank to download backup from:": "Leave blank to download backup from:",
   "Add Alias | Forward Email": "Add Alias | Forward Email",
   "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>": "You successfully created a new alias: <code class=\"alert-link text-decoration-underline\">%s</code>",
-  "Review Alias": "Review Alias"
+  "Review Alias": "Review Alias",
+  "My Account - Aliases": "My Account - Aliases",
+  "Retrieve via API": "Retrieve via API",
+  "Log": "Log",
+  "No error logs have been stored yet.  Please check back later.": "No error logs have been stored yet.  Please check back later.",
+  "Admin - Logs": "Admin - Logs",
+  "Search for logs": "Search for logs",
+  "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.": "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.",
+  "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.": "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.",
+  "Level": "Level",
+  "User": "User",
+  "Request": "Request"
 }

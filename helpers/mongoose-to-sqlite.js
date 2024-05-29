@@ -6,7 +6,6 @@
 const { Buffer } = require('node:buffer');
 
 const Database = require('better-sqlite3-multiple-ciphers');
-const WebSocketAsPromised = require('websocket-as-promised');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -112,11 +111,11 @@ async function updateMany(
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -268,11 +267,11 @@ async function countDocuments(instance, session, filter = {}) {
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -311,6 +310,7 @@ async function countDocuments(instance, session, filter = {}) {
 }
 
 // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
+// eslint-disable-next-line complexity
 async function deleteMany(instance, session, condition = {}, options = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -320,11 +320,11 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -393,11 +393,11 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -492,11 +492,11 @@ async function find(
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -589,11 +589,11 @@ async function findOne(
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -643,11 +643,11 @@ async function $__handleSave(options = {}, fn) {
       throw new TypeError('Database is missing');
 
     if (
-      !this?.instance?.wsp ||
-      (!(this.instance.wsp instanceof WebSocketAsPromised) &&
-        !this.instance.wsp[Symbol.for('isWSP')])
+      this?.instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+      (!this?.instance?.wsp || !this?.instance.wsp[Symbol.for('isWSP')]) &&
+      (!this?.instance || !this?.instance[Symbol.for('isWSP')])
     )
-      throw new TypeError('WebSocketAsPromised missing');
+      throw new TypeError('WebSocketAsPromised instance required');
 
     if (typeof this?.session?.user?.password !== 'string')
       throw new TypeError('Session user and password missing');
@@ -811,11 +811,11 @@ async function findOneAndUpdate(
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
@@ -999,12 +999,13 @@ async function distinct(instance, session, field, conditions = {}) {
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
   if (!isSANB(field)) throw new TypeError('Field missing');
+
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   const sql = builder.build({
     type: 'select',
@@ -1047,11 +1048,11 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
     throw new TypeError('Database is missing');
 
   if (
-    !instance?.wsp ||
-    (!(instance.wsp instanceof WebSocketAsPromised) &&
-      !instance.wsp[Symbol.for('isWSP')])
+    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
+    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
+    !instance[Symbol.for('isWSP')]
   )
-    throw new TypeError('WebSocketAsPromised missing');
+    throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
