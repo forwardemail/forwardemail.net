@@ -5,7 +5,10 @@
 
 const { Buffer } = require('node:buffer');
 
+const RE2 = require('re2');
 const mongoose = require('mongoose');
+
+const IMAP_RESPONSE_REGEX = new RE2(/^[A-Z]+$/);
 
 // <https://stackoverflow.com/a/52869830>
 function isISODate(str) {
@@ -57,6 +60,10 @@ function parseBuffers(json, objectId = false, checkDate = true) {
 }
 
 function recursivelyParse(str, objectId = false, checkDate = true) {
+  // for `imapResponse` it only returns a string with the error
+  // `rg "imapResponse: "`
+  // (e.g. OVERQUOTA, NONEXISTENT, ALREADYEXISTS)
+  if (typeof str === 'string' && IMAP_RESPONSE_REGEX.test(str)) return str;
   const json =
     typeof str === 'object' && !Buffer.isBuffer(str) ? str : JSON.parse(str);
   return parseBuffers(json, objectId, checkDate);
