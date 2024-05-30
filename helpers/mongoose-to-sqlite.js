@@ -1891,9 +1891,15 @@ async function convertResult(Model, doc, projection = {}) {
   const obj = {};
   if (!Model?.mapping) throw new TypeError('Mapping was not found');
   for (const key of Object.keys(doc)) {
-    if (!Model.mapping[key])
-      throw new TypeError(`Mapping for ${key} does not exist`);
-    obj[key] = Model.mapping[key].getter(doc[key]);
+    if (Model.mapping[key]) {
+      obj[key] = Model.mapping[key].getter(doc[key]);
+    } else {
+      // sometimes we have a legacy column such as "uid"
+      // which is a type String and so we can easily add mapping
+      if (typeof doc[key] !== 'string')
+        throw new TypeError(`Mapping for ${key} does not exist`);
+      obj[key] = doc[key];
+    }
   }
 
   const d = new Model(obj);
