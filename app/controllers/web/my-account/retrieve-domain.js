@@ -12,7 +12,7 @@ const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { parse } = require('node-html-parser');
 
-const getDmarcRecord = require('@forwardemail/mailauth/lib/dmarc/get-dmarc-record');
+const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const importAliases = require('./import-aliases');
 
 const { Domains, Aliases } = require('#models');
