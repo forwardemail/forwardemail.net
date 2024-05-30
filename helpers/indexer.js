@@ -309,9 +309,10 @@ class Indexer extends WildDuckIndexer {
           }
 
           if (data) {
-            await write(
-              Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
-            );
+            await write(Buffer.isBuffer(data) ? data.toString('binary') : data);
+            // await write(
+            //   Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
+            // );
           }
         }
 
@@ -331,10 +332,12 @@ class Indexer extends WildDuckIndexer {
         isRootNode = false;
         if (Buffer.isBuffer(node.body)) {
           // node Buffer
-          remainder = node.body;
+          // remainder = node.body;
+          remainder = node.body.toString('binary');
         } else if (node.body && node.body.buffer) {
           // mongodb Binary
-          remainder = node.body.buffer;
+          // remainder = node.body.buffer;
+          remainder = node.body.buffer.toString('binary');
         } else if (typeof node.body === 'string') {
           // binary string
           remainder = Buffer.from(node.body, 'binary');

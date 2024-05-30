@@ -19,6 +19,7 @@ const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 const emailHelper = require('#helpers/email');
 const Emails = require('#models/emails');
+
 const logger = require('#helpers/logger');
 const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -43,9 +44,11 @@ graceful.listen();
     for await (const email of Emails.find({
       created_at: { $lt: Date.now() - ms(config.emailRetention) }
     })
+      .select('_id message')
       .lean()
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
+      logger.debug('email', { email });
       try {
         await Emails.deleteOne(
           { _id: email._id },
@@ -84,7 +87,11 @@ graceful.listen();
     // delete files and chunks that are > 60 days old
     // (safeguard in case emails removed but chunks and files weren't)
     // (while still supporting scheduled date sending, e.g. 30 days out)
-    for await (const file of Emails.db.collection('fs.files').find({})) {
+    for await (const file of Emails.db
+      .collection('fs.files')
+      .find({})
+      .project({ uploadDate: 1 })) {
+      logger.debug('file', { file });
       if (new Date(file.uploadDate).getTime() < Date.now() - ms('60d')) {
         // remove it and delete from bucket
         try {
@@ -97,7 +104,11 @@ graceful.listen();
     }
 
     // delete chunks without references to files
-    for await (const chunk of Emails.db.collection('fs.chunks').find({})) {
+    for await (const chunk of Emails.db
+      .collection('fs.chunks')
+      .find({})
+      .project({ files_id: 1 })) {
+      logger.debug('chunk', { chunk });
       const count = await Emails.db.collection('fs.files').countDocuments({
         _id: chunk.files_id
       });

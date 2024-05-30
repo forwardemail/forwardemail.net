@@ -725,6 +725,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         // (ensures real-time blocking working)
         // or if the domain no longer has smtp access
         //
+        // TODO: this is slow
         const isDomainBlocked = await Domains.exists({
           $or: [
             {

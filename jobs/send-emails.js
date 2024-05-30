@@ -126,6 +126,7 @@ async function sendEmails() {
   //
 
   // NOTE: if you change this then also update `jobs/check-smtp-frozen-queue` if necessary
+  // TODO: optimize this query
   const query = {
     _id: { $nin: recentlyBlockedIds },
     is_locked: false,

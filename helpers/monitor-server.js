@@ -148,12 +148,12 @@ async function check() {
     }
 
     //
-    // in worker threads we want to alert if heap total is >= 4GB
+    // in worker threads we want to alert if heap total is >= 2 GB
     // (so we can optimize each job and monitor in real-time)
     //
     const memoryInfo = memoryUsage();
-    if (memoryInfo.heapTotal > bytes('4GB')) {
-      let message = `Exceeded 4 GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
+    if (memoryInfo.heapTotal > bytes('2GB')) {
+      let message = `Exceeded 2 GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
       if (!isMainThread && workerData?.job?.name) {
         message += ` (${workerData.job.name})`;
       }

@@ -125,7 +125,7 @@ class AttachmentStorage {
     // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
     try {
       //
-      // NOTE: `attachmnent.body` can be undefined if FileNotFound error occurs
+      // NOTE: `attachment.body` can be undefined if FileNotFound error occurs
       //       so in order to prevent an error being thrown per below GH issue
       //       we allocate a new Buffer with size of 0 bytes
       //       <https://github.com/sindresorhus/into-stream/issues/23>
