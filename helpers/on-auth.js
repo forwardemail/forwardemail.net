@@ -421,6 +421,11 @@ async function onAuth(auth, session, fn) {
       timezone: timeZone
     };
 
+    //
+    // TODO: run wsp to check if database can be opened
+    //       (if on IMAP/POP3/CalDAV) and if not then
+    //       do a hard reset and run a backup of the database
+    //
     // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
     // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
     /*

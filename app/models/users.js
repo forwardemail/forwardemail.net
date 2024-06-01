@@ -959,10 +959,6 @@ Users.pre('save', async function (next) {
     // now we need to find the @ubuntu.com domain
     // and create the user their alias if not already exists
     //
-    const adminIds = await this.constructor.distinct('_id', {
-      group: 'admin'
-    });
-
     if (!hasMatch) {
       for (const domainName of Object.keys(mapping)) {
         if (
@@ -978,9 +974,7 @@ Users.pre('save', async function (next) {
           const domain = await conn.models.Domains.findOne({
             name: domainName,
             plan: 'team',
-            'members.user': {
-              $in: adminIds
-            }
+            has_txt_record: true
           });
 
           if (!domain) {

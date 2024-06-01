@@ -1711,14 +1711,20 @@ async function parsePayload(data, ws) {
           storage_location: payload.session.user.storage_location
         });
         const diskSpace = await checkDiskSpace(storagePath);
+        const maxQuotaPerAlias = await Domains.getMaxQuota(
+          payload.session.user.domain_id
+        );
 
         // <https://github.com/nodejs/node/issues/38006>
         const stats = await fs.promises.stat(storagePath);
-        if (!stats.isFile() || stats.size === 0)
-          throw new TypeError('Database empty');
+        if (!stats.isFile() || stats.size === 0) {
+          const err = new TypeError('Database is an empty file');
+          err.storagePath = storagePath;
+          throw err;
+        }
 
         // we calculate size of db x 2 (backup + tarball)
-        const spaceRequired = stats.size * 2;
+        const spaceRequired = Math.max(maxQuotaPerAlias * 2, stats.size * 2);
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(

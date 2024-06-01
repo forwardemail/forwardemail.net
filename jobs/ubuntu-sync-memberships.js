@@ -42,10 +42,6 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const adminIds = await Users.distinct('_id', {
-      group: 'admin'
-    });
-
     const mapping = {
       'ubuntu.com': '~ubuntumembers',
       'kubuntu.org': '~kubuntu-members',
@@ -59,9 +55,7 @@ graceful.listen();
       const domain = await Domains.findOne({
         name: domainName,
         plan: 'team',
-        'members.user': {
-          $in: adminIds
-        }
+        has_txt_record: true
       });
 
       if (!domain)
@@ -128,9 +122,7 @@ graceful.listen();
         const domain = await Domains.findOne({
           name: domainName,
           plan: 'team',
-          'members.user': {
-            $in: adminIds
-          }
+          has_txt_record: true
         });
 
         if (!domain)
