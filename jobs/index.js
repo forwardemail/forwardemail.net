@@ -17,19 +17,19 @@ const jobs = [
   {
     name: 'paypal',
     interval: '1h',
-    timeout: 0,
+    timeout: '1h',
     path: path.join(__dirname, 'paypal', 'index.js')
   },
   {
     name: 'paypal-dup-tx-id',
     interval: '30m',
-    timeout: 0,
+    timeout: '30m',
     path: path.join(__dirname, 'paypal', 'dup-tx-id.js')
   },
   {
     name: 'stripe',
-    interval: '1h',
-    timeout: 0,
+    interval: '1.5h',
+    timeout: '1.5h',
     path: path.join(__dirname, 'stripe', 'index.js')
   },
   //
@@ -146,7 +146,7 @@ const jobs = [
   {
     name: 'delete-emails',
     interval: '1h',
-    timeout: 0
+    timeout: '1h'
   },
   {
     name: 'parse-logs',
@@ -173,8 +173,8 @@ const jobs = [
   // crawl the sitemap and open graph images
   {
     name: 'crawl-sitemap',
-    interval: '1m',
-    timeout: 0
+    interval: '12h',
+    timeout: '2h'
   },
   // check for frozen outbound smtp queue
   {

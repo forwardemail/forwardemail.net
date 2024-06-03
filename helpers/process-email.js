@@ -164,6 +164,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
       if (!alias.is_enabled)
         throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED'));
 
+      // user must exist
+      if (!alias.user) {
+        const err = new TypeError(i18n.translateError('INVALID_USER'));
+        err.alias = alias;
+        err.email = email;
+        throw err;
+        // throw Boom.notFound(i18n.translateError('INVALID_USER'));
+      }
+
       // alias owner must not be banned
       if (alias.user[config.userFields.isBanned])
         throw Boom.forbidden(i18n.translateError('ACCOUNT_BANNED'));

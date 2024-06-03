@@ -47,14 +47,19 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     )
       return setupPragma(db, session, 'aes256cbc');
     // invalid password
-    if (err.code === 'SQLITE_NOTADB')
-      throw new IMAPError(
+    if (err.code === 'SQLITE_NOTADB') {
+      const _err = new IMAPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true
         }
       );
+      _err.original_error = err;
+      _err.invalid_password = true;
+      throw _err;
+    }
+
     throw err;
   }
 

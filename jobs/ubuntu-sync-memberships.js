@@ -125,8 +125,13 @@ graceful.listen();
           has_txt_record: true
         });
 
-        if (!domain)
-          throw new Error(config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE);
+        if (!domain) {
+          const err = new Error(
+            config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE
+          );
+          err[Symbol.for('do_not_throw')] = true;
+          throw err;
+        }
 
         //
         // remove from member group (if they are not an admin)
@@ -175,22 +180,24 @@ graceful.listen();
       await delay(ms('1s'));
     }
   } catch (err) {
-    await logger.error(err);
-    // send an email to admins of the error
-    await emailHelper({
-      template: 'alert',
-      message: {
-        to: config.email.message.from,
-        subject: 'Ubuntu Sync Memberships Issue'
-      },
-      locals: {
-        message: `<pre><code>${JSON.stringify(
-          parseErr(err),
-          null,
-          2
-        )}</code></pre>`
-      }
-    });
+    if (!err[Symbol.for('do_not_throw')]) {
+      await logger.error(err);
+      // send an email to admins of the error
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: 'Ubuntu Sync Memberships Issue'
+        },
+        locals: {
+          message: `<pre><code>${JSON.stringify(
+            parseErr(err),
+            null,
+            2
+          )}</code></pre>`
+        }
+      });
+    }
   }
 
   if (parentPort) parentPort.postMessage('done');

@@ -142,15 +142,26 @@ async function refreshSession(session, command) {
   // TODO: script to export as mbox
 
   // connect to the database (sets `session.db` for us automatically)
-  await getDatabase(
-    this,
-    {
-      // alias
-      id: session.user.alias_id,
-      storage_location: session.user.storage_location
-    },
-    session
-  );
+  try {
+    await getDatabase(
+      this,
+      {
+        // alias
+        id: session.user.alias_id,
+        storage_location: session.user.storage_location
+      },
+      session
+    );
+  } catch (err) {
+    if (err.invalid_password)
+      this.logger.fatal(
+        new TypeError(
+          `Password token valid for ${session.user.username} (${session.user.alias_id}) (bad SQLite file)`
+        ),
+        { original_error: err, alias, session }
+      );
+    throw err;
+  }
 
   // fire notifications if any (e.g. initial creation of databases)
   if (this?.constructor?.name !== 'CalDAV')
