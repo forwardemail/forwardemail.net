@@ -36,10 +36,7 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const HOSTNAME = os.hostname();
 
-const AFFIXES =
-  config.env === 'test'
-    ? ['-wal', '-shm']
-    : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
+const AFFIXES = ['-wal', '-shm'];
 
 const REQUIRED_PATHS = [
   'INBOX',
