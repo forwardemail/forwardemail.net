@@ -5369,10 +5369,16 @@
   "An error occurred while attempting to send bulk reply. Please try again.": "אירעה שגיאה בעת ניסיון לשלוח תשובה בכמות גדולה. בבקשה נסה שוב.",
   "Resolve": "לִפְתוֹר",
   "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "שים לב שכדי לשמור על מוניטין IP ולהבטיח יכולת מסירה, יש לנו תהליך סקירה ידני על בסיס דומיין לאישור SMTP יוצא. זה לוקח בדרך כלל פחות מ-24 שעות, כאשר רוב הבקשות מכובדות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך את התהליך הזה למיידי עם בקרות ספאם והתראות נוספות. תהליך זה מבטיח שהודעות הדוא\"ל שלך יגיעו לתיבת הדואר הנכנס וההודעות שלך לא יסומנו כדואר זבל.",
-  "Admin - Logs": "Admin - Logs",
-  "Search for logs": "Search for logs",
-  "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.": "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.",
-  "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.": "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.",
-  "Level": "Level",
-  "Request": "Request"
+  "Admin - Logs": "אדמין - יומנים",
+  "Search for logs": "חפש יומנים",
+  "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.": "אם מבצעים שאילתה לפי אינדקס חלקי, כלול את התנאים המתאימים (למשל <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code> .",
+  "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.": "אם מבצעים שאילתה באמצעות מאפיין &quot;הודעה&quot;, השתמש באופרטור <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> .",
+  "Level": "רָמָה",
+  "Request": "בַּקָשָׁה",
+  "Link has expired, already been claimed, or is no longer active.": "הקישור פג, כבר נתבע או אינו פעיל יותר.",
+  "Password was claimed for <span class=\"font-weight-bold text-monospace notranslate\">%s</span> by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "הסיסמה נתבעה עבור <span class=\"font-weight-bold text-monospace notranslate\">%s</span> על ידי <span class=\"font-weight-bold text-monospace notranslate\">%s</span> .",
+  "Password was claimed for <span class=\"notranslate\">%s</span>": "נתבעה סיסמה עבור <span class=\"notranslate\">%s</span>",
+  "Invalid inquiry webhook email. Requires support@ emails.": "כתובת אימייל לא חוקית של שאילתה webhook. דורש support@ מיילים.",
+  "Invalid inquiry webhook payload.": "מטען אינטרנט לא חוקי של שאילתה.",
+  "Webhook request did not originate from a valid hostname": "בקשת Webhook לא הגיעה משם מארח חוקי"
 }

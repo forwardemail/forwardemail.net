@@ -3,7 +3,8 @@
     {
       "name": "bree",
       "script": "bree.js",
-      "max_memory_restart": "25G",
+      "max_restarts": "999999",
+      "max_memory_restart": "28G",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",

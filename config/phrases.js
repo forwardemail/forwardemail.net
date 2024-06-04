@@ -20,6 +20,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  LINK_EXPIRED_OR_INVALID:
+    'Link has expired, already been claimed, or is no longer active.',
   SMTP_RATE_LIMIT_EXCEEDED:
     'You have exceeded your daily SMTP outbound rate limit.',
   UBUNTU_NOT_ALLOWED_EMAIL:
@@ -73,6 +75,9 @@ module.exports = {
   ALIAS_PASSWORD_INSTRUCTIONS:
     'Alias password instructions have been emailed to <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_INSTRUCTIONS_SUBJECT: `Here is your password for <span class="notranslate">%s</span>`,
+  ALIAS_PASSWORD_CLAIMED:
+    'Password was claimed for <span class="font-weight-bold text-monospace notranslate">%s</span> by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+  ALIAS_PASSWORD_CLAIMED_SUBJECT: `Password was claimed for <span class="notranslate">%s</span>`,
   ALIAS_PASSWORD_GENERATED:
     'New password was generated for <span class="font-weight-bold text-monospace notranslate">%s</span> by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,

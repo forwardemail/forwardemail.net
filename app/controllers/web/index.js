@@ -512,7 +512,7 @@ async function regenerateAliasPassword(ctx) {
       message: {
         to,
         subject: i18n.translate(
-          'ALIAS_PASSWORD_GENERATED_SUBJECT',
+          'ALIAS_PASSWORD_CLAIMED_SUBJECT',
           locale,
           `${alias.name}@${domain.name}`
         )
@@ -520,7 +520,7 @@ async function regenerateAliasPassword(ctx) {
       locals: {
         locale,
         message: i18n.translate(
-          'ALIAS_PASSWORD_GENERATED',
+          'ALIAS_PASSWORD_CLAIMED',
           locale,
           `${alias.name}@${domain.name}`,
           alias.emailed_instructions
@@ -566,9 +566,26 @@ async function regenerateAliasPassword(ctx) {
     } else {
       ctx.body = { redirectTo };
     }
+
+    // in the background remove the `emailed_instructions`
+    // since it was claimed already by the end user
+    Aliases.findByIdAndUpdate(alias._id, {
+      $unset: {
+        emailed_instructions: 1
+      }
+    })
+      .then()
+      .catch((err) => {
+        ctx.logger.fatal(
+          new TypeError(
+            `Error while removing emailed_instructions for alias ID ${alias.id}`
+          )
+        );
+        ctx.logger.fatal(err);
+      });
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+    ctx.throw(Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID')));
   }
 }
 

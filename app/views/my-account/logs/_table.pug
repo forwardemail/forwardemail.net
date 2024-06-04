@@ -17,7 +17,6 @@ table.table.table-hover.table-bordered.table-sm
       else
         each log in logs
           tr
-            //- TODO: show webhook response
             td.align-middle
               ul.list-unstyled.mb-0
                 li
@@ -107,6 +106,10 @@ table.table.table-hover.table-bordered.table-sm
                                   span.badge.badge-danger.mr-1= bounce.recipient.to
                               if bounce.err && bounce.err.message
                                 span.text-monospace!= ansiHTML(bounce.err.message)
+                              if bounce.err && bounce.err.responseCode
+                                span.badge.badge-pill.mr-1= bounce.err.responseCode
+                              if bounce.err && bounce.err.original_message
+                                span.text-monospace.mr-1= bounce.err.original_message
             td.align-middle.text-center
               ul.list-inline.mb-0
                 li.list-inline-item

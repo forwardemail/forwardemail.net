@@ -103,11 +103,6 @@ const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
 const concurrency = os.cpus().length;
 
-const AFFIXES =
-  config.env === 'test'
-    ? ['-wal', '-shm']
-    : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
-
 const IP_ADDRESS = ip.address();
 
 const PAYLOAD_ACTIONS = new Set([
@@ -374,7 +369,8 @@ async function parsePayload(data, ws) {
       payload.action !== 'setup' &&
       payload.action !== 'reset' &&
       payload.action !== 'size' &&
-      payload.action !== 'tmp'
+      payload.action !== 'tmp' &&
+      payload.action !== 'rekey'
     ) {
       db = await getDatabase(
         this,
@@ -1432,6 +1428,7 @@ async function parsePayload(data, ws) {
             )} was available`
           );
 
+        // TODO: this should not fix database
         db = await getDatabase(
           this,
           // alias
@@ -1551,7 +1548,9 @@ async function parsePayload(data, ws) {
               // $id-tmp.sqlite
               // $id-tmp-wal.sqlite
               // $id-tmp-shm.sqlite
-              for (const affix of AFFIXES) {
+              for (const affix of config.env === 'test'
+                ? ['-wal', '-shm']
+                : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm']) {
                 const affixFilePath = path.join(
                   dirName,
                   `${basename}${affix}${ext}`
@@ -1563,12 +1562,18 @@ async function parsePayload(data, ws) {
                     size += stats.size;
                   }
                 } catch (err) {
-                  if (err.code !== 'ENOENT') throw err;
+                  if (err.code !== 'ENOENT') {
+                    err.isCodeBug = true;
+                    throw err;
+                  }
                 }
               }
             }
           } catch (err) {
-            if (err.code !== 'ENOENT') throw err;
+            if (err.code !== 'ENOENT') {
+              err.isCodeBug = true;
+              throw err;
+            }
           }
 
           // save storage_used on the given alias
@@ -1690,20 +1695,24 @@ async function parsePayload(data, ws) {
         break;
       }
 
-      // leverages `payload.new_password` to rekey existing
+      //
+      // NOTE: rekeying is not supported in WAL mode
+      //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/64>
+      //       e.g. this results in "SqliteError: SQL logic error"
+      //       `db.rekey(Buffer.from(decrypt(payload.new_password)));`
+      //       `db.pragma(`rekey="${decrypt(payload.new_password)}"`);`
+      //
       case 'rekey': {
+        // leverages `payload.new_password` to rekey existing
         if (!isSANB(payload.new_password))
           throw new TypeError('New password missing');
-        //
-        // NOTE: rekeying is not supported in WAL mode
-        //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/64>
-        //       e.g. this results in "SqliteError: SQL logic error"
-        //       `db.rekey(Buffer.from(decrypt(payload.new_password)));`
-        //       `db.pragma(`rekey="${decrypt(payload.new_password)}"`);`
-        //
-        // instead we will simply make a backup
-        // and then remove the old db and then add the new db
-        //
+
+        lock = await this.lock.waitAcquireLock(
+          `${payload.session.user.alias_id}`,
+          ms('1h'),
+          ms('10s')
+        );
+        if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
 
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
@@ -1715,16 +1724,24 @@ async function parsePayload(data, ws) {
           payload.session.user.domain_id
         );
 
-        // <https://github.com/nodejs/node/issues/38006>
-        const stats = await fs.promises.stat(storagePath);
-        if (!stats.isFile() || stats.size === 0) {
-          const err = new TypeError('Database is an empty file');
-          err.storagePath = storagePath;
-          throw err;
+        let stats;
+        try {
+          // <https://github.com/nodejs/node/issues/38006>
+          stats = await fs.promises.stat(storagePath);
+          if (!stats.isFile())
+            throw new TypeError(`${storagePath} was not a file`);
+        } catch (err) {
+          if (err.code !== 'ENOENT') {
+            err.isCodeBug = true;
+            throw err;
+          }
         }
 
         // we calculate size of db x 2 (backup + tarball)
-        const spaceRequired = Math.max(maxQuotaPerAlias * 2, stats.size * 2);
+        const spaceRequired = Math.max(
+          maxQuotaPerAlias * 2,
+          stats && stats.size > 0 ? stats.size * 2 : 0
+        );
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
@@ -1733,53 +1750,67 @@ async function parsePayload(data, ws) {
             )} was available`
           );
 
-        //
-        // TODO: if the database is empty and it is <= initial size
-        // then instead of rekey we can just do a complete reset
-        //
-        // if (stats.size <= config.INITIAL_DB_SIZE) {
-        //   // TODO: finish me
-        // }
+        // check if file path was <= initial db size
+        // (and if so then perform the same logic as in "reset")
+        let reset = false;
+        if (!stats || stats.size <= config.INITIAL_DB_SIZE) {
+          try {
+            await fs.promises.rm(storagePath, {
+              force: true,
+              recursive: true
+            });
+          } catch (err) {
+            if (err.code !== 'ENOENT') {
+              err.isCodeBug = true;
+              throw err;
+            }
+          }
 
-        // create backup
-        const tmp = path.join(
-          path.dirname(storagePath),
-          `${payload.id}-backup.sqlite`
-        );
+          reset = true;
 
-        //
-        // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
-        //       because if a page is modified during backup, it has to start over
-        //       <https://news.ycombinator.com/item?id=31387556>
-        //       <https://github.com/benbjohnson/litestream.io/issues/56>
-        //
-        //       also, if we used `backup` then for a temporary period
-        //       the database would be unencrypted on disk, and instead
-        //       we use VACUUM INTO which keeps the encryption as-is
-        //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
-        //
-        //       const results = await db.backup(tmp);
-        //
-        //       so instead we use the VACUUM INTO command with the `tmp` path
-        //
+          const dirName = path.dirname(storagePath);
+          const ext = path.extname(storagePath);
+          const basename = path.basename(storagePath, ext);
 
-        // lock database if not already locked
-        if (!payload?.lock) lock = await acquireLock(this, db);
+          for (const affix of ['-wal', '-shm']) {
+            const affixFilePath = path.join(
+              dirName,
+              `${basename}${affix}${ext}`
+            );
+            try {
+              // eslint-disable-next-line no-await-in-loop
+              await fs.promises.rm(affixFilePath, {
+                force: true,
+                recursive: true
+              });
+            } catch (err) {
+              if (err.code !== 'ENOENT') {
+                err.isCodeBug = true;
+                throw err;
+              }
+            }
+          }
 
-        // run a checkpoint to copy over wal to db
-        db.pragma('wal_checkpoint(PASSIVE)');
-
-        // create backup
-        const results = db.exec(`VACUUM INTO '${tmp}'`);
-
-        logger.debug('results', { results });
-
-        let backup = true;
-        let err;
-
-        try {
-          // open the backup and encrypt it
-          const backupDb = await getDatabase(
+          // TODO: this should not fix database
+          db = await getDatabase(
+            this,
+            // alias
+            {
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            },
+            {
+              ...payload.session,
+              user: {
+                ...payload.session.user,
+                password: payload.new_password
+              }
+            },
+            lock
+          );
+        } else {
+          // TODO: this should not fix database
+          db = await getDatabase(
             this,
             // alias
             {
@@ -1787,48 +1818,138 @@ async function parsePayload(data, ws) {
               storage_location: payload.session.user.storage_location
             },
             payload.session,
-            lock || payload?.lock,
-            false,
-            tmp
+            lock
           );
-          // rekey the database with new password
-          backupDb.pragma('wal_checkpoint(PASSIVE)');
-          const journalModeResult = backupDb.pragma('journal_mode=DELETE');
-          if (
-            !Array.isArray(journalModeResult) ||
-            journalModeResult.length !== 1 ||
-            !journalModeResult[0] ||
-            typeof journalModeResult[0] !== 'object' ||
-            journalModeResult[0].journal_mode !== 'delete'
-          )
-            throw new TypeError('Journal mode could not be changed');
-          // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
-          backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
-          backupDb.pragma('journal_mode=WAL');
-          // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
-          backupDb.prepare('VACUUM').run();
-
-          try {
-            backupDb.pragma('optimize');
-            backupDb.close();
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-
-          // rename backup file (overwrites existing destination file)
-          await fs.promises.rename(tmp, storagePath);
-          backup = false;
-          logger.debug('renamed', { tmp, storagePath });
-        } catch (_err) {
-          err = _err;
         }
 
-        // always do cleanup in case of errors
-        if (backup) {
+        //
+        // NOTE: if we're not resetting database then assume we want to do a backup
+        //
+        let err;
+        if (!reset) {
+          // create backup
+          const tmp = path.join(
+            path.dirname(storagePath),
+            `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
+          );
+
+          //
+          // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+          //       because if a page is modified during backup, it has to start over
+          //       <https://news.ycombinator.com/item?id=31387556>
+          //       <https://github.com/benbjohnson/litestream.io/issues/56>
+          //
+          //       also, if we used `backup` then for a temporary period
+          //       the database would be unencrypted on disk, and instead
+          //       we use VACUUM INTO which keeps the encryption as-is
+          //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+          //
+          //       const results = await db.backup(tmp);
+          //
+          //       so instead we use the VACUUM INTO command with the `tmp` path
+          //
+
+          // run a checkpoint to copy over wal to db
+          db.pragma('wal_checkpoint(PASSIVE)');
+
+          // create backup
+          const results = db.exec(`VACUUM INTO '${tmp}'`);
+
+          logger.debug('results', { results });
+
+          let backup = true;
+
           try {
-            await fs.promises.unlink(tmp);
-          } catch (err) {
-            logger.fatal(err, { payload });
+            // open the backup and encrypt it
+            const backupDb = await getDatabase(
+              this,
+              // alias
+              {
+                id: payload.session.user.alias_id,
+                storage_location: payload.session.user.storage_location
+              },
+              payload.session,
+              lock,
+              false,
+              tmp
+            );
+
+            // rekey the database with new password
+            backupDb.pragma('wal_checkpoint(PASSIVE)');
+
+            // ensure journal mode changed to delete so we can rekey database
+            const journalModeResult = backupDb.pragma('journal_mode=DELETE', {
+              simple: true
+            });
+            if (journalModeResult !== 'delete')
+              throw new TypeError('Journal mode could not be changed');
+
+            // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
+            backupDb.prepare('VACUUM').run();
+            // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
+            backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
+
+            //
+            // NOTE: do not enable this again because if so it will create
+            //       -wal and -shm files and corrupt the database
+            //       `backupDb.pragma('journal_mode=WAL');`
+            //
+            //       (the next time the database is opened the journal mode will get switched to WAL)
+            //
+
+            // NOTE: VACUUM will persist the rekey operation and write to db
+            // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
+            backupDb.prepare('VACUUM').run();
+
+            try {
+              backupDb.pragma('optimize');
+              backupDb.close();
+            } catch (err) {
+              logger.fatal(err, { payload });
+            }
+
+            // rename backup file (overwrites existing destination file)
+            await fs.promises.rename(tmp, storagePath);
+            backup = false;
+            logger.debug('renamed', { tmp, storagePath });
+
+            // remove the old -whm and -shm files
+            const dirName = path.dirname(storagePath);
+            const ext = path.extname(storagePath);
+            const basename = path.basename(storagePath, ext);
+
+            for (const affix of ['-wal', '-shm']) {
+              const affixFilePath = path.join(
+                dirName,
+                `${basename}${affix}${ext}`
+              );
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                await fs.promises.rm(affixFilePath, {
+                  force: true,
+                  recursive: true
+                });
+              } catch (err) {
+                if (err.code !== 'ENOENT') {
+                  err.isCodeBug = true;
+                  throw err;
+                }
+              }
+            }
+          } catch (_err) {
+            err = _err;
+          }
+
+          // always do cleanup in case of errors
+          if (backup) {
+            try {
+              await fs.promises.rm(tmp, {
+                force: true,
+                recursive: true
+              });
+            } catch (err) {
+              logger.fatal(err, { payload });
+            }
           }
         }
 
@@ -1884,11 +2005,18 @@ async function parsePayload(data, ws) {
           );
 
         try {
-          await fs.promises.unlink(storagePath);
+          await fs.promises.rm(storagePath, {
+            force: true,
+            recursive: true
+          });
         } catch (err) {
-          logger.warn(err, { payload });
+          if (err.code !== 'ENOENT') {
+            err.isCodeBug = true;
+            throw err;
+          }
         }
 
+        // TODO: don't allow getDatabase to perform a reset here
         db = await getDatabase(
           this,
           // alias
@@ -2097,7 +2225,10 @@ async function parsePayload(data, ws) {
         // always do cleanup in case of errors
         if (tmp && backup) {
           try {
-            await fs.promises.unlink(tmp);
+            await fs.promises.rm(tmp, {
+              force: true,
+              recursive: true
+            });
           } catch (err) {
             logger.fatal(err, { payload });
           }

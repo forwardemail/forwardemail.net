@@ -7378,5 +7378,11 @@
   "Inquiry does not exist.": "문의가 존재하지 않습니다.",
   "An error occurred while attempting to send bulk reply. Please try again.": "대량 답장을 보내는 동안 오류가 발생했습니다. 다시 시도해 주세요.",
   "Resolve": "해결하다",
-  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "IP 평판을 유지하고 전달 가능성을 보장하기 위해 아웃바운드 SMTP 승인에 대해 도메인별로 수동 검토 프로세스를 갖추고 있습니다. 이 작업은 일반적으로 24시간 이내에 완료되며 대부분의 요청은 1~2시간 이내에 처리됩니다. 가까운 시일 내에 추가 스팸 제어 및 알림 기능을 통해 이 프로세스를 즉각적으로 만드는 것이 목표입니다. 이 프로세스를 통해 귀하의 이메일이 받은 편지함에 도달하고 메시지가 스팸으로 표시되지 않도록 할 수 있습니다."
+  "Please note that in order to maintain IP reputation and ensure deliverability, we have a manual review process on a per-domain basis for outbound SMTP approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.": "IP 평판을 유지하고 전달 가능성을 보장하기 위해 아웃바운드 SMTP 승인에 대해 도메인별로 수동 검토 프로세스를 갖추고 있습니다. 이 작업은 일반적으로 24시간 이내에 완료되며 대부분의 요청은 1~2시간 이내에 처리됩니다. 가까운 시일 내에 추가 스팸 제어 및 알림 기능을 통해 이 프로세스를 즉각적으로 만드는 것이 목표입니다. 이 프로세스를 통해 귀하의 이메일이 받은 편지함에 도달하고 메시지가 스팸으로 표시되지 않도록 할 수 있습니다.",
+  "Link has expired, already been claimed, or is no longer active.": "링크가 만료되었거나 이미 소유권이 주장되었거나 더 이상 활성 상태가 아닙니다.",
+  "Password was claimed for <span class=\"font-weight-bold text-monospace notranslate\">%s</span> by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "<span class=\"font-weight-bold text-monospace notranslate\">%s</span> 이(가) <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 대한 비밀번호를 요구했습니다.",
+  "Password was claimed for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 에 대한 비밀번호가 요청되었습니다.",
+  "Invalid inquiry webhook email. Requires support@ emails.": "문의 웹훅 이메일이 잘못되었습니다. support@ 이메일이 필요합니다.",
+  "Invalid inquiry webhook payload.": "잘못된 조회 웹훅 페이로드입니다.",
+  "Webhook request did not originate from a valid hostname": "웹훅 요청이 유효한 호스트 이름에서 발생하지 않았습니다."
 }

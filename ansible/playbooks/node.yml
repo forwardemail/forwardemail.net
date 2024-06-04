@@ -74,6 +74,14 @@
         hour: "*"
         minute: "0"
         job: "/home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1"
+    - name: Check PM2
+      become: true
+      become_user: deploy
+      cron:
+        name: "check-pm2"
+        hour: "*"
+        minute: "*/20"
+        job: "/home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1"
     # - name: Reload pm2 every 4 hours
     #   become: true
     #   become_user: deploy

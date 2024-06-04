@@ -133,7 +133,9 @@ async function generateAliasPassword(ctx) {
     }
 
     const pass = await alias.createToken(
-      ctx.state.user.email,
+      `${ctx.state.user.email}${
+        emailedInstructions ? ` for ${emailedInstructions}` : ''
+      }`,
       ctx.request.body.new_password || undefined,
       _.uniq(_.compact(userInputs))
     );

@@ -822,21 +822,24 @@ function retryGetDatabase(...args) {
               const stats = await fs.promises.stat(err.dbFilePath);
               if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE)
                 throw err;
+              err.stats = stats;
             } catch (err) {
               logger.debug(err);
               return;
             }
 
-            // rename backup file
-            await fs.promises.rename(
-              err.dbFilePath,
-              `${err.dbFilePath}.backup`
-            );
-
-            // backup all WAL and other files
+            //
+            // remove db file and all related files
+            //
             const dirName = path.dirname(err.dbFilePath);
             const ext = path.extname(err.dbFilePath);
             const basename = path.basename(err.dbFilePath, ext);
+
+            await fs.promises.rm(err.dbFilePath, {
+              force: true,
+              recursive: true
+            });
+
             for (const affix of AFFIXES) {
               const affixFilePath = path.join(
                 dirName,
@@ -844,10 +847,10 @@ function retryGetDatabase(...args) {
               );
               try {
                 // eslint-disable-next-line no-await-in-loop
-                await fs.promises.rename(
-                  affixFilePath,
-                  `${affixFilePath}.backup`
-                );
+                await fs.promises.rm(affixFilePath, {
+                  force: true,
+                  recursive: true
+                });
               } catch (err) {
                 if (err.code !== 'ENOENT') {
                   err.isCodeBug = true;
@@ -867,6 +870,10 @@ function retryGetDatabase(...args) {
                 message: `<p>${
                   err.dbFilePath
                 }</p><hr /><pre><code>${JSON.stringify(
+                  err.stats,
+                  null,
+                  2
+                )}</code></pre><pre><code>${JSON.stringify(
                   parseErr(err),
                   null,
                   2

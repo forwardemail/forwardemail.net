@@ -3,7 +3,8 @@
     {
       "name": "sqlite",
       "script": "sqlite.js",
-      "max_memory_restart": "16G",
+      "max_restarts": "999999",
+      "max_memory_restart": "20G",
       "wait_ready": true,
       "exec_mode": "cluster",
       "instances": "max",
@@ -15,7 +16,8 @@
     {
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
-      "max_memory_restart": "16G",
+      "max_restarts": "999999",
+      "max_memory_restart": "20G",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
