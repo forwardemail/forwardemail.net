@@ -65,8 +65,9 @@ graceful.listen();
 
           const bad = list.filter(
             (p) =>
-              p.pm2_env.status !== 'online' ||
-              Date.now() - p.pm2_env.pm_uptime < ms('15m')
+              p.name !== 'pm2-logrotate' &&
+              (p.pm2_env.status !== 'online' ||
+                Date.now() - p.pm2_env.pm_uptime < ms('15m'))
           );
 
           if (bad.length > 0) {
