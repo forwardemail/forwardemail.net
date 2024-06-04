@@ -1733,6 +1733,14 @@ async function parsePayload(data, ws) {
             )} was available`
           );
 
+        //
+        // TODO: if the database is empty and it is <= initial size
+        // then instead of rekey we can just do a complete reset
+        //
+        // if (stats.size <= config.INITIAL_DB_SIZE) {
+        //   // TODO: finish me
+        // }
+
         // create backup
         const tmp = path.join(
           path.dirname(storagePath),
@@ -1797,6 +1805,8 @@ async function parsePayload(data, ws) {
           // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
           backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
           backupDb.pragma('journal_mode=WAL');
+          // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
+          backupDb.prepare('VACUUM').run();
 
           try {
             backupDb.pragma('optimize');

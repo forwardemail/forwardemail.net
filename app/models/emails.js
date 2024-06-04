@@ -467,9 +467,30 @@ Emails.pre('save', function (next) {
     // this.locked_by = undefined;
     // this.locked_at = undefined;
 
+    //
+    // in case of MongoServerError we want email to instantly retry
+    // (e.g. `rejectedErrors.name` is `MongoServerError`)
+    //
+
     // if all recipients were rejected (5xx), then status is "bounced"
     // if some recipients accepted and others were rejected (5xx) then status is "partially_sent"
     if (this.rejectedErrors.length > 0) {
+      if (
+        this.status === 'queued' &&
+        this.rejectedErrors.every((err) => err.isCodeBug === true)
+        // this.rejectedErrors.every(
+        //   (err) =>
+        //     err.name === 'MongoServerError' ||
+        //     err.name === 'MongoError' ||
+        //     err.name === 'RedisError'
+        // )
+      ) {
+        this.is_locked = false;
+        this.locked_by = undefined;
+        this.locked_at = undefined;
+        return next();
+      }
+
       const [lowestErrorCode] = this.rejectedErrors
         .map((err) => getErrorCode(err))
         .sort();

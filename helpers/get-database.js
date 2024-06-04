@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
+const path = require('node:path');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -13,6 +14,8 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
 
+const parseErr = require('parse-err');
+const Aliases = require('#models/aliases');
 const Calendars = require('#models/calendars');
 const CalendarEvents = require('#models/calendar-events');
 const Attachments = require('#models/attachments');
@@ -21,14 +24,22 @@ const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const config = require('#config');
 const env = require('#config/env');
+const email = require('#helpers/email');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isTimeoutError = require('#helpers/is-timeout-error');
+const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const HOSTNAME = os.hostname();
+
+const AFFIXES =
+  config.env === 'test'
+    ? ['-wal', '-shm']
+    : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm'];
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -753,9 +764,124 @@ function retryGetDatabase(...args) {
     {
       retries: 2,
       minTimeout: ms('15s'),
-      onFailedAttempt(err) {
+      // eslint-disable-next-line complexity
+      async onFailedAttempt(err) {
         if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return;
         if (isTimeoutError(err)) return;
+        //
+        // NOTE: we attempt to check if the password was valid
+        //       and if so, then we run a backup, email it to the admin/user
+        //       and then run a reset of the database with the valid password
+        //       (edge case in case "rekey" operation does not succeed)
+        //
+        if (err.code === 'SQLITE_NOTADB' && err.dbFilePath && !err.readonly) {
+          const session = args[2];
+          try {
+            //
+            // check if password was valid
+            //
+            if (!session?.user?.alias_id) throw err;
+            if (!session?.user?.password) throw err;
+            // if (!session?.user?.owner_full_email) throw err;
+
+            // try to fetch most up to date alias object
+            const alias = await Aliases.findOne({ id: session.user.alias_id })
+              .populate(
+                'user',
+                `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
+              )
+              .select('+tokens.hash +tokens.salt')
+              .lean()
+              .exec();
+
+            // mirror of `helpers/validate-alias.js`
+            // (extra safeguard)
+            if (!alias) throw err;
+            if (!alias.user) throw err;
+            if (alias.user[config.userFields.isBanned]) throw err;
+            if (!alias.is_enabled) throw err;
+            if (alias.name === '*') throw err;
+            if (alias.name.startsWith('/')) throw err;
+
+            // mirrors `helpers/on-auth.js`
+            // (extra safeguard)
+            if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
+              throw err;
+
+            // ensure that the token is valid
+            let isValid = false;
+            if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
+              isValid = await isValidPassword(
+                alias.tokens,
+                decrypt(session.user.password)
+              );
+            if (!isValid) throw err;
+
+            // check if file path was <= initial db size
+            const stats = await fs.promises.stat(err.dbFilePath);
+            if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE)
+              throw err;
+
+            // rename backup file
+            await fs.promises.rename(
+              err.dbFilePath,
+              `${err.dbFilePath}.backup`
+            );
+
+            // backup all WAL and other files
+            const dirName = path.dirname(err.dbFilePath);
+            const ext = path.extname(err.dbFilePath);
+            const basename = path.basename(err.dbFilePath, ext);
+            for (const affix of AFFIXES) {
+              const affixFilePath = path.join(
+                dirName,
+                `${basename}${affix}${ext}`
+              );
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                await fs.promises.rename(
+                  affixFilePath,
+                  `${affixFilePath}.backup`
+                );
+              } catch (err) {
+                if (err.code !== 'ENOENT') {
+                  err.isCodeBug = true;
+                  logger.fatal(err);
+                }
+              }
+            }
+
+            // email admins of the renaming
+            email({
+              template: 'alert',
+              message: {
+                to: config.email.message.from,
+                subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
+              },
+              locals: {
+                message: `<p>${
+                  err.dbFilePath
+                }</p><hr /><pre><code>${JSON.stringify(
+                  parseErr(err),
+                  null,
+                  2
+                )}</code></pre>`
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
+
+            // return here so we can retry and it will re-create database
+            return;
+          } catch (_err) {
+            // this should email admins via `isCodeBug` setting to `true`
+            _err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${_err.message}`;
+            _err.isCodeBug = true;
+            _err.original_error = err;
+            logger.fatal(_err, { session });
+          }
+        }
+
         throw err;
       }
     }

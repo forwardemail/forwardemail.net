@@ -55,8 +55,8 @@ async function setupPragma(db, session, cipher = 'chacha20') {
           ignoreHook: true
         }
       );
+      _err.code = err.code;
       _err.original_error = err;
-      _err.invalid_password = true;
       throw _err;
     }
 

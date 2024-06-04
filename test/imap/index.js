@@ -55,8 +55,6 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
-const INITIAL_DB_SIZE = 200704;
-
 subscriber.setMaxListeners(0);
 
 test.before(utils.setupMongoose);
@@ -879,7 +877,7 @@ test('onGetQuotaRoot', async (t) => {
     });
 
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, INITIAL_DB_SIZE);
+    t.is(storageUsed, config.INITIAL_DB_SIZE);
     const quota = await t.context.imapFlow.getQuota();
     t.is(quota.path, 'INBOX');
     t.is(quota.storage.limit, config.maxQuotaPerAlias);
@@ -887,11 +885,11 @@ test('onGetQuotaRoot', async (t) => {
     t.log('quota', quota);
     t.log('quota.storage.usage', quota.storage.usage);
     t.is(quota.storage.usage, 4096);
-    // TODO: figure out why INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
+    // TODO: figure out why config.INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
     //   path: 'INBOX',
     //   storage: {
-    //     usage: INITIAL_DB_SIZE, // isCI ? 200704 : INITIAL_DB_SIZE,
+    //     usage: config.INITIAL_DB_SIZE, // isCI ? 200704 : config.INITIAL_DB_SIZE,
     //     limit: config.maxQuotaPerAlias,
     //     status: '0%'
     //   }
@@ -911,12 +909,12 @@ test('onGetQuotaRoot', async (t) => {
       alias_id: alias.id
     });
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, 200704);
+    t.is(storageUsed, config.INITIAL_DB_SIZE);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
-        usage: 200704,
+        usage: config.INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -976,13 +974,13 @@ ZXhhbXBsZQo=
     //   uid: append.uid
     // });
     const storageUsed = await Aliases.getStorageUsed(alias);
-    t.is(storageUsed, 200704);
+    t.is(storageUsed, config.INITIAL_DB_SIZE);
     const quota = await imapFlow.getQuota('boopboop');
     t.deepEqual(quota, {
       path: 'boopboop',
       storage: {
         // message size is rounded to nearest 1024 bytes
-        usage: 200704,
+        usage: config.INITIAL_DB_SIZE,
         limit: config.maxQuotaPerAlias,
         status: '0%'
       }
@@ -1001,7 +999,7 @@ test('onGetQuota', async (t) => {
   t.deepEqual(quota, {
     path: 'INBOX',
     storage: {
-      usage: 200704, // INITIAL_DB_SIZE,
+      usage: config.INITIAL_DB_SIZE,
       limit: config.maxQuotaPerAlias,
       status: '0%'
     }
