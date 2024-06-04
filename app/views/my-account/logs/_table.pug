@@ -106,8 +106,29 @@ table.table.table-hover.table-bordered.table-sm
                                   span.badge.badge-danger.mr-1= bounce.recipient.to
                               if bounce.err && bounce.err.message
                                 span.text-monospace!= ansiHTML(bounce.err.message)
-                              if bounce.err && bounce.err.responseCode
-                                span.badge.badge-pill.mr-1= bounce.err.responseCode
+
+                              br
+
+                              //- status code
+                              - let specificStatusCode;
+                              - let specificBadgeClass = "badge-success";
+                              if bounce.err && bounce.err.statusCode
+                                - specificStatusCode = bounce.err.statusCode;
+                              else if bounce.err && bounce.err.status
+                                - specificStatusCode = bounce.err.status;
+                              else if bounce.err && bounce.err.responseCode
+                                - specificStatusCode = bounce.err.responseCode;
+
+                              if specificStatusCode
+                                if specificStatusCode >= 500
+                                  - specificBadgeClass = "badge-danger";
+                                else if specificStatusCode >= 400
+                                  - specificBadgeClass = "badge-warning";
+                                else if specificStatusCode >= 300
+                                  - specificBadgeClass = "badge-primary";
+                                span.badge.badge-pill.mr-1(class=specificBadgeClass)= specificStatusCode
+
+                              //- message
                               if bounce.err && bounce.err.original_message
                                 span.text-monospace.mr-1= bounce.err.original_message
             td.align-middle.text-center
