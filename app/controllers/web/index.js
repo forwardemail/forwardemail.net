@@ -42,12 +42,13 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
-const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
+// const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
-const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+// const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
 
@@ -464,6 +465,7 @@ async function regenerateAliasPassword(ctx) {
 
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
 
+    /*
     // generate new password
     // set locale for translation in `createToken`
     alias.locale = ctx.locale;
@@ -502,6 +504,7 @@ async function regenerateAliasPassword(ctx) {
     } catch (err) {
       ctx.logger.fatal(err);
     }
+    */
 
     // email admins that user claimed password
     email({
@@ -531,7 +534,8 @@ async function regenerateAliasPassword(ctx) {
     const html = ctx.translate(
       'ALIAS_GENERATED_PASSWORD',
       `${alias.name}@${domain.name}`,
-      pass
+      decrypt(ctx.params.encrypted_password)
+      // pass
     );
 
     const swal = {

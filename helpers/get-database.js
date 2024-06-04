@@ -814,10 +814,18 @@ function retryGetDatabase(...args) {
               );
             if (!isValid) throw err;
 
+            err.isCodeBug = true;
+            err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${err.message}`;
+
             // check if file path was <= initial db size
-            const stats = await fs.promises.stat(err.dbFilePath);
-            if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE)
-              throw err;
+            try {
+              const stats = await fs.promises.stat(err.dbFilePath);
+              if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE)
+                throw err;
+            } catch (err) {
+              logger.debug(err);
+              return;
+            }
 
             // rename backup file
             await fs.promises.rename(
@@ -874,7 +882,7 @@ function retryGetDatabase(...args) {
             // this should email admins via `isCodeBug` setting to `true`
             _err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${_err.message}`;
             _err.isCodeBug = true;
-            _err.original_error = err;
+            _err.original_error = parseErr(err);
             logger.fatal(_err, { session });
           }
         }
