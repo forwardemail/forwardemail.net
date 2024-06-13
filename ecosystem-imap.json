@@ -3,7 +3,7 @@
     {
       "name": "imap-993",
       "script": "imap.js",
-      "max_restarts": "999999",
+      "max_restarts": 999,
       "max_memory_restart": "15G",
       "exec_mode": "cluster",
       "wait_ready": true,
@@ -17,7 +17,7 @@
     {
       "name": "imap-2993",
       "script": "imap.js",
-      "max_restarts": "999999",
+      "max_restarts": 999,
       "max_memory_restart": "15G",
       "exec_mode": "fork",
       "wait_ready": true,

@@ -3,7 +3,7 @@
     {
       "name": "api",
       "script": "api.js",
-      "max_restarts": "999999",
+      "max_restarts": 999,
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
@@ -17,7 +17,7 @@
     {
       "name": "proxy",
       "script": "proxy.js",
-      "max_restarts": "999999",
+      "max_restarts": 999,
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",

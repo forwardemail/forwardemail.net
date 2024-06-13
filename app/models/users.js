@@ -155,7 +155,7 @@ object[config.userFields.smtpLimit] = {
   type: Number,
   default: config.smtpLimitMessages,
   min: 10,
-  max: 10000
+  max: 100000
 };
 
 // Custom receipt email

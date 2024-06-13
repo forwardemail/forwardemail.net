@@ -61,19 +61,56 @@ graceful.listen();
               )
             );
 
-          // TODO: an improvement would be to read the `ecosystem-xyz.json` file to determine the processes necessary
+          const bad = [];
+          const reload = [];
 
-          const bad = list.filter(
-            (p) =>
-              p.name !== 'pm2-logrotate' &&
-              (p.pm2_env.status !== 'online' ||
-                Date.now() - p.pm2_env.pm_uptime < ms('15m'))
-          );
+          for (const p of list) {
+            if (p.name === 'pm2-logrotate') continue;
+
+            // TODO: an improvement would be to read the `ecosystem-xyz.json` file to determine the processes necessary
+            if (
+              p.pm2_env.status !== 'online' ||
+              Date.now() - p.pm2_env.pm_uptime < ms('15m')
+            )
+              bad.push(p);
+
+            // if any have "errored" status then attempt to reload them
+            if (['stopped', 'errored'].includes(p.pm2_env.status))
+              reload.push(p);
+          }
+
+          if (reload.length > 0) {
+            for (const p of reload) {
+              // eslint-disable-next-line no-await-in-loop
+              await new Promise((resolve, reject) => {
+                pm2.reload(p.name, (err) => {
+                  if (err) return reject(err);
+                  resolve();
+                });
+              });
+
+              // reloaded process message
+              const subject = `PM2 reloaded ${
+                p.name
+              } on ${os.hostname()} (${IP_ADDRESS})`;
+              // eslint-disable-next-line no-await-in-loop
+              await emailHelper({
+                template: 'alert',
+                message: {
+                  to: config.email.message.from,
+                  subject
+                },
+                locals: {
+                  message: subject
+                }
+              });
+            }
+          }
 
           if (bad.length > 0) {
             const subject = `PM2 on ${os.hostname()} (${IP_ADDRESS}) has ${
               bad.length
-            }) bad process${bad.length > 1 ? 'es' : ''}`;
+            } bad process${bad.length > 1 ? 'es' : ''}`;
             const message = `<ul class="mb-0 text-left"><li>${bad
               .map(
                 (p) =>

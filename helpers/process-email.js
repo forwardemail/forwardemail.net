@@ -989,6 +989,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
             try {
               await emailHelper({
+                // TODO: smtp-spam-detected
                 template: 'smtp-suspended',
                 message: { to: obj.to, bcc: config.email.message.from },
                 locals: {
