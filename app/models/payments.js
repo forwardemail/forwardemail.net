@@ -6,7 +6,7 @@
 const path = require('node:path');
 
 const Boom = require('@hapi/boom');
-const numeral = require('numeral');
+// const numeral = require('numeral');
 const capitalize = require('lodash/capitalize');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
@@ -49,6 +49,162 @@ const Payments = new mongoose.Schema({
     unique: true,
     index: true
   },
+  currency: {
+    type: String,
+    default: 'usd',
+    lowercase: true,
+    trim: true,
+    enum: [
+      //
+      // NOTE: Last updated: June 13, 2024
+      // <https://docs.stripe.com/currencies#presentment-currencies>
+      //
+      'aed',
+      'afn',
+      'all',
+      'amd',
+      'ang',
+      'aoa',
+      'ars',
+      'aud',
+      'awg',
+      'azn',
+      'bam',
+      'bbd',
+      'bdt',
+      'bgn',
+      'bif',
+      'bmd',
+      'bnd',
+      'bob',
+      'brl',
+      'bsd',
+      'bwp',
+      'byn',
+      'bzd',
+      'cad',
+      'cdf',
+      'chf',
+      'clp',
+      'cny',
+      'cop',
+      'crc',
+      'cve',
+      'czk',
+      'djf',
+      'dkk',
+      'dop',
+      'dzd',
+      'egp',
+      'etb',
+      'eur',
+      'fjd',
+      'fkp',
+      'gbp',
+      'gel',
+      'gip',
+      'gmd',
+      'gnf',
+      'gtq',
+      'gyd',
+      'hkd',
+      'hnl',
+      'htg',
+      'huf',
+      'idr',
+      'ils',
+      'inr',
+      'isk',
+      'jmd',
+      'jpy',
+      'kes',
+      'kgs',
+      'khr',
+      'kmf',
+      'krw',
+      'kyd',
+      'kzt',
+      'lak',
+      'lbp',
+      'lkr',
+      'lrd',
+      'lsl',
+      'mad',
+      'mdl',
+      'mga',
+      'mkd',
+      'mmk',
+      'mnt',
+      'mop',
+      'mur',
+      'mvr',
+      'mwk',
+      'mxn',
+      'myr',
+      'mzn',
+      'nad',
+      'ngn',
+      'nio',
+      'nok',
+      'npr',
+      'nzd',
+      'pab',
+      'pen',
+      'pgk',
+      'php',
+      'pkr',
+      'pln',
+      'pyg',
+      'qar',
+      'ron',
+      'rsd',
+      'rub',
+      'rwf',
+      'sar',
+      'sbd',
+      'scr',
+      'sek',
+      'sgd',
+      'shp',
+      'sle',
+      'sos',
+      'srd',
+      'std',
+      'szl',
+      'thb',
+      'tjs',
+      'top',
+      'try',
+      'ttd',
+      'twd',
+      'tzs',
+      'uah',
+      'ugx',
+      'usd',
+      'uyu',
+      'uzs',
+      'vnd',
+      'vuv',
+      'wst',
+      'xaf',
+      'xcd',
+      'xof',
+      'xpf',
+      'yer',
+      'zar',
+      'zmw'
+    ]
+  },
+  exchange_rate: {
+    type: Number,
+    min: 0,
+    default: 1
+  },
+  fee: {
+    type: Number,
+    min: 0, // cents (not dollars)
+    default: 0
+  },
   amount: {
     type: Number,
     min: 0, // cents (not dollars)
@@ -58,6 +214,14 @@ const Payments = new mongoose.Schema({
     type: Number,
     min: 0, // cents (not dollars)
     index: true
+  },
+  currency_amount: {
+    type: Number,
+    min: 0 // cents (not dollars)
+  },
+  currency_amount_refunded: {
+    type: Number,
+    min: 0 // cents (not dollars)
   },
   // when the payment was created by the payment provider(paypal/stripe)
   // which can vary significantly from the payment.created_at date
@@ -217,13 +381,18 @@ async function getUniqueReference(payment) {
 
 Payments.pre('validate', async function (next) {
   try {
-    this.amount_formatted = numeral(
+    const sum =
       Number.isFinite(this.amount_refunded) &&
-        this.amount_refunded > 0 &&
-        this.amount_refunded <= this.amount
+      this.amount_refunded > 0 &&
+      this.amount_refunded <= this.amount
         ? (this.amount - this.amount_refunded) / 100
-        : this.amount / 100
-    ).format('$0,0,0.00');
+        : this.amount / 100;
+
+    // this.amount_formatted = numeral(sum).format('$0,0,0.00');
+    this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(sum);
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);

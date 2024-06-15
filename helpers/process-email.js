@@ -506,12 +506,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //
     let srsDomain;
     const returnPath = `${domain.return_path}.${domain.name}`;
+    let returnPathResults;
     try {
-      const results = await resolver.resolveCname(returnPath);
+      returnPathResults = await resolver.resolveCname(returnPath);
       if (
-        Array.isArray(results) &&
-        isSANB(results[0]) &&
-        results[0] === RETURN_PATH
+        Array.isArray(returnPathResults) &&
+        isSANB(returnPathResults[0]) &&
+        returnPathResults[0] === RETURN_PATH
       )
         srsDomain = returnPath;
     } catch (err) {
@@ -519,8 +520,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
     }
 
     // verify Return-Path (enforces domain reputation)
-    if (srsDomain !== returnPath)
-      throw Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH'));
+    if (srsDomain !== returnPath) {
+      const err = Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH'));
+      err.returnPathResults = returnPathResults;
+      err.srsDomain = srsDomain;
+      err.returnPath = returnPath;
+      throw err;
+    }
 
     // rewrite envelope From with SRS using CNAME
     // (custom Return-Path but we don't add this header since IMAP does)
@@ -734,15 +740,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
         // (ensures real-time blocking working)
         // or if the domain no longer has smtp access
         //
-        // TODO: this is slow
         const isDomainBlocked = await Domains.exists({
           $or: [
             {
-              domain: domain._id,
+              _id: domain._id,
               has_smtp: false
             },
             {
-              domain: domain._id,
+              _id: domain._id,
               is_smtp_suspended: true
             }
           ]

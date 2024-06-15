@@ -59,7 +59,7 @@ async function mapper(id) {
         group: 'admin'
       }
     },
-    plan: { $ne: 'free' }
+    plan: { $in: ['enhanced_protection', 'team'] }
   });
   if (
     count === 0 &&
@@ -78,7 +78,7 @@ async function mapper(id) {
 
   try {
     const ids = await Users.distinct('_id', {
-      plan: { $ne: 'free' },
+      plan: { $in: ['enhanced_protection', 'team'] },
       [config.userFields.stripeSubscriptionID]: {
         $exists: false
       },

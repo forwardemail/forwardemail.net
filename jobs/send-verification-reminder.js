@@ -41,9 +41,7 @@ graceful.listen();
     // that were created within past 30+ days
     for await (const user of Users.find({
       plan: 'free',
-      [config.userFields.isBanned]: {
-        $ne: true
-      },
+      [config.userFields.isBanned]: false,
       [config.passport.fields.githubProfileID]: {
         $exists: false
       },

@@ -16,6 +16,7 @@
   * [Retrieve account](#retrieve-account)
   * [Update account](#update-account)
 * [Emails](#emails)
+  * [Get email limit](#get-email-limit)
   * [List emails](#list-emails)
   * [Create email](#create-email)
   * [Retrieve email](#retrieve-email)
@@ -35,6 +36,7 @@
   * [Update domain member](#update-domain-member)
   * [Remove domain member](#remove-domain-member)
 * [Aliases](#aliases)
+  * [Generate an alias password](#generate-an-alias-password)
   * [List domain aliases](#list-domain-aliases)
   * [Create new domain alias](#create-new-domain-alias)
   * [Retrieve domain alias](#retrieve-domain-alias)
@@ -207,6 +209,19 @@ curl -X PUT BASE_URI/v1/account \
 ## Emails
 
 Please ensure that you have followed setup instructions for your domain.  These instructions can be found at [My Account → Domains → Settings → Outbound SMTP Configuration](/my-account/domains).  You need to ensure setup of DKIM, Return-Path, and DMARC for sending outbound SMTP with your domain.
+
+### Get email limit
+
+This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.
+
+> `GET /v1/emails/limit`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/emails/limit \
+  -u API_TOKEN:
+```
 
 ### List emails
 
@@ -499,6 +514,26 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 
 ## Aliases
+
+### Generate an alias password
+
+Note that if you do not email instructions, then the username and password will be in the JSON response body of a successful request in the format `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+
+> `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
+
+| Body Parameter         | Required | Type    | Description                                                                                                                                                                                                                                                                                         |
+| ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password`         | No       | String  | Your custom new password to use for the alias.  Note that you can leave this blank or missing altogether from your API request body if you wish to get a randomly generated and strong password.                                                                                                    |
+| `password`             | No       | String  | Existing password for alias to change the password without deleting the existing IMAP mailbox storage (see `is_override` option below if you no longer have the existing password).                                                                                                                 |
+| `is_override`          | No       | Boolean | **USE WITH CAUTION**: This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias. |
+| `emailed_instructions` | No       | String  | Email address to send the alias' password and setup instructions to.                                                                                                                                                                                                                                |
+
+> Example Request:
+
+```sh
+curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password \
+  -u API_TOKEN:
+```
 
 ### List domain aliases
 

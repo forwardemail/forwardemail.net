@@ -77,7 +77,7 @@ graceful.listen();
     );
 
     for await (const domain of Domains.find({
-      plan: { $ne: 'free' },
+      plan: { $in: ['enhanced_protection', 'team'] },
       has_mx_record: true,
       has_txt_record: true
     })

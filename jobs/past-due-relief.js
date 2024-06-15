@@ -109,7 +109,7 @@ async function mapper(user) {
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.isBanned]: false,
       plan: {
-        $ne: 'free'
+        $in: ['enhanced_protection', 'team']
       },
       [config.userFields.planExpiresAt]: {
         $lte: dayjs().subtract(6, 'month').toDate()

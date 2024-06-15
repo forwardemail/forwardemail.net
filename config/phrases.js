@@ -71,15 +71,15 @@ module.exports = {
     'Alias backup has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed once it is ready for download.',
   ALIAS_BACKUP_DOWNLOAD_SUBJECT: `New alias backup download for <span class="notranslate">%s</span>`,
   ALIAS_BACKUP_DOWNLOAD:
-    'Alias mailbox backup was downloaded by <span class="font-weight-bold text-monospace notranslate">%s</span> for <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+    'Alias mailbox backup was downloaded by <span class="font-weight-bold text-monospace notranslate">%s</span>.  It was for <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_INSTRUCTIONS:
     'Alias password instructions have been emailed to <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_INSTRUCTIONS_SUBJECT: `Here is your password for <span class="notranslate">%s</span>`,
   ALIAS_PASSWORD_CLAIMED:
-    'Password was claimed for <span class="font-weight-bold text-monospace notranslate">%s</span> by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+    'Password was claimed for <span class="font-weight-bold text-monospace notranslate">%s</span>.  This action was done by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_CLAIMED_SUBJECT: `Password was claimed for <span class="notranslate">%s</span>`,
   ALIAS_PASSWORD_GENERATED:
-    'New password was generated for <span class="font-weight-bold text-monospace notranslate">%s</span> by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
+    'New password created for <span class="font-weight-bold text-monospace notranslate">%s</span>.  This action was done by <span class="font-weight-bold text-monospace notranslate">%s</span>.',
   ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,
   NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',

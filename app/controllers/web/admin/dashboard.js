@@ -45,7 +45,7 @@ async function getGrowthChart() {
   const docs = await Users.aggregate([
     {
       $match: {
-        plan: { $ne: 'free' },
+        plan: { $in: ['enhanced_protection', 'team'] },
         created_at: {
           $gte: dayjs()
             .subtract(1, 'day')
@@ -606,7 +606,7 @@ async function getBody(ctx) {
       const labels = await Users.distinct(config.lastLocaleField, {
         [config.userFields.hasVerifiedEmail]: true,
         [config.userFields.isBanned]: false,
-        plan: { $ne: 'free' }
+        plan: { $in: ['enhanced_protection', 'team'] }
       });
       const series = await Promise.all(
         labels.map((label) =>
@@ -614,7 +614,7 @@ async function getBody(ctx) {
             [config.lastLocaleField]: label,
             [config.userFields.hasVerifiedEmail]: true,
             [config.userFields.isBanned]: false,
-            plan: { $ne: 'free' }
+            plan: { $in: ['enhanced_protection', 'team'] }
           })
         )
       );

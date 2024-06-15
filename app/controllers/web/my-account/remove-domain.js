@@ -53,7 +53,7 @@ async function removeDomain(ctx, next) {
           group: 'admin'
         }
       },
-      plan: { $ne: 'free' }
+      plan: { $in: ['enhanced_protection', 'team'] }
     });
     if (count === 0) {
       ctx.logger.info(`updating to free plan`);

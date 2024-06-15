@@ -830,7 +830,7 @@ async function parseLog(log) {
           const domain = await Domains.findOne({
             name,
             verification_record: verifications[0],
-            plan: { $ne: 'free' }
+            plan: { $in: ['enhanced_protection', 'team'] }
           });
 
           if (!domain) return;
@@ -940,8 +940,8 @@ Logs.postCreate(async (doc, next) => {
       message: {
         to: config.email.message.from,
         subject: `${
-          isRateLimiting ? 'Rate Limiting' : 'Code Bug'
-        } Detected (Log ID ${doc.id})`
+          isRateLimiting ? 'Rate Limiting' : doc?.err?.name || 'Code Bug'
+        } (Log ID ${doc.id})`
       },
       locals: {
         message: `<pre><code>${JSON.stringify(doc, null, 2)}</code></pre>`

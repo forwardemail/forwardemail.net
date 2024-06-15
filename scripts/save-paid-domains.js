@@ -33,7 +33,7 @@ graceful.listen();
   await setupMongoose(logger);
 
   const _ids = await Domains.distinct('_id', {
-    plan: { $ne: 'free' }
+    plan: { $in: ['enhanced_protection', 'team'] }
   })
     .lean()
     .exec();

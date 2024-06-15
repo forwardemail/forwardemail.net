@@ -101,7 +101,7 @@ async function mapper(_id) {
   try {
     const _ids = await Domains.distinct('members.user', {
       plan: {
-        $ne: 'free'
+        $in: ['enhanced_protection', 'team']
       }
     });
 

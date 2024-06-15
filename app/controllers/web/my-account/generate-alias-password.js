@@ -6,6 +6,8 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
+const sanitizeHtml = require('sanitize-html');
+const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
@@ -14,8 +16,8 @@ const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
-const isValidPassword = require('#helpers/is-valid-password');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
+const isValidPassword = require('#helpers/is-valid-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 // eslint-disable-next-line complexity
@@ -50,7 +52,7 @@ async function generateAliasPassword(ctx) {
       Array.isArray(alias.tokens) &&
       alias.tokens.length > 0 &&
       !isSANB(ctx.request.body.password) &&
-      ctx.request.body.is_override !== 'true'
+      !boolean(ctx.request.body.is_override)
     )
       throw Boom.badRequest(ctx.translateError('ALIAS_OVERRIDE_REQUIRED'));
 
@@ -63,7 +65,7 @@ async function generateAliasPassword(ctx) {
     }
 
     if (isSANB(ctx.request.body.password)) {
-      if (ctx.request.body.is_override === 'true')
+      if (boolean(ctx.request.body.is_override))
         throw Boom.badRequest(
           ctx.translateError('ALIAS_OVERRIDE_CANNOT_HAVE_PASSWORD')
         );
@@ -175,7 +177,7 @@ async function generateAliasPassword(ctx) {
       } catch (err) {
         ctx.logger.fatal(err);
       }
-    } else if (ctx.request.body.is_override === 'true') {
+    } else if (boolean(ctx.request.body.is_override)) {
       // reset existing mailbox and create new mailbox
       const wsp = createWebSocketAsPromised();
       await wsp.request({
@@ -345,6 +347,25 @@ async function generateAliasPassword(ctx) {
           pass
         );
 
+    if (ctx.api) {
+      if (emailedInstructions) {
+        ctx.body = sanitizeHtml(
+          ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions),
+          {
+            allowedTags: [],
+            allowedAttributes: {}
+          }
+        );
+      } else {
+        ctx.body = {
+          username: `${alias.name}@${ctx.state.domain.name}`,
+          password: pass
+        };
+      }
+
+      return;
+    }
+
     const swal = {
       title: ctx.request.t('Success'),
       html,
@@ -392,12 +413,17 @@ async function generateAliasPassword(ctx) {
     if (err && err.isBoom) throw err;
     if (isErrorConstructorName(err, 'ValidationError')) throw err;
     ctx.logger.fatal(err);
-    ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/aliases`
-    );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+
+    if (ctx.api) {
+      throw ctx.translateError('UNKNOWN_ERROR');
+    } else {
+      ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${ctx.state.domain.name}/aliases`
+      );
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+    }
   }
 }
 

@@ -130,6 +130,7 @@ router
     web.myAccount.listEmails,
     api.v1.emails.list
   )
+  .get('/emails/limit', rateLimit(100, 'get email limit'), api.v1.emails.limit)
   .get(
     '/emails/:id',
     rateLimit(100, 'retrieve emails'),
@@ -292,6 +293,13 @@ router
     web.myAccount.ensureAliasAdmin,
     web.myAccount.removeAlias,
     api.v1.aliases.retrieve
+  )
+  .post(
+    '/domains/:domain_id/aliases/:alias_id/generate-password',
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    rateLimit(50, 'generate alias password'),
+    web.myAccount.generateAliasPassword
   );
 
 // inquiries

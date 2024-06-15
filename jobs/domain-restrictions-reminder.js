@@ -103,7 +103,7 @@ graceful.listen();
     //
     const ids = await Users.distinct('_id', {
       group: 'user',
-      plan: { $ne: 'free' },
+      plan: { $in: ['enhanced_protection', 'team'] },
       [config.userFields.isBanned]: false,
       [config.userFields.hasVerifiedEmail]: true,
       [config.userFields.paymentReminderTerminationNoticeSentAt]: {

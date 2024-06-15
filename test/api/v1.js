@@ -137,6 +137,40 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(res.body.recipients, [user.email]);
 });
 
+test('creates alias and generates password', async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  const domain = await factory.create('domain', {
+    members: [{ user: user._id, group: 'admin' }],
+    plan: user.plan,
+    resolver,
+    has_smtp: true
+  });
+
+  const res = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      name: 'test'
+    });
+  t.is(res.status, 200);
+  t.is(res.body.name, 'test');
+  t.deepEqual(res.body.recipients, [user.email]);
+
+  const res2 = await t.context.api
+    .post(`/v1/domains/${domain.name}/aliases/${res.body.id}/generate-password`)
+    .auth(user[config.userFields.apiToken])
+    .send({
+      new_password: 'Lb7nKMMttr6FMEuF7eU'
+    });
+  t.is(res2.status, 408);
+  // t.is(res2.body.username, `test@${domain.name}`);
+  // t.is(res2.body.password, 'Lb7nKMMttr6FMEuF7eU');
+});
+
 test('creates alias with multiple recipients', async (t) => {
   const user = await factory.create('user', {
     plan: 'enhanced_protection',

@@ -100,7 +100,7 @@ graceful.listen();
           },
           {
             plan: {
-              $ne: 'free'
+              $in: ['enhanced_protection', 'team']
             }
           }
         ]

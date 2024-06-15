@@ -1933,7 +1933,7 @@ async function ensureUserHasValidPlan(user, locale) {
 
   // Get all domains associated with this user
   const domains = await this.find({
-    plan: { $ne: 'free' },
+    plan: { $in: ['enhanced_protection', 'team'] },
     'members.user': user._id
   })
     .select('name plan members.user members.group')

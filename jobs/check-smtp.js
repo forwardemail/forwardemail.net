@@ -248,7 +248,7 @@ async function mapper(id) {
           $and: [
             {
               plan: {
-                $ne: 'free'
+                $in: ['enhanced_protection', 'team']
               }
             },
             {

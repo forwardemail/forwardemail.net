@@ -145,14 +145,16 @@ function createWebSocketAsPromised(options = {}) {
 
       // will retry by default up to 10x with exponential backoff
       // (for initial connection)
-      if (!wsp.isOpened)
+      if (!wsp.isOpened) {
         await pRetry(() => wsp.open(), {
           retries: 9, // in case the default in node-retry changes
           onFailedAttempt(err) {
+            err.isCodeBug = true;
             // <https://github.com/vitalets/websocket-as-promised/issues/47>
-            logger.error(err);
+            logger.fatal(err);
           }
         });
+      }
 
       // helper for debugging
       if (config.env !== 'production') data.stack = new Error('stack').stack;

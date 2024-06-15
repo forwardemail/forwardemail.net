@@ -181,7 +181,7 @@ async function mapper(alias) {
     const bannedUserIdSet = await Users.getBannedUserIdSet(client);
 
     const paidDomainIds = await Domains.distinct('_id', {
-      plan: { $ne: 'free' },
+      plan: { $in: ['enhanced_protection', 'team'] },
       has_mx_record: true,
       has_txt_record: true
     });

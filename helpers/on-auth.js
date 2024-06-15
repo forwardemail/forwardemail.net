@@ -145,7 +145,7 @@ async function onAuth(auth, session, fn) {
     const domain = await Domains.findOne({
       name: domainName,
       verification_record: verifications[0],
-      plan: { $ne: 'free' }
+      plan: { $in: ['enhanced_protection', 'team'] }
     })
       .populate(
         'members.user',

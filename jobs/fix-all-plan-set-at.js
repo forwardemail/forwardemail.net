@@ -92,7 +92,7 @@ async function mapper(id) {
 
   try {
     const ids = await Users.distinct('_id', {
-      plan: { $ne: 'free' }
+      plan: { $in: ['enhanced_protection', 'team'] }
     });
 
     await pMap(ids, mapper, { concurrency });

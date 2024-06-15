@@ -89,13 +89,20 @@ if !returnHTML
     tbody
       tr
         td.border-0!= payment.description
-        td.border-0.text-right= numeral(payment.amount / 100).format("$0,0,0.00")
+        td.border-0.text-right
+          if !payment.currency || payment.currency === 'usd' || !payment.currency_amount
+            = new Intl.NumberFormat(ctx.locale, { style: "currency", currency: "USD" }).format(payment.amount / 100)
+          else
+            = new Intl.NumberFormat(ctx.locale, { style: "currency", currency: payment.currency.toUpperCase() }).format(payment.currency_amount)
       if payment.amount_refunded > 0
         tr
           td.border-0= payment.method === "free_beta_program" ? t("Discount") : t("Refund")
           td.border-0.text-right
             = "-"
-            = numeral(payment.amount_refunded / 100).format("$0,0,0.00")
+            if !payment.currency || payment.currency === 'usd' || !payment.currency_amount_refunded
+              = new Intl.NumberFormat(ctx.locale, { style: "currency", currency: "USD" }).format(payment.amount_refunded / 100)
+            else
+              = new Intl.NumberFormat(ctx.locale, { style: "currency", currency: payment.currency.toUpperCase() }).format(payment.currency_amount_refunded)
     tfoot
       tr
         th.border-0.align-middle
@@ -106,3 +113,9 @@ if !returnHTML
           .float-right.text-right
             u= t("Total:")
         th.border-0.align-middle.text-right: u= payment.amount_formatted
+      if payment.currency !== 'usd' && payment.exchange_rate
+        tr
+          th.border-0.align-middle.text-right(colspan=2)
+            strong= t("Exchange Rate")
+            = ": "
+            = payment.exchange_rate

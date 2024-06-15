@@ -76,10 +76,41 @@ function syncStripePaymentIntent(user) {
       )
         throw new Error('No successful stripe charge on payment intent.');
 
-      logger.info(`charge ${stripeCharge.id}`);
+      logger.info(`charge ${stripeCharge.id}`, { charge: stripeCharge });
 
       let amountRefunded;
-      if (stripeCharge.refunded) amountRefunded = stripeCharge.amount_refunded;
+      let currencyAmountRefunded;
+
+      let { amount } = paymentIntent;
+      if (stripeCharge.refunded) {
+        amountRefunded = stripeCharge.amount_refunded;
+
+        if (
+          !_.isArray(stripeCharge.refunds.data) ||
+          _.isEmpty(stripeCharge.refunds.data)
+        )
+          throw new Error(
+            `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without refunds object`
+          );
+
+        const [stripeChargeRefund] = stripeCharge.refunds.data;
+
+        if (!isSANB(stripeChargeRefund.balance_transaction))
+          throw new Error(
+            `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without "balance_transaction" ID in charge refund object retrieved`
+          );
+
+        const balanceTransaction = await stripe.balanceTransactions.retrieve(
+          stripeChargeRefund.balance_transaction
+        );
+
+        if (!balanceTransaction)
+          throw new Error(
+            `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction for refund`
+          );
+
+        currencyAmountRefunded = Math.abs(balanceTransaction.amount);
+      }
 
       const hasInvoice = isSANB(paymentIntent.invoice);
 
@@ -175,6 +206,41 @@ function syncStripePaymentIntent(user) {
         [payment] = payments;
       }
 
+      if (!isSANB(stripeCharge.balance_transaction))
+        throw new Error(
+          `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without "balance_transaction" ID in charge object retrieved`
+        );
+
+      //
+      // NOTE: stripe adaptive pricing allows us to accept in foreign amount
+      //       and to get the converted amount and exchange rate we need to
+      //       use the balance transaction API to retrieve based off stripe
+      //       charge's balance_transaction ID
+      //
+      const balanceTransaction = await stripe.balanceTransactions.retrieve(
+        stripeCharge.balance_transaction
+      );
+
+      if (!balanceTransaction)
+        throw new Error(
+          `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction`
+        );
+
+      // sync payment amount in USD
+      amount = balanceTransaction.amount;
+
+      // sync fee
+      const { fee } = balanceTransaction;
+
+      // sync exchange rate
+      const exchangeRate = balanceTransaction.exchange_rate;
+
+      // always sync currency
+      const { currency } = stripeCharge;
+
+      // sync amount in currency
+      const currencyAmount = stripeCharge.amount;
+
       if (payment) {
         logger.info('found existing payment');
 
@@ -222,12 +288,13 @@ function syncStripePaymentIntent(user) {
             )
           );
 
-        if (paymentIntent.amount !== payment.amount)
-          throw new Error(
-            'Saved payment.amount does not match amount from billing history sync'.concat(
-              errorDetails
-            )
-          );
+        // TODO: uncomment this in future once migration run
+        // if (paymentIntent.amount !== payment.amount)
+        //   throw new Error(
+        //     'Saved payment.amount does not match amount from billing history sync'.concat(
+        //       errorDetails
+        //     )
+        //   );
 
         if (
           isSANB(payment.stripe_invoice_id) &&
@@ -288,7 +355,13 @@ function syncStripePaymentIntent(user) {
         payment.stripe_payment_intent_id = paymentIntent.id;
         payment.stripe_subscription_id = invoice?.subscription;
         payment.invoice_at = dayjs.unix(paymentIntent.created).toDate();
+        payment.amount = amount;
         payment.amount_refunded = amountRefunded;
+        payment.fee = fee;
+        payment.exchange_rate = exchangeRate;
+        payment.currency = currency;
+        payment.currency_amount = currencyAmount;
+        payment.currency_amount_refunded = currencyAmountRefunded;
 
         await payment.save();
 
@@ -302,8 +375,13 @@ function syncStripePaymentIntent(user) {
           plan,
           kind,
           duration,
-          amount: paymentIntent.amount,
+          amount,
           amount_refunded: amountRefunded,
+          fee,
+          exchange_rate: exchangeRate,
+          currency,
+          currency_amount: currencyAmount,
+          currency_amount_refunded: currencyAmountRefunded,
           stripe_session_id: checkoutSession?.id,
           stripe_payment_intent_id: paymentIntent?.id,
           stripe_invoice_id: invoice?.id,

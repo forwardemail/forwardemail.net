@@ -7384,5 +7384,21 @@
   "Password was claimed for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>のパスワードが要求されました",
   "Invalid inquiry webhook email. Requires support@ emails.": "問い合わせ Webhook メールが無効です。support@ メールが必要です。",
   "Invalid inquiry webhook payload.": "問い合わせ Webhook ペイロードが無効です。",
-  "Webhook request did not originate from a valid hostname": "Webhook リクエストは有効なホスト名から送信されませんでした"
+  "Webhook request did not originate from a valid hostname": "Webhook リクエストは有効なホスト名から送信されませんでした",
+  "Alias mailbox backup was downloaded by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  It was for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "エイリアス メールボックスのバックアップが<span class=\"font-weight-bold text-monospace notranslate\">%s</span>によってダウンロードされました。これは<span class=\"font-weight-bold text-monospace notranslate\">%s</span>用でした。",
+  "Password was claimed for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  This action was done by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "<span class=\"font-weight-bold text-monospace notranslate\">%s</span>のパスワードが要求されました。このアクションは<span class=\"font-weight-bold text-monospace notranslate\">%s</span>によって実行されました。",
+  "New password created for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  This action was done by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "<span class=\"font-weight-bold text-monospace notranslate\">%s</span>の新しいパスワードが作成されました。このアクションは<span class=\"font-weight-bold text-monospace notranslate\">%s</span>によって実行されました。",
+  "Get email limit": "メール制限を取得する",
+  "This is a simple endpoint that returns a JSON object containing the": "これは、次の内容を含むJSONオブジェクトを返すシンプルなエンドポイントです。",
+  "for the number of daily SMTP outbound messages on a per account basis.": "アカウントごとの毎日の SMTP 送信メッセージの数。",
+  "Generate an alias password": "エイリアスパスワードを生成する",
+  "Note that if you do not email instructions, then the username and password will be in the JSON response body of a successful request in the format": "指示をメールで送信しない場合、ユーザー名とパスワードは成功したリクエストのJSONレスポンス本文に次の形式で含まれます。",
+  "Password for alias (leave blank/empty if you wish to use a strong and randomly generated password).": "エイリアスのパスワード (強力でランダムに生成されたパスワードを使用する場合は空白のままにします)。",
+  "Override the existing alias, which will purge the existing IMAP storage and reset the alias' SQLite email database completely.": "既存のエイリアスを上書きすると、既存の IMAP ストレージが消去され、エイリアスの SQLite 電子メール データベースが完全にリセットされます。",
+  "Email address to send the alias' password and setup instructions to.": "エイリアスのパスワードとセットアップ手順を送信するメール アドレス。",
+  "Your custom new password to use for the alias.  Note that you can leave this blank or missing altogether from your API request body if you wish to get a randomly generated and strong password.": "エイリアスに使用するカスタムの新しいパスワード。ランダムに生成された強力なパスワードを取得する場合は、これを空白のままにするか、API リクエスト本文から完全に省略することができます。",
+  "Existing password for alias to change the password without deleting the existing IMAP mailbox storage (see": "既存のIMAPメールボックスストレージを削除せずにパスワードを変更するには、エイリアスの既存のパスワード（",
+  "option below if you no longer have the existing password).": "既存のパスワードがなくなった場合は、以下のオプションを選択してください。",
+  ": This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias.": ": これにより、既存のエイリアスのパスワードとデータベースが完全に上書きされ、既存の IMAP ストレージが完全に削除され、エイリアスの SQLite 電子メール データベースが完全にリセットされます。このエイリアスに既存のメールボックスが接続されている場合は、可能であればバックアップを作成してください。",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit."
 }

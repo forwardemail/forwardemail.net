@@ -7384,5 +7384,21 @@
   "Password was claimed for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 에 대한 비밀번호가 요청되었습니다.",
   "Invalid inquiry webhook email. Requires support@ emails.": "문의 웹훅 이메일이 잘못되었습니다. support@ 이메일이 필요합니다.",
   "Invalid inquiry webhook payload.": "잘못된 조회 웹훅 페이로드입니다.",
-  "Webhook request did not originate from a valid hostname": "웹훅 요청이 유효한 호스트 이름에서 발생하지 않았습니다."
+  "Webhook request did not originate from a valid hostname": "웹훅 요청이 유효한 호스트 이름에서 발생하지 않았습니다.",
+  "Alias mailbox backup was downloaded by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  It was for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "별칭 사서함 백업이 <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 의해 다운로드되었습니다. <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 위한 것이었습니다.",
+  "Password was claimed for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  This action was done by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "<span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 대한 비밀번호가 요청되었습니다. 이 작업은 <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 의해 수행되었습니다.",
+  "New password created for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  This action was done by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "<span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 대한 새 비밀번호가 생성되었습니다. 이 작업은 <span class=\"font-weight-bold text-monospace notranslate\">%s</span> 에 의해 수행되었습니다.",
+  "Get email limit": "이메일 한도 받기",
+  "This is a simple endpoint that returns a JSON object containing the": "이는 다음을 포함하는 JSON 객체를 반환하는 간단한 엔드포인트입니다.",
+  "for the number of daily SMTP outbound messages on a per account basis.": "계정당 일일 SMTP 아웃바운드 메시지 수입니다.",
+  "Generate an alias password": "별칭 비밀번호 생성",
+  "Note that if you do not email instructions, then the username and password will be in the JSON response body of a successful request in the format": "지침을 이메일로 보내지 않으면 성공적인 요청의 JSON 응답 본문에 사용자 이름과 비밀번호가 다음 형식으로 포함됩니다.",
+  "Password for alias (leave blank/empty if you wish to use a strong and randomly generated password).": "별칭의 비밀번호(강력하고 무작위로 생성된 비밀번호를 사용하려면 비워두세요).",
+  "Override the existing alias, which will purge the existing IMAP storage and reset the alias' SQLite email database completely.": "기존 IMAP 저장소를 제거하고 별칭의 SQLite 이메일 데이터베이스를 완전히 재설정하는 기존 별칭을 재정의합니다.",
+  "Email address to send the alias' password and setup instructions to.": "별칭의 비밀번호와 설정 지침을 보낼 이메일 주소입니다.",
+  "Your custom new password to use for the alias.  Note that you can leave this blank or missing altogether from your API request body if you wish to get a randomly generated and strong password.": "별칭에 사용할 사용자 정의 새 비밀번호입니다.  무작위로 생성된 강력한 비밀번호를 얻으려면 이 항목을 공백으로 두거나 API 요청 본문에서 모두 누락시킬 수 있습니다.",
+  "Existing password for alias to change the password without deleting the existing IMAP mailbox storage (see": "기존 IMAP 메일함 저장소를 삭제하지 않고 비밀번호를 변경하려면 별칭에 대한 기존 비밀번호(참조)",
+  "option below if you no longer have the existing password).": "기존 비밀번호가 더 이상 없는 경우 아래 옵션을 선택하세요).",
+  ": This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias.": ": 이렇게 하면 기존 별칭 비밀번호와 데이터베이스가 완전히 무시되고 기존 IMAP 저장소가 영구적으로 삭제되며 별칭의 SQLite 이메일 데이터베이스가 완전히 재설정됩니다. 이 별칭에 기존 사서함이 연결되어 있는 경우 가능하면 백업을 만드십시오.",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit."
 }

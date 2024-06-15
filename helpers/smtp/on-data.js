@@ -143,7 +143,7 @@ async function onData(stream, _session, fn) {
 
     const domain = await Domains.findOne({
       id: session.user.domain_id,
-      plan: { $ne: 'free' }
+      plan: { $in: ['enhanced_protection', 'team'] }
     })
       .populate(
         'members.user',
