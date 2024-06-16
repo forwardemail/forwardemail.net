@@ -381,18 +381,38 @@ async function getUniqueReference(payment) {
 
 Payments.pre('validate', async function (next) {
   try {
-    const sum =
-      Number.isFinite(this.amount_refunded) &&
-      this.amount_refunded > 0 &&
-      this.amount_refunded <= this.amount
-        ? (this.amount - this.amount_refunded) / 100
-        : this.amount / 100;
+    if (
+      this.currency &&
+      this.currency !== 'usd' &&
+      this.currency_amount &&
+      this.currency_amount_refunded &&
+      this.currency_amount_refunded <= this.currency_amount
+    ) {
+      const sum =
+        Number.isFinite(this.currency_amount_refunded) &&
+        this.currency_amount_refunded > 0 &&
+        this.currency_amount_refunded <= this.currency_amount
+          ? (this.currency_amount - this.currency_amount_refunded) / 100
+          : this.currency_amount / 100;
 
-    // this.amount_formatted = numeral(sum).format('$0,0,0.00');
-    this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(sum);
+      this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
+        style: 'currency',
+        currency: this.currency.toUpperCase()
+      }).format(sum);
+    } else {
+      const sum =
+        Number.isFinite(this.amount_refunded) &&
+        this.amount_refunded > 0 &&
+        this.amount_refunded <= this.amount
+          ? (this.amount - this.amount_refunded) / 100
+          : this.amount / 100;
+
+      // this.amount_formatted = numeral(sum).format('$0,0,0.00');
+      this.amount_formatted = new Intl.NumberFormat(this.locale || 'en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(sum);
+    }
 
     if (!isSANB(this.reference))
       this.reference = await cryptoRandomString.async(config.referenceOptions);

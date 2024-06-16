@@ -192,8 +192,11 @@ The Secondary will instruct the Primary over the `WebSocket` connection to execu
 4. Run the `VACUUM INTO` SQLite command.
 5. Ensure that the copied file can be opened with the encrypted password (safeguard/dummyproofing).
 6. Upload it to Cloudflare R2 for storage (or your own provider if specified).
+
+<!--
 7. Compress the resulting backup file with `gzip`.
 8. Upload it to Cloudflare R2 for storage (or your own provider if specified).
+-->
 
 Remember that your mailboxes are encrypted – and while we have IP restrictions and other authentication measures in place for WebSocket communication – in the event of a bad actor, you can rest assured that unless the WebSocket payload has your IMAP password, it cannot open your database.
 

@@ -132,10 +132,39 @@ nav.navbar(class=navbarClasses.join(" "))
           - domain = filteredDomains[0];
       if user && user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade
         ul.list-inline.ml-auto.mr-3.d-inline-block.d-lg-none.mb-0
-          a.btn.btn-sm.btn-danger(
-            href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
-          )
-            = t("Upgrade")
+          //- Site Search
+          li.list-inline-item
+            a.btn(
+              href=l("/search"),
+              data-toggle="modal",
+              data-target="#modal-search",
+              role="button",
+              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+            )
+              i.fa.fa-search
+              span.sr-only
+                = " "
+                = t("Search")
+          li.list-inline-item
+            a.btn.btn-sm.btn-danger(
+              href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
+            )
+              = t("Upgrade")
+      else if user
+        ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
+          //- Site Search
+          li.list-inline-item
+            a.btn(
+              href=l("/search"),
+              data-toggle="modal",
+              data-target="#modal-search",
+              role="button",
+              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+            )
+              i.fa.fa-search
+              span.sr-only
+                = " "
+                = t("Search")
       else if !user && !isBot(ctx.get('User-Agent'))
         ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
           //- Site Search

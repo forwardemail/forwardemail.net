@@ -939,9 +939,7 @@ Logs.postCreate(async (doc, next) => {
       template: 'alert',
       message: {
         to: config.email.message.from,
-        subject: `${
-          isRateLimiting ? 'Rate Limiting' : doc?.err?.name || 'Code Bug'
-        } (Log ID ${doc.id})`
+        subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
       },
       locals: {
         message: `<pre><code>${JSON.stringify(doc, null, 2)}</code></pre>`

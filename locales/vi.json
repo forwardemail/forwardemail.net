@@ -4903,8 +4903,11 @@
   "Existing password for alias to change the password without deleting the existing IMAP mailbox storage (see": "Mật khẩu hiện tại cho bí danh để thay đổi mật khẩu mà không xóa bộ nhớ hộp thư IMAP hiện có (xem",
   "option below if you no longer have the existing password).": "tùy chọn bên dưới nếu bạn không còn mật khẩu hiện tại).",
   ": This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias.": ": Điều này sẽ ghi đè hoàn toàn mật khẩu và cơ sở dữ liệu bí danh hiện có, đồng thời sẽ xóa vĩnh viễn bộ lưu trữ IMAP hiện có và đặt lại hoàn toàn cơ sở dữ liệu email SQLite của bí danh. Vui lòng tạo bản sao lưu nếu có thể nếu bạn có hộp thư hiện có gắn với bí danh này.",
-  "Your account is <strong class=\"notranslate\">%s</strong> past due.": "Your account is <strong class=\"notranslate\">%s</strong> past due.",
-  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.",
-  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Your plan expired on <span class=\"notranslate\">%s</span>.",
-  "Make payment immediately to avoid account termination.": "Make payment immediately to avoid account termination."
+  "Your account is <strong class=\"notranslate\">%s</strong> past due.": "Tài khoản của bạn đã quá hạn <strong class=\"notranslate\">%s</strong> .",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "Chúng tôi chấp nhận Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, Ghi nợ trực tiếp SEPA, ghi nợ được ủy quyền trước của Canada và Ghi nợ trực tiếp ACH.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Gói của bạn đã hết hạn vào <span class=\"notranslate\">%s</span> .",
+  "Make payment immediately to avoid account termination.": "Thanh toán ngay để tránh bị chấm dứt tài khoản.",
+  "500,000+ custom domain names": "Hơn 500.000 tên miền tùy chỉnh",
+  "Need secure and private email?": "Cần email an toàn và riêng tư?",
+  "LineageOS": "LineageOS"
 }

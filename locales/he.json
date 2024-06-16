@@ -5396,7 +5396,10 @@
   "Existing password for alias to change the password without deleting the existing IMAP mailbox storage (see": "סיסמה קיימת עבור כינוי לשינוי הסיסמה מבלי למחוק את אחסון תיבת הדואר הקיים של IMAP (ראה",
   "option below if you no longer have the existing password).": "אפשרות למטה אם אין לך עוד את הסיסמה הקיימת).",
   ": This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias.": ": זה יעקוף לחלוטין את סיסמת הכינוי ואת מסד הנתונים הקיימים, וימחק לצמיתות את אחסון ה-IMAP הקיים ויאפס לחלוטין את מסד הנתונים של SQLite הדוא\"ל של הכינוי. אנא בצע גיבוי במידת האפשר אם יש לך תיבת דואר קיימת המצורפת לכינוי זה.",
-  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.",
-  "Your plan expired on <span class=\"notranslate\">%s</span>.": "Your plan expired on <span class=\"notranslate\">%s</span>.",
-  "Make payment immediately to avoid account termination.": "Make payment immediately to avoid account termination."
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "אנו מקבלים ויזה, מאסטרקארד, אמריקן אקספרס, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA הוראת קבע, חיובים מורשים מראש בקנדה, ו-ACH הוראת קבע.",
+  "Your plan expired on <span class=\"notranslate\">%s</span>.": "תוקף התוכנית שלך פג ב- <span class=\"notranslate\">%s</span> .",
+  "Make payment immediately to avoid account termination.": "בצע תשלום מיידי כדי למנוע סגירת חשבון.",
+  "500,000+ custom domain names": "500,000+ שמות דומיין מותאמים אישית",
+  "Need secure and private email?": "זקוק לאימייל מאובטח ופרטי?",
+  "LineageOS": "LineageOS"
 }

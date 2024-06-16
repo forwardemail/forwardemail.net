@@ -100,12 +100,13 @@ We provide email hosting and email forwarding service to notable users such as:
 * Netflix
 * Disney Ad Sales
 * jQuery
+* LineageOS
 * Government of South Australia
 * Government of Dominican Republic
 * The University of Maryland
 * The University of Washington
 * David Heinemeier Hansson
-* 470,000+ custom domain names
+* 500,000+ custom domain names
 
 You can learn more about Forward Email on [our About page](/about).
 
