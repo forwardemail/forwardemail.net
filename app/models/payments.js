@@ -381,13 +381,7 @@ async function getUniqueReference(payment) {
 
 Payments.pre('validate', async function (next) {
   try {
-    if (
-      this.currency &&
-      this.currency !== 'usd' &&
-      this.currency_amount &&
-      this.currency_amount_refunded &&
-      this.currency_amount_refunded <= this.currency_amount
-    ) {
+    if (this.currency && this.currency !== 'usd') {
       const sum =
         Number.isFinite(this.currency_amount_refunded) &&
         this.currency_amount_refunded > 0 &&
