@@ -2304,9 +2304,10 @@ async function parsePayload(data, ws) {
 
     err.payload = payload;
 
+    // TODO: we can't do this because of object circular reference
     // delete err.payload.user.password (safeguard)
-    if (err?.payload?.session?.user?.password)
-      delete err.payload.session.user.password;
+    // if (err?.payload?.session?.user?.password)
+    //   delete err.payload.session.user.password;
 
     // at least early on we should get errors in advance
     err.isCodeBug = true;
