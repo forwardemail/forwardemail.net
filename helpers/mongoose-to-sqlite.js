@@ -498,8 +498,11 @@ async function find(
   )
     throw new TypeError('WebSocketAsPromised instance required');
 
-  if (typeof session?.user?.password !== 'string')
-    throw new TypeError('Session user and password missing');
+  if (typeof session?.user?.password !== 'string') {
+    const err = new TypeError('Session user and password missing');
+    err.session = session;
+    throw err;
+  }
 
   const condition = prepareQuery(mapping, filter);
 
