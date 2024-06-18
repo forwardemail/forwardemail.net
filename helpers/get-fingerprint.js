@@ -5,7 +5,7 @@
 
 const isSANB = require('is-string-and-not-blank');
 const revHash = require('rev-hash');
-const safeStringify = require('safe-stable-stringify');
+const safeStringify = require('fast-safe-stringify');
 
 //
 // generate a fingerprint for the email (returns a short md5 hash)

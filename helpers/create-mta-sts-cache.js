@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const safeStringify = require('safe-stable-stringify');
+const safeStringify = require('fast-safe-stringify');
 
 const logger = require('./logger');
 

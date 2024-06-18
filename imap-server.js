@@ -25,7 +25,7 @@ const bytes = require('bytes');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const pify = require('pify');
-const safeStringify = require('safe-stable-stringify');
+const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 
 const Aliases = require('#models/aliases');

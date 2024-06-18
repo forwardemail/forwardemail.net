@@ -233,7 +233,6 @@
     "reserved-email-addresses-list": "2.0.13",
     "rev-hash": "3",
     "rrule": "2.8.1",
-    "safe-stable-stringify": "2.4.3",
     "sanitize-html": "2.13.0",
     "scmp": "2.1.0",
     "sender-rewriting-scheme": "1.0.0",

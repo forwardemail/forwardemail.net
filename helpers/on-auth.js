@@ -10,7 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
 const revHash = require('rev-hash');
-const safeStringify = require('safe-stable-stringify');
+const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 const { isEmail } = require('validator');
 
