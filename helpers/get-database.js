@@ -126,6 +126,7 @@ async function getDatabase(
   newlyCreated = false,
   customDbFilePath = false
 ) {
+  const { stack } = new Error('stack');
   // return early if the session.db was already assigned
   if (
     session.db &&
@@ -566,6 +567,9 @@ async function getDatabase(
         }
       }
     } catch (err) {
+      err._stack = stack;
+      err.session = session;
+
       if (
         err.code !== 'SQLITE_ERROR' ||
         !err.message.startsWith('no such table:')

@@ -304,6 +304,9 @@ Logs.pre('validate', function (next) {
   next();
 });
 
+/*
+// NOTE: this deletes object references for p-retry
+//       we are removing in the interim
 // safeguard for sensitive stuff
 Logs.pre('save', function (next) {
   // delete err.payload.user.password (safeguard)
@@ -316,6 +319,7 @@ Logs.pre('save', function (next) {
 
   next();
 });
+*/
 
 //
 // NOTE: this comes after validate because validation ensures `required: true`
