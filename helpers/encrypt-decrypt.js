@@ -20,6 +20,7 @@ function encrypt(
   encryptionKey = env.HELPER_ENCRYPTION_KEY,
   algorithm = 'aes-256-cbc'
 ) {
+  if (!text) throw new TypeError(`Text value missing`);
   const iv = ivLength
     ? Buffer.from(crypto.randomBytes(ivLength))
         .toString('hex')
@@ -41,6 +42,7 @@ function decrypt(
   encryptionKey = env.HELPER_ENCRYPTION_KEY,
   algorithm = 'aes-256-cbc'
 ) {
+  if (!text) throw new TypeError(`Text value missing`);
   const textParts = text.includes('-') ? text.split('-') : [];
   const iv = Buffer.from(textParts.shift() || '', 'binary');
   const encryptedText = Buffer.from(textParts.join('-'), 'hex');
