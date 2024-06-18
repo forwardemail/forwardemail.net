@@ -181,12 +181,12 @@ class SQLite {
         this.isAlive = true;
       });
 
-      ws.on('message', function () {
-        this.isAlive = true;
-      });
-
       ws.on('message', (data) => {
-        // TODO: spawn worker thread to parse the payload (?)
+        this.isAlive = true;
+
+        // return early for ping/pong
+        if (data && data.length === 4 && data.toString() === 'ping') return;
+
         parsePayload.call(this, data, ws);
       });
     });

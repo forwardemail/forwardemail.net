@@ -14,7 +14,6 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
 const revHash = require('rev-hash');
-const safeStringify = require('fast-safe-stringify');
 const { WebSocket } = require('ws');
 
 const config = require('#config');
@@ -25,6 +24,7 @@ const parseError = require('#helpers/parse-error');
 const recursivelyParse = require('#helpers/recursively-parse');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+const { encoder, decoder } = require('#helpers/encoder-decoder');
 
 // <https://github.com/partykit/partykit/tree/main/packages/partysocket>
 // <https://github.com/partykit/partykit/issues/536>
@@ -80,15 +80,16 @@ function createWebSocketAsPromised(options = {}) {
           maxPayload: 0, // disable max payload size
           auth,
           rejectUnauthorized: config.env !== 'production'
+          // perMessageDeflate: false,
+          // headers: {
+          //   authorization: 'Basic ' + Buffer.from(auth).toString('base64')
+          // }
         }),
         debug: config.env === 'development'
       });
     },
-    packMessage: (data) => safeStringify(data),
-    unpackMessage(data) {
-      if (typeof data !== 'string') return data;
-      return JSON.parse(data);
-    },
+    packMessage: (data) => encoder.pack(data),
+    unpackMessage: (data) => decoder.unpack(data),
     attachRequestId(data, id) {
       return {
         id,
@@ -147,7 +148,7 @@ function createWebSocketAsPromised(options = {}) {
       // (for initial connection)
       if (!wsp.isOpened) {
         await pRetry(() => wsp.open(), {
-          retries: 9, // in case the default in node-retry changes
+          retries: config.env === 'production' ? 9 : 1, // in case the default in node-retry changes
           onFailedAttempt(err) {
             err.isCodeBug = true;
             // <https://github.com/vitalets/websocket-as-promised/issues/47>
@@ -167,6 +168,7 @@ function createWebSocketAsPromised(options = {}) {
       // (e.g. in case connection disconnected and no response was made)
       const response = await pRetry(
         () => {
+          data.date = Date.now();
           return wsp.sendRequest(data, {
             timeout:
               typeof data.timeout === 'number' &&

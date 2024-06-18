@@ -48,13 +48,29 @@ const Attachments = new mongoose.Schema(
     contentType: { type: String, required: true },
     transferEncoding: { type: String, required: true },
     lineCount: { type: Number, required: true },
-    body: { type: Buffer, required: true },
     counter: { type: Number, required: true }, // metadata.c
     counterUpdated: { type: Date, required: true }, // metadata.cu
-    size: { type: Number, required: true } // metadata.esize (attachment body length)
+    size: { type: Number, required: true }, // metadata.esize (attachment body length)
     // unlike wildduck we don't use these right now:
     // - `metadata.decoded` (Boolean)
     // - `metadata.lineLen` (Number)
+
+    //
+    //       <https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3>
+    //
+    //       Quote from the author of SQLite:
+    //
+    //       > Here's a hint though - make the BLOB columns the last column in
+    //       > your tables. Or even store the BLOBs in a separate table which
+    //       > only has two columns: an integer primary key and the blob itself,
+    //       > and then access the BLOB content using a join if you need to.
+    //       > If you put various small integer fields after the BLOB, then
+    //       > SQLite has to scan through the entire BLOB content (following
+    //       > the linked list of disk pages) to get to the integer fields at
+    //       > the end, and that definitely can slow you down.
+    //       > - D. Richard Hipp
+    //
+    body: { type: Buffer, required: true }
   },
   dummySchemaOptions
 );

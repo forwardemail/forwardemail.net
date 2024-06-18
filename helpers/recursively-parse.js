@@ -49,7 +49,7 @@ function parseBuffers(json, objectId = false, checkDate = true) {
     Array.isArray(json.data)
   ) {
     json = Buffer.from(json.data);
-  } else {
+  } else if (!Buffer.isBuffer(json)) {
     for (const key of Object.keys(json)) {
       // iterate recursively
       json[key] = parseBuffers(json[key], objectId, checkDate);

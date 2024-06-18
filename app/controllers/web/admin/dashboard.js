@@ -10,7 +10,7 @@ const memoize = require('memoizee');
 const ms = require('ms');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const titleize = require('titleize');
 
 const config = require('#config');

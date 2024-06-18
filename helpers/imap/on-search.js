@@ -17,7 +17,6 @@ const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
 const tools = require('wildduck/lib/tools');
-const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
@@ -642,7 +641,7 @@ async function onSearch(mailboxId, options, session, fn) {
     if ($and.length > 0) query.$and = $and;
 
     // converts objectids -> strings and arrays/json appropriately
-    const condition = JSON.parse(safeStringify(query));
+    const condition = JSON.parse(JSON.stringify(query));
 
     const sql = builder.build({
       type: 'select',

@@ -42,8 +42,10 @@ async function onList(query, session, fn) {
     await this.refreshSession(session, 'LIST');
 
     const mailboxes = await Mailboxes.find(this, session, {});
-
-    fn(null, mailboxes);
+    fn(
+      null,
+      mailboxes.map((m) => m.toObject())
+    );
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

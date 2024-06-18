@@ -1594,3 +1594,53 @@ test
   t.true(msg !== null);
   t.is(msg.subject, subject);
 });
+
+test('50 MB email', async (t) => {
+  const { imapFlow, alias, domain } = t.context;
+
+  let mailbox = await Mailboxes.findOne(t.context.imap, t.context.session, {
+    path: 'INBOX'
+  });
+
+  const randomString = Array.from({ length: 50000000 }).join('a');
+
+  //
+  // TODO: if we have the below then attachment gets created
+  //
+  /*
+  const raw = `
+Date: ${new Date().toISOString()}
+MIME-Version: 1.0
+Content-Language: en-US
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: test
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+${randomString}`.trim();
+  */
+
+  const raw = `
+Date: ${new Date().toISOString()}
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: test
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+${randomString}`.trim();
+
+  await imapFlow.append('INBOX', Buffer.from(raw), [], new Date());
+  const storageUsed = await Aliases.getStorageUsed(alias);
+  t.is(storageUsed, 101208064);
+
+  mailbox = await Mailboxes.findById(
+    t.context.imap,
+    t.context.session,
+    mailbox._id
+  );
+
+  t.is(mailbox.uidNext, 2);
+});

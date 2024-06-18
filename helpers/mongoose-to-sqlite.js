@@ -9,7 +9,7 @@ const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const { Builder } = require('json-sql');
 
 const env = require('#config/env');

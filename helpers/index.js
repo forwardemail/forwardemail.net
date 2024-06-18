@@ -20,6 +20,7 @@ const syncPayPalSubscriptionPaymentsByUser = require('./sync-paypal-subscription
 const syncStripePaymentIntent = require('./sync-stripe-payment-intent');
 const toObject = require('./to-object');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
+const { encoder, decoder } = require('./encoder-decoder');
 const { paypalAgent, paypal } = require('./paypal');
 // TODO: create an npm package for this and then add it in smtp code too
 const combineErrors = require('./combine-errors');
@@ -90,6 +91,8 @@ module.exports = {
   decrypt,
   email,
   encrypt,
+  encoder,
+  decoder,
   getEmailLocals,
   i18n,
   isErrorConstructorName,

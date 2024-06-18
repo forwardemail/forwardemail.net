@@ -45,7 +45,10 @@ async function onLsub(query, session, fn) {
       subscribed: true
     });
 
-    fn(null, mailboxes);
+    fn(
+      null,
+      mailboxes.map((m) => m.toObject())
+    );
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

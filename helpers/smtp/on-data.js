@@ -8,7 +8,7 @@ const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const mongoose = require('mongoose');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');

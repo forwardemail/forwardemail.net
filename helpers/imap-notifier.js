@@ -19,7 +19,7 @@ const Axe = require('axe');
 const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const ms = require('ms');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 
 const IMAPError = require('#helpers/imap-error');
 const Journals = require('#models/journals');

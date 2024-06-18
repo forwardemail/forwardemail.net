@@ -29,7 +29,6 @@ const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
-const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const {
   S3Client,
@@ -62,6 +61,7 @@ const recursivelyParse = require('#helpers/recursively-parse');
 const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+const { encoder, decoder } = require('#helpers/encoder-decoder');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -246,8 +246,7 @@ async function getTemporaryDatabase(payload) {
 
 // eslint-disable-next-line complexity
 async function parsePayload(data, ws) {
-  // return early for ping/pong
-  if (data && data.toString() === 'ping') return;
+  const now = Date.now();
 
   let db;
   let lock;
@@ -257,7 +256,19 @@ async function parsePayload(data, ws) {
     if (!data) throw new TypeError('Data missing');
 
     // request.socket.remoteAddress
-    payload = ws ? recursivelyParse(data) : data;
+    payload = ws ? recursivelyParse(decoder.unpack(data)) : data;
+
+    // if (config.env !== 'production' && payload.date)
+    //   logger.debug(
+    //     `Payload took ${prettyMs(now - payload.date)} to be received`
+    //   );
+
+    // if it took more than 5s to be received then we should alert admins
+    if (payload.date && now - payload.date >= 5000) {
+      const err = new TypeError(`Payload took >= 5s to be received`);
+      err.payload = payload;
+      logger.fatal(err);
+    }
 
     //
     // validate payload
@@ -1617,12 +1628,16 @@ async function parsePayload(data, ws) {
         if (payload.stmt.length === 0)
           throw new TypeError('Payload statement must have at least one key');
 
+        //
         // in case recursivelyParsed converted this, we should stringify it
         // (e.g. dates get converted and we need them as strings for SQLite insertion)
+        //
+        // NOTE: we could also exclude keys (e.g. "stmt" in an arg to recursively parse)
+        //
         payload.stmt = JSON.parse(
           typeof payload.stmt === 'string'
             ? payload.stmt
-            : safeStringify(payload.stmt)
+            : JSON.stringify(payload.stmt)
         );
 
         let stmt;
@@ -2279,7 +2294,7 @@ async function parsePayload(data, ws) {
 
     if (!ws || typeof ws.send !== 'function') return response;
 
-    ws.send(safeStringify(response));
+    ws.send(encoder.pack(response));
   } catch (_err) {
     // since we use multiArgs from pify
     // if a promise that was wrapped with multiArgs: true
@@ -2314,13 +2329,14 @@ async function parsePayload(data, ws) {
 
     if (!ws || typeof ws.send !== 'function') throw err;
 
-    if (_.isPlainObject(payload) && isSANB(payload.id))
+    if (_.isPlainObject(payload) && isSANB(payload.id)) {
       ws.send(
-        safeStringify({
+        encoder.pack({
           id: payload.id,
           err: parseErr(err)
         })
       );
+    }
   }
 }
 

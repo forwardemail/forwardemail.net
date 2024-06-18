@@ -16,6 +16,29 @@
 async function storeNodeBodies(instance, session, maildata, mimeTree) {
   mimeTree.attachmentMap = {};
   for (const node of maildata.nodes) {
+    //
+    // TODO: we should store blobs in their own table and use a foreign key reference (?)
+    //       <https://stackoverflow.com/a/57583478>
+    //
+    //       <https://sqlite-users.sqlite.narkive.com/Q4txMI8t/effect-of-blobs-on-performance#post3>
+    //
+    //       Quote from the author of SQLite:
+    //
+    //       > Here's a hint though - make the BLOB columns the last column in
+    //       > your tables. Or even store the BLOBs in a separate table which
+    //       > only has two columns: an integer primary key and the blob itself,
+    //       > and then access the BLOB content using a join if you need to.
+    //       > If you put various small integer fields after the BLOB, then
+    //       > SQLite has to scan through the entire BLOB content (following
+    //       > the linked list of disk pages) to get to the integer fields at
+    //       > the end, and that definitely can slow you down.
+    //       > - D. Richard Hipp
+    //
+    // NOTE: findOneAndUpdate calls in AttachmentStorage helper method
+    //       cause SQLite slowness because it's updating a row
+    //       that has a large BLOB (e.g. if you have a large attachment it's slow)
+    //
+
     // eslint-disable-next-line no-await-in-loop
     const attachment = await this.attachmentStorage.create(
       instance,

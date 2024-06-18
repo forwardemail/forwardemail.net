@@ -16,7 +16,6 @@
 const _ = require('lodash');
 const getStream = require('get-stream');
 const mongoose = require('mongoose');
-const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
@@ -112,7 +111,7 @@ async function getMessages(instance, session, server, opts = {}) {
   }
 
   // converts objectids -> strings and arrays/json appropriately
-  const condition = JSON.parse(safeStringify(pageQuery));
+  const condition = JSON.parse(JSON.stringify(pageQuery));
 
   // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
 

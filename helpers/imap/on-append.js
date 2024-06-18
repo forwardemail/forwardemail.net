@@ -361,9 +361,14 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // prepare text for indexing
     let text = '';
     if (maildata.text) {
+      //
+      // NOTE: without `slice(0, 1MB)` it would output following and cause max callstack exceeded error
+      //
+      //       > Input length 49999999 is above allowed limit of 16777216. Truncating without ellipsis.
+      //
       // replace line breaks for consistency
-      text = splitLines(maildata.text).join(' ').trim();
-      // convert and remove unnecessary things
+      text = splitLines(maildata.text).join(' ').trim().slice(0, 1048576); // 1 MB
+      // convert and remove unnecessary HTML
       text = convert(text, {
         wordwrap: false,
         selectors: [
@@ -484,6 +489,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session
     });
 
+    // TODO: we could probably remove this or make it happen after
     // update storage
     try {
       const size = await this.wsp.request({

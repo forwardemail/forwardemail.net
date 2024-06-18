@@ -15,7 +15,6 @@
 
 const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const ms = require('ms');
-const safeStringify = require('fast-safe-stringify');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
@@ -126,7 +125,7 @@ async function onStore(mailboxId, update, session, fn) {
     else query.uid = tools.checkRangeQuery(update.messages);
 
     // converts objectids -> strings and arrays/json appropriately
-    const condition = JSON.parse(safeStringify(query));
+    const condition = JSON.parse(JSON.stringify(query));
 
     // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
 

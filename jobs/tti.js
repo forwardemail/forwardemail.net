@@ -21,7 +21,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const prettyMilliseconds = require('pretty-ms');
-const safeStringify = require('fast-safe-stringify');
+const safeStringify = require('safe-stable-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const { randomstring } = require('@sidoshi/random-string');
 
