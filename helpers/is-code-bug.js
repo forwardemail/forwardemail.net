@@ -20,6 +20,7 @@ function isCodeBug(err) {
       err.code === 'SQLITE_ERROR' ||
       err.name === 'MongooseServerSelectionError' ||
       err.name === 'MongoNetworkError' ||
+      err.name === 'MongoPoolClearedError' ||
       // <https://github.com/WiseLibs/better-sqlite3/blob/007d43e229190618884a9f976909c0b14a17d82c/docs/api.md?plain=1#L611>
       (typeof err.code === 'string' &&
         err.code.startsWith('UNKNOWN_SQLITE_ERROR_')) ||
@@ -37,6 +38,7 @@ function isCodeBug(err) {
         !isErrorConstructorName(err, 'ValidationError')) ||
       isErrorConstructorName(err, 'MongoError') ||
       isErrorConstructorName(err, 'MongoNetworkError') ||
+      isErrorConstructorName(err, 'MongoPoolClearedError') ||
       isErrorConstructorName(err, 'MongooseServerSelectionError') ||
       isErrorConstructorName(err, 'RedisError')
   );
