@@ -21,26 +21,26 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onUnsubscribe(path, session, fn) {
   this.logger.debug('UNSUBSCRIBE', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'unsubscribe',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'unsubscribe',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'UNSUBSCRIBE');
 
     const mailbox = await Mailboxes.findOneAndUpdate(
@@ -72,7 +72,7 @@ async function onUnsubscribe(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

@@ -30,28 +30,28 @@ const builder = new Builder();
 async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'search',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress,
-            selected: session.selected
-          },
-          mailboxId,
-          options
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'search',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress,
+          selected: session.selected
+        },
+        mailboxId,
+        options
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'SEARCH');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -76,8 +76,8 @@ async function onSearch(mailboxId, options, session, fn) {
     let highestModseq = 0;
     let returned;
 
-    // eslint-disable-next-line complexity
-    const walkQuery = async (parent, ne, node) => {
+    // eslint-disable-next-line complexity, no-inner-declarations
+    async function walkQuery(parent, ne, node) {
       if (returned) {
         return;
       }
@@ -126,7 +126,6 @@ async function onSearch(mailboxId, options, session, fn) {
             // use FTS5 for full text search in onSearch function
             // <https://kimsereylam.com/sqlite/2020/03/06/full-text-search-with-sqlite.html>
             //
-            let ids;
 
             //
             // TODO: note this is currently disabled (see notes in sqlite-server.js regarding fts5)
@@ -152,37 +151,26 @@ async function onSearch(mailboxId, options, session, fn) {
               };
             }
 
-            if (session.db.wsp) {
-              // eslint-disable-next-line no-await-in-loop
-              ids = await this.wsp.request({
-                action: 'stmt',
-                session: { user: session.user },
-                stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
-              });
-            } else {
-              ids = session.db.prepare(sql.query).pluck().all(sql.values);
-            }
+            const ids = session.db.prepare(sql.query).pluck().all(sql.values);
 
             parent.push({
               _id: { $in: ids }
             });
 
             // NOTE: this is the wildduck reference (which does not support NOT matches)
-            /*
             // search over email body
-            if (term.value && !ne) {
-              query.searchable = true;
-              query.$text = {
-                $search: term.value
-              };
-            } else {
-              // can not search by text
-              parent.push({
-                // should not match anything
-                _id: -1
-              });
-            }
-            */
+            // if (term.value && !ne) {
+            //   query.searchable = true;
+            //   query.$text = {
+            //     $search: term.value
+            //   };
+            // } else {
+            //   // can not search by text
+            //   parent.push({
+            //     // should not match anything
+            //     _id: -1
+            //   });
+            // }
 
             break;
           }
@@ -211,7 +199,7 @@ async function onSearch(mailboxId, options, session, fn) {
               // <https://github.com/nodemailer/wildduck/pull/570>
               // if (
               //   !_.isEqual(term.value.sort(), session.selected.uidList.sort())
-              // ) {
+              // )
               if (term.value.length !== session.selected.uidList.length) {
                 // not 1:*
                 parent.push({
@@ -316,21 +304,10 @@ async function onSearch(mailboxId, options, session, fn) {
                         .trim()
                     }
                   };
-                  let ids;
-                  if (session.db.wsp) {
-                    // eslint-disable-next-line no-await-in-loop
-                    ids = await this.wsp.request({
-                      action: 'stmt',
-                      session: { user: session.user },
-                      stmt: [
-                        ['prepare', sql.query],
-                        ['pluck'],
-                        ['all', sql.values]
-                      ]
-                    });
-                  } else {
-                    ids = session.db.prepare(sql.query).pluck().all(sql.values);
-                  }
+                  const ids = session.db
+                    .prepare(sql.query)
+                    .pluck()
+                    .all(sql.values);
 
                   entry._id = { $in: ids };
                 } else {
@@ -340,21 +317,10 @@ async function onSearch(mailboxId, options, session, fn) {
                     query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
                     values: { p1: term.header, p2: regex }
                   };
-                  let ids;
-                  if (session.db.wsp) {
-                    // eslint-disable-next-line no-await-in-loop
-                    ids = await this.wsp.request({
-                      action: 'stmt',
-                      session: { user: session.user },
-                      stmt: [
-                        ['prepare', sql.query],
-                        ['pluck'],
-                        ['all', sql.values]
-                      ]
-                    });
-                  } else {
-                    ids = session.db.prepare(sql.query).pluck().all(sql.values);
-                  }
+                  const ids = session.db
+                    .prepare(sql.query)
+                    .pluck()
+                    .all(sql.values);
 
                   entry._id = { $in: ids };
                 }
@@ -363,21 +329,10 @@ async function onSearch(mailboxId, options, session, fn) {
                   query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') != $p1;`,
                   values: { p1: term.header, p2: term.value }
                 };
-                let ids;
-                if (session.db.wsp) {
-                  // eslint-disable-next-line no-await-in-loop
-                  ids = await this.wsp.request({
-                    action: 'stmt',
-                    session: { user: session.user },
-                    stmt: [
-                      ['prepare', sql.query],
-                      ['pluck'],
-                      ['all', sql.values]
-                    ]
-                  });
-                } else {
-                  ids = session.db.prepare(sql.query).pluck().all(sql.values);
-                }
+                const ids = session.db
+                  .prepare(sql.query)
+                  .pluck()
+                  .all(sql.values);
 
                 entry._id = { $in: ids };
               } else {
@@ -385,57 +340,44 @@ async function onSearch(mailboxId, options, session, fn) {
                   query: `select _id from Messages, json_each(Messages.headers) where key = $p1;`,
                   values: { p1: term.header }
                 };
-                let ids;
-                if (session.db.wsp) {
-                  // eslint-disable-next-line no-await-in-loop
-                  ids = await this.wsp.request({
-                    action: 'stmt',
-                    session: { user: session.user },
-                    stmt: [
-                      ['prepare', sql.query],
-                      ['pluck'],
-                      ['all', sql.values]
-                    ]
-                  });
-                } else {
-                  ids = session.db.prepare(sql.query).pluck().all(sql.values);
-                }
+                const ids = session.db
+                  .prepare(sql.query)
+                  .pluck()
+                  .all(sql.values);
 
                 entry._id = { $in: ids };
               }
 
               // wildduck/mongodb version
-              /*
-              const entry = term.value
-                ? {
-                    headers: {
-                      $elemMatch: {
-                        key: term.header,
-                        value: ne
-                          ? {
-                              // not can not have a regex, so try exact match instead even if it fails
-                              $not: {
-                                $eq: Buffer.from(term.value, 'binary')
-                                  .toString()
-                                  .toLowerCase()
-                                  .trim()
-                              }
-                            }
-                          : {
-                              $regex: regex,
-                              $options: 'i'
-                            }
-                      }
-                    }
-                  }
-                : {
-                    'headers.key': ne
-                      ? {
-                          $ne: term.header
-                        }
-                      : term.header
-                  };
-              */
+              // const entry = term.value
+              //   ? {
+              //       headers: {
+              //         $elemMatch: {
+              //           key: term.header,
+              //           value: ne
+              //             ? {
+              //                 // not can not have a regex, so try exact match instead even if it fails
+              //                 $not: {
+              //                   $eq: Buffer.from(term.value, 'binary')
+              //                     .toString()
+              //                     .toLowerCase()
+              //                     .trim()
+              //                 }
+              //               }
+              //             : {
+              //                 $regex: regex,
+              //                 $options: 'i'
+              //               }
+              //         }
+              //       }
+              //     }
+              //   : {
+              //       'headers.key': ne
+              //         ? {
+              //             $ne: term.header
+              //           }
+              //         : term.header
+              //     };
               parent.push(entry);
             }
 
@@ -631,7 +573,7 @@ async function onSearch(mailboxId, options, session, fn) {
           }
         }
       }
-    };
+    }
 
     const $and = [];
     await walkQuery($and, false, options.query);
@@ -650,24 +592,11 @@ async function onSearch(mailboxId, options, session, fn) {
       fields: ['uid', 'modseq']
     });
 
-    let messages;
-
     //
     // NOTE: using `all()` currently for faster performance
     //       (since we don't write to the socket here)
     //
-    if (session.db.wsp) {
-      messages = await this.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        stmt: [
-          ['prepare', sql.query],
-          ['all', sql.values]
-        ]
-      });
-    } else {
-      messages = session.db.prepare(sql.query).all(sql.values);
-    }
+    const messages = session.db.prepare(sql.query).all(sql.values);
 
     try {
       for (const message of messages) {
@@ -712,7 +641,7 @@ async function onSearch(mailboxId, options, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

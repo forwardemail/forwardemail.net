@@ -71,37 +71,65 @@ async function refreshSession(session, command) {
   if (!isSANB(session?.user?.storage_location))
     throw new IMAPError('Alias storage location does not exist on session');
 
-  const [domain, alias] = await Promise.all([
-    Domains.findById(session.user.domain_id)
-      .populate(
-        'members.user',
-        `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
-      )
-      .lean()
-      .exec(),
-    Aliases.findById(session.user.alias_id)
-      .populate(
-        'user',
-        // TODO: we can remove `smtpLimit` (?)
-        `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.lastLocaleField}`
-      )
-      .select('+tokens.hash +tokens.salt')
-      .lean()
-      .exec()
-  ]);
+  // only refresh if it has been more >= 10s
+  // (drastically helps speed up bulk migrations and appends)
+  let needsRefreshed = true;
+  if (this.client) {
+    try {
+      // TODO: add p-timeout here
+      // TODO: add p-timeout to getStorageUsed redis invocation
+      const cache = await this.client.get(
+        `refresh_check:${session.user.alias_id}`
+      );
+      if (cache) needsRefreshed = false;
+    } catch (err) {
+      this.logger.fatal(err);
+    }
+  }
 
-  // validate domain (in case tampered with during session)
-  validateDomain(domain, session.user.domain_name);
+  if (needsRefreshed) {
+    const [domain, alias] = await Promise.all([
+      Domains.findById(session.user.domain_id)
+        .populate(
+          'members.user',
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+        )
+        .lean()
+        .exec(),
+      Aliases.findById(session.user.alias_id)
+        .populate(
+          'user',
+          // TODO: we can remove `smtpLimit` (?)
+          `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.lastLocaleField}`
+        )
+        .select('+tokens.hash +tokens.salt')
+        .lean()
+        .exec()
+    ]);
 
-  // validate alias (in case tampered with during session)
-  validateAlias(alias, session.user.domain_name, session.user.alias_name);
+    // validate domain (in case tampered with during session)
+    validateDomain(domain, session.user.domain_name);
 
-  // refresh the user's pgp settings, email, and locale
-  session.user.alias_has_pgp = alias.has_pgp;
-  session.user.alias_public_key = alias.public_key;
-  session.user.locale =
-    alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
-  session.user.owner_full_email = alias.user.email;
+    // validate alias (in case tampered with during session)
+    validateAlias(alias, session.user.domain_name, session.user.alias_name);
+
+    // refresh the user's pgp settings, email, and locale
+    session.user.alias_has_pgp = alias.has_pgp;
+    session.user.alias_public_key = alias.public_key;
+    session.user.locale =
+      alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
+    session.user.owner_full_email = alias.user.email;
+
+    // set updated imap_backup_at
+    session.imap_backup_at = alias.imap_backup_at;
+
+    await this.client.set(
+      `refresh_check:${session.user.alias_id}`,
+      true,
+      'PX',
+      10000
+    );
+  }
 
   //
   // NOTE: we don't need to perform the below validation because we
@@ -162,6 +190,10 @@ async function refreshSession(session, command) {
   //
   // prevent circular dep (otherwise we could do instanceof)
   if (
+    // don't perform backup while during a write command
+    ['POP3', 'FETCH', 'GETQUOTAROOT', 'GETQUOTA', 'LIST', 'STATUS'].includes(
+      command
+    ) &&
     config.env !== 'test' &&
     this?.constructor?.name !== 'IMAP' && //
     // NOTE: this takes 100ms+ so we put it in onAuth instead running in the background
@@ -188,13 +220,13 @@ async function refreshSession(session, command) {
       const oneDayAgo = dayjs().subtract(1, 'day').toDate();
       const now = new Date();
       if (
-        !_.isDate(alias.imap_backup_at) ||
-        new Date(alias.imap_backup_at).getTime() <= oneDayAgo.getTime()
+        !_.isDate(session.imap_backup_at) ||
+        new Date(session.imap_backup_at).getTime() <= oneDayAgo.getTime()
       ) {
         Aliases.findOneAndUpdate(
           {
-            _id: alias._id,
-            imap_backup_at: _.isDate(alias.imap_backup_at)
+            id: session.user.alias_id,
+            imap_backup_at: _.isDate(session.imap_backup_at)
               ? {
                   $exists: true,
                   $lte: oneDayAgo
@@ -229,6 +261,7 @@ async function refreshSession(session, command) {
               .catch((err) => {
                 this.logger.fatal(err, { session });
                 // if the backup failed then we unset the imap_backup_at
+                session.imap_backup_at = undefined;
                 Aliases.findOneAndUpdate(
                   {
                     _id: alias._id,

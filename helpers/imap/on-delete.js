@@ -14,7 +14,6 @@
  */
 
 // const imapTools = require('wildduck/imap-core/lib/imap-tools');
-const ms = require('ms');
 const pify = require('pify');
 
 const onMove = require('./on-move');
@@ -24,46 +23,47 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const updateStorageUsed = require('#helpers/update-storage-used');
 
 const onMovePromise = pify(onMove, { multiArgs: true });
 
 async function onDelete(path, session, fn) {
   this.logger.debug('DELETE', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        // const [bool, mailboxId, writeStream] = await this.wsp.request(
-        const [bool, mailboxId] = await this.wsp.request({
-          action: 'delete',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
+  if (this.wsp) {
+    try {
+      // const [bool, mailboxId, writeStream] = await this.wsp.request(
+      const [bool, mailboxId] = await this.wsp.request({
+        action: 'delete',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
 
-        // not writing to stream yet (since entire mailbox deleted)
-        // if (Array.isArray(writeStream)) {
-        //   for (const write of writeStream) {
-        //     if (Array.isArray(write)) {
-        //       session.writeStream.write(session.formatResponse(...write));
-        //     } else {
-        //       session.writeStream.write(write);
-        //     }
-        //   }
-        // }
+      // not writing to stream yet (since entire mailbox deleted)
+      // if (Array.isArray(writeStream)) {
+      //   for (const write of writeStream) {
+      //     if (Array.isArray(write)) {
+      //       session.writeStream.write(session.formatResponse(...write));
+      //     } else {
+      //       session.writeStream.write(write);
+      //     }
+      //   }
+      // }
 
-        fn(null, bool, mailboxId);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+      fn(null, bool, mailboxId);
+    } catch (err) {
+      fn(err);
     }
 
-    const writeStream = [];
+    return;
+  }
+
+  try {
+    // const writeStream = [];
 
     await this.refreshSession(session, 'DELETE');
 
@@ -111,7 +111,6 @@ async function onDelete(path, session, fn) {
     //   true // cmd === 'UID MOVE'
     // );
 
-    // this will internally addEntries for the moving
     try {
       const results = await onMovePromise.call(
         this,
@@ -127,8 +126,9 @@ async function onDelete(path, session, fn) {
           }
         }
       );
-      if (results[2] && Array.isArray(results[2]))
-        writeStream.push(...results[2]);
+      this.logger.debug('results', { results });
+      // if (results[2] && Array.isArray(results[2]))
+      //   writeStream.push(...results[2]);
     } catch (_err) {
       // since we use multiArgs from pify
       // if a promise that was wrapped with multiArgs: true
@@ -147,15 +147,11 @@ async function onDelete(path, session, fn) {
 
     // results.deletedCount is mainly for publish/notifier
     if (results.deletedCount > 0) {
-      try {
-        await this.server.notifier.addEntries(this, session, mailbox, {
-          command: 'DELETE',
-          mailbox: mailbox._id
-        });
-        this.server.notifier.fire(session.user.alias_id);
-      } catch (err) {
-        this.logger.fatal(err, { path, session });
-      }
+      await this.server.notifier.addEntries(this, session, mailbox, {
+        command: 'DELETE',
+        mailbox: mailbox._id
+      });
+      this.server.notifier.fire(session.user.alias_id);
     }
 
     //
@@ -179,16 +175,13 @@ async function onDelete(path, session, fn) {
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { path, session });
     }
 
-    fn(null, true, mailbox._id, writeStream);
+    // fn(null, true, mailbox._id, writeStream);
+    fn(null, true, mailbox._id);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {
@@ -196,7 +189,7 @@ async function onDelete(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    return fn(refineAndLogError(err, session, true));
+    return fn(refineAndLogError(err, session, true, this));
   }
 }
 

@@ -19,26 +19,26 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onList(query, session, fn) {
   this.logger.debug('LIST', { query, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'list',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          query
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'list',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        query
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'LIST');
 
     const mailboxes = await Mailboxes.find(this, session, {});
@@ -53,7 +53,7 @@ async function onList(query, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

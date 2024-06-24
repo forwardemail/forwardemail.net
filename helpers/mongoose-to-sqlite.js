@@ -110,11 +110,7 @@ async function updateMany(
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -149,7 +145,7 @@ async function updateMany(
       condition
     });
 
-    if (session.db.wsp) {
+    if (instance.wsp) {
       beforeDocs = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
@@ -237,7 +233,7 @@ async function updateMany(
 
   if (options?.returnDocument === 'after') {
     let docs;
-    if (session.db.wsp) {
+    if (instance.wsp) {
       docs = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
@@ -266,11 +262,7 @@ async function countDocuments(instance, session, filter = {}) {
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -290,7 +282,7 @@ async function countDocuments(instance, session, filter = {}) {
   });
 
   let result;
-  if (session.db.wsp) {
+  if (instance.wsp) {
     result = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
@@ -310,7 +302,7 @@ async function countDocuments(instance, session, filter = {}) {
 }
 
 // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
-// eslint-disable-next-line complexity
+
 async function deleteMany(instance, session, condition = {}, options = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -319,11 +311,7 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -392,11 +380,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -491,11 +475,7 @@ async function find(
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string') {
@@ -530,7 +510,7 @@ async function find(
   const sql = builder.build(opts);
 
   let docs;
-  if (session.db.wsp) {
+  if (instance.wsp) {
     docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
@@ -591,11 +571,7 @@ async function findOne(
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -611,7 +587,7 @@ async function findOne(
 
   let doc;
 
-  if (session.db.wsp) {
+  if (instance.wsp) {
     doc = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
@@ -641,15 +617,11 @@ async function $__handleSave(options = {}, fn) {
     if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
     if (
       !this.session?.db ||
-      (!(this.session.db instanceof Database) && !this.session.db.wsp)
+      (!(this.session.db instanceof Database) && !this.instance.wsp)
     )
       throw new TypeError('Database is missing');
 
-    if (
-      this?.instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-      (!this?.instance?.wsp || !this?.instance.wsp[Symbol.for('isWSP')]) &&
-      (!this?.instance || !this?.instance[Symbol.for('isWSP')])
-    )
+    if (!this?.instance?.wsp && this?.instance?.constructor?.name !== 'SQLite')
       throw new TypeError('WebSocketAsPromised instance required');
 
     if (typeof this?.session?.user?.password !== 'string')
@@ -739,7 +711,6 @@ async function $__handleSave(options = {}, fn) {
       const sql = builder.build({
         type: 'select',
         table,
-        lock: this.lock || options.lock,
         condition: {
           _id: this._id.toString()
         }
@@ -747,7 +718,7 @@ async function $__handleSave(options = {}, fn) {
 
       let doc;
 
-      if (this.session.db.wsp) {
+      if (this.instance.wsp) {
         doc = await this.instance.wsp.request({
           action: 'stmt',
           session: { user: this.session.user },
@@ -762,7 +733,7 @@ async function $__handleSave(options = {}, fn) {
       }
 
       if (!doc) throw new TypeError('Document failed to save');
-      doc = await convertResult(this.constructor, doc);
+      doc = await convertResult(this.constructor, doc, {}, true);
       fn(null, doc);
     }
   } catch (err) {
@@ -813,11 +784,7 @@ async function findOneAndUpdate(
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -975,7 +942,7 @@ async function findOneAndUpdate(
 
   let doc;
 
-  if (session.db.wsp) {
+  if (instance.wsp) {
     doc = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
@@ -990,7 +957,7 @@ async function findOneAndUpdate(
   }
 
   if (!doc) throw new TypeError('Document does not exist');
-  doc = await convertResult(this, doc, options?.projection);
+  doc = await convertResult(this, doc, options?.projection, true);
   return options?.returnDocument === 'after' ? doc : beforeDoc;
 }
 
@@ -1003,11 +970,7 @@ async function distinct(instance, session, field, conditions = {}) {
     throw new TypeError('Database is missing');
   if (!isSANB(field)) throw new TypeError('Field missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   const sql = builder.build({
@@ -1020,7 +983,7 @@ async function distinct(instance, session, field, conditions = {}) {
 
   let docs;
 
-  if (session.db.wsp) {
+  if (instance.wsp) {
     docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
@@ -1050,16 +1013,15 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
+  //
+  // TODO: rewrite this to use transaction (similar to on move)
+  //
   for (const op of ops) {
     try {
       if (typeof op !== 'object') throw new TypeError('Op must be an object');
@@ -1112,10 +1074,6 @@ async function bulkWrite(instance, session, ops = [], options = {}) {
               'Every operation must be either $addToSet, $inc, $set, or $unset'
             );
 
-          //
-          // NOTE: we could use json_extract and json_each in future
-          // shared `doc`for $addToSet and $pull
-          //
           let doc;
 
           if (op.updateOne.update.$addToSet) {
@@ -1890,10 +1848,35 @@ function parseSchema(Model, modelName = '') {
   };
 }
 
-async function convertResult(Model, doc, projection = {}) {
+function syncConvertResult(Model, doc) {
   const obj = {};
   if (!Model?.mapping) throw new TypeError('Mapping was not found');
-  for (const key of Object.keys(doc)) {
+
+  for (const key in doc) {
+    if (Model.mapping[key]) {
+      obj[key] = Model.mapping[key].getter(doc[key]);
+    } else {
+      // sometimes we have a legacy column such as "uid"
+      // which is a type String and so we can easily add mapping
+      if (typeof doc[key] !== 'string')
+        throw new TypeError(`Mapping for ${key} does not exist`);
+      obj[key] = doc[key];
+    }
+  }
+
+  return new Model(obj);
+}
+
+async function convertResult(
+  Model,
+  doc,
+  projection = {},
+  shouldValidate = false
+) {
+  const obj = {};
+  if (!Model?.mapping) throw new TypeError('Mapping was not found');
+
+  for (const key in doc) {
     if (Model.mapping[key]) {
       obj[key] = Model.mapping[key].getter(doc[key]);
     } else {
@@ -1908,14 +1891,15 @@ async function convertResult(Model, doc, projection = {}) {
   const d = new Model(obj);
 
   const pathsToValidate = [];
-  for (const key of Object.keys(projection)) {
+  for (const key in projection) {
     if (Boolean(projection[key]) === true) pathsToValidate.push(key);
   }
 
   // if we had a projection with at least one truthy value then pass it as array
-  await (pathsToValidate.length > 0
-    ? d.validate(pathsToValidate)
-    : d.validate());
+  if (shouldValidate)
+    await (pathsToValidate.length > 0
+      ? d.validate(pathsToValidate)
+      : d.validate());
 
   return d;
 }
@@ -1984,5 +1968,6 @@ module.exports = {
   prepareQuery,
   parseSchema,
   convertResult,
+  syncConvertResult,
   sqliteVirtualDB
 };

@@ -10,12 +10,12 @@ const memoize = require('memoizee');
 const ms = require('ms');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
-const safeStringify = require('fast-safe-stringify');
 const titleize = require('titleize');
 
 const config = require('#config');
-const { Users, Domains, Aliases, Payments } = require('#models');
 const locales = require('#config/locales');
+const { Users, Domains, Aliases, Payments } = require('#models');
+const { encoder } = require('#helpers/encoder-decoder');
 
 // <https://stackoverflow.com/a/44096051>
 const timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -729,7 +729,7 @@ async function getBody(ctx) {
   };
 
   // store a hash so we know if data changes to refresh
-  body.hash = revHash(safeStringify(body));
+  body.hash = revHash(encoder.pack(body));
 
   return body;
 }

@@ -28,9 +28,12 @@ function onRcptTo(address, session, fn) {
           new SMTPError('Too many recipients', {
             responseCode: 452,
             ignoreHook: true
-          })
-        ),
-        session
+          }),
+          session,
+          false,
+          this
+        )
+        // session
       )
     );
 
@@ -46,9 +49,12 @@ function onRcptTo(address, session, fn) {
           new SMTPError('Address is not a valid RFC 5321 email address', {
             responseCode: 553,
             ignoreHook: true
-          })
-        ),
-        session
+          }),
+          session,
+          false,
+          this
+        )
+        // session
       )
     );
 

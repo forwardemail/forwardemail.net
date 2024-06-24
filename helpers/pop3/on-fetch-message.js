@@ -78,7 +78,7 @@ async function onFetchMessage(message, session, fn) {
 
     fn(null, obj.value);
   } catch (err) {
-    fn(refineAndLogError(err, session));
+    fn(refineAndLogError(err, session, false, this));
   }
 }
 

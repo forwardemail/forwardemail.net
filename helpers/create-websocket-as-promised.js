@@ -168,7 +168,7 @@ function createWebSocketAsPromised(options = {}) {
       // (e.g. in case connection disconnected and no response was made)
       const response = await pRetry(
         () => {
-          data.date = Date.now();
+          data.sent_at = Date.now();
           return wsp.sendRequest(data, {
             timeout:
               typeof data.timeout === 'number' &&

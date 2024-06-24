@@ -474,7 +474,7 @@ async function onData(stream, _session, fn) {
 
     setImmediate(fn);
   } catch (err) {
-    setImmediate(() => fn(refineAndLogError(err, session)));
+    setImmediate(() => fn(refineAndLogError(err, session, false, this)));
   }
 }
 

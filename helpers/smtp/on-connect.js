@@ -98,7 +98,7 @@ async function onConnect(session, fn) {
 
     fn();
   } catch (err) {
-    fn(refineAndLogError(err, session));
+    fn(refineAndLogError(err, session, false, this));
   }
 }
 

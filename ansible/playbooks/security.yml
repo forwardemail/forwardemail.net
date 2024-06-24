@@ -14,6 +14,11 @@
         name: ssh
         state: restarted
   tasks:
+    - name: Delete Digital Ocean Networking Configuration
+      ansible.builtin.file:
+        state: absent
+        path: /etc/systemd/resolved.conf.d/DigitalOcean.conf
+
     - name: Insert/Update disable core dumps
       blockinfile:
         path: /etc/security/limits.conf
@@ -531,6 +536,11 @@
     # https://github.com/Oefenweb/ansible-dns
     - role: dns
       dns_nameservers:
+        # google (temporary due to cloudflare ESERVFAIL and EAI_AGAIN errors)
+        - 8.8.8.8
+        - 8.8.4.4
+        - 2001:4860:4860::8888
+        - 2001:4860:4860::8844
         # cloudflare
         - 1.1.1.1
         - 1.0.0.1

@@ -64,6 +64,11 @@ async function releaseLock(instance, db, lock) {
   if (db && !(db instanceof Database) && !db.wsp)
     throw new TypeError('Database not instance');
 
+  if (!lock?.success)
+    throw new TypeError(
+      'releaseLock not wrapped in try/catch and was not successful'
+    );
+
   const result = await instance.lock.releaseLock(lock);
   if (!result.success) {
     // update existing in-memory lock used for SQLite server

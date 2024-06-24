@@ -14,7 +14,7 @@ const logger = require('./logger');
 const env = require('#config/env');
 
 // this is sourced from FE original codebase
-function refineAndLogError(err, session, isIMAP = false) {
+function refineAndLogError(err, session, isIMAP = false, instance) {
   // handle programmer mistakes
   // (don't re-check if we already checked)
   if (typeof err.isCodeBug !== 'boolean') {
@@ -23,6 +23,22 @@ function refineAndLogError(err, session, isIMAP = false) {
       logger.fatal(err, { session });
       err.responseCode = 421;
     }
+  }
+
+  // clear caches for the given alias
+  if (
+    instance?.client &&
+    err.code === 'SQLITE_ERROR' &&
+    session?.user?.alias_id
+  ) {
+    Promise.all([
+      instance.client.del(`refresh_check:${session.user.alias_id}`),
+      instance.client.del(`migrate_check:${session.user.alias_id}`),
+      instance.client.del(`folder_check:${session.user.alias_id}`),
+      instance.client.del(`trash_check:${session.user.alias_id}`)
+    ])
+      .then()
+      .catch((err) => logger.fatal(err, { session }));
   }
 
   // if it was HTTP error and no `responseCode` set then try to parse it

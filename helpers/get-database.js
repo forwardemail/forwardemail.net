@@ -13,6 +13,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
+const { boolean } = require('boolean');
 
 const parseErr = require('parse-err');
 const Aliases = require('#models/aliases');
@@ -126,14 +127,15 @@ async function getDatabase(
   newlyCreated = false,
   customDbFilePath = false
 ) {
-  const { stack } = new Error('stack');
+  // const { stack } = new Error('stack');
   // return early if the session.db was already assigned
   if (
     session.db &&
-    (session.db instanceof Database || session.db.wsp) &&
+    (session.db instanceof Database || instance.wsp) &&
     session.db.open === true
-  )
+  ) {
     return session.db;
+  }
 
   // instance must be either IMAP, POP3, SQLite, or CalDAV
   if (
@@ -141,10 +143,11 @@ async function getDatabase(
       instance?.constructor?.name
     ) &&
     HOSTNAME !== env.SQLITE_HOST
-  )
+  ) {
     throw new TypeError(
       'Instance must be either IMAP, POP3, SQLite, or CalDAV'
     );
+  }
 
   // safeguard
   if (!mongoose.isObjectIdOrHexString(alias?.id))
@@ -157,8 +160,7 @@ async function getDatabase(
   // <https://www.sqlite.org/c3ref/open.html>
   // <https://github.com/knex/knex/issues/1287>
   let readonly = true;
-  if (instance?.constructor?.name === 'SQLite' || HOSTNAME === env.SQLITE_HOST)
-    readonly = false;
+  if (!instance.wsp) readonly = false;
 
   //
   // we will substitute global with the unique bucket configuration hash
@@ -176,25 +178,26 @@ async function getDatabase(
   //
   if (readonly) {
     let exists = false;
-    if (env.SQLITE_RCLONE_ENABLED && HOSTNAME === env.IMAP_HOST) {
+    if (env.SQLITE_RCLONE_ENABLED && HOSTNAME !== env.SQLITE_HOST) {
       try {
         const stats = await fs.promises.stat(dbFilePath);
-        if (stats.isFile()) exists = true;
+        if (stats.isFile()) {
+          exists = true;
+        }
       } catch (err) {
-        err.isCodeBug = true; // hide error from end users
-        if (err.code !== 'ENOENT') throw err;
+        err.isCodeBug = true; // Hide error from end users
+        if (err.code !== 'ENOENT') {
+          throw err;
+        }
       }
     }
 
     if (!exists) {
+      // TODO: cleanup all this
       if (instance?.constructor?.name === 'SQLite')
         throw new TypeError('IMAP or POP3 server instance required');
 
-      if (
-        instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-        (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-        !instance[Symbol.for('isWSP')]
-      )
+      if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
         throw new TypeError('WebSocketAsPromised instance required');
 
       // TODO: newlyCreated logic should get called early
@@ -210,13 +213,13 @@ async function getDatabase(
       //
       if (newlyCreated) {
         if (env.SQLITE_RCLONE_ENABLED && HOSTNAME === env.IMAP_HOST) {
-          const err = new TypeError(
+          const error = new TypeError(
             'Newly created and still having readonly issues'
           );
-          err.alias = alias;
-          err.session = session;
-          err.dbFilePath = dbFilePath;
-          logger.fatal(err, { alias, session });
+          error.alias = alias;
+          error.session = session;
+          error.dbFilePath = dbFilePath;
+          logger.fatal(error, { alias, session });
         }
 
         //
@@ -480,9 +483,11 @@ async function getDatabase(
       fileMustExist: readonly,
       timeout: config.busyTimeout,
       // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: config.env === 'development' ? console.log : null
+      verbose: config.env === 'production' ? null : console.log
     });
-    if (!db.lock) db.lock = existingLock;
+    if (!db.lock) {
+      db.lock = existingLock;
+    }
 
     await setupPragma(db, session);
 
@@ -491,7 +496,9 @@ async function getDatabase(
     session.db = db;
 
     // if it is readonly then return early
-    if (readonly) return db;
+    if (readonly) {
+      return db;
+    }
 
     if (!existingLock || existingLock?.success !== true)
       lock = await acquireLock(instance, db);
@@ -502,9 +509,11 @@ async function getDatabase(
     //       and fix an issue where idate was set incorrectly (legacy bug)
     //       note that these must come before schema operations (e.g. unique index constraints)
     //
+    /*
     try {
       // since we didn't originally have "UNIQUE" constraint on "path"
       // we need to keep this in here for a while until we're sure it's fixed
+      console.time('iterating over required paths');
       for (const path of REQUIRED_PATHS) {
         // eslint-disable-next-line no-await-in-loop
         const mailboxes = await Mailboxes.find(instance, session, {
@@ -542,6 +551,8 @@ async function getDatabase(
         }
       }
 
+      console.timeEnd('iterating over required paths');
+
       // for any idate values that were set from `new Date(false)`
       // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
       // we need to set the value of `idate` to the value of `hdate`
@@ -576,95 +587,152 @@ async function getDatabase(
       )
         logger.fatal(err, { session });
     }
+    */
+
+    let migrateCheck = false;
+    let folderCheck = false;
+    let trashCheck = false;
+
+    if (instance.client) {
+      try {
+        const results = await instance.client.mget([
+          `migrate_check:${session.user.alias_id}`,
+          `folder_check:${session.user.alias_id}`,
+          `trash_check:${session.user.alias_id}`
+        ]);
+        migrateCheck = boolean(results[0]);
+        folderCheck = boolean(results[1]);
+        trashCheck = boolean(results[2]);
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
 
     // migrate schema
-    const commands = await migrateSchema(db, session, {
-      Mailboxes,
-      Messages,
-      Threads,
-      Attachments,
-      Calendars,
-      CalendarEvents
-    });
+    // TODO: add p-timeout to the client.get calls below
+    if (!migrateCheck) {
+      //
+      // NOTE: if we change schema on db then we
+      //       need to stop sqlite server then
+      //       purge all migrate_check:* keys
+      //
+      const commands = await migrateSchema(db, session, {
+        Mailboxes,
+        Messages,
+        Threads,
+        Attachments,
+        Calendars,
+        CalendarEvents
+      });
 
-    if (commands.length > 0) {
-      for (const command of commands) {
-        try {
-          // TODO: wsp here (?)
-          db.prepare(command).run();
-          // await knexDatabase.raw(command);
-        } catch (err) {
-          err.isCodeBug = true;
-          logger.fatal(err, { command, alias, session });
-          // migration support in case existing rows
-          if (
-            err.message.includes(
-              'Cannot add a NOT NULL column with default value NULL'
-            ) &&
-            command.endsWith(' NOT NULL')
-          ) {
-            try {
-              db.prepare(command.replace(' NOT NULL', '')).run();
-            } catch (err) {
-              err.isCodeBug = true;
-              logger.fatal(err, { command, alias, session });
+      if (commands.length > 0) {
+        for (const command of commands) {
+          try {
+            // TODO: wsp here (?)
+            db.prepare(command).run();
+            // await knexDatabase.raw(command);
+          } catch (err) {
+            err.isCodeBug = true;
+            logger.fatal(err, { command, alias, session });
+            // migration support in case existing rows
+            if (
+              err.message.includes(
+                'Cannot add a NOT NULL column with default value NULL'
+              ) &&
+              command.endsWith(' NOT NULL')
+            ) {
+              try {
+                db.prepare(command.replace(' NOT NULL', '')).run();
+              } catch (err) {
+                err.isCodeBug = true;
+                logger.fatal(err, { command, alias, session });
+              }
             }
           }
         }
+      }
+
+      try {
+        await instance.client.set(
+          `migrate_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
+        );
+      } catch (err) {
+        logger.fatal(err);
       }
     }
 
     //
     // create initial folders for the user if they do not yet exist
+    // (only do this once every day)
     //
     try {
-      const paths = await Mailboxes.distinct(instance, session, 'path', {});
-      const required = [];
-      for (const path of REQUIRED_PATHS) {
-        if (!paths.includes(path)) required.push(path);
-      }
+      if (!folderCheck) {
+        const paths = await Mailboxes.distinct(instance, session, 'path', {});
+        const required = [];
+        for (const path of REQUIRED_PATHS) {
+          if (!paths.includes(path)) {
+            required.push(path);
+          }
+        }
 
-      if (required.length > 0) {
-        // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
-        //       (and that would lead to unnecessary recursion)
-        await Promise.all(
-          required.map(async (path) => {
-            try {
-              const count = await Mailboxes.countDocuments(instance, session, {
-                path
-              });
+        if (required.length > 0) {
+          // NOTE: we don't invoke `onCreate` here or re-use it since it calls `refreshSession`
+          //       (and that would lead to unnecessary recursion)
+          await Promise.all(
+            required.map(async (path) => {
+              try {
+                const count = await Mailboxes.countDocuments(
+                  instance,
+                  session,
+                  {
+                    path
+                  }
+                );
 
-              if (count > 0) return;
+                if (count > 0) {
+                  return;
+                }
 
-              const mailbox = await Mailboxes.create({
-                // virtual helper
-                instance,
-                session,
-                lock: existingLock?.success ? existingLock : lock,
+                const mailbox = await Mailboxes.create({
+                  // Virtual helper
+                  instance,
+                  session,
+                  lock: existingLock?.success ? existingLock : lock,
 
-                path,
-                // NOTE: this is the same uncommented code as `helpers/imap/on-create`
-                // TODO: support custom alias retention (would get stored on session)
-                // TODO: if user updates retention then we'd need to update in-memory IMAP connections
-                // retention: typeof alias.retention === 'number' ? alias.retention : 0
-                retention: 0
-              });
+                  path,
+                  // NOTE: this is the same uncommented code as `helpers/imap/on-create`
+                  // TODO: support custom alias retention (would get stored on session)
+                  // TODO: if user updates retention then we'd need to update in-memory IMAP connections
+                  // retention: typeof alias.retention === 'number' ? alias.retention : 0
+                  retention: 0
+                });
 
-              await instance.server.notifier.addEntries(
-                instance,
-                session,
-                mailbox,
-                {
-                  command: 'CREATE',
-                  mailbox: mailbox._id,
-                  path
-                },
-                existingLock?.success ? existingLock : lock
-              );
-            } catch (err) {
-              logger.fatal(err, { session });
-            }
-          })
+                await instance.server.notifier.addEntries(
+                  instance,
+                  session,
+                  mailbox,
+                  {
+                    command: 'CREATE',
+                    mailbox: mailbox._id,
+                    path
+                  },
+                  existingLock?.success ? existingLock : lock
+                );
+              } catch (err) {
+                logger.fatal(err, { session });
+              }
+            })
+          );
+        }
+
+        await instance.client.set(
+          `folder_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
         );
       }
     } catch (err) {
@@ -672,28 +740,39 @@ async function getDatabase(
     }
 
     // remove messages in Junk/Trash folder that are >= 30 days old
+    // (only do this once every day)
     try {
-      const mailboxes = await Mailboxes.find(instance, session, {
-        path: {
-          $in: ['Trash', 'Junk']
-        },
-        specialUse: {
-          $in: ['\\Trash', '\\Junk']
+      if (!trashCheck) {
+        const mailboxes = await Mailboxes.find(instance, session, {
+          path: {
+            $in: ['Trash', 'Junk']
+          },
+          specialUse: {
+            $in: ['\\Trash', '\\Junk']
+          }
+        });
+        if (mailboxes.length === 0) {
+          throw new TypeError('Trash folder(s) do not exist');
         }
-      });
-      if (mailboxes.length === 0)
-        throw new TypeError('Trash folder(s) do not exist');
-      // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
-      // (as we've done below by simply mapping and returning `id` vs `_id`)
-      await Messages.deleteMany(instance, session, {
-        mailbox: {
-          $in: mailboxes.map((m) => m._id.toString())
-        },
-        exp: true,
-        rdate: {
-          $lte: Date.now()
-        }
-      });
+
+        // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
+        // (as we've done below by simply mapping and returning `id` vs `_id`)
+        await Messages.deleteMany(instance, session, {
+          mailbox: {
+            $in: mailboxes.map((m) => m._id.toString())
+          },
+          exp: true,
+          rdate: {
+            $lte: Date.now()
+          }
+        });
+        await instance.client.set(
+          `trash_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
+        );
+      }
     } catch (err) {
       logger.fatal(err, { session });
     }
@@ -702,7 +781,9 @@ async function getDatabase(
 
     // release lock
     try {
-      if (lock) await releaseLock(instance, db, lock);
+      if (lock) {
+        await releaseLock(instance, db, lock);
+      }
     } catch (err) {
       logger.debug(err, { alias, session });
     }
@@ -729,16 +810,17 @@ async function getDatabase(
     return db;
   } catch (err) {
     // in case developers are connected to it in SQLiteStudio (this will cause a read/write error)
-    if (err.code === 'SQLITE_IOERR_SHORT_READ')
+    if (err.code === 'SQLITE_IOERR_SHORT_READ') {
       err.message +=
         '******************* PLEASE DISCONNECT FROM SQLiteStudio IF YOU ARE CONNECTED *************';
+    }
 
     // release lock
     if (lock) {
       try {
         await releaseLock(instance, db, lock);
-      } catch (err) {
-        logger.fatal(err, { alias, session });
+      } catch (err_) {
+        logger.fatal(err_, { alias, session });
       }
     }
 
@@ -758,150 +840,184 @@ async function getDatabase(
 }
 
 function retryGetDatabase(...args) {
-  return pRetry(
-    () => {
-      return getDatabase(...args);
-    },
-    {
-      retries: 2,
-      minTimeout: ms('15s'),
-      // eslint-disable-next-line complexity
-      async onFailedAttempt(err) {
-        if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return;
-        if (isTimeoutError(err)) return;
-        //
-        // NOTE: we attempt to check if the password was valid
-        //       and if so, then we run a backup, email it to the admin/user
-        //       and then run a reset of the database with the valid password
-        //       (edge case in case "rekey" operation does not succeed)
-        //
-        if (err.code === 'SQLITE_NOTADB' && err.dbFilePath && !err.readonly) {
-          const session = args[2];
-          try {
-            //
-            // check if password was valid
-            //
-            if (!session?.user?.alias_id) throw err;
-            if (!session?.user?.password) throw err;
-            // if (!session?.user?.owner_full_email) throw err;
-
-            // try to fetch most up to date alias object
-            const alias = await Aliases.findOne({ id: session.user.alias_id })
-              .populate(
-                'user',
-                `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
-              )
-              .select('+tokens.hash +tokens.salt')
-              .lean()
-              .exec();
-
-            // mirror of `helpers/validate-alias.js`
-            // (extra safeguard)
-            if (!alias) throw err;
-            if (!alias.user) throw err;
-            if (alias.user[config.userFields.isBanned]) throw err;
-            if (!alias.is_enabled) throw err;
-            if (alias.name === '*') throw err;
-            if (alias.name.startsWith('/')) throw err;
-
-            // mirrors `helpers/on-auth.js`
-            // (extra safeguard)
-            if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
-              throw err;
-
-            // ensure that the token is valid
-            let isValid = false;
-            if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
-              isValid = await isValidPassword(
-                alias.tokens,
-                decrypt(session.user.password)
-              );
-            if (!isValid) throw err;
-
-            err.isCodeBug = true;
-            err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${err.message}`;
-
-            // check if file path was <= initial db size
-            try {
-              const stats = await fs.promises.stat(err.dbFilePath);
-              if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE)
-                throw err;
-              err.stats = stats;
-            } catch (err) {
-              logger.debug(err);
-              return;
-            }
-
-            //
-            // remove db file and all related files
-            //
-            const dirName = path.dirname(err.dbFilePath);
-            const ext = path.extname(err.dbFilePath);
-            const basename = path.basename(err.dbFilePath, ext);
-
-            await fs.promises.rm(err.dbFilePath, {
-              force: true,
-              recursive: true
-            });
-
-            for (const affix of AFFIXES) {
-              const affixFilePath = path.join(
-                dirName,
-                `${basename}${affix}${ext}`
-              );
-              try {
-                // eslint-disable-next-line no-await-in-loop
-                await fs.promises.rm(affixFilePath, {
-                  force: true,
-                  recursive: true
-                });
-              } catch (err) {
-                if (err.code !== 'ENOENT') {
-                  err.isCodeBug = true;
-                  logger.fatal(err);
-                }
-              }
-            }
-
-            // email admins of the renaming
-            email({
-              template: 'alert',
-              message: {
-                to: config.email.message.from,
-                subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
-              },
-              locals: {
-                message: `<p>${
-                  err.dbFilePath
-                }</p><hr /><pre><code>${JSON.stringify(
-                  err.stats,
-                  null,
-                  2
-                )}</code></pre><pre><code>${JSON.stringify(
-                  parseErr(err),
-                  null,
-                  2
-                )}</code></pre>`
-              }
-            })
-              .then()
-              .catch((err) => logger.fatal(err));
-
-            // return here so we can retry and it will re-create database
-            return;
-          } catch (_err) {
-            // this should email admins via `isCodeBug` setting to `true`
-            _err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${_err.message}`;
-            _err.isCodeBug = true;
-            _err.original_error = parseErr(err);
-            logger.fatal(_err, { session });
-          }
-        }
-
-        throw err;
+  return pRetry(() => getDatabase(...args), {
+    retries: 2,
+    minTimeout: ms('15s'),
+    // eslint-disable-next-line complexity
+    async onFailedAttempt(error) {
+      if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') {
+        return;
       }
+
+      if (isTimeoutError(error)) {
+        return;
+      }
+
+      //
+      // NOTE: we attempt to check if the password was valid
+      //       and if so, then we run a backup, email it to the admin/user
+      //       and then run a reset of the database with the valid password
+      //       (edge case in case "rekey" operation does not succeed)
+      //
+      if (
+        error.code === 'SQLITE_NOTADB' &&
+        error.dbFilePath &&
+        !error.readonly
+      ) {
+        const session = args[2];
+        try {
+          //
+          // check if password was valid
+          //
+          if (!session?.user?.alias_id) {
+            throw error;
+          }
+
+          if (!session?.user?.password) {
+            throw error;
+          }
+          // if (!session?.user?.owner_full_email) throw err;
+
+          // try to fetch most up to date alias object
+          const alias = await Aliases.findOne({ id: session.user.alias_id })
+            .populate(
+              'user',
+              `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
+            )
+            .select('+tokens.hash +tokens.salt')
+            .lean()
+            .exec();
+
+          // mirror of `helpers/validate-alias.js`
+          // (extra safeguard)
+          if (!alias) {
+            throw error;
+          }
+
+          if (!alias.user) {
+            throw error;
+          }
+
+          if (alias.user[config.userFields.isBanned]) {
+            throw error;
+          }
+
+          if (!alias.is_enabled) {
+            throw error;
+          }
+
+          if (alias.name === '*') {
+            throw error;
+          }
+
+          if (alias.name.startsWith('/')) {
+            throw error;
+          }
+
+          // mirrors `helpers/on-auth.js`
+          // (extra safeguard)
+          if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0) {
+            throw error;
+          }
+
+          // ensure that the token is valid
+          let isValid = false;
+          if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0) {
+            isValid = await isValidPassword(
+              alias.tokens,
+              decrypt(session.user.password)
+            );
+          }
+
+          if (!isValid) {
+            throw error;
+          }
+
+          error.isCodeBug = true;
+          error.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${error.message}`;
+
+          // check if file path was <= initial db size
+          try {
+            const stats = await fs.promises.stat(error.dbFilePath);
+            if (!stats.isFile() || stats.size > config.INITIAL_DB_SIZE) {
+              throw error;
+            }
+
+            error.stats = stats;
+          } catch (err) {
+            logger.debug(err);
+            return;
+          }
+
+          //
+          // remove db file and all related files
+          //
+          const dirName = path.dirname(error.dbFilePath);
+          const ext = path.extname(error.dbFilePath);
+          const basename = path.basename(error.dbFilePath, ext);
+
+          await fs.promises.rm(error.dbFilePath, {
+            force: true,
+            recursive: true
+          });
+
+          for (const affix of AFFIXES) {
+            const affixFilePath = path.join(
+              dirName,
+              `${basename}${affix}${ext}`
+            );
+            try {
+              // eslint-disable-next-line no-await-in-loop
+              await fs.promises.rm(affixFilePath, {
+                force: true,
+                recursive: true
+              });
+            } catch (err) {
+              if (err.code !== 'ENOENT') {
+                err.isCodeBug = true;
+                logger.fatal(err);
+              }
+            }
+          }
+
+          // email admins of the renaming
+          email({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
+            },
+            locals: {
+              message: `<p>${
+                error.dbFilePath
+              }</p><hr /><pre><code>${JSON.stringify(
+                error.stats,
+                null,
+                2
+              )}</code></pre><pre><code>${JSON.stringify(
+                parseErr(error),
+                null,
+                2
+              )}</code></pre>`
+            }
+          })
+            .then()
+            .catch((err) => logger.fatal(err));
+
+          // return here so we can retry and it will re-create database
+          return;
+        } catch (err) {
+          // this should email admins via `isCodeBug` setting to `true`
+          err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${err.message}`;
+          err.isCodeBug = true;
+          err.original_error = parseErr(error);
+          logger.fatal(err, { session });
+        }
+      }
+
+      throw error;
     }
-  );
+  });
 }
 
 module.exports = retryGetDatabase;

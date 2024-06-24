@@ -22,26 +22,26 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onStatus(path, session, fn) {
   this.logger.debug('STATUS', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'status',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'status',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'STATUS');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -56,16 +56,15 @@ async function onStatus(path, session, fn) {
         }
       );
 
-    // TODO: parallel
-
-    const messages = await Messages.countDocuments(this, session, {
-      mailbox: mailbox._id
-    });
-
-    const unseen = await Messages.countDocuments(this, session, {
-      mailbox: mailbox._id,
-      unseen: true
-    });
+    const [messages, unseen] = await Promise.all([
+      Messages.countDocuments(this, session, {
+        mailbox: mailbox._id
+      }),
+      Messages.countDocuments(this, session, {
+        mailbox: mailbox._id,
+        unseen: true
+      })
+    ]);
 
     fn(null, {
       messages,
@@ -81,7 +80,7 @@ async function onStatus(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

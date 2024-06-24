@@ -79,13 +79,13 @@ const createPassword = require('./create-password');
 const Indexer = require('./indexer');
 const getQueryResponse = require('./get-query-response');
 const parsePayload = require('./parse-payload');
-const wspServer = require('./wsp-server');
 const getFingerprint = require('./get-fingerprint');
 const zxcvbn = require('./zxcvbn');
 const createMtaStsCache = require('./create-mta-sts-cache');
 const encryptMessage = require('./encrypt-message');
 const getKeyInfo = require('./get-key-info');
 const isMessageEncrypted = require('./is-message-encrypted');
+const updateStorageUsed = require('./update-storage-used');
 
 module.exports = {
   decrypt,
@@ -166,11 +166,11 @@ module.exports = {
   Indexer,
   getQueryResponse,
   parsePayload,
-  wspServer,
   getFingerprint,
   zxcvbn,
   createMtaStsCache,
   encryptMessage,
   getKeyInfo,
-  isMessageEncrypted
+  isMessageEncrypted,
+  updateStorageUsed
 };

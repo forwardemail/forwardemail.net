@@ -5,7 +5,8 @@
 
 const isSANB = require('is-string-and-not-blank');
 const revHash = require('rev-hash');
-const safeStringify = require('fast-safe-stringify');
+
+const { encoder } = require('./encoder-decoder');
 
 //
 // generate a fingerprint for the email (returns a short md5 hash)
@@ -51,10 +52,10 @@ function getFingerprint(session, headers, body, useSender = true) {
   if (!hasHeader && body) arr.push(body);
 
   if (useSender && sender) {
-    return [revHash(sender), revHash(safeStringify(arr))].join(':');
+    return [revHash(sender), revHash(encoder.pack(arr))].join(':');
   }
 
-  return revHash(safeStringify(arr));
+  return revHash(encoder.pack(arr));
 }
 
 module.exports = getFingerprint;

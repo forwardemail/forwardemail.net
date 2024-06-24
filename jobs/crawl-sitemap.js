@@ -246,18 +246,19 @@ graceful.listen();
     const sitemap = `${config.urls.web}/sitemap.xml`;
 
     // google
-    try {
-      const { body } = await retryRequest(
-        `https://www.google.com/ping?sitemap=${sitemap}`,
-        {
-          method: 'POST'
-        }
-      );
-      await body.text();
-      logger.debug('submitted sitemap to google');
-    } catch (err) {
-      await logger.error(err);
-    }
+    // <https://developers.google.com/search/blog/2023/06/sitemaps-lastmod-ping>
+    // try {
+    //   const { body } = await retryRequest(
+    //     `https://www.google.com/ping?sitemap=${sitemap}`,
+    //     {
+    //       method: 'POST'
+    //     }
+    //   );
+    //   await body.text();
+    //   logger.debug('submitted sitemap to google');
+    // } catch (err) {
+    //   await logger.error(err);
+    // }
 
     // yandex
     try {

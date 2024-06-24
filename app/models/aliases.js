@@ -693,15 +693,40 @@ async function getStorageUsed(alias, locale = i18n.config.defaultLocale) {
 
 Aliases.statics.getStorageUsed = getStorageUsed;
 
-Aliases.statics.isOverQuota = async function (alias, size = 0) {
-  const storageUsed = await getStorageUsed.call(this, alias);
+Aliases.statics.isOverQuota = async function (
+  alias,
+  size = 0,
+  client,
+  reset = false
+) {
+  let storageUsed;
+  let maxQuotaPerAlias;
+
+  // check cache
+  if (client && !reset) {
+    try {
+      const cache = await client.get(`alias_quota:${alias.id}`);
+      if (cache) {
+        const json = JSON.parse(cache);
+        if (json.storageUsed && json.maxQuotaPerAlias) {
+          storageUsed = json.storageUsed;
+          maxQuotaPerAlias = json.maxQuotaPerAlias;
+        }
+      }
+    } catch (err) {
+      logger.fatal(err);
+    }
+  }
+
+  if (!storageUsed) storageUsed = await getStorageUsed.call(this, alias);
 
   // TODO: allow users to purchase more storage (tied to their user.storage_quota)
   //       but this is only relative here if the user is an admin of their aliases domain
 
-  const maxQuotaPerAlias = await Domains.getMaxQuota(
-    alias?.domain?._id || alias.domain
-  );
+  if (!maxQuotaPerAlias)
+    maxQuotaPerAlias = await Domains.getMaxQuota(
+      alias?.domain?._id || alias.domain
+    );
 
   // TODO: if user is on team plan then check if any other user is on team plan
   //       and multiply that user count by the max quota (pooling concept for teams)
@@ -716,6 +741,21 @@ Aliases.statics.isOverQuota = async function (alias, size = 0) {
         )}/${prettyBytes(maxQuotaPerAlias)})`
       )
     );
+
+  // cache the values of storageUsed and isOverQuota for 5-10s
+  if (size === 0)
+    client
+      .set(
+        `alias_quota:${alias.id}`,
+        JSON.stringify({
+          storageUsed,
+          maxQuotaPerAlias
+        }),
+        'PX',
+        10000
+      )
+      .then()
+      .catch((err) => logger.fatal(err));
 
   return { storageUsed, isOverQuota };
 };

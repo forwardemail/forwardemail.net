@@ -2198,14 +2198,21 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         }
       },
       {
+        $project: {
+          _id: 0,
+          storage_used: 1
+        }
+      },
+      {
         $group: {
-          _id: '',
+          _id: null,
           storage_used: {
             $sum: '$storage_used'
           }
         }
       }
     ]);
+
     // Results [ { _id: '', storage_used: 91360 } ]
     if (
       results.length !== 1 ||

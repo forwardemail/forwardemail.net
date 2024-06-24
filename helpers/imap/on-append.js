@@ -18,7 +18,6 @@ const { Buffer } = require('node:buffer');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const ms = require('ms');
 const parseErr = require('parse-err');
 const splitLines = require('split-lines');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
@@ -37,6 +36,7 @@ const config = require('#config');
 const encryptMessage = require('#helpers/encrypt-message');
 const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const { formatResponse } = IMAPConnection.prototype;
@@ -52,7 +52,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
   let maildata;
   let mimeTreeData;
 
-  try {
+  if (this.wsp) {
     // do not allow messages larger than 64 MB
     if (
       raw &&
@@ -62,50 +62,56 @@ async function onAppend(path, flags, date, raw, session, fn) {
       throw new IMAPError(
         i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
       );
+    try {
+      const [bool, response, message] = await this.wsp.request({
+        action: 'append',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path,
+        flags,
+        date,
+        raw
+      });
 
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const [bool, response, writeStream] = await this.wsp.request({
-          action: 'append',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path,
-          flags,
-          date,
-          raw
-        });
-
-        if (Array.isArray(writeStream)) {
-          for (const write of writeStream) {
-            if (Array.isArray(write)) {
-              session.writeStream.write(session.formatResponse(...write));
-            } else {
-              session.writeStream.write(write);
-            }
-          }
-        }
-
-        fn(null, bool, response);
-      } catch (err) {
-        fn(err);
+      if (
+        session.selected &&
+        session.selected.mailbox &&
+        session.selected.mailbox.toString() === message.mailbox.toString()
+      ) {
+        session.writeStream.write(
+          formatResponse.call(session, 'EXISTS', message.uid)
+        );
       }
 
-      return;
+      fn(null, bool, response);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'APPEND');
 
-    const writeStream = [];
-
+    //
+    // NOTE: without caching this could take 100ms+ to run
+    //       (and if you're appending/migrating thousands of messages in)
+    //       (then it'd be 100xY, e.g. 10000 messages = 16 minutes)
+    //
     // check if over quota
-    const { storageUsed, isOverQuota } = await Aliases.isOverQuota({
-      id: session.user.alias_id,
-      domain: session.user.domain_id,
-      locale: session.user.locale
-    });
+    const { storageUsed, isOverQuota } = await Aliases.isOverQuota(
+      {
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      },
+      0,
+      this.client
+    );
     if (isOverQuota)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
@@ -312,14 +318,28 @@ async function onAppend(path, flags, date, raw, session, fn) {
       const response = {
         uidValidity: mailbox.uidValidity,
         uid: existingMessage.uid,
-        id: existingMessage.id,
+        id: existingMessage._id,
         mailbox: mailbox._id,
         mailboxPath: mailbox.path,
         size: existingMessage.size,
         status: 'new' // TODO: should this be "existing"
       };
+
       this.logger.debug('command response', { response });
-      fn(null, true, response, writeStream);
+
+      await this.server.notifier.addEntries(this, session, mailbox._id, {
+        ignore:
+          session?.selected?.mailbox &&
+          session.selected.mailbox.toString() ===
+            existingMessage.mailbox.toString(),
+        command: 'EXISTS',
+        uid: existingMessage.uid,
+        mailbox: mailbox._id,
+        message: existingMessage._id
+      });
+      this.server.notifier.fire(session.user.alias_id);
+
+      fn(null, true, response);
       return;
     }
 
@@ -391,6 +411,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //
     const retention =
       typeof mailbox.retention === 'number' ? mailbox.retention : 0;
+
     const data = {
       fingerprint,
       mailbox: mailbox._id,
@@ -480,7 +501,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // store the message
     const message = await Messages.create(data);
-
     this.logger.debug('message created', {
       message,
       path,
@@ -489,50 +509,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session
     });
 
-    // TODO: we could probably remove this or make it happen after
     // update storage
     try {
-      const size = await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id
-      });
-      this.logger.debug('size updated', size);
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
-    }
-
-    let ignore = false;
-    if (
-      session.selected &&
-      session.selected.mailbox &&
-      session.selected.mailbox.toString() === mailbox._id.toString()
-    ) {
-      ignore = session.id;
-      const payload = formatResponse.call(session, 'EXISTS', message.uid);
-      if (this?.constructor?.name === 'IMAP') {
-        session.writeStream.write(payload);
-      } else {
-        writeStream.push(payload);
-      }
-    }
-
-    try {
-      await this.server.notifier.addEntries(this, session, mailbox, {
-        ignore,
-        command: 'EXISTS',
-        uid: message.uid,
-        mailbox: mailbox._id,
-        message: message._id,
-        thread: message.thread,
-        modseq: message.modseq,
-        unseen: message.unseen,
-        idate: message.idate,
-        junk: message.junk
-      });
-      this.server.notifier.fire(session.user.alias_id);
-    } catch (err) {
-      this.logger.fatal(err, { path, flags, date, session });
+      this.logger.fatal(err, { message, path, flags, date, session });
     }
 
     const response = {
@@ -540,13 +521,25 @@ async function onAppend(path, flags, date, raw, session, fn) {
       uid: message.uid,
       id,
       mailbox: mailbox._id,
+      mailboxPath: mailbox.path,
       size,
       status: 'new'
     };
 
     this.logger.debug('command response', { response });
 
-    fn(null, true, response, writeStream);
+    await this.server.notifier.addEntries(this, session, mailbox._id, {
+      ignore:
+        session?.selected?.mailbox &&
+        session.selected.mailbox.toString() === message.mailbox.toString(),
+      command: 'EXISTS',
+      uid: message.uid,
+      mailbox: mailbox._id,
+      message: message._id
+    });
+    this.server.notifier.fire(session.user.alias_id);
+
+    fn(null, true, response);
   } catch (err) {
     // delete attachments if we need to cleanup
     const attachmentIds =
@@ -588,7 +581,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

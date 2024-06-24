@@ -729,195 +729,223 @@ async function processEmail({ email, port = 25, resolver, client }) {
       });
     }
 
-    const results = await pMap(
-      addresses,
-      // eslint-disable-next-line complexity
-      async (address) => {
-        const to = [address];
-        const target = address.split('@')[1];
-        //
-        // check if exists for domain being blocked
-        // (ensures real-time blocking working)
-        // or if the domain no longer has smtp access
-        //
-        const isDomainBlocked = await Domains.exists({
-          $or: [
-            {
-              _id: domain._id,
-              has_smtp: false
-            },
-            {
-              _id: domain._id,
-              is_smtp_suspended: true
-            }
-          ]
-        });
-
-        if (isDomainBlocked)
-          throw Boom.badRequest(i18n.translateError('DOMAIN_SUSPENDED'));
-
-        try {
+    let results = [];
+    if (addresses.length > 0)
+      results = await pMap(
+        addresses,
+        // eslint-disable-next-line complexity
+        async (address) => {
+          const to = [address];
+          const target = address.split('@')[1];
           //
-          // NOTE: check `target` against recently blocked domains and if so then retry later
-          //       (this gives postmasters like Outlook and Gmail a back-off period)
-          //       (and gives opportunity for another server to try sending it)
+          // check if exists for domain being blocked
+          // (ensures real-time blocking working)
+          // or if the domain no longer has smtp access
           //
-          const isRecentlyBlocked = await Emails.exists({
-            updated_at: {
-              $gte: dayjs().subtract(1, 'hour').toDate(),
-              $lte: new Date()
-            },
-            has_blocked_hashes: true,
-            blocked_hashes: {
-              $in: getBlockedHashes(IP_ADDRESS)
-            },
-            rejectedErrors: {
-              $elemMatch: {
-                date: {
-                  $gte: dayjs().subtract(1, 'hour').toDate(),
-                  $lte: new Date()
-                },
-                target,
-                'bounceInfo.category': 'blocklist',
-                'mx.localAddress': IP_ADDRESS
+          const isDomainBlocked = await Domains.exists({
+            $or: [
+              {
+                _id: domain._id,
+                has_smtp: false
+              },
+              {
+                _id: domain._id,
+                is_smtp_suspended: true
               }
-            }
+            ]
           });
 
-          if (isRecentlyBlocked) {
-            const err = Boom.badRequest(
-              i18n.translateError(
-                'RECENTLY_BLOCKED',
-                i18n.config.defaultLocale,
-                target
-              )
-            );
-            err.is_recently_blocked = true;
-            throw err;
-          }
+          if (isDomainBlocked)
+            throw Boom.badRequest(i18n.translateError('DOMAIN_SUSPENDED'));
 
-          const options = {
-            session: createSession(email),
-            cache,
-            target,
-            port,
-            envelope: {
-              from: envelope.from,
-              to
-            },
-            raw,
-            localAddress: IP_ADDRESS,
-            localHostname: HOSTNAME,
-            resolver,
-            client
-          };
+          try {
+            //
+            // NOTE: check `target` against recently blocked domains and if so then retry later
+            //       (this gives postmasters like Outlook and Gmail a back-off period)
+            //       (and gives opportunity for another server to try sending it)
+            //
+            const isRecentlyBlocked = await Emails.exists({
+              updated_at: {
+                $gte: dayjs().subtract(1, 'hour').toDate(),
+                $lte: new Date()
+              },
+              has_blocked_hashes: true,
+              blocked_hashes: {
+                $in: getBlockedHashes(IP_ADDRESS)
+              },
+              rejectedErrors: {
+                $elemMatch: {
+                  date: {
+                    $gte: dayjs().subtract(1, 'hour').toDate(),
+                    $lte: new Date()
+                  },
+                  target,
+                  'bounceInfo.category': 'blocklist',
+                  'mx.localAddress': IP_ADDRESS
+                }
+              }
+            });
 
-          //
-          // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
-          //       (e.g. when it arrives at the destination mail server, it is already encrypted)
-          //
-          let pgp = false;
-          // TODO: cache the responses below
-          if (!isEncrypted) {
-            try {
-              //
-              // NOTE: this uses `fetch` which is OK because
-              //       as of Node v18 it uses Undici fetch under the hood
-              //
-              // <https://github.com/nodejs/undici/issues/421#issuecomment-1491441971>
-              // <https://keys.openpgp.org/about/api#rate-limiting>
-              //
-              const wkd = new WKD();
+            if (isRecentlyBlocked) {
+              const err = Boom.badRequest(
+                i18n.translateError(
+                  'RECENTLY_BLOCKED',
+                  i18n.config.defaultLocale,
+                  target
+                )
+              );
+              err.is_recently_blocked = true;
+              throw err;
+            }
 
-              wkd._fetch = (url) => {
-                return fetch(url, {
-                  signal: AbortSignal.timeout(
-                    config.env === 'test' ? ms('2s') : ms('30s')
-                  ),
-                  dispatcher: new Agent({
-                    headersTimeout:
-                      config.env === 'test' ? ms('2s') : ms('30s'),
-                    connectTimeout:
-                      config.env === 'test' ? ms('2s') : ms('30s'),
-                    bodyTimeout: config.env === 'test' ? ms('2s') : ms('30s'),
-                    connect: {
-                      lookup(hostname, options, fn) {
-                        resolver
-                          .lookup(hostname, options)
-                          .then((result) => {
-                            fn(null, result?.address, result?.family);
-                          })
-                          .catch((err) => fn(err));
+            const options = {
+              session: createSession(email),
+              cache,
+              target,
+              port,
+              envelope: {
+                from: envelope.from,
+                to
+              },
+              raw,
+              localAddress: IP_ADDRESS,
+              localHostname: HOSTNAME,
+              resolver,
+              client
+            };
+
+            //
+            // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
+            //       (e.g. when it arrives at the destination mail server, it is already encrypted)
+            //
+            let pgp = false;
+            // TODO: cache the responses below
+            if (!isEncrypted) {
+              try {
+                //
+                // NOTE: this uses `fetch` which is OK because
+                //       as of Node v18 it uses Undici fetch under the hood
+                //
+                // <https://github.com/nodejs/undici/issues/421#issuecomment-1491441971>
+                // <https://keys.openpgp.org/about/api#rate-limiting>
+                //
+                const wkd = new WKD();
+
+                wkd._fetch = (url) => {
+                  return fetch(url, {
+                    signal: AbortSignal.timeout(
+                      config.env === 'test' ? ms('2s') : ms('30s')
+                    ),
+                    dispatcher: new Agent({
+                      headersTimeout:
+                        config.env === 'test' ? ms('2s') : ms('30s'),
+                      connectTimeout:
+                        config.env === 'test' ? ms('2s') : ms('30s'),
+                      bodyTimeout: config.env === 'test' ? ms('2s') : ms('30s'),
+                      connect: {
+                        lookup(hostname, options, fn) {
+                          resolver
+                            .lookup(hostname, options)
+                            .then((result) => {
+                              fn(null, result?.address, result?.family);
+                            })
+                            .catch((err) => fn(err));
+                        }
                       }
-                    }
-                  })
-                });
-              };
-
-              logger.info('address', { address });
-
-              // TODO: pending PR in wkd-client package
-              // <https://github.com/openpgpjs/wkd-client/issues/3>
-              // <https://github.com/openpgpjs/wkd-client/pull/4>
-              const binaryKey = await wkd.lookup({
-                email: address
-              });
-
-              // TODO: this is a temporary fix until the PR above is merged
-              // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
-              const str = new TextDecoder().decode(binaryKey);
-              if (str && isHTML(str))
-                throw new Error('Invalid WKD lookup HTML result');
-
-              logger.info('binaryKey', { binaryKey });
-
-              const publicKey = await readKey({
-                binaryKey
-              });
-
-              logger.info('publicKey', { publicKey });
-
-              if (publicKey) {
-                try {
-                  const encryptedUnsignedMessage = await encryptMessage(
-                    publicKey,
-                    unsigned,
-                    false
-                  );
-                  const signResult = await dkimSign(encryptedUnsignedMessage, {
-                    canonicalization: 'relaxed/relaxed',
-                    algorithm: 'rsa-sha256',
-                    signTime: new Date(),
-                    signatureData: [
-                      {
-                        signingDomain: domain.name,
-                        selector: domain.dkim_key_selector,
-                        privateKey: decrypt(domain.dkim_private_key),
-                        algorithm: 'rsa-sha256',
-                        canonicalization: 'relaxed/relaxed'
-                      }
-                    ]
+                    })
                   });
+                };
 
-                  if (signResult.errors.length > 0) {
-                    const err = combineErrors(
-                      signResult.errors.map((error) => error.err)
+                logger.info('address', { address });
+
+                // TODO: pending PR in wkd-client package
+                // <https://github.com/openpgpjs/wkd-client/issues/3>
+                // <https://github.com/openpgpjs/wkd-client/pull/4>
+                const binaryKey = await wkd.lookup({
+                  email: address
+                });
+
+                // TODO: this is a temporary fix until the PR above is merged
+                // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
+                const str = new TextDecoder().decode(binaryKey);
+                if (str && isHTML(str))
+                  throw new Error('Invalid WKD lookup HTML result');
+
+                logger.info('binaryKey', { binaryKey });
+
+                const publicKey = await readKey({
+                  binaryKey
+                });
+
+                logger.info('publicKey', { publicKey });
+
+                if (publicKey) {
+                  try {
+                    const encryptedUnsignedMessage = await encryptMessage(
+                      publicKey,
+                      unsigned,
+                      false
                     );
-                    // we may want to remove cyclical reference
-                    // for (const error of signResult.errors) {
-                    //   delete error.err;
-                    // }
-                    err.signResult = signResult;
-                    throw err;
-                  }
+                    const signResult = await dkimSign(
+                      encryptedUnsignedMessage,
+                      {
+                        canonicalization: 'relaxed/relaxed',
+                        algorithm: 'rsa-sha256',
+                        signTime: new Date(),
+                        signatureData: [
+                          {
+                            signingDomain: domain.name,
+                            selector: domain.dkim_key_selector,
+                            privateKey: decrypt(domain.dkim_private_key),
+                            algorithm: 'rsa-sha256',
+                            canonicalization: 'relaxed/relaxed'
+                          }
+                        ]
+                      }
+                    );
 
-                  const signatures = Buffer.from(signResult.signatures, 'utf8');
-                  options.raw = Buffer.concat(
-                    [signatures, encryptedUnsignedMessage],
-                    signatures.length + encryptedUnsignedMessage.length
-                  );
-                  pgp = true;
-                } catch (err) {
+                    if (signResult.errors.length > 0) {
+                      const err = combineErrors(
+                        signResult.errors.map((error) => error.err)
+                      );
+                      // we may want to remove cyclical reference
+                      // for (const error of signResult.errors) {
+                      //   delete error.err;
+                      // }
+                      err.signResult = signResult;
+                      throw err;
+                    }
+
+                    const signatures = Buffer.from(
+                      signResult.signatures,
+                      'utf8'
+                    );
+                    options.raw = Buffer.concat(
+                      [signatures, encryptedUnsignedMessage],
+                      signatures.length + encryptedUnsignedMessage.length
+                    );
+                    pgp = true;
+                  } catch (err) {
+                    logger.fatal(err, {
+                      user: email.user,
+                      email: email._id,
+                      domains: [email.domain],
+                      session: createSession(email)
+                    });
+                  }
+                }
+              } catch (err) {
+                if (
+                  err.message === 'fetch failed' ||
+                  err.message.includes('Direct WKD lookup failed')
+                ) {
+                  logger.debug(err, {
+                    user: email.user,
+                    email: email._id,
+                    domains: [email.domain],
+                    session: createSession(email)
+                  });
+                } else {
                   logger.fatal(err, {
                     user: email.user,
                     email: email._id,
@@ -925,27 +953,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                     session: createSession(email)
                   });
                 }
-              }
-            } catch (err) {
-              if (
-                err.message === 'fetch failed' ||
-                err.message.includes('Direct WKD lookup failed')
-              ) {
-                logger.debug(err, {
-                  user: email.user,
-                  email: email._id,
-                  domains: [email.domain],
-                  session: createSession(email)
-                });
-              } else {
-                logger.fatal(err, {
-                  user: email.user,
-                  email: email._id,
-                  domains: [email.domain],
-                  session: createSession(email)
-                });
-              }
-              /*
+                /*
               // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
               if (
                 !err.message.includes('NotFound') &&
@@ -961,128 +969,128 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   session: createSession(email)
                 });
               */
-            }
-          }
-
-          logger.debug('sending email', { options, pgp });
-          const info = await sendEmail(options);
-          logger.debug('sent email', { info, pgp });
-          info.pgp = pgp;
-          return info;
-        } catch (err) {
-          // log the error (dups will be removed)
-          logger.error(err, {
-            user: email.user,
-            email: email._id,
-            domains: [email.domain],
-            session: createSession(email)
-          });
-
-          //
-          // if the SMTP response was from trusted root host and it was rejected for spam/virus
-          // then denylist the sender (probably a low-reputation domain name spammer)
-          //
-          if (
-            user.group !== 'admin' &&
-            domain.name !== env.WEB_HOST &&
-            err.truthSource &&
-            typeof err.bounceInfo === 'object' &&
-            typeof err.bounceInfo.category === 'string' &&
-            ['virus', 'spam'].includes(err.bounceInfo.category)
-          ) {
-            // send an email to all admins of the domain
-            const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-            try {
-              await emailHelper({
-                // TODO: smtp-spam-detected
-                template: 'smtp-suspended',
-                message: { to: obj.to, bcc: config.email.message.from },
-                locals: {
-                  domain:
-                    typeof domain.toObject === 'function'
-                      ? domain.toObject()
-                      : domain,
-                  locale: obj.locale,
-                  category: err.bounceInfo.category,
-                  responseCode: err.responseCode,
-                  response: err.response,
-                  truthSource: err.truthSource,
-                  email:
-                    typeof email.toObject === 'function'
-                      ? email.toObject()
-                      : email
-                }
-              });
-            } catch (err) {
-              logger.fatal(err, meta);
+              }
             }
 
-            // if any of the domain admins are admins then don't ban
-            const adminExists = await Users.exists({
-              _id: {
-                $in: domain.members
-                  .filter((m) => m.group === 'admin')
-                  .map((m) =>
-                    typeof m.user === 'object' &&
-                    typeof m?.user?._id === 'object'
-                      ? m.user._id
-                      : m.user
-                  )
-              },
-              group: 'admin'
+            logger.debug('sending email', { options, pgp });
+            const info = await sendEmail(options);
+            logger.debug('sent email', { info, pgp });
+            info.pgp = pgp;
+            return info;
+          } catch (err) {
+            // log the error (dups will be removed)
+            logger.error(err, {
+              user: email.user,
+              email: email._id,
+              domains: [email.domain],
+              session: createSession(email)
             });
 
-            if (!adminExists) {
-              // store when we sent this email and mark user as suspended
-              await Domains.findByIdAndUpdate(domain._id, {
-                $set: {
-                  smtp_suspended_sent_at: new Date(),
-                  is_smtp_suspended: true
-                }
+            //
+            // if the SMTP response was from trusted root host and it was rejected for spam/virus
+            // then denylist the sender (probably a low-reputation domain name spammer)
+            //
+            if (
+              user.group !== 'admin' &&
+              domain.name !== env.WEB_HOST &&
+              err.truthSource &&
+              typeof err.bounceInfo === 'object' &&
+              typeof err.bounceInfo.category === 'string' &&
+              ['virus', 'spam'].includes(err.bounceInfo.category)
+            ) {
+              // send an email to all admins of the domain
+              const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+              try {
+                await emailHelper({
+                  // TODO: smtp-spam-detected
+                  template: 'smtp-suspended',
+                  message: { to: obj.to, bcc: config.email.message.from },
+                  locals: {
+                    domain:
+                      typeof domain.toObject === 'function'
+                        ? domain.toObject()
+                        : domain,
+                    locale: obj.locale,
+                    category: err.bounceInfo.category,
+                    responseCode: err.responseCode,
+                    response: err.response,
+                    truthSource: err.truthSource,
+                    email:
+                      typeof email.toObject === 'function'
+                        ? email.toObject()
+                        : email
+                  }
+                });
+              } catch (err) {
+                logger.fatal(err, meta);
+              }
+
+              // if any of the domain admins are admins then don't ban
+              const adminExists = await Users.exists({
+                _id: {
+                  $in: domain.members
+                    .filter((m) => m.group === 'admin')
+                    .map((m) =>
+                      typeof m.user === 'object' &&
+                      typeof m?.user?._id === 'object'
+                        ? m.user._id
+                        : m.user
+                    )
+                },
+                group: 'admin'
               });
 
-              // send sms/email alert to admins
-              const _err = new TypeError(
-                `${domain.name} (ID ${domain.id}) was suspended from SMTP access per email ID ${email.id}`
-              );
-              _err.err = err; // reference original error
-              logger.error(_err, meta);
+              if (!adminExists) {
+                // store when we sent this email and mark user as suspended
+                await Domains.findByIdAndUpdate(domain._id, {
+                  $set: {
+                    smtp_suspended_sent_at: new Date(),
+                    is_smtp_suspended: true
+                  }
+                });
 
-              // delete all existing tokens for the alias
-              // (this way further retries will fail with incorrect password)
-              // await Aliases.findByIdAndUpdate(alias._id, {
-              //   $set: {
-              //     tokens: []
-              //   }
-              // });
+                // send sms/email alert to admins
+                const _err = new TypeError(
+                  `${domain.name} (ID ${domain.id}) was suspended from SMTP access per email ID ${email.id}`
+                );
+                _err.err = err; // reference original error
+                logger.error(_err, meta);
+
+                // delete all existing tokens for the alias
+                // (this way further retries will fail with incorrect password)
+                // await Aliases.findByIdAndUpdate(alias._id, {
+                //   $set: {
+                //     tokens: []
+                //   }
+                // });
+              }
+
+              //
+              // NOTE: we do `forbidden` here instead of `badRequest`
+              //       so that the email will permanently fail instead of retrying
+              //
+              const error = Boom.forbidden(
+                i18n.translateError('DOMAIN_SUSPENDED')
+              );
+              // preserve original err
+              error.error = err;
+              throw error;
             }
 
-            //
-            // NOTE: we do `forbidden` here instead of `badRequest`
-            //       so that the email will permanently fail instead of retrying
-            //
-            const error = Boom.forbidden(
-              i18n.translateError('DOMAIN_SUSPENDED')
-            );
-            // preserve original err
-            error.error = err;
-            throw error;
+            return {
+              accepted: [],
+              rejected: to,
+              rejectedErrors: to.map((recipient) => {
+                const error = parseErr(err);
+                error.recipient = recipient;
+                error.date = new Date();
+                return error;
+              })
+            };
           }
-
-          return {
-            accepted: [],
-            rejected: to,
-            rejectedErrors: to.map((recipient) => {
-              const error = parseErr(err);
-              error.recipient = recipient;
-              error.date = new Date();
-              return error;
-            })
-          };
-        }
-      },
-      { concurrency: config.concurrency }
-    );
+        },
+        { concurrency: config.concurrency }
+      );
 
     // - [ ] TODO: credits get deducted regardless (and do not roll over to next period)
     //       (if out of credits then make an automated job email users courtesy)

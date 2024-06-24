@@ -59,8 +59,7 @@ function createTangerine(
       // speeds up tests x2 if any DNS errors detected
       timeout: env.NODE_ENV === 'production' ? 10000 : 5000,
       tries: env.NODE_ENV === 'production' ? 4 : 2,
-      // use Cloudflare first then Google as a fallback in round-robin approach
-      servers: new Set(['1.1.1.1', '1.0.0.1', '8.8.8.8', '8.8.4.4']),
+      servers: new Set(['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1']),
       setCacheArgs(key, result) {
         return ['PX', Math.round(result.ttl * 1000)];
       }

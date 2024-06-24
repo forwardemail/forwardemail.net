@@ -14,19 +14,20 @@
  */
 
 const mongoose = require('mongoose');
-const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const { boolean } = require('boolean');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const { convertResult } = require('#helpers/mongoose-to-sqlite');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
+const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 
-const BULK_BATCH_SIZE = 150;
+// const BULK_BATCH_SIZE = 150;
 
 const builder = new Builder();
 
@@ -34,54 +35,43 @@ const builder = new Builder();
 async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 
-  let lock;
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const [bool, response, writeStream] = await this.wsp.request({
-          action: 'move',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress,
-            selected: session.selected
-          },
-          mailboxId,
-          update
-        });
-        if (Array.isArray(writeStream)) {
-          for (const write of writeStream) {
-            if (Array.isArray(write)) {
-              session.writeStream.write(session.formatResponse(...write));
-            } else {
-              session.writeStream.write(write);
-            }
+  if (this.wsp) {
+    try {
+      const [bool, response, writeStream] = await this.wsp.request({
+        action: 'move',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress,
+          selected: session.selected
+        },
+        mailboxId,
+        update
+      });
+
+      if (Array.isArray(writeStream)) {
+        for (const write of writeStream) {
+          if (Array.isArray(write)) {
+            session.writeStream.write(session.formatResponse(...write));
+          } else {
+            session.writeStream.write(write);
           }
         }
-
-        fn(null, bool, response);
-      } catch (err) {
-        fn(err);
       }
 
-      return;
+      fn(null, bool, response);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  let lock;
+  try {
     await this.refreshSession(session, 'MOVE');
 
-    // TODO: parallel
-
-    const mailbox = await Mailboxes.findOne(this, session, {
-      _id: mailboxId
-    });
-
-    if (!mailbox)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          imapResponse: 'TRYCREATE'
-        }
-      );
+    lock = await acquireLock(this, session.db);
 
     const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
@@ -95,291 +85,155 @@ async function onMove(mailboxId, update, session, fn) {
         }
       );
 
-    lock = await acquireLock(this, session.db);
+    // increment modification index to indicate a change occurred on old mailbox
+    const mailbox = await Mailboxes.findOneAndUpdate(
+      this,
+      session,
+      {
+        _id: mailboxId
+      },
+      {
+        $inc: {
+          modifyIndex: 1
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    );
+
+    if (!mailbox)
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'TRYCREATE'
+        }
+      );
 
     let err;
-
-    let existEntries = [];
-    let expungeEntries = [];
 
     const sourceUid = [];
     const destinationUid = [];
     const writeStream = [];
 
+    const expungeEntries = [];
+    const existEntries = [];
+
     try {
-      // increment modification index to indicate a change occurred
-      const updatedMailbox = await Mailboxes.findOneAndUpdate(
-        this,
-        session,
-        {
-          _id: mailbox._id
-        },
-        {
-          $inc: {
-            modifyIndex: 1
-          }
-        },
-        {
-          lock,
-          returnDocument: 'after',
-          projection: {
-            _id: true,
-            uidNext: true,
-            modifyIndex: true
-          }
-        }
-      );
+      const condition = {
+        mailbox: mailbox._id.toString()
+      };
 
-      //
-      // NOTE: wildduck does not check that the result exists nor does it pass NONEXISTENT on this edge case
-      // (e.g. `throw new IMAPError('...', { imapResponse: 'NONEXISTENT' });`)
-      //
-      if (!updatedMailbox)
-        throw new IMAPError(
-          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
-        );
-
-      const newModseq = updatedMailbox.modifyIndex || 1;
+      // <https://github.com/nodemailer/wildduck/issues/698>
+      if (update.messages.length > 0)
+        condition.uid = tools.checkRangeQuery(update.messages);
 
       const sql = builder.build({
         type: 'select',
         table: 'Messages',
-        condition: {
-          mailbox: mailbox._id.toString(),
-          uid: tools.checkRangeQuery(update.messages)
-        },
+        condition,
         // sort required for IMAP UIDPLUS
         sort: 'uid'
       });
 
-      let messages;
+      const ops = [];
 
-      if (session.db.wsp) {
-        messages = await this.wsp.request({
-          action: 'stmt',
-          session: { user: session.user },
-          lock,
-          stmt: [
-            ['prepare', sql.query],
-            ['all', sql.values]
-          ]
-        });
-      } else {
-        messages = session.db.prepare(sql.query).all(sql.values);
-      }
-
-      for (const result of messages) {
-        // eslint-disable-next-line no-await-in-loop
-        let message = await convertResult(Messages, result);
-
-        this.logger.debug('fetched message', {
-          result,
-          message,
-          mailboxId,
-          update,
-          session
-        });
-
-        // store reference to existing message data
-        const existingMessageId = message._id;
-        const existingMailboxId = message.mailbox;
-        const existingMessageUid = message.uid;
-
+      const { modifyIndex, specialUse, retention, _id } = targetMailbox;
+      let { uidNext } = targetMailbox;
+      const stmt = session.db.prepare(sql.query);
+      for (const m of stmt.iterate(sql.values)) {
         // add to source uid array
-        sourceUid.push(existingMessageUid);
+        sourceUid.push(m.uid);
+        destinationUid.push(uidNext);
 
-        // eslint-disable-next-line no-await-in-loop
-        const updatedTargetMailbox = await Mailboxes.findOneAndUpdate(
-          this,
-          session,
-          {
-            _id: targetMailbox._id,
-            path: update.destination
-          },
-          {
-            $inc: {
-              uidNext: 1
-            }
-          },
-          {
-            lock,
-            projection: {
-              uidNext: true,
-              modifyIndex: true
-            },
-            returnDocument: 'before'
-          }
-        );
-
-        // NOTE: wildduck does not pass NONEXISTENT on this edge case
-        // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/message-handler.js#L942-L944>
-        // (e.g. `throw new IMAPError('...', { imapResponse: 'NONEXISTENT' });`)
-        if (!updatedTargetMailbox)
-          throw new IMAPError(
-            i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale)
-          );
-
-        // push new destination uid
-        destinationUid.push(updatedTargetMailbox.uidNext);
-
-        const { unseen } = message;
+        const flags = JSON.parse(m.flags);
 
         // update message
-        message._id = new mongoose.Types.ObjectId();
-        message.id = message._id.toString();
-        message.mailbox = targetMailbox._id;
-        message.uid = updatedTargetMailbox.uidNext;
-        message.exp =
-          typeof targetMailbox.retention === 'number'
-            ? targetMailbox.retention !== 0
-            : false;
-        message.rdate = new Date(Date.now() + (targetMailbox.retention || 0));
-        message.modseq = updatedTargetMailbox.modifyIndex;
-        message.junk = targetMailbox.specialUse === '\\Junk';
-        message.remoteAddress = session.remoteAddress;
-        message.transaction = 'MOVE';
-        message.searchable = !message.flags.includes('\\Deleted');
+        const exp = typeof retention === 'number' ? retention !== 0 : false;
+        const rdate = new Date(Date.now() + (retention || 0));
 
-        // virtual helper for locking if we lock in advance
-        message.lock = lock;
-
-        // virtual db helper
-        message.instance = this;
-        message.session = session;
-
-        // create new message (in new target mailbox)
-        // eslint-disable-next-line no-await-in-loop
-        message = await Messages.create(message);
-
-        /*
-        let ignore = false;
-        if (
-          session.selected &&
-          session.selected.mailbox &&
-          session.selected.mailbox.toString() === mailbox._id.toString()
-        ) {
-          ignore = session.id;
-          if (this?.constructor?.name === 'IMAP') {
-            session.writeStream.write(
-              session.formatResponse('EXISTS', message.uid)
-            );
-          } else {
-            writeStream.push(['EXISTS', message.uid]);
+        const sql = builder.build({
+          type: 'update',
+          table: 'Messages',
+          condition: {
+            _id: m._id
+          },
+          modifier: {
+            $set: prepareQuery(Messages.mapping, {
+              mailbox: _id,
+              uid: uidNext,
+              exp,
+              rdate,
+              modseq: modifyIndex,
+              junk: specialUse === '\\Junk',
+              remoteAddress: session.remoteAddress,
+              transaction: 'MOVE',
+              searchable: !flags.includes('\\Deleted')
+            })
           }
-        }
-        */
-
-        existEntries.push({
-          ignore: session.id,
-          command: 'EXISTS',
-          uid: message.uid,
-          message: message._id
-          // mailbox: message.mailbox,
-          // TODO: we can remove `thread`, `unseen`, and `idate`
-          //       from all addEntries and from journal db itself
-          // unseen: message.unseen,
-          // thread: message.thread,
-          // modseq: message.modseq,
-          // idate: message.idate,
-          // ...(message.junk ? { junk: true } : {})
         });
 
-        // delete old message
-        // eslint-disable-next-line no-await-in-loop
-        const results = await Messages.deleteOne(
-          this,
-          session,
-          {
-            _id: existingMessageId,
-            mailbox: existingMailboxId,
-            uid: existingMessageUid
-          },
-          { lock }
-        );
+        // NOTE: otherwise we get the error:
+        // > "This database connection is busy executing a query"
+        // session.db.prepare(sql.query).run(sql.values);
+        ops.push([sql.query, sql.values]);
 
-        if (results && results.deletedCount) {
-          if (this?.constructor?.name === 'IMAP') {
-            session.writeStream.write(
-              session.formatResponse('EXPUNGE', sourceUid)
-            );
-            session.writeStream.write(
-              session.formatResponse('EXPUNGE', existingMessageUid)
-            );
-          } else {
-            writeStream.push(
-              ['EXPUNGE', sourceUid],
-              ['EXPUNGE', existingMessageUid]
-            );
-          }
+        // EXPUNGE entries
+        writeStream.push('EXPUNGE', m.uid);
+        expungeEntries.push({
+          ignore: session.id,
+          command: 'EXPUNGE',
+          uid: m.uid,
+          // modseq is needed to avoid updating mailbox entry
+          modseq: mailbox.modifyIndex || 1,
+          unseen: boolean(m.unseen),
+          idate: new Date(m.idate),
+          mailbox: mailbox._id,
+          message: new mongoose.Types.ObjectId(m._id),
+          thread: new mongoose.Types.ObjectId(m.thread)
+        });
 
-          expungeEntries.push({
-            ignore: session.id,
-            command: 'EXPUNGE',
-            uid: existingMessageUid,
-            modseq: newModseq,
-            unseen,
-            idate: message.idate,
-            mailbox: existingMailboxId,
-            message: existingMessageId,
-            thread: message.thread
+        // EXIST entries
+        existEntries.push({
+          command: 'EXISTS',
+          uid: uidNext,
+          unseen: boolean(m.unseen),
+          // TODO: set `modseq` equal to modifyIndex + 1 of target mailbox (?)
+          idate: new Date(m.idate),
+          mailbox: _id,
+          message: new mongoose.Types.ObjectId(m._id),
+          thread: new mongoose.Types.ObjectId(m.thread)
+          // junk
+        });
+
+        // increment uid next by one
+        uidNext++;
+      }
+
+      if (ops.length > 0) {
+        // store on target mailbox the final value of `uidNext`
+        {
+          const sql = builder.build({
+            type: 'update',
+            table: 'Mailboxes',
+            condition: {
+              _id: _id.toString()
+            },
+            modifier: {
+              $set: {
+                uidNext
+              }
+            }
           });
-        } else {
-          this.logger.fatal(new Error('failed to delete old message'), {
-            results,
-            mailboxId,
-            update,
-            session
-          });
+          ops.push([sql.query, sql.values]);
         }
 
-        //
-        // iterate over entries if necessary
-        //
-        let notify = false;
-
-        if (expungeEntries.length >= BULK_BATCH_SIZE) {
-          // expunge messages from old mailbox
-          try {
-            // eslint-disable-next-line no-await-in-loop
-            await this.server.notifier.addEntries(
-              this,
-              session,
-              mailbox,
-              expungeEntries,
-              lock
-            );
-            expungeEntries = [];
-            notify = true;
-          } catch (err) {
-            this.logger.fatal(err, { mailboxId, update, session });
+        // perform db operations
+        session.db.transaction(() => {
+          for (const op of ops) {
+            session.db.prepare(op[0]).run(op[1]);
           }
-        }
-
-        if (existEntries.length >= BULK_BATCH_SIZE) {
-          // add new messages to new mailbox
-          try {
-            // eslint-disable-next-line no-await-in-loop
-            await this.server.notifier.addEntries(
-              this,
-              session,
-              targetMailbox._id,
-              existEntries,
-              lock
-            );
-            existEntries = [];
-            notify = true;
-          } catch (err) {
-            this.logger.fatal(err, { mailboxId, update, session });
-          }
-        }
-
-        if (notify) {
-          try {
-            this.server.notifier.fire(session.user.alias_id);
-          } catch (err) {
-            this.logger.fatal(err, { mailboxId, update, session });
-          }
-        }
+        })();
       }
     } catch (_err) {
       err = _err;
@@ -392,8 +246,6 @@ async function onMove(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    // TODO: do we need this
-    // write any if needed
     if (sourceUid.length > 0 && session?.selected?.uidList) {
       const payload = {
         tag: '*',
@@ -405,64 +257,14 @@ async function onMove(mailboxId, update, session, fn) {
           }
         ]
       };
-      if (this?.constructor?.name === 'IMAP') {
-        session.writeStream.write(payload);
-      } else {
-        writeStream.push(payload);
-      }
-    }
-
-    //
-    // iterate over entries if necessary
-    //
-    if (expungeEntries.length > 0) {
-      // expunge messages from old mailbox
-      try {
-        await this.server.notifier.addEntries(
-          this,
-          session,
-          mailbox,
-          expungeEntries,
-          lock
-        );
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
-    }
-
-    if (existEntries.length > 0) {
-      // add new messages to new mailbox
-      try {
-        await this.server.notifier.addEntries(
-          this,
-          session,
-          targetMailbox,
-          existEntries,
-          lock
-        );
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
-    }
-
-    if (expungeEntries.length > 0 || existEntries.length > 0) {
-      try {
-        this.server.notifier.fire(session.user.alias_id);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
+      writeStream.push(payload);
     }
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id,
-        lock
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // throw error if any
@@ -477,6 +279,24 @@ async function onMove(mailboxId, update, session, fn) {
       target: targetMailbox._id,
       status: 'moved'
     };
+
+    if (sourceUid.length > 0) {
+      // expunge messages from old mailbox
+      await this.server.notifier.addEntries(
+        this,
+        session,
+        mailboxId,
+        expungeEntries
+      );
+      await this.server.notifier.addEntries(
+        this,
+        session,
+        targetMailbox._id,
+        existEntries
+      );
+      this.server.notifier.fire(session.user.alias_id);
+    }
+
     fn(null, true, response, writeStream);
   } catch (err) {
     // release lock
@@ -494,7 +314,7 @@ async function onMove(mailboxId, update, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

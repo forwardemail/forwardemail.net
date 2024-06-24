@@ -152,6 +152,7 @@ class Indexer extends WildDuckIndexer {
               return selector.headers.includes(key);
             })
             .join('\r\n') + '\r\n\r\n';
+
         return headers;
       }
 

@@ -28,7 +28,6 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
 const refreshSession = require('#helpers/refresh-session');
-const wspServer = require('#helpers/wsp-server');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 class SQLite {
@@ -106,7 +105,6 @@ class SQLite {
     });
     this.server = server;
     this.refreshSession = refreshSession.bind(this);
-    this.wsp = wspServer;
 
     function authenticate(request, socket, head, fn) {
       try {

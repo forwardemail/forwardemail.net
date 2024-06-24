@@ -17,28 +17,41 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const { boolean } = require('boolean');
 
-const Attachments = require('#models/attachments');
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
-const ServerShutdownError = require('#helpers/server-shutdown-error');
-const SocketError = require('#helpers/socket-error');
 const i18n = require('#helpers/i18n');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const { convertResult } = require('#helpers/mongoose-to-sqlite');
+const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
-// eslint-disable-next-line max-params, complexity
+//
+// NOTE: this is custom function since `JSON.parse` on the entire
+//       message's `mimeTree` would be incredible slow (1ms+)
+//
+const ATTACHMENT_MAP_STR = ',"attachmentMap":{';
+function getAttachments(mimeTree) {
+  const index = mimeTree.indexOf(ATTACHMENT_MAP_STR);
+  if (index === -1) return [];
+  return Object.values(
+    JSON.parse(
+      `{${mimeTree.slice(index + ATTACHMENT_MAP_STR.length).split('}')[0]}}`
+    )
+  );
+}
+
+// eslint-disable-next-line max-params
 async function onCopy(connection, mailboxId, update, session, fn) {
   this.logger.debug('COPY', { connection, mailboxId, update, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      // start notifying connection of progress
-      let timeout;
+  if (this.wsp) {
+    // start notifying connection of progress
+    let timeout;
+    try {
       (function update() {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -47,36 +60,41 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }, ms('15s'));
       })();
 
-      try {
-        const data = await this.wsp.request({
-          action: 'copy',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          // connection: null,
-          mailboxId,
-          update
-        });
-        clearTimeout(timeout);
-        fn(null, ...data);
-      } catch (err) {
-        clearTimeout(timeout);
-        fn(err);
-      }
-
-      return;
+      const [bool, response] = await this.wsp.request({
+        action: 'copy',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        // connection: null,
+        mailboxId,
+        update
+      });
+      clearTimeout(timeout);
+      fn(null, bool, response);
+    } catch (err) {
+      clearTimeout(timeout);
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'COPY');
 
     // check if over quota
-    const { isOverQuota } = await Aliases.isOverQuota({
-      id: session.user.alias_id,
-      domain: session.user.domain_id,
-      locale: session.user.locale
-    });
+    const { isOverQuota } = await Aliases.isOverQuota(
+      {
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      },
+      0,
+      this.client
+    );
+
     if (isOverQuota)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
@@ -84,6 +102,15 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           imapResponse: 'OVERQUOTA'
         }
       );
+
+    const sourceIds = [];
+    const sourceUid = [];
+    const destinationUid = [];
+    const entries = [];
+    let copiedMessages = 0;
+    let copiedStorage = 0;
+    let err;
+    let lock;
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -109,204 +136,170 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }
       );
 
-    const sourceUid = [];
-    const destinationUid = [];
+    try {
+      lock = await acquireLock(this, session.db);
 
-    let copiedMessages = 0;
-    let copiedStorage = 0;
-
-    const sql = builder.build({
-      type: 'select',
-      table: 'Messages',
-      condition: {
-        mailbox: mailbox._id.toString(),
-        uid: tools.checkRangeQuery(update.messages)
-      },
-      // sort required for IMAP UIDPLUS
-      sort: 'uid'
-    });
-
-    //
-    // NOTE: you cannot perform updates while iterating
-    //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-456534827>
-    //
-    // NOTE: but you can if you set unsafe mode on
-    //       <https://github.com/WiseLibs/better-sqlite3/issues/203#issuecomment-619401512>
-    //       <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/unsafe.md>
-    //
-    //       however from tests we see that this causes write conflicts
-    //       (e.g. says it was written but then when you check it doesn't exist)
-    //
-    let messages;
-    if (session.db.wsp) {
-      messages = await this.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        stmt: [
-          ['prepare', sql.query],
-          ['all', sql.values]
-        ]
-      });
-    } else {
-      messages = session.db.prepare(sql.query).all(sql.values);
-    }
-
-    for (const result of messages) {
-      // eslint-disable-next-line no-await-in-loop
-      const message = await convertResult(Messages, result);
-
-      this.logger.debug('copying message', { result, message });
-
-      // check if server is in the process of shutting down
-      if (this.server._closeTimeout) throw new ServerShutdownError();
-
-      // TODO: we should use web socket request to check against IMAP server if it's still open
-      // check if socket is still connected
-      if (this?.constructor?.name === 'IMAP') {
-        const socket =
-          (session.socket && session.socket._parent) || session.socket;
-        if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-          throw new SocketError();
-      } else {
-        // TODO: finish this for SQLite server to check websocket if still open
-      }
-
-      // store current query for updating copied state
-      const query = {
-        _id: message._id,
-        uid: message.uid,
-        mailbox: message.mailbox
+      const condition = {
+        mailbox: mailbox._id.toString()
       };
 
-      // don't copy in bulk so it doesn't get out of incremental uid sync
-      sourceUid.unshift(message.uid);
+      // <https://github.com/nodemailer/wildduck/issues/698>
+      if (update.messages.length > 0)
+        condition.uid = tools.checkRangeQuery(update.messages);
 
-      // eslint-disable-next-line no-await-in-loop
-      const updatedMailbox = await Mailboxes.findOneAndUpdate(
-        this,
-        session,
-        {
-          _id: targetMailbox._id
-        },
-        {
-          $inc: {
-            uidNext: 1
-          }
-        },
-        {
-          returnDocument: 'before'
-        }
-      );
-
-      if (!updatedMailbox)
-        throw new IMAPError(
-          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-          {
-            imapResponse: 'TRYCREATE'
-          }
-        );
-
-      destinationUid.unshift(updatedMailbox.uidNext);
-
-      // copy the message and generate new id
-      message._id = new mongoose.Types.ObjectId();
-      message.id = message._id.toString();
-      message.mailbox = targetMailbox._id;
-      message.uid = updatedMailbox.uidNext;
-      message.exp =
-        typeof targetMailbox.retention === 'number'
-          ? targetMailbox.retention !== 0
-          : false;
-      message.rdate = new Date(
-        Date.now() +
-          (typeof targetMailbox.retention === 'number'
-            ? targetMailbox.retention
-            : 0)
-      );
-      message.modseq = updatedMailbox.modifyIndex;
-      message.junk = targetMailbox.specialUse === '\\Junk';
-      message.remoteAddress = session.remoteAddress;
-      message.transaction = 'COPY';
-
-      // virtual helper for locking if we lock in advance
-      // message.lock = lock;
-
-      // virtual helper
-      message.instance = this;
-      message.session = session;
-
-      // set existing message as copied
-      // TODO: may want to check for return value
-      // eslint-disable-next-line no-await-in-loop
-      await Messages.findOneAndUpdate(this, session, query, {
-        $set: {
-          copied: true
-        }
+      const sql = builder.build({
+        type: 'select',
+        table: 'Messages',
+        condition,
+        // sort required for IMAP UIDPLUS
+        sort: 'uid'
       });
 
-      // create new message
-      // eslint-disable-next-line no-await-in-loop
-      const newMessage = await Messages.create(message);
+      let { uidNext } = targetMailbox;
 
-      // update attachment store magic number
-      const attachmentIds = Object.keys(
-        newMessage.mimeTree.attachmentMap || {}
-      ).map((key) => newMessage.mimeTree.attachmentMap[key]);
-      if (attachmentIds.length > 0) {
-        try {
-          // update attachments
-          // eslint-disable-next-line no-await-in-loop
-          await Attachments.updateMany(
-            this,
-            session,
+      // const stmt = session.db.prepare(sql.query);
+      // for (const m of stmt.iterate(sql.values))
+      //
+      // NOTE: this is inefficient but works for now
+      //
+      const messages = session.db.prepare(sql.query).all(sql.values);
+
+      if (messages.length > 0)
+        session.db.transaction(() => {
+          for (const m of messages) {
+            // don't copy in bulk so it doesn't get out of incremental uid sync
+            const _id = new mongoose.Types.ObjectId();
+            sourceUid.unshift(m.uid);
+            sourceIds.push(m._id);
+            destinationUid.unshift(uidNext);
+
+            // copy the message and generate new id
+            m._id = _id.toString();
+            m.mailbox = targetMailbox._id.toString();
+            m.uid = uidNext;
+            m.exp = (
+              typeof targetMailbox.retention === 'number'
+                ? targetMailbox.retention !== 0
+                : false
+            )
+              ? 1
+              : 0;
+            m.rdate = new Date(
+              Date.now() +
+                (typeof targetMailbox.retention === 'number'
+                  ? targetMailbox.retention
+                  : 0)
+            ).toISOString();
+            m.modseq = mailbox.modifyIndex;
+            m.junk = targetMailbox.specialUse === '\\Junk';
+            m.remoteAddress = session.remoteAddress;
+            m.transaction = 'COPY';
+
+            // create new message
             {
-              hash: { $in: attachmentIds }
-            },
-            {
-              $inc: {
-                counter: 1,
-                magic: newMessage.magic
-              },
-              $set: {
-                counterUpdated: new Date()
-              }
+              const sql = builder.build({
+                type: 'insert',
+                table: 'Messages',
+                values: m
+              });
+              session.db.prepare(sql.query).run(sql.values);
             }
-            // {
-            //   multi: true
-            // }
-          );
-        } catch (err) {
-          this.logger.fatal(err, { mailboxId, update, session });
-        }
-      }
 
-      // increase counters
-      copiedMessages++;
-      copiedStorage += newMessage.size;
+            // update attachment store magic number
+            const attachmentIds = getAttachments(m.mimeTree);
+            if (attachmentIds.length > 0) {
+              const sql = builder.build({
+                type: 'update',
+                table: 'Attachments',
+                condition: {
+                  hash: {
+                    $in: attachmentIds
+                  }
+                },
+                modifier: {
+                  $inc: {
+                    counter: 1,
+                    magic: m.magic
+                  },
+                  $set: {
+                    counterUpdated: new Date().toString()
+                  }
+                }
+              });
+              session.db.prepare(sql.query).run(sql.values);
+            }
 
-      // add entries
+            // increase counters
+            copiedMessages++;
+            copiedStorage += m.size;
+            uidNext++;
+
+            // add entries
+            entries.push({
+              command: 'EXISTS',
+              uid: m.uid,
+              mailbox: targetMailbox._id,
+              message: _id,
+              thread: new mongoose.Types.ObjectId(m.thread),
+              unseen: boolean(m.unseen),
+              idate: new Date(m.idate),
+              junk: boolean(m.junk)
+            });
+          }
+
+          // set all existing messages as copied
+          {
+            const sql = builder.build({
+              type: 'update',
+              table: 'Messages',
+              condition: {
+                _id: {
+                  $in: sourceIds
+                }
+              },
+              modifier: {
+                $set: {
+                  copied: true
+                }
+              }
+            });
+            session.db.prepare(sql.query).run(sql.values);
+          }
+
+          // store on target mailbox the final value of `uidNext`
+          {
+            const sql = builder.build({
+              type: 'update',
+              table: 'Mailboxes',
+              condition: {
+                _id: targetMailbox._id.toString()
+              },
+              modifier: {
+                $set: {
+                  uidNext
+                }
+              }
+            });
+            session.db.prepare(sql.query).run(sql.values);
+          }
+        })();
+    } catch (_err) {
+      err = _err;
+    }
+
+    // release lock
+    if (lock?.success) {
       try {
-        // eslint-disable-next-line no-await-in-loop
-        await this.server.notifier.addEntries(this, session, targetMailbox, {
-          command: 'EXISTS',
-          uid: message.uid,
-          mailbox: newMessage.mailbox,
-          message: newMessage._id,
-          thread: newMessage.thread,
-          unseen: newMessage.unseen,
-          idate: newMessage.idate,
-          junk: newMessage.junk
-        });
+        await releaseLock(this, session.db, lock);
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
     }
 
+    if (err) throw err;
+
     // update quota if copied messages
     if (copiedMessages > 0 && copiedStorage > 0) {
-      // send notifications
-      this.server.notifier.fire(session.user.alias_id);
-
       //
       // NOTE: we don't error for quota during copy due to this reasoning
       //       <https://github.com/nodemailer/wildduck/issues/517#issuecomment-1748329188>
@@ -317,7 +310,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           domain: session.user.domain_id,
           locale: session.user.locale
         },
-        copiedStorage
+        copiedStorage,
+        this.client
       )
         .then((results) => {
           if (results.isOverQuota) {
@@ -370,13 +364,19 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { connection, mailboxId, update, session });
+    }
+
+    if (entries.length > 0) {
+      await this.server.notifier.addEntries(
+        this,
+        session,
+        targetMailbox._id,
+        entries.reverse()
+      );
+      this.server.notifier.fire(session.user.alias_id);
     }
 
     fn(null, true, {
@@ -391,7 +391,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

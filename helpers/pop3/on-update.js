@@ -37,7 +37,7 @@ async function onUpdate(update, session, fn) {
     // NOTE: WildDuck returns callback immediately without waiting for update result
     fn();
   } catch (err) {
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 
   try {
@@ -93,6 +93,8 @@ async function onUpdate(update, session, fn) {
       //     }
       //   }
       // );
+
+      // TODO: rewrite this
       for (const _id of _ids) {
         try {
           // eslint-disable-next-line no-await-in-loop
@@ -121,25 +123,21 @@ async function onUpdate(update, session, fn) {
         }
       }
 
-      try {
-        await this.server.notifier.addEntries(
-          this,
-          session,
-          updatedMailbox,
-          update.seen
-            .filter((message) => mongoose.isObjectIdOrHexString(message.id))
-            .map((message) => ({
-              command: 'FETCH',
-              uid: message.uid,
-              flags: [...message.flags, '\\Seen'],
-              message: new mongoose.Types.ObjectId(message.id),
-              modseq: updatedMailbox.modifyIndex
-            }))
-        );
-        this.server.notifier.fire(session.user.alias_id);
-      } catch (err) {
-        this.logger.fatal(err, { update, session });
-      }
+      await this.server.notifier.addEntries(
+        this,
+        session,
+        updatedMailbox,
+        update.seen
+          .filter((message) => mongoose.isObjectIdOrHexString(message.id))
+          .map((message) => ({
+            command: 'FETCH',
+            uid: message.uid,
+            flags: [...message.flags, '\\Seen'],
+            message: new mongoose.Types.ObjectId(message.id),
+            modseq: updatedMailbox.modifyIndex
+          }))
+      );
+      this.server.notifier.fire(session.user.alias_id);
     }
 
     // handle deleted
@@ -176,7 +174,7 @@ async function onUpdate(update, session, fn) {
     // throws, then the error will be an array so we need to get first key
     let err = _err;
     if (Array.isArray(err)) err = _err[0];
-    refineAndLogError(err, session);
+    refineAndLogError(err, session, false, this);
   }
 }
 

@@ -13,7 +13,6 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
@@ -22,8 +21,9 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const { convertResult } = require('#helpers/mongoose-to-sqlite');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
+const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder();
 
@@ -31,40 +31,40 @@ const builder = new Builder();
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
-  let lock;
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const [bool, writeStream] = await this.wsp.request({
-          action: 'expunge',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress,
-            selected: session.selected
-          },
-          mailboxId,
-          update
-        });
+  if (this.wsp) {
+    try {
+      const [bool, writeStream] = await this.wsp.request({
+        action: 'expunge',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress,
+          selected: session.selected
+        },
+        mailboxId,
+        update
+      });
 
-        if (Array.isArray(writeStream)) {
-          for (const write of writeStream) {
-            if (Array.isArray(write)) {
-              session.writeStream.write(session.formatResponse(...write));
-            } else {
-              session.writeStream.write(write);
-            }
+      if (Array.isArray(writeStream)) {
+        for (const write of writeStream) {
+          if (Array.isArray(write)) {
+            session.writeStream.write(session.formatResponse(...write));
+          } else {
+            session.writeStream.write(write);
           }
         }
-
-        fn(null, bool);
-      } catch (err) {
-        fn(err);
       }
 
-      return;
+      fn(null, bool);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  let lock;
+  try {
     await this.refreshSession(session, 'EXPUNGE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -85,14 +85,12 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     const condition = {
       mailbox: mailbox._id.toString(),
-      undeleted: false
+      undeleted: 0
     };
 
     if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
 
     this.logger.debug('expunge query', { condition });
-
-    let messages;
 
     lock = await acquireLock(this, session.db);
 
@@ -107,138 +105,85 @@ async function onExpunge(mailboxId, update, session, fn) {
         sort: 'uid'
       });
 
-      if (session.db.wsp) {
-        messages = await this.wsp.request({
-          action: 'stmt',
-          session: { user: session.user },
-          lock,
-          stmt: [
-            ['prepare', sql.query],
-            ['all', sql.values]
-          ]
-        });
-      } else {
-        messages = session.db.prepare(sql.query).all(sql.values);
-      }
+      const messages = session.db.prepare(sql.query).all(sql.values);
 
-      for (const result of messages) {
-        // eslint-disable-next-line no-await-in-loop
-        const message = await convertResult(Messages, result);
-
-        this.logger.debug('expunge message', {
-          result,
-          message,
-          mailboxId,
-          update,
-          session
-        });
-
-        /*
-        // archive message (not used yet)
-        // don't archive drafts nor copies
-        const shouldArchive = !message.flags.includes('\\Draft') && !message.copied;
-        if (shouldArchive) {
-          message.archived = new Date();
-          message.exp = true;
-          message.rdate = new Date(message.archived.getTime() + ms('30d'));
-          try {
-            await Archived.insertOne(message);
-          } catch (err) {
-            // duplicate error (already archived)
-            if (err.code === 11000) {
-              this.logger.fatal(err, { message. mailboxId, update, session });
-            } else {
-              throw err;
-            }
-          }
-        }
-        */
-
-        // delete message
-        // eslint-disable-next-line no-await-in-loop
-        const results = await Messages.deleteOne(
+      if (messages.length > 0) {
+        const results = await Messages.deleteMany(
           this,
           session,
           {
-            _id: message._id,
-            mailbox: mailbox._id,
-            uid: message.uid
+            $or: messages.map((message) => ({
+              _id: message._id,
+              mailbox: mailbox._id,
+              uid: message.uid
+            }))
           },
           { lock }
         );
 
-        if (results?.deletedCount === 1) {
-          // if we deleted a message then adjust storage quota
-          // storageUsed += message.size;
-
+        if (results?.deletedCount > 0) {
           // delete attachments
-          const attachmentIds = message?.mimeTree?.attachmentMap
-            ? Object.keys(message.mimeTree.attachmentMap || {}).map(
-                (key) => message.mimeTree.attachmentMap[key]
-              )
-            : [];
-          if (attachmentIds.length > 0) {
-            try {
-              // eslint-disable-next-line no-await-in-loop
-              await this.attachmentStorage.deleteMany(
-                this,
-                session,
-                attachmentIds,
-                message.magic,
-                lock
-              );
-            } catch (err) {
-              this.logger.fatal(err, {
-                attachmentIds,
-                message,
-                mailbox,
-                update,
-                session
-              });
-            }
-          }
+          await Promise.all(
+            messages.map(async (_message) => {
+              const message = syncConvertResult(Messages, _message);
+              const attachmentIds = message?.mimeTree?.attachmentMap
+                ? Object.keys(message.mimeTree.attachmentMap || {}).map(
+                    (key) => message.mimeTree.attachmentMap[key]
+                  )
+                : [];
+              if (attachmentIds.length > 0) {
+                try {
+                  await this.attachmentStorage.deleteMany(
+                    this,
+                    session,
+                    attachmentIds,
+                    message.magic,
+                    lock
+                  );
+                } catch (err) {
+                  this.logger.fatal(err, {
+                    attachmentIds,
+                    message,
+                    mailbox,
+                    update,
+                    session
+                  });
+                }
+              }
+            })
+          );
+        }
 
-          // write to socket we've expunged message
-          if (
-            !update.silent ||
-            (session &&
-              session.selected &&
-              session.selected.mailbox &&
-              session.selected.mailbox.toString() === mailbox._id.toString())
-          ) {
-            if (this?.constructor?.name === 'IMAP') {
-              session.writeStream.write(
-                session.formatResponse('EXPUNGE', message.uid)
-              );
-            } else {
-              writeStream.push(['EXPUNGE', message.uid]);
-            }
-          }
-
-          try {
-            // eslint-disable-next-line no-await-in-loop
-            await this.server.notifier.addEntries(
-              this,
-              session,
-              mailbox,
-              {
-                ignore: session.id,
-                command: 'EXPUNGE',
-                uid: message.uid,
-                mailbox: mailbox._id,
-                message: message._id,
-                thread: message.thread,
-                // modseq: message.modseq,
-                unseen: message.unseen,
-                idate: message.idate
-              },
-              lock
-            );
-            this.server.notifier.fire(session.user.alias_id);
-          } catch (err) {
-            this.logger.fatal(err, { mailboxId, update, session });
+        // write to socket we've expunged message
+        if (
+          !update.silent ||
+          (session &&
+            session.selected &&
+            session.selected.mailbox &&
+            session.selected.mailbox.toString() === mailbox._id.toString())
+        ) {
+          for (const message of messages) {
+            writeStream.push(['EXPUNGE', message.uid]);
           }
         }
+
+        await this.server.notifier.addEntries(
+          this,
+          session,
+          mailbox,
+          messages.map((message) => ({
+            ignore: session.id,
+            command: 'EXPUNGE',
+            uid: message.uid,
+            mailbox: mailbox._id,
+            message: message._id,
+            thread: message.thread,
+            modseq: message.modseq,
+            unseen: message.unseen,
+            idate: message.idate
+          }))
+        );
+        this.server.notifier.fire(session.user.alias_id);
       }
     } catch (_err) {
       err = _err;
@@ -271,14 +216,9 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id,
-        lock
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { mailboxId, update, session });
     }
 
     // throw error
@@ -301,7 +241,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

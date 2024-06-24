@@ -1032,11 +1032,14 @@ test
 
   // attempt to copy messages to "backup" folder
   // when it doesn't yet exist results in a fail (false)
-  t.is(await t.context.imapFlow.messageCopy('1:*', 'backup'), false);
+  const backupResult = await t.context.imapFlow.messageCopy('1:*', 'backup');
+  t.is(backupResult, false);
 
   // copy all messages to a mailbox called "Backup" (must exist)
   await t.context.imapFlow.mailboxCreate('backup');
   const result = await t.context.imapFlow.messageCopy('1:*', 'backup');
+  t.true(result !== false);
+  t.log(result);
   t.is(result.path, 'copy');
   t.is(result.destination, 'backup');
   t.is(result.uidMap.size, 10);
@@ -1595,7 +1598,7 @@ test
   t.is(msg.subject, subject);
 });
 
-test('50 MB email', async (t) => {
+test('large mailbox', async (t) => {
   const { imapFlow, alias, domain } = t.context;
 
   let mailbox = await Mailboxes.findOne(t.context.imap, t.context.session, {
@@ -1621,8 +1624,9 @@ Content-Transfer-Encoding: 7bit
 ${randomString}`.trim();
   */
 
-  const raw = `
-Date: ${new Date().toISOString()}
+  // NOTE: this is a ~50mb email
+  const raw = Buffer.from(
+    `Date: ${new Date().toISOString()}
 To: ${alias.name}@${domain.name}
 From: ${alias.name}@${domain.name}
 Subject: test
@@ -1630,9 +1634,11 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-${randomString}`.trim();
+${randomString}`.trim()
+  );
 
-  await imapFlow.append('INBOX', Buffer.from(raw), [], new Date());
+  await imapFlow.append('INBOX', raw, [], new Date());
+
   const storageUsed = await Aliases.getStorageUsed(alias);
   t.is(storageUsed, 101208064);
 
@@ -1643,4 +1649,40 @@ ${randomString}`.trim();
   );
 
   t.is(mailbox.uidNext, 2);
+
+  for (let i = 0; i < 10; i++) {
+    const raw = Buffer.from(
+      `Date: ${new Date().toISOString()}
+To: ${alias.name}@${domain.name}
+From: ${alias.name}@${domain.name}
+Subject: test #${i}
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+${i}`.trim()
+    );
+
+    // eslint-disable-next-line no-await-in-loop
+    await imapFlow.append('INBOX', raw, [], new Date());
+  }
+
+  await imapFlow.mailboxOpen('INBOX');
+
+  const uids = [];
+  for await (const message of imapFlow.fetch('1:*', {
+    envelope: true
+  })) {
+    uids.push(message.uid);
+  }
+
+  for (const uid of uids) {
+    // <https://github.com/postalsys/imapflow/issues/203>
+    // eslint-disable-next-line no-await-in-loop
+    const stream = await imapFlow.download(uid, undefined, {
+      chunkSize: 12500049
+    });
+    // eslint-disable-next-line no-await-in-loop
+    await getStream(stream.content);
+  }
 });

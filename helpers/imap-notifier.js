@@ -20,17 +20,19 @@ const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
+const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Journals = require('#models/journals');
 const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
 const config = require('#config');
 const helperLogger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 
 const logger =
   config.env === 'development' ? helperLogger : new Axe({ silent: true });
+
+const builder = new Builder();
 
 class IMAPNotifier extends EventEmitter {
   constructor(options) {
@@ -115,10 +117,7 @@ class IMAPNotifier extends EventEmitter {
 
   // eslint-disable-next-line complexity, max-params
   async addEntries(instance, session, mailboxId, entries, lock = false) {
-    if (
-      !session?.db ||
-      (!(session.db instanceof Database) && !session.db.wsp)
-    ) {
+    if (!session?.db || (!(session.db instanceof Database) && !instance.wsp)) {
       const err = new TypeError('Database is missing');
       err.instance = instance;
       err.session = session;
@@ -127,11 +126,7 @@ class IMAPNotifier extends EventEmitter {
       throw err;
     }
 
-    if (
-      instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-      (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-      !instance[Symbol.for('isWSP')]
-    )
+    if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
       throw new TypeError('WebSocketAsPromised instance required');
 
     if (typeof session?.user?.password !== 'string')
@@ -145,7 +140,7 @@ class IMAPNotifier extends EventEmitter {
 
     const updated = entries
       .filter((entry) => !entry.modseq && entry.message)
-      .map((entry) => entry.message);
+      .map((entry) => entry.message.toString());
 
     if (!mailboxId)
       throw new IMAPError(
@@ -200,10 +195,28 @@ class IMAPNotifier extends EventEmitter {
     const modseq = mailbox.modifyIndex;
     const created = new Date();
 
+    const bulk = Journals.collection.initializeUnorderedBulkOp();
+
     for (const entry of entries) {
       entry.modseq = entry.modseq || modseq;
       entry.created = entry.created || created;
       entry.mailbox = entry.mailbox || mailbox._id;
+      const doc = new Journals(entry).toObject({
+        bson: true,
+        transform: false,
+        virtuals: true,
+        getters: true,
+        _skipDepopulateTopLevel: true,
+        depopulate: true,
+        flattenDecimals: false,
+        useProjection: false
+      });
+      doc.object = 'journal';
+      doc.id = doc._id.toString();
+      const now = new Date();
+      doc.created_at = now;
+      doc.updated_at = now;
+      bulk.insert(doc);
     }
 
     if (updated.length > 0) {
@@ -216,73 +229,63 @@ class IMAPNotifier extends EventEmitter {
       });
 
       try {
-        //
-        // NOTE: sqlite doesn't support $max like MongoDB does
-        //
-
-        /*
-        await Messages.updateMany(
-          db,
-          wsp,
-          session
-          {
-            _id: {
-              $in: updated
-            },
-            mailbox: mailbox._id
+        const condition = {
+          _id: {
+            $in: updated
           },
-          {
-            // only update modseq if value > existing
-            $max: {
+          modseq: {
+            $lt: modseq
+          }
+        };
+        const sql = builder.build({
+          type: 'update',
+          table: 'Messages',
+          condition,
+          modifier: {
+            $set: {
               modseq
             }
-          },
-          { lock }
-        );
-        */
-
-        const messages = await Messages.find(
-          instance,
-          session,
-          {
-            _id: {
-              $in: updated
-            },
-            mailbox: mailbox._id
-          },
-          {},
-          {
-            lock
           }
-        );
+        });
 
-        for (const message of messages) {
-          if (message.modseq < modseq)
-            // eslint-disable-next-line no-await-in-loop
-            await Messages.findByIdAndUpdate(
-              instance,
-              session,
-              message._id,
-              {
-                $set: {
-                  modseq
-                }
-              },
-              { lock }
-            );
+        if (instance.wsp) {
+          await instance.wsp.request({
+            action: 'stmt',
+            session: { user: session.user },
+            lock,
+            stmt: [
+              ['prepare', sql.query],
+              ['run', sql.values]
+            ]
+          });
+        } else {
+          session.db.prepare(sql.query).run(sql.values);
         }
       } catch (err) {
         logger.fatal(err, { mailbox, updated, modseq, session });
       }
     }
 
-    logger.debug('creating entries', { entries });
+    logger.debug('creating entries', {
+      entries
+    });
 
-    await Journals.create(entries);
+    const bulkResults = await bulk.execute();
+    if (
+      bulkResults?.result?.ok !== 1 ||
+      bulkResults?.writeErrors?.length > 0 ||
+      bulkResults?.writeConcernErrors?.length > 0
+    ) {
+      const err = new TypeError('Bulk write errors');
+      err.bulkResults = bulkResults;
+      throw err;
+    }
 
     return entries.length;
   }
 
+  // TODO: rewrite this b/c we don't use `payload` ever
+  // TODO: remove safeStringify and replace with just the aliasId
   fire(aliasId, payload) {
     if (!aliasId) throw new Error('Alias ID missing');
 
@@ -297,6 +300,7 @@ class IMAPNotifier extends EventEmitter {
     });
   }
 
+  // <https://github.com/nodemailer/wildduck/blob/c9188b3766b547b091d140a33308b5c3ec3aa1d4/imap-core/lib/imap-connection.js#L616-L619>
   getUpdates(mailbox, modifyIndex, fn) {
     modifyIndex = Number(modifyIndex) || 0;
     Journals.collection
@@ -316,7 +320,10 @@ class IMAPNotifier extends EventEmitter {
     if (!data?.session?.user?.alias_id) return fn(null, true);
 
     // close the db connection
-    if (typeof data?.session?.db?.close === 'function') {
+    if (
+      data?.session?.db?.pragma === 'function' &&
+      data?.session?.db?.close === 'function'
+    ) {
       try {
         data.session.db.pragma('optimize');
         data.session.db.close();

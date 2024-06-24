@@ -25,27 +25,27 @@ const builder = new Builder();
 async function onOpen(path, session, fn) {
   this.logger.debug('OPEN', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const response = await this.wsp.request({
-          action: 'open',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
+  if (this.wsp) {
+    try {
+      const response = await this.wsp.request({
+        action: 'open',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
 
-        fn(null, response);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+      fn(null, response);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'OPEN');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -88,31 +88,9 @@ async function onOpen(path, session, fn) {
       sort: 'uid'
     });
 
-    let docs;
-    let err;
-
-    try {
-      if (session.db.wsp) {
-        docs = await this.wsp.request({
-          action: 'stmt',
-          session: { user: session.user },
-          stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
-        });
-      } else {
-        docs = session.db.prepare(sql.query).pluck().all(sql.values);
-      }
-
-      if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
-    } catch (_err) {
-      err = _err;
-      err.sql = sql;
-    }
-
-    if (err) throw err;
-
     // send response
     const response = mailbox.toObject();
-    response.uidList = docs;
+    response.uidList = session.db.prepare(sql.query).pluck().all(sql.values);
     fn(null, response);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
@@ -121,7 +99,7 @@ async function onOpen(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

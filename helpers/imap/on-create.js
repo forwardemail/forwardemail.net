@@ -13,46 +13,49 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onCreate(path, session, fn) {
   this.logger.debug('CREATE', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'create',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'create',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'CREATE');
 
     // check if over quota
-    const { isOverQuota } = await Aliases.isOverQuota({
-      id: session.user.alias_id,
-      domain: session.user.domain_id,
-      locale: session.user.locale
-    });
+    const { isOverQuota } = await Aliases.isOverQuota(
+      {
+        id: session.user.alias_id,
+        domain: session.user.domain_id,
+        locale: session.user.locale
+      },
+      0,
+      this.client
+    );
     if (isOverQuota)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
@@ -99,26 +102,18 @@ async function onCreate(path, session, fn) {
       retention: 0
     });
 
-    try {
-      await this.server.notifier.addEntries(this, session, mailbox, {
-        command: 'CREATE',
-        mailbox: mailbox._id,
-        path
-      });
-      this.server.notifier.fire(session.user.alias_id);
-    } catch (err) {
-      this.logger.fatal(err, { path, session });
-    }
+    await this.server.notifier.addEntries(this, session, mailbox, {
+      command: 'CREATE',
+      mailbox: mailbox._id,
+      path
+    });
+    this.server.notifier.fire(session.user.alias_id);
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { path, session });
     }
 
     fn(null, true, mailbox._id);
@@ -130,7 +125,7 @@ async function onCreate(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

@@ -59,9 +59,10 @@ const migrateSchema = require('#helpers/migrate-schema');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const setupPragma = require('#helpers/setup-pragma');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
-const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -258,13 +259,8 @@ async function parsePayload(data, ws) {
     // request.socket.remoteAddress
     payload = ws ? recursivelyParse(decoder.unpack(data)) : data;
 
-    // if (config.env !== 'production' && payload.date)
-    //   logger.debug(
-    //     `Payload took ${prettyMs(now - payload.date)} to be received`
-    //   );
-
     // if it took more than 5s to be received then we should alert admins
-    if (payload.date && now - payload.date >= 5000) {
+    if (payload.sent_at && now - payload.sent_at >= 5000) {
       const err = new TypeError(`Payload took >= 5s to be received`);
       err.payload = payload;
       logger.fatal(err);
@@ -288,7 +284,7 @@ async function parsePayload(data, ws) {
 
     // id
     // <https://github.com/nodejs/node/issues/46748>
-    if (!isSANB(payload.id)) throw new TypeError('Payload id missing');
+    if (ws && !isSANB(payload.id)) throw new TypeError('Payload id missing');
 
     // action
     if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
@@ -730,25 +726,21 @@ async function parsePayload(data, ws) {
                   { user: payload.session.user, db: tmpDb },
                   { _id: message._id }
                 );
-
-                // update storage
-                try {
-                  // eslint-disable-next-line no-await-in-loop
-                  await this.wsp.request.call(this, {
-                    action: 'size',
-                    timeout: ms('15s'),
-                    alias_id: payload.session.user.alias_id,
-                    lock: payload?.lock
-                  });
-                } catch (err) {
-                  err.isCodeBug = true;
-                  this.logger.fatal(err, { payload });
-                }
               } catch (_err) {
                 const err = Array.isArray(_err) ? _err[0] : _err;
                 err.isCodeBug = true;
                 logger.fatal(err, { payload });
               }
+            }
+
+            // update storage
+            try {
+              await updateStorageUsed(
+                payload.session.user.alias_id,
+                this.client
+              );
+            } catch (err) {
+              logger.fatal(err, { payload });
             }
           }
         } catch (err) {
@@ -773,9 +765,8 @@ async function parsePayload(data, ws) {
         }
 
         // vacuum database
-        await this.wsp.request.call(this, {
+        await parsePayload.call(this, {
           action: 'vacuum',
-          timeout: ms('5m'),
           session: { user: payload.session.user }
         });
 
@@ -889,7 +880,7 @@ async function parsePayload(data, ws) {
                   `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
-                  'id has_imap has_pgp public_key storage_location user is_enabled name domain'
+                  'id imap_backup_at has_imap has_pgp public_key storage_location user is_enabled name domain'
                 )
                 .lean()
                 .exec();
@@ -937,12 +928,15 @@ async function parsePayload(data, ws) {
                   alias_public_key: alias.public_key,
                   locale: alias.user[config.lastLocaleField],
                   owner_full_email: alias.user.email
-                }
+                },
+                imap_backup_at: alias.imap_backup_at
               };
 
               // check quota
               const { isOverQuota, storageUsed } = await Aliases.isOverQuota(
-                alias
+                alias,
+                0,
+                this.client
               );
 
               if (isOverQuota) {
@@ -1355,14 +1349,8 @@ async function parsePayload(data, ws) {
 
                   // update storage after temporary message created
                   try {
-                    await this.wsp.request.call(this, {
-                      action: 'size',
-                      timeout: ms('15s'),
-                      alias_id: alias.id,
-                      lock: payload?.lock
-                    });
+                    await updateStorageUsed(alias.id, this.client);
                   } catch (err) {
-                    err.isCodeBug = true;
                     logger.fatal(err, { payload });
                   }
 
@@ -1396,8 +1384,7 @@ async function parsePayload(data, ws) {
             } catch (err) {
               logger.error(err, { payload });
               err.isCodeBug = isCodeBug(err);
-              errors[`${obj.address}`] =
-                !ws || typeof ws.send !== 'function' ? err : parseErr(err);
+              errors[`${obj.address}`] = ws ? parseErr(err) : err;
             }
           },
           { concurrency }
@@ -1458,15 +1445,9 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
-          await this.wsp.request.call(this, {
-            action: 'size',
-            timeout: ms('15s'),
-            alias_id: payload.session.user.alias_id,
-            lock: payload?.lock
-          });
+          await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
-          err.isCodeBug = true;
-          this.logger.fatal(err, { payload });
+          logger.fatal(err, { payload });
         }
 
         break;
@@ -1533,79 +1514,15 @@ async function parsePayload(data, ws) {
 
       // updates storage_used for a specific alias by its id
       case 'size': {
-        if (!mongoose.isObjectIdOrHexString(payload.alias_id))
-          throw new TypeError('Alias ID missing');
+        if (!isSANB(payload.alias_id))
+          throw new TypeError('Payload alias ID missing');
 
-        const alias = await Aliases.findById(payload.alias_id)
-          .select('id storage_location')
-          .lean()
-          .exec();
-
-        if (alias) {
-          let size = 0;
-
-          try {
-            // <https://github.com/nodejs/node/issues/38006>
-            const filePath = getPathToDatabase(alias);
-            const dirName = path.dirname(filePath);
-            const ext = path.extname(filePath);
-            const basename = path.basename(filePath, ext);
-            // $id.sqlite
-            const stats = await fs.promises.stat(filePath);
-            if (stats.isFile() && stats.size > 0) {
-              size += stats.size;
-              // $id-wal.sqlite
-              // $id-shm.sqlite
-              // $id-tmp.sqlite
-              // $id-tmp-wal.sqlite
-              // $id-tmp-shm.sqlite
-              for (const affix of config.env === 'test'
-                ? ['-wal', '-shm']
-                : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm']) {
-                const affixFilePath = path.join(
-                  dirName,
-                  `${basename}${affix}${ext}`
-                );
-                try {
-                  // eslint-disable-next-line no-await-in-loop
-                  const stats = await fs.promises.stat(affixFilePath);
-                  if (stats.isFile() && stats.size > 0) {
-                    size += stats.size;
-                  }
-                } catch (err) {
-                  if (err.code !== 'ENOENT') {
-                    err.isCodeBug = true;
-                    throw err;
-                  }
-                }
-              }
-            }
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          // save storage_used on the given alias
-          await Aliases.findByIdAndUpdate(payload.alias_id, {
-            $set: {
-              storage_used: size
-            }
-          });
-
-          response = {
-            id: payload.id,
-            data: size
-          };
-          break;
-        } else {
-          response = {
-            id: payload.id,
-            data: 0
-          };
-          break;
-        }
+        const size = await updateStorageUsed(payload.alias_id, this.client);
+        response = {
+          id: payload.id,
+          data: size
+        };
+        break;
       }
 
       // this assumes locking already took place
@@ -1970,15 +1887,9 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
-          await this.wsp.request.call(this, {
-            action: 'size',
-            timeout: ms('15s'),
-            alias_id: payload.session.user.alias_id,
-            lock: payload?.lock
-          });
+          await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
-          err.isCodeBug = true;
-          this.logger.fatal(err, { payload });
+          logger.fatal(err, { payload });
         }
 
         if (err) throw err;
@@ -2045,15 +1956,9 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
-          await this.wsp.request.call(this, {
-            action: 'size',
-            timeout: ms('15s'),
-            alias_id: payload.session.user.alias_id,
-            lock
-          });
+          await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
-          err.isCodeBug = true;
-          this.logger.fatal(err, { payload });
+          logger.fatal(err, { payload });
         }
 
         response = {
@@ -2292,7 +2197,7 @@ async function parsePayload(data, ws) {
       }
     }
 
-    if (!ws || typeof ws.send !== 'function') return response;
+    if (!ws) return response.data;
 
     ws.send(encoder.pack(response));
   } catch (_err) {

@@ -62,14 +62,10 @@ Threads.plugin(validationErrorTransform);
 // code is inspired from wildduck (rewrite necessary for async/await and different db structure)
 // eslint-disable-next-line complexity
 async function getThreadId(instance, session, subject, mimeTree) {
-  if (!session?.db || (!(session.db instanceof Database) && !session.db.wsp))
+  if (!session?.db || (!(session.db instanceof Database) && !instance.wsp))
     throw new TypeError('Database is missing');
 
-  if (
-    instance?.wsp?.constructor?.name !== 'WebSocketAsPromised' &&
-    (!instance?.wsp || !instance.wsp[Symbol.for('isWSP')]) &&
-    !instance[Symbol.for('isWSP')]
-  )
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
   if (typeof session?.user?.password !== 'string')
@@ -115,7 +111,7 @@ async function getThreadId(instance, session, subject, mimeTree) {
       const values = [subject, ...referenceIds];
 
       // reading so no need to lock
-      if (session.db.wsp) {
+      if (instance.wsp) {
         thread = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
@@ -179,7 +175,7 @@ async function getThreadId(instance, session, subject, mimeTree) {
           }
         });
 
-        if (session.db.wsp) {
+        if (instance.wsp) {
           thread = await instance.wsp.request({
             action: 'stmt',
             session: { user: session.user },

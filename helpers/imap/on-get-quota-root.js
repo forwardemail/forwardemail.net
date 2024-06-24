@@ -23,26 +23,26 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onGetQuotaRoot(path, session, fn) {
   this.logger.debug('GETQUOTAROOT', { path, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'get_quota_root',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'get_quota_root',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
+    return;
+  }
+
+  try {
     await this.refreshSession(session, 'GETQUOTAROOT');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -56,6 +56,9 @@ async function onGetQuotaRoot(path, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
+
+    // TODO: if uids get out of order then this should trigger
+    //       a reset perhaps maybe?
 
     const [storageUsed, maxQuotaPerAlias] = await Promise.all([
       Aliases.getStorageUsed({
@@ -78,7 +81,7 @@ async function onGetQuotaRoot(path, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 

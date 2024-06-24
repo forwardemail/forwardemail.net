@@ -3957,5 +3957,7 @@
   "You will automatically receive unlimited domains for this price.": "Du vil automatisk modtage ubegrænsede domæner til denne pris.",
   "Need secure and private email?": "Har du brug for sikker og privat e-mail?",
   "Upgrade for $3": "Opgrader for $3",
-  "LineageOS": "LineageOS"
+  "LineageOS": "LineageOS",
+  "Conversion Credit:": "Conversion Credit:",
+  "Next payment due <span class=\"notranslate\">%s<span> on <span class=\"notranslate\">%s</span>.": "Next payment due <span class=\"notranslate\">%s<span> on <span class=\"notranslate\">%s</span>."
 }

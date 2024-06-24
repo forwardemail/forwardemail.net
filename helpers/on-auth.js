@@ -421,6 +421,10 @@ async function onAuth(auth, session, fn) {
       timezone: timeZone
     };
 
+    // TODO: redo this
+    // used for imap backup
+    if (alias) session.imap_backup_at = alias.imap_backup_at;
+
     //
     // TODO: run wsp to check if database can be opened
     //       (if on IMAP/POP3/CalDAV) and if not then
@@ -472,7 +476,9 @@ async function onAuth(auth, session, fn) {
     //       (otherwise it won't be intuitive to users if they're late on payment)
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
-    fn(refineAndLogError(err, session, this.server instanceof IMAPServer));
+    fn(
+      refineAndLogError(err, session, this.server instanceof IMAPServer, this)
+    );
   }
 }
 

@@ -13,40 +13,37 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const ms = require('ms');
-
+const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const IMAPError = require('#helpers/imap-error');
+const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
 
-  try {
-    if (this?.constructor?.name === 'IMAP') {
-      try {
-        const data = await this.wsp.request({
-          action: 'rename',
-          session: {
-            id: session.id,
-            user: session.user,
-            remoteAddress: session.remoteAddress
-          },
-          path,
-          newPath
-        });
-        fn(null, ...data);
-      } catch (err) {
-        fn(err);
-      }
-
-      return;
+  if (this.wsp) {
+    try {
+      const data = await this.wsp.request({
+        action: 'rename',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path,
+        newPath
+      });
+      fn(null, ...data);
+    } catch (err) {
+      fn(err);
     }
 
-    await this.refreshSession(session, 'RENAME');
+    return;
+  }
 
-    // TODO: parallel
+  try {
+    await this.refreshSession(session, 'RENAME');
 
     const mailbox = await Mailboxes.findOne(this, session, {
       path
@@ -102,26 +99,18 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
-    try {
-      await this.server.notifier.addEntries(this, session, mailbox, {
-        command: 'RENAME',
-        mailbox: mailbox._id,
-        path: renamedMailbox.path
-      });
-      this.server.notifier.fire(session.user.alias_id);
-    } catch (err) {
-      this.logger.fatal(err, { path, session });
-    }
+    await this.server.notifier.addEntries(this, session, mailbox, {
+      command: 'RENAME',
+      mailbox: mailbox._id,
+      path: renamedMailbox.path
+    });
+    this.server.notifier.fire(session.user.alias_id);
 
     // update storage
     try {
-      await this.wsp.request({
-        action: 'size',
-        timeout: ms('15s'),
-        alias_id: session.user.alias_id
-      });
+      await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      this.logger.fatal(err);
+      this.logger.fatal(err, { path, session });
     }
 
     // send response
@@ -133,7 +122,7 @@ async function onRename(path, newPath, session, fn) {
       return fn(null, err.imapResponse);
     }
 
-    fn(refineAndLogError(err, session, true));
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 
