@@ -14,7 +14,7 @@
  */
 
 const Aliases = require('#models/aliases');
-const Mailboxes = require('#models/mailboxes');
+// const Mailboxes = require('#models/mailboxes');
 const IMAPError = require('#helpers/imap-error');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -44,6 +44,7 @@ async function onGetQuotaRoot(path, session, fn) {
   try {
     await this.refreshSession(session, 'GETQUOTAROOT');
 
+    /*
     const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
@@ -55,11 +56,11 @@ async function onGetQuotaRoot(path, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
+    */
 
     // TODO: if uids get out of order then this should trigger
     //       a reset perhaps maybe?
 
-    /*
     const exists =
       session.db
         .prepare(`select exists(select 1 FROM "Mailboxes" WHERE "path" = ?)`)
@@ -73,7 +74,6 @@ async function onGetQuotaRoot(path, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
-    */
 
     const { storageUsed, maxQuotaPerAlias } = await Aliases.isOverQuota(
       {
