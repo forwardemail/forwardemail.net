@@ -4909,5 +4909,7 @@
   "Make payment immediately to avoid account termination.": "Thanh toán ngay để tránh bị chấm dứt tài khoản.",
   "500,000+ custom domain names": "Hơn 500.000 tên miền tùy chỉnh",
   "Need secure and private email?": "Cần email an toàn và riêng tư?",
-  "LineageOS": "LineageOS"
+  "LineageOS": "LineageOS",
+  "Storage used by this alias": "Bộ nhớ được sử dụng bởi bí danh này",
+  "alias": "bí danh"
 }

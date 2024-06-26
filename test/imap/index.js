@@ -884,7 +884,7 @@ test('onGetQuotaRoot', async (t) => {
     t.is(quota.storage.status, '0%');
     t.log('quota', quota);
     t.log('quota.storage.usage', quota.storage.usage);
-    t.is(quota.storage.usage, 4096);
+    t.is(quota.storage.usage, 196608);
     // TODO: figure out why config.INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
     //   path: 'INBOX',

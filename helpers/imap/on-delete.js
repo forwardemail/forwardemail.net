@@ -55,6 +55,7 @@ async function onDelete(path, session, fn) {
       // }
 
       fn(null, bool, mailboxId);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -151,7 +152,6 @@ async function onDelete(path, session, fn) {
         command: 'DELETE',
         mailbox: mailbox._id
       });
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     //
@@ -175,6 +175,7 @@ async function onDelete(path, session, fn) {
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { path, session });

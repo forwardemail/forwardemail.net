@@ -54,16 +54,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
   if (this.wsp) {
     // do not allow messages larger than 64 MB
-    if (
-      raw &&
-      (Buffer.isBuffer(raw) ? Buffer.byteLength(raw) : raw.length) >
-        SIXTY_FOUR_MB_IN_BYTES
-    )
-      throw new IMAPError(
-        i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
-      );
     try {
-      const [bool, response, message] = await this.wsp.request({
+      if (
+        raw &&
+        (Buffer.isBuffer(raw) ? Buffer.byteLength(raw) : raw.length) >
+          SIXTY_FOUR_MB_IN_BYTES
+      )
+        throw new IMAPError(
+          i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
+        );
+      const [bool, response] = await this.wsp.request({
         action: 'append',
         session: {
           id: session.id,
@@ -79,14 +79,15 @@ async function onAppend(path, flags, date, raw, session, fn) {
       if (
         session.selected &&
         session.selected.mailbox &&
-        session.selected.mailbox.toString() === message.mailbox.toString()
+        session.selected.mailbox.toString() === response.mailbox.toString()
       ) {
         session.writeStream.write(
-          formatResponse.call(session, 'EXISTS', message.uid)
+          formatResponse.call(session, 'EXISTS', response.uid)
         );
       }
 
       fn(null, bool, response);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -337,7 +338,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
         mailbox: mailbox._id,
         message: existingMessage._id
       });
-      this.server.notifier.fire(session.user.alias_id);
 
       fn(null, true, response);
       return;
@@ -511,6 +511,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { message, path, flags, date, session });

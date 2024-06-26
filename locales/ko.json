@@ -7402,5 +7402,5 @@
   ": This will override the existing alias password and database completely, and will permanently delete the existing IMAP storage and reset the alias' SQLite email database completely. Please make a backup if possible if you have an existing mailbox attached to this alias.": ": 이렇게 하면 기존 별칭 비밀번호와 데이터베이스가 완전히 무시되고 기존 IMAP 저장소가 영구적으로 삭제되며 별칭의 SQLite 이메일 데이터베이스가 완전히 재설정됩니다. 이 별칭에 기존 사서함이 연결되어 있는 경우 가능하면 백업을 만드십시오.",
   "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, and ACH Direct Debit.": "Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay를 사용할 수 있습니다. / Clearpay, Klarna, SEPA 자동 이체, 캐나다 사전 승인 이체, ACH 자동 이체.",
   "500,000+ custom domain names": "500,000개 이상의 사용자 정의 도메인 이름",
-  "LineageOS": "LineageOS"
+  "LineageOS": "리니지OS"
 }

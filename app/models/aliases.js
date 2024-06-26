@@ -744,20 +744,17 @@ Aliases.statics.isOverQuota = async function (
 
   // cache the values of storageUsed and isOverQuota for 5-10s
   if (size === 0)
-    client
-      .set(
-        `alias_quota:${alias.id}`,
-        JSON.stringify({
-          storageUsed,
-          maxQuotaPerAlias
-        }),
-        'PX',
-        10000
-      )
-      .then()
-      .catch((err) => logger.fatal(err));
+    await client.set(
+      `alias_quota:${alias.id}`,
+      JSON.stringify({
+        storageUsed,
+        maxQuotaPerAlias
+      }),
+      'PX',
+      10000
+    );
 
-  return { storageUsed, isOverQuota };
+  return { storageUsed, isOverQuota, maxQuotaPerAlias };
 };
 
 Aliases.methods.createToken = async function (

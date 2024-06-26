@@ -732,16 +732,6 @@ async function parsePayload(data, ws) {
                 logger.fatal(err, { payload });
               }
             }
-
-            // update storage
-            try {
-              await updateStorageUsed(
-                payload.session.user.alias_id,
-                this.client
-              );
-            } catch (err) {
-              logger.fatal(err, { payload });
-            }
           }
         } catch (err) {
           err.isCodeBug = true;
@@ -755,8 +745,14 @@ async function parsePayload(data, ws) {
         // vacuum temporary database
         tmpDb.prepare('VACUUM').run();
 
-        // TODO: unlock the temporary database
+        // update storage
+        try {
+          await updateStorageUsed(payload.session.user.alias_id, this.client);
+        } catch (err) {
+          logger.fatal(err, { payload });
+        }
 
+        // TODO: unlock the temporary database
         try {
           tmpDb.pragma('optimize');
           tmpDb.close();
@@ -1347,6 +1343,13 @@ async function parsePayload(data, ws) {
                     remoteAddress: payload.remoteAddress
                   });
 
+                  // run a checkpoint to copy over wal to db
+                  tmpDb.pragma('wal_checkpoint(PASSIVE)');
+
+                  // TODO: vacuum into instead (same for elsewhere)
+                  // vacuum temporary database
+                  tmpDb.prepare('VACUUM').run();
+
                   // update storage after temporary message created
                   try {
                     await updateStorageUsed(alias.id, this.client);
@@ -1445,6 +1448,7 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
+          db.pragma('wal_checkpoint(PASSIVE)');
           await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
           logger.fatal(err, { payload });
@@ -1956,6 +1960,7 @@ async function parsePayload(data, ws) {
 
         // update storage
         try {
+          db.pragma('wal_checkpoint(PASSIVE)');
           await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
           logger.fatal(err, { payload });

@@ -60,6 +60,7 @@ async function onMove(mailboxId, update, session, fn) {
       }
 
       fn(null, bool, response);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -262,6 +263,7 @@ async function onMove(mailboxId, update, session, fn) {
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
@@ -294,7 +296,6 @@ async function onMove(mailboxId, update, session, fn) {
         targetMailbox._id,
         existEntries
       );
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     fn(null, true, response, writeStream);

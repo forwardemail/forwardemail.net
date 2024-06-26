@@ -56,6 +56,7 @@ async function onStore(mailboxId, update, session, fn) {
       }
 
       fn(null, bool, response);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -135,14 +136,13 @@ async function onStore(mailboxId, update, session, fn) {
         session.db.transaction(() => {
           for (const result of messages) {
             const message = syncConvertResult(Messages, result);
-
-            this.logger.debug('fetched message', {
-              result,
-              message,
-              mailboxId,
-              update,
-              session
-            });
+            // this.logger.debug('fetched message', {
+            //   result,
+            //   message,
+            //   mailboxId,
+            //   update,
+            //   session
+            // });
 
             // skip messages if necessary
             if (
@@ -253,6 +253,7 @@ async function onStore(mailboxId, update, session, fn) {
                 const flagUpdates = new Set(
                   update.value.map((f) => getFlag(f))
                 );
+
                 message.flags = [
                   ...new Set(
                     message.flags.filter((f) => {
@@ -321,10 +322,12 @@ async function onStore(mailboxId, update, session, fn) {
             const condition = prepareQuery(Messages.mapping, {
               _id: message._id,
               mailbox: mailbox._id,
-              uid: message.uid,
-              modseq: {
-                $lt: newModseq
-              }
+              uid: message.uid
+              // NOTE: this causes flag updates to not work properly and not save properly
+              // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L339-L341>
+              // modseq: {
+              //   $lt: newModseq
+              // }
             });
 
             const sql = builder.build({
@@ -338,14 +341,16 @@ async function onStore(mailboxId, update, session, fn) {
 
             session.db.prepare(sql.query).run(sql.values);
 
-            entries.push({
+            const entry = {
               command: 'FETCH',
               ignore: session.id,
               uid: message.uid,
               flags: message.flags,
               message: message._id,
               modseq: newModseq
-            });
+            };
+
+            entries.push(entry);
           }
 
           // update mailbox flags
@@ -402,14 +407,17 @@ async function onStore(mailboxId, update, session, fn) {
     }
 
     // release lock
-    try {
-      await releaseLock(this, session.db, lock);
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
+    if (lock?.success) {
+      try {
+        await releaseLock(this, session.db, lock);
+      } catch (err) {
+        this.logger.fatal(err, { mailboxId, update, session });
+      }
     }
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });
@@ -420,7 +428,6 @@ async function onStore(mailboxId, update, session, fn) {
 
     if (entries.length > 0) {
       await this.server.notifier.addEntries(this, session, mailboxId, entries);
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     // send response

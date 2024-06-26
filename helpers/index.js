@@ -86,6 +86,7 @@ const encryptMessage = require('./encrypt-message');
 const getKeyInfo = require('./get-key-info');
 const isMessageEncrypted = require('./is-message-encrypted');
 const updateStorageUsed = require('./update-storage-used');
+const getAttachments = require('./get-attachments');
 
 module.exports = {
   decrypt,
@@ -172,5 +173,6 @@ module.exports = {
   encryptMessage,
   getKeyInfo,
   isMessageEncrypted,
-  updateStorageUsed
+  updateStorageUsed,
+  getAttachments
 };

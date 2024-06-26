@@ -35,6 +35,7 @@ const builder = new Builder();
 
 const { formatResponse } = IMAPConnection.prototype;
 
+// eslint-disable-next-line complexity
 async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
@@ -58,6 +59,7 @@ async function onFetch(mailboxId, options, session, fn) {
       }
 
       fn(null, bool, response);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -150,7 +152,7 @@ async function onFetch(mailboxId, options, session, fn) {
       condition,
       fields,
       // sort required for IMAP UIDPLUS
-      sort: 'uid'
+      sort: condition?.uid?.$eq ? undefined : 'uid'
       // no limits right now:
       // limit: MAX_PAGE_SIZE
     });
@@ -235,6 +237,7 @@ async function onFetch(mailboxId, options, session, fn) {
             });
 
             const compiled = imapHandler.compiler(data);
+
             // `compiled` is a 'binary' string
             totalBytes += compiled.length;
 
@@ -282,8 +285,9 @@ async function onFetch(mailboxId, options, session, fn) {
 
           // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
           const stream = imapHandler.compileStream(data);
-          const buffer = await getStream.buffer(stream);
-          const compiled = buffer.toString('binary');
+          const compiled = await getStream(stream, {
+            encoding: 'binary'
+          });
           totalBytes += compiled.length;
           writeStream.push(compiled);
 
@@ -314,7 +318,7 @@ async function onFetch(mailboxId, options, session, fn) {
             });
           }
         },
-        { concurrency: 500 }
+        { concurrency: 1000 }
       );
     }
 
@@ -334,7 +338,6 @@ async function onFetch(mailboxId, options, session, fn) {
         mailbox._id,
         entries
       );
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     fn(

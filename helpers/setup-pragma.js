@@ -80,6 +80,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 
   // <https://litestream.io/tips/#synchronous-pragma>
   db.pragma('synchronous=NORMAL');
+  // TODO: db.pragma('synchronous=EXTRA');
 
   //
   // NOTE: only if we're using Litestream

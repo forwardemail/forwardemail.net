@@ -591,18 +591,18 @@ async function getDatabase(
 
     let migrateCheck = false;
     let folderCheck = false;
-    let trashCheck = false;
+    // let trashCheck = false;
 
     if (instance.client) {
       try {
         const results = await instance.client.mget([
           `migrate_check:${session.user.alias_id}`,
-          `folder_check:${session.user.alias_id}`,
-          `trash_check:${session.user.alias_id}`
+          `folder_check:${session.user.alias_id}`
+          // `trash_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
-        trashCheck = boolean(results[2]);
+        // trashCheck = boolean(results[2]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -739,8 +739,20 @@ async function getDatabase(
       logger.fatal(err, { session });
     }
 
+    // TODO: redo this so it sets `undeleted: 0` instead
+    // TODO: redo this so it sets `undeleted: 0` instead
+    // TODO: redo this so it sets `undeleted: 0` instead
+    // TODO: redo this so it sets `undeleted: 0` instead
+    // TODO: redo this so it sets `undeleted: 0` instead
+    // TODO: redo this so it sets `undeleted: 0` instead
+
+    //
+    // NOTE: we leave it up to the user to delete messages
+    //       but note that on CLOSE we call EXPUNGE on the mailbox
+    //
     // remove messages in Junk/Trash folder that are >= 30 days old
     // (only do this once every day)
+    /*
     try {
       if (!trashCheck) {
         const mailboxes = await Mailboxes.find(instance, session, {
@@ -758,13 +770,17 @@ async function getDatabase(
         // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
         // (as we've done below by simply mapping and returning `id` vs `_id`)
         await Messages.deleteMany(instance, session, {
-          mailbox: {
-            $in: mailboxes.map((m) => m._id.toString())
-          },
-          exp: true,
-          rdate: {
-            $lte: Date.now()
-          }
+          $or: [
+            {
+              mailbox: {
+                $in: mailboxes.map((m) => m._id.toString())
+              },
+              exp: true,
+              rdate: {
+                $lte: Date.now()
+              }
+            }
+          ]
         });
         await instance.client.set(
           `trash_check:${session.user.alias_id}`,
@@ -776,6 +792,7 @@ async function getDatabase(
     } catch (err) {
       logger.fatal(err, { session });
     }
+    */
 
     // TODO: delete orphaned attachments (those without messages that reference them)
 

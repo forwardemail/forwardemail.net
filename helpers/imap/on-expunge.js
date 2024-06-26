@@ -18,12 +18,11 @@ const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
-const Messages = require('#models/messages');
+const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
-const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder();
 
@@ -56,6 +55,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       }
 
       fn(null, bool);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -66,6 +66,8 @@ async function onExpunge(mailboxId, update, session, fn) {
   let lock;
   try {
     await this.refreshSession(session, 'EXPUNGE');
+
+    lock = await acquireLock(this, session.db);
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -92,67 +94,49 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     this.logger.debug('expunge query', { condition });
 
-    lock = await acquireLock(this, session.db);
-
     let err;
 
     try {
       const sql = builder.build({
-        type: 'select',
+        type: 'remove',
         table: 'Messages',
         condition,
+        returning: ['_id', 'uid', 'modseq', 'magic', 'mimeTree'],
         // sort required for IMAP UIDPLUS
         sort: 'uid'
       });
 
-      const messages = session.db.prepare(sql.query).all(sql.values);
+      let messages = [];
+
+      session.db.transaction(async () => {
+        // delete messages
+        messages = session.db.prepare(sql.query).all(sql.values);
+
+        // delete attachments
+        for (const m of messages) {
+          const attachmentIds = getAttachments(m.mimeTree);
+          if (attachmentIds.length > 0)
+            // eslint-disable-next-line no-await-in-loop
+            await this.attachmentStorage.deleteMany(
+              this,
+              session,
+              attachmentIds,
+              m.magic,
+              lock,
+              true // `true` indicates we're in a transaction
+            );
+        }
+      })();
 
       if (messages.length > 0) {
-        const results = await Messages.deleteMany(
-          this,
-          session,
-          {
-            $or: messages.map((message) => ({
-              _id: message._id,
-              mailbox: mailbox._id,
-              uid: message.uid
-            }))
-          },
-          { lock }
-        );
-
-        if (results?.deletedCount > 0) {
-          // delete attachments
-          await Promise.all(
-            messages.map(async (_message) => {
-              const message = syncConvertResult(Messages, _message);
-              const attachmentIds = message?.mimeTree?.attachmentMap
-                ? Object.keys(message.mimeTree.attachmentMap || {}).map(
-                    (key) => message.mimeTree.attachmentMap[key]
-                  )
-                : [];
-              if (attachmentIds.length > 0) {
-                try {
-                  await this.attachmentStorage.deleteMany(
-                    this,
-                    session,
-                    attachmentIds,
-                    message.magic,
-                    lock
-                  );
-                } catch (err) {
-                  this.logger.fatal(err, {
-                    attachmentIds,
-                    message,
-                    mailbox,
-                    update,
-                    session
-                  });
-                }
-              }
-            })
-          );
-        }
+        //
+        // NOTE: we have autovacuum on so we don't need to do a checkpoint nor vacuum
+        //
+        // run a checkpoint to copy over wal to db
+        // session.db.pragma('wal_checkpoint(PASSIVE)');
+        //
+        // vacuum database
+        // session.db.prepare('VACUUM').run();
 
         // write to socket we've expunged message
         if (
@@ -177,13 +161,12 @@ async function onExpunge(mailboxId, update, session, fn) {
             uid: message.uid,
             mailbox: mailbox._id,
             message: message._id,
-            thread: message.thread,
-            modseq: message.modseq,
-            unseen: message.unseen,
-            idate: message.idate
+            modseq: message.modseq
+            // thread: message.thread,
+            // unseen: message.unseen,
+            // idate: message.idate
           }))
         );
-        this.server.notifier.fire(session.user.alias_id);
       }
     } catch (_err) {
       err = _err;
@@ -196,26 +179,9 @@ async function onExpunge(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    // NOTE: we update storage used in real-time in `getDatabase`
-    // update storage quota
-    // if (storageUsed > 0)
-    //   Aliases.findOneAndUpdate(
-    //     {
-    //       _id: alias._id
-    //     },
-    //     {
-    //       $inc: {
-    //         storageUsed: storageUsed * -1
-    //       }
-    //     }
-    //   )
-    //     .then()
-    //     .catch((err) =>
-    //       this.logger.fatal(err, { storageUsed, mailboxId, update, session })
-    //     );
-
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });

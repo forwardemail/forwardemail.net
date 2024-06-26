@@ -19,6 +19,7 @@ const intoStream = require('into-stream');
 const pify = require('pify');
 const revHash = require('rev-hash');
 const _ = require('lodash');
+const { Builder } = require('json-sql');
 
 const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 
@@ -30,6 +31,59 @@ const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 
 const Attachments = require('#models/attachments');
 const logger = require('#helpers/logger');
+const { acquireLock, releaseLock } = require('#helpers/lock');
+const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
+
+const builder = new Builder();
+
+function updateAttachments(attachmentIds, magic, session) {
+  const sql = builder.build({
+    type: 'update',
+    table: 'Attachments',
+    condition: {
+      hash: { $in: attachmentIds }
+    },
+    modifier: {
+      $inc: {
+        counter: -1,
+        magic: -magic
+      },
+      $set: {
+        counterUpdated: new Date().toISOString()
+      }
+    },
+    returning: ['_id', 'counter', 'magic']
+  });
+
+  // update attachment data
+  const attachments = session.db.prepare(sql.query).all(sql.values);
+
+  // delete attachments if necessary
+  const $in = [];
+  for (const attachment of attachments) {
+    if (attachment.counter === 0 && attachment.magic === 0) {
+      $in.push(attachment._id);
+    }
+  }
+
+  //
+  // NOTE: wildduck has this disabled (as they have a cleanup job that runs after a duration)
+  //       (e.g. if a user quickly re-adds the attachment, it would save the re-creation by hash lookup)
+  //       (but to keep things simple for now we're just going to delete it)
+  //
+  if ($in.length > 0) {
+    const sql = builder.build({
+      type: 'remove',
+      table: 'Attachments',
+      condition: {
+        _id: {
+          $in
+        }
+      }
+    });
+    session.db.prepare(sql.query).run(sql.values);
+  }
+}
 
 class AttachmentStorage {
   constructor(options) {
@@ -70,51 +124,54 @@ class AttachmentStorage {
     };
   }
 
-  async create(instance, session, attachment) {
-    const hex = await this.calculateHashPromise(attachment.body);
-    attachment.hash = revHash(Buffer.from(hex, 'hex'));
-    attachment.counter = 1;
-    attachment.counterUpdated = new Date();
-    attachment.size = attachment.body.length;
-    if (
-      Number.isNaN(attachment.magic) ||
-      typeof attachment.magic !== 'number'
-    ) {
+  async create(instance, session, node) {
+    const hex = await this.calculateHashPromise(node.body);
+    node.hash = revHash(Buffer.from(hex, 'hex'));
+    node.counter = 1;
+    node.counterUpdated = new Date();
+    node.size = node.body.length;
+    if (Number.isNaN(node.magic) || typeof node.magic !== 'number') {
       const err = new TypeError('Invalid magic');
-      err.attachment = attachment;
+      err.node = node;
       throw err;
     }
 
-    const result = await Attachments.findOneAndUpdate(
-      instance,
-      session,
-      {
-        hash: attachment.hash
+    const sql = builder.build({
+      type: 'update',
+      table: 'Attachments',
+      condition: {
+        hash: node.hash
       },
-      {
+      modifier: {
         $inc: {
           counter: 1,
-          magic: attachment.magic
+          magic: node.magic
         },
         $set: {
-          counterUpdated: new Date()
+          counterUpdated: new Date().toISOString()
         }
       },
-      {
-        returnDocument: 'after'
-      }
-    );
+      returning: ['*']
+    });
 
-    if (result) return result;
+    const result = session.db.prepare(sql.query).get(sql.values);
+    if (result) return syncConvertResult(Attachments, result);
 
-    // virtual helper for locking if we lock in advance
-    // attachment.lock = lock
+    // TODO: finish this INSERT statement with validation of a field returned
+    // const attachment = new Attachments(node);
+    // await attachment.validate();
+    // {
+    //   const sql = builder.build({
+    //     type: 'insert',
+    //   });
+    //   // TODO: finish this
+    // }
 
     // virtual helper
-    attachment.instance = instance;
-    attachment.session = session;
+    node.instance = instance;
+    node.session = session;
 
-    return Attachments.create(attachment);
+    return Attachments.create(node);
   }
 
   //
@@ -143,7 +200,14 @@ class AttachmentStorage {
   }
 
   // eslint-disable-next-line max-params
-  async deleteMany(instance, session, attachmentIds, magic, lock = false) {
+  async deleteMany(
+    instance,
+    session,
+    attachmentIds,
+    magic,
+    lock = false,
+    isTransaction = true
+  ) {
     if (Number.isNaN(magic) || typeof magic !== 'number') {
       const err = new TypeError('Invalid magic');
       err.attachmentIds = attachmentIds;
@@ -151,47 +215,35 @@ class AttachmentStorage {
       throw err;
     }
 
-    const attachments = await Attachments.updateMany(
-      instance,
-      session,
-      {
-        hash: { $in: attachmentIds }
-      },
-      {
-        $inc: {
-          counter: -1,
-          magic: -magic
-        },
-        $set: {
-          counterUpdated: new Date()
-        }
-      },
-      {
-        lock,
-        returnDocument: 'after'
-      }
-    );
+    if (instance.wsp) throw new TypeError('WSP instance invalid');
 
-    //
-    // NOTE: wildduck has this disabled (as they have a cleanup job that runs after a duration)
-    //       (e.g. if a user quickly re-adds the attachment, it would save the re-creation by hash lookup)
-    //       (but to keep things simple for now we're just going to delete it)
-    //
-    await Promise.all(
-      attachments.map(async (attachment) => {
-        try {
-          if (attachment.counter === 0 && attachment.magic === 0)
-            await Attachments.deleteOne(
-              instance,
-              session,
-              { _id: attachment._id },
-              { lock }
-            );
-        } catch (err) {
-          logger.fatal(err, { attachment });
-        }
-      })
-    );
+    let newLock;
+    if (!lock) newLock = await acquireLock(this, session.db);
+
+    let err;
+
+    try {
+      if (isTransaction) {
+        updateAttachments(attachmentIds, magic, session);
+      } else {
+        session.db.transaction(() => {
+          updateAttachments(attachmentIds, magic, session);
+        });
+      }
+    } catch (_err) {
+      err = _err;
+    }
+
+    // release lock
+    if (newLock?.success) {
+      try {
+        await releaseLock(instance, session.db, newLock);
+      } catch (err) {
+        logger.fatal(err, { attachmentIds, magic });
+      }
+    }
+
+    if (err) throw err;
   }
 }
 

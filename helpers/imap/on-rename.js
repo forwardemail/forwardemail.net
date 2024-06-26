@@ -35,6 +35,7 @@ async function onRename(path, newPath, session, fn) {
         newPath
       });
       fn(null, ...data);
+      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -104,10 +105,10 @@ async function onRename(path, newPath, session, fn) {
       mailbox: mailbox._id,
       path: renamedMailbox.path
     });
-    this.server.notifier.fire(session.user.alias_id);
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { path, session });

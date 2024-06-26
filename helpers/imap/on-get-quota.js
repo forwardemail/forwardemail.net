@@ -16,7 +16,6 @@
  */
 
 const Aliases = require('#models/aliases');
-const Domains = require('#models/domains');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onGetQuota(path, session, fn) {
@@ -46,14 +45,15 @@ async function onGetQuota(path, session, fn) {
 
     if (path !== '') return fn(null, 'NONEXISTENT');
 
-    const [storageUsed, maxQuotaPerAlias] = await Promise.all([
-      Aliases.getStorageUsed({
+    const { storageUsed, maxQuotaPerAlias } = await Aliases.isOverQuota(
+      {
         id: session.user.alias_id,
         domain: session.user.domain_id,
         locale: session.user.locale
-      }),
-      Domains.getMaxQuota(session.user.domain_id)
-    ]);
+      },
+      0,
+      this.client
+    );
 
     fn(null, {
       root: '',

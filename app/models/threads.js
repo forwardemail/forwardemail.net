@@ -29,7 +29,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const {
   dummyProofModel,
   dummySchemaOptions,
-  convertResult,
+  syncConvertResult,
   sqliteVirtualDB
 } = require('#helpers/mongoose-to-sqlite');
 
@@ -126,7 +126,7 @@ async function getThreadId(instance, session, subject, mimeTree) {
     }
 
     if (thread) {
-      thread = await convertResult(this, thread);
+      thread = syncConvertResult(this, thread);
 
       for (const id of referenceIds) {
         thread.ids.push(id);
@@ -145,37 +145,12 @@ async function getThreadId(instance, session, subject, mimeTree) {
           },
           modifier: {
             ids: safeStringify(thread.ids)
-          }
+          },
+          returning: ['*']
         });
-
-        // result of this will be like:
-        // `{ changes: 1, lastInsertRowid: 11 }`
 
         // use websockets if readonly
         if (session.db.readonly) {
-          await instance.wsp.request({
-            action: 'stmt',
-            session: { user: session.user },
-            stmt: [
-              ['prepare', sql.query],
-              ['run', sql.values]
-            ]
-          });
-        } else {
-          session.db.prepare(sql.query).run(sql.values);
-        }
-      }
-
-      {
-        const sql = builder.build({
-          type: 'select',
-          table: 'Threads',
-          condition: {
-            _id: thread._id.toString()
-          }
-        });
-
-        if (instance.wsp) {
           thread = await instance.wsp.request({
             action: 'stmt',
             session: { user: session.user },
@@ -187,10 +162,10 @@ async function getThreadId(instance, session, subject, mimeTree) {
         } else {
           thread = session.db.prepare(sql.query).get(sql.values);
         }
-
-        if (!thread) throw new TypeError('Thread does not exist');
-        thread = await convertResult(this, thread);
       }
+
+      if (!thread) throw new TypeError('Thread does not exist');
+      thread = syncConvertResult(this, thread);
     }
   }
 

@@ -28,6 +28,7 @@ const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const helperLogger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
+const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const logger =
   config.env === 'development' ? helperLogger : new Axe({ silent: true });
@@ -86,19 +87,49 @@ class IMAPNotifier extends EventEmitter {
       }
     };
 
+    // <https://github.com/nodemailer/wildduck/commit/5721047bc1c23b816f08cbf1cba7fbe494724af5>
     this.subscriber.on('message', (channel, message) => {
       if (channel !== config.IMAP_REDIS_CHANNEL_NAME) return;
+
       let data;
-      try {
-        data = JSON.parse(message);
-      } catch {
-        return;
+      // if e present at beginning, check if p also is present
+      // if no p -> no json parse
+      // if p -> json parse ONLY p
+      // if e not in beginning but p is -> json parse whole
+
+      let needFullParse = true;
+
+      if (
+        message.length === 32 &&
+        message[2] === 'e' &&
+        message[5] === '"' &&
+        message[6 + 24] === '"'
+      ) {
+        // there is only e, no p -> no need for full parse
+        needFullParse = false;
       }
 
-      if (data.e && !data.p) {
-        scheduleDataEvent(data.e);
-      } else if (data.e) {
-        this._listeners.emit(data.e, data.p);
+      if (needFullParse) {
+        // full parse
+        try {
+          data = JSON.parse(message);
+        } catch {
+          return;
+        }
+      } else {
+        // get e and continue
+        data = { e: message.slice(6, 6 + 24) };
+      }
+
+      if (this._listeners._events[data.e]?.length > 0) {
+        // do not schedule or fire/emit empty events
+        if (data.e && !data.p) {
+          // events without payload are scheduled, these are notifications about changes in journal
+          scheduleDataEvent(data.e);
+        } else if (data.e) {
+          // events with payload are triggered immediatelly, these are actions for doing something
+          this._listeners.emit(data.e, data.p);
+        }
       }
     });
 
@@ -164,122 +195,142 @@ class IMAPNotifier extends EventEmitter {
     // safeguard
     if (_.isEmpty(query) || !query._id) throw new Error('Query empty');
 
-    if (updated.length > 0) {
-      mailbox = await Mailboxes.findOneAndUpdate(
-        instance,
-        session,
-        query,
-        {
-          $inc: {
-            modifyIndex: 1
-          }
-        },
-        {
-          lock,
-          returnDocument: 'after'
-        }
-      );
-    }
+    let newLock;
+    if (!lock) newLock = await acquireLock(instance, session.db);
 
-    if (!mailbox) mailbox = await Mailboxes.findOne(instance, session, query);
+    let err;
 
-    if (!mailbox)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          responseCode: 404,
-          code: 'NoSuchMailbox'
-        }
-      );
-
-    const modseq = mailbox.modifyIndex;
-    const created = new Date();
-
-    const bulk = Journals.collection.initializeUnorderedBulkOp();
-
-    for (const entry of entries) {
-      entry.modseq = entry.modseq || modseq;
-      entry.created = entry.created || created;
-      entry.mailbox = entry.mailbox || mailbox._id;
-      const doc = new Journals(entry).toObject({
-        bson: true,
-        transform: false,
-        virtuals: true,
-        getters: true,
-        _skipDepopulateTopLevel: true,
-        depopulate: true,
-        flattenDecimals: false,
-        useProjection: false
-      });
-      doc.object = 'journal';
-      doc.id = doc._id.toString();
-      const now = new Date();
-      doc.created_at = now;
-      doc.updated_at = now;
-      bulk.insert(doc);
-    }
-
-    if (updated.length > 0) {
-      logger.debug('updating messages', {
-        entries,
-        modseq,
-        mailbox,
-        updated,
-        session
-      });
-
-      try {
-        const condition = {
-          _id: {
-            $in: updated
-          },
-          modseq: {
-            $lt: modseq
-          }
-        };
-        const sql = builder.build({
-          type: 'update',
-          table: 'Messages',
-          condition,
-          modifier: {
-            $set: {
-              modseq
+    try {
+      if (updated.length > 0) {
+        mailbox = await Mailboxes.findOneAndUpdate(
+          instance,
+          session,
+          query,
+          {
+            $inc: {
+              modifyIndex: 1
             }
+          },
+          {
+            lock,
+            returnDocument: 'after'
           }
+        );
+      }
+
+      if (!mailbox) mailbox = await Mailboxes.findOne(instance, session, query);
+
+      if (!mailbox)
+        throw new IMAPError(
+          i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+          {
+            responseCode: 404,
+            code: 'NoSuchMailbox'
+          }
+        );
+
+      const modseq = mailbox.modifyIndex;
+      const created = new Date();
+
+      const bulk = Journals.collection.initializeUnorderedBulkOp();
+
+      for (const entry of entries) {
+        entry.modseq = entry.modseq || modseq;
+        entry.created = entry.created || created;
+        entry.mailbox = entry.mailbox || mailbox._id;
+        const doc = new Journals(entry).toObject({
+          bson: true,
+          transform: false,
+          virtuals: true,
+          getters: true,
+          _skipDepopulateTopLevel: true,
+          depopulate: true,
+          flattenDecimals: false,
+          useProjection: false
+        });
+        doc.object = 'journal';
+        doc.id = doc._id.toString();
+        const now = new Date();
+        doc.created_at = now;
+        doc.updated_at = now;
+        bulk.insert(doc);
+      }
+
+      if (updated.length > 0) {
+        logger.debug('updating messages', {
+          entries,
+          modseq,
+          mailbox,
+          updated,
+          session
         });
 
-        if (instance.wsp) {
-          await instance.wsp.request({
-            action: 'stmt',
-            session: { user: session.user },
-            lock,
-            stmt: [
-              ['prepare', sql.query],
-              ['run', sql.values]
-            ]
+        try {
+          const condition = {
+            _id: {
+              $in: updated
+            },
+            modseq: {
+              $lt: modseq
+            }
+          };
+          const sql = builder.build({
+            type: 'update',
+            table: 'Messages',
+            condition,
+            modifier: {
+              $set: {
+                modseq
+              }
+            }
           });
-        } else {
-          session.db.prepare(sql.query).run(sql.values);
+
+          if (instance.wsp) {
+            await instance.wsp.request({
+              action: 'stmt',
+              session: { user: session.user },
+              lock,
+              stmt: [
+                ['prepare', sql.query],
+                ['run', sql.values]
+              ]
+            });
+          } else {
+            session.db.prepare(sql.query).run(sql.values);
+          }
+        } catch (err) {
+          logger.fatal(err, { mailbox, updated, modseq, session });
         }
+      }
+
+      logger.debug('creating entries', {
+        entries
+      });
+
+      const bulkResults = await bulk.execute();
+      if (
+        bulkResults?.result?.ok !== 1 ||
+        bulkResults?.writeErrors?.length > 0 ||
+        bulkResults?.writeConcernErrors?.length > 0
+      ) {
+        const err = new TypeError('Bulk write errors');
+        err.bulkResults = bulkResults;
+        throw err;
+      }
+    } catch (_err) {
+      err = _err;
+    }
+
+    // release lock
+    if (newLock?.success) {
+      try {
+        await releaseLock(instance, session.db, newLock);
       } catch (err) {
-        logger.fatal(err, { mailbox, updated, modseq, session });
+        logger.fatal(err, { mailbox, updated, session });
       }
     }
 
-    logger.debug('creating entries', {
-      entries
-    });
-
-    const bulkResults = await bulk.execute();
-    if (
-      bulkResults?.result?.ok !== 1 ||
-      bulkResults?.writeErrors?.length > 0 ||
-      bulkResults?.writeConcernErrors?.length > 0
-    ) {
-      const err = new TypeError('Bulk write errors');
-      err.bulkResults = bulkResults;
-      throw err;
-    }
+    if (err) throw err;
 
     return entries.length;
   }

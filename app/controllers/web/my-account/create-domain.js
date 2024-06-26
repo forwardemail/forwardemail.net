@@ -79,7 +79,13 @@ async function createDomain(ctx, next) {
     // if there was a payment required error before creating the domain
     // it indicates that the domain was most likely a malicious extension
     // redirect to /my-account/domains/new?domain=$domain&plan=enhanced_protection
-    if (err && err.isBoom && err.output && err.output.statusCode === 402) {
+    if (
+      !ctx.api &&
+      err &&
+      err.isBoom &&
+      err.output &&
+      err.output.statusCode === 402
+    ) {
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
       );

@@ -3958,6 +3958,11 @@
   "Need secure and private email?": "Har du brug for sikker og privat e-mail?",
   "Upgrade for $3": "Opgrader for $3",
   "LineageOS": "LineageOS",
-  "Conversion Credit:": "Conversion Credit:",
-  "Next payment due <span class=\"notranslate\">%s<span> on <span class=\"notranslate\">%s</span>.": "Next payment due <span class=\"notranslate\">%s<span> on <span class=\"notranslate\">%s</span>."
+  "Conversion Credit:": "Konverteringskredit:",
+  "Next payment due <span class=\"notranslate\">%s<span> on <span class=\"notranslate\">%s</span>.": "Næste betaling forfalder <span class=\"notranslate\">%s <span>on <span class=\"notranslate\">%s</span> .</span></span>",
+  "Storage used by other aliases": "Lager, der bruges af andre aliaser",
+  "Storage used by this alias": "Lager, der bruges af dette alias",
+  "alias": "alias",
+  "Update Alias": "Opdater Alias",
+  "Recipients must be a line-break/space/comma separated list of valid email addresses, fully-qualified domain names (\"FQDN\"), IP addresses, and/or webhook URL's.  We will automatically remove duplicate entries for you and perform validation when you click \"Update Alias\" below.": "Modtagere skal være en linjeskift/mellemrum/kommasepareret liste over gyldige e-mailadresser, fuldt kvalificerede domænenavne (\"FQDN\"), IP-adresser og/eller webhook-URL'er.  Vi fjerner automatisk duplikerede poster for dig og udfører validering, når du klikker på \"Opdater alias\" nedenfor."
 }

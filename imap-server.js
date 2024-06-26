@@ -137,7 +137,7 @@ class IMAP {
 
     // override logger
     server.logger = this.logger;
-    server.loggelf = (...args) => this.logger.debug(...args);
+    server.loggelf = () => {}; // (...args) => this.logger.debug(...args);
 
     server.onAuth = onAuth.bind(this);
     server.onAppend = imap.onAppend.bind(this);

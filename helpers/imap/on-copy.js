@@ -17,32 +17,18 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
-const { boolean } = require('boolean');
+// const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
+const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
-const updateStorageUsed = require('#helpers/update-storage-used');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
-
-//
-// NOTE: this is custom function since `JSON.parse` on the entire
-//       message's `mimeTree` would be incredible slow (1ms+)
-//
-const ATTACHMENT_MAP_STR = ',"attachmentMap":{';
-function getAttachments(mimeTree) {
-  const index = mimeTree.indexOf(ATTACHMENT_MAP_STR);
-  if (index === -1) return [];
-  return Object.values(
-    JSON.parse(
-      `{${mimeTree.slice(index + ATTACHMENT_MAP_STR.length).split('}')[0]}}`
-    )
-  );
-}
 
 // eslint-disable-next-line max-params
 async function onCopy(connection, mailboxId, update, session, fn) {
@@ -73,6 +59,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       });
       clearTimeout(timeout);
       fn(null, bool, response);
+      this.server.notifier.fire(session.user.alias_id, update.destination);
     } catch (err) {
       clearTimeout(timeout);
       fn(err);
@@ -239,11 +226,11 @@ async function onCopy(connection, mailboxId, update, session, fn) {
               command: 'EXISTS',
               uid: m.uid,
               mailbox: targetMailbox._id,
-              message: _id,
-              thread: new mongoose.Types.ObjectId(m.thread),
-              unseen: boolean(m.unseen),
-              idate: new Date(m.idate),
-              junk: boolean(m.junk)
+              message: _id
+              // thread: new mongoose.Types.ObjectId(m.thread),
+              // unseen: boolean(m.unseen),
+              // idate: new Date(m.idate),
+              // junk: boolean(m.junk)
             });
           }
 
@@ -364,6 +351,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
 
     // update storage
     try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { connection, mailboxId, update, session });
@@ -374,9 +362,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         this,
         session,
         targetMailbox._id,
-        entries.reverse()
+        entries
       );
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     fn(null, true, {

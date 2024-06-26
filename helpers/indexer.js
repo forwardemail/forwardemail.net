@@ -310,10 +310,9 @@ class Indexer extends WildDuckIndexer {
           }
 
           if (data) {
-            await write(Buffer.isBuffer(data) ? data.toString('binary') : data);
-            // await write(
-            //   Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
-            // );
+            await write(
+              Buffer.isBuffer(data) ? data : Buffer.from(data, 'binary')
+            );
           }
         }
 
@@ -333,12 +332,10 @@ class Indexer extends WildDuckIndexer {
         isRootNode = false;
         if (Buffer.isBuffer(node.body)) {
           // node Buffer
-          // remainder = node.body;
-          remainder = node.body.toString('binary');
+          remainder = node.body;
         } else if (node.body && node.body.buffer) {
           // mongodb Binary
-          // remainder = node.body.buffer;
-          remainder = node.body.buffer.toString('binary');
+          remainder = node.body.buffer;
         } else if (typeof node.body === 'string') {
           // binary string
           remainder = Buffer.from(node.body, 'binary');
@@ -348,9 +345,6 @@ class Indexer extends WildDuckIndexer {
         }
 
         if (node.boundary) {
-          // this is a multipart node, so start with initial boundary before continuing
-          // TODO: <https://github.com/nodemailer/wildduck/issues/571>
-          // await emit(`\r\n--${node.boundary}`);
           await emit(`--${node.boundary}`);
         } else if (node.attachmentId && !options.skipExternal) {
           await emit(false, true); // force newline between header and contents

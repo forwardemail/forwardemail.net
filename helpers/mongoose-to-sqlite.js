@@ -138,120 +138,95 @@ async function updateMany(
 
   let beforeDocs = [];
 
-  if (options?.returnDocument !== 'after') {
-    const sql = builder.build({
-      type: 'select',
-      table,
-      condition
-    });
+  // acquire lock if options.lock not set
+  let lock;
+  if (!options?.lock) lock = await acquireLock(instance, session.db);
 
-    if (instance.wsp) {
-      beforeDocs = await instance.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        lock: options.lock,
-        stmt: [
-          ['prepare', sql.query],
-          ['all', sql.values]
-        ]
+  let docs;
+  let err;
+
+  try {
+    if (options?.returnDocument !== 'after') {
+      const sql = builder.build({
+        type: 'select',
+        table,
+        condition
       });
-    } else {
-      beforeDocs = session.db.prepare(sql.query).all(sql.values);
-    }
-  }
 
-  // only support limited `update` keys (add more as we go)
-  {
-    const keys = Object.keys(update);
-    if (keys.length === 0)
-      throw new TypeError('At least one update condition is required');
-
-    // <https://github.com/2do2go/json-sql/blob/4be018c0662dacba06ddf033d18e71ebf93ee7c3/docs/README.md?plain=1#L989>
-    for (const key of keys) {
-      if (keys.filter((k) => k === key).length > 1)
-        throw new TypeError('Only one of each type is supported');
-
-      if (key !== '$set' && key !== '$inc')
-        throw new TypeError('Only $set and $inc are supported');
-
-      if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
-    }
-
-    const sql = builder.build({
-      type: 'update',
-      table,
-      condition,
-      modifier: update
-    });
-
-    // acquire lock if options.lock not set
-    let lock;
-    if (!options?.lock) {
-      lock = await acquireLock(instance, session.db);
-    }
-
-    let err;
-
-    // result of this will be like:
-    // `{ changes: 1, lastInsertRowid: 11 }`
-    try {
-      if (session.db.readonly) {
-        await instance.wsp.request({
+      if (instance.wsp) {
+        beforeDocs = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
           lock: options.lock || lock,
           stmt: [
             ['prepare', sql.query],
-            ['run', sql.values]
+            ['all', sql.values]
           ]
         });
       } else {
-        session.db.prepare(sql.query).run(sql.values);
-      }
-    } catch (_err) {
-      err = _err;
-    }
-
-    // release lock if options.lock not set
-    if (lock) {
-      try {
-        await releaseLock(instance, session.db, lock);
-      } catch (err) {
-        logger.fatal(err, { lock });
+        beforeDocs = session.db.prepare(sql.query).all(sql.values);
       }
     }
 
-    // throw error if any
-    if (err) throw err;
-  }
+    // only support limited `update` keys (add more as we go)
+    {
+      const keys = Object.keys(update);
+      if (keys.length === 0)
+        throw new TypeError('At least one update condition is required');
 
-  const sql = builder.build({
-    type: 'select',
-    table,
-    condition
-  });
+      // <https://github.com/2do2go/json-sql/blob/4be018c0662dacba06ddf033d18e71ebf93ee7c3/docs/README.md?plain=1#L989>
+      for (const key of keys) {
+        if (keys.filter((k) => k === key).length > 1)
+          throw new TypeError('Only one of each type is supported');
 
-  if (options?.returnDocument === 'after') {
-    let docs;
-    if (instance.wsp) {
-      docs = await instance.wsp.request({
-        action: 'stmt',
-        session: { user: session.user },
-        lock: options.lock,
-        stmt: [
-          ['prepare', sql.query],
-          ['all', sql.values]
-        ]
+        if (key !== '$set' && key !== '$inc')
+          throw new TypeError('Only $set and $inc are supported');
+
+        if (key === '$set') update[key] = prepareQuery(mapping, update[key]);
+      }
+
+      const sql = builder.build({
+        type: 'update',
+        table,
+        condition,
+        modifier: update,
+        returning: ['*']
       });
-    } else {
-      docs = session.db.prepare(sql.query).all(sql.values);
-    }
 
-    return Promise.all(docs.map((doc) => convertResult(this, doc)));
+      if (session.db.readonly) {
+        docs = await instance.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          lock: options.lock || lock,
+          stmt: [
+            ['prepare', sql.query],
+            ['all', sql.values]
+          ]
+        });
+      } else {
+        docs = session.db.prepare(sql.query).all(sql.values);
+      }
+    }
+  } catch (_err) {
+    err = _err;
   }
 
-  // session.db.prepare(sql.query).all(sql.values);
-  return Promise.all(beforeDocs.map((doc) => convertResult(this, doc)));
+  // release lock if options.lock not set
+  if (lock?.success) {
+    try {
+      await releaseLock(instance, session.db, lock);
+    } catch (err) {
+      logger.fatal(err, { lock });
+    }
+  }
+
+  // throw error if any
+  if (err) throw err;
+
+  if (options?.returnDocument === 'after')
+    return docs.map((doc) => syncConvertResult(this, doc));
+
+  return beforeDocs.map((doc) => syncConvertResult(this, doc));
 }
 
 async function countDocuments(instance, session, filter = {}) {
@@ -637,13 +612,15 @@ async function $__handleSave(options = {}, fn) {
     const values = prepareQuery(mapping, this);
 
     let err;
+    let doc;
 
     try {
       if (this.isNew) {
         const sql = builder.build({
           type: 'insert',
           table,
-          values
+          values,
+          returning: ['*']
         });
 
         // acquire lock if options.lock not set
@@ -652,17 +629,17 @@ async function $__handleSave(options = {}, fn) {
 
         // use websockets if readonly
         if (this.session.db.readonly) {
-          await this.instance.wsp.request({
+          doc = await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
             lock: this.lock || options.lock || lock,
             stmt: [
               ['prepare', sql.query],
-              ['run', sql.values]
+              ['get', sql.values]
             ]
           });
         } else {
-          this.session.db.prepare(sql.query).run(sql.values);
+          doc = this.session.db.prepare(sql.query).get(sql.values);
         }
       } else {
         const sql = builder.build({
@@ -671,24 +648,25 @@ async function $__handleSave(options = {}, fn) {
           condition: {
             _id: this._id.toString()
           },
-          modifier: values
+          modifier: values,
+          returning: ['*']
         });
         // acquire lock if options.lock not set
         if (!this.lock && !options?.lock)
           lock = await acquireLock(this.instance, this.session.db);
         // use websockets if readonly
         if (this.session.db.readonly) {
-          await this.instance.wsp.request({
+          doc = await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
             lock: this.lock || options.lock || lock,
             stmt: [
               ['prepare', sql.query],
-              ['run', sql.values]
+              ['get', sql.values]
             ]
           });
         } else {
-          this.session.db.prepare(sql.query).run(sql.values);
+          doc = this.session.db.prepare(sql.query).get(sql.values);
         }
       }
     } catch (_err) {
@@ -707,35 +685,9 @@ async function $__handleSave(options = {}, fn) {
     // throw error if any
     if (err) throw err;
 
-    {
-      const sql = builder.build({
-        type: 'select',
-        table,
-        condition: {
-          _id: this._id.toString()
-        }
-      });
-
-      let doc;
-
-      if (this.instance.wsp) {
-        doc = await this.instance.wsp.request({
-          action: 'stmt',
-          session: { user: this.session.user },
-          lock: this.lock || options.lock,
-          stmt: [
-            ['prepare', sql.query],
-            ['get', sql.values]
-          ]
-        });
-      } else {
-        doc = this.session.db.prepare(sql.query).get(sql.values);
-      }
-
-      if (!doc) throw new TypeError('Document failed to save');
-      doc = await convertResult(this.constructor, doc, {}, true);
-      fn(null, doc);
-    }
+    if (!doc) throw new TypeError('Document failed to save');
+    doc = syncConvertResult(this.constructor, doc);
+    fn(null, doc);
   } catch (err) {
     // release lock if options.lock not set
     if (lock) {
@@ -800,161 +752,135 @@ async function findOneAndUpdate(
   );
   if (!beforeDoc) return null;
 
-  // only support limited `options` keys (add more as we go)
-  {
-    const keys = Object.keys(options);
-    for (const key of keys) {
-      if (keys.filter((k) => k === key).length > 1)
-        throw new TypeError('Only one of each type is supported');
-      if (key !== 'returnDocument' && key !== 'lock')
-        throw new TypeError(`Key type ${key} is not yet supported`);
-      if (
-        key === 'returnDocument' &&
-        !['before', 'after'].includes(options[key])
-      )
-        throw new TypeError(
-          `returnDocument must be "before" or "after" and it was "${options[key]}"`
-        );
-    }
-  }
+  // acquire lock if options.lock not set
+  let lock;
+  if (!options?.lock) lock = await acquireLock(instance, session.db);
 
-  // only support limited `update` keys (add more as we go)
-  {
-    const keys = Object.keys(update);
-    if (keys.length === 0)
-      throw new TypeError('At least one update condition is required');
+  let doc;
+  let err;
 
-    // <https://github.com/2do2go/json-sql/blob/4be018c0662dacba06ddf033d18e71ebf93ee7c3/docs/README.md?plain=1#L989>
-    for (const key of keys) {
-      if (keys.filter((k) => k === key).length > 1)
-        throw new TypeError('Only one of each type is supported');
-
-      if (key !== '$set' && key !== '$inc' && key !== '$addToSet')
-        throw new TypeError('Only $set, $inc, and $addToSet are supported');
-
-      if (key === '$addToSet') {
-        for (const prop of Object.keys(update.$addToSet)) {
-          // only support boolean, string, or number (not array or object)
-          if (!['boolean', 'string', 'number'].includes(typeof prop))
-            throw new TypeError(
-              'Only boolean, string, number are supported for $addToSet'
-            );
-          // ensure that the same prop doesn't exist in a $set
-          if (update.$set && update.$set[prop])
-            throw new TypeError(
-              'You cannot use both $addToSet and $set for the same prop'
-            );
-          // ensure the prop we're trying to push to is an array
-          if (!Array.isArray(beforeDoc[prop]))
-            throw new TypeError('Prop was not an array');
-
-          // if it was an object
-          if (typeof update.$addToSet[prop] === 'object') {
-            // only support one key which is $each
-            for (const subProp of Object.keys(update.$addToSet[prop])) {
-              if (subProp !== '$each')
-                throw new TypeError(
-                  'Only $each is supported in $addToSet objects'
-                );
-              if (!Array.isArray(update.$addToSet[prop].$each))
-                throw new TypeError('$each must be an array');
-              // only add to the set if it doesn't exist
-              for (const val of update.$addToSet[prop].$each) {
-                if (!beforeDoc[prop].includes(val)) {
-                  if (!update.$set) update.$set = {};
-
-                  update.$set[prop] = [...beforeDoc[prop], val];
-                }
-              }
-            }
-          } else if (!beforeDoc[prop].includes(update.$addToSet[prop])) {
-            // only add to the set if it doesn't exist
-            if (!update.$set) update.$set = {};
-
-            update.$set[prop] = [...beforeDoc[prop], update.$addToSet[prop]];
-          }
-        }
-
-        // delete $addToSet from the query preparation
-        delete update.$addToSet;
+  try {
+    // only support limited `options` keys (add more as we go)
+    {
+      const keys = Object.keys(options);
+      for (const key of keys) {
+        if (keys.filter((k) => k === key).length > 1)
+          throw new TypeError('Only one of each type is supported');
+        if (key !== 'returnDocument' && key !== 'lock')
+          throw new TypeError(`Key type ${key} is not yet supported`);
+        if (
+          key === 'returnDocument' &&
+          !['before', 'after'].includes(options[key])
+        )
+          throw new TypeError(
+            `returnDocument must be "before" or "after" and it was "${options[key]}"`
+          );
       }
     }
 
-    if (update.$set) update.$set = prepareQuery(mapping, update.$set);
+    // only support limited `update` keys (add more as we go)
+    {
+      const keys = Object.keys(update);
+      if (keys.length === 0)
+        throw new TypeError('At least one update condition is required');
 
-    const sql = builder.build({
-      type: 'update',
-      table,
-      condition: {
-        _id: beforeDoc._id.toString()
-      },
-      modifier: update
-    });
+      // <https://github.com/2do2go/json-sql/blob/4be018c0662dacba06ddf033d18e71ebf93ee7c3/docs/README.md?plain=1#L989>
+      for (const key of keys) {
+        if (keys.filter((k) => k === key).length > 1)
+          throw new TypeError('Only one of each type is supported');
 
-    // acquire lock if options.lock not set
-    let lock;
-    if (!options?.lock) lock = await acquireLock(instance, session.db);
+        if (key !== '$set' && key !== '$inc' && key !== '$addToSet')
+          throw new TypeError('Only $set, $inc, and $addToSet are supported');
 
-    let err;
+        if (key === '$addToSet') {
+          for (const prop of Object.keys(update.$addToSet)) {
+            // only support boolean, string, or number (not array or object)
+            if (!['boolean', 'string', 'number'].includes(typeof prop))
+              throw new TypeError(
+                'Only boolean, string, number are supported for $addToSet'
+              );
+            // ensure that the same prop doesn't exist in a $set
+            if (update.$set && update.$set[prop])
+              throw new TypeError(
+                'You cannot use both $addToSet and $set for the same prop'
+              );
+            // ensure the prop we're trying to push to is an array
+            if (!Array.isArray(beforeDoc[prop]))
+              throw new TypeError('Prop was not an array');
 
-    try {
-      // result of this will be like:
-      // `{ changes: 1, lastInsertRowid: 11 }`
+            // if it was an object
+            if (typeof update.$addToSet[prop] === 'object') {
+              // only support one key which is $each
+              for (const subProp of Object.keys(update.$addToSet[prop])) {
+                if (subProp !== '$each')
+                  throw new TypeError(
+                    'Only $each is supported in $addToSet objects'
+                  );
+                if (!Array.isArray(update.$addToSet[prop].$each))
+                  throw new TypeError('$each must be an array');
+                // only add to the set if it doesn't exist
+                for (const val of update.$addToSet[prop].$each) {
+                  if (!beforeDoc[prop].includes(val)) {
+                    if (!update.$set) update.$set = {};
+
+                    update.$set[prop] = [...beforeDoc[prop], val];
+                  }
+                }
+              }
+            } else if (!beforeDoc[prop].includes(update.$addToSet[prop])) {
+              // only add to the set if it doesn't exist
+              if (!update.$set) update.$set = {};
+
+              update.$set[prop] = [...beforeDoc[prop], update.$addToSet[prop]];
+            }
+          }
+
+          // delete $addToSet from the query preparation
+          delete update.$addToSet;
+        }
+      }
+
+      if (update.$set) update.$set = prepareQuery(mapping, update.$set);
+
+      const sql = builder.build({
+        type: 'update',
+        table,
+        condition: {
+          _id: beforeDoc._id.toString()
+        },
+        modifier: update,
+        returning: ['*']
+      });
+
       if (session.db.readonly) {
-        await instance.wsp.request({
+        doc = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
           lock: options.lock || lock,
           stmt: [
             ['prepare', sql.query],
-            ['run', sql.values]
+            ['get', sql.values]
           ]
         });
       } else {
-        session.db.prepare(sql.query).run(sql.values);
-      }
-    } catch (_err) {
-      err = _err;
-      err.sql = sql;
-      err.update = update;
-    }
-
-    // release lock if options.lock not set
-    if (lock) {
-      try {
-        await releaseLock(instance, session.db, lock);
-      } catch (err) {
-        logger.fatal(err, { lock });
+        doc = session.db.prepare(sql.query).get(sql.values);
       }
     }
-
-    // throw error if any
-    if (err) throw err;
+  } catch (_err) {
+    err = _err;
   }
 
-  const sql = builder.build({
-    type: 'select',
-    table,
-    condition: {
-      _id: beforeDoc._id.toString()
+  // release lock if options.lock not set
+  if (lock) {
+    try {
+      await releaseLock(instance, session.db, lock);
+    } catch (err) {
+      logger.fatal(err, { lock });
     }
-  });
-
-  let doc;
-
-  if (instance.wsp) {
-    doc = await instance.wsp.request({
-      action: 'stmt',
-      session: { user: session.user },
-      lock: options.lock,
-      stmt: [
-        ['prepare', sql.query],
-        ['get', sql.values]
-      ]
-    });
-  } else {
-    doc = session.db.prepare(sql.query).get(sql.values);
   }
+
+  // throw error if any
+  if (err) throw err;
 
   if (!doc) throw new TypeError('Document does not exist');
   doc = await convertResult(this, doc, options?.projection, true);
@@ -999,380 +925,6 @@ async function distinct(instance, session, field, conditions = {}) {
   return docs;
 }
 
-// eslint-disable-next-line complexity
-async function bulkWrite(instance, session, ops = [], options = {}) {
-  if (!Array.isArray(ops) || ops.length === 0)
-    throw new TypeError('Ops is empty');
-
-  if (!_.isEmpty(options)) throw new TypeError('Options not yet supported');
-
-  const table = this?.collection?.modelName;
-  if (!isSANB(table)) throw new TypeError('Table name missing');
-  const mapping = this?.mapping;
-  if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
-  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
-    throw new TypeError('Database is missing');
-
-  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
-    throw new TypeError('WebSocketAsPromised instance required');
-
-  if (typeof session?.user?.password !== 'string')
-    throw new TypeError('Session user and password missing');
-
-  //
-  // TODO: rewrite this to use transaction (similar to on move)
-  //
-  for (const op of ops) {
-    try {
-      if (typeof op !== 'object') throw new TypeError('Op must be an object');
-      for (const key of Object.keys(op)) {
-        if (key !== 'updateOne')
-          throw new TypeError('updateOnly is only permitted');
-
-        // op = {
-        //   updateOne: {
-        //     filter: {
-        //       _id: message._id,
-        //       mailbox: mailbox._id,
-        //       uid: message.uid
-        //     },
-        //     update: {
-        //       $addToSet: {
-        //         flags: '\\Seen'
-        //       },
-        //       $set: {
-        //         unseen: false
-        //       }
-        //     }
-        //   }
-        // }
-
-        if (key === 'updateOne') {
-          for (const prop of Object.keys(op[key])) {
-            if (prop !== 'filter' && prop !== 'update')
-              throw new TypeError('Only filter and update are permitted');
-          }
-
-          if (typeof op?.updateOne?.filter !== 'object')
-            throw new TypeError('Update required');
-          if (typeof op?.updateOne?.update !== 'object')
-            throw new TypeError('Update required');
-
-          //
-          // since json-sql doesn't have $addToSet modifier support we do some manual work
-          // (but in future we could use sqlite json functions to parse and add to the array probably)
-          //
-
-          // every operation must be $addToSet, $inc, or $set (for now)
-          if (
-            Object.keys(op.updateOne.update).some(
-              (k) =>
-                !['$addToSet', '$pull', '$inc', '$set', '$unset'].includes(k)
-            )
-          )
-            throw new TypeError(
-              'Every operation must be either $addToSet, $inc, $set, or $unset'
-            );
-
-          let doc;
-
-          if (op.updateOne.update.$addToSet) {
-            // get the existing record from the database so we can modify it
-            if (!doc)
-              // eslint-disable-next-line no-await-in-loop
-              doc = await findOne.call(
-                this,
-                instance,
-                session,
-                op.updateOne.filter
-              );
-
-            if (!doc) {
-              const err = new TypeError('Doc does not exist');
-              err.op = op;
-              err.operator = '$addToSet';
-              err.filter = op.updateOne.filter;
-              throw err;
-            }
-
-            for (const prop of Object.keys(op.updateOne.update.$addToSet)) {
-              // only support boolean, string, or number (not array or object)
-              if (!['boolean', 'string', 'number'].includes(typeof prop))
-                throw new TypeError(
-                  'Only boolean, string, number are supported for $addToSet'
-                );
-              // ensure that the same prop doesn't exist in a $set
-              if (op.updateOne.update.$set && op.updateOne.update.$set[prop])
-                throw new TypeError(
-                  'You cannot use both $addToSet and $set for the same prop'
-                );
-              // ensure the prop we're trying to push to is an array
-              if (!Array.isArray(doc[prop]))
-                throw new TypeError('Prop was not an array');
-
-              // if it was an object
-              if (typeof op.updateOne.update.$addToSet[prop] === 'object') {
-                // only support one key which is $each
-                for (const subProp of Object.keys(
-                  op.updateOne.update.$addToSet[prop]
-                )) {
-                  if (subProp !== '$each')
-                    throw new TypeError(
-                      'Only $each is supported in $addToSet objects'
-                    );
-                  if (!Array.isArray(op.updateOne.update.$addToSet[prop].$each))
-                    throw new TypeError('$each must be an array');
-                  // only add to the set if it doesn't exist
-                  for (const val of op.updateOne.update.$addToSet[prop].$each) {
-                    if (!doc[prop].includes(val)) {
-                      if (!op.updateOne.update.$set)
-                        op.updateOne.update.$set = {};
-
-                      op.updateOne.update.$set[prop] = [...doc[prop], val];
-                    }
-                  }
-                }
-              } else if (
-                !doc[prop].includes(op.updateOne.update.$addToSet[prop])
-              ) {
-                // only add to the set if it doesn't exist
-                if (!op.updateOne.update.$set) op.updateOne.update.$set = {};
-
-                op.updateOne.update.$set[prop] = [
-                  ...doc[prop],
-                  op.updateOne.update.$addToSet[prop]
-                ];
-              }
-            }
-
-            // delete $addToSet from the query preparation
-            delete op.updateOne.update.$addToSet;
-          }
-
-          if (op.updateOne.update.$pull) {
-            if (typeof op.updateOne.update.$pull !== 'object')
-              throw new TypeError('$pull must be an object');
-
-            // get the existing record from the database so we can modify it
-            if (!doc)
-              // eslint-disable-next-line no-await-in-loop
-              doc = await findOne.call(
-                this,
-                instance,
-                session,
-                op.updateOne.filter
-              );
-
-            if (!doc) {
-              const err = new TypeError('Doc does not exist');
-              err.op = op;
-              err.operator = '$pull';
-              err.filter = op.updateOne.filter;
-              throw err;
-            }
-
-            // op.updateOne.update {
-            //   '$pull': { flags: { '$in': [Array] } },
-            //   ...
-            // }
-            //
-            // (or)
-            //
-            // op.updateOne.update {
-            //   '$pull': { flags: 'Some-String' },
-            //   ...
-            // }
-            for (const prop of Object.keys(op.updateOne.update.$pull)) {
-              // ensure that the same prop doesn't exist in a $set
-              if (op.updateOne.update.$set && op.updateOne.update.$set[prop])
-                throw new TypeError(
-                  'You cannot use both $pull and $set for the same prop'
-                );
-
-              // ensure the prop we're trying to push to is an array
-              if (!Array.isArray(doc[prop]))
-                throw new TypeError('Prop was not an array');
-
-              if (
-                ['string', 'number', 'boolean'].includes(
-                  typeof op.updateOne.update.$pull[prop]
-                )
-              ) {
-                // only add it to the set if it exists for removal
-                if (doc[prop].includes(op.updateOne.update.$pull[prop])) {
-                  if (!op.updateOne.update.$set) op.updateOne.update.$set = {};
-                  op.updateOne.update.$set[prop] = _.without(
-                    doc[prop],
-                    op.updateOne.update.$pull[prop]
-                  );
-                }
-              } else if (typeof op.updateOne.update.$pull[prop] === 'object') {
-                // $in supported
-                const keys = Object.keys(op.updateOne.update.$pull[prop]);
-                if (keys.length !== 1 || !keys.includes('$in'))
-                  throw new TypeError(
-                    'Only $in is supported in object for $pull'
-                  );
-
-                if (Array.isArray(op.updateOne.update.$pull[prop].$in)) {
-                  if (
-                    op.updateOne.update.$pull[prop].$in.every((v) =>
-                      ['string', 'number', 'boolean'].includes(typeof v)
-                    )
-                  ) {
-                    // only make changes if there are some to be made
-                    if (
-                      _.without(
-                        doc[prop],
-                        ...op.updateOne.update.$pull[prop].$in
-                      ).length !== doc[prop].length
-                    ) {
-                      if (!op.updateOne.update.$set)
-                        op.updateOne.update.$set = {};
-                      op.updateOne.update.$set[prop] = _.without(
-                        doc[prop],
-                        ...op.updateOne.update.$pull[prop].$in
-                      );
-                    }
-                  } else {
-                    throw new TypeError(
-                      'All values in $in must be boolean, string, or number'
-                    );
-                  }
-                } else {
-                  throw new TypeError('$in must be an Array in $pull');
-                }
-              } else {
-                throw new TypeError('$pull invalid object prop type');
-              }
-            }
-
-            // delete $pull from the query preparation
-            delete op.updateOne.update.$pull;
-          }
-
-          if (op.updateOne.update.$unset) {
-            for (const prop of Object.keys(op.updateOne.update.$unset)) {
-              // ensure that the same prop doesn't exist in a $set
-              if (op.updateOne.update.$set && op.updateOne.update.$set[prop])
-                throw new TypeError(
-                  'You cannot use both $unset and $set for the same prop'
-                );
-
-              if (!mapping[prop])
-                throw new TypeError(
-                  `Mapping does not exist for ${prop} in ${table}`
-                );
-
-              if (!mapping[prop].default_value)
-                throw new TypeError(
-                  `Default value does not exist for ${prop} in ${table}`
-                );
-
-              if (!op.updateOne.update.$set) op.updateOne.update.$set = {};
-
-              //
-              // NOTE: NULL is not yet supported in json-sql
-              // <https://github.com/2do2go/json-sql/issues/57>
-              // op.updateOne.update.$set[prop] = null;
-              //
-              // (so we use the above workaround where we reset it to default value)
-              //
-              op.updateOne.update.$set[prop] = mapping[prop].default_value;
-            }
-
-            // delete $unset from the query preparation
-            delete op.updateOne.update.$unset;
-          }
-
-          if (op.updateOne.update.$set) {
-            for (const prop of Object.keys(op.updateOne.update.$set)) {
-              // only support boolean, string, or number (not array or object)
-              if (!['boolean', 'string', 'number'].includes(typeof prop))
-                throw new TypeError(
-                  'Only boolean, string, number are supported for $addToSet'
-                );
-            }
-          }
-
-          const modifier = {};
-          for (const key of Object.keys(op.updateOne.update)) {
-            modifier[key] = {};
-            for (const prop of Object.keys(op.updateOne.update[key])) {
-              if (typeof mapping[prop] !== 'object')
-                throw new TypeError(
-                  `Mapping for ${prop} does not exist in ${table}`
-                );
-              if (typeof mapping[prop].setter !== 'function')
-                throw new TypeError(
-                  `Mapping setter function for ${prop} does not exist in ${table}`
-                );
-              modifier[key][prop] = mapping[prop].setter(
-                op.updateOne.update[key][prop]
-              );
-            }
-          }
-
-          const sql = builder.build({
-            type: 'update',
-            table,
-            condition: prepareQuery(mapping, op.updateOne.filter),
-            modifier
-          });
-
-          // TODO: run validate() on all docs before 'update' and 'insert'
-
-          // acquire lock if options.lock not set
-          let lock;
-          // eslint-disable-next-line no-await-in-loop
-          if (!options?.lock) lock = await acquireLock(instance, session.db);
-
-          let err;
-
-          try {
-            // result of this will be like:
-            // `{ changes: 1, lastInsertRowid: 11 }`
-            if (session.db.readonly) {
-              // eslint-disable-next-line no-await-in-loop
-              await instance.wsp.request({
-                action: 'stmt',
-                session: { user: session.user },
-                lock: options.lock || lock,
-                stmt: [
-                  ['prepare', sql.query],
-                  ['run', sql.values]
-                ]
-              });
-            } else {
-              session.db.prepare(sql.query).run(sql.values);
-            }
-          } catch (_err) {
-            err = _err;
-          }
-
-          // release lock if options.lock not set
-          if (lock) {
-            try {
-              // eslint-disable-next-line no-await-in-loop
-              await releaseLock(instance, session.db, lock);
-            } catch (err) {
-              logger.fatal(err, { lock });
-            }
-          }
-
-          // throw error if any
-          if (err) throw err;
-
-          continue;
-        }
-      }
-    } catch (err) {
-      err.op = op;
-      logger.debug(err, { session, op });
-    }
-  }
-}
-
 function dummyProofModel(model) {
   // add createStatement and mapping
   const { createStatement, mapping } = parseSchema(model);
@@ -1397,7 +949,6 @@ function dummyProofModel(model) {
   model.findOneAndUpdate = findOneAndUpdate.bind(model);
   model.distinct = distinct.bind(model);
   model.updateMany = updateMany.bind(model);
-  model.bulkWrite = bulkWrite.bind(model);
 
   // <https://github.com/Automattic/mongoose/blob/7efa1512915c5527bc53d81a2effd3d539324875/lib/model.js#L311-L318>
   model.prototype.$__handleSave = $__handleSave;
