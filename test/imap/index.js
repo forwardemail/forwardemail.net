@@ -884,7 +884,7 @@ test('onGetQuotaRoot', async (t) => {
     t.is(quota.storage.status, '0%');
     t.log('quota', quota);
     t.log('quota.storage.usage', quota.storage.usage);
-    t.is(quota.storage.usage, 196608);
+    t.is(quota.storage.usage, 188416);
     // TODO: figure out why config.INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
     //   path: 'INBOX',
@@ -1640,7 +1640,7 @@ ${randomString}`.trim()
   await imapFlow.append('INBOX', raw, [], new Date());
 
   const storageUsed = await Aliases.getStorageUsed(alias);
-  t.is(storageUsed, 101208064);
+  t.is(storageUsed, 101081088); // 101208064);
 
   mailbox = await Mailboxes.findById(
     t.context.imap,

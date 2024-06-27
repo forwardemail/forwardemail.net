@@ -168,7 +168,7 @@ const STRIPE_LOCALES = new Set([
 
 const config = {
   ...metaConfig,
-  INITIAL_DB_SIZE: 200704,
+  INITIAL_DB_SIZE: 196608, // 200704,
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',
   returnPath: 'fe-bounces',

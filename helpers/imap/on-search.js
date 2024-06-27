@@ -160,10 +160,14 @@ async function onSearch(mailboxId, options, session, fn) {
             for (const id of ids) {
               set.add(id);
             }
+
             // old approach:
             // parent.push({
             //   _id: { $in: ids }
             // });
+            parent.push({
+              _id: { $ne: '' }
+            });
 
             // NOTE: this is the wildduck reference (which does not support NOT matches)
             // search over email body
@@ -322,8 +326,10 @@ async function onSearch(mailboxId, options, session, fn) {
                   for (const id of ids) {
                     set.add(id);
                   }
+
                   // old approach:
                   // entry._id = { $in: ids };
+                  entry._id = { $ne: '' };
                 } else {
                   const sql = {
                     // NOTE: for array lookups:
@@ -341,8 +347,10 @@ async function onSearch(mailboxId, options, session, fn) {
                   for (const id of ids) {
                     set.add(id);
                   }
+
                   // old approach:
                   // entry._id = { $in: ids };
+                  entry._id = { $ne: '' };
                 }
               } else if (ne) {
                 const sql = {
@@ -362,6 +370,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
                 // old approach
                 // entry._id = { $in: ids };
+                entry._id = { $ne: '' };
               } else {
                 const sql = {
                   query: `select _id from Messages, json_each(Messages.headers) where key = $p1;`,
@@ -380,6 +389,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
                 // old approach
                 // entry._id = { $in: ids };
+                entry._id = { $ne: '' };
               }
 
               // wildduck/mongodb version
@@ -623,15 +633,14 @@ async function onSearch(mailboxId, options, session, fn) {
       type: 'select',
       table: 'Messages',
       condition,
-      fields: ['uid', 'modseq']
+      fields: ['_id', 'uid', 'modseq']
     });
 
-    //
-    // NOTE: using `all()` currently for faster performance
-    //       (since we don't write to the socket here)
-    //
-
     try {
+      //
+      // NOTE: using `all()` currently for faster performance
+      //       (since we don't write to the socket here)
+      //
       // const messages = session.db.prepare(sql.query).all(sql.values);
       // for (const message of messages) {
       //   // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
