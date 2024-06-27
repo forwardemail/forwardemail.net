@@ -433,6 +433,7 @@ async function onAuth(auth, session, fn) {
     // (otherwise they're not going to have any mail received)
     //
     if (
+      alias &&
       !alias.has_imap &&
       (this.server instanceof IMAPServer || this.server instanceof POP3Server)
     ) {
