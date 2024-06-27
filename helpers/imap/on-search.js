@@ -76,6 +76,8 @@ async function onSearch(mailboxId, options, session, fn) {
     let highestModseq = 0;
     let returned;
 
+    const set = new Set();
+
     // eslint-disable-next-line complexity, no-inner-declarations
     async function walkQuery(parent, ne, node) {
       if (returned) {
@@ -153,9 +155,15 @@ async function onSearch(mailboxId, options, session, fn) {
 
             const ids = session.db.prepare(sql.query).pluck().all(sql.values);
 
-            parent.push({
-              _id: { $in: ids }
-            });
+            // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+            // new approach:
+            for (const id of ids) {
+              set.add(id);
+            }
+            // old approach:
+            // parent.push({
+            //   _id: { $in: ids }
+            // });
 
             // NOTE: this is the wildduck reference (which does not support NOT matches)
             // search over email body
@@ -309,7 +317,13 @@ async function onSearch(mailboxId, options, session, fn) {
                     .pluck()
                     .all(sql.values);
 
-                  entry._id = { $in: ids };
+                  // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+                  // new approach:
+                  for (const id of ids) {
+                    set.add(id);
+                  }
+                  // old approach:
+                  // entry._id = { $in: ids };
                 } else {
                   const sql = {
                     // NOTE: for array lookups:
@@ -322,7 +336,13 @@ async function onSearch(mailboxId, options, session, fn) {
                     .pluck()
                     .all(sql.values);
 
-                  entry._id = { $in: ids };
+                  // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+                  // new approach:
+                  for (const id of ids) {
+                    set.add(id);
+                  }
+                  // old approach:
+                  // entry._id = { $in: ids };
                 }
               } else if (ne) {
                 const sql = {
@@ -334,7 +354,14 @@ async function onSearch(mailboxId, options, session, fn) {
                   .pluck()
                   .all(sql.values);
 
-                entry._id = { $in: ids };
+                // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+                // new approach:
+                for (const id of ids) {
+                  set.add(id);
+                }
+
+                // old approach
+                // entry._id = { $in: ids };
               } else {
                 const sql = {
                   query: `select _id from Messages, json_each(Messages.headers) where key = $p1;`,
@@ -345,7 +372,14 @@ async function onSearch(mailboxId, options, session, fn) {
                   .pluck()
                   .all(sql.values);
 
-                entry._id = { $in: ids };
+                // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+                // new approach:
+                for (const id of ids) {
+                  set.add(id);
+                }
+
+                // old approach
+                // entry._id = { $in: ids };
               }
 
               // wildduck/mongodb version
@@ -378,7 +412,7 @@ async function onSearch(mailboxId, options, session, fn) {
               //           }
               //         : term.header
               //     };
-              parent.push(entry);
+              if (!_.isEmpty(entry)) parent.push(entry);
             }
 
             break;
@@ -494,7 +528,7 @@ async function onSearch(mailboxId, options, session, fn) {
                 }
               }
 
-              parent.push(entry);
+              if (!_.isEmpty(entry)) parent.push(entry);
             }
 
             break;
@@ -549,7 +583,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   : entry
               };
 
-              parent.push(entry);
+              if (!_.isEmpty(entry)) parent.push(entry);
             }
 
             break;
@@ -596,34 +630,25 @@ async function onSearch(mailboxId, options, session, fn) {
     // NOTE: using `all()` currently for faster performance
     //       (since we don't write to the socket here)
     //
-    const messages = session.db.prepare(sql.query).all(sql.values);
 
     try {
-      for (const message of messages) {
+      // const messages = session.db.prepare(sql.query).all(sql.values);
+      // for (const message of messages) {
+      //   // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+      //   if (set.size > 0 && !set.has(message._id)) continue;
+
+      //   if (highestModseq < message.modseq) highestModseq = message.modseq;
+      //   uidList.push(message.uid);
+      // }
+
+      // less memory consumption
+      for (const message of session.db.prepare(sql.query).iterate(sql.values)) {
+        // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
+        if (set.size > 0 && !set.has(message._id)) continue;
+
         if (highestModseq < message.modseq) highestModseq = message.modseq;
         uidList.push(message.uid);
       }
-      /*
-      for (const result of stmt.iterate(sql.values)) {
-        // eslint-disable-next-line no-await-in-loop
-        const message = await convertResult(Messages, result, {
-          uid: true,
-          modseq: true
-        });
-
-        this.logger.debug('fetched message', {
-          result,
-          message,
-          mailboxId,
-          options,
-          session
-        });
-
-        if (highestModseq < message.modseq) highestModseq = message.modseq;
-
-        uidList.push(message.uid);
-      }
-      */
     } catch (err) {
       this.logger.fatal(err, { mailboxId, options, session });
       throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'));

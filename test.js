@@ -206,6 +206,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     console.log('message', message);
     console.timeEnd('read and write to database');
 
+    db.pragma('analysis_limit=400');
     db.pragma('optimize');
     db.close();
 

@@ -6,9 +6,7 @@
 const { randomUUID } = require('node:crypto');
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/195>
-// const ReconnectingWebSocket = require('reconnecting-websocket');
-
-const ReconnectingWebSocket = require('reconnecting-websocket');
+const ReconnectingWebSocket = require('@opensumi/reconnecting-websocket');
 const WebSocketAsPromised = require('websocket-as-promised');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -35,6 +33,44 @@ const { encoder, decoder } = require('#helpers/encoder-decoder');
 ReconnectingWebSocket.prototype._debug = () => {
   // if (config.env === 'development')
   //   logger.debug('reconnectingwebsocket', { args });
+};
+
+class Event {
+  constructor(type, target) {
+    this.target = target;
+    this.type = type;
+  }
+}
+
+class CloseEvent extends Event {
+  constructor(code = 1000, reason = '', target) {
+    super('close', target);
+    this.code = code;
+    this.reason = reason;
+  }
+}
+
+// <https://github.com/pladaria/reconnecting-websocket/issues/197>
+ReconnectingWebSocket.prototype._disconnect = function (code, reason) {
+  if (code === undefined) {
+    code = 1000;
+  }
+
+  this._clearTimeouts();
+  if (!this._ws) {
+    return;
+  }
+
+  this._removeListeners();
+  try {
+    if (this._ws.readyState !== ReconnectingWebSocket.CONNECTING) {
+      this._ws.close(code, reason);
+    }
+
+    this._handleClose(new CloseEvent(code, reason, this));
+  } catch (err) {
+    logger.fatal(err);
+  }
 };
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>

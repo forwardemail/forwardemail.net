@@ -68,7 +68,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma('secure_delete=ON');
 
   //
-  // NOTE: we still run a manual vacuum every 24 hours
+  // NOTE: we still run a mangal vacuum every 24 hours
   //
   // turn on auto vacuum (for large amounts of deleted content)
   // <https://www.sqlite.org/pragma.html#pragma_auto_vacuum>
@@ -80,7 +80,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
 
   // <https://litestream.io/tips/#synchronous-pragma>
   db.pragma('synchronous=NORMAL');
-  // TODO: db.pragma('synchronous=EXTRA');
+  // db.pragma('synchronous=EXTRA');
 
   //
   // NOTE: only if we're using Litestream

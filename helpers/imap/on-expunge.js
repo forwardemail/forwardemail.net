@@ -44,7 +44,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         update
       });
 
-      if (Array.isArray(writeStream)) {
+      if (session?.writeStream?.write && Array.isArray(writeStream)) {
         for (const write of writeStream) {
           if (Array.isArray(write)) {
             session.writeStream.write(session.formatResponse(...write));

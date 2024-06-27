@@ -4,6 +4,7 @@
  */
 
 const ErrorStackParser = require('error-stack-parser');
+const _ = require('lodash');
 const prepareStackTrace = require('prepare-stack-trace');
 
 //
@@ -11,6 +12,11 @@ const prepareStackTrace = require('prepare-stack-trace');
 // <https://github.com/cabinjs/parse-logs/blob/b2ecb3f9331c40546309a542e313238dd9897f0c/index.js#L18-L43>
 //
 function parseError(error) {
+  //
+  // since msgpackr can encode/decode Error objects
+  //
+  if (_.isError(error)) return error;
+
   const err = new Error(error.message);
   const { stack } = err;
 

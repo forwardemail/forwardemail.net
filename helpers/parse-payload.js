@@ -8,6 +8,8 @@ const os = require('node:os');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
+const { randomUUID } = require('node:crypto');
+
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -285,6 +287,8 @@ async function parsePayload(data, ws) {
     // id
     // <https://github.com/nodejs/node/issues/46748>
     if (ws && !isSANB(payload.id)) throw new TypeError('Payload id missing');
+
+    if (!isSANB(payload.id)) payload.id = randomUUID();
 
     // action
     if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
@@ -754,6 +758,7 @@ async function parsePayload(data, ws) {
 
         // TODO: unlock the temporary database
         try {
+          tmpDb.pragma('analysis_limit=400');
           tmpDb.pragma('optimize');
           tmpDb.close();
         } catch (err) {
@@ -876,7 +881,7 @@ async function parsePayload(data, ws) {
                   `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
-                  'id imap_backup_at has_imap has_pgp public_key storage_location user is_enabled name domain'
+                  'id has_imap has_pgp public_key storage_location user is_enabled name domain'
                 )
                 .lean()
                 .exec();
@@ -924,8 +929,7 @@ async function parsePayload(data, ws) {
                   alias_public_key: alias.public_key,
                   locale: alias.user[config.lastLocaleField],
                   owner_full_email: alias.user.email
-                },
-                imap_backup_at: alias.imap_backup_at
+                }
               };
 
               // check quota
@@ -1376,6 +1380,7 @@ async function parsePayload(data, ws) {
                 }
 
                 try {
+                  tmpDb.pragma('analysis_limit=400');
                   tmpDb.pragma('optimize');
                   tmpDb.close();
                 } catch (err) {
@@ -1387,7 +1392,9 @@ async function parsePayload(data, ws) {
             } catch (err) {
               logger.error(err, { payload });
               err.isCodeBug = isCodeBug(err);
-              errors[`${obj.address}`] = ws ? parseErr(err) : err;
+              // NOTE: since msgpackr supports encode/decode
+              // errors[`${obj.address}`] = ws ? parseErr(err) : err;
+              errors[`${obj.address}`] = err;
             }
           },
           { concurrency }
@@ -1838,6 +1845,7 @@ async function parsePayload(data, ws) {
             backupDb.prepare('VACUUM').run();
 
             try {
+              backupDb.pragma('analysis_limit=400');
               backupDb.pragma('optimize');
               backupDb.close();
             } catch (err) {
@@ -1979,198 +1987,210 @@ async function parsePayload(data, ws) {
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
 
-        // only allow one backup at a time and once every hour
-        const backupLock = await this.lock.waitAcquireLock(
-          `${payload.session.user.alias_id}-backup`,
-          ms('1h'), // expires after 1h
-          ms('10s') // wait for 10s
+        // only allow one backup a day
+        const cache = await this.client.get(
+          `backup_check:${payload.session.user.alias_id}`
         );
 
-        if (!backupLock.success)
-          throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
-
-        let tmp;
-        let backup;
-        let err;
-
-        try {
-          // check how much space is remaining on storage location
-          const storagePath = getPathToDatabase({
-            id: payload.session.user.alias_id,
-            storage_location: payload.session.user.storage_location
-          });
-          const diskSpace = await checkDiskSpace(storagePath);
-          tmp = path.join(
-            path.dirname(storagePath),
-            `${payload.id}-backup.sqlite`
+        if (!cache) {
+          // set cache so we don't run two backups at once
+          await this.client.set(
+            `backup_check:${payload.session.user.alias_id}`,
+            true,
+            'PX',
+            ms('1d')
           );
 
-          // <https://github.com/nodejs/node/issues/38006>
-          const stats = await fs.promises.stat(storagePath);
-          if (!stats.isFile() || stats.size === 0)
-            throw new TypeError('Database empty');
+          let tmp;
+          let backup;
+          let err;
 
-          // we calculate size of db x 2 (backup + tarball)
-          const spaceRequired = stats.size * 2;
-
-          if (diskSpace.free < spaceRequired)
-            throw new TypeError(
-              `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
-                diskSpace.free
-              )} was available`
+          try {
+            // check how much space is remaining on storage location
+            const storagePath = getPathToDatabase({
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            });
+            const diskSpace = await checkDiskSpace(storagePath);
+            tmp = path.join(
+              path.dirname(storagePath),
+              `${payload.id}-backup.sqlite`
             );
 
-          // create bucket on s3 if it doesn't already exist
-          // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
-          const bucket = `${config.env}-${dashify(
-            _.camelCase(payload.session.user.storage_location)
-          )}`;
+            // <https://github.com/nodejs/node/issues/38006>
+            const stats = await fs.promises.stat(storagePath);
+            if (
+              !stats.isFile() ||
+              stats.size === 0 ||
+              stats.size <= config.INITIAL_DB_SIZE
+            )
+              throw new TypeError('Database empty');
 
-          const key = `${payload.session.user.alias_id}.sqlite`;
+            // we calculate size of db x 2 (backup + tarball)
+            const spaceRequired = stats.size * 2;
 
-          if (config.env !== 'test') {
-            let res;
-            try {
-              res = await S3.send(
-                new HeadBucketCommand({
-                  Bucket: bucket
-                })
+            if (diskSpace.free < spaceRequired)
+              throw new TypeError(
+                `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                  diskSpace.free
+                )} was available`
               );
-            } catch (err) {
-              if (err.name !== 'NotFound') throw err;
-            }
 
-            if (res?.$metadata?.httpStatusCode !== 200) {
+            // create bucket on s3 if it doesn't already exist
+            // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
+            const bucket = `${config.env}-${dashify(
+              _.camelCase(payload.session.user.storage_location)
+            )}`;
+
+            const key = `${payload.session.user.alias_id}.sqlite`;
+
+            if (config.env !== 'test') {
+              let res;
               try {
-                await S3.send(
-                  new CreateBucketCommand({
-                    ACL: 'private',
+                res = await S3.send(
+                  new HeadBucketCommand({
                     Bucket: bucket
                   })
                 );
               } catch (err) {
-                if (err.name !== 'BucketAlreadyOwnedByYou') throw err;
+                if (err.name !== 'NotFound') throw err;
+              }
+
+              if (res?.$metadata?.httpStatusCode !== 200) {
+                try {
+                  await S3.send(
+                    new CreateBucketCommand({
+                      ACL: 'private',
+                      Bucket: bucket
+                    })
+                  );
+                } catch (err) {
+                  if (err.name !== 'BucketAlreadyOwnedByYou') throw err;
+                }
               }
             }
-          }
 
-          //
-          // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
-          //       because if a page is modified during backup, it has to start over
-          //       <https://news.ycombinator.com/item?id=31387556>
-          //       <https://github.com/benbjohnson/litestream.io/issues/56>
-          //
-          //       also, if we used `backup` then for a temporary period
-          //       the database would be unencrypted on disk, and instead
-          //       we use VACUUM INTO which keeps the encryption as-is
-          //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
-          //
-          //       const results = await db.backup(tmp);
-          //
-          //       so instead we use the VACUUM INTO command with the `tmp` path
-          //
+            //
+            // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+            //       because if a page is modified during backup, it has to start over
+            //       <https://news.ycombinator.com/item?id=31387556>
+            //       <https://github.com/benbjohnson/litestream.io/issues/56>
+            //
+            //       also, if we used `backup` then for a temporary period
+            //       the database would be unencrypted on disk, and instead
+            //       we use VACUUM INTO which keeps the encryption as-is
+            //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+            //
+            //       const results = await db.backup(tmp);
+            //
+            //       so instead we use the VACUUM INTO command with the `tmp` path
+            //
 
-          // run a checkpoint to copy over wal to db
-          db.pragma('wal_checkpoint(PASSIVE)');
+            // run a checkpoint to copy over wal to db
+            db.pragma('wal_checkpoint(PASSIVE)');
 
-          // create backup
-          const results = db.exec(`VACUUM INTO '${tmp}'`);
+            // create backup
+            // takes approx 5-10s per GB
+            db.exec(`VACUUM INTO '${tmp}'`);
 
-          logger.debug('results', { results });
-          backup = true;
+            backup = true;
 
-          // open the backup to ensure that encryption still valid
-          const backupDb = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            },
-            payload.session,
-            null,
-            false,
-            tmp
-          );
-
-          try {
-            backupDb.pragma('optimize');
-            backupDb.close();
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-
-          // calculate hash of file
-          const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
-
-          // check if hash already exists in s3
-          try {
-            const obj = await S3.send(
-              new HeadObjectCommand({
-                Bucket: bucket,
-                Key: key
-              })
+            // open the backup to ensure that encryption still valid
+            const backupDb = await getDatabase(
+              this,
+              // alias
+              {
+                id: payload.session.user.alias_id,
+                storage_location: payload.session.user.storage_location
+              },
+              payload.session,
+              null,
+              false,
+              tmp
             );
 
-            if (obj?.Metadata?.hash === hash)
-              throw new TypeError('Hash already exists, returning early');
-          } catch (err) {
-            if (err.name !== 'NotFound') throw err;
-          }
-
-          const upload = new Upload({
-            client: S3,
-            params: {
-              Bucket: bucket,
-              Key: key,
-              Body: fs.createReadStream(tmp),
-              Metadata: { hash }
+            try {
+              backupDb.pragma('analysis_limit=400');
+              backupDb.pragma('optimize');
+              backupDb.close();
+            } catch (err) {
+              logger.fatal(err, { payload });
             }
-          });
-          await upload.done();
 
-          // update alias imap backup date using provided time
-          await Aliases.findOneAndUpdate(
-            {
-              _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-              domain: new mongoose.Types.ObjectId(
-                payload.session.user.domain_id
-              )
-            },
-            {
-              $set: {
-                imap_backup_at: new Date(payload.backup_at)
+            // calculate hash of file
+            const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
+
+            // check if hash already exists in s3
+            try {
+              const obj = await S3.send(
+                new HeadObjectCommand({
+                  Bucket: bucket,
+                  Key: key
+                })
+              );
+
+              if (obj?.Metadata?.hash === hash)
+                throw new TypeError('Hash already exists, returning early');
+            } catch (err) {
+              if (err.name !== 'NotFound') throw err;
+            }
+
+            const upload = new Upload({
+              client: S3,
+              params: {
+                Bucket: bucket,
+                Key: key,
+                Body: fs.createReadStream(tmp),
+                Metadata: { hash }
               }
-            }
-          );
-        } catch (_err) {
-          err = _err;
-        }
-
-        // always do cleanup in case of errors
-        if (tmp && backup) {
-          try {
-            await fs.promises.rm(tmp, {
-              force: true,
-              recursive: true
             });
-          } catch (err) {
-            logger.fatal(err, { payload });
+            await upload.done();
+
+            // update alias imap backup date using provided time
+            await Aliases.findOneAndUpdate(
+              {
+                _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+                domain: new mongoose.Types.ObjectId(
+                  payload.session.user.domain_id
+                )
+              },
+              {
+                $set: {
+                  imap_backup_at: new Date(payload.backup_at)
+                }
+              }
+            );
+          } catch (_err) {
+            err = _err;
+          }
+
+          // always do cleanup in case of errors
+          if (tmp && backup) {
+            try {
+              await fs.promises.rm(tmp, {
+                force: true,
+                recursive: true
+              });
+            } catch (err) {
+              logger.fatal(err, { payload });
+            }
+          }
+
+          // if an error occurred then allow cache to attempt again
+          // (but wait 30 minutes instead of 1 day)
+          if (err) {
+            this.client
+              .set(
+                `backup_check:${payload.session.user.alias_id}`,
+                true,
+                'PX',
+                ms('30m')
+              )
+              .then()
+              .catch((err) => logger.fatal(err, { payload }));
+            if (err.message !== 'Database empty') throw err;
           }
         }
-
-        // release lock if any
-        if (backupLock) {
-          try {
-            const result = await releaseLock(this, db, backupLock);
-            if (!result.success)
-              throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-        }
-
-        if (err) throw err;
 
         response = {
           id: payload.id,
@@ -2195,7 +2215,11 @@ async function parsePayload(data, ws) {
 
     if (db && db.open && typeof db.close === 'function') {
       try {
-        if (typeof db.pragma === 'function') db.pragma('optimize');
+        if (typeof db.pragma === 'function') {
+          db.pragma('analysis_limit=400');
+          db.pragma('optimize');
+        }
+
         db.close();
       } catch (err) {
         logger.fatal(err, { payload });
@@ -2231,6 +2255,7 @@ async function parsePayload(data, ws) {
 
     if (db && db.open && typeof db.close === 'function') {
       try {
+        db.pragma('analysis_limit=400');
         db.pragma('optimize');
         db.close();
       } catch (err) {
@@ -2244,7 +2269,9 @@ async function parsePayload(data, ws) {
       ws.send(
         encoder.pack({
           id: payload.id,
-          err: parseErr(err)
+          err
+          // err: parseErr(err), // NOTE: results in RangeError: Maximum call stack size exceeded
+          // err: safeStringify(parseErr(err))
         })
       );
     }

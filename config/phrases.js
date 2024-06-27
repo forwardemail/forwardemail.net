@@ -258,6 +258,10 @@ module.exports = {
     'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
+  IMAP_NOT_ENABLED_SUBJECT:
+    'Enable IMAP to receive mail for <span class="notranslate">%s</span>',
+  IMAP_NOT_ENABLED_MESSAGE:
+    'Please <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s">edit your alias</a> and enable IMAP to receive mail for <strong class="text-monospace notranslate">%s</strong>.',
   IMAP_MAILBOX_MAX_EXCEEDED: 'Maximum number of mailboxes exceeded',
   IMAP_MESSAGE_SIZE_EXCEEDED: 'Maximum message size exceeded',
   IMAP_MAILBOX_INBOX_CANNOT_STORE_DRAFTS: 'Inbox cannot store draft messages',

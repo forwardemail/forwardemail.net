@@ -17,6 +17,7 @@ const { isEmail } = require('validator');
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
 const SocketError = require('./socket-error');
+const email = require('./email');
 const parseRootDomain = require('./parse-root-domain');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
@@ -166,7 +167,7 @@ async function onAuth(auth, session, fn) {
       })
         .populate(
           'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
+          `id has_imap ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
@@ -421,55 +422,63 @@ async function onAuth(auth, session, fn) {
       timezone: timeZone
     };
 
-    // TODO: redo this
-    // used for imap backup
-    if (alias) session.imap_backup_at = alias.imap_backup_at;
-
-    //
-    // TODO: run wsp to check if database can be opened
-    //       (if on IMAP/POP3/CalDAV) and if not then
-    //       do a hard reset and run a backup of the database
-    //
-    // if we're on IMAP/POP3/CalDAV then ensure that the password can open the database
-    // TODO: probably should throw Invalid password error if it matches SQLITE not a db error (?)
-    /*
-    try {
-      await refreshSession.call(
-        this,
-        {
-          ...session,
-          user
-        },
-        'OPEN'
-      );
-    } catch (err) {
-      // TODO: if an error occurs then decrease connection by 1
-      err.isCodeBug = true;
-      this.logger.fatal(err);
-    }
-    */
-
-    //
-    // sync with tmp db in the background
-    // (will cause imap-notifier to send IDLE notifications)
-    //
-    if (
-      this.wsp &&
-      (this.server instanceof IMAPServer || this.server instanceof POP3Server)
-    ) {
-      this.wsp
-        .request({
-          action: 'sync',
-          timeout: ms('5m'),
-          session: { user }
-        })
-        .then()
-        .catch((err) => this.logger.fatal(err, { user }));
-    }
-
     // this response object sets `session.user` to have `domain` and `alias`
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L235>
     fn(null, { user });
+
+    //
+    // if we're on IMAP or POP3 server then as a weekly courtesy
+    // if the user does not have IMAP storage enabled then
+    // alert them by email to inform them they need to enable IMAP
+    // (otherwise they're not going to have any mail received)
+    //
+    if (
+      !alias.has_imap &&
+      (this.server instanceof IMAPServer || this.server instanceof POP3Server)
+    ) {
+      this.client
+        .get(`imap_check:${alias.id}`)
+        .then((cache) => {
+          if (cache) return;
+          this.client
+            .set(`imap_check:${alias.id}`, true, 'PX', ms('7d'))
+            .then(() => {
+              email({
+                template: 'alert',
+                message: {
+                  to: user.owner_full_email,
+                  bcc: config.email.message.from,
+                  subject: i18n.translate(
+                    'IMAP_NOT_ENABLED_SUBJECT',
+                    user.locale,
+                    user.username
+                  )
+                },
+                locals: {
+                  message: i18n.translate(
+                    'IMAP_NOT_ENABLED_MESSAGE',
+                    user.locale,
+                    `${config.urls.web}/${user.locale}/my-account/domains/${
+                      domain.name
+                    }/aliases?q=${encodeURIComponent(user.username)}`,
+                    user.username
+                  )
+                }
+              })
+                .then()
+                .catch((err) => {
+                  this.logger.fatal(err, { session });
+                  // backoff for 30m for the next retry
+                  this.client
+                    .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
+                    .then()
+                    .catch((err) => this.logger.fatal(err, { session }));
+                });
+            })
+            .catch((err) => this.logger.fatal(err, { session }));
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+    }
   } catch (err) {
     //
     // NOTE: we should actually share error message if it was not a code bug

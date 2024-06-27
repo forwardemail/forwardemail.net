@@ -172,10 +172,12 @@ async function generateAliasPassword(ctx) {
       await alias.save();
 
       // close websocket
-      try {
-        wsp.close();
-      } catch (err) {
-        ctx.logger.fatal(err);
+      if (wsp.isOpened) {
+        try {
+          wsp.close();
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
       }
     } else if (boolean(ctx.request.body.is_override)) {
       // reset existing mailbox and create new mailbox
@@ -204,10 +206,12 @@ async function generateAliasPassword(ctx) {
       await alias.save();
 
       // close websocket
-      try {
-        wsp.close();
-      } catch (err) {
-        ctx.logger.fatal(err);
+      if (wsp.isOpened) {
+        try {
+          wsp.close();
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
       }
     } else {
       // create new mailbox
@@ -258,10 +262,12 @@ async function generateAliasPassword(ctx) {
       await alias.save();
 
       // close websocket
-      try {
-        wsp.close();
-      } catch (err) {
-        ctx.logger.fatal(err);
+      if (wsp.isOpened) {
+        try {
+          wsp.close();
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
       }
     }
 

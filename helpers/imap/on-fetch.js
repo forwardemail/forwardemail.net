@@ -54,8 +54,10 @@ async function onFetch(mailboxId, options, session, fn) {
         options
       });
 
-      for (const compiled of writeStream) {
-        session.writeStream.write({ compiled });
+      if (session?.writeStream?.write) {
+        for (const compiled of writeStream) {
+          session.writeStream.write({ compiled });
+        }
       }
 
       fn(null, bool, response);

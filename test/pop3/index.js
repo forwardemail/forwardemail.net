@@ -382,4 +382,6 @@ ZXhhbXBsZQo=
   t.log('dele1', dele1);
 
   t.is(dele1, 'message 1 deleted');
+
+  await t.context.pop3Command.command('QUIT');
 });

@@ -15,7 +15,6 @@
 
 const { EventEmitter } = require('node:events');
 
-const Axe = require('axe');
 const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const ms = require('ms');
@@ -26,12 +25,9 @@ const IMAPError = require('#helpers/imap-error');
 const Journals = require('#models/journals');
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
-const helperLogger = require('#helpers/logger');
+const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
 const { acquireLock, releaseLock } = require('#helpers/lock');
-
-const logger =
-  config.env === 'development' ? helperLogger : new Axe({ silent: true });
 
 const builder = new Builder();
 
@@ -376,6 +372,7 @@ class IMAPNotifier extends EventEmitter {
       data?.session?.db?.close === 'function'
     ) {
       try {
+        data.session.db.pragma('analysis_limit=400');
         data.session.db.pragma('optimize');
         data.session.db.close();
       } catch (err) {

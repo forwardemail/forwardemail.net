@@ -51,8 +51,10 @@ async function onStore(mailboxId, update, session, fn) {
         update
       });
 
-      for (const write of writeStream) {
-        session.writeStream.write(session.formatResponse(...write));
+      if (session?.writeStream?.write) {
+        for (const write of writeStream) {
+          session.writeStream.write(session.formatResponse(...write));
+        }
       }
 
       fn(null, bool, response);

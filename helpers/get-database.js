@@ -9,31 +9,39 @@ const path = require('node:path');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
+const pify = require('pify');
+const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 
 const parseErr = require('parse-err');
 const Aliases = require('#models/aliases');
-const Calendars = require('#models/calendars');
-const CalendarEvents = require('#models/calendar-events');
 const Attachments = require('#models/attachments');
+const CalendarEvents = require('#models/calendar-events');
+const Calendars = require('#models/calendars');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const config = require('#config');
-const env = require('#config/env');
 const email = require('#helpers/email');
+const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
+const onExpunge = require('#helpers/imap/on-expunge');
 const setupPragma = require('#helpers/setup-pragma');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+
+const onExpungePromise = pify(onExpunge, { multiArgs: true });
+
+const builder = new Builder();
 
 const HOSTNAME = os.hostname();
 
@@ -591,18 +599,18 @@ async function getDatabase(
 
     let migrateCheck = false;
     let folderCheck = false;
-    // let trashCheck = false;
+    let trashCheck = false;
 
     if (instance.client) {
       try {
         const results = await instance.client.mget([
           `migrate_check:${session.user.alias_id}`,
-          `folder_check:${session.user.alias_id}`
-          // `trash_check:${session.user.alias_id}`
+          `folder_check:${session.user.alias_id}`,
+          `trash_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
-        // trashCheck = boolean(results[2]);
+        trashCheck = boolean(results[2]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -739,49 +747,76 @@ async function getDatabase(
       logger.fatal(err, { session });
     }
 
-    // TODO: redo this so it sets `undeleted: 0` instead
-    // TODO: redo this so it sets `undeleted: 0` instead
-    // TODO: redo this so it sets `undeleted: 0` instead
-    // TODO: redo this so it sets `undeleted: 0` instead
-    // TODO: redo this so it sets `undeleted: 0` instead
-    // TODO: redo this so it sets `undeleted: 0` instead
+    // release lock
+    try {
+      if (lock) {
+        await releaseLock(instance, db, lock);
+      }
+    } catch (err) {
+      logger.debug(err, { alias, session });
+    }
 
     //
-    // NOTE: we leave it up to the user to delete messages
-    //       but note that on CLOSE we call EXPUNGE on the mailbox
-    //
-    // remove messages in Junk/Trash folder that are >= 30 days old
-    // (only do this once every day)
-    /*
+    // NOTE: we remove messages in Junk/Trash folder that are >= 30 days old
+    //       (but we only do this once every day)
     try {
       if (!trashCheck) {
         const mailboxes = await Mailboxes.find(instance, session, {
           path: {
-            $in: ['Trash', 'Junk']
+            $in: ['Trash', 'Spam', 'Junk']
           },
           specialUse: {
             $in: ['\\Trash', '\\Junk']
           }
         });
-        if (mailboxes.length === 0) {
-          throw new TypeError('Trash folder(s) do not exist');
-        }
 
-        // NOTE: this does not support `prepareQuery` so you will need to convert _id -> id
-        // (as we've done below by simply mapping and returning `id` vs `_id`)
-        await Messages.deleteMany(instance, session, {
-          $or: [
-            {
-              mailbox: {
-                $in: mailboxes.map((m) => m._id.toString())
+        if (mailboxes.length === 0)
+          throw new TypeError('Trash folder(s) do not exist');
+
+        const sql = builder.build({
+          type: 'update',
+          table: 'Messages',
+          condition: {
+            $or: [
+              {
+                mailbox: {
+                  $in: mailboxes.map((m) => m._id.toString())
+                },
+                exp: 1,
+                rdate: {
+                  $lte: Date.now()
+                }
               },
-              exp: true,
-              rdate: {
-                $lte: Date.now()
+              {
+                mailbox: {
+                  $in: mailboxes.map((m) => m._id.toString())
+                },
+                rdate: {
+                  $lte: dayjs().subtract(30, 'days').toDate().getTime()
+                }
               }
+            ]
+          },
+          modifier: {
+            $set: {
+              undeleted: false
             }
-          ]
+          }
         });
+
+        db.prepare(sql.query).run(sql.values);
+
+        await Promise.all(
+          mailboxes.map((mailbox) =>
+            onExpungePromise.call(
+              instance,
+              mailbox._id.toString(),
+              { silent: true },
+              session
+            )
+          )
+        );
+
         await instance.client.set(
           `trash_check:${session.user.alias_id}`,
           true,
@@ -792,37 +827,11 @@ async function getDatabase(
     } catch (err) {
       logger.fatal(err, { session });
     }
-    */
 
+    //
     // TODO: delete orphaned attachments (those without messages that reference them)
-
-    // release lock
-    try {
-      if (lock) {
-        await releaseLock(instance, db, lock);
-      }
-    } catch (err) {
-      logger.debug(err, { alias, session });
-    }
-
-    // if alias db size was 0 then we should update it
-    /*
-    try {
-      const storageUsed = await Aliases.getStorageUsed({
-        domain: new mongoose.Types.ObjectId(session.user.domain_id)
-      });
-      if (storageUsed === 0) {
-        const size = await instance.wsp.request({
-          action: 'size',
-          timeout: ms('15s'),
-          alias_id: alias.id
-        });
-        logger.debug('updating size', { size, alias, session });
-      }
-    } catch (err) {
-      logger.fatal(err, { alias, session });
-    }
-    */
+    //       (note this is unlikely as we already take care of this in EXPUNGE)
+    //
 
     return db;
   } catch (err) {

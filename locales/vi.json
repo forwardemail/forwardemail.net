@@ -4911,5 +4911,7 @@
   "Need secure and private email?": "Cần email an toàn và riêng tư?",
   "LineageOS": "LineageOS",
   "Storage used by this alias": "Bộ nhớ được sử dụng bởi bí danh này",
-  "alias": "bí danh"
+  "alias": "bí danh",
+  "Enable IMAP to receive mail for <span class=\"notranslate\">%s</span>": "Bật IMAP để nhận thư cho <span class=\"notranslate\">%s</span>",
+  "Please <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">edit your alias</a> and enable IMAP to receive mail for <strong class=\"text-monospace notranslate\">%s</strong>.": "Vui lòng <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">chỉnh sửa bí danh của bạn</a> và bật IMAP để nhận thư cho <strong class=\"text-monospace notranslate\">%s</strong> ."
 }

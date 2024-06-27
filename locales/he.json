@@ -5401,5 +5401,7 @@
   "Make payment immediately to avoid account termination.": "בצע תשלום מיידי כדי למנוע סגירת חשבון.",
   "500,000+ custom domain names": "500,000+ שמות דומיין מותאמים אישית",
   "Need secure and private email?": "זקוק לאימייל מאובטח ופרטי?",
-  "LineageOS": "LineageOS"
+  "LineageOS": "LineageOS",
+  "Enable IMAP to receive mail for <span class=\"notranslate\">%s</span>": "אפשר IMAP כדי לקבל דואר עבור <span class=\"notranslate\">%s</span>",
+  "Please <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">edit your alias</a> and enable IMAP to receive mail for <strong class=\"text-monospace notranslate\">%s</strong>.": "אנא <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">ערוך את הכינוי שלך</a> ואפשר ל-IMAP לקבל דואר עבור <strong class=\"text-monospace notranslate\">%s</strong> ."
 }

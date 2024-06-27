@@ -172,7 +172,7 @@ The Primary is running on the data servers with the mounted volumes containing t
 We accomplish two-way communication with [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
 * Primary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocketServer` server.
-* Secondary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocket` client that is wrapped with [websocket-as-promised](https://github.com/vitalets/websocket-as-promised) and [reconnecting-websocket](https://github.com/pladaria/reconnecting-websocket).  These two wrappers ensure that the `WebSocket` reconnects and can send and receive data for specific database writes.
+* Secondary servers use an instance of [ws](https://github.com/websockets/ws)'s `WebSocket` client that is wrapped with [websocket-as-promised](https://github.com/vitalets/websocket-as-promised) and [reconnecting-websocket](https://github.com/opensumi/reconnecting-websocket).  These two wrappers ensure that the `WebSocket` reconnects and can send and receive data for specific database writes.
 
 ### Backups
 

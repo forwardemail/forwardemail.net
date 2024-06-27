@@ -134,7 +134,23 @@ async function updateMany(
     }
   }
 
-  const condition = prepareQuery(mapping, filter);
+  {
+    const keys = Object.keys(filter);
+    for (const key of keys) {
+      if (key.startsWith('$') && key !== '$or')
+        throw new TypeError(`Key ${key} is not supported in updateMany`);
+    }
+  }
+
+  let condition = {};
+
+  if (filter.$or) {
+    condition = {
+      $or: filter.$or.map((v) => prepareQuery(mapping, v))
+    };
+  } else {
+    condition = prepareQuery(mapping, filter);
+  }
 
   let beforeDocs = [];
 

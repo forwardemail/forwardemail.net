@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -16,6 +13,7 @@ const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
 const i18n = require('#helpers/i18n');
+const parsePayload = require('#helpers/parse-payload');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 
@@ -185,109 +183,36 @@ async function refreshSession(session, command) {
     this.server.notifier.fire(session.user.alias_id);
 
   //
-  // if and only if we're not an instance of IMAP
-  // (otherwise this would result in recursion)
+  // only perform sync and backup during read commands on sqlite server
+  // (these are specifically commands for when the user is attempting to get messages)
   //
-  // prevent circular dep (otherwise we could do instanceof)
   if (
-    // don't perform backup while during a write command
-    ['POP3', 'FETCH', 'GETQUOTAROOT', 'GETQUOTA', 'LIST', 'STATUS'].includes(
-      command
-    ) &&
-    config.env !== 'test' &&
-    this?.constructor?.name !== 'IMAP' && //
-    // NOTE: this takes 100ms+ so we put it in onAuth instead running in the background
-    //       (if a message gets delivered to tmp then it will notify IMAP connections already)
-    //
-    // sync with temp db on every request
-    //
-    // const sync = await this.wsp.request.call(this, {
-    //   action: 'sync',
-    //   timeout: ms('10s'),
-    //   session: { user: session.user }
-    // });
-    // this.logger.debug('sync', { sync });
-
-    // TODO: this needs limited to only being one once per alias across all its IMAP connections
-    // offset by 10s to prevent locking db while a read is in progress
-    !session.backupInProgress
+    needsRefreshed &&
+    !this.wsp && // ensures SQLite only
+    ['POP3', 'GETQUOTAROOT', 'GETQUOTA', 'STATUS'].includes(command)
   ) {
-    session.backupInProgress = true;
-    setTimeout(() => {
-      //
-      // daily backups
-      //
-      const oneDayAgo = dayjs().subtract(1, 'day').toDate();
-      const now = new Date();
-      if (
-        !_.isDate(session.imap_backup_at) ||
-        new Date(session.imap_backup_at).getTime() <= oneDayAgo.getTime()
-      ) {
-        Aliases.findOneAndUpdate(
-          {
-            id: session.user.alias_id,
-            imap_backup_at: _.isDate(session.imap_backup_at)
-              ? {
-                  $exists: true,
-                  $lte: oneDayAgo
-                }
-              : {
-                  $exists: false
-                }
-          },
-          {
-            $set: {
-              imap_backup_at: now
-            }
-          }
-        )
-          .then((alias) => {
-            // return early if no alias found (point in time safeguard)
-            if (!alias) {
-              session.backupInProgress = false;
-              return;
-            }
+    // sync with tmp db
+    try {
+      const sync = await parsePayload.call(this, {
+        action: 'sync',
+        session: { user: session.user }
+      });
+      this.logger.debug('tmp db sync complete', { sync, session });
+    } catch (err) {
+      this.logger.fatal(err, { session });
+    }
 
-            this.wsp.request
-              .call(this, {
-                action: 'backup',
-                backup_at: now.toISOString(),
-                session: { user: session.user }
-              })
-              .then(() => {
-                this.logger.debug('backup performed', { session });
-                session.backupInProgress = false;
-              })
-              .catch((err) => {
-                this.logger.fatal(err, { session });
-                // if the backup failed then we unset the imap_backup_at
-                session.imap_backup_at = undefined;
-                Aliases.findOneAndUpdate(
-                  {
-                    _id: alias._id,
-                    imap_backup_at: now
-                  },
-                  {
-                    $unset: {
-                      imap_backup_at: 1
-                    }
-                  }
-                )
-                  .then(() => {
-                    session.backupInProgress = false;
-                  })
-                  .catch((err) => {
-                    this.logger.fatal(err, { session });
-                    session.backupInProgress = false;
-                  });
-              });
-          })
-          .catch((err) => {
-            this.logger.fatal(err, { session });
-            session.backupInProgress = false;
-          });
-      }
-    }, ms('10s'));
+    // daily backup (run in background)
+    parsePayload
+      .call(this, {
+        action: 'backup',
+        backup_at: new Date().toISOString(),
+        session: { user: session.user }
+      })
+      .then((backup) => {
+        this.logger.debug('backup complete', { backup, session });
+      })
+      .catch((err) => this.logger.fatal(err, { session }));
   }
 }
 
