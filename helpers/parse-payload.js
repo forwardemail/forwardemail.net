@@ -31,6 +31,7 @@ const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
+const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const {
   S3Client,
@@ -1289,7 +1290,7 @@ async function parsePayload(data, ws) {
                                 )
                               },
                               locals: {
-                                message: `<pre><code>${JSON.stringify(
+                                message: `<pre><code>${safeStringify(
                                   parseErr(err),
                                   null,
                                   2
@@ -1392,9 +1393,9 @@ async function parsePayload(data, ws) {
             } catch (err) {
               logger.error(err, { payload });
               err.isCodeBug = isCodeBug(err);
-              // NOTE: since msgpackr supports encode/decode
-              // errors[`${obj.address}`] = ws ? parseErr(err) : err;
-              errors[`${obj.address}`] = err;
+              errors[`${obj.address}`] = JSON.parse(
+                safeStringify(ws ? parseErr(err) : err)
+              );
             }
           },
           { concurrency }
@@ -2269,9 +2270,9 @@ async function parsePayload(data, ws) {
       ws.send(
         encoder.pack({
           id: payload.id,
-          err
           // err: parseErr(err), // NOTE: results in RangeError: Maximum call stack size exceeded
-          // err: safeStringify(parseErr(err))
+          // err, // NOTE: we haven't tried this yet but still it could have a circular reference
+          err: JSON.parse(safeStringify(parseErr(err)))
         })
       );
     }
