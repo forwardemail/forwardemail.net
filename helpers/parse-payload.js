@@ -767,10 +767,10 @@ async function parsePayload(data, ws) {
         }
 
         // vacuum database
-        await parsePayload.call(this, {
-          action: 'vacuum',
-          session: { user: payload.session.user }
-        });
+        // await parsePayload.call(this, {
+        //   action: 'vacuum',
+        //   session: { user: payload.session.user }
+        // });
 
         response = {
           id: payload.id,

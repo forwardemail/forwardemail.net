@@ -167,7 +167,7 @@ async function onAuth(auth, session, fn) {
       })
         .populate(
           'user',
-          `id has_imap ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
+          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
         )
         .select('+tokens.hash +tokens.salt')
         .lean()
