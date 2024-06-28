@@ -459,11 +459,13 @@ async function onAuth(auth, session, fn) {
                   message: i18n.translate(
                     'IMAP_NOT_ENABLED_MESSAGE',
                     user.locale,
+                    user.username,
                     `${config.urls.web}/${user.locale}/my-account/domains/${
                       domain.name
                     }/aliases?q=${encodeURIComponent(user.username)}`,
                     user.username
-                  )
+                  ),
+                  locale: user.locale
                 }
               })
                 .then()
