@@ -218,7 +218,7 @@ class AttachmentStorage {
     if (instance.wsp) throw new TypeError('WSP instance invalid');
 
     let newLock;
-    if (!lock) newLock = await acquireLock(this, session.db);
+    if (!lock) newLock = await acquireLock(instance, session.db);
 
     let err;
 
