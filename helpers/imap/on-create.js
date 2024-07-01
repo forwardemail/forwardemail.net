@@ -36,7 +36,6 @@ async function onCreate(path, session, fn) {
         path
       });
       fn(null, ...data);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -108,6 +107,7 @@ async function onCreate(path, session, fn) {
       mailbox: mailbox._id,
       path
     });
+    this.server.notifier.fire(session.user.alias_id);
 
     // update storage
     try {

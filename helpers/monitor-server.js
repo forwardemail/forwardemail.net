@@ -6,8 +6,13 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const process = require('node:process');
 const { isMainThread, workerData } = require('node:worker_threads');
-const { memoryUsage } = require('node:process');
+// const {
+//   getHeapStatistics,
+//   writeHeapSnapshot
+//   setHeapSnapshotNearHeapLimit
+// } = require('node:v8');
 
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
@@ -35,6 +40,25 @@ let lastCpuPercentage = 0;
 let lastUsedPercentage = 0;
 const mountMapping = {};
 
+// <https://nodejs.org/api/v8.html#v8setheapsnapshotnearheaplimitlimit>
+// setHeapSnapshotNearHeapLimit(1);
+
+//
+// instead of manually binding a SIGUSR2 event
+// we can set a node option to listen for the signal
+// "node_args": "--heapsnapshot-signal=SIGUSR2",
+// `kill -USR2 <pid>`
+// process.once('SIGUSR2', () => {
+//   writeHeapSnapshot(
+//     path.join(
+//       os.tmpdir(),
+//       `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
+//         process.pid
+//       }.heapsnapshot`
+//     )
+//   );
+// });
+
 async function check() {
   // ensure that `netstat`, `tcpdump`, `get`, `curl`, `nc`, `gcc` is not installed
   // TODO: apparmor
@@ -52,6 +76,23 @@ async function check() {
   // TODO: kernel option CONFIG_IO_STRICT_DEVMEM
 
   try {
+    //
+    // in worker threads we want to alert if heap total is >= 2 + X GB
+    // (so we can optimize each job and monitor in real-time)
+    //
+    const memoryInfo = process.memoryUsage();
+    if (memoryInfo.heapTotal > bytes('2GB')) {
+      let message = `Exceeded 2GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
+      if (!isMainThread && workerData?.job?.name) {
+        message += ` (${workerData.job.name})`;
+      }
+
+      const err = new TypeError(message);
+      err.memoryUsed = prettyBytes(memoryInfo.heapTotal);
+      err.memoryInfo = memoryInfo;
+      logger.fatal(err);
+    }
+
     // only monitor main thread
     if (isMainThread) {
       // check memory
@@ -146,23 +187,6 @@ async function check() {
         if (err.code !== 'ENOENT') throw err;
       }
     }
-
-    //
-    // in worker threads we want to alert if heap total is >= 2 GB
-    // (so we can optimize each job and monitor in real-time)
-    //
-    const memoryInfo = memoryUsage();
-    if (memoryInfo.heapTotal > bytes('2GB')) {
-      let message = `Exceeded 2 GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
-      if (!isMainThread && workerData?.job?.name) {
-        message += ` (${workerData.job.name})`;
-      }
-
-      const err = new TypeError(message);
-      err.memoryUsed = prettyBytes(memoryInfo.heapTotal);
-      err.memoryInfo = memoryInfo;
-      logger.fatal(err);
-    }
   } catch (err) {
     logger.fatal(err);
   }
@@ -171,7 +195,7 @@ async function check() {
 function monitorServer() {
   if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') return;
   check();
-  const interval = setInterval(check, isMainThread ? ms('1m') : ms('10s'));
+  const interval = setInterval(check, isMainThread ? ms('10s') : ms('5s'));
   return interval;
 }
 

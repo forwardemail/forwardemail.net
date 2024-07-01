@@ -7,6 +7,7 @@
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
+      "node_args": "--heapsnapshot-signal=SIGUSR2",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",

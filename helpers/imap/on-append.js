@@ -76,18 +76,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         raw
       });
 
-      if (
-        session.selected &&
-        session.selected.mailbox &&
-        session.selected.mailbox.toString() === response.mailbox.toString()
-      ) {
-        session.writeStream.write(
-          formatResponse.call(session, 'EXISTS', response.uid)
-        );
-      }
-
       fn(null, bool, response);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -307,40 +296,29 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //
     const fingerprint = getFingerprint(session, headers, mimeTree.body, false);
 
-    const existingMessage = await Messages.findOne(this, session, {
-      fingerprint
-    });
-
-    //
-    // this typically only happens if we're sending from MX server
-    // (sometimes senders will make multiple attempts even if one succeeded)
-    //
-    if (existingMessage) {
-      const response = {
-        uidValidity: mailbox.uidValidity,
-        uid: existingMessage.uid,
-        id: existingMessage._id,
-        mailbox: mailbox._id,
-        mailboxPath: mailbox.path,
-        size: existingMessage.size,
-        status: 'new' // TODO: should this be "existing"
-      };
-
-      this.logger.debug('command response', { response });
-
-      await this.server.notifier.addEntries(this, session, mailbox._id, {
-        ignore:
-          session?.selected?.mailbox &&
-          session.selected.mailbox.toString() ===
-            existingMessage.mailbox.toString(),
-        command: 'EXISTS',
-        uid: existingMessage.uid,
-        mailbox: mailbox._id,
-        message: existingMessage._id
+    // this is set only via "tmp" command in parse payload
+    if (session.checkForExisting) {
+      const existingMessage = await Messages.findOne(this, session, {
+        fingerprint,
+        mailbox: mailbox._id
       });
 
-      fn(null, true, response);
-      return;
+      //
+      // this typically only happens if we're sending from MX server
+      // (sometimes senders will make multiple attempts even if one succeeded)
+      //
+      if (existingMessage) {
+        fn(null, true, {
+          uidValidity: mailbox.uidValidity,
+          uid: existingMessage.uid,
+          id: existingMessage._id,
+          mailbox: mailbox._id,
+          mailboxPath: mailbox.path,
+          size: existingMessage.size,
+          status: 'new'
+        });
+        return;
+      }
     }
 
     // store reference for cleanup
@@ -528,6 +506,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
     };
 
     this.logger.debug('command response', { response });
+
+    if (
+      session.selected &&
+      session.selected.mailbox &&
+      session.selected.mailbox.toString() === response.mailbox.toString()
+    )
+      await this.wss.broadcast(
+        session,
+        formatResponse.call(session, 'EXISTS', response.uid)
+      );
 
     await this.server.notifier.addEntries(this, session, mailbox._id, {
       ignore:

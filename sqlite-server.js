@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
 const { promisify } = require('node:util');
+const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const Lock = require('ioredfour');
@@ -15,6 +16,7 @@ const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pify = require('pify');
+const pWaitFor = require('p-wait-for');
 const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
@@ -29,6 +31,7 @@ const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
 const refreshSession = require('#helpers/refresh-session');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encoder } = require('#helpers/encoder-decoder');
 
 class SQLite {
   constructor(options = {}) {
@@ -103,6 +106,35 @@ class SQLite {
       noServer: true,
       maxPayload: 0 // disable max payload size
     });
+
+    this.wss.broadcast = async (session, payload) => {
+      const uuid = randomUUID();
+      const packed = encoder.pack({
+        uuid,
+        session_id: session.id,
+        alias_id: session.user.alias_id,
+        payload
+      });
+
+      for (const client of this.wss.clients) {
+        // return early if we already received response
+        if (this.uuidsReceived.has(uuid)) break;
+
+        client.send(packed);
+      }
+
+      try {
+        await pWaitFor(() => this.uuidsReceived.has(uuid), {
+          timeout: ms('5s'),
+          interval: 0
+        });
+        this.uuidsReceived.delete(uuid);
+      } catch (err) {
+        err.isCodeBug = true;
+        throw err;
+      }
+    };
+
     this.server = server;
     this.refreshSession = refreshSession.bind(this);
 
@@ -168,6 +200,8 @@ class SQLite {
       });
     });
 
+    this.uuidsReceived = new Set();
+
     this.wss.on('connection', (ws, request) => {
       ws.isAlive = true;
       logger.debug('connection from %s', request.socket.remoteAddress);
@@ -182,8 +216,20 @@ class SQLite {
       ws.on('message', (data) => {
         this.isAlive = true;
 
+        if (!data) return;
+
         // return early for ping/pong
-        if (data && data.length === 4 && data.toString() === 'ping') return;
+        if (data.length === 4 && data.toString() === 'ping') return;
+
+        // return early for uuid from wss.broadcast
+        if (data.length === 36) {
+          const uuid = data.toString();
+          this.uuidsReceived.add(uuid);
+          setTimeout(() => {
+            this.uuidsReceived.delete(uuid);
+          }, 1000);
+          return;
+        }
 
         parsePayload.call(this, data, ws);
       });

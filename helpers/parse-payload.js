@@ -673,104 +673,123 @@ async function parsePayload(data, ws) {
 
       // sync the user's temp mailbox to their current
       case 'sync': {
-        const tmpDb = await getTemporaryDatabase.call(this, payload);
-
-        // TODO: lock the temporary database
-
         let count = 0;
 
-        // copy and purge messages
-        try {
-          const messages = await TemporaryMessages.find(
-            this,
-            { user: payload.session.user, db: tmpDb },
-            {}
+        // only allow sync to occur once every 10s
+        const cache = await this.client.get(
+          `sync_check:${payload.session.user.alias_id}`
+        );
+
+        if (!cache) {
+          // set cache so we don't sync twice at once
+          await this.client.set(
+            `sync_check:${payload.session.user.alias_id}`,
+            true,
+            'PX',
+            ms('10s')
           );
 
-          if (messages.length > 0) {
-            for (const message of messages) {
-              //
-              // if one message fails then not all of them should
-              // (e.g. one might have an issue with `date` or `raw`)
-              //
-              try {
-                // check that we have available space
-                const storagePath = getPathToDatabase({
-                  id: payload.session.user.alias_id,
-                  storage_location: payload.session.user.storage_location
-                });
-                const spaceRequired = Buffer.byteLength(message.raw);
-                // eslint-disable-next-line no-await-in-loop
-                const diskSpace = await checkDiskSpace(storagePath);
-                if (diskSpace.free < spaceRequired)
-                  throw new TypeError(
-                    `Needed ${prettyBytes(
-                      spaceRequired
-                    )} but only ${prettyBytes(diskSpace.free)} was available`
+          const tmpDb = await getTemporaryDatabase.call(this, payload);
+
+          // copy and purge messages
+          try {
+            const messages = await TemporaryMessages.find(
+              this,
+              { user: payload.session.user, db: tmpDb },
+              {}
+            );
+
+            if (messages.length > 0) {
+              for (const message of messages) {
+                //
+                // if one message fails then not all of them should
+                // (e.g. one might have an issue with `date` or `raw`)
+                //
+                try {
+                  // check that we have available space
+                  const storagePath = getPathToDatabase({
+                    id: payload.session.user.alias_id,
+                    storage_location: payload.session.user.storage_location
+                  });
+                  const spaceRequired = Buffer.byteLength(message.raw);
+                  // eslint-disable-next-line no-await-in-loop
+                  const diskSpace = await checkDiskSpace(storagePath);
+                  if (diskSpace.free < spaceRequired)
+                    throw new TypeError(
+                      `Needed ${prettyBytes(
+                        spaceRequired
+                      )} but only ${prettyBytes(diskSpace.free)} was available`
+                    );
+
+                  // eslint-disable-next-line no-await-in-loop
+                  await onAppendPromise.call(
+                    this,
+                    'INBOX',
+                    [],
+                    message.date,
+                    message.raw,
+                    {
+                      ..._.omit(payload.session, 'db'),
+                      remoteAddress: message.remoteAddress,
+
+                      // don't append duplicate messages
+                      checkForExisting: true
+                    }
                   );
 
-                // eslint-disable-next-line no-await-in-loop
-                await onAppendPromise.call(
-                  this,
-                  'INBOX',
-                  [],
-                  message.date,
-                  message.raw,
-                  {
-                    ..._.omit(payload.session, 'db'),
-                    remoteAddress: message.remoteAddress
-                  }
-                );
+                  count++;
 
-                count++;
+                  // if successfully appended then delete from the database
+                  // eslint-disable-next-line no-await-in-loop
+                  await TemporaryMessages.deleteOne(
+                    this,
+                    { user: payload.session.user, db: tmpDb },
+                    { _id: message._id }
+                  );
+                } catch (_err) {
+                  const err = Array.isArray(_err) ? _err[0] : _err;
+                  err.isCodeBug = true;
+                  logger.fatal(err, { payload });
+                }
+              }
 
-                // if successfully appended then delete from the database
-                // eslint-disable-next-line no-await-in-loop
-                await TemporaryMessages.deleteOne(
-                  this,
-                  { user: payload.session.user, db: tmpDb },
-                  { _id: message._id }
+              // run a checkpoint to copy over wal to db
+              tmpDb.pragma('wal_checkpoint(PASSIVE)');
+
+              // TODO: vacuum into instead (same for elsewhere)
+              // vacuum temporary database
+              tmpDb.prepare('VACUUM').run();
+
+              // update storage
+              try {
+                await updateStorageUsed(
+                  payload.session.user.alias_id,
+                  this.client
                 );
-              } catch (_err) {
-                const err = Array.isArray(_err) ? _err[0] : _err;
-                err.isCodeBug = true;
+              } catch (err) {
                 logger.fatal(err, { payload });
               }
+
+              // TODO: unlock the temporary database
+              try {
+                tmpDb.pragma('analysis_limit=400');
+                tmpDb.pragma('optimize');
+                tmpDb.close();
+              } catch (err) {
+                logger.fatal(err, { payload });
+              }
+
+              // vacuum database
+              // await parsePayload.call(this, {
+              //   action: 'vacuum',
+              //   session: { user: payload.session.user }
+              // });
             }
+          } catch (err) {
+            err.isCodeBug = true;
+            logger.fatal(err, { payload });
           }
-        } catch (err) {
-          err.isCodeBug = true;
-          logger.fatal(err, { payload });
         }
-
-        // run a checkpoint to copy over wal to db
-        tmpDb.pragma('wal_checkpoint(PASSIVE)');
-
-        // TODO: vacuum into instead (same for elsewhere)
-        // vacuum temporary database
-        tmpDb.prepare('VACUUM').run();
-
-        // update storage
-        try {
-          await updateStorageUsed(payload.session.user.alias_id, this.client);
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
-
-        // TODO: unlock the temporary database
-        try {
-          tmpDb.pragma('analysis_limit=400');
-          tmpDb.pragma('optimize');
-          tmpDb.close();
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
-
-        // vacuum database
-        // await parsePayload.call(this, {
-        //   action: 'vacuum',
-        //   session: { user: payload.session.user }
-        // });
 
         response = {
           id: payload.id,
@@ -868,7 +887,7 @@ async function parsePayload(data, ws) {
         // get fingerprint (somewhat CPU intensive since we're using raw message)
         // (arguments = `session`, `headers`, `body`, `useSender`)
         //
-        const fingerprint = getFingerprint({}, headers, payload.raw, false);
+        const fingerprint = getFingerprint({}, headers, payload.raw);
 
         await pMap(
           payload.aliases,
@@ -1099,7 +1118,7 @@ async function parsePayload(data, ws) {
                 id: alias.id,
                 storage_location: alias.storage_location
               });
-              const spaceRequired = payload.raw * 2; // 2x to account for syncing
+              const spaceRequired = byteLength * 2; // 2x to account for syncing
               const diskSpace = await checkDiskSpace(storagePath);
               if (diskSpace.free < spaceRequired)
                 throw new TypeError(
@@ -1124,7 +1143,7 @@ async function parsePayload(data, ws) {
                     } catch {}
                   },
                   multiArgs: true,
-                  timeout: ms('15s')
+                  timeout: ms('10s')
                 });
 
                 const user = JSON.parse(response);
@@ -1145,8 +1164,16 @@ async function parsePayload(data, ws) {
                       password: user.password
                     },
                     remoteAddress: payload.remoteAddress,
+                    resolvedRootClientHostname:
+                      payload.resolvedRootClientHostname,
                     resolvedClientHostname: payload.resolvedClientHostname,
-                    allowlistValue: payload.allowlistValue
+                    allowlistValue: payload.allowlistValue,
+
+                    // don't emit wss.broadcast
+                    selected: false,
+
+                    // don't append duplicate messages
+                    checkForExisting: true
                   }
                 );
 
@@ -1394,7 +1421,7 @@ async function parsePayload(data, ws) {
               logger.error(err, { payload });
               err.isCodeBug = isCodeBug(err);
               errors[`${obj.address}`] = JSON.parse(
-                safeStringify(ws ? parseErr(err) : err)
+                safeStringify(parseErr(err))
               );
             }
           },
@@ -1955,6 +1982,13 @@ async function parsePayload(data, ws) {
           }
         }
 
+        await Promise.all([
+          this.client.del(`refresh_check:${payload.session.user.alias_id}`),
+          this.client.del(`migrate_check:${payload.session.user.alias_id}`),
+          this.client.del(`folder_check:${payload.session.user.alias_id}`),
+          this.client.del(`trash_check:${payload.session.user.alias_id}`)
+        ]);
+
         // TODO: don't allow getDatabase to perform a reset here
         db = await getDatabase(
           this,
@@ -2002,194 +2036,214 @@ async function parsePayload(data, ws) {
             ms('1d')
           );
 
-          let tmp;
-          let backup;
-          let err;
+          // check when we actually did the last user backup
+          const alias = await Aliases.findById(payload.session.user.alias_id)
+            .lean()
+            .exec();
+          if (!alias) throw new TypeError('Alias does not exist');
 
-          try {
-            // check how much space is remaining on storage location
-            const storagePath = getPathToDatabase({
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            });
-            const diskSpace = await checkDiskSpace(storagePath);
-            tmp = path.join(
-              path.dirname(storagePath),
-              `${payload.id}-backup.sqlite`
-            );
+          let runBackup = true;
 
-            // <https://github.com/nodejs/node/issues/38006>
-            const stats = await fs.promises.stat(storagePath);
-            if (
-              !stats.isFile() ||
-              stats.size === 0 ||
-              stats.size <= config.INITIAL_DB_SIZE
-            )
-              throw new TypeError('Database empty');
+          if (
+            _.isDate(alias.imap_backup_at) &&
+            // if it's less than 24h ago then we should not do another backup
+            new Date(alias.imap_backup_at).getTime() >
+              dayjs().subtract(1, 'day').toDate().getTime()
+          )
+            runBackup = false;
 
-            // we calculate size of db x 2 (backup + tarball)
-            const spaceRequired = stats.size * 2;
+          if (runBackup) {
+            let tmp;
+            let backup;
+            let err;
 
-            if (diskSpace.free < spaceRequired)
-              throw new TypeError(
-                `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
-                  diskSpace.free
-                )} was available`
+            try {
+              // check how much space is remaining on storage location
+              const storagePath = getPathToDatabase({
+                id: payload.session.user.alias_id,
+                storage_location: payload.session.user.storage_location
+              });
+              const diskSpace = await checkDiskSpace(storagePath);
+              tmp = path.join(
+                path.dirname(storagePath),
+                `${payload.id}-backup.sqlite`
               );
 
-            // create bucket on s3 if it doesn't already exist
-            // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
-            const bucket = `${config.env}-${dashify(
-              _.camelCase(payload.session.user.storage_location)
-            )}`;
+              // <https://github.com/nodejs/node/issues/38006>
+              const stats = await fs.promises.stat(storagePath);
+              if (
+                !stats.isFile() ||
+                stats.size === 0 ||
+                stats.size <= config.INITIAL_DB_SIZE
+              )
+                throw new TypeError('Database empty');
 
-            const key = `${payload.session.user.alias_id}.sqlite`;
+              // we calculate size of db x 2 (backup + tarball)
+              const spaceRequired = stats.size * 2;
 
-            if (config.env !== 'test') {
-              let res;
-              try {
-                res = await S3.send(
-                  new HeadBucketCommand({
-                    Bucket: bucket
-                  })
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                    diskSpace.free
+                  )} was available`
                 );
-              } catch (err) {
-                if (err.name !== 'NotFound') throw err;
-              }
 
-              if (res?.$metadata?.httpStatusCode !== 200) {
+              // create bucket on s3 if it doesn't already exist
+              // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
+              const bucket = `${config.env}-${dashify(
+                _.camelCase(payload.session.user.storage_location)
+              )}`;
+
+              const key = `${payload.session.user.alias_id}.sqlite`;
+
+              if (config.env !== 'test') {
+                let res;
                 try {
-                  await S3.send(
-                    new CreateBucketCommand({
-                      ACL: 'private',
+                  res = await S3.send(
+                    new HeadBucketCommand({
                       Bucket: bucket
                     })
                   );
                 } catch (err) {
-                  if (err.name !== 'BucketAlreadyOwnedByYou') throw err;
+                  if (err.name !== 'NotFound') throw err;
+                }
+
+                if (res?.$metadata?.httpStatusCode !== 200) {
+                  try {
+                    await S3.send(
+                      new CreateBucketCommand({
+                        ACL: 'private',
+                        Bucket: bucket
+                      })
+                    );
+                  } catch (err) {
+                    if (err.name !== 'BucketAlreadyOwnedByYou') throw err;
+                  }
                 }
               }
-            }
 
-            //
-            // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
-            //       because if a page is modified during backup, it has to start over
-            //       <https://news.ycombinator.com/item?id=31387556>
-            //       <https://github.com/benbjohnson/litestream.io/issues/56>
-            //
-            //       also, if we used `backup` then for a temporary period
-            //       the database would be unencrypted on disk, and instead
-            //       we use VACUUM INTO which keeps the encryption as-is
-            //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
-            //
-            //       const results = await db.backup(tmp);
-            //
-            //       so instead we use the VACUUM INTO command with the `tmp` path
-            //
+              //
+              // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+              //       because if a page is modified during backup, it has to start over
+              //       <https://news.ycombinator.com/item?id=31387556>
+              //       <https://github.com/benbjohnson/litestream.io/issues/56>
+              //
+              //       also, if we used `backup` then for a temporary period
+              //       the database would be unencrypted on disk, and instead
+              //       we use VACUUM INTO which keeps the encryption as-is
+              //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+              //
+              //       const results = await db.backup(tmp);
+              //
+              //       so instead we use the VACUUM INTO command with the `tmp` path
+              //
 
-            // run a checkpoint to copy over wal to db
-            db.pragma('wal_checkpoint(PASSIVE)');
+              // run a checkpoint to copy over wal to db
+              db.pragma('wal_checkpoint(PASSIVE)');
 
-            // create backup
-            // takes approx 5-10s per GB
-            db.exec(`VACUUM INTO '${tmp}'`);
+              // create backup
+              // takes approx 5-10s per GB
+              db.exec(`VACUUM INTO '${tmp}'`);
 
-            backup = true;
+              backup = true;
 
-            // open the backup to ensure that encryption still valid
-            const backupDb = await getDatabase(
-              this,
-              // alias
-              {
-                id: payload.session.user.alias_id,
-                storage_location: payload.session.user.storage_location
-              },
-              payload.session,
-              null,
-              false,
-              tmp
-            );
-
-            try {
-              backupDb.pragma('analysis_limit=400');
-              backupDb.pragma('optimize');
-              backupDb.close();
-            } catch (err) {
-              logger.fatal(err, { payload });
-            }
-
-            // calculate hash of file
-            const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
-
-            // check if hash already exists in s3
-            try {
-              const obj = await S3.send(
-                new HeadObjectCommand({
-                  Bucket: bucket,
-                  Key: key
-                })
+              // open the backup to ensure that encryption still valid
+              const backupDb = await getDatabase(
+                this,
+                // alias
+                {
+                  id: payload.session.user.alias_id,
+                  storage_location: payload.session.user.storage_location
+                },
+                payload.session,
+                null,
+                false,
+                tmp
               );
 
-              if (obj?.Metadata?.hash === hash)
-                throw new TypeError('Hash already exists, returning early');
-            } catch (err) {
-              if (err.name !== 'NotFound') throw err;
-            }
-
-            const upload = new Upload({
-              client: S3,
-              params: {
-                Bucket: bucket,
-                Key: key,
-                Body: fs.createReadStream(tmp),
-                Metadata: { hash }
+              try {
+                backupDb.pragma('analysis_limit=400');
+                backupDb.pragma('optimize');
+                backupDb.close();
+              } catch (err) {
+                logger.fatal(err, { payload });
               }
-            });
-            await upload.done();
 
-            // update alias imap backup date using provided time
-            await Aliases.findOneAndUpdate(
-              {
-                _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-                domain: new mongoose.Types.ObjectId(
-                  payload.session.user.domain_id
-                )
-              },
-              {
-                $set: {
-                  imap_backup_at: new Date(payload.backup_at)
+              // calculate hash of file
+              const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
+
+              // check if hash already exists in s3
+              try {
+                const obj = await S3.send(
+                  new HeadObjectCommand({
+                    Bucket: bucket,
+                    Key: key
+                  })
+                );
+
+                if (obj?.Metadata?.hash === hash)
+                  throw new TypeError('Hash already exists, returning early');
+              } catch (err) {
+                if (err.name !== 'NotFound') throw err;
+              }
+
+              const upload = new Upload({
+                client: S3,
+                params: {
+                  Bucket: bucket,
+                  Key: key,
+                  Body: fs.createReadStream(tmp),
+                  Metadata: { hash }
                 }
-              }
-            );
-          } catch (_err) {
-            err = _err;
-          }
-
-          // always do cleanup in case of errors
-          if (tmp && backup) {
-            try {
-              await fs.promises.rm(tmp, {
-                force: true,
-                recursive: true
               });
-            } catch (err) {
-              logger.fatal(err, { payload });
-            }
-          }
+              await upload.done();
 
-          // if an error occurred then allow cache to attempt again
-          // (but wait 30 minutes instead of 1 day)
-          if (err) {
-            this.client
-              .set(
-                `backup_check:${payload.session.user.alias_id}`,
-                true,
-                'PX',
-                ms('30m')
-              )
-              .then()
-              .catch((err) => logger.fatal(err, { payload }));
-            if (err.message !== 'Database empty') throw err;
+              // update alias imap backup date using provided time
+              await Aliases.findOneAndUpdate(
+                {
+                  _id: new mongoose.Types.ObjectId(
+                    payload.session.user.alias_id
+                  ),
+                  domain: new mongoose.Types.ObjectId(
+                    payload.session.user.domain_id
+                  )
+                },
+                {
+                  $set: {
+                    imap_backup_at: new Date(payload.backup_at)
+                  }
+                }
+              );
+            } catch (_err) {
+              err = _err;
+            }
+
+            // always do cleanup in case of errors
+            if (tmp && backup) {
+              try {
+                await fs.promises.rm(tmp, {
+                  force: true,
+                  recursive: true
+                });
+              } catch (err) {
+                logger.fatal(err, { payload });
+              }
+            }
+
+            // if an error occurred then allow cache to attempt again
+            // (but wait 30 minutes instead of 1 day)
+            if (err) {
+              this.client
+                .set(
+                  `backup_check:${payload.session.user.alias_id}`,
+                  true,
+                  'PX',
+                  ms('30m')
+                )
+                .then()
+                .catch((err) => logger.fatal(err, { payload }));
+              if (err.message !== 'Database empty') throw err;
+            }
           }
         }
 

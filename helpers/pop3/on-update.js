@@ -163,7 +163,10 @@ async function onUpdate(update, session, fn) {
           // uids to move
           messages: update.deleted.map((message) => message.uid),
           // add \Seen flag to deleted messages
-          markAsSeen: true
+          markAsSeen: true,
+
+          // do not broadcast messages
+          silent: true
         },
         session
       );

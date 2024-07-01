@@ -16,6 +16,7 @@
 const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -28,6 +29,8 @@ const { acquireLock, releaseLock } = require('#helpers/lock');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
+const { formatResponse } = IMAPConnection.prototype;
+
 const builder = new Builder();
 
 function getFlag(f) {
@@ -39,7 +42,7 @@ async function onStore(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response, writeStream] = await this.wsp.request({
+      const [bool, response] = await this.wsp.request({
         action: 'store',
         session: {
           id: session.id,
@@ -51,14 +54,7 @@ async function onStore(mailboxId, update, session, fn) {
         update
       });
 
-      if (session?.writeStream?.write) {
-        for (const write of writeStream) {
-          session.writeStream.write(session.formatResponse(...write));
-        }
-      }
-
       fn(null, bool, response);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -84,7 +80,6 @@ async function onStore(mailboxId, update, session, fn) {
       );
 
     const modified = [];
-    const writeStream = [];
     const entries = [];
     const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
     const query = {
@@ -135,7 +130,7 @@ async function onStore(mailboxId, update, session, fn) {
     try {
       if (messages.length > 0) {
         // eslint-disable-next-line complexity
-        session.db.transaction(() => {
+        session.db.transaction(async () => {
           for (const result of messages) {
             const message = syncConvertResult(Messages, result);
             // this.logger.debug('fetched message', {
@@ -308,15 +303,15 @@ async function onStore(mailboxId, update, session, fn) {
 
             if (!update.silent || condstoreEnabled) {
               // write to socket the response
-              writeStream.push([
-                'FETCH',
-                message.uid,
-                {
+              // eslint-disable-next-line no-await-in-loop
+              await this.wss.broadcast(
+                session,
+                formatResponse.call(session, 'FETCH', message.uid, {
                   uid: update.isUid ? message.uid : false,
                   flags: message.flags,
                   modseq: condstoreEnabled ? newModseq : false
-                }
-              ]);
+                })
+              );
             }
 
             $set.modseq = newModseq;
@@ -430,10 +425,11 @@ async function onStore(mailboxId, update, session, fn) {
 
     if (entries.length > 0) {
       await this.server.notifier.addEntries(this, session, mailboxId, entries);
+      this.server.notifier.fire(session.user.alias_id);
     }
 
     // send response
-    fn(null, true, modified, writeStream);
+    fn(null, true, modified);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

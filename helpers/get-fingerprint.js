@@ -14,13 +14,8 @@ const { encoder } = require('./encoder-decoder');
 // <https://metacpan.org/pod/Email::Fingerprint>
 // <https://dl.acm.org/doi/fullHtml/10.1145/1105664.1105677>
 //
-function getFingerprint(session, headers, body, useSender = true) {
+function getFingerprint(session, headers, body) {
   const arr = [];
-
-  const sender =
-    session.allowlistValue ||
-    session.resolvedClientHostname ||
-    session.remoteAddress;
 
   //
   // NOTE: `headers` can either be Headers instance
@@ -50,10 +45,6 @@ function getFingerprint(session, headers, body, useSender = true) {
   // and if it did, it's hard on CPU
   // (e.g. since we enforce "From" header)
   if (!hasHeader && body) arr.push(body);
-
-  if (useSender && sender) {
-    return [revHash(sender), revHash(encoder.pack(arr))].join(':');
-  }
 
   return revHash(encoder.pack(arr));
 }

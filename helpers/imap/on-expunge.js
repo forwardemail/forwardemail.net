@@ -15,6 +15,7 @@
 
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -24,6 +25,8 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 
+const { formatResponse } = IMAPConnection.prototype;
+
 const builder = new Builder();
 
 // eslint-disable-next-line complexity
@@ -32,7 +35,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, writeStream] = await this.wsp.request({
+      const [bool] = await this.wsp.request({
         action: 'expunge',
         session: {
           id: session.id,
@@ -44,18 +47,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         update
       });
 
-      if (session?.writeStream?.write && Array.isArray(writeStream)) {
-        for (const write of writeStream) {
-          if (Array.isArray(write)) {
-            session.writeStream.write(session.formatResponse(...write));
-          } else {
-            session.writeStream.write(write);
-          }
-        }
-      }
-
       fn(null, bool);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -80,8 +72,6 @@ async function onExpunge(mailboxId, update, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
-
-    const writeStream = [];
 
     // let storageUsed = 0;
 
@@ -146,10 +136,25 @@ async function onExpunge(mailboxId, update, session, fn) {
             session.selected.mailbox &&
             session.selected.mailbox.toString() === mailbox._id.toString())
         ) {
-          for (const message of messages) {
-            writeStream.push(['EXPUNGE', message.uid]);
-          }
+          await this.wss.broadcast(
+            session,
+            messages.map((message) =>
+              formatResponse.call(session, 'EXPUNGE', message.uid)
+            )
+          );
         }
+
+        if (!update.silent && session?.selected?.uidList)
+          await this.wss.broadcast(session, {
+            tag: '*',
+            command: String(session.selected.uidList.length),
+            attributes: [
+              {
+                type: 'atom',
+                value: 'EXISTS'
+              }
+            ]
+          });
 
         await this.server.notifier.addEntries(
           this,
@@ -167,6 +172,7 @@ async function onExpunge(mailboxId, update, session, fn) {
             // idate: message.idate
           }))
         );
+        this.server.notifier.fire(session.user.alias_id);
       }
     } catch (_err) {
       err = _err;
@@ -190,7 +196,7 @@ async function onExpunge(mailboxId, update, session, fn) {
     // throw error
     if (err) throw err;
 
-    fn(null, true, writeStream);
+    fn(null, true);
   } catch (err) {
     // release lock
     if (lock?.success) {

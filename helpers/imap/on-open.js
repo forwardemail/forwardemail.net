@@ -60,23 +60,6 @@ async function onOpen(path, session, fn) {
         }
       );
 
-    //
-    // NOTE: the below comment doesn't apply anymore
-    //       since we're actually using sqlite behind the scenes!
-    //
-    // distinct has a limited response size of 16 MB
-    // <https://www.mongodb.com/docs/manual/reference/method/db.collection.distinct/>
-    // > 'The maximum BSON document size is 16 megabytes'
-    // <https://github.com/nodemailer/wildduck/issues/530>
-    //
-    /*
-    const uidList = await Messages.distinct(this, session, 'uid', {
-      mailbox: mailbox._id
-    });
-
-    mailbox.uidList = uidList.sort();
-    */
-
     const sql = builder.build({
       type: 'select',
       table: 'Messages',

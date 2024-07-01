@@ -17,6 +17,7 @@ const mongoose = require('mongoose');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -26,6 +27,8 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
+
+const { formatResponse } = IMAPConnection.prototype;
 
 // const BULK_BATCH_SIZE = 150;
 
@@ -37,7 +40,7 @@ async function onMove(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response, writeStream] = await this.wsp.request({
+      const [bool, response] = await this.wsp.request({
         action: 'move',
         session: {
           id: session.id,
@@ -49,18 +52,7 @@ async function onMove(mailboxId, update, session, fn) {
         update
       });
 
-      if (session?.writeStream?.write && Array.isArray(writeStream)) {
-        for (const write of writeStream) {
-          if (Array.isArray(write)) {
-            session.writeStream.write(session.formatResponse(...write));
-          } else {
-            session.writeStream.write(write);
-          }
-        }
-      }
-
       fn(null, bool, response);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -115,7 +107,6 @@ async function onMove(mailboxId, update, session, fn) {
 
     const sourceUid = [];
     const destinationUid = [];
-    const writeStream = [];
 
     const expungeEntries = [];
     const existEntries = [];
@@ -179,8 +170,6 @@ async function onMove(mailboxId, update, session, fn) {
         // session.db.prepare(sql.query).run(sql.values);
         ops.push([sql.query, sql.values]);
 
-        // EXPUNGE entries
-        writeStream.push('EXPUNGE', m.uid);
         expungeEntries.push({
           ignore: session.id,
           command: 'EXPUNGE',
@@ -247,19 +236,8 @@ async function onMove(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    if (sourceUid.length > 0 && session?.selected?.uidList) {
-      const payload = {
-        tag: '*',
-        command: String(session.selected.uidList.length),
-        attributes: [
-          {
-            type: 'atom',
-            value: 'EXISTS'
-          }
-        ]
-      };
-      writeStream.push(payload);
-    }
+    // throw error if any
+    if (err) throw err;
 
     // update storage
     try {
@@ -269,18 +247,31 @@ async function onMove(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    // throw error if any
-    if (err) throw err;
+    // set by POP3 `on-update.js` to not broadcast messages
+    if (!update.silent) {
+      if (sourceUid.length > 0 && session?.selected?.uidList) {
+        await this.wss.broadcast(session, {
+          tag: '*',
+          command: String(session.selected.uidList.length),
+          attributes: [
+            {
+              type: 'atom',
+              value: 'EXISTS'
+            }
+          ]
+        });
+      }
 
-    // send response
-    const response = {
-      uidValidity: targetMailbox.uidValidity,
-      sourceUid,
-      destinationUid,
-      mailbox: mailbox._id,
-      target: targetMailbox._id,
-      status: 'moved'
-    };
+      // EXPUNGE entries
+      if (expungeEntries.length > 0) {
+        await this.wss.broadcast(
+          session,
+          expungeEntries.map((entry) =>
+            formatResponse.call(session, 'EXPUNGE', entry.uid)
+          )
+        );
+      }
+    }
 
     if (sourceUid.length > 0) {
       // expunge messages from old mailbox
@@ -296,9 +287,20 @@ async function onMove(mailboxId, update, session, fn) {
         targetMailbox._id,
         existEntries
       );
+      this.server.notifier.fire(session.user.alias_id);
     }
 
-    fn(null, true, response, writeStream);
+    // send response
+    const response = {
+      uidValidity: targetMailbox.uidValidity,
+      sourceUid,
+      destinationUid,
+      mailbox: mailbox._id,
+      target: targetMailbox._id,
+      status: 'moved'
+    };
+
+    fn(null, true, response);
   } catch (err) {
     // release lock
     if (lock?.success) {

@@ -251,7 +251,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
                 0
               );
             } catch (err) {
-              logger.error(err);
+              if (err.name !== 'TimeoutError') logger.error(err);
             }
 
             // update `storage_used` for given alias

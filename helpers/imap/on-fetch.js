@@ -14,7 +14,6 @@
  */
 
 const getStream = require('get-stream');
-const pMap = require('p-map');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
@@ -41,7 +40,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response, writeStream] = await this.wsp.request({
+      const [bool, response] = await this.wsp.request({
         action: 'fetch',
         session: {
           id: session.id,
@@ -54,14 +53,7 @@ async function onFetch(mailboxId, options, session, fn) {
         options
       });
 
-      if (session?.writeStream?.write) {
-        for (const compiled of writeStream) {
-          session.writeStream.write({ compiled });
-        }
-      }
-
       fn(null, bool, response);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -179,149 +171,145 @@ async function onFetch(mailboxId, options, session, fn) {
     // with the `batchSize` value at a time (for better performance)
     //
     const entries = [];
-    const writeStream = [];
     const ops = [];
 
     let rowCount = 0;
     let totalBytes = 0;
 
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
-    // const stmt = session.db.prepare(sql.query);
-    // for (const result of stmt.iterate(sql.values))
-    const results = session.db.prepare(sql.query).all(sql.values);
+    const stmt = session.db.prepare(sql.query);
+    for (const result of stmt.iterate(sql.values)) {
+      const message = syncConvertResult(Messages, result, projection);
 
-    if (results.length > 0) {
-      await pMap(
-        results,
-        async (result) => {
-          const message = syncConvertResult(Messages, result, projection);
+      // don't process messages that are new since query started
+      if (
+        queryAll &&
+        typeof session?.selected?.uidList === 'object' &&
+        Array.isArray(session.selected.uidList) &&
+        !session.selected.uidList.includes(message.uid)
+      ) {
+        continue;
+      }
 
-          // don't process messages that are new since query started
-          if (
-            queryAll &&
-            typeof session?.selected?.uidList === 'object' &&
-            Array.isArray(session.selected.uidList) &&
-            !session.selected.uidList.includes(message.uid)
-          ) {
-            return;
-          }
+      const markAsSeen =
+        options.markAsSeen &&
+        message.flags &&
+        !message.flags.includes('\\Seen');
+      if (markAsSeen) message.flags.unshift('\\Seen');
 
-          const markAsSeen =
-            options.markAsSeen &&
-            message.flags &&
-            !message.flags.includes('\\Seen');
-          if (markAsSeen) message.flags.unshift('\\Seen');
+      // write the response early since we don't need to perform db operation
+      if (options.metadataOnly && !markAsSeen) {
+        // eslint-disable-next-line no-await-in-loop
+        const values = await Promise.all(
+          getQueryResponse(
+            options.query,
+            message,
+            {
+              logger: this.logger,
+              fetchOptions: {},
+              // database
+              attachmentStorage: this.attachmentStorage,
+              acceptUTF8Enabled:
+                typeof session.isUTF8Enabled === 'function'
+                  ? session.isUTF8Enabled()
+                  : session.acceptUTF8Enabled || false
+            },
+            this,
+            session
+          )
+        );
 
-          // write the response early since we don't need to perform db operation
-          if (options.metadataOnly && !markAsSeen) {
-            const values = await Promise.all(
-              getQueryResponse(
-                options.query,
-                message,
-                {
-                  logger: this.logger,
-                  fetchOptions: {},
-                  // database
-                  attachmentStorage: this.attachmentStorage,
-                  acceptUTF8Enabled:
-                    typeof session.isUTF8Enabled === 'function'
-                      ? session.isUTF8Enabled()
-                      : session.acceptUTF8Enabled || false
-                },
-                this,
-                session
-              )
-            );
+        const data = formatResponse.call(session, 'FETCH', message.uid, {
+          query: options.query,
+          values
+        });
 
-            const data = formatResponse.call(session, 'FETCH', message.uid, {
-              query: options.query,
-              values
-            });
+        const compiled = imapHandler.compiler(data);
 
-            const compiled = imapHandler.compiler(data);
+        // `compiled` is a 'binary' string
+        totalBytes += compiled.length;
 
-            // `compiled` is a 'binary' string
-            totalBytes += compiled.length;
+        // eslint-disable-next-line no-await-in-loop
+        await this.wss.broadcast(session, { compiled });
+        rowCount++;
 
-            writeStream.push(compiled);
-            rowCount++;
+        //
+        // NOTE: we may need to pass indexer options here as similar to wildduck (through the use of `eachAsync`)
+        // <https://mongoosejs.com/docs/api/querycursor.html#QueryCursor.prototype.eachAsync()>
+        // (e.g. so we can do `await Promise.resolve((resolve) => setImmediate(resolve));`)
+        //
 
-            //
-            // NOTE: we may need to pass indexer options here as similar to wildduck (through the use of `eachAsync`)
-            // <https://mongoosejs.com/docs/api/querycursor.html#QueryCursor.prototype.eachAsync()>
-            // (e.g. so we can do `await Promise.resolve((resolve) => setImmediate(resolve));`)
-            //
+        // move along to next cursor
+        continue;
+      }
 
-            // move along to next cursor
-            return;
-          }
+      //
+      // NOTE: wildduck uses streams and a TTL limiter/counter however we can
+      // simplify this for now just by writing to the socket writable stream
+      //
 
-          //
-          // NOTE: wildduck uses streams and a TTL limiter/counter however we can
-          // simplify this for now just by writing to the socket writable stream
-          //
-
-          const values = await Promise.all(
-            getQueryResponse(
-              options.query,
-              message,
-              {
-                logger: this.logger,
-                fetchOptions: {},
-                // database
-                attachmentStorage: this.attachmentStorage,
-                acceptUTF8Enabled:
-                  typeof session.isUTF8Enabled === 'function'
-                    ? session.isUTF8Enabled()
-                    : session.acceptUTF8Enabled || false
-              },
-              this,
-              session
-            )
-          );
-
-          const data = formatResponse.call(session, 'FETCH', message.uid, {
-            query: options.query,
-            values
-          });
-
-          // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
-          const stream = imapHandler.compileStream(data);
-          const compiled = await getStream(stream, {
-            encoding: 'binary'
-          });
-          totalBytes += compiled.length;
-          writeStream.push(compiled);
-
-          rowCount++;
-
-          if (markAsSeen) {
-            const sql = builder.build({
-              type: 'update',
-              table: 'Messages',
-              condition: {
-                _id: message._id.toString()
-              },
-              modifier: {
-                $set: {
-                  flags: JSON.stringify(message.flags),
-                  unseen: false
-                }
-              }
-            });
-            ops.push([sql.query, sql.values]);
-
-            entries.push({
-              ignore: session.id,
-              command: 'FETCH',
-              uid: message.uid,
-              flags: message.flags,
-              message: message._id
-            });
-          }
-        },
-        { concurrency: 1000 }
+      // eslint-disable-next-line no-await-in-loop
+      const values = await Promise.all(
+        getQueryResponse(
+          options.query,
+          message,
+          {
+            logger: this.logger,
+            fetchOptions: {},
+            // database
+            attachmentStorage: this.attachmentStorage,
+            acceptUTF8Enabled:
+              typeof session.isUTF8Enabled === 'function'
+                ? session.isUTF8Enabled()
+                : session.acceptUTF8Enabled || false
+          },
+          this,
+          session
+        )
       );
+
+      const data = formatResponse.call(session, 'FETCH', message.uid, {
+        query: options.query,
+        values
+      });
+
+      // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
+      const stream = imapHandler.compileStream(data);
+      // eslint-disable-next-line no-await-in-loop
+      const compiled = await getStream(stream, {
+        encoding: 'binary'
+      });
+      totalBytes += compiled.length;
+
+      // eslint-disable-next-line no-await-in-loop
+      await this.wss.broadcast(session, { compiled });
+
+      rowCount++;
+
+      if (markAsSeen) {
+        const sql = builder.build({
+          type: 'update',
+          table: 'Messages',
+          condition: {
+            _id: message._id.toString()
+          },
+          modifier: {
+            $set: {
+              flags: JSON.stringify(message.flags),
+              unseen: false
+            }
+          }
+        });
+        ops.push([sql.query, sql.values]);
+
+        entries.push({
+          ignore: session.id,
+          command: 'FETCH',
+          uid: message.uid,
+          flags: message.flags,
+          message: message._id
+        });
+      }
     }
 
     // perform db operations
@@ -340,17 +328,13 @@ async function onFetch(mailboxId, options, session, fn) {
         mailbox._id,
         entries
       );
+      this.server.notifier.fire(session.user.alias_id);
     }
 
-    fn(
-      null,
-      true,
-      {
-        rowCount,
-        totalBytes
-      },
-      writeStream
-    );
+    fn(null, true, {
+      rowCount,
+      totalBytes
+    });
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
     if (err.imapResponse) {

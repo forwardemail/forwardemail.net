@@ -20,10 +20,9 @@ const Axe = require('axe');
 const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
-const _ = require('lodash');
 const bytes = require('bytes');
-const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const pRetry = require('p-retry');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
@@ -36,6 +35,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const imap = require('#helpers/imap');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
@@ -200,6 +200,72 @@ class IMAP {
       })
     );
 
+    // listen for websocket write stream
+    this.wsp.onUnpackedMessage.addListener(async (data) => {
+      try {
+        if (
+          typeof data === 'object' &&
+          typeof data.uuid === 'string' &&
+          typeof data.session_id === 'string' &&
+          typeof data.alias_id === 'string' &&
+          data.payload !== undefined
+        ) {
+          for (const connection of this.server.connections) {
+            // extra safeguard to use two sources of truth (session ID + alias ID)
+            if (
+              connection?.id !== data.session_id ||
+              connection?.session?.user?.alias_id !== data.alias_id
+            )
+              continue;
+
+            if (Array.isArray(data.payload)) {
+              for (const payload of data.payload) {
+                connection.session.writeStream.write(payload);
+              }
+            } else {
+              connection.session.writeStream.write(data.payload);
+            }
+
+            // will retry by default up to 10x with exponential backoff
+            // (for initial connection)
+            if (!this.wsp.isOpened) {
+              // eslint-disable-next-line no-await-in-loop
+              await pRetry(() => this.wsp.open(), {
+                retries: config.env === 'production' ? 9 : 1, // in case the default in node-retry changes
+                onFailedAttempt(err) {
+                  err.isCodeBug = true;
+                  // <https://github.com/vitalets/websocket-as-promised/issues/47>
+                  logger.fatal(err);
+                }
+              });
+            }
+
+            // attempt to send the request 3x
+            // eslint-disable-next-line no-await-in-loop
+            await pRetry(
+              () => {
+                this.wsp.send(data.uuid);
+              },
+              {
+                retries: 2,
+                onFailedAttempt(err) {
+                  if (isTimeoutError(err)) {
+                    logger.error(err);
+                    return;
+                  }
+
+                  throw err;
+                }
+              }
+            );
+            break;
+          }
+        }
+      } catch (err) {
+        logger.fatal(err);
+      }
+    });
+
     //
     // the notifier is utilized in the IMAP connection (see `wildduck/imap-core/lib/imap-connection.js`)
     // in order to `getUpdates` and send them over the socket (e.g. `EXIST`, `EXPUNGE`, `FETCH`)
@@ -233,35 +299,17 @@ class IMAP {
         }
 
         if (channel === 'sqlite_auth_request') {
-          const connections = [...this.server.connections];
-          const matches = connections.filter(
-            (c) => c?.session?.user?.alias_id === id
-          );
-          // if no matches found then timer will run out since no response
-          // (e.g. if this IMAP server doesn't have a connection maybe another does)
-          if (matches.length === 0) return;
-
-          // sort by desc date find the first match
-          const sorted = _.sortBy(
-            matches,
-            (c) => c?.session?.arrivalDate
-          ).reverse();
-
-          // error if no password was on the object (for debugging)
-          if (!isSANB(sorted[0].session.user.password)) {
-            const err = new TypeError(
-              'IMAP connection session did not have password'
-            );
-            err.matches = matches;
-            err.sorted = sorted;
-            throw err;
+          for (const connection of this.server.connections) {
+            if (connection?.session?.user?.alias_id === id) {
+              // find the most recent connection if any and broadcast that
+              this.client.publish(
+                'sqlite_auth_response',
+                safeStringify(connection.session.user)
+              );
+              break;
+            }
           }
 
-          // find the most recent connection if any and broadcast that
-          this.client.publish(
-            'sqlite_auth_response',
-            safeStringify(sorted[0].session.user)
-          );
           return;
         }
 

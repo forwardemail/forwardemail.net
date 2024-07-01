@@ -59,7 +59,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       });
       clearTimeout(timeout);
       fn(null, bool, response);
-      this.server.notifier.fire(session.user.alias_id, update.destination);
     } catch (err) {
       clearTimeout(timeout);
       fn(err);
@@ -364,6 +363,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         targetMailbox._id,
         entries
       );
+      this.server.notifier.fire(session.user.alias_id, update.destination);
     }
 
     fn(null, true, {

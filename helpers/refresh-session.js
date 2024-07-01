@@ -13,7 +13,6 @@ const SocketError = require('#helpers/socket-error');
 const config = require('#config');
 const getDatabase = require('#helpers/get-database');
 const i18n = require('#helpers/i18n');
-const parsePayload = require('#helpers/parse-payload');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 
@@ -179,41 +178,8 @@ async function refreshSession(session, command) {
   );
 
   // fire notifications if any (e.g. initial creation of databases)
-  if (this?.constructor?.name !== 'CalDAV')
-    this.server.notifier.fire(session.user.alias_id);
-
-  //
-  // only perform sync and backup during read commands on sqlite server
-  // (these are specifically commands for when the user is attempting to get messages)
-  //
-  if (
-    needsRefreshed &&
-    !this.wsp && // ensures SQLite only
-    ['POP3', 'GETQUOTAROOT', 'GETQUOTA', 'STATUS'].includes(command)
-  ) {
-    // sync with tmp db
-    try {
-      const sync = await parsePayload.call(this, {
-        action: 'sync',
-        session: { user: session.user }
-      });
-      this.logger.debug('tmp db sync complete', { sync, session });
-    } catch (err) {
-      this.logger.fatal(err, { session });
-    }
-
-    // daily backup (run in background)
-    parsePayload
-      .call(this, {
-        action: 'backup',
-        backup_at: new Date().toISOString(),
-        session: { user: session.user }
-      })
-      .then((backup) => {
-        this.logger.debug('backup complete', { backup, session });
-      })
-      .catch((err) => this.logger.fatal(err, { session }));
-  }
+  // if (this?.constructor?.name !== 'CalDAV')
+  //   this.server.notifier.fire(session.user.alias_id);
 }
 
 module.exports = refreshSession;

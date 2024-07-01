@@ -32,7 +32,6 @@ async function onDelete(path, session, fn) {
 
   if (this.wsp) {
     try {
-      // const [bool, mailboxId, writeStream] = await this.wsp.request(
       const [bool, mailboxId] = await this.wsp.request({
         action: 'delete',
         session: {
@@ -43,19 +42,7 @@ async function onDelete(path, session, fn) {
         path
       });
 
-      // not writing to stream yet (since entire mailbox deleted)
-      // if (Array.isArray(writeStream)) {
-      //   for (const write of writeStream) {
-      //     if (Array.isArray(write)) {
-      //       session.writeStream.write(session.formatResponse(...write));
-      //     } else {
-      //       session.writeStream.write(write);
-      //     }
-      //   }
-      // }
-
       fn(null, bool, mailboxId);
-      this.server.notifier.fire(session.user.alias_id);
     } catch (err) {
       fn(err);
     }
@@ -64,8 +51,6 @@ async function onDelete(path, session, fn) {
   }
 
   try {
-    // const writeStream = [];
-
     await this.refreshSession(session, 'DELETE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -128,8 +113,6 @@ async function onDelete(path, session, fn) {
         }
       );
       this.logger.debug('results', { results });
-      // if (results[2] && Array.isArray(results[2]))
-      //   writeStream.push(...results[2]);
     } catch (_err) {
       // since we use multiArgs from pify
       // if a promise that was wrapped with multiArgs: true
@@ -152,6 +135,7 @@ async function onDelete(path, session, fn) {
         command: 'DELETE',
         mailbox: mailbox._id
       });
+      this.server.notifier.fire(session.user.alias_id);
     }
 
     //
@@ -181,7 +165,6 @@ async function onDelete(path, session, fn) {
       this.logger.fatal(err, { path, session });
     }
 
-    // fn(null, true, mailbox._id, writeStream);
     fn(null, true, mailbox._id);
   } catch (err) {
     // NOTE: wildduck uses `imapResponse` so we are keeping it consistent

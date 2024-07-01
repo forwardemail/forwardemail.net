@@ -427,6 +427,40 @@ async function onAuth(auth, session, fn) {
     fn(null, { user });
 
     //
+    // if we're on IMAP or POP3 server then sync messages with user
+    //
+    if (
+      alias &&
+      alias.has_imap &&
+      (this.server instanceof IMAPServer ||
+        this.server instanceof POP3Server) &&
+      this.wsp
+    ) {
+      // sync with tmp db
+      this.wsp
+        .request({
+          action: 'sync',
+          session: { user }
+        })
+        .then((sync) => {
+          this.logger.debug('tmp db sync complete', { sync, session });
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+
+      // daily backup (run in background)
+      this.wsp
+        .request({
+          action: 'backup',
+          backup_at: new Date().toISOString(),
+          session: { user: session.user }
+        })
+        .then((backup) => {
+          this.logger.debug('backup complete', { backup, session });
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+    }
+
+    //
     // if we're on IMAP or POP3 server then as a weekly courtesy
     // if the user does not have IMAP storage enabled then
     // alert them by email to inform them they need to enable IMAP
