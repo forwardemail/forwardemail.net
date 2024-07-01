@@ -452,7 +452,7 @@ async function onAuth(auth, session, fn) {
         .request({
           action: 'backup',
           backup_at: new Date().toISOString(),
-          session: { user: session.user }
+          session: { user }
         })
         .then((backup) => {
           this.logger.debug('backup complete', { backup, session });
