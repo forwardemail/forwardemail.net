@@ -32,6 +32,7 @@ async function onDelete(path, session, fn) {
 
   if (this.wsp) {
     try {
+      console.time(`delete timer ${session.id}`);
       const [bool, mailboxId] = await this.wsp.request({
         action: 'delete',
         session: {
@@ -41,6 +42,7 @@ async function onDelete(path, session, fn) {
         },
         path
       });
+      console.timeEnd(`delete timer ${session.id}`);
 
       fn(null, bool, mailboxId);
     } catch (err) {

@@ -46,6 +46,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }, ms('15s'));
       })();
 
+      console.time(`copy timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'copy',
         session: {
@@ -57,6 +58,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         mailboxId,
         update
       });
+      console.timeEnd(`copy timer ${session.id}`);
       clearTimeout(timeout);
       fn(null, bool, response);
     } catch (err) {

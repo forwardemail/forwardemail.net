@@ -63,6 +63,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
         throw new IMAPError(
           i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
         );
+
+      console.time(`append timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'append',
         session: {
@@ -75,6 +77,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         date,
         raw
       });
+      console.timeEnd(`append timer ${session.id}`);
 
       fn(null, bool, response);
     } catch (err) {

@@ -32,6 +32,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
+      console.time(`search timer ${session.id}`);
       const data = await this.wsp.request({
         action: 'search',
         session: {
@@ -43,6 +44,7 @@ async function onSearch(mailboxId, options, session, fn) {
         mailboxId,
         options
       });
+      console.timeEnd(`search timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
       fn(err);

@@ -26,6 +26,7 @@ async function onCreate(path, session, fn) {
 
   if (this.wsp) {
     try {
+      console.time(`create timer ${session.id}`);
       const data = await this.wsp.request({
         action: 'create',
         session: {
@@ -35,6 +36,7 @@ async function onCreate(path, session, fn) {
         },
         path
       });
+      console.timeEnd(`create timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
       fn(err);

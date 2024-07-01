@@ -35,6 +35,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
+      console.time(`expunge timer ${session.id}`);
       const [bool] = await this.wsp.request({
         action: 'expunge',
         session: {
@@ -46,6 +47,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         mailboxId,
         update
       });
+      console.timeEnd(`expunge timer ${session.id}`);
 
       fn(null, bool);
     } catch (err) {

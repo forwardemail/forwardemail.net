@@ -42,6 +42,7 @@ async function onStore(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
+      console.time(`store timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'store',
         session: {
@@ -53,6 +54,7 @@ async function onStore(mailboxId, update, session, fn) {
         mailboxId,
         update
       });
+      console.timeEnd(`store timer ${session.id}`);
 
       fn(null, bool, response);
     } catch (err) {
