@@ -294,7 +294,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //       (and so for ones that went through, we don't want to store them twice)
     //       (note that this is unlike the MX server, which has this set to `true`)
     //
-    const fingerprint = getFingerprint(session, headers, mimeTree.body, false);
+    const fingerprint = getFingerprint(session, headers, mimeTree.body);
 
     // this is set only via "tmp" command in parse payload
     if (session.checkForExisting) {
