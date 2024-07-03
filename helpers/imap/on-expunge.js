@@ -17,6 +17,7 @@ const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
+const pMapSeries = require('p-map-series');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
@@ -51,6 +52,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
       fn(null, bool);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -98,27 +100,27 @@ async function onExpunge(mailboxId, update, session, fn) {
         sort: 'uid'
       });
 
-      let messages = [];
+      // delete messages
+      const messages = session.db.prepare(sql.query).all(sql.values);
 
-      session.db.transaction(async () => {
-        // delete messages
-        messages = session.db.prepare(sql.query).all(sql.values);
-
-        // delete attachments
-        for (const m of messages) {
+      // delete attachments
+      try {
+        await pMapSeries(messages, async (m) => {
           const attachmentIds = getAttachments(m.mimeTree);
           if (attachmentIds.length > 0)
-            // eslint-disable-next-line no-await-in-loop
             await this.attachmentStorage.deleteMany(
               this,
               session,
               attachmentIds,
               m.magic,
-              lock,
-              true // `true` indicates we're in a transaction
+              lock
             );
-        }
-      })();
+        });
+      } catch (err) {
+        err.message = `Error while deleting attachments: ${err.message}`;
+        err.isCodeBug = true;
+        this.logger.fatal(err);
+      }
 
       if (messages.length > 0) {
         //
@@ -207,12 +209,6 @@ async function onExpunge(mailboxId, update, session, fn) {
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
-    }
-
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { mailboxId, update, session });
-      return fn(null, err.imapResponse);
     }
 
     fn(refineAndLogError(err, session, true, this));

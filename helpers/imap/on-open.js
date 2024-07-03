@@ -39,6 +39,7 @@ async function onOpen(path, session, fn) {
 
       fn(null, response);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -76,12 +77,6 @@ async function onOpen(path, session, fn) {
     response.uidList = session.db.prepare(sql.query).pluck().all(sql.values);
     fn(null, response);
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { path, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

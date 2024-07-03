@@ -63,6 +63,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       fn(null, bool, response);
     } catch (err) {
       clearTimeout(timeout);
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -153,124 +154,126 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       const messages = session.db.prepare(sql.query).all(sql.values);
 
       if (messages.length > 0)
-        session.db.transaction(() => {
-          for (const m of messages) {
-            // don't copy in bulk so it doesn't get out of incremental uid sync
-            const _id = new mongoose.Types.ObjectId();
-            sourceUid.unshift(m.uid);
-            sourceIds.push(m._id);
-            destinationUid.unshift(uidNext);
+        session.db
+          .transaction((messages) => {
+            for (const m of messages) {
+              // don't copy in bulk so it doesn't get out of incremental uid sync
+              const _id = new mongoose.Types.ObjectId();
+              sourceUid.unshift(m.uid);
+              sourceIds.push(m._id);
+              destinationUid.unshift(uidNext);
 
-            // copy the message and generate new id
-            m._id = _id.toString();
-            m.mailbox = targetMailbox._id.toString();
-            m.uid = uidNext;
-            m.exp = (
-              typeof targetMailbox.retention === 'number'
-                ? targetMailbox.retention !== 0
-                : false
-            )
-              ? 1
-              : 0;
-            m.rdate = new Date(
-              Date.now() +
-                (typeof targetMailbox.retention === 'number'
-                  ? targetMailbox.retention
-                  : 0)
-            ).toISOString();
-            m.modseq = mailbox.modifyIndex;
-            m.junk = targetMailbox.specialUse === '\\Junk';
-            m.remoteAddress = session.remoteAddress;
-            m.transaction = 'COPY';
+              // copy the message and generate new id
+              m._id = _id.toString();
+              m.mailbox = targetMailbox._id.toString();
+              m.uid = uidNext;
+              m.exp = (
+                typeof targetMailbox.retention === 'number'
+                  ? targetMailbox.retention !== 0
+                  : false
+              )
+                ? 1
+                : 0;
+              m.rdate = new Date(
+                Date.now() +
+                  (typeof targetMailbox.retention === 'number'
+                    ? targetMailbox.retention
+                    : 0)
+              ).toISOString();
+              m.modseq = mailbox.modifyIndex;
+              m.junk = targetMailbox.specialUse === '\\Junk';
+              m.remoteAddress = session.remoteAddress;
+              m.transaction = 'COPY';
 
-            // create new message
-            {
-              const sql = builder.build({
-                type: 'insert',
-                table: 'Messages',
-                values: m
+              // create new message
+              {
+                const sql = builder.build({
+                  type: 'insert',
+                  table: 'Messages',
+                  values: m
+                });
+                session.db.prepare(sql.query).run(sql.values);
+              }
+
+              // update attachment store magic number
+              const attachmentIds = getAttachments(m.mimeTree);
+              if (attachmentIds.length > 0) {
+                const sql = builder.build({
+                  type: 'update',
+                  table: 'Attachments',
+                  condition: {
+                    hash: {
+                      $in: attachmentIds
+                    }
+                  },
+                  modifier: {
+                    $inc: {
+                      counter: 1,
+                      magic: m.magic
+                    },
+                    $set: {
+                      counterUpdated: new Date().toString()
+                    }
+                  }
+                });
+                session.db.prepare(sql.query).run(sql.values);
+              }
+
+              // increase counters
+              copiedMessages++;
+              copiedStorage += m.size;
+              uidNext++;
+
+              // add entries
+              entries.push({
+                command: 'EXISTS',
+                uid: m.uid,
+                mailbox: targetMailbox._id,
+                message: _id
+                // thread: new mongoose.Types.ObjectId(m.thread),
+                // unseen: boolean(m.unseen),
+                // idate: new Date(m.idate),
+                // junk: boolean(m.junk)
               });
-              session.db.prepare(sql.query).run(sql.values);
             }
 
-            // update attachment store magic number
-            const attachmentIds = getAttachments(m.mimeTree);
-            if (attachmentIds.length > 0) {
+            // set all existing messages as copied
+            {
               const sql = builder.build({
                 type: 'update',
-                table: 'Attachments',
+                table: 'Messages',
                 condition: {
-                  hash: {
-                    $in: attachmentIds
+                  _id: {
+                    $in: sourceIds
                   }
                 },
                 modifier: {
-                  $inc: {
-                    counter: 1,
-                    magic: m.magic
-                  },
                   $set: {
-                    counterUpdated: new Date().toString()
+                    copied: true
                   }
                 }
               });
               session.db.prepare(sql.query).run(sql.values);
             }
 
-            // increase counters
-            copiedMessages++;
-            copiedStorage += m.size;
-            uidNext++;
-
-            // add entries
-            entries.push({
-              command: 'EXISTS',
-              uid: m.uid,
-              mailbox: targetMailbox._id,
-              message: _id
-              // thread: new mongoose.Types.ObjectId(m.thread),
-              // unseen: boolean(m.unseen),
-              // idate: new Date(m.idate),
-              // junk: boolean(m.junk)
-            });
-          }
-
-          // set all existing messages as copied
-          {
-            const sql = builder.build({
-              type: 'update',
-              table: 'Messages',
-              condition: {
-                _id: {
-                  $in: sourceIds
+            // store on target mailbox the final value of `uidNext`
+            {
+              const sql = builder.build({
+                type: 'update',
+                table: 'Mailboxes',
+                condition: {
+                  _id: targetMailbox._id.toString()
+                },
+                modifier: {
+                  $set: {
+                    uidNext
+                  }
                 }
-              },
-              modifier: {
-                $set: {
-                  copied: true
-                }
-              }
-            });
-            session.db.prepare(sql.query).run(sql.values);
-          }
-
-          // store on target mailbox the final value of `uidNext`
-          {
-            const sql = builder.build({
-              type: 'update',
-              table: 'Mailboxes',
-              condition: {
-                _id: targetMailbox._id.toString()
-              },
-              modifier: {
-                $set: {
-                  uidNext
-                }
-              }
-            });
-            session.db.prepare(sql.query).run(sql.values);
-          }
-        })();
+              });
+              session.db.prepare(sql.query).run(sql.values);
+            }
+          })
+          .immediate(messages);
     } catch (_err) {
       err = _err;
     }
@@ -374,12 +377,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       destinationUid
     });
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { connection, mailboxId, update, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

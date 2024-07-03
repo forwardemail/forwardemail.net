@@ -81,6 +81,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
       fn(null, bool, response);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -562,15 +563,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
           { attachmentIds, session }
         );
       }
-    }
-
-    // handle mongodb error
-    if (err.code === 1100) err.imapResponse = 'ALREADYEXISTS';
-
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { path, flags, date, session });
-      return fn(null, err.imapResponse);
     }
 
     fn(refineAndLogError(err, session, true, this));

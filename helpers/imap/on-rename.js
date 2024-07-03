@@ -36,6 +36,7 @@ async function onRename(path, newPath, session, fn) {
       });
       fn(null, ...data);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -117,12 +118,6 @@ async function onRename(path, newPath, session, fn) {
     // send response
     fn(null, true, renamedMailbox._id);
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { path, newPath, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

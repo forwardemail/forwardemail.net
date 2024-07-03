@@ -47,6 +47,7 @@ async function onSearch(mailboxId, options, session, fn) {
       console.timeEnd(`search timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -671,12 +672,6 @@ async function onSearch(mailboxId, options, session, fn) {
       highestModseq
     });
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { mailboxId, options, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

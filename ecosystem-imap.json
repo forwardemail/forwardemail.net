@@ -10,6 +10,9 @@
       "instances": "max",
       "node_args": "--heapsnapshot-signal=SIGUSR2",
       "pmx": false,
+      "env_development": {
+        "IMAP_PORT": 2113
+      },
       "env_production": {
         "NODE_ENV": "production",
         "IMAP_PORT": 993

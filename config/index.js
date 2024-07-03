@@ -290,8 +290,9 @@ const config = {
   // rewritten to `${user.id}@${removedEmailDomain}`
   removedEmailDomain: env.REMOVED_EMAIL_DOMAIN,
 
-  // SQLite busy_timeout value (how long we should wait for locking too)
-  busyTimeout: ms('30s'),
+  // SQLite busy_timeout value
+  // <https://activesphere.com/blog/2018/12/24/understanding-sqlite-busy>
+  busyTimeout: ms('10s'),
 
   // server
   env: env.NODE_ENV.toLowerCase(),

@@ -27,6 +27,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
 const refreshSession = require('#helpers/refresh-session');
@@ -109,6 +110,9 @@ class SQLite {
 
     this.wss.broadcast = async (session, payload) => {
       const uuid = randomUUID();
+      console.time(
+        `waiting for broadcast ${uuid} for ${session.user.alias_id}`
+      );
       const packed = encoder.pack({
         uuid,
         session_id: session.id,
@@ -116,23 +120,55 @@ class SQLite {
         payload
       });
 
-      for (const client of this.wss.clients) {
-        // return early if we already received response
-        if (this.uuidsReceived.has(uuid)) break;
+      //
+      // TODO: wss.broadcast should write to socket
+      //       of ALL connected clients where
+      //       selected mailbox and alias id are matching
+      //
 
-        client.send(packed);
-      }
+      //
+      // NOTE: redis pub/sub seemed to add +1-2ms overhead from testing
+      //
+      // NOTE: an existing websocket connection
+      //       (e.g. IMAP server could get restarted)
+      //       and so we can't just iterate over the current
+      //       we have to continously iterate over all clients
+      //       (sending the data every 5s until we get a response)
+      //
+      await pWaitFor(
+        async () => {
+          if (this.uuidsReceived.has(uuid)) return true;
 
-      try {
-        await pWaitFor(() => this.uuidsReceived.has(uuid), {
-          timeout: ms('5s'),
-          interval: 0
-        });
-        this.uuidsReceived.delete(uuid);
-      } catch (err) {
-        err.isCodeBug = true;
-        throw err;
-      }
+          for (const client of this.wss.clients) {
+            if (this.uuidsReceived.has(uuid)) break;
+
+            client.send(packed);
+          }
+
+          try {
+            await pWaitFor(() => this.uuidsReceived.has(uuid), {
+              timeout: ms('10s'),
+              interval: 1
+            });
+            return true;
+          } catch (err) {
+            if (isTimeoutError(err)) return false;
+            throw err;
+          }
+        },
+        {
+          timeout: ms('5m'),
+          interval: ms('5s')
+        }
+      );
+
+      this.uuidsReceived.delete(uuid);
+
+      // TODO: do interval cleanup
+
+      console.timeEnd(
+        `waiting for broadcast ${uuid} for ${session.user.alias_id}`
+      );
     };
 
     this.server = server;
@@ -208,8 +244,13 @@ class SQLite {
 
       ws.on('error', (err) => logger.error(err, { ws, request }));
 
+      ws.on('ping', function () {
+        logger.debug('ping from %s', request.socket.remoteAddress);
+        this.isAlive = true;
+      });
+
       ws.on('pong', function () {
-        // logger.debug('pong from %s', request.socket.remoteAddress);
+        logger.debug('pong from %s', request.socket.remoteAddress);
         this.isAlive = true;
       });
 
@@ -219,15 +260,16 @@ class SQLite {
         if (!data) return;
 
         // return early for ping/pong
-        if (data.length === 4 && data.toString() === 'ping') return;
+        if (data.length === 4 && data.toString() === 'ping') {
+          logger.debug('ping from %s', request.socket.remoteAddress);
+          return;
+        }
 
+        // TODO: we could use redis instead
         // return early for uuid from wss.broadcast
         if (data.length === 36) {
           const uuid = data.toString();
           this.uuidsReceived.add(uuid);
-          setTimeout(() => {
-            this.uuidsReceived.delete(uuid);
-          }, 1000);
           return;
         }
 
@@ -255,11 +297,18 @@ class SQLite {
 
     this.wsInterval = setInterval(() => {
       for (const ws of this.wss.clients) {
-        if (ws.isAlive === false) return ws.terminate();
+        /*
+        if (ws.isAlive === false) {
+          // <https://github.com/websockets/ws/issues/1142#issuecomment-1279826041>
+          // return ws.close();
+          return ws.terminate();
+        }
+
         ws.isAlive = false;
+        */
         ws.ping();
       }
-    }, ms('35s'));
+    }, ms('45s'));
 
     await promisify(this.server.listen).bind(this.server)(port, host, ...args);
   }

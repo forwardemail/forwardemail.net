@@ -32,6 +32,7 @@ async function onList(query, session, fn) {
       });
       fn(null, ...data);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -47,12 +48,6 @@ async function onList(query, session, fn) {
       mailboxes.map((m) => m.toObject())
     );
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { query, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

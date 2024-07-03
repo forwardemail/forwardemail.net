@@ -32,6 +32,7 @@ const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
+const { Builder } = require('json-sql');
 const { Iconv } = require('iconv');
 const {
   S3Client,
@@ -66,6 +67,7 @@ const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -104,6 +106,8 @@ const onStatusPromise = pify(onStatus, { multiArgs: true });
 const onStorePromise = pify(onStore, { multiArgs: true });
 const onSubscribePromise = pify(onSubscribe, { multiArgs: true });
 const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
+
+const builder = new Builder();
 
 const concurrency = os.cpus().length;
 
@@ -673,7 +677,9 @@ async function parsePayload(data, ws) {
 
       // sync the user's temp mailbox to their current
       case 'sync': {
-        let count = 0;
+        let deleted = 0;
+
+        let err;
 
         // only allow sync to occur once every 10s
         const cache = await this.client.get(
@@ -686,32 +692,51 @@ async function parsePayload(data, ws) {
             `sync_check:${payload.session.user.alias_id}`,
             true,
             'PX',
-            ms('10s')
+            ms('30m')
           );
 
           const tmpDb = await getTemporaryDatabase.call(this, payload);
 
-          // copy and purge messages
-          try {
-            const messages = await TemporaryMessages.find(
-              this,
-              { user: payload.session.user, db: tmpDb },
-              {}
-            );
+          const sql = builder.build({
+            table: 'TemporaryMessages',
+            fields: [
+              {
+                expression: 'count(1)'
+              }
+            ]
+          });
 
-            if (messages.length > 0) {
-              for (const message of messages) {
-                //
-                // if one message fails then not all of them should
-                // (e.g. one might have an issue with `date` or `raw`)
-                //
+          const count = tmpDb.prepare(sql.query).pluck().get(sql.values);
+
+          if (count > 0) {
+            let hasMore = true;
+            while (hasMore) {
+              const sql = builder.build({
+                type: 'select',
+                table: 'TemporaryMessages',
+                limit: 10
+              });
+
+              const messages = tmpDb.prepare(sql.query).all(sql.values);
+
+              if (messages.length === 0) {
+                hasMore = false;
+                continue;
+              }
+
+              for (const m of messages) {
                 try {
+                  const message = syncConvertResult(TemporaryMessages, m);
+                  //
+                  // if one message fails then not all of them should
+                  // (e.g. one might have an issue with `date` or `raw`)
+                  //
                   // check that we have available space
                   const storagePath = getPathToDatabase({
                     id: payload.session.user.alias_id,
                     storage_location: payload.session.user.storage_location
                   });
-                  const spaceRequired = Buffer.byteLength(message.raw);
+                  const spaceRequired = Buffer.byteLength(message.raw) * 2;
                   // eslint-disable-next-line no-await-in-loop
                   const diskSpace = await checkDiskSpace(storagePath);
                   if (diskSpace.free < spaceRequired)
@@ -737,63 +762,63 @@ async function parsePayload(data, ws) {
                     }
                   );
 
-                  count++;
-
                   // if successfully appended then delete from the database
-                  // eslint-disable-next-line no-await-in-loop
-                  await TemporaryMessages.deleteOne(
-                    this,
-                    { user: payload.session.user, db: tmpDb },
-                    { _id: message._id }
-                  );
+                  const sql = builder.build({
+                    type: 'remove',
+                    table: 'TemporaryMessages',
+                    condition: {
+                      _id: m._id
+                    }
+                  });
+                  tmpDb.prepare(sql.query).run(sql.values);
+                  deleted++;
                 } catch (_err) {
-                  const err = Array.isArray(_err) ? _err[0] : _err;
-                  err.isCodeBug = true;
-                  logger.fatal(err, { payload });
+                  err = Array.isArray(_err) ? _err[0] : _err;
+                  hasMore = false;
+                  break;
                 }
               }
-
-              // run a checkpoint to copy over wal to db
-              tmpDb.pragma('wal_checkpoint(PASSIVE)');
-
-              // TODO: vacuum into instead (same for elsewhere)
-              // vacuum temporary database
-              tmpDb.prepare('VACUUM').run();
-
-              // update storage
-              try {
-                await updateStorageUsed(
-                  payload.session.user.alias_id,
-                  this.client
-                );
-              } catch (err) {
-                logger.fatal(err, { payload });
-              }
-
-              // TODO: unlock the temporary database
-              try {
-                tmpDb.pragma('analysis_limit=400');
-                tmpDb.pragma('optimize');
-                tmpDb.close();
-              } catch (err) {
-                logger.fatal(err, { payload });
-              }
-
-              // vacuum database
-              // await parsePayload.call(this, {
-              //   action: 'vacuum',
-              //   session: { user: payload.session.user }
-              // });
             }
+          }
+
+          try {
+            // run a checkpoint to copy over wal to db
+            tmpDb.pragma('wal_checkpoint(PASSIVE)');
+            // vacuum temporary database
+            tmpDb.prepare('VACUUM').run();
           } catch (err) {
-            err.isCodeBug = true;
             logger.fatal(err, { payload });
           }
+
+          // update storage
+          try {
+            await updateStorageUsed(payload.session.user.alias_id, this.client);
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
+
+          try {
+            tmpDb.pragma('analysis_limit=400');
+            tmpDb.pragma('optimize');
+            tmpDb.close();
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
+
+          if (err) throw err;
+
+          // update cache so we can try again in 10s
+          await this.client.set(
+            `sync_check:${payload.session.user.alias_id}`,
+            true,
+            'PX',
+            ms('10s')
+          );
         }
 
         response = {
           id: payload.id,
-          data: count
+          data: deleted
         };
         break;
       }
@@ -1963,7 +1988,7 @@ async function parsePayload(data, ws) {
         );
         const spaceRequired = maxQuotaPerAlias * 2;
 
-        if (diskSpace.free < spaceRequired)
+        if (config.env !== 'development' && diskSpace.free < spaceRequired)
           throw new TypeError(
             `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
               diskSpace.free

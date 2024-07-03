@@ -39,6 +39,7 @@ async function onCreate(path, session, fn) {
       console.timeEnd(`create timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -121,13 +122,6 @@ async function onCreate(path, session, fn) {
 
     fn(null, true, mailbox._id);
   } catch (err) {
-    if (err.code === 11000) err.imapResponse = 'ALREADYEXISTS';
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { path, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

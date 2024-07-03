@@ -5,12 +5,14 @@
 
 const { randomUUID } = require('node:crypto');
 
+const Channel = require('chnl');
 // <https://github.com/pladaria/reconnecting-websocket/issues/195>
 const ReconnectingWebSocket = require('@opensumi/reconnecting-websocket');
 const WebSocketAsPromised = require('websocket-as-promised');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
+const pWaitFor = require('p-wait-for');
 const revHash = require('rev-hash');
 const { WebSocket } = require('ws');
 
@@ -24,34 +26,81 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 
-// <https://github.com/partykit/partykit/tree/main/packages/partysocket>
-// <https://github.com/partykit/partykit/issues/536>
-// const partysocket = require('partysocket');
-// partysocket.WebSocket.prototype._debug = (...args) =>
-//   logger.debug('partysocket', { args });
+// <https://github.com/vitalets/websocket-as-promised/pull/49>
+WebSocketAsPromised.prototype._handleClose = function (event) {
+  this._onClose.dispatchAsync(event);
+  this._closing.resolve(event);
+  const error = new Error(
+    `WebSocket closed with reason: ${event.reason || event.message} (${
+      event.code
+    }).`
+  );
+  if (this._opening.isPending) {
+    this._opening.reject(error);
+  }
 
-ReconnectingWebSocket.prototype._debug = () => {
-  // if (config.env === 'development')
-  //   logger.debug('reconnectingwebsocket', { args });
+  this._cleanup(error);
 };
 
-class Event {
-  constructor(type, target) {
-    this.target = target;
-    this.type = type;
+// override to support @opensumi/reconnecting-websockets used under the hood
+WebSocketAsPromised.prototype._createWS = function () {
+  if (this._ws) {
+    this._ws.reconnect();
+  } else {
+    this._ws = this._options.createWebSocket(this._url);
+    this._wsSubscription = new Channel.Subscription([
+      {
+        channel: this._ws,
+        event: 'open',
+        listener: (e) => this._handleOpen(e)
+      },
+      {
+        channel: this._ws,
+        event: 'message',
+        listener: (e) => this._handleMessage(e)
+      },
+      {
+        channel: this._ws,
+        event: 'error',
+        listener: (e) => this._handleError(e)
+      },
+      {
+        channel: this._ws,
+        event: 'close',
+        listener: (e) => this._handleClose(e)
+      }
+    ]).on();
   }
-}
+};
 
-class CloseEvent extends Event {
-  constructor(code = 1000, reason = '', target) {
-    super('close', target);
-    this.code = code;
-    this.reason = reason;
+// since we're using reconnecting websockets we shouldn't destroy the websocket but reconnect it
+WebSocketAsPromised.prototype._cleanupWS = function () {
+  // do nothing
+};
+
+// <https://github.com/vitalets/websocket-as-promised/issues/47>
+// <https://github.com/pladaria/reconnecting-websocket/issues/198>
+function handleError(event) {
+  this._debug('error event', event.message);
+  // this._disconnect(undefined, event.message === 'TIMEOUT' ? 'timeout' : undefined);
+  this._disconnect(
+    undefined,
+    event.message === 'TIMEOUT' ? 'timeout' : event.message
+  );
+  if (this.onerror) {
+    this.onerror(event);
   }
+
+  this._debug('exec error listeners');
+  // eslint-disable-next-line unicorn/no-array-for-each
+  this._listeners.error.forEach((listener) => {
+    return this._callEventListener(event, listener);
+  });
+  this._connect();
 }
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/197>
-ReconnectingWebSocket.prototype._disconnect = function (code, reason) {
+function disconnect(code, reason) {
   if (code === undefined) {
     code = 1000;
   }
@@ -71,7 +120,33 @@ ReconnectingWebSocket.prototype._disconnect = function (code, reason) {
   } catch (err) {
     logger.fatal(err);
   }
+}
+
+ReconnectingWebSocket.prototype._debug = () => {
+  // if (config.env === 'development')
+  //   logger.debug('reconnectingwebsocket', { args });
 };
+
+// <https://github.com/partykit/partykit/tree/main/packages/partysocket>
+// <https://github.com/partykit/partykit/issues/536>
+// const partysocket = require('partysocket');
+// partysocket.WebSocket.prototype._debug = (...args) =>
+//   logger.debug('partysocket', { args });
+
+class Event {
+  constructor(type, target) {
+    this.target = target;
+    this.type = type;
+  }
+}
+
+class CloseEvent extends Event {
+  constructor(code = 1000, reason = '', target) {
+    super('close', target);
+    this.code = code;
+    this.reason = reason;
+  }
+}
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
 function createWebSocketClass(options) {
@@ -109,7 +184,7 @@ function createWebSocketAsPromised(options = {}) {
       // TODO: prevent duplicate RWS instances
       // <https://github.com/vitalets/websocket-as-promised/issues/6#issuecomment-1089790824>
       // return new partysocket.WebSocket(url, [], {
-      return new ReconnectingWebSocket(url, [], {
+      const rws = new ReconnectingWebSocket(url, [], {
         // <https://github.com/pladaria/reconnecting-websocket#available-options>
         // <https://github.com/pladaria/reconnecting-websocket/issues/138#issuecomment-698206018>
         WebSocket: createWebSocketClass({
@@ -123,6 +198,13 @@ function createWebSocketAsPromised(options = {}) {
         }),
         debug: config.env === 'development'
       });
+
+      // bind overriden prototype functions until PR's merged
+      // (see above)
+      rws._handleError = handleError.bind(rws);
+      rws._disconnect = disconnect.bind(rws);
+
+      return rws;
     },
     packMessage: (data) => encoder.pack(data),
     unpackMessage: (data) => decoder.unpack(data),
@@ -148,21 +230,19 @@ function createWebSocketAsPromised(options = {}) {
   //
   // bind event listeners
   //
-  // if (config.env === 'development') {
-  //   for (const event of [
-  //     'onOpen',
-  //     'onSend',
-  //     'onMessage',
-  //     'onUnpackedMessage',
-  //     'onResponse',
-  //     'onClose',
-  //     'onError'
-  //   ]) {
-  //     wsp[event].addListener((...args) =>
-  //       logger[event === 'onError' ? 'error' : 'debug'](event, { args })
-  //     );
-  //   }
-  // }
+  for (const event of [
+    // 'onOpen',
+    // 'onSend',
+    // 'onMessage',
+    // 'onUnpackedMessage',
+    // 'onResponse',
+    'onClose',
+    'onError'
+  ]) {
+    wsp[event].addListener((...args) =>
+      logger[event === 'onError' ? 'error' : 'debug'](event, { args })
+    );
+  }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
   wsp.request = async function (data, retries = 2) {
@@ -180,19 +260,6 @@ function createWebSocketAsPromised(options = {}) {
       )
         throw new TypeError('Alias ID missing from session');
 
-      // will retry by default up to 10x with exponential backoff
-      // (for initial connection)
-      if (!wsp.isOpened) {
-        await pRetry(() => wsp.open(), {
-          retries: config.env === 'production' ? 9 : 1, // in case the default in node-retry changes
-          onFailedAttempt(err) {
-            err.isCodeBug = true;
-            // <https://github.com/vitalets/websocket-as-promised/issues/47>
-            logger.fatal(err);
-          }
-        });
-      }
-
       // helper for debugging
       if (config.env !== 'production') data.stack = new Error('stack').stack;
 
@@ -203,8 +270,25 @@ function createWebSocketAsPromised(options = {}) {
       // attempt to send the request 3x
       // (e.g. in case connection disconnected and no response was made)
       const response = await pRetry(
-        () => {
+        async () => {
           data.sent_at = Date.now();
+
+          if (!wsp.isOpened)
+            await pWaitFor(
+              async () => {
+                try {
+                  await wsp.open();
+                  return true;
+                } catch (err) {
+                  logger.debug(err);
+                  return false;
+                }
+              },
+              {
+                timeout: ms('30s')
+              }
+            );
+
           return wsp.sendRequest(data, {
             timeout:
               typeof data.timeout === 'number' &&
@@ -247,16 +331,23 @@ function createWebSocketAsPromised(options = {}) {
     }
   };
 
-  // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
-  wsp._interval = setInterval(() => {
-    if (wsp.isOpened) wsp.send('ping');
-  }, ms('60s'));
+  wsp.onOpen.addListener(() => {
+    // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
+    if (!wsp._interval)
+      wsp._interval = setInterval(() => {
+        try {
+          wsp._ws._ws.ping();
+        } catch (err) {
+          logger.warn(err);
+        }
+      }, ms('5s'));
+  });
 
   wsp.onClose.addListener(
     () => {
       if (wsp._interval) clearInterval(wsp._interval);
-    },
-    { once: true }
+    }
+    // }, { once: true }
   );
 
   return wsp;

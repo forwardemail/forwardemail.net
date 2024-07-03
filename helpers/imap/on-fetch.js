@@ -57,6 +57,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
       fn(null, bool, response);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -316,11 +317,13 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // perform db operations
     if (ops.length > 0) {
-      session.db.transaction(() => {
-        for (const op of ops) {
-          session.db.prepare(op[0]).run(op[1]);
-        }
-      })();
+      session.db
+        .transaction((ops) => {
+          for (const op of ops) {
+            session.db.prepare(op[0]).run(op[1]);
+          }
+        })
+        .immediate(ops);
     }
 
     if (entries.length > 0) {
@@ -338,12 +341,6 @@ async function onFetch(mailboxId, options, session, fn) {
       totalBytes
     });
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { mailboxId, options, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

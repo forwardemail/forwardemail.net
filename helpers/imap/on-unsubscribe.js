@@ -34,6 +34,7 @@ async function onUnsubscribe(path, session, fn) {
       });
       fn(null, ...data);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -66,12 +67,6 @@ async function onUnsubscribe(path, session, fn) {
 
     fn(null, true);
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { path, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

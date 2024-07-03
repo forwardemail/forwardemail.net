@@ -58,6 +58,7 @@ async function onStore(mailboxId, update, session, fn) {
 
       fn(null, bool, response);
     } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -83,6 +84,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     const modified = [];
     const entries = [];
+    const broadcast = [];
     const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
     const query = {
       mailbox: mailbox._id
@@ -131,275 +133,277 @@ async function onStore(mailboxId, update, session, fn) {
 
     try {
       if (messages.length > 0) {
-        // eslint-disable-next-line complexity
-        session.db.transaction(async () => {
-          for (const result of messages) {
-            const message = syncConvertResult(Messages, result);
-            // this.logger.debug('fetched message', {
-            //   result,
-            //   message,
-            //   mailboxId,
-            //   update,
-            //   session
-            // });
+        session.db
+          // eslint-disable-next-line complexity
+          .transaction((messages) => {
+            for (const result of messages) {
+              const message = syncConvertResult(Messages, result);
+              // this.logger.debug('fetched message', {
+              //   result,
+              //   message,
+              //   mailboxId,
+              //   update,
+              //   session
+              // });
 
-            // skip messages if necessary
-            if (
-              queryAll &&
-              session?.selected?.uidList &&
-              Array.isArray(session.selected.uidList) &&
-              !session.selected.uidList.includes(message.uid)
-            ) {
-              this.logger.debug('message skipped due to queryAll', {
-                message,
-                queryAll,
-                session,
-                update
-              });
-              continue;
-            }
-
-            if (
-              update.unchangedSince &&
-              message.modseq > update.unchangedSince
-            ) {
-              this.logger.debug('message skipped due to unchangedSince', {
-                message,
-                queryAll,
-                session,
-                update
-              });
-              modified.push(message.uid);
-              continue;
-            }
-
-            // TODO: trim() on flags in message model (?)
-            const existingFlags = new Set(message.flags.map((f) => getFlag(f)));
-
-            const $set = {};
-            let updated;
-
-            switch (update.action) {
-              case 'set': {
-                // operation is only an update if flags are different
-                if (
-                  existingFlags.size !== update.value.length ||
-                  update.value.some((f) => !existingFlags.has(getFlag(f)))
-                )
-                  updated = true;
-
-                message.flags = [...new Set([update.value].flat())];
-
-                // set flags
-                if (updated) {
-                  $set.flags = message.flags;
-                  $set.unseen = !message.flags.includes('\\Seen');
-                  $set.flagged = message.flags.includes('\\Flagged');
-                  $set.undeleted = !message.flags.includes('\\Deleted');
-                  $set.draft = message.flags.includes('\\Draft');
-                  $set.searchable = !message.flags.includes('\\Deleted');
-                }
-
-                break;
+              // skip messages if necessary
+              if (
+                queryAll &&
+                session?.selected?.uidList &&
+                Array.isArray(session.selected.uidList) &&
+                !session.selected.uidList.includes(message.uid)
+              ) {
+                this.logger.debug('message skipped due to queryAll', {
+                  message,
+                  queryAll,
+                  session,
+                  update
+                });
+                continue;
               }
 
-              case 'add': {
-                const newFlags = [];
-                message.flags = [
-                  ...new Set([
-                    ...message.flags,
-                    ...update.value.filter((f) => {
-                      if (!existingFlags.has(getFlag(f))) {
-                        updated = true;
-                        newFlags.push(f);
-                        return true;
+              if (
+                update.unchangedSince &&
+                message.modseq > update.unchangedSince
+              ) {
+                this.logger.debug('message skipped due to unchangedSince', {
+                  message,
+                  queryAll,
+                  session,
+                  update
+                });
+                modified.push(message.uid);
+                continue;
+              }
+
+              // TODO: trim() on flags in message model (?)
+              const existingFlags = new Set(
+                message.flags.map((f) => getFlag(f))
+              );
+
+              const $set = {};
+              let updated;
+
+              switch (update.action) {
+                case 'set': {
+                  // operation is only an update if flags are different
+                  if (
+                    existingFlags.size !== update.value.length ||
+                    update.value.some((f) => !existingFlags.has(getFlag(f)))
+                  )
+                    updated = true;
+
+                  message.flags = [...new Set([update.value].flat())];
+
+                  // set flags
+                  if (updated) {
+                    $set.flags = message.flags;
+                    $set.unseen = !message.flags.includes('\\Seen');
+                    $set.flagged = message.flags.includes('\\Flagged');
+                    $set.undeleted = !message.flags.includes('\\Deleted');
+                    $set.draft = message.flags.includes('\\Draft');
+                    $set.searchable = !message.flags.includes('\\Deleted');
+                  }
+
+                  break;
+                }
+
+                case 'add': {
+                  const newFlags = [];
+                  message.flags = [
+                    ...new Set([
+                      ...message.flags,
+                      ...update.value.filter((f) => {
+                        if (!existingFlags.has(getFlag(f))) {
+                          updated = true;
+                          newFlags.push(f);
+                          return true;
+                        }
+
+                        return false;
+                      })
+                    ])
+                  ];
+
+                  // add flags
+                  if (updated) {
+                    $set.flags = message.flags;
+
+                    if (
+                      newFlags.includes('\\Seen') ||
+                      newFlags.includes('\\Flagged') ||
+                      newFlags.includes('\\Deleted') ||
+                      newFlags.includes('\\Draft')
+                    ) {
+                      if (newFlags.includes('\\Seen')) $set.unseen = false;
+
+                      if (newFlags.includes('\\Flagged')) $set.flagged = true;
+
+                      if (newFlags.includes('\\Deleted')) {
+                        $set.undeleted = false;
+                        $set.searchable = false;
                       }
 
-                      return false;
-                    })
-                  ])
-                ];
-
-                // add flags
-                if (updated) {
-                  $set.flags = message.flags;
-
-                  if (
-                    newFlags.includes('\\Seen') ||
-                    newFlags.includes('\\Flagged') ||
-                    newFlags.includes('\\Deleted') ||
-                    newFlags.includes('\\Draft')
-                  ) {
-                    if (newFlags.includes('\\Seen')) $set.unseen = false;
-
-                    if (newFlags.includes('\\Flagged')) $set.flagged = true;
-
-                    if (newFlags.includes('\\Deleted')) {
-                      $set.undeleted = false;
-                      $set.searchable = false;
+                      if (newFlags.includes('\\Draft')) $set.draft = true;
                     }
-
-                    if (newFlags.includes('\\Draft')) $set.draft = true;
                   }
+
+                  break;
                 }
 
-                break;
+                case 'remove': {
+                  // operation is only an update if flags are different
+                  const oldFlags = [];
+                  const flagUpdates = new Set(
+                    update.value.map((f) => getFlag(f))
+                  );
+
+                  message.flags = [
+                    ...new Set(
+                      message.flags.filter((f) => {
+                        if (!flagUpdates.has(getFlag(f))) return true;
+
+                        oldFlags.push(f);
+                        updated = true;
+                        return false;
+                      })
+                    )
+                  ];
+
+                  // remove flags
+                  if (updated) {
+                    $set.flags = message.flags;
+
+                    if (
+                      oldFlags.includes('\\Seen') ||
+                      oldFlags.includes('\\Flagged') ||
+                      oldFlags.includes('\\Deleted') ||
+                      oldFlags.includes('\\Draft')
+                    ) {
+                      if (oldFlags.includes('\\Seen')) $set.unseen = true;
+
+                      if (oldFlags.includes('\\Flagged')) $set.flagged = false;
+
+                      if (oldFlags.includes('\\Deleted')) {
+                        $set.undeleted = true;
+                        if (!['\\Junk', '\\Trash'].includes(mailbox.specialUse))
+                          $set.searchable = true;
+                      }
+
+                      if (oldFlags.includes('\\Draft')) $set.draft = false;
+                    }
+                  }
+
+                  break;
+                }
+
+                default: {
+                  throw new TypeError('Unknown action');
+                }
               }
 
-              case 'remove': {
-                // operation is only an update if flags are different
-                const oldFlags = [];
-                const flagUpdates = new Set(
-                  update.value.map((f) => getFlag(f))
+              // return early if not updated
+              if (!updated) continue;
+
+              // get modseq
+              if (!newModseq) newModseq = mailbox.modifyIndex + 1;
+
+              if (!update.silent || condstoreEnabled) {
+                // write to socket the response
+                broadcast.push(
+                  formatResponse.call(session, 'FETCH', message.uid, {
+                    uid: update.isUid ? message.uid : false,
+                    flags: message.flags,
+                    modseq: condstoreEnabled ? newModseq : false
+                  })
                 );
+              }
 
-                message.flags = [
-                  ...new Set(
-                    message.flags.filter((f) => {
-                      if (!flagUpdates.has(getFlag(f))) return true;
+              $set.modseq = newModseq;
 
-                      oldFlags.push(f);
-                      updated = true;
-                      return false;
-                    })
-                  )
-                ];
+              const condition = prepareQuery(Messages.mapping, {
+                _id: message._id,
+                mailbox: mailbox._id,
+                uid: message.uid
+                // NOTE: this causes flag updates to not work properly and not save properly
+                // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L339-L341>
+                // modseq: {
+                //   $lt: newModseq
+                // }
+              });
 
-                // remove flags
-                if (updated) {
-                  $set.flags = message.flags;
+              const sql = builder.build({
+                type: 'update',
+                table: 'Messages',
+                condition,
+                modifier: {
+                  $set: prepareQuery(Messages.mapping, $set)
+                }
+              });
 
-                  if (
-                    oldFlags.includes('\\Seen') ||
-                    oldFlags.includes('\\Flagged') ||
-                    oldFlags.includes('\\Deleted') ||
-                    oldFlags.includes('\\Draft')
-                  ) {
-                    if (oldFlags.includes('\\Seen')) $set.unseen = true;
+              session.db.prepare(sql.query).run(sql.values);
 
-                    if (oldFlags.includes('\\Flagged')) $set.flagged = false;
+              const entry = {
+                command: 'FETCH',
+                ignore: session.id,
+                uid: message.uid,
+                flags: message.flags,
+                message: message._id,
+                modseq: newModseq
+              };
 
-                    if (oldFlags.includes('\\Deleted')) {
-                      $set.undeleted = true;
-                      if (!['\\Junk', '\\Trash'].includes(mailbox.specialUse))
-                        $set.searchable = true;
-                    }
+              entries.push(entry);
+            }
 
-                    if (oldFlags.includes('\\Draft')) $set.draft = false;
-                  }
+            // update mailbox flags
+            // TODO: see FIXME from wildduck at <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L419>
+            const newFlags = [];
+            if (update.action !== 'remove') {
+              const mailboxFlags = [
+                ...imapTools.systemFlags,
+                ...(mailbox.flags || [])
+              ].map((f) => getFlag(f));
+
+              // find flags that don't yet exist for mailbox to add
+              for (const flag of update.value) {
+                // limit mailbox flags by 100
+                if (mailboxFlags.length + newFlags.length >= 100) {
+                  const err = new TypeError('Mailbox flags exceeds 100');
+                  err.mailboxFlags = mailboxFlags;
+                  err.newFlags = newFlags;
+                  err.session = session;
+                  throw err;
                 }
 
-                break;
-              }
-
-              default: {
-                throw new TypeError('Unknown action');
+                // add flag if mailbox does not include it
+                if (!mailboxFlags.includes(getFlag(flag))) newFlags.push(flag);
               }
             }
 
-            // return early if not updated
-            if (!updated) continue;
+            if (newModseq || newFlags.length > 0) {
+              const $set = {};
+              if (newModseq) $set.modifyIndex = newModseq;
 
-            // get modseq
-            if (!newModseq) newModseq = mailbox.modifyIndex + 1;
-
-            if (!update.silent || condstoreEnabled) {
-              // write to socket the response
-              // eslint-disable-next-line no-await-in-loop
-              await this.wss.broadcast(
-                session,
-                formatResponse.call(session, 'FETCH', message.uid, {
-                  uid: update.isUid ? message.uid : false,
-                  flags: message.flags,
-                  modseq: condstoreEnabled ? newModseq : false
-                })
-              );
-            }
-
-            $set.modseq = newModseq;
-
-            const condition = prepareQuery(Messages.mapping, {
-              _id: message._id,
-              mailbox: mailbox._id,
-              uid: message.uid
-              // NOTE: this causes flag updates to not work properly and not save properly
-              // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L339-L341>
-              // modseq: {
-              //   $lt: newModseq
-              // }
-            });
-
-            const sql = builder.build({
-              type: 'update',
-              table: 'Messages',
-              condition,
-              modifier: {
-                $set: prepareQuery(Messages.mapping, $set)
-              }
-            });
-
-            session.db.prepare(sql.query).run(sql.values);
-
-            const entry = {
-              command: 'FETCH',
-              ignore: session.id,
-              uid: message.uid,
-              flags: message.flags,
-              message: message._id,
-              modseq: newModseq
-            };
-
-            entries.push(entry);
-          }
-
-          // update mailbox flags
-          // TODO: see FIXME from wildduck at <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L419>
-          const newFlags = [];
-          if (update.action !== 'remove') {
-            const mailboxFlags = [
-              ...imapTools.systemFlags,
-              ...(mailbox.flags || [])
-            ].map((f) => getFlag(f));
-
-            // find flags that don't yet exist for mailbox to add
-            for (const flag of update.value) {
-              // limit mailbox flags by 100
-              if (mailboxFlags.length + newFlags.length >= 100) {
-                const err = new TypeError('Mailbox flags exceeds 100');
-                err.mailboxFlags = mailboxFlags;
-                err.newFlags = newFlags;
-                err.session = session;
-                throw err;
+              if (newFlags.length > 0) {
+                mailbox.flags.push(...newFlags);
+                mailbox.flags = [...new Set(mailbox.flags)];
+                $set.flags = mailbox.flags;
               }
 
-              // add flag if mailbox does not include it
-              if (!mailboxFlags.includes(getFlag(flag))) newFlags.push(flag);
+              const sql = builder.build({
+                type: 'update',
+                table: 'Mailboxes',
+                condition: {
+                  _id: mailbox._id.toString()
+                },
+                modifier: {
+                  $set: prepareQuery(Mailboxes.mapping, $set)
+                }
+              });
+              session.db.prepare(sql.query).run(sql.values);
             }
-          }
-
-          if (newModseq || newFlags.length > 0) {
-            const $set = {};
-            if (newModseq) $set.modifyIndex = newModseq;
-
-            if (newFlags.length > 0) {
-              mailbox.flags.push(...newFlags);
-              mailbox.flags = [...new Set(mailbox.flags)];
-              $set.flags = mailbox.flags;
-            }
-
-            const sql = builder.build({
-              type: 'update',
-              table: 'Mailboxes',
-              condition: {
-                _id: mailbox._id.toString()
-              },
-              modifier: {
-                $set: prepareQuery(Mailboxes.mapping, $set)
-              }
-            });
-            session.db.prepare(sql.query).run(sql.values);
-          }
-        })();
+          })
+          .immediate(messages);
       }
     } catch (_err) {
       err = _err;
@@ -414,6 +418,9 @@ async function onStore(mailboxId, update, session, fn) {
       }
     }
 
+    // if there was an error during cursor then throw
+    if (err) throw err;
+
     // update storage
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');
@@ -422,8 +429,9 @@ async function onStore(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    // if there was an error during cursor then throw
-    if (err) throw err;
+    if (broadcast.length > 0) {
+      await this.wss.broadcast(session, broadcast);
+    }
 
     if (entries.length > 0) {
       await this.server.notifier.addEntries(this, session, mailboxId, entries);
@@ -433,12 +441,6 @@ async function onStore(mailboxId, update, session, fn) {
     // send response
     fn(null, true, modified);
   } catch (err) {
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { mailboxId, update, session });
-      return fn(null, err.imapResponse);
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

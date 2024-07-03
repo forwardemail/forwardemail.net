@@ -54,6 +54,9 @@ async function onMove(mailboxId, update, session, fn) {
 
       fn(null, bool, response);
     } catch (err) {
+      // NOTE: if POP3 then throw err (since POP3 re-uses this)
+      if (!this?.constructor?.name !== 'POP3' && err.imapResponse)
+        return fn(null, err.imapResponse);
       fn(err);
     }
 
@@ -219,11 +222,13 @@ async function onMove(mailboxId, update, session, fn) {
         }
 
         // perform db operations
-        session.db.transaction(() => {
-          for (const op of ops) {
-            session.db.prepare(op[0]).run(op[1]);
-          }
-        })();
+        session.db
+          .transaction((ops) => {
+            for (const op of ops) {
+              session.db.prepare(op[0]).run(op[1]);
+            }
+          })
+          .immediate(ops);
       }
     } catch (_err) {
       err = _err;
@@ -309,12 +314,6 @@ async function onMove(mailboxId, update, session, fn) {
       } catch (err) {
         this.logger.fatal(err, { mailboxId, update, session });
       }
-    }
-
-    // NOTE: wildduck uses `imapResponse` so we are keeping it consistent
-    if (err.imapResponse) {
-      this.logger.error(err, { mailboxId, update, session });
-      return fn(null, err.imapResponse);
     }
 
     fn(refineAndLogError(err, session, true, this));

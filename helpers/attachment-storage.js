@@ -200,14 +200,7 @@ class AttachmentStorage {
   }
 
   // eslint-disable-next-line max-params
-  async deleteMany(
-    instance,
-    session,
-    attachmentIds,
-    magic,
-    lock = false,
-    isTransaction = true
-  ) {
+  async deleteMany(instance, session, attachmentIds, magic, lock = false) {
     if (Number.isNaN(magic) || typeof magic !== 'number') {
       const err = new TypeError('Invalid magic');
       err.attachmentIds = attachmentIds;
@@ -223,13 +216,7 @@ class AttachmentStorage {
     let err;
 
     try {
-      if (isTransaction) {
-        updateAttachments(attachmentIds, magic, session);
-      } else {
-        session.db.transaction(() => {
-          updateAttachments(attachmentIds, magic, session);
-        });
-      }
+      updateAttachments(attachmentIds, magic, session);
     } catch (_err) {
       err = _err;
     }

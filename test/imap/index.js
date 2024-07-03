@@ -1578,6 +1578,11 @@ test
   // errors should be empty object
   t.deepEqual(result, {});
 
+  await t.context.wsp.request({
+    action: 'sync',
+    session: t.context.session
+  });
+
   // t.is(result.date, now.toISOString());
   // t.is(result.raw.type, 'Buffer');
   // t.deepEqual(raw, Buffer.from(result.raw.data));

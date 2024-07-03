@@ -23,7 +23,9 @@ const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const mongoose = require('mongoose');
 const pRetry = require('p-retry');
+const pWaitFor = require('p-wait-for');
 const pify = require('pify');
+const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 
@@ -226,24 +228,23 @@ class IMAP {
               connection.session.writeStream.write(data.payload);
             }
 
-            // will retry by default up to 10x with exponential backoff
-            // (for initial connection)
-            if (!this.wsp.isOpened) {
-              // eslint-disable-next-line no-await-in-loop
-              await pRetry(() => this.wsp.open(), {
-                retries: config.env === 'production' ? 9 : 1, // in case the default in node-retry changes
-                onFailedAttempt(err) {
-                  err.isCodeBug = true;
-                  // <https://github.com/vitalets/websocket-as-promised/issues/47>
-                  logger.fatal(err);
-                }
-              });
-            }
-
             // attempt to send the request 3x
             // eslint-disable-next-line no-await-in-loop
             await pRetry(
-              () => {
+              async () => {
+                await pWaitFor(
+                  async () => {
+                    try {
+                      await this.wsp.open();
+                      return true;
+                    } catch (err) {
+                      logger.debug(err);
+                      return false;
+                    }
+                  },
+                  { timeout: ms('30s') }
+                );
+
                 this.wsp.send(data.uuid);
               },
               {

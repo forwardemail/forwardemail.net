@@ -486,6 +486,11 @@ async function getDatabase(
   let lock;
 
   try {
+    //
+    // <https://github.com/WiseLibs/better-sqlite3/issues/1217>
+    // <https://github.com/mattn/go-sqlite3/issues/274#issuecomment-1429010261>
+    // <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#:~:text=Transaction%20functions%20do,loop%20ticks%20anyways>
+    //
     db = new Database(dbFilePath, {
       readonly,
       fileMustExist: readonly,
@@ -868,7 +873,7 @@ async function getDatabase(
 function retryGetDatabase(...args) {
   return pRetry(() => getDatabase(...args), {
     retries: 2,
-    minTimeout: ms('15s'),
+    minTimeout: ms('5s'),
     // eslint-disable-next-line complexity
     async onFailedAttempt(error) {
       if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') {
