@@ -4,12 +4,15 @@
  */
 
 const Router = require('@koa/router');
+const multer = require('@koa/multer');
 const paginate = require('koa-ctx-paginate');
 
 const policies = require('#helpers/policies');
 const web = require('#controllers/web');
 
 const router = new Router({ prefix: '/admin' });
+
+const upload = multer();
 
 router
   .use((ctx, next) => {
@@ -55,8 +58,26 @@ router
   // inquiries
   .get('/inquiries', paginate.middleware(10, 50), web.admin.inquiries.list)
   .get('/inquiries/:id', web.admin.inquiries.retrieve)
-  .post('/inquiries/bulk', web.admin.inquiries.bulkReply)
-  .post('/inquiries/:id', web.admin.inquiries.reply)
+  .post(
+    '/inquiries/bulk',
+    upload.fields([
+      {
+        name: 'attachments',
+        maxCount: 3
+      }
+    ]),
+    web.admin.inquiries.bulkReply
+  )
+  .post(
+    '/inquiries/:id',
+    upload.fields([
+      {
+        name: 'attachments',
+        maxCount: 3
+      }
+    ]),
+    web.admin.inquiries.reply
+  )
   .put('/inquiries/:id', web.admin.inquiries.resolve)
 
   // domains

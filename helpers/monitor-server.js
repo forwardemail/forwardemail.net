@@ -195,7 +195,7 @@ async function check() {
 function monitorServer() {
   if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') return;
   check();
-  const interval = setInterval(check, isMainThread ? ms('10s') : ms('5s'));
+  const interval = setInterval(check, ms('1m'));
   return interval;
 }
 

@@ -12,6 +12,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('plan', null, '#table-inquiries')
         th(scope="col")
+          +sortHeader('reference', Reference, '#table-inquiries')
+        th(scope="col")
           +sortHeader('created_at', 'Created', '#table-inquiries')
         th(scope="col")
           +sortHeader('updated_at', 'Updated', '#table-inquiries')
@@ -38,7 +40,9 @@ include ../../_pagination
             td.align-middle
               = inquiry.message
             td.align-middle
-              = titleize(humanize(inquiry.plan))
+              = titleize(humanize(inquiry.plan || 'none'))
+            td.align-middle
+              = inquiry.reference || 'none'
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
             )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
@@ -50,7 +54,7 @@ include ../../_pagination
                 a.btn.btn-primary(
                   href=l(`/admin/inquiries/${inquiry.id}`),
                   data-toggle="tooltip",
-                  data-title=t("Edit")
+                  data-title=t("Reply")
                 ): i.fa.fa-fw.fa-edit
                 form.ajax-form.confirm-prompt.btn-group(
                   action=l(`/admin/inquiries/${inquiry.id}`),
