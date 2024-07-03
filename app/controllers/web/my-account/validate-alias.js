@@ -113,7 +113,8 @@ function validateAlias(ctx, next) {
       'kubuntu.org',
       'lubuntu.me',
       'edubuntu.org',
-      'ubuntustudio.com'
+      'ubuntustudio.com',
+      'ubuntu.net'
     ].includes(ctx.state.domain.name)
   ) {
     const member = ctx.state.domain.members.find(

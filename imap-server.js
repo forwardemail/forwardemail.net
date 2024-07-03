@@ -242,7 +242,7 @@ class IMAP {
                       return false;
                     }
                   },
-                  { timeout: ms('30s') }
+                  { timeout: ms('15s') }
                 );
 
                 this.wsp.send(data.uuid);

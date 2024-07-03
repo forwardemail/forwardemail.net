@@ -47,7 +47,8 @@ graceful.listen();
       'kubuntu.org': '~kubuntu-members',
       'lubuntu.me': '~lubuntu-members',
       'edubuntu.org': '~edubuntu-members',
-      'ubuntustudio.com': '~ubuntustudio-core'
+      'ubuntustudio.com': '~ubuntustudio-core',
+      'ubuntu.net': '~ubuntu-smtp-test'
     };
 
     for (const domainName of Object.keys(mapping)) {

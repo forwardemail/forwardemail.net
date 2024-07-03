@@ -56,7 +56,7 @@ html.h-100.no-js(
         integrity=manifest("img/apple-touch-icon.png", "integrity"),
         crossorigin="anonymous"
       )
-      if (domain && domain.name && ['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com'].includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+      if (domain && domain.name && ['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com','ubuntu.net'].includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         link(
           rel="icon",
           type="image/png",
@@ -297,7 +297,7 @@ html.h-100.no-js(
     role="document",
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
-    class=(domain && domain.name && ["ubuntu.com", "kubuntu.org", "lubuntu.me", "edubuntu.org", "ubuntustudio.com"].includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
+    class=(domain && domain.name && ["ubuntu.com", "kubuntu.org", "lubuntu.me", "edubuntu.org", "ubuntustudio.com", "ubuntu.net"].includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";
     - const isRegisterOrLogin = ctx.pathWithoutLocale && ["/register", config.loginRoute].includes(ctx.pathWithoutLocale);

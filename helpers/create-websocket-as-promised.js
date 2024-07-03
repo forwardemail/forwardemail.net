@@ -26,50 +26,70 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 
+const DEFAULT = {
+  maxReconnectionDelay: 10000,
+  minReconnectionDelay: 1000 + Math.random() * 4000,
+  minUptime: 5000,
+  reconnectionDelayGrowFactor: 1.3,
+  connectionTimeout: 4000,
+  maxRetries: Number.POSITIVE_INFINITY,
+  maxEnqueuedMessages: Number.POSITIVE_INFINITY,
+  startClosed: false,
+  debug: false
+};
+
 // <https://github.com/vitalets/websocket-as-promised/pull/49>
 WebSocketAsPromised.prototype._handleClose = function (event) {
-  this._onClose.dispatchAsync(event);
-  this._closing.resolve(event);
-  const error = new Error(
-    `WebSocket closed with reason: ${event.reason || event.message} (${
-      event.code
-    }).`
-  );
-  if (this._opening.isPending) {
-    this._opening.reject(error);
-  }
+  try {
+    this._onClose.dispatchAsync(event);
+    this._closing.resolve(event);
+    const error = new Error(
+      `WebSocket closed with reason: ${event.reason || event.message} (${
+        event.code
+      }).`
+    );
+    if (this._opening.isPending) {
+      this._opening.reject(error);
+    }
 
-  this._cleanup(error);
+    this._cleanup(error);
+  } catch (err) {
+    logger.fatal(err, { event });
+  }
 };
 
 // override to support @opensumi/reconnecting-websockets used under the hood
 WebSocketAsPromised.prototype._createWS = function () {
-  if (this._ws) {
-    this._ws.reconnect();
-  } else {
-    this._ws = this._options.createWebSocket(this._url);
-    this._wsSubscription = new Channel.Subscription([
-      {
-        channel: this._ws,
-        event: 'open',
-        listener: (e) => this._handleOpen(e)
-      },
-      {
-        channel: this._ws,
-        event: 'message',
-        listener: (e) => this._handleMessage(e)
-      },
-      {
-        channel: this._ws,
-        event: 'error',
-        listener: (e) => this._handleError(e)
-      },
-      {
-        channel: this._ws,
-        event: 'close',
-        listener: (e) => this._handleClose(e)
-      }
-    ]).on();
+  try {
+    if (this._ws) {
+      this._ws.reconnect();
+    } else {
+      this._ws = this._options.createWebSocket(this._url);
+      this._wsSubscription = new Channel.Subscription([
+        {
+          channel: this._ws,
+          event: 'open',
+          listener: (e) => this._handleOpen(e)
+        },
+        {
+          channel: this._ws,
+          event: 'message',
+          listener: (e) => this._handleMessage(e)
+        },
+        {
+          channel: this._ws,
+          event: 'error',
+          listener: (e) => this._handleError(e)
+        },
+        {
+          channel: this._ws,
+          event: 'close',
+          listener: (e) => this._handleClose(e)
+        }
+      ]).on();
+    }
+  } catch (err) {
+    logger.fatal(err);
   }
 };
 
@@ -81,37 +101,41 @@ WebSocketAsPromised.prototype._cleanupWS = function () {
 // <https://github.com/vitalets/websocket-as-promised/issues/47>
 // <https://github.com/pladaria/reconnecting-websocket/issues/198>
 function handleError(event) {
-  this._debug('error event', event.message);
-  // this._disconnect(undefined, event.message === 'TIMEOUT' ? 'timeout' : undefined);
-  this._disconnect(
-    undefined,
-    event.message === 'TIMEOUT' ? 'timeout' : event.message
-  );
-  if (this.onerror) {
-    this.onerror(event);
-  }
+  try {
+    this._debug('error event', event.message);
+    // this._disconnect(undefined, event.message === 'TIMEOUT' ? 'timeout' : undefined);
+    this._disconnect(
+      undefined,
+      event.message === 'TIMEOUT' ? 'timeout' : event.message
+    );
+    if (this.onerror) {
+      this.onerror(event);
+    }
 
-  this._debug('exec error listeners');
-  // eslint-disable-next-line unicorn/no-array-for-each
-  this._listeners.error.forEach((listener) => {
-    return this._callEventListener(event, listener);
-  });
-  this._connect();
+    this._debug('exec error listeners');
+    // eslint-disable-next-line unicorn/no-array-for-each
+    this._listeners.error.forEach((listener) => {
+      return this._callEventListener(event, listener);
+    });
+    this._connect();
+  } catch (err) {
+    logger.fatal(err, { event });
+  }
 }
 
 // <https://github.com/pladaria/reconnecting-websocket/issues/197>
 function disconnect(code, reason) {
-  if (code === undefined) {
-    code = 1000;
-  }
-
-  this._clearTimeouts();
-  if (!this._ws) {
-    return;
-  }
-
-  this._removeListeners();
   try {
+    if (code === undefined) {
+      code = 1000;
+    }
+
+    this._clearTimeouts();
+    if (!this._ws) {
+      return;
+    }
+
+    this._removeListeners();
     if (this._ws.readyState !== ReconnectingWebSocket.CONNECTING) {
       this._ws.close(code, reason);
     }
@@ -122,7 +146,32 @@ function disconnect(code, reason) {
   }
 }
 
-ReconnectingWebSocket.prototype._debug = () => {
+// <https://github.com/pladaria/reconnecting-websocket/issues/199>
+function _getNextDelay() {
+  const {
+    reconnectionDelayGrowFactor = DEFAULT.reconnectionDelayGrowFactor,
+    minReconnectionDelay = DEFAULT.minReconnectionDelay,
+    maxReconnectionDelay = DEFAULT.maxReconnectionDelay
+  } = this._options;
+  let delay = 0;
+  if (this._retryCount > 0) {
+    delay =
+      minReconnectionDelay *
+      reconnectionDelayGrowFactor ** (this._retryCount - 1);
+    if (delay > maxReconnectionDelay) {
+      delay = maxReconnectionDelay;
+    }
+  } else {
+    // -1 `_retryCount` indicates it's reconnecting so wait
+    delay = 1000;
+  }
+
+  this._debug('next delay', delay);
+  return delay;
+}
+
+ReconnectingWebSocket.prototype._debug = (...args) => {
+  logger.debug(...args);
   // if (config.env === 'development')
   //   logger.debug('reconnectingwebsocket', { args });
 };
@@ -203,6 +252,7 @@ function createWebSocketAsPromised(options = {}) {
       // (see above)
       rws._handleError = handleError.bind(rws);
       rws._disconnect = disconnect.bind(rws);
+      rws._getNextDelay = _getNextDelay.bind(rws);
 
       return rws;
     },
@@ -285,7 +335,7 @@ function createWebSocketAsPromised(options = {}) {
                 }
               },
               {
-                timeout: ms('30s')
+                timeout: ms('15s')
               }
             );
 
@@ -295,7 +345,7 @@ function createWebSocketAsPromised(options = {}) {
               Number.isFinite(data.timeout) &&
               data.timeout > 0
                 ? data.timeout
-                : ms('5m'),
+                : ms('10m'),
             requestId
           });
         },
