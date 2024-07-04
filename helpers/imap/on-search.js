@@ -16,6 +16,7 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
+const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
@@ -33,6 +34,7 @@ async function onSearch(mailboxId, options, session, fn) {
   if (this.wsp) {
     try {
       console.time(`search timer ${session.id}`);
+      const start = Date.now();
       const data = await this.wsp.request({
         action: 'search',
         session: {
@@ -44,6 +46,18 @@ async function onSearch(mailboxId, options, session, fn) {
         mailboxId,
         options
       });
+
+      // useful for admins to debug which queries are taking long
+      const delta = Date.now() - start;
+      if (delta > ms('30s')) {
+        const err = new TypeError('Search took longer than 30s');
+        err.delta = delta;
+        err.mailboxId = mailboxId;
+        err.options = options;
+        err.session = session;
+        this.logger.fatal(err, { session });
+      }
+
       console.timeEnd(`search timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {

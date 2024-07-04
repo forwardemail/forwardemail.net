@@ -692,7 +692,7 @@ async function parsePayload(data, ws) {
             `sync_check:${payload.session.user.alias_id}`,
             true,
             'PX',
-            ms('30m')
+            ms('5m')
           );
 
           const tmpDb = await getTemporaryDatabase.call(this, payload);
@@ -711,6 +711,15 @@ async function parsePayload(data, ws) {
           if (count > 0) {
             let hasMore = true;
             while (hasMore) {
+              // set cache so we don't sync twice at once
+              // eslint-disable-next-line no-await-in-loop
+              await this.client.set(
+                `sync_check:${payload.session.user.alias_id}`,
+                true,
+                'PX',
+                ms('5m')
+              );
+
               const sql = builder.build({
                 type: 'select',
                 table: 'TemporaryMessages',

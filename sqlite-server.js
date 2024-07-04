@@ -110,9 +110,6 @@ class SQLite {
 
     this.wss.broadcast = async (session, payload) => {
       const uuid = randomUUID();
-      console.time(
-        `waiting for broadcast ${uuid} for ${session.user.alias_id}`
-      );
       const packed = encoder.pack({
         uuid,
         session_id: session.id,
@@ -165,10 +162,6 @@ class SQLite {
       this.uuidsReceived.delete(uuid);
 
       // TODO: do interval cleanup
-
-      console.timeEnd(
-        `waiting for broadcast ${uuid} for ${session.user.alias_id}`
-      );
     };
 
     this.server = server;

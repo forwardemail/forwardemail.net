@@ -85,6 +85,63 @@ function updateAttachments(attachmentIds, magic, session) {
   }
 }
 
+async function createAttachment(instance, session, node, isRetry = false) {
+  const hex = await this.calculateHashPromise(node.body);
+  node.hash = revHash(Buffer.from(hex, 'hex'));
+  node.counter = 1;
+  node.counterUpdated = new Date();
+  node.size = node.body.length;
+  if (Number.isNaN(node.magic) || typeof node.magic !== 'number') {
+    const err = new TypeError('Invalid magic');
+    err.node = node;
+    throw err;
+  }
+
+  const sql = builder.build({
+    type: 'update',
+    table: 'Attachments',
+    condition: {
+      hash: node.hash
+    },
+    modifier: {
+      $inc: {
+        counter: 1,
+        magic: node.magic
+      },
+      $set: {
+        counterUpdated: new Date().toISOString()
+      }
+    },
+    returning: ['*']
+  });
+
+  const result = session.db.prepare(sql.query).get(sql.values);
+  if (result) return syncConvertResult(Attachments, result);
+
+  // TODO: finish this INSERT statement with validation of a field returned
+  // const attachment = new Attachments(node);
+  // await attachment.validate();
+  // {
+  //   const sql = builder.build({
+  //     type: 'insert',
+  //   });
+  //   // TODO: finish this
+  // }
+
+  // virtual helper
+  node.instance = instance;
+  node.session = session;
+
+  try {
+    const attachment = Attachments.create(node);
+    return attachment;
+  } catch (err) {
+    if (err.message !== 'UNIQUE constraint failed: Attachments.hash' || isRetry)
+      throw err;
+    return createAttachment.call(this, instance, session, node, true);
+  }
+}
+
 class AttachmentStorage {
   constructor(options) {
     this.options = options || {};
@@ -124,54 +181,8 @@ class AttachmentStorage {
     };
   }
 
-  async create(instance, session, node) {
-    const hex = await this.calculateHashPromise(node.body);
-    node.hash = revHash(Buffer.from(hex, 'hex'));
-    node.counter = 1;
-    node.counterUpdated = new Date();
-    node.size = node.body.length;
-    if (Number.isNaN(node.magic) || typeof node.magic !== 'number') {
-      const err = new TypeError('Invalid magic');
-      err.node = node;
-      throw err;
-    }
-
-    const sql = builder.build({
-      type: 'update',
-      table: 'Attachments',
-      condition: {
-        hash: node.hash
-      },
-      modifier: {
-        $inc: {
-          counter: 1,
-          magic: node.magic
-        },
-        $set: {
-          counterUpdated: new Date().toISOString()
-        }
-      },
-      returning: ['*']
-    });
-
-    const result = session.db.prepare(sql.query).get(sql.values);
-    if (result) return syncConvertResult(Attachments, result);
-
-    // TODO: finish this INSERT statement with validation of a field returned
-    // const attachment = new Attachments(node);
-    // await attachment.validate();
-    // {
-    //   const sql = builder.build({
-    //     type: 'insert',
-    //   });
-    //   // TODO: finish this
-    // }
-
-    // virtual helper
-    node.instance = instance;
-    node.session = session;
-
-    return Attachments.create(node);
+  async create(instance, session, node, isRetry = false) {
+    return createAttachment.call(this, instance, session, node, isRetry);
   }
 
   //

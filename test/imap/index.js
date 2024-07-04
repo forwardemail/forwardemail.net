@@ -190,7 +190,7 @@ test.beforeEach(async (t) => {
   t.context.imapFlow = imapFlow;
 
   // create inbox
-  await t.context.imapFlow.mailboxCreate('INBOX');
+  // await t.context.imapFlow.mailboxCreate('INBOX');
   await getDatabase(imap, alias, t.context.session);
   const mailbox = await Mailboxes.findOne(t.context.imap, t.context.session, {
     path: 'INBOX'
