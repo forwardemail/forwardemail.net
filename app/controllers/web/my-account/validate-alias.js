@@ -120,6 +120,7 @@ function validateAlias(ctx, next) {
     if (member.group === 'user' && body.has_imap)
       return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
 
+    /*
     if (
       _.isArray(body.recipients) &&
       body.recipients.some(
@@ -129,6 +130,7 @@ function validateAlias(ctx, next) {
       return ctx.throw(
         Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))
       );
+    */
   }
 
   ctx.state.body = body;
