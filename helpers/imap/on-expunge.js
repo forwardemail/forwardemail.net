@@ -79,6 +79,14 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // let storageUsed = 0;
 
+    //
+    // NOTE: we return early as a safeguard if the mailbox is not Trash/Junk/Spam
+    //       <https://github.com/nodemailer/wildduck/issues/702>
+    //       (mirrors trashCheck in `helpers/get-database.js`)
+    //
+    if (!['Trash', 'Spam', 'Junk'].includes(mailbox.path))
+      return fn(null, true);
+
     const condition = {
       mailbox: mailbox._id.toString(),
       undeleted: 0
