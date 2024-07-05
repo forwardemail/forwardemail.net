@@ -31,22 +31,31 @@ async function listDomains(ctx) {
     })
       .lean()
       .exec();
-    const aliases = await Aliases.find({
-      user: ctx.state.user._id,
-      domain: { $in: domains.map((d) => d._id) },
-      recipients: ctx.state.user.email
-    })
-      .populate('domain', 'name')
-      .lean()
-      .exec();
-    if (aliases.length > 0) {
-      ctx.flash(
-        'error',
-        ctx.translate(
-          'RECIPIENT_MATCHES_EMAIL',
-          aliases.map((a) => `${a?.name}@${a?.domain?.name}`)
-        )
+    if (domains.length > 0) {
+      const combinations = domains.map(
+        (d) =>
+          `${ctx.state.user[config.passport.fields.ubuntuUsername]}@${d.name}`
       );
+      const aliases = await Aliases.find({
+        name: ctx.state.user[config.passport.fields.ubuntuUsername],
+        user: ctx.state.user._id,
+        domain: { $in: domains.map((d) => d._id) },
+        recipients: {
+          $in: combinations
+        }
+      })
+        .populate('domain', 'name')
+        .lean()
+        .exec();
+      if (aliases.length > 0) {
+        ctx.flash(
+          'error',
+          ctx.translate(
+            'RECIPIENT_MATCHES_EMAIL',
+            aliases.map((a) => `${a?.name}@${a?.domain?.name}`)
+          )
+        );
+      }
     }
   }
 
