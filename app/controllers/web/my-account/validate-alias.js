@@ -10,7 +10,7 @@ const slug = require('speakingurl');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+// const { isEmail } = require('validator');
 
 const config = require('#config');
 

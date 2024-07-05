@@ -1025,6 +1025,15 @@ Emails.statics.queue = async function (
       from = fromHeader.value[0].address.toLowerCase();
   }
 
+  //
+  // rewrite from header to be without "+" symbol
+  // so that users can send with "+" address filtering
+  //
+  if (from && from.includes('+')) {
+    const [name, domain] = from.split('@');
+    from = `${name.split('+')[0]}@${domain}`;
+  }
+
   if (!from)
     throw Boom.forbidden(
       i18n.translateError(

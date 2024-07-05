@@ -90,6 +90,9 @@ async function onAuth(auth, session, fn) {
 
     let [name, domainName] = auth.username.trim().toLowerCase().split('@');
 
+    // allow users to send/receive using "+" filter
+    if (name && name.includes('+')) name = name.split('+')[0];
+
     domainName = punycode.toUnicode(domainName);
 
     // password must be valid
