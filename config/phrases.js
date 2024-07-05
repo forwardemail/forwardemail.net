@@ -20,6 +20,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  RECIPIENT_MATCHES_EMAIL:
+    'You must edit the "Recipients" for these aliases to ensure they forward to a proper destination: <span class="notranslate">%s</span>',
   LINK_EXPIRED_OR_INVALID:
     'Link has expired, already been claimed, or is no longer active.',
   SMTP_RATE_LIMIT_EXCEEDED:

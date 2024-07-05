@@ -168,6 +168,14 @@ const STRIPE_LOCALES = new Set([
 
 const config = {
   ...metaConfig,
+  ubuntuTeamMapping: {
+    'ubuntu.com': '~ubuntumembers',
+    'kubuntu.org': '~kubuntu-members',
+    'lubuntu.me': '~lubuntu-members',
+    'edubuntu.org': '~edubuntu-members',
+    'ubuntustudio.com': '~ubuntustudio-core',
+    'ubuntu.net': '~ubuntu-smtp-test'
+  },
   INITIAL_DB_SIZE: 196608, // 200704,
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',

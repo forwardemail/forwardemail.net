@@ -7,10 +7,48 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
+const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const config = require('#config');
 
+// eslint-disable-next-line complexity
 async function listDomains(ctx) {
   let { domains } = ctx.state;
+
+  // if user has ubuntu ID then check if recipient matches email address
+  // and if so then alert the user with a flash notification
+  if (
+    !ctx.api &&
+    ctx.state.user[config.passport.fields.ubuntuProfileID] &&
+    ctx.state.user[config.passport.fields.ubuntuUsername]
+  ) {
+    const domains = await Domains.find({
+      name: {
+        $in: Object.keys(config.ubuntuTeamMapping)
+      },
+      plan: 'team',
+      has_txt_record: true
+    })
+      .lean()
+      .exec();
+    const aliases = await Aliases.find({
+      user: ctx.state.user._id,
+      domain: { $in: domains.map((d) => d._id) },
+      recipients: ctx.state.user.email
+    })
+      .populate('domain', 'name')
+      .lean()
+      .exec();
+    if (aliases.length > 0) {
+      ctx.flash(
+        'error',
+        ctx.translate(
+          'RECIPIENT_MATCHES_EMAIL',
+          aliases.map((a) => `${a?.name}@${a?.domain?.name}`)
+        )
+      );
+    }
+  }
 
   // if some of the domains were not global and need setup then toast notification
   if (!ctx.query.page || ctx.query.page === 1) {

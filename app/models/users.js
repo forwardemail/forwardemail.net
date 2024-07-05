@@ -905,19 +905,12 @@ Users.pre('save', function (next) {
 // (and probably need some automated job that checks this for active memberships)
 //
 Users.pre('save', async function (next) {
-  if (!isSANB(this[fields.ubuntuProfileID])) return next();
+  if (
+    !isSANB(this[fields.ubuntuProfileID]) ||
+    !isSANB(this[fields.ubuntuUsername])
+  )
+    return next();
   try {
-    if (!isSANB(this[fields.ubuntuUsername])) {
-      const error = Boom.badRequest(
-        i18n.api.t({
-          phrase: config.i18n.phrases.UBUNTU_INVAILD_USERNAME,
-          locale: this[config.lastLocaleField]
-        })
-      );
-      error.no_translate = true;
-      throw error;
-    }
-
     const response = await retryRequest(
       `https://api.launchpad.net/1.0/~${
         this[fields.ubuntuUsername]
@@ -944,33 +937,13 @@ Users.pre('save', async function (next) {
 
     // TODO: support pagination for users that have paginated memberships
 
-    // TODO: move this to config index and rewrite everywhere else to re-use
-    const mapping = {
-      'ubuntu.com': '~ubuntumembers',
-      'kubuntu.org': '~kubuntu-members',
-      'lubuntu.me': '~lubuntu-members',
-      'edubuntu.org': '~edubuntu-members',
-      'ubuntustudio.com': '~ubuntustudio-core',
-      'ubuntu.net': '~ubuntu-smtp-test'
-    };
-
-    let hasMatch = !_.isEmpty(json.entries) && json.total_size !== 0;
-
     //
     // now we need to find the @ubuntu.com domain
     // and create the user their alias if not already exists
     //
-    if (!hasMatch) {
-      for (const domainName of Object.keys(mapping)) {
-        if (
-          json.entries.some(
-            (entry) =>
-              entry.team_link ===
-              `https://api.launchpad.net/1.0/${mapping[domainName]}`
-          )
-        ) {
-          hasMatch = true;
-
+    if (!_.isEmpty(json.entries)) {
+      for (const domainName of Object.keys(config.ubuntuTeamMapping)) {
+        try {
           // eslint-disable-next-line no-await-in-loop
           const domain = await conn.models.Domains.findOne({
             name: domainName,
@@ -978,84 +951,109 @@ Users.pre('save', async function (next) {
             has_txt_record: true
           });
 
-          if (!domain) {
-            const error = Boom.badRequest(
-              i18n.api.t({
-                phrase: config.i18n.phrases.DOMAIN_DOES_NOT_EXIST_ANYWHERE,
-                locale: this[config.lastLocaleField]
-              })
-            );
-            error.no_translate = true;
-            throw error;
-          }
+          if (!domain) continue;
 
-          //
-          // otherwise check that the domain includes this user id
-          // and if not, then add it to the group as a user
-          //
-          const match = domain.members.find(
+          let match = domain.members.find(
             (m) => m.user.toString() === this._id.toString()
           );
-          if (!match) {
-            domain.members.push({
-              user: this._id,
-              group: 'user'
-            });
-            // eslint-disable-next-line no-await-in-loop
-            await domain.save();
-          }
 
-          // now check that if the alias already exists and is owned by this user
-          // eslint-disable-next-line no-await-in-loop
-          const alias = await conn.models.Aliases.findOne({
-            user: this._id,
-            domain: domain._id,
-            name: this[fields.ubuntuUsername].toLowerCase()
-          });
-
-          // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-          if (!alias) {
-            // eslint-disable-next-line no-await-in-loop
-            const count = await conn.models.Aliases.countDocuments({
-              user: this._id,
-              domain: domain._id
-            });
-            if (count > 3) {
-              const error = Boom.badRequest(
-                i18n.api.t({
-                  phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
-                  locale: this[config.lastLocaleField]
-                })
-              );
-              error.no_translate = true;
-              throw error;
+          if (
+            json.entries.some(
+              (entry) =>
+                entry.team_link ===
+                `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[domainName]}`
+            )
+          ) {
+            //
+            // otherwise check that the domain includes this user id
+            // and if not, then add it to the group as a user
+            //
+            if (!match) {
+              match = {
+                user: this._id,
+                group: 'user'
+              };
+              domain.members.push(match);
+              // eslint-disable-next-line no-await-in-loop
+              await domain.save();
             }
 
+            // now check that if the alias already exists and is owned by this user
             // eslint-disable-next-line no-await-in-loop
-            await conn.models.Aliases.create({
-              // virtual to assist in preventing lookup
-              is_new_user: true,
-
+            const alias = await conn.models.Aliases.findOne({
               user: this._id,
               domain: domain._id,
-              name: this[fields.ubuntuUsername].toLowerCase(),
-              recipients: [this.email],
-              locale: this[config.lastLocaleField]
+              name: this[fields.ubuntuUsername].toLowerCase()
             });
+
+            // if not, then create it, but only if there aren't already 3+ aliases owned by this user
+            if (!alias) {
+              // eslint-disable-next-line no-await-in-loop
+              const count = await conn.models.Aliases.countDocuments({
+                user: this._id,
+                domain: domain._id
+              });
+              if (match.group !== 'admin' && count > 3) {
+                const error = Boom.badRequest(
+                  i18n.api.t({
+                    phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
+                    locale: this[config.lastLocaleField]
+                  })
+                );
+                error.no_translate = true;
+                throw error;
+              }
+
+              // eslint-disable-next-line no-await-in-loop
+              await conn.models.Aliases.create({
+                // virtual to assist in preventing lookup
+                is_new_user: true,
+
+                user: this._id,
+                domain: domain._id,
+                name: this[fields.ubuntuUsername].toLowerCase(),
+                recipients: [this.email],
+                locale: this[config.lastLocaleField]
+              });
+            }
+
+            continue;
           }
+
+          //
+          // otherwise disable any aliases and remove user from membership for this domain
+          //
+          if (match && match.group === 'user') {
+            domain.members = domain.members.filter(
+              (m) => m.user.toString() !== this._id.toString()
+            );
+            // eslint-disable-next-line no-await-in-loop
+            await domain.save();
+            // eslint-disable-next-line no-await-in-loop
+            await conn.models.Aliases.findAndUpdate(
+              {
+                user: this._id,
+                domain: domain._id
+              },
+              {
+                $set: {
+                  is_enabled: false
+                }
+              },
+              {
+                multi: true
+              }
+            );
+          }
+        } catch (err) {
+          // alert admins by email
+          err.isCodeBug = true;
+          err.ubuntuProfileID = this[fields.ubuntuProfileID];
+          err.ubuntuUsername = this[fields.ubuntuUsername];
+          err.email = this.email;
+          logger.fatal(err);
         }
       }
-    }
-
-    if (!hasMatch) {
-      const error = Boom.badRequest(
-        i18n.api.t({
-          phrase: config.i18n.phrases.UBUNTU_INVALID_GROUP,
-          locale: this[config.lastLocaleField]
-        })
-      );
-      error.no_translate = true;
-      throw error;
     }
 
     /*
@@ -1084,7 +1082,13 @@ Users.pre('save', async function (next) {
 
     next();
   } catch (err) {
-    next(err);
+    // alert admins by email
+    err.isCodeBug = true;
+    err.ubuntuProfileID = this[fields.ubuntuProfileID];
+    err.ubuntuUsername = this[fields.ubuntuUsername];
+    err.email = this.email;
+    logger.fatal(err);
+    next();
   }
 });
 

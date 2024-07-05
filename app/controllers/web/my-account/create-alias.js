@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 
+const config = require('#config');
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
 
@@ -25,16 +26,7 @@ async function createAlias(ctx, next) {
     // if the domain is ubuntu.com and the user is in the user group
     // then don't allow them to create aliases (only manage/delete their own)
     //
-    if (
-      [
-        'ubuntu.com',
-        'kubuntu.org',
-        'lubuntu.me',
-        'edubuntu.org',
-        'ubuntustudio.com',
-        'ubuntu.net'
-      ].includes(ctx.state.domain.name)
-    ) {
+    if (Object.keys(config.ubuntuTeamMapping).includes(ctx.state.domain.name)) {
       const member = ctx.state.domain.members.find(
         (member) => member.user && member.user.id === ctx.state.user.id
       );

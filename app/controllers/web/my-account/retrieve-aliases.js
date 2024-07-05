@@ -99,7 +99,7 @@ async function retrieveAliases(ctx, next) {
   if (isSANB(ctx.query.recipient)) {
     if (ctx.state.domain.is_catchall_regex_disabled) {
       query.$and.push({
-        recipient: ctx.query.recipient.trim().toLowerCase()
+        recipients: ctx.query.recipient.trim().toLowerCase()
       });
     } else {
       query.$and.push({
