@@ -330,6 +330,15 @@ const NS_PROVIDERS = {
     'https://hover.com/signin',
     false,
     '@'
+  ],
+  canonical: [
+    'canonical',
+    'Canonical',
+    'https://canonical.com/',
+    '',
+    '',
+    '',
+    true
   ]
 };
 
