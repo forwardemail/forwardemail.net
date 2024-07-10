@@ -6,6 +6,7 @@
 * [What is Forward Email](#what-is-forward-email)
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
+* [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
 * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
 * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
 * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
@@ -31,6 +32,7 @@
 * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
 * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
 * [What are no-reply addresses](#what-are-no-reply-addresses)
+* [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
 * [Do you have an allowlist](#do-you-have-an-allowlist)
   * [What domain name extensions are allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default)
   * [What is your allowlist criteria](#what-is-your-allowlist-criteria)
@@ -69,6 +71,7 @@
 * [Is this well-tested](#is-this-well-tested)
 * [Do you pass along SMTP response messages and codes](#do-you-pass-along-smtp-response-messages-and-codes)
 * [How do you prevent spammers and ensure good email forwarding reputation](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+* [Why are my emails landing in Spam and Junk and how can I check my domain reputation](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
 * [What should I do if I receive spam emails](#what-should-i-do-if-i-receive-spam-emails)
 * [Can I "send mail as" in Gmail with this](#can-i-send-mail-as-in-gmail-with-this)
 * [Can I "send mail as" in Outlook with this](#can-i-send-mail-as-in-outlook-with-this)
@@ -719,6 +722,19 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     If you're using the <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How to Send Mail As using Gmail</a> feature, then you may want to add yourself to an allowlist.  See <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">these instructions by Gmail</a> on this topic.
   </span>
 </div>
+
+
+## Can I use multiple MX exchanges and servers for advanced forwarding
+
+Yes, but **you should only have one MX exchange listed in your DNS records**.
+
+Do not attempt to use "Priority" as a way to configure multiple MX exchanges.
+
+Instead, you need to configure your existing MX exchange to forward mail for all non-matching aliases to our service's exchanges (`mx1.forwardemail.net` and/or `mx2.forwardemail.net`).
+
+If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
+
+If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
 
 ## How do I set up SPF for Forward Email
@@ -1607,6 +1623,8 @@ We routinely monitor all major DNS denylists and if any of our mail exchange ("M
 
 At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
+Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
+
 
 ## What are no-reply addresses
 
@@ -1634,6 +1652,11 @@ Email usernames equal to any of the following (case-insensitive) are considered 
 * `noreplys`
 
 This list is maintained [as an open-source project on GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+
+
+## What are your server's IP addresses
+
+We publish our IP addresses at <https://forwardemail.net/ips>.
 
 
 ## Do you have an allowlist
@@ -2728,6 +2751,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 
 **Here are additional notes regarding webhooks:**
 
+* If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.  Alternatively you could check it against [our published IP addresses](#what-are-your-servers-ip-addresses).  See the discussion at <https://github.com/forwardemail/free-email-forwarding/issues/235> for more insight.
 * If a webhook does not respond with a `200` status code, then we will store its response in the [error log created](#do-you-store-error-logs) – which is useful for debugging.
 * Webhook HTTP requests will retry up to 3 times every SMTP connection attempt, with a 60 second max timeout per endpoint POST request.  **Note that this does not mean that it only retries 3 times**, it will actually retry continously over time by sending a SMTP code of 421 (which indicates to the sender retry later) after the 3rd failed HTTP POST request attempt.  This means the email will retry continuously for days until a 200 status code is achieved.
 * We will retry automatically based off the default status and error codes used in [superagent's retry method](https://ladjs.github.io/superagent/#retrying-requests) (we are maintainers).
@@ -3443,6 +3467,26 @@ Yes, absolutely.  For example if you're sending an email to `hello@example.com` 
 ## How do you prevent spammers and ensure good email forwarding reputation
 
 See our sections on [How does your email forwarding system work](#how-does-your-email-forwarding-system-work), [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues), and [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked) above.
+
+
+## Why are my emails landing in Spam and Junk and how can I check my domain reputation
+
+This section guides you if your outbound mail is using our SMTP servers (e.g. `smtp.forwardemail.net`) (or forwarded via `mx1.forwardemail.net` or `mx2.forwardemail.net`) and it is being delivered in the Spam or Junk folder of recipients.
+
+We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) against [all reputable DNS denylists](#how-do-you-handle-your-ip-addresses-becoming-blocked), **therefore it is most likely a domain-reputation specific issue**.
+
+You can try to use one or more of these tools to check your domain's reputation and categorization:
+
+* [Cloudflare Domain Categorization Feedback](https://radar.cloudflare.com/domains/feedback)
+* [Spamhaus IP and Domain Reputation Checker](https://check.spamhaus.org/)
+* [Cisco Talos IP and Domain Reputation Center](https://talosintelligence.com/reputation_center)
+* [Barracuda IP and Domain Reputation Lookup](https://www.barracudacentral.org/lookups/lookup-reputation)
+* [MX Toolbox Blacklist Check](https://mxtoolbox.com/blacklists.aspx)
+* [Google Postmaster Tools](https://www.gmail.com/postmaster/)
+* [Yahoo Sender Hub](https://senders.yahooinc.com/) (includes Verizon/AOL)
+* [MultiRBL.valli.org Blacklist Check](https://multirbl.valli.org/lookup/)
+
+If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
 
 ## What should I do if I receive spam emails

@@ -57,6 +57,17 @@ router
 
     return next();
   })
+  // ips
+  .get('/ips.txt', web.ips)
+  .get('/ips.json', web.ips)
+  .get('/ips/hostnames.txt', web.ips)
+  .get('/ips/hostnames.json', web.ips)
+  .get('/ips/v4', web.ips)
+  .get('/ips/v4.txt', web.ips)
+  .get('/ips/v6', web.ips)
+  .get('/ips/v6.txt', web.ips)
+  .get('/ips/v4.json', web.ips)
+  .get('/ips/v6.json', web.ips)
   // sitemap
   .get('/sitemap.xml', web.sitemap)
   // report URI support (not locale specific)
@@ -164,6 +175,21 @@ localeRouter
 
     return next();
   })
+
+  //
+  // ips
+  //
+  .get('/ips', web.ips)
+  .get('/ips.txt', web.ips)
+  .get('/ips.json', web.ips)
+  .get('/ips/hostnames.txt', web.ips)
+  .get('/ips/hostnames.json', web.ips)
+  .get('/ips/v4', web.ips)
+  .get('/ips/v4.txt', web.ips)
+  .get('/ips/v6', web.ips)
+  .get('/ips/v6.txt', web.ips)
+  .get('/ips/v4.json', web.ips)
+  .get('/ips/v6.json', web.ips)
 
   // ubuntu one
   .get('/ubuntu', render('ubuntu'))

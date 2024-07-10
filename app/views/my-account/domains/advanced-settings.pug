@@ -390,6 +390,41 @@ block body
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
 
+          //- Ignore MX Check
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(type="hidden", name="_section", value="ignore_mx_check")
+              h2.h6.card-header= t("Ignore MX Check for Verification")
+              .card-body
+                +planRequired(false)
+                .form-group.form-check.mb-0
+                  input#input-ignore-mx-check.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="ignore_mx_check",
+                    value="true",
+                    checked=domain.ignore_mx_check
+                  )
+                  label.form-check-label(for="input-ignore-mx-check")= t("Ignore MX record check for verification (useful for advanced MX exchange configuration)")
+                  p.form-text.small.text-black.text-themed-50.mb-0= t("If you check this, then we will assume you are keeping your existing MX exchange and have advanced forwarding rules that forward mail to our server.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
           //- Outbound SMTP Retention
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
@@ -416,6 +451,33 @@ block body
                 ul.list-inline.mb-0
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(type="submit")= t("Save")
+
+          //- Restricted Alias Names
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=l(`/my-account/domains/${domain.name}/restricted-alias-names`),
+              method="POST",
+              disabled=isTeamDisabled
+            )
+              h2.h6.card-header= t("Restricted Alias Names")
+              .card-body
+                +planRequired(true)
+                .alert.alert-danger.small!= t("<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.")
+                .alert.alert-info.small= t("Enter alias names below. You can use line breaks, commas, and/or spaces as delimiters.")
+                label(for="#textarea-restricted-alias-names")= t("Restricted Alias Names")
+                textarea#textarea-restricted-alias-names.form-control(
+                  name="restricted_alias_names",
+                  rows=5
+                )= Array.isArray(domain.restricted_alias_names) ? domain.restricted_alias_names.join("\n") : ""
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isTeamDisabled
+                    )= t("Save")
+
+          //- Allowlisted Senders
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=l(`/my-account/domains/${domain.name}/allowlist`),
@@ -435,6 +497,7 @@ block body
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(type="submit")= t("Save")
 
+          //- Denylisted Senders
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
               action=l(`/my-account/domains/${domain.name}/denylist`),

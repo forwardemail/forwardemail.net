@@ -265,6 +265,8 @@ block body
                       i.fa.fa-refresh
                       = " "
                       = t("Verify")
+              if domain.ignore_mx_check
+                .alert.alert-primary.my-3.small!= t('Your domain currently has "Ignore MX Record" checked under <a href="%s" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${domain.name}/advanced-settings`))
               if provider && provider.slug && provider.slug === 'cloudflare'
                 .alert.alert-warning.my-3.small
                   strong= t("Important Note:")
@@ -286,68 +288,69 @@ block body
                       if provider && provider.slug && provider.slug === 'cloudflare'
                         th.border-0.align-middle.text-nowrap Proxy status
                   tbody
-                    tr
-                      td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
-                      td.align-middle.small
-                        if !domain.root_name || domain.root_name === domain.name
-                          if provider && typeof provider.host === 'string'
-                            if provider.host === ''
-                              i.text-muted.user-select-none= t("None")
+                    if !domain.ignore_mx_check
+                      tr
+                        td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
+                        td.align-middle.small
+                          if !domain.root_name || domain.root_name === domain.name
+                            if provider && typeof provider.host === 'string'
+                              if provider.host === ''
+                                i.text-muted.user-select-none= t("None")
+                              else
+                                = provider.host
                             else
-                              = provider.host
+                              | "@", ".", or leave empty/blank if allowed.
                           else
-                            | "@", ".", or leave empty/blank if allowed.
-                        else
-                          code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                      td.align-middle: strong.px-2 MX
-                      td.align-middle: code.text-themed 10
-                      td.align-middle.text-left.py-3
-                        code#copy-mx1.d-block.text-themed.text-nowrap
-                          | mx1.forwardemail.net
-                          if provider && provider.trailingPeriod
-                            = "."
-                        if !domain.has_mx_record
-                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                            type="button",
-                            data-toggle="clipboard",
-                            data-clipboard-target="#copy-mx1"
-                          )
-                            i.fa.fa-clipboard
-                            = " "
-                            = t("Copy")
-                      if provider && provider.slug && provider.slug === 'cloudflare'
-                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
-                    tr
-                      td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
-                      td.align-middle.small
-                        if !domain.root_name || domain.root_name === domain.name
-                          if provider && typeof provider.host === 'string'
-                            if provider.host === ''
-                              i.text-muted.user-select-none= t("None")
+                            code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                        td.align-middle: strong.px-2 MX
+                        td.align-middle: code.text-themed 10
+                        td.align-middle.text-left.py-3
+                          code#copy-mx1.d-block.text-themed.text-nowrap
+                            | mx1.forwardemail.net
+                            if provider && provider.trailingPeriod
+                              = "."
+                          if !domain.has_mx_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-mx1"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+                        if provider && provider.slug && provider.slug === 'cloudflare'
+                          td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+                      tr
+                        td(class=domain.has_mx_record ? "bg-success" : "bg-danger")
+                        td.align-middle.small
+                          if !domain.root_name || domain.root_name === domain.name
+                            if provider && typeof provider.host === 'string'
+                              if provider.host === ''
+                                i.text-muted.user-select-none= t("None")
+                              else
+                                = provider.host
                             else
-                              = provider.host
+                              | "@", ".", or leave empty/blank if allowed.
                           else
-                            | "@", ".", or leave empty/blank if allowed.
-                        else
-                          code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
-                      td.align-middle: strong.px-2 MX
-                      td.align-middle: code.text-themed 10
-                      td.align-middle.text-left.py-3
-                        code#copy-mx2.d-block.text-themed.text-nowrap
-                          | mx2.forwardemail.net
-                          if provider && provider.trailingPeriod
-                            = "."
-                        if !domain.has_mx_record
-                          button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                            type="button",
-                            data-toggle="clipboard",
-                            data-clipboard-target="#copy-mx2"
-                          )
-                            i.fa.fa-clipboard
-                            = " "
-                            = t("Copy")
-                      if provider && provider.slug && provider.slug === 'cloudflare'
-                        td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
+                            code.text-themed= domain.name.slice(0, domain.name.lastIndexOf(domain.root_name) - 1)
+                        td.align-middle: strong.px-2 MX
+                        td.align-middle: code.text-themed 10
+                        td.align-middle.text-left.py-3
+                          code#copy-mx2.d-block.text-themed.text-nowrap
+                            | mx2.forwardemail.net
+                            if provider && provider.trailingPeriod
+                              = "."
+                          if !domain.has_mx_record
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-mx2"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+                        if provider && provider.slug && provider.slug === 'cloudflare'
+                          td.align-middle.small.text-center.user-select-none.text-nowrap DNS only
                     if domain.plan === 'free' && hasExistingTXT
                       each record in existingTXT
                         tr

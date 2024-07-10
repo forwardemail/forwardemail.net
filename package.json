@@ -231,7 +231,7 @@
     "qs": "6.12.2",
     "re2": "1.21.3",
     "regex-parser": "2.3.0",
-    "reserved-email-addresses-list": "2.0.13",
+    "reserved-email-addresses-list": "2.0.14",
     "rev-hash": "3",
     "rrule": "2.8.1",
     "sanitize-html": "2.13.0",

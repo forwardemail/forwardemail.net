@@ -200,6 +200,7 @@ async function retrieveDomain(ctx, next) {
   ) {
     await Promise.all([
       (async () => {
+        if (ctx.state.domain.ignore_mx_check === true) return;
         try {
           const records = await ctx.resolver.resolveMx(ctx.state.domain.name, {
             purgeCache: true

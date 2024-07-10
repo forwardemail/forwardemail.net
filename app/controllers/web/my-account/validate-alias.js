@@ -109,7 +109,11 @@ function validateAlias(ctx, next) {
   // if the domain is ubuntu.com and the user is in the user group
   // then don't allow them to enable IMAP
   //
-  if (Object.keys(config.ubuntuTeamMapping).includes(ctx.state.domain.name)) {
+  if (
+    ctx.state.domain.plan === 'team' &&
+    ctx.state.domain.has_txt_record &&
+    Object.keys(config.ubuntuTeamMapping).includes(ctx.state.domain.name)
+  ) {
     const member = ctx.state.domain.members.find(
       (member) => member.user && member.user.id === ctx.state.user.id
     );

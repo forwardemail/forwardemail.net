@@ -37,6 +37,7 @@ const denylist = require('./denylist');
 const guides = require('./guides');
 const sitemap = require('./sitemap');
 const search = require('./search');
+const ips = require('./ips');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -607,5 +608,6 @@ module.exports = {
   sitemap,
   generateOpenGraphImage,
   regenerateAliasPassword,
-  search
+  search,
+  ips
 };

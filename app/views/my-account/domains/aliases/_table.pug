@@ -121,6 +121,8 @@ mixin renderProgressBar(domain, alias, isMobile = false)
   else
     = t("Not Available")
 
+- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
+
 p.text-center.d-lg-none
   a.btn.btn-link.btn-sm(
     href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
@@ -368,7 +370,7 @@ p.text-center.d-lg-none
                   = t("Recipients")
                   = ":"
                 ul.list-inline.mb-1
-                  if alias.name !== '*' && !alias.name.startsWith('/')
+                  if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntu || domain.group === 'admin')
                     li.list-inline-item
                       span.badge.text-nowrap.text-uppercase(
                         class=alias.has_imap ? "badge-success" : "badge-secondary"
@@ -544,7 +546,7 @@ p.text-center.d-lg-none
               +renderProgressBar(domain, alias)
             td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
-                if alias.name !== '*' && !alias.name.startsWith('/')
+                if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntu || domain.group === 'admin')
                   li.list-inline-item
                     span.badge.text-nowrap.text-uppercase(
                       class=alias.has_imap ? "badge-success" : "badge-secondary"

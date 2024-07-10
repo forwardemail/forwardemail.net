@@ -63,6 +63,7 @@ const removeCatchAllPassword = require('./remove-catch-all-password');
 const changeModulusLength = require('./change-modulus-length');
 const checkVerifiedEmail = require('./check-verified-email');
 const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
+const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
 const uploadAliasMbox = require('./upload-alias-mbox');
 
@@ -128,5 +129,6 @@ module.exports = {
   checkVerifiedEmail,
   updateAllowlistAndDenylist,
   updateTimezone,
-  uploadAliasMbox
+  uploadAliasMbox,
+  updateRestrictedAliasNames
 };

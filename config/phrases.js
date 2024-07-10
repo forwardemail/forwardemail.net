@@ -20,6 +20,8 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  INVALID_LOCAL_PART:
+    '<span class="notranslate">%s</span> is not a valid UTF-8 local part for an alias name',
   RECIPIENT_MATCHES_EMAIL:
     'You must edit the "Recipients" for these aliases to ensure they forward to a proper destination: <span class="notranslate">%s</span>',
   LINK_EXPIRED_OR_INVALID:

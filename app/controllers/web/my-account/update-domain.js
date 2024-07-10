@@ -47,49 +47,80 @@ async function updateDomain(ctx, next) {
       'has_phishing_protection',
       'has_executable_protection',
       'has_virus_protection',
-      'has_recipient_verification'
+      'has_recipient_verification',
+      'ignore_mx_check'
     ]) {
       if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
         ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
     }
-  } else if (ctx.request.body._section === 'spam_scanner_settings') {
-    // require paid plan
-    if (ctx.state.domain.plan === 'free')
-      return ctx.throw(
-        Boom.paymentRequired(
-          ctx.translateError(
-            'PLAN_UPGRADE_REQUIRED',
-            ctx.state.l(
-              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+  } else
+    switch (ctx.request.body._section) {
+      case 'spam_scanner_settings': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          return ctx.throw(
+            Boom.paymentRequired(
+              ctx.translateError(
+                'PLAN_UPGRADE_REQUIRED',
+                ctx.state.l(
+                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                )
+              )
             )
-          )
-        )
-      );
-    for (const bool of [
-      'has_adult_content_protection',
-      'has_phishing_protection',
-      'has_executable_protection',
-      'has_virus_protection'
-    ]) {
-      ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
+          );
+        for (const bool of [
+          'has_adult_content_protection',
+          'has_phishing_protection',
+          'has_executable_protection',
+          'has_virus_protection'
+        ]) {
+          ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
+        }
+
+        break;
+      }
+
+      case 'recipient_verification': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          return ctx.throw(
+            Boom.paymentRequired(
+              ctx.translateError(
+                'PLAN_UPGRADE_REQUIRED',
+                ctx.state.l(
+                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                )
+              )
+            )
+          );
+        ctx.state.domain.has_recipient_verification = boolean(
+          ctx.request.body.has_recipient_verification
+        );
+
+        break;
+      }
+
+      case 'ignore_mx_check': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          return ctx.throw(
+            Boom.paymentRequired(
+              ctx.translateError(
+                'PLAN_UPGRADE_REQUIRED',
+                ctx.state.l(
+                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                )
+              )
+            )
+          );
+        ctx.state.domain.ignore_mx_check = boolean(
+          ctx.request.body.ignore_mx_check
+        );
+
+        break;
+      }
+      // No default
     }
-  } else if (ctx.request.body._section === 'recipient_verification') {
-    // require paid plan
-    if (ctx.state.domain.plan === 'free')
-      return ctx.throw(
-        Boom.paymentRequired(
-          ctx.translateError(
-            'PLAN_UPGRADE_REQUIRED',
-            ctx.state.l(
-              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
-            )
-          )
-        )
-      );
-    ctx.state.domain.has_recipient_verification = boolean(
-      ctx.request.body.has_recipient_verification
-    );
-  }
 
   // custom verification IFF allowed
   if (

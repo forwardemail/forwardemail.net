@@ -176,6 +176,10 @@ module.exports = function (config) {
       'Forgot Password',
       'Reset your account password to regain access to your account.'
     ],
+    '/ips': [
+      'IP Addresses',
+      'We publish and automatically update the IP addresses used by our server infrastructure.'
+    ],
     '/reset-password': ['Reset Password', 'Confirm your password reset token.'],
     '/auth': [`Auth ${lad}`, 'Authenticate yourself to log in.'],
     '/ubuntu': [

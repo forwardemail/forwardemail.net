@@ -158,6 +158,16 @@ router
   )
 
   .post(
+    '/domains/:domain_id/restricted-alias-names',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureTeamPlan,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(100, 'restricted alias names'),
+    web.myAccount.updateRestrictedAliasNames
+  )
+
+  .post(
     '/domains/:domain_id/allowlist',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,

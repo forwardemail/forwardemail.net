@@ -108,7 +108,7 @@ if breadcrumbs.length > 1
                     != t('Import <span class="notranslate">TXT</span> Records')
                     = " "
                     i.fa.fa-cloud-download-alt
-            if domain.group === 'admin' || !['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com','ubuntu.net'].includes(domain.name)
+            if domain.group === 'admin' || !Object.keys(config.ubuntuTeamMapping).includes(domain.name)
               li.list-inline-item.mb-1
                 a.btn.btn-dark(
                   href=l(`/my-account/domains/${domain.name}/aliases/new`),

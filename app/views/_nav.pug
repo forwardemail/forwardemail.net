@@ -95,7 +95,7 @@ nav.navbar(class=navbarClasses.join(" "))
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l(),
       class=isBot(ctx.get("User-Agent")) ? "" : "text-themed"
     )
-      if (domain && domain.name && ['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com'].includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+      if (domain && domain.name && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         if user
           img(
             src=manifest("img/ubuntu-one-mono-logo.svg"),
@@ -122,7 +122,7 @@ nav.navbar(class=navbarClasses.join(" "))
           class=isBot(ctx.get("User-Agent")) ? "d-none d-md-inline-block" : "d-inline-block"
         )= "Forward Email"
 
-    if (domain && domain.name && ['ubuntu.com','kubuntu.org','lubuntu.me','edubuntu.org','ubuntustudio.com'].includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+    if (domain && domain.name && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
       //- Empty on purpose
     else
       - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
@@ -540,6 +540,10 @@ nav.navbar(class=navbarClasses.join(" "))
                 .dropdown-menu.dropdown-menu-right(
                   aria-labelledby="navbar-dropdown-docs"
                 )
+                  a.dropdown-item(
+                    href=l("/ips"),
+                    class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
+                  )= t("IP Addresses")
                   a.dropdown-item(
                     href=l("/email-api"),
                     class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""

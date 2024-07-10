@@ -186,7 +186,8 @@ async function validateDomain(ctx, next) {
     'has_phishing_protection',
     'has_executable_protection',
     'has_virus_protection',
-    'has_recipient_verification'
+    'has_recipient_verification',
+    'ignore_mx_check'
   ]) {
     if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
       ctx.state.optionalBooleans[bool] = boolean(ctx.request.body[bool]);

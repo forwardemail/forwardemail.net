@@ -94,7 +94,8 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
-if !domain || !domain.is_global
+- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
+if !domain || !domain.is_global && (!isUbuntu || domain.group === 'admin')
   .form-group
     = t("IMAP Storage")
     = " "

@@ -44,6 +44,12 @@ const CACHE_TYPES = ['NS', 'MX', 'TXT'];
 const CLOUDFLARE_PURGE_CACHE_URL = 'https://1.1.1.1/api/v1/purge';
 const USER_AGENT = `${pkg.name}/${pkg.version}`;
 
+// <https://github.com/validatorjs/validator.js/blob/master/src/lib/isEmail.js>
+const quotedEmailUserUtf8 = new RE2(
+  // eslint-disable-next-line no-control-regex
+  /^([\s\u0001-\u0008\u000E-\u001F!\u0023-\u005B\u005D-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|(\\[\u0001-\u0009\u000B-\u007F\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*$/i
+);
+
 // <https://github.com/nodejs/node/blob/08dd4b1723b20d56fbedf37d52e736fe09715f80/lib/dns.js#L296-L320>
 // <https://docs.rs/c-ares/4.0.3/c_ares/enum.Error.html>
 const DNS_RETRY_CODES = new Set([
@@ -205,6 +211,11 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  ignore_mx_check: {
+    type: Boolean,
+    default: false
+  },
+
   retention_days: {
     type: Number,
     min: 0,
@@ -224,6 +235,9 @@ const Domains = new mongoose.Schema({
   //
   allowlist: [String],
   denylist: [String],
+
+  // restricted alias names for admins only (prevents non-admin from using)
+  restricted_alias_names: [String],
 
   last_allowlist_sync_at: {
     type: Date,
@@ -878,6 +892,32 @@ Domains.pre('validate', function (next) {
   next();
 });
 
+// Validate and convert to lowercase restricted alias names
+Domains.pre('save', function (next) {
+  if (
+    !Array.isArray(this.restricted_alias_names) ||
+    this.restricted_alias_names.length === 0
+  )
+    return next();
+
+  // make compact / unique / lowercased
+  this.restricted_alias_names = _.compact(
+    _.uniq(this.restricted_alias_names.map((name) => name.toLowerCase()))
+  );
+
+  // validate they're actual alias usernames
+  for (const name of this.restricted_alias_names) {
+    if (!quotedEmailUserUtf8.test(name))
+      return next(
+        Boom.badRequest(
+          i18n.translateError('INVALID_LOCAL_PART', this.locale, name)
+        )
+      );
+  }
+
+  next();
+});
+
 // Prevent members from existing on domains after plan changes
 Domains.pre('save', function (next) {
   if (this.plan === 'team') {
@@ -995,6 +1035,12 @@ Domains.pre('save', async function (next) {
     logger.fatal(err);
   }
 
+  next();
+});
+
+// if `ignore_mx_check` is true then set `has_mx_record` to `true`
+Domains.pre('save', function (next) {
+  if (this.ignore_mx_check === true) this.has_mx_record = true;
   next();
 });
 
@@ -1591,6 +1637,12 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
     // validate MX records
     //
     (async function () {
+      // if `ignore_mx_check` is true then set `has_mx_record` to `true`
+      if (domain.ignore_mx_check === true) {
+        mx = true;
+        return;
+      }
+
       try {
         const results = await resolver.resolveMx(domain.name, {
           purgeCache: true

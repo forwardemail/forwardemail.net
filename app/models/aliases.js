@@ -526,10 +526,31 @@ Aliases.pre('save', async function (next) {
         (addr) => addr === string
       );
 
-      if (!reservedMatch)
-        reservedMatch = reservedAdminList.find(
-          (addr) =>
-            addr === string || string.startsWith(addr) || string.endsWith(addr)
+      if (!reservedMatch) {
+        if (
+          domain.plan === 'team' &&
+          domain.has_txt_record &&
+          Object.keys(config.ubuntuTeamMapping).includes(domain.name)
+        ) {
+          reservedMatch = reservedAdminList.find((addr) => addr === string);
+        } else {
+          reservedMatch = reservedAdminList.find(
+            (addr) =>
+              addr === string ||
+              string.startsWith(addr) ||
+              string.endsWith(addr)
+          );
+        }
+      }
+
+      if (
+        !reservedMatch &&
+        domain.plan === 'team' &&
+        Array.isArray(domain.restricted_alias_names) &&
+        domain.restricted_alias_names.length > 0
+      )
+        reservedMatch = domain.restricted_alias_names.find(
+          (name) => name === string
         );
 
       if (reservedMatch) {
