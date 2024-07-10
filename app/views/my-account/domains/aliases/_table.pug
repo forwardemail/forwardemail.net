@@ -121,7 +121,7 @@ mixin renderProgressBar(domain, alias, isMobile = false)
   else
     = t("Not Available")
 
-- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
+- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
 
 p.text-center.d-lg-none
   a.btn.btn-link.btn-sm(

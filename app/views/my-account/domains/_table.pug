@@ -2,7 +2,7 @@ include ../../_sort-header
 include ../../_pagination
 
 mixin renderProgressBar(domain, isMobile = false)
-  if domain && domain.group !== 'admin' && domain.plan === "team" && domain.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(domain.name)
+  if domain && domain.group !== 'admin' && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)
     //- render nothing
     = ""
   else if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')

@@ -56,7 +56,7 @@ html.h-100.no-js(
         integrity=manifest("img/apple-touch-icon.png", "integrity"),
         crossorigin="anonymous"
       )
-      if (domain && domain.name && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+      if (domain && domain.name && config && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         link(
           rel="icon",
           type="image/png",

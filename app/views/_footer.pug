@@ -25,7 +25,7 @@ footer.mt-auto
               )= t("Need help?")
   .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
-      if (domain && domain.name && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+      if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
         //- Empty on purpose
       else
         .text-center.mb-3
