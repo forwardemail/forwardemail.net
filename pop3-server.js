@@ -81,8 +81,11 @@ class POP3 {
       },
       logger: this.logger,
 
-      // NOTE: a default `SNICallback` function is created already
-      // SNICallback: function
+      // <https://github.com/nodemailer/wildduck/issues/635>
+      // <https://github.com/nodemailer/wildduck/blob/b9349f6e8315873668d605e6567ced2d7b1c0c80/imap-core/lib/imap-server.js#L413-L419>
+      SNICallback(servername, cb) {
+        cb(null, server.secureContext.get(servername));
+      },
 
       ...(config.env === 'production'
         ? {

@@ -121,9 +121,11 @@ class IMAP {
       enableCompression: true,
       skipFetchLog: false,
 
-      // NOTE: a default `SNICallback` function is created already
+      // <https://github.com/nodemailer/wildduck/issues/635>
       // <https://github.com/nodemailer/wildduck/blob/b9349f6e8315873668d605e6567ced2d7b1c0c80/imap-core/lib/imap-server.js#L413-L419>
-      // SNICallback: function
+      SNICallback(servername, cb) {
+        cb(null, server.secureContext.get(servername));
+      },
 
       logoutMessages: ['Logging out'],
 
