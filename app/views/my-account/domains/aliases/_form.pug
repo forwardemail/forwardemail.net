@@ -165,7 +165,7 @@ if !domain || (domain && !domain.is_global)
   )
   label.form-check-label(for="input-is-enabled")= t("Active")
   p.form-text.small.text-black.text-themed-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")
-if !domain || !domain.is_global
+if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
   .form-group.form-check
     input#input-has-pgp.form-check-input(
       type="checkbox",
