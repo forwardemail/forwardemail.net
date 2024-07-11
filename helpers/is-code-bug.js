@@ -31,7 +31,6 @@ function isCodeBug(err) {
       (typeof err.code === 'string' && err.code.startsWith('SQLITE_')) ||
       isErrorConstructorName(err, 'SqliteError') ||
       isErrorConstructorName(err, 'TypeError') ||
-      isErrorConstructorName(err, 'TypeError') ||
       isErrorConstructorName(err, 'SyntaxError') ||
       isErrorConstructorName(err, 'ReferenceError') ||
       isErrorConstructorName(err, 'RangeError') ||

@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isErrorConstructorName = require('./is-error-constructor-name');
+
+// eslint-disable-next-line complexity
 function isTimeoutError(err) {
   if (typeof err !== 'object') return false;
 
@@ -14,6 +17,23 @@ function isTimeoutError(err) {
 
   // in case database is locked, consider it a timeout error
   if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return true;
+
+  // redis/mongo connection errors should retry
+  // and be considered a timeout error
+  if (
+    err.name === 'RedisError' ||
+    err.name === 'MongooseServerSelectionError' ||
+    err.name === 'MongoNetworkError' ||
+    err.name === 'PoolClearedOnNetworkError' ||
+    err.name === 'MongoPoolClearedError' ||
+    isErrorConstructorName(err, 'MongoNetworkError') ||
+    isErrorConstructorName(err, 'MongoError') ||
+    isErrorConstructorName(err, 'PoolClearedOnNetworkError') ||
+    isErrorConstructorName(err, 'MongoPoolClearedError') ||
+    isErrorConstructorName(err, 'MongooseServerSelectionError') ||
+    isErrorConstructorName(err, 'RedisError')
+  )
+    return true;
 
   for (const key of ['message', 'response']) {
     if (typeof err[key] !== 'string') continue;

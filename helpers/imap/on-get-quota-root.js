@@ -17,6 +17,7 @@ const Aliases = require('#models/aliases');
 // const Mailboxes = require('#models/mailboxes');
 const IMAPError = require('#helpers/imap-error');
 const i18n = require('#helpers/i18n');
+const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 async function onGetQuotaRoot(path, session, fn) {
@@ -44,6 +45,18 @@ async function onGetQuotaRoot(path, session, fn) {
 
   try {
     await this.refreshSession(session, 'GETQUOTAROOT');
+
+    //
+    // sync with tmp db every time user attempts to fetch mail
+    //
+    // NOTE: this has caching mechanism to prevent more than 1 call every 10s
+    //
+    syncTemporaryMailbox
+      .call(this, session)
+      .then((sync) => {
+        this.logger.debug('tmp db sync complete', { sync, session });
+      })
+      .catch((err) => this.logger.fatal(err, { session }));
 
     /*
     const mailbox = await Mailboxes.findOne(this, session, {

@@ -7173,5 +7173,8 @@
   "Don't worry &ndash; you do not need to upgrade unless you're adding custom domains to your account.": "不用担心 - 除非您要向您的帐户添加自定义域，否则您不需要升级。",
   "You do not need to upgrade unless you're adding custom domains to your account.": "除非您要向您的帐户添加自定义域，否则您不需要升级。",
   "You don't need to upgrade unless you add custom domains you own.": "除非您添加自己拥有的自定义域，否则您不需要升级。",
-  "You don't need to upgrade unless you add custom domain names.": "除非您添加自定义域名，否则无需升级。"
+  "You don't need to upgrade unless you add custom domain names.": "除非您添加自定义域名，否则无需升级。",
+  "<span class=\"notranslate\">%s</span> has restricted alias name(s) detected": "<span class=\"notranslate\">%s</span>检测到受限制的别名",
+  "<div>The following alias names were detected on <strong class=\"notranslate text-monospace\"></span> to be listed in restricted alias names and already existed.  You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</div><ul class=\"notranslate\"><li>%s</li></ul>": "<div>检测到以下别名列<strong class=\"notranslate text-monospace\">to be listed in restricted alias names and already existed. You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</strong> <ul class=\"notranslate\"><li>%s</li></ul>",
+  "<div>The following alias names were detected on <strong class=\"notranslate text-monospace\">%s</span> to be listed in restricted alias names and already existed.  You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</div><ul class=\"notranslate\"><li>%s</li></ul>": "<div>在<strong class=\"notranslate text-monospace\">%s to be listed in restricted alias names and already existed. You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</strong> <ul class=\"notranslate\"><li>%s</li></ul>"
 }

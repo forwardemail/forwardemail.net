@@ -20,6 +20,10 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  RESTRICTED_ALIAS_DETECTED_SUBJECT:
+    '<span class="notranslate">%s</span> has restricted alias name(s) detected',
+  RESTRICTED_ALIAS_DETECTED_MESSAGE:
+    '<div>The following alias names were detected on <strong class="notranslate text-monospace">%s</span> to be listed in restricted alias names and already existed.  You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</div><ul class="notranslate"><li>%s</li></ul>',
   INVALID_LOCAL_PART:
     '<span class="notranslate">%s</span> is not a valid UTF-8 local part for an alias name',
   RECIPIENT_MATCHES_EMAIL:

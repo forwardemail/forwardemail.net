@@ -281,11 +281,11 @@ function createWebSocketAsPromised(options = {}) {
   // bind event listeners
   //
   for (const event of [
-    'onOpen',
-    'onSend',
-    'onMessage',
-    'onUnpackedMessage',
-    'onResponse',
+    // 'onOpen',
+    // 'onSend',
+    // 'onMessage',
+    // 'onUnpackedMessage',
+    // 'onResponse',
     'onClose',
     'onError'
   ]) {

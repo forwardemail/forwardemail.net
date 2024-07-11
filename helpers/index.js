@@ -87,6 +87,8 @@ const getKeyInfo = require('./get-key-info');
 const isMessageEncrypted = require('./is-message-encrypted');
 const updateStorageUsed = require('./update-storage-used');
 const getAttachments = require('./get-attachments');
+const syncTemporaryMailbox = require('./sync-temporary-mailbox');
+const getTemporaryDatabase = require('./get-temporary-database');
 
 module.exports = {
   decrypt,
@@ -174,5 +176,7 @@ module.exports = {
   getKeyInfo,
   isMessageEncrypted,
   updateStorageUsed,
-  getAttachments
+  getAttachments,
+  syncTemporaryMailbox,
+  getTemporaryDatabase
 };

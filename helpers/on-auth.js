@@ -485,7 +485,7 @@ async function onAuth(auth, session, fn) {
                 template: 'alert',
                 message: {
                   to: user.owner_full_email,
-                  bcc: config.email.message.from,
+                  // bcc: config.email.message.from,
                   subject: i18n.translate(
                     'IMAP_NOT_ENABLED_SUBJECT',
                     user.locale,

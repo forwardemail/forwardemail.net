@@ -44,6 +44,9 @@ const concurrency = os.cpus().length;
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const subscriber = new Redis(breeSharedConfig.redis, logger);
+client.setMaxListeners(0);
+subscriber.setMaxListeners(0);
+
 const tmpdir = os.tmpdir();
 
 const graceful = new Graceful({

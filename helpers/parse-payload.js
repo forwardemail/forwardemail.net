@@ -12,7 +12,6 @@ const { randomUUID } = require('node:crypto');
 
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
-const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
@@ -33,7 +32,6 @@ const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
-const { Builder } = require('json-sql');
 const { Iconv } = require('iconv');
 const {
   S3Client,
@@ -56,19 +54,18 @@ const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
-const migrateSchema = require('#helpers/migrate-schema');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
-const setupPragma = require('#helpers/setup-pragma');
+const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
-const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
@@ -108,23 +105,23 @@ const onStorePromise = pify(onStore, { multiArgs: true });
 const onSubscribePromise = pify(onSubscribe, { multiArgs: true });
 const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
-const builder = new Builder();
-
 const concurrency = os.cpus().length;
 
 const IP_ADDRESS = ip.address();
 
 const PAYLOAD_ACTIONS = new Set([
-  'sync',
-  'tmp',
-  'setup',
-  'vacuum',
-  'size',
-  'stmt',
-  'backup',
-  'rekey',
-  'reset',
+  'sync', // no db
+  'tmp', // no db
+  'setup', // no db
+  'vacuum', // no db
+  'size', // no db
+  'stmt', // db required
+  'backup', // no db
+  'rekey', // no db
+  'reset', // no db
 
+  // none of these require db
+  // (because they all have `refreshSession` calls)
   'append',
   'copy',
   'create',
@@ -175,82 +172,6 @@ async function increaseRateLimiting(client, date, sender, root, byteLength) {
     .pexpire(specificSizeKey, ms('1d'))
     .pexpire(specificCountKey, ms('1d'))
     .exec();
-}
-
-async function getTemporaryDatabase(payload) {
-  // TODO: check disk space here (2x existing tmp db size)
-  const storagePath = getPathToDatabase({
-    id: payload.session.user.alias_id,
-    storage_location: payload.session.user.storage_location
-  });
-
-  const filePath = path.join(
-    path.dirname(storagePath),
-    `${payload.session.user.alias_id}-tmp.sqlite`
-  );
-
-  const tmpDb = new Database(filePath, {
-    // if the db wasn't found it means there wasn't any mail
-    // fileMustExist: true,
-    timeout: config.busyTimeout,
-    // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-    verbose: config.env === 'development' ? console.log : null
-  });
-
-  const tmpSession = {
-    ...payload.session,
-    user: {
-      ...payload.session.user,
-      password: encrypt(env.API_SECRETS[0])
-    }
-  };
-
-  await setupPragma(tmpDb, tmpSession);
-
-  // migrate schema
-  const commands = await migrateSchema(tmpDb, tmpSession, {
-    TemporaryMessages
-  });
-
-  const lock = await acquireLock(this, tmpDb);
-
-  if (commands.length > 0) {
-    for (const command of commands) {
-      try {
-        // TODO: wsp here (?)
-        tmpDb.prepare(command).run();
-        // await knexDatabase.raw(command);
-      } catch (err) {
-        err.isCodeBug = true;
-        logger.fatal(err, { command });
-        // migration support in case existing rows
-        if (
-          err.message.includes(
-            'Cannot add a NOT NULL column with default value NULL'
-          ) &&
-          command.endsWith(' NOT NULL')
-        ) {
-          try {
-            tmpDb.prepare(command.replace(' NOT NULL', '')).run();
-          } catch (err) {
-            err.isCodeBug = true;
-            logger.fatal(err, { command });
-          }
-        }
-      }
-    }
-  }
-
-  // release lock
-  if (lock) {
-    try {
-      await releaseLock(this, tmpDb, lock);
-    } catch (err) {
-      logger.fatal(err, { payload });
-    }
-  }
-
-  return tmpDb;
 }
 
 // eslint-disable-next-line complexity
@@ -379,26 +300,6 @@ async function parsePayload(data, ws) {
       // storage location
       if (!isSANB(payload.session.user.storage_location))
         throw new TypeError('Payload storage location missing');
-    }
-
-    // NOTE: `this` is the sqlite instance
-    if (
-      payload.action !== 'setup' &&
-      payload.action !== 'reset' &&
-      payload.action !== 'size' &&
-      payload.action !== 'tmp' &&
-      payload.action !== 'rekey'
-    ) {
-      db = await getDatabase(
-        this,
-        // alias
-        {
-          id: payload.session.user.alias_id,
-          storage_location: payload.session.user.storage_location
-        },
-        payload.session,
-        payload?.lock
-      );
     }
 
     //
@@ -678,154 +579,7 @@ async function parsePayload(data, ws) {
 
       // sync the user's temp mailbox to their current
       case 'sync': {
-        let deleted = 0;
-
-        let err;
-
-        // only allow sync to occur once every 10s
-        const cache = await this.client.get(
-          `sync_check:${payload.session.user.alias_id}`
-        );
-
-        if (!cache) {
-          // set cache so we don't sync twice at once
-          await this.client.set(
-            `sync_check:${payload.session.user.alias_id}`,
-            true,
-            'PX',
-            ms('5m')
-          );
-
-          const tmpDb = await getTemporaryDatabase.call(this, payload);
-
-          const sql = builder.build({
-            table: 'TemporaryMessages',
-            fields: [
-              {
-                expression: 'count(1)'
-              }
-            ]
-          });
-
-          const count = tmpDb.prepare(sql.query).pluck().get(sql.values);
-
-          if (count > 0) {
-            let hasMore = true;
-            while (hasMore) {
-              // set cache so we don't sync twice at once
-              // eslint-disable-next-line no-await-in-loop
-              await this.client.set(
-                `sync_check:${payload.session.user.alias_id}`,
-                true,
-                'PX',
-                ms('5m')
-              );
-
-              const sql = builder.build({
-                type: 'select',
-                table: 'TemporaryMessages',
-                limit: 10
-              });
-
-              const messages = tmpDb.prepare(sql.query).all(sql.values);
-
-              if (messages.length === 0) {
-                hasMore = false;
-                continue;
-              }
-
-              for (const m of messages) {
-                try {
-                  const message = syncConvertResult(TemporaryMessages, m);
-                  //
-                  // if one message fails then not all of them should
-                  // (e.g. one might have an issue with `date` or `raw`)
-                  //
-                  // check that we have available space
-                  const storagePath = getPathToDatabase({
-                    id: payload.session.user.alias_id,
-                    storage_location: payload.session.user.storage_location
-                  });
-                  const spaceRequired = Buffer.byteLength(message.raw) * 2;
-                  // eslint-disable-next-line no-await-in-loop
-                  const diskSpace = await checkDiskSpace(storagePath);
-                  if (diskSpace.free < spaceRequired)
-                    throw new TypeError(
-                      `Needed ${prettyBytes(
-                        spaceRequired
-                      )} but only ${prettyBytes(diskSpace.free)} was available`
-                    );
-
-                  // eslint-disable-next-line no-await-in-loop
-                  await onAppendPromise.call(
-                    this,
-                    'INBOX',
-                    [],
-                    message.date,
-                    message.raw,
-                    {
-                      ..._.omit(payload.session, 'db'),
-                      remoteAddress: message.remoteAddress,
-
-                      // don't append duplicate messages
-                      checkForExisting: true
-                    }
-                  );
-
-                  // if successfully appended then delete from the database
-                  const sql = builder.build({
-                    type: 'remove',
-                    table: 'TemporaryMessages',
-                    condition: {
-                      _id: m._id
-                    }
-                  });
-                  tmpDb.prepare(sql.query).run(sql.values);
-                  deleted++;
-                } catch (_err) {
-                  err = Array.isArray(_err) ? _err[0] : _err;
-                  hasMore = false;
-                  break;
-                }
-              }
-            }
-          }
-
-          try {
-            // run a checkpoint to copy over wal to db
-            tmpDb.pragma('wal_checkpoint(PASSIVE)');
-            // vacuum temporary database
-            tmpDb.prepare('VACUUM').run();
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-
-          // update storage
-          try {
-            await updateStorageUsed(payload.session.user.alias_id, this.client);
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-
-          try {
-            tmpDb.pragma('analysis_limit=400');
-            tmpDb.pragma('optimize');
-            tmpDb.close();
-          } catch (err) {
-            logger.fatal(err, { payload });
-          }
-
-          if (err) throw err;
-
-          // update cache so we can try again in 10s
-          await this.client.set(
-            `sync_check:${payload.session.user.alias_id}`,
-            true,
-            'PX',
-            ms('10s')
-          );
-        }
-
+        const deleted = await syncTemporaryMailbox.call(this, payload.session);
         response = {
           id: payload.id,
           data: deleted
@@ -1242,9 +996,7 @@ async function parsePayload(data, ws) {
               // fallback to writing to temporary database storage
               //
               if (fallback) {
-                const tmpDb = await getTemporaryDatabase.call(this, {
-                  session
-                });
+                const tmpDb = await getTemporaryDatabase.call(this, session);
 
                 let err;
 
@@ -1566,6 +1318,17 @@ async function parsePayload(data, ws) {
           // TODO: we should check that we have 2x space required
           // <https://www.theunterminatedstring.com/sqlite-vacuuming/>
 
+          db = await getDatabase(
+            this,
+            // alias
+            {
+              id: payload.session.user.alias_id,
+              storage_location: payload.session.user.storage_location
+            },
+            payload.session,
+            payload?.lock
+          );
+
           // lock database if not already locked
           if (!payload?.lock) lock = await acquireLock(this, db);
 
@@ -1662,6 +1425,17 @@ async function parsePayload(data, ws) {
           );
         }
         */
+
+        db = await getDatabase(
+          this,
+          // alias
+          {
+            id: payload.session.user.alias_id,
+            storage_location: payload.session.user.storage_location
+          },
+          payload.session,
+          payload?.lock
+        );
 
         for (const op of payload.stmt) {
           // `op` must be an array with two keys
@@ -2198,6 +1972,16 @@ async function parsePayload(data, ws) {
               //
               //       so instead we use the VACUUM INTO command with the `tmp` path
               //
+              db = await getDatabase(
+                this,
+                // alias
+                {
+                  id: payload.session.user.alias_id,
+                  storage_location: payload.session.user.storage_location
+                },
+                payload.session,
+                payload?.lock
+              );
 
               // run a checkpoint to copy over wal to db
               db.pragma('wal_checkpoint(PASSIVE)');
