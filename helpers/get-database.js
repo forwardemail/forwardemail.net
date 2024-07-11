@@ -876,11 +876,15 @@ function retryGetDatabase(...args) {
     minTimeout: ms('5s'),
     // eslint-disable-next-line complexity
     async onFailedAttempt(error) {
+      const session = args[2];
+
       if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') {
+        logger.fatal(error, { session });
         return;
       }
 
       if (isTimeoutError(error)) {
+        logger.fatal(error, { session });
         return;
       }
 
@@ -895,7 +899,6 @@ function retryGetDatabase(...args) {
         error.dbFilePath &&
         !error.readonly
       ) {
-        const session = args[2];
         try {
           //
           // check if password was valid
@@ -1044,6 +1047,8 @@ function retryGetDatabase(...args) {
           err.original_error = parseErr(error);
           logger.fatal(err, { session });
         }
+      } else {
+        logger.fatal(error, { session });
       }
 
       throw error;

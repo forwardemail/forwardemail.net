@@ -13,13 +13,14 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const pMapSeries = require('p-map-series');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
-const pMapSeries = require('p-map-series');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
+const config = require('#config');
 const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -84,7 +85,10 @@ async function onExpunge(mailboxId, update, session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/702>
     //       (mirrors trashCheck in `helpers/get-database.js`)
     //
-    if (!['Trash', 'Spam', 'Junk'].includes(mailbox.path))
+    if (
+      config.env === 'production' &&
+      !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
+    )
       return fn(null, true);
 
     const condition = {

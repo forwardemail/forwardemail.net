@@ -250,8 +250,9 @@ class IMAP {
               {
                 retries: 2,
                 onFailedAttempt(err) {
+                  logger.error(err);
+
                   if (isTimeoutError(err)) {
-                    logger.error(err);
                     return;
                   }
 

@@ -114,9 +114,9 @@ function handleError(event) {
 
     this._debug('exec error listeners');
     // eslint-disable-next-line unicorn/no-array-for-each
-    this._listeners.error.forEach((listener) => {
-      return this._callEventListener(event, listener);
-    });
+    this._listeners.error.forEach((listener) =>
+      this._callEventListener(event, listener)
+    );
     this._connect();
   } catch (err) {
     logger.fatal(err, { event });
@@ -281,11 +281,11 @@ function createWebSocketAsPromised(options = {}) {
   // bind event listeners
   //
   for (const event of [
-    // 'onOpen',
-    // 'onSend',
-    // 'onMessage',
-    // 'onUnpackedMessage',
-    // 'onResponse',
+    'onOpen',
+    'onSend',
+    'onMessage',
+    'onUnpackedMessage',
+    'onResponse',
     'onClose',
     'onError'
   ]) {
@@ -298,8 +298,9 @@ function createWebSocketAsPromised(options = {}) {
   wsp.request = async function (data, retries = 2) {
     try {
       // TODO: we could probably remove this validation
-      if (typeof data?.action !== 'string')
+      if (typeof data?.action !== 'string') {
         throw new TypeError('Action missing from payload');
+      }
 
       // TODO: we could probably remove this validation
       if (
@@ -307,11 +308,14 @@ function createWebSocketAsPromised(options = {}) {
         data.action !== 'size' &&
         (typeof data?.session?.user?.alias_id !== 'string' ||
           !mongoose.isObjectIdOrHexString(data.session.user.alias_id))
-      )
+      ) {
         throw new TypeError('Alias ID missing from session');
+      }
 
       // helper for debugging
-      if (config.env !== 'production') data.stack = new Error('stack').stack;
+      if (config.env !== 'production') {
+        data.stack = new Error('stack').stack;
+      }
 
       const requestId = data?.session?.user?.alias_id
         ? `${revHash(data.session.user.alias_id)}:${revHash(randomUUID())}`
@@ -323,7 +327,7 @@ function createWebSocketAsPromised(options = {}) {
         async () => {
           data.sent_at = Date.now();
 
-          if (!wsp.isOpened)
+          if (!wsp.isOpened) {
             await pWaitFor(
               async () => {
                 try {
@@ -338,6 +342,7 @@ function createWebSocketAsPromised(options = {}) {
                 timeout: ms('15s')
               }
             );
+          }
 
           return wsp.sendRequest(data, {
             timeout:
@@ -351,13 +356,14 @@ function createWebSocketAsPromised(options = {}) {
         },
         {
           retries,
-          onFailedAttempt(err) {
-            if (isTimeoutError(err)) {
-              logger.error(err, { data });
+          onFailedAttempt(error) {
+            logger.error(error, { data });
+
+            if (isTimeoutError(error)) {
               return;
             }
 
-            throw err;
+            throw error;
           }
         }
       );
@@ -366,13 +372,16 @@ function createWebSocketAsPromised(options = {}) {
         !response.id ||
         (!response.err && typeof response.data === 'undefined')
       ) {
-        const err = new TypeError('Response was invalid');
-        err._response = response;
-        logger.fatal(err);
-        throw err;
+        const error = new TypeError('Response was invalid');
+        error._response = response;
+        logger.fatal(error);
+        throw error;
       }
 
-      if (response.err) throw parseError(response.err);
+      if (response.err) {
+        throw parseError(response.err);
+      }
+
       return recursivelyParse(response.data, true);
     } catch (err) {
       err.isCodeBug = true;
@@ -383,7 +392,7 @@ function createWebSocketAsPromised(options = {}) {
 
   wsp.onOpen.addListener(() => {
     // <https://github.com/vitalets/websocket-as-promised/issues/2#issuecomment-618241047>
-    if (!wsp._interval)
+    if (!wsp._interval) {
       wsp._interval = setInterval(() => {
         try {
           wsp._ws._ws.ping();
@@ -391,11 +400,14 @@ function createWebSocketAsPromised(options = {}) {
           logger.warn(err);
         }
       }, ms('5s'));
+    }
   });
 
   wsp.onClose.addListener(
     () => {
-      if (wsp._interval) clearInterval(wsp._interval);
+      if (wsp._interval) {
+        clearInterval(wsp._interval);
+      }
     }
     // }, { once: true }
   );
