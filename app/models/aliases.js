@@ -401,7 +401,8 @@ Aliases.pre('save', async function (next) {
         $or: [
           {
             _id: alias.domain,
-            'members.user': alias.user
+            // virtual helper from `jobs/ubuntu-sync-memberships.js`
+            ...(alias.virtual_member ? {} : { 'members.user': alias.user })
           },
           {
             _id: alias.domain,
