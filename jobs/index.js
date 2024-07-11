@@ -236,7 +236,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     {
       name: 'ubuntu-sync-memberships',
-      interval: '2m',
+      interval: '1m',
       timeout: 0
     }
   );

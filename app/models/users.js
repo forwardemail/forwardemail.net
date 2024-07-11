@@ -28,6 +28,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Payments = require('./payments');
 
+const email = require('#helpers/email');
 const retryRequest = require('#helpers/retry-request');
 const logger = require('#helpers/logger');
 const config = require('#config');
@@ -1092,10 +1093,77 @@ Users.pre('save', async function (next) {
   }
 });
 
-Users.postCreate((user, next) => {
+Users.postCreate(async (user, next) => {
   logger.info('user created', {
     user: user.toObject()
   });
+
+  // return early if possible
+  if (!user[fields.ubuntuUsername] || !user[fields.ubuntuProfileID])
+    return next();
+
+  try {
+    // if user was ubuntu then notify admins of any ubuntu domain
+    const domains = await conn.models.Domains.find({
+      name: { $in: Object.keys(config.ubuntuTeamMapping) },
+      plan: 'team',
+      has_txt_record: true
+    })
+      .lean()
+      .exec();
+
+    // return early if possible
+    if (domains.length === 0) return next();
+
+    // check as long as user has at least one alias
+    const count = await conn.models.Aliases.countDocuments({
+      user: user._id,
+      domain: { $in: domains.map((d) => d._id) }
+    });
+
+    // return early if possible
+    if (count === 0) return next();
+
+    const ids = [];
+    for (const domain of domains) {
+      for (const m of domain.members) {
+        if (m.group === 'admin') ids.push(m.user.toString());
+      }
+    }
+
+    // return early if possible
+    if (ids.length === 0) return next();
+
+    // get all the admin emails
+    const to = await Users.distinct('email', {
+      id: {
+        $in: ids
+      },
+      [config.userFields.hasVerifiedEmail]: true,
+      [config.userFields.isBanned]: false
+    });
+
+    if (to.length === 0) return next();
+
+    await email({
+      template: 'alert',
+      message: {
+        to,
+        bcc: config.email.message.from,
+        subject: `🎉 ~${
+          user[fields.ubuntuUsername]
+        } signed into Forward Email with Launchpad!`
+      },
+      locals: {
+        message: `~${user[fields.ubuntuUsername]} signed in with email ${
+          user.email
+        } and is a member of ${count} team${count.length === 1 ? '' : 's'}.`
+      }
+    });
+  } catch (err) {
+    logger.fatal(err);
+  }
+
   next();
 });
 

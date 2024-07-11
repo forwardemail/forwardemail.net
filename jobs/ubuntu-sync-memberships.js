@@ -42,10 +42,38 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose(logger);
 
   try {
+    const domains = await Domains.find({
+      name: { $in: Object.keys(config.ubuntuTeamMapping) },
+      plan: 'team',
+      has_txt_record: true
+    })
+      .lean()
+      .exec();
+
+    const userIds = [];
+    for (const domain of domains) {
+      for (const m of domain.members) {
+        if (m.group === 'admin') userIds.push(m.user.toString());
+      }
+    }
+
+    // get all the admin emails
+    const to =
+      userIds.length === 0
+        ? []
+        : await Users.distinct('email', {
+            id: {
+              $in: userIds
+            },
+            [config.userFields.hasVerifiedEmail]: true,
+            [config.userFields.isBanned]: false
+          });
+
     //
     // go through all ubuntu members and then lookup their profile
     // to ensure that they're still in the ~ubuntumembers team
@@ -115,6 +143,7 @@ graceful.listen();
               group: 'user'
             };
             domain.members.push(match);
+            domain.skip_verification = true;
             // eslint-disable-next-line no-await-in-loop
             await domain.save();
           }
@@ -161,6 +190,30 @@ graceful.listen();
               recipients: [user.email],
               locale: user[config.lastLocaleField]
             });
+
+            // notify admins
+            if (to.length > 0)
+              emailHelper({
+                template: 'alert',
+                message: {
+                  to,
+                  bcc: config.email.message.from,
+                  subject: `🎉 ~${
+                    user[fields.ubuntuUsername]
+                  } added to Launchpad team ~${
+                    config.ubuntuTeamMapping[domainName]
+                  }`
+                },
+                locals: {
+                  message: `~${
+                    user[fields.ubuntuUsername]
+                  } added to Launchpad team ~${
+                    config.ubuntuTeamMapping[domainName]
+                  }" with email ${user.email}.`
+                }
+              })
+                .then()
+                .catch((err) => logger.fatal(err));
           }
 
           continue;
@@ -173,23 +226,54 @@ graceful.listen();
           domain.members = domain.members.filter(
             (m) => m.user.toString() !== user._id.toString()
           );
+          domain.skip_verification = true;
           // eslint-disable-next-line no-await-in-loop
           await domain.save();
           // eslint-disable-next-line no-await-in-loop
-          await Aliases.findAndUpdate(
-            {
-              user: user._id,
-              domain: domain._id
-            },
-            {
+          await Aliases.deleteMany({
+            user: user._id,
+            domain: domain._id
+          });
+
+          // if user has no other aliases then mark email as unverified
+          // (this way the automated job will delete the users account in 30d)
+          // eslint-disable-next-line no-await-in-loop
+          const [aliasCount, domainCount] = await Promise.all([
+            Aliases.countDocuments({ user: user._id }),
+            Domains.countDocuments({ 'members.user': user._id })
+          ]);
+
+          if (aliasCount === 0 && domainCount === 0)
+            // eslint-disable-next-line no-await-in-loop
+            await Users.findByIdAndUpdate(user._id, {
               $set: {
-                is_enabled: false
+                [config.userFields.hasVerifiedEmail]: false
               }
-            },
-            {
-              multi: true
-            }
-          );
+            });
+
+          // notify admins
+          if (to.length > 0)
+            emailHelper({
+              template: 'alert',
+              message: {
+                to,
+                bcc: config.email.message.from,
+                subject: `⚠️ ~${
+                  user[fields.ubuntuUsername]
+                } removed from Launchpad team ~${
+                  config.ubuntuTeamMapping[domainName]
+                }`
+              },
+              locals: {
+                message: `~${
+                  user[fields.ubuntuUsername]
+                } removed from Launchpad team ~${
+                  config.ubuntuTeamMapping[domainName]
+                } with email ${user.email}.`
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
         }
       }
 
