@@ -132,6 +132,23 @@ block body
                     )= t("Enable Auto-Renew")
         .col-12.d-flex(class=user.plan === "free" ? false : "col-lg-6")
           .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
+            if isUbuntu
+              picture.mb-3
+                source(
+                  srcset=manifest("img/ubuntu-one-mono-logo.svg"),
+                  media="(prefers-color-scheme: dark)"
+                )
+                img(
+                  src=manifest("img/ubuntu-one-mono-logo-dark.svg"),
+                  width=98,
+                  height=40,
+                  alt=t("Ubuntu One")
+                )
+              .alert.alert-success.small.text-center
+                strong= t("You're on a verified Launchpad team via Ubuntu One.")
+              if user.plan === "free"
+                .alert.alert-warning.small.text-center
+                  != t("You don't need to upgrade unless you add custom domain names.")
             h2= t(titleize(humanize(user.plan)))
             .small.text-muted.text-uppercase.mb-3
               != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))

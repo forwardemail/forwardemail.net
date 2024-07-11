@@ -7472,5 +7472,13 @@
   "Enter alias names below. You can use line breaks, commas, and/or spaces as delimiters.": "아래에 별칭 이름을 입력하세요. 줄 바꿈, 쉼표 및/또는 공백을 구분 기호로 사용할 수 있습니다.",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>주의:</strong> 아래에 값을 입력하면 <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>관리자 전용 사용자 이름</a> 외에도 팀의 관리자가 아닌 사용자가 이 목록과 정확히 일치하는 별칭을 만드는 것을 허용하지 않습니다.",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>주의:</strong> 아래에 값을 입력하면 <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>관리자 전용 사용자 이름</a> 외에도 팀의 관리자가 아닌 사용자가 이 목록과 정확히 일치하는 별칭을 만드는 것을 허용하지 않습니다.",
-  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span> 별칭 이름에 대한 유효한 UTF-8 로컬 부분이 아닙니다."
+  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span> 별칭 이름에 대한 유효한 UTF-8 로컬 부분이 아닙니다.",
+  "You're a verified member of an Ubuntu One team via Launchpad.": "귀하는 Launchpad를 통해 확인된 Ubuntu One 팀의 구성원입니다.",
+  "Don't worry &ndash; you do not need to upgrade unless you plan to add custom domains to your account.": "걱정하지 마세요 계정에 사용자 정의 도메인을 추가하려는 경우가 아니면 업그레이드할 필요가 없습니다.",
+  "You're a verified Launchpad team via Ubuntu One.": "귀하는 Ubuntu One을 통해 검증된 Launchpad 팀입니다.",
+  "You're on a verified Launchpad team via Ubuntu One.": "귀하는 Ubuntu One을 통해 검증된 Launchpad 팀에 속해 있습니다.",
+  "Don't worry &ndash; you do not need to upgrade unless you're adding custom domains to your account.": "걱정하지 마세요 계정에 사용자 지정 도메인을 추가하지 않는 한 업그레이드할 필요가 없습니다.",
+  "You do not need to upgrade unless you're adding custom domains to your account.": "계정에 사용자 지정 도메인을 추가하지 않는 한 업그레이드할 필요가 없습니다.",
+  "You don't need to upgrade unless you add custom domains you own.": "소유한 사용자 지정 도메인을 추가하지 않는 한 업그레이드할 필요가 없습니다.",
+  "You don't need to upgrade unless you add custom domain names.": "사용자 지정 도메인 이름을 추가하지 않는 한 업그레이드할 필요가 없습니다."
 }

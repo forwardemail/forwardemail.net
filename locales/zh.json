@@ -7165,5 +7165,13 @@
   "Enter alias names below. You can use line breaks, commas, and/or spaces as delimiters.": "在下面输入别名。您可以使用换行符、逗号和/或空格作为分隔符。",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>警告：</strong>如果在下面输入任何值，那么除了<a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>仅限管理员的用户名</a>之外，我们将不允许您团队中的非管理员用户创建与此列表完全匹配的别名。",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>警告：</strong>如果在下面输入任何值，那么除了<a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>仅限管理员的用户名</a>之外，我们将不允许您团队中的非管理员用户创建与此列表完全匹配的别名。",
-  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span>不是别名的有效 UTF-8 本地部分"
+  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span>不是别名的有效 UTF-8 本地部分",
+  "You're a verified member of an Ubuntu One team via Launchpad.": "您是通过 Launchpad 验证的 Ubuntu One 团队的成员。",
+  "Don't worry &ndash; you do not need to upgrade unless you plan to add custom domains to your account.": "不用担心——除非您计划向您的帐户添加自定义域，否则您不需要升级。",
+  "You're a verified Launchpad team via Ubuntu One.": "您是通过 Ubuntu One 验证的 Launchpad 团队。",
+  "You're on a verified Launchpad team via Ubuntu One.": "您已通过 Ubuntu One 加入经过验证的 Launchpad 团队。",
+  "Don't worry &ndash; you do not need to upgrade unless you're adding custom domains to your account.": "不用担心 - 除非您要向您的帐户添加自定义域，否则您不需要升级。",
+  "You do not need to upgrade unless you're adding custom domains to your account.": "除非您要向您的帐户添加自定义域，否则您不需要升级。",
+  "You don't need to upgrade unless you add custom domains you own.": "除非您添加自己拥有的自定义域，否则您不需要升级。",
+  "You don't need to upgrade unless you add custom domain names.": "除非您添加自定义域名，否则无需升级。"
 }

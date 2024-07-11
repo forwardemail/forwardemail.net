@@ -4,7 +4,7 @@ include ../../_pagination
 mixin renderProgressBar(domain, isMobile = false)
   if domain && domain.group !== 'admin' && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)
     //- render nothing
-    = ""
+    = t("Not Available")
   else if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
     - const storageUsedByAliases = Math.round((domain.storage_used_by_aliases / domain.storage_quota) * 100);
     - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases) / domain.storage_quota) * 100);

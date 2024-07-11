@@ -7472,5 +7472,13 @@
   "Enter alias names below. You can use line breaks, commas, and/or spaces as delimiters.": "以下にエイリアス名を入力してください。区切り文字として改行、カンマ、スペースを使用できます。",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>注意:</strong>以下の値を入力すると、 <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer'>管理者専用のユーザー名</a>に加えて、チーム内の管理者以外のユーザーがこのリストと完全に一致するエイリアスを作成することは許可されません。",
   "<strong>Caution:</strong> If any values are entered below, then in addition to <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>admin-only usernames</a>, we will not allow non-admin users in your team to create aliases have exact matches with this list.": "<strong>注意:</strong>以下の値を入力すると、 <a href='https://github.com/forwardemail/reserved-email-addresses-list/blob/master/admin-list.json' target='_blank', rel='noopener noreferrer' class='alert-link'>管理者専用のユーザー名</a>に加えて、チーム内の管理者以外のユーザーがこのリストと完全に一致するエイリアスを作成することは許可されません。",
-  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span>エイリアス名の有効な UTF-8 ローカル部分ではありません"
+  "<span class=\"notranslate\">%s</span> is not a valid UTF-8 local part for an alias name": "<span class=\"notranslate\">%s</span>エイリアス名の有効な UTF-8 ローカル部分ではありません",
+  "You're a verified member of an Ubuntu One team via Launchpad.": "あなたは、Launchpad 経由で Ubuntu One チームの認証済みメンバーです。",
+  "Don't worry &ndash; you do not need to upgrade unless you plan to add custom domains to your account.": "ご心配なく。アカウントにカスタム ドメインを追加する予定がない限り、アップグレードする必要はありません。",
+  "You're a verified Launchpad team via Ubuntu One.": "あなたは、Ubuntu One 経由で認証された Launchpad チームです。",
+  "You're on a verified Launchpad team via Ubuntu One.": "あなたは、Ubuntu One 経由で認証された Launchpad チームに所属しています。",
+  "Don't worry &ndash; you do not need to upgrade unless you're adding custom domains to your account.": "ご心配なく。アカウントにカスタム ドメインを追加しない限り、アップグレードする必要はありません。",
+  "You do not need to upgrade unless you're adding custom domains to your account.": "アカウントにカスタム ドメインを追加しない限り、アップグレードする必要はありません。",
+  "You don't need to upgrade unless you add custom domains you own.": "所有するカスタム ドメインを追加しない限り、アップグレードする必要はありません。",
+  "You don't need to upgrade unless you add custom domain names.": "カスタム ドメイン名を追加しない限り、アップグレードする必要はありません。"
 }

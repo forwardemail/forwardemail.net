@@ -1,4 +1,5 @@
 - const domainQuery = isSANB(ctx.query.domain) && (validator.isIP(ctx.query.domain) || isFQDN(ctx.query.domain)) ? ctx.query.domain : false;
+- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
 if alias
   input(type="hidden", name="_method", value="PUT")
 .form-row
@@ -18,6 +19,7 @@ if alias
           i.fa.fa-dice
       input#input-alias-name.form-control.border-themed(
         required,
+        readonly=isUbuntu && domain.group !== "admin",
         value=alias ? alias.name : domain && domain.aliases && domain.aliases.length === 0 && isSANB(ctx.query.q) ? striptags(ctx.query.q).split("@")[0].toLowerCase().trim() : "",
         name="name",
         autocomplete=config.env === "test" ? "off" : randomstring(),
@@ -94,7 +96,6 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
-- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
 if !domain || !domain.is_global && (!isUbuntu || domain.group === 'admin')
   .form-group
     = t("IMAP Storage")

@@ -502,6 +502,24 @@ Aliases.pre('save', async function (next) {
     const string = alias.name.replace(/[^\da-z]/g, '');
 
     if (member.group !== 'admin') {
+      // ubuntu-related aliases for non-admins cannot edit their username
+      if (
+        !alias.isNew &&
+        domain.plan === 'team' &&
+        domain.has_txt_record &&
+        Object.keys(config.ubuntuTeamMapping).includes(domain.name)
+      ) {
+        const existingAlias = await alias.constructor.findById(alias._id);
+        if (!existingAlias)
+          throw Boom.notFound(
+            i18n.translateError('ALIAS_DOES_NOT_EXIST', alias.locale)
+          );
+        if (existingAlias.name !== alias.name)
+          throw Boom.badRequest(
+            i18n.translateError('UBUNTU_PERMISSIONS', alias.locale)
+          );
+      }
+
       // alias name cannot be a wildcard "*" if the user is not an admin
       if (alias.name === '*')
         throw Boom.badRequest(

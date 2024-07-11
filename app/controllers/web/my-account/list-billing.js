@@ -9,6 +9,8 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
+const config = require('#config');
+
 const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'i');
 
 async function listBilling(ctx) {
@@ -36,6 +38,15 @@ async function listBilling(ctx) {
   );
 
   ctx.state.breadcrumbHeaderCentered = true;
+
+  ctx.state.isUbuntu = Boolean(
+    ctx.state.domains.some(
+      (d) =>
+        d.has_txt_record === true &&
+        d.plan === 'team' &&
+        Object.keys(config.ubuntuTeamMapping).includes(d.name)
+    )
+  );
 
   if (ctx.accepts('html'))
     return ctx.render('my-account/billing', {

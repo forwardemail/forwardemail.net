@@ -168,7 +168,19 @@ async function listDomains(ctx) {
   }
 
   // store allDomains used for alias modal dropdown
-  const allDomains = [...domains];
+  const allDomains = [...domains].filter((domain) => {
+    const member = domain.members.find((m) => m.user.id === ctx.state.user.id);
+    // hide ubuntu-related domains
+    if (
+      member &&
+      domain.plan === 'team' &&
+      domain.has_txt_record &&
+      Object.keys(config.ubuntuTeamMapping).includes(domain.name) &&
+      member.group !== 'admin'
+    )
+      return false;
+    return true;
+  });
 
   // domains are already pre-sorted A-Z by 'name' so only use sortFn if passed
   if (sortFn) domains = _.sortBy(domains, [sortFn]);
