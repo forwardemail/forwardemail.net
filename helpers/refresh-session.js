@@ -4,6 +4,7 @@
  */
 
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -68,7 +69,7 @@ async function refreshSession(session, command) {
   if (!isSANB(session?.user?.storage_location))
     throw new IMAPError('Alias storage location does not exist on session');
 
-  // only refresh if it has been more >= 10s
+  // only refresh if it has been more 1d
   // (drastically helps speed up bulk migrations and appends)
   let needsRefreshed = true;
   if (this.client) {
@@ -120,11 +121,12 @@ async function refreshSession(session, command) {
     // set updated imap_backup_at
     session.imap_backup_at = alias.imap_backup_at;
 
+    // a long cache period avoids MongoDB connection issues interrupting IMAP
     await this.client.set(
       `refresh_check:${session.user.alias_id}`,
       true,
       'PX',
-      10000
+      ms('1d')
     );
   }
 
