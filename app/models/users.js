@@ -1047,7 +1047,7 @@ Users.pre('save', async function (next) {
             // eslint-disable-next-line no-await-in-loop
             await domain.save();
             // eslint-disable-next-line no-await-in-loop
-            await conn.models.Aliases.findAndUpdate(
+            await conn.models.Aliases.updateMany(
               {
                 user: this._id,
                 domain: domain._id
@@ -1056,9 +1056,6 @@ Users.pre('save', async function (next) {
                 $set: {
                   is_enabled: false
                 }
-              },
-              {
-                multi: true
               }
             );
           }
