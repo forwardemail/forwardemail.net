@@ -952,7 +952,11 @@ Emails.statics.queue = async function (
   let member;
 
   if (userId)
-    member = domain.members.find((member) => member.user.id === userId);
+    member = domain.members.find(
+      (member) =>
+        member?.user?.id === userId ||
+        (member.user && member.user.toString() === userId)
+    );
 
   if (!member)
     throw Boom.notFound(i18n.translateError('INVALID_MEMBER', locale));
