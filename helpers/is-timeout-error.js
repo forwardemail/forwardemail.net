@@ -23,11 +23,15 @@ function isTimeoutError(err) {
   if (
     err.name === 'RedisError' ||
     err.name === 'MongooseServerSelectionError' ||
+    err.name === 'MongoBulkWriteError' ||
     err.name === 'MongoNetworkError' ||
+    err.name === 'MongoNetworkTimeoutError' ||
     err.name === 'PoolClearedOnNetworkError' ||
     err.name === 'MongoPoolClearedError' ||
     isErrorConstructorName(err, 'MongoNetworkError') ||
+    isErrorConstructorName(err, 'MongoNetworkTimeoutError') ||
     isErrorConstructorName(err, 'MongoError') ||
+    isErrorConstructorName(err, 'MongoBulkWriteError') ||
     isErrorConstructorName(err, 'PoolClearedOnNetworkError') ||
     isErrorConstructorName(err, 'MongoPoolClearedError') ||
     isErrorConstructorName(err, 'MongooseServerSelectionError') ||
@@ -37,11 +41,13 @@ function isTimeoutError(err) {
 
   for (const key of ['message', 'response']) {
     if (typeof err[key] !== 'string') continue;
+    const str = err[key].toLowerCase();
     if (
-      err[key].includes('Request aborted') ||
-      err[key].includes('Timeout') ||
-      err[key].includes('Request Time-out') ||
-      err[key].includes('Timeout - closing connection')
+      str.includes('request aborted') ||
+      str.includes('timeout') ||
+      str.includes('request time-out') ||
+      str.includes('timeout - closing connection') ||
+      str.includes('connection timed out')
     )
       return true;
   }

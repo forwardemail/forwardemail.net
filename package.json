@@ -39,7 +39,7 @@
     "@ladjs/graceful": "4.0.0",
     "@ladjs/i18n": "8.0.3",
     "@ladjs/koa-simple-ratelimit": "4.1.1",
-    "@ladjs/mongoose": "6.0.1",
+    "@ladjs/mongoose": "7.0.0",
     "@ladjs/mongoose-error-messages": "1.0.0",
     "@ladjs/passport": "5.1.4",
     "@ladjs/pick-original": "1.0.0",

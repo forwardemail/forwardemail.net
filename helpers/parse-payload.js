@@ -2007,6 +2007,22 @@ async function parsePayload(data, ws) {
               // run a checkpoint to copy over wal to db
               db.pragma('wal_checkpoint(PASSIVE)');
 
+              // cleanup tmp if it already exists
+              // otherwise you get an error like:
+              // err = {
+              //   name: 'SqliteError',
+              //   message: 'output file already exists'
+              //   ...
+              // }
+              try {
+                await fs.promises.rm(tmp, {
+                  force: true,
+                  recursive: true
+                });
+              } catch (err) {
+                logger.fatal(err, { payload });
+              }
+
               // create backup
               // takes approx 5-10s per GB
               db.exec(`VACUUM INTO '${tmp}'`);
