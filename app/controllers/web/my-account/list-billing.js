@@ -39,7 +39,7 @@ async function listBilling(ctx) {
 
   ctx.state.breadcrumbHeaderCentered = true;
 
-  ctx.state.isUbuntu = Boolean(
+  ctx.state.isUbuntuBilling = Boolean(
     ctx.state.domains.some(
       (d) =>
         d.has_txt_record === true &&

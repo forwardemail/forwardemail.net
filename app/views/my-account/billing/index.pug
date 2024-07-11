@@ -132,7 +132,7 @@ block body
                     )= t("Enable Auto-Renew")
         .col-12.d-flex(class=user.plan === "free" ? false : "col-lg-6")
           .mt-3.mt-sm-5.mt-lg-0.d-flex.flex-column.flex-grow-1.align-items-center.rounded-lg
-            if isUbuntu
+            if isUbuntuBilling
               picture.mb-3
                 source(
                   srcset=manifest("img/ubuntu-one-mono-logo.svg"),

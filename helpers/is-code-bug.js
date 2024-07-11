@@ -14,6 +14,8 @@ const isErrorConstructorName = require('./is-error-constructor-name');
 function isCodeBug(err) {
   const bool = boolean(
     err.isCodeBug === true ||
+      err.babylonError || // pug-related
+      err.component || // pug-related
       (CONNECTION_CLOSED_ERROR_MSG &&
         err.message === CONNECTION_CLOSED_ERROR_MSG) ||
       err.name === 'SqliteError' ||

@@ -121,7 +121,7 @@ mixin renderProgressBar(domain, alias, isMobile = false)
   else
     = t("Not Available")
 
-- const isUbuntu = domain && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
+- const isUbuntuRelatedAlias = domain && domain.plan === "team" && domain.has_txt_record && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name);
 
 p.text-center.d-lg-none
   a.btn.btn-link.btn-sm(
@@ -144,7 +144,7 @@ p.text-center.d-lg-none
           +sortHeader('description', 'Description', '#table-aliases')
         th.text-center.d-none.d-lg-table-cell(scope="col")
           +sortHeader('is_enabled', 'Active', '#table-aliases')
-        if !isUbuntu || domain.group === 'admin'
+        if !isUbuntuRelatedAlias || domain.group === 'admin'
           th.align-middle.d-none.d-lg-table-cell.text-nowrap.text-center(
             scope="col"
           )
@@ -163,7 +163,9 @@ p.text-center.d-lg-none
     tbody
       if domain && domain.aliases && (domain.aliases.length === 0 || (isSANB(ctx.query.q) && !domain.aliases.find(a => a.name === ctx.query.q.split('@')[0].toLowerCase().trim() || a.recipients.find(r => r === ctx.query.q.toLowerCase().trim()))))
         tr
-          td(colspan=6 - (!isUbuntu || domain.group === "admin" ? 0 : 1))
+          td(
+            colspan=6 - (!isUbuntuRelatedAlias || domain.group === "admin" ? 0 : 1)
+          )
             .alert.alert-warning.mb-0.text-center
               ul.list-inline.mb-0
                 - const str = striptags(ctx.query.q).split("@")[0].toLowerCase().trim();
@@ -349,7 +351,7 @@ p.text-center.d-lg-none
                   code= `${alias.name}@${domain.name}`
               //- on mobile we need to render this different
               .d-lg-none.p-2
-                if !isUbuntu || domain.group === 'admin'
+                if !isUbuntuRelatedAlias || domain.group === 'admin'
                   .small
                     +renderProgressBar(domain, alias, true)
                 if domain && domain.aliases && domain.aliases.find(alias => isSANB(alias.description) || (_.isArray(alias.labels) && alias.labels.length > 0))
@@ -372,7 +374,7 @@ p.text-center.d-lg-none
                   = t("Recipients")
                   = ":"
                 ul.list-inline.mb-1
-                  if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntu || domain.group === 'admin')
+                  if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntuRelatedAlias || domain.group === 'admin')
                     li.list-inline-item
                       span.badge.text-nowrap.text-uppercase(
                         class=alias.has_imap ? "badge-success" : "badge-secondary"
@@ -462,7 +464,7 @@ p.text-center.d-lg-none
                       i.fa.fa-pencil
                       = " "
                       = t("Edit")
-                  if !isUbuntu || domain.group === 'admin'
+                  if !isUbuntuRelatedAlias || domain.group === 'admin'
                     li.list-inline-item
                       form.ajax-form.confirm-prompt.d-block(
                         action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
@@ -545,12 +547,12 @@ p.text-center.d-lg-none
                 class=alias.is_enabled ? "text-success" : "text-danger"
               )
                 i.fa.fa-fw(class=alias.is_enabled ? "fa-check" : "fa-times")
-            if !isUbuntu || domain.group === 'admin'
+            if !isUbuntuRelatedAlias || domain.group === 'admin'
               td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
                 +renderProgressBar(domain, alias)
             td.align-middle.d-none.d-lg-table-cell
               ul.list-inline.mb-0
-                if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntu || domain.group === 'admin')
+                if alias.name !== '*' && !alias.name.startsWith('/') && (!isUbuntuRelatedAlias || domain.group === 'admin')
                   li.list-inline-item
                     span.badge.text-nowrap.text-uppercase(
                       class=alias.has_imap ? "badge-success" : "badge-secondary"
@@ -640,7 +642,7 @@ p.text-center.d-lg-none
                     i.fa.fa-pencil
                     = " "
                     = t("Edit")
-                if !isUbuntu || domain.group === 'admin'
+                if !isUbuntuRelatedAlias || domain.group === 'admin'
                   li.list-inline-item
                     form.ajax-form.confirm-prompt.d-block(
                       action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
