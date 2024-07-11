@@ -115,25 +115,28 @@ p.text-center.d-lg-none
     = " "
     i.fa.fa-info-circle
 
+- const isOnlyUbuntuDomains = domains.length > 0 && domains.every((d) => d.plan === "team" && d.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(d.name));
+
 .table-responsive
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
         th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
-        th.text-center.align-middle.d-none.d-lg-table-cell(scope="col")
-          = t("Storage Usage")
-          a.btn.btn-link.text-uppercase.text-white(
-            href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
-            role="button",
-            data-toggle="modal",
-            data-target="#modal-storage"
-          )
-            i.fa.fa-info-circle
+        if !isOnlyUbuntuDomains
+          th.text-center.align-middle.d-none.d-lg-table-cell(scope="col")
+            = t("Storage Usage")
+            a.btn.btn-link.text-uppercase.text-white(
+              href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
+              role="button",
+              data-toggle="modal",
+              data-target="#modal-storage"
+            )
+              i.fa.fa-info-circle
         th.align-middle.text-nowrap(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
-        td.alert.alert-info(colspan=4)= t("No domains exist for that search.")
+        td.alert.alert-info(colspan=4 - (isOnlyUbuntuDomains ? 0 : 1))= t("No domains exist for that search.")
       else
         each domain in domains
           - domain.plan = domain.plan || "free";
@@ -178,10 +181,12 @@ p.text-center.d-lg-none
                         class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning"
                       )
                         = titleize(humanize(domain.plan))
-              .d-lg-none.small.mt-1
-                +renderProgressBar(domain, true)
-            td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
-              +renderProgressBar(domain)
+              if !isOnlyUbuntuDomains
+                .d-lg-none.small.mt-1
+                  +renderProgressBar(domain, true)
+            if !isOnlyUbuntuDomains
+              td.align-middle.p-3.small.d-none.d-lg-table-cell.text-center
+                +renderProgressBar(domain)
             td.align-middle
               ul.list-inline.mb-0.text-nowrap
                 li.list-inline-item.d-block.d-sm-inline-block
