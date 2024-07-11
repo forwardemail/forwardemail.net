@@ -16,7 +16,8 @@ async function search(ctx) {
   // search string should be A-Z, 0-9, _ only
   // otherwise rendering of `app/views/_search-results.pug`
   //
-  ctx.query.q = ctx.query.q.replace(/[\W_]+/g, ' ').trim();
+  if (isSANB(ctx.query.q))
+    ctx.query.q = ctx.query.q.replace(/[\W_]+/g, ' ').trim();
 
   const results = isSANB(ctx.query.q)
     ? await SearchResults.find(
