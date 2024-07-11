@@ -905,6 +905,7 @@ Users.pre('save', function (next) {
 // when ubuntu users sign in we need to check their membership
 // (and probably need some automated job that checks this for active memberships)
 //
+// eslint-disable-next-line complexity
 Users.pre('save', async function (next) {
   if (
     !isSANB(this[fields.ubuntuProfileID]) ||
@@ -1047,17 +1048,74 @@ Users.pre('save', async function (next) {
             // eslint-disable-next-line no-await-in-loop
             await domain.save();
             // eslint-disable-next-line no-await-in-loop
-            await conn.models.Aliases.updateMany(
-              {
-                user: this._id,
-                domain: domain._id
-              },
-              {
-                $set: {
-                  is_enabled: false
-                }
+            await conn.models.Aliases.deleteMany({
+              user: this._id,
+              domain: domain._id
+            });
+
+            // if user has no other aliases then mark email as unverified
+            // (this way the automated job will delete the users account in 30d)
+            // eslint-disable-next-line no-await-in-loop
+            const [aliasCount, domainCount] = await Promise.all([
+              conn.models.Aliases.countDocuments({ user: this._id }),
+              conn.models.Domains.countDocuments({ 'members.user': this._id })
+            ]);
+
+            if (aliasCount === 0 && domainCount === 0)
+              this[config.userFields.hasVerifiedEmail] = false;
+
+            // if user was ubuntu then notify admins of any ubuntu domain
+            // eslint-disable-next-line no-await-in-loop
+            const domains = await conn.models.Domains.find({
+              name: { $in: Object.keys(config.ubuntuTeamMapping) },
+              plan: 'team',
+              has_txt_record: true
+            })
+              .lean()
+              .exec();
+
+            const ids = [];
+            for (const domain of domains) {
+              for (const m of domain.members) {
+                if (m.group === 'admin') ids.push(m.user.toString());
               }
-            );
+            }
+
+            if (ids.length > 0) {
+              // get all the admin emails
+              // eslint-disable-next-line no-await-in-loop
+              const to = await this.constructor.distinct('email', {
+                id: {
+                  $in: ids
+                },
+                [config.userFields.hasVerifiedEmail]: true,
+                [config.userFields.isBanned]: false
+              });
+
+              // notify admins
+              if (to.length > 0)
+                email({
+                  template: 'alert',
+                  message: {
+                    to,
+                    bcc: config.email.message.from,
+                    subject: `⚠️ ~${
+                      this[fields.ubuntuUsername]
+                    } removed from Launchpad team ${
+                      config.ubuntuTeamMapping[domainName]
+                    }`
+                  },
+                  locals: {
+                    message: `~${
+                      this[fields.ubuntuUsername]
+                    } removed from Launchpad team ${
+                      config.ubuntuTeamMapping[domainName]
+                    } with email ${this.email}.`
+                  }
+                })
+                  .then()
+                  .catch((err) => logger.fatal(err));
+            }
           }
         } catch (err) {
           // alert admins by email
