@@ -555,6 +555,11 @@ const config = {
     digestAlgorithm: 'sha256',
     encoding: 'hex',
     saltlen: 32,
+    //
+    // TODO: this should be bumped from 25000 to 100000
+    //       (but we may need to do a migration of sorts if so)
+    //       <https://github.com/nodemailer/wildduck/pull/648>
+    //
     iterations: 25000,
     keylen: 512,
     passwordValidator(password, fn) {
