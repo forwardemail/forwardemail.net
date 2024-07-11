@@ -141,7 +141,9 @@ async function retrieveDomainBilling(ctx) {
             domain.plan !== 'free' &&
             domain.members.some(
               (member) =>
-                member.user.id === ctx.state.user.id && member.group === 'admin'
+                member.user &&
+                member.user.id === ctx.state.user.id &&
+                member.group === 'admin'
             )
         )
       ) {
@@ -243,7 +245,9 @@ async function retrieveDomainBilling(ctx) {
       const adminDomains = ctx.state.domains.filter((domain) =>
         domain.members.some(
           (member) =>
-            member.user.id === ctx.state.user.id && member.group === 'admin'
+            member.user &&
+            member.user.id === ctx.state.user.id &&
+            member.group === 'admin'
         )
       );
 

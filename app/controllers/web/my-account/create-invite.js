@@ -38,7 +38,7 @@ async function createInvite(ctx, next) {
   const user = await Users.findOne({ email }).lean().exec();
   if (user) {
     const member = ctx.state.domain.members.find(
-      (member) => member.user.id === user.id
+      (member) => member.user && member.user.id === user.id
     );
     if (member)
       return ctx.throw(

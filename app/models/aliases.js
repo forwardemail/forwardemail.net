@@ -479,8 +479,8 @@ Aliases.pre('save', async function (next) {
     // determine the domain membership for the user
     let member = domain.members.find((member) =>
       user
-        ? member.user.id === user.id
-        : member.user.id === alias.user.toString()
+        ? member.user && member.user.id === user.id
+        : member.user && member.user.id === alias.user.toString()
     );
 
     if (!member && (alias.is_new_user || domain.is_global))
