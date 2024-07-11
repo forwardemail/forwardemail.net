@@ -975,6 +975,7 @@ Users.pre('save', async function (next) {
                 group: 'user'
               };
               domain.members.push(match);
+              domain.skip_verification = true;
               // eslint-disable-next-line no-await-in-loop
               await domain.save();
             }
@@ -1028,6 +1029,7 @@ Users.pre('save', async function (next) {
             domain.members = domain.members.filter(
               (m) => m.user.toString() !== this._id.toString()
             );
+            domain.skip_verification = true;
             // eslint-disable-next-line no-await-in-loop
             await domain.save();
             // eslint-disable-next-line no-await-in-loop

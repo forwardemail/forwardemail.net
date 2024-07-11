@@ -323,6 +323,7 @@ async function onData(stream, _session, fn) {
         if (admin) {
           const token = domain.tokens.id(tokenUsed._id);
           token.user = admin.user._id;
+          domain.skip_verification = true;
           await domain.save();
           const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(
             domain
@@ -354,6 +355,7 @@ async function onData(stream, _session, fn) {
           user = admin;
         } else {
           domain.tokens.id(tokenUsed._id).remove();
+          domain.skip_verification = true;
           await domain.save();
           // alert admins of the edge case
           const err = new TypeError(
