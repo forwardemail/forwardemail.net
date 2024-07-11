@@ -139,15 +139,15 @@ graceful.listen();
                   `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[domainName]}`
               )
             ) {
+              //
+              // NOTE: we don't want to add the user
+              //       unless we successfully created an alias for them
+              //
               if (!match) {
                 match = {
                   user: user._id,
                   group: 'user'
                 };
-                domain.members.push(match);
-                domain.skip_verification = true;
-                // eslint-disable-next-line no-await-in-loop
-                await domain.save();
               }
 
               // now check that if the alias already exists and is owned by this user
@@ -185,6 +185,11 @@ graceful.listen();
 
                 // eslint-disable-next-line no-await-in-loop
                 await Aliases.create({
+                  //
+                  // virtual to assist with member lookup
+                  // (so we don't create a user we don't want to yet)
+                  //
+                  virtual_member: match,
                   // virtual to assist in preventing lookup
                   is_new_user: true,
 
@@ -194,6 +199,15 @@ graceful.listen();
                   recipients: [user.email],
                   locale: user[config.lastLocaleField]
                 });
+
+                //
+                // NOTE: we don't want to add the user
+                //       unless we successfully created an alias for them
+                //
+                domain.members.push(match);
+                domain.skip_verification = true;
+                // eslint-disable-next-line no-await-in-loop
+                await domain.save();
 
                 // notify admins
                 if (to.length > 0)

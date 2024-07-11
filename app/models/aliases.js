@@ -365,6 +365,14 @@ Aliases.plugin(mongooseCommonPlugin, {
   defaultLocale: i18n.getLocale()
 });
 
+Aliases.virtual('virtual_member')
+  .get(function () {
+    return this.__virtual_member;
+  })
+  .set(function (virtualMember) {
+    this.__virtual_member = virtualMember;
+  });
+
 Aliases.virtual('is_new_user')
   .get(function () {
     return this.__is_new_user;
@@ -491,6 +499,9 @@ Aliases.pre('save', async function (next) {
         },
         group: 'user'
       };
+
+    // virtual helper from `jobs/ubuntu-sync-memberships.js`
+    if (!member && alias.virtual_member) member = alias.virtual_member;
 
     //
     // NOTE: because the user model has a pre save hook that adds a domain member
