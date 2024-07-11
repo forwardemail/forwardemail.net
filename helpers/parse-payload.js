@@ -756,7 +756,8 @@ async function parsePayload(data, ws) {
                     storageUsed
                   )} storage used`
                 );
-                logger.fatal(err, { payload }); // send alert to admins
+                err.payload = _.omit(payload, 'raw');
+                logger.fatal(err);
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
@@ -782,7 +783,8 @@ async function parsePayload(data, ws) {
                     storageUsed
                   )} storage used`
                 );
-                logger.fatal(err, { payload }); // send alert to admins
+                err.payload = _.omit(payload, 'raw');
+                logger.fatal(err); // send alert to admins
                 throw new SMTPError(
                   i18n.translate(
                     'IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA',
@@ -833,6 +835,7 @@ async function parsePayload(data, ws) {
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
+                      err.isCodeBug = true;
                       err.payload = payload;
                       throw err;
                     }
@@ -849,6 +852,7 @@ async function parsePayload(data, ws) {
                           )} from ${count} messages`,
                           { responseCode: 421 }
                         );
+                        err.isCodeBug = true;
                         err.payload = payload;
                         throw err;
                       }
@@ -860,6 +864,7 @@ async function parsePayload(data, ws) {
                         )} from ${count} messages`,
                         { responseCode: 421 }
                       );
+                      err.isCodeBug = true;
                       err.payload = payload;
                       throw err;
                     }
@@ -872,6 +877,7 @@ async function parsePayload(data, ws) {
                     )} from ${count} messages`,
                     { responseCode: 421 }
                   );
+                  err.isCodeBug = true;
                   err.payload = payload;
                   throw err;
                 }
@@ -897,6 +903,7 @@ async function parsePayload(data, ws) {
                       responseCode: 421
                     }
                   );
+                  err.isCodeBug = true;
                   err.payload = payload;
                   throw err;
                 }
@@ -981,14 +988,20 @@ async function parsePayload(data, ws) {
                     byteLength
                   );
                 } catch (err) {
-                  logger.fatal(err, { payload });
+                  err.isCodeBug = true;
+                  err.payload = _.omit(payload, 'raw');
+                  logger.fatal(err);
                 }
               } catch (_err) {
                 const err = Array.isArray(_err) ? _err[0] : _err;
                 if (isTimeoutError(err)) {
-                  logger.warn(err, { payload });
+                  err.isCodeBug = true;
+                  err.payload = _.omit(payload, 'raw');
+                  logger.error(err);
                 } else {
-                  logger.error(err, { payload });
+                  err.isCodeBug = true;
+                  err.payload = _.omit(payload, 'raw');
+                  logger.error(err);
                 }
               }
 
@@ -1051,9 +1064,11 @@ async function parsePayload(data, ws) {
                         }
                       )
                         .then()
-                        .catch((err) => this.logger.fatal(err, { payload }));
+                        .catch((err) => this.logger.fatal(err));
                     } catch (err) {
-                      logger.fatal(err, { payload });
+                      err.isCodeBug = true;
+                      err.payload = _.omit(payload, 'raw');
+                      logger.fatal(err);
                       if (!isCodeBug(err)) {
                         // email alias user (only once a day as a reminder) if it was not a code bug
                         const now = new Date();
@@ -1119,12 +1134,10 @@ async function parsePayload(data, ws) {
                                   }
                                 })
                                   .then()
-                                  .catch((err) =>
-                                    this.logger.fatal(err, { payload })
-                                  );
+                                  .catch((err) => this.logger.fatal(err));
                               })
                               .catch((err) => {
-                                this.logger.fatal(err, { payload });
+                                this.logger.fatal(err);
                                 Aliases.findOneAndUpdate(
                                   {
                                     _id: new mongoose.Types.ObjectId(
@@ -1140,12 +1153,10 @@ async function parsePayload(data, ws) {
                                       pgp_error_sent_at: 1
                                     }
                                   }
-                                ).catch((err) =>
-                                  this.logger.fatal(err, { payload })
-                                );
+                                ).catch((err) => this.logger.fatal(err));
                               });
                           })
-                          .catch((err) => this.logger.fatal(err, { payload }));
+                          .catch((err) => this.logger.fatal(err));
                       }
                     }
                   }
@@ -1173,7 +1184,9 @@ async function parsePayload(data, ws) {
                   try {
                     await updateStorageUsed(alias.id, this.client);
                   } catch (err) {
-                    logger.fatal(err, { payload });
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.fatal(err);
                   }
 
                   //
@@ -1188,10 +1201,15 @@ async function parsePayload(data, ws) {
                       byteLength
                     );
                   } catch (err) {
-                    logger.fatal(err, { payload });
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.fatal(err);
                   }
                 } catch (_err) {
                   err = _err;
+                  err.isCodeBug = true;
+                  err.payload = _.omit(payload, 'raw');
+                  logger.fatal(err);
                 }
 
                 try {
@@ -1199,14 +1217,17 @@ async function parsePayload(data, ws) {
                   tmpDb.pragma('optimize');
                   tmpDb.close();
                 } catch (err) {
-                  logger.fatal(err, { payload });
+                  err.isCodeBug = true;
+                  err.payload = _.omit(payload, 'raw');
+                  logger.fatal(err);
                 }
 
                 if (err) throw err;
               }
             } catch (err) {
-              logger.error(err, { payload });
+              err.payload = _.omit(payload, 'raw');
               err.isCodeBug = isCodeBug(err);
+              logger.error(err);
               errors[`${obj.address}`] = JSON.parse(
                 safeStringify(parseErr(err))
               );
@@ -2136,7 +2157,7 @@ async function parsePayload(data, ws) {
     let err = _err;
     if (Array.isArray(err)) err = _err[0];
 
-    err.payload = payload;
+    err.payload = _.omit(payload, 'raw');
 
     // TODO: we can't do this because of object circular reference
     // delete err.payload.user.password (safeguard)
