@@ -218,14 +218,14 @@ graceful.listen();
                       bcc: config.email.message.from,
                       subject: `🎉 ~${
                         user[fields.ubuntuUsername]
-                      } added to Launchpad team ~${
+                      } added to Launchpad team ${
                         config.ubuntuTeamMapping[domainName]
                       }`
                     },
                     locals: {
                       message: `~${
                         user[fields.ubuntuUsername]
-                      } added to Launchpad team ~${
+                      } added to Launchpad team ${
                         config.ubuntuTeamMapping[domainName]
                       }" with email ${user.email}.`
                     }
@@ -278,14 +278,14 @@ graceful.listen();
                     bcc: config.email.message.from,
                     subject: `⚠️ ~${
                       user[fields.ubuntuUsername]
-                    } removed from Launchpad team ~${
+                    } removed from Launchpad team ${
                       config.ubuntuTeamMapping[domainName]
                     }`
                   },
                   locals: {
                     message: `~${
                       user[fields.ubuntuUsername]
-                    } removed from Launchpad team ~${
+                    } removed from Launchpad team ${
                       config.ubuntuTeamMapping[domainName]
                     } with email ${user.email}.`
                   }
