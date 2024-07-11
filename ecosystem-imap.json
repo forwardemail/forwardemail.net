@@ -8,7 +8,6 @@
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",
-      "node_args": "--heapsnapshot-signal=SIGUSR2",
       "pmx": false,
       "env_development": {
         "IMAP_PORT": 2113
@@ -26,7 +25,6 @@
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
-      "node_args": "--heapsnapshot-signal=SIGUSR2",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",

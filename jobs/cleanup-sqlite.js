@@ -242,14 +242,15 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
                 throw err;
               }
 
-              await wsp.request(
-                {
-                  action: 'vacuum',
-                  timeout: ms('5m'),
-                  session: { user }
-                },
-                0
-              );
+              // NOTE: we have `auto_vacuum=FULL` set in `helpers/setup-pragma`
+              // await wsp.request(
+              //   {
+              //     action: 'vacuum',
+              //     timeout: ms('5m'),
+              //     session: { user }
+              //   },
+              //   0
+              // );
             } catch (err) {
               if (err.name !== 'TimeoutError') logger.error(err);
             }

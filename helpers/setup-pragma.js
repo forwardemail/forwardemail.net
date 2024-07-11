@@ -68,10 +68,13 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma('secure_delete=ON');
 
   //
-  // NOTE: we still run a manual vacuum every 24 hours
-  //
   // turn on auto vacuum (for large amounts of deleted content)
   // <https://www.sqlite.org/pragma.html#pragma_auto_vacuum>
+  //
+  //
+  // NOTE: if you change this then uncomment `jobs/cleanup-sqlite`
+  //       and also optimize the 'vacuum' parse-payload switch/case
+  //       statement so that it checks for os.freemem() similar to 'backup'
   //
   db.pragma('auto_vacuum=FULL');
 

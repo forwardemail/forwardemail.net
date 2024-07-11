@@ -334,7 +334,8 @@ function createWebSocketAsPromised(options = {}) {
                   await wsp.open();
                   return true;
                 } catch (err) {
-                  logger.debug(err);
+                  err.wsData = data;
+                  logger.fatal(err);
                   return false;
                 }
               },
@@ -357,7 +358,9 @@ function createWebSocketAsPromised(options = {}) {
         {
           retries,
           onFailedAttempt(error) {
-            logger.error(error, { data });
+            error.isCodeBug = true;
+            error.wsData = data;
+            logger.error(error);
 
             if (isTimeoutError(error)) {
               return;

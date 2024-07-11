@@ -28,6 +28,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pEvent = require('p-event');
 const pMap = require('p-map');
+const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
@@ -2121,6 +2122,32 @@ async function parsePayload(data, ws) {
                     diskSpace.free
                   )} was available`
                 );
+
+              //
+              // ensure that we have the space required available in memory
+              // (prevents multiple backups from taking up all of the memory on server)
+              try {
+                await pWaitFor(
+                  () => {
+                    return os.freemem() > spaceRequired;
+                  },
+                  {
+                    interval: ms('30s'),
+                    timeout: ms('10m')
+                  }
+                );
+              } catch (err) {
+                if (isTimeoutError(err)) {
+                  err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
+                  err.isCodeBug = true;
+                }
+
+                err.freemem = os.freemem();
+                err.spaceRequired = spaceRequired;
+                err.alias = alias.id;
+                err.payload = payload;
+                throw err;
+              }
 
               // create bucket on s3 if it doesn't already exist
               // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
