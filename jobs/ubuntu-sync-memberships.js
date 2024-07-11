@@ -93,7 +93,7 @@ graceful.listen();
     for (const id of ids) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        const user = await Users.findById(id);
+        const user = await Users.findById(id).lean().exec();
         if (!user) continue;
 
         // eslint-disable-next-line no-await-in-loop
@@ -117,80 +117,143 @@ graceful.listen();
           throw new Error(config.i17n.phrases.UBUNTU_API_RESPONSE_INVALID);
 
         for (const domainName of Object.keys(config.ubuntuTeamMapping)) {
-          // eslint-disable-next-line no-await-in-loop
-          const domain = await Domains.findOne({
-            name: domainName,
-            plan: 'team',
-            has_txt_record: true
-          });
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            const domain = await Domains.findOne({
+              name: domainName,
+              plan: 'team',
+              has_txt_record: true
+            });
 
-          if (!domain) continue;
+            if (!domain) continue;
 
-          // add user to the team if they are a member and don't have an @ yet
-          let match = domain.members.find(
-            (m) => m.user.toString() === user._id.toString()
-          );
+            // add user to the team if they are a member and don't have an @ yet
+            let match = domain.members.find(
+              (m) => m.user.toString() === user._id.toString()
+            );
 
-          if (
-            json.entries.some(
-              (entry) =>
-                entry.team_link ===
-                `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[domainName]}`
-            )
-          ) {
-            if (!match) {
-              match = {
+            if (
+              json.entries.some(
+                (entry) =>
+                  entry.team_link ===
+                  `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[domainName]}`
+              )
+            ) {
+              if (!match) {
+                match = {
+                  user: user._id,
+                  group: 'user'
+                };
+                domain.members.push(match);
+                domain.skip_verification = true;
+                // eslint-disable-next-line no-await-in-loop
+                await domain.save();
+              }
+
+              // now check that if the alias already exists and is owned by this user
+              // eslint-disable-next-line no-await-in-loop
+              const alias = await Aliases.findOne({
                 user: user._id,
-                group: 'user'
-              };
-              domain.members.push(match);
+                domain: domain._id,
+                name: user[fields.ubuntuUsername].toLowerCase()
+              })
+                .lean()
+                .exec();
+
+              // if not, then create it, but only if there aren't already 3+ aliases owned by this user
+              if (!alias) {
+                // eslint-disable-next-line no-await-in-loop
+                const count = await Aliases.countDocuments({
+                  user: user._id,
+                  domain: domain._id
+                });
+                if (match.group !== 'admin' && count > 3) {
+                  const error = Boom.badRequest(
+                    i18n.api.t({
+                      phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
+                      locale: user[config.lastLocaleField]
+                    })
+                  );
+                  error.no_translate = true;
+                  error.isCodeBug = true;
+                  error.email = user.email;
+                  error.ubuntuUsername = user[fields.ubuntuUsername];
+                  error.ubuntuProfileID = user[fields.ubuntuProfileID];
+                  logger.error(error);
+                  continue;
+                }
+
+                // eslint-disable-next-line no-await-in-loop
+                await Aliases.create({
+                  // virtual to assist in preventing lookup
+                  is_new_user: true,
+
+                  user: user._id,
+                  domain: domain._id,
+                  name: user[fields.ubuntuUsername].toLowerCase(),
+                  recipients: [user.email],
+                  locale: user[config.lastLocaleField]
+                });
+
+                // notify admins
+                if (to.length > 0)
+                  emailHelper({
+                    template: 'alert',
+                    message: {
+                      to,
+                      bcc: config.email.message.from,
+                      subject: `🎉 ~${
+                        user[fields.ubuntuUsername]
+                      } added to Launchpad team ~${
+                        config.ubuntuTeamMapping[domainName]
+                      }`
+                    },
+                    locals: {
+                      message: `~${
+                        user[fields.ubuntuUsername]
+                      } added to Launchpad team ~${
+                        config.ubuntuTeamMapping[domainName]
+                      }" with email ${user.email}.`
+                    }
+                  })
+                    .then()
+                    .catch((err) => logger.fatal(err));
+              }
+
+              continue;
+            }
+
+            //
+            // otherwise disable any aliases and remove user from membership for this domain
+            //
+            if (match && match.group === 'user') {
+              domain.members = domain.members.filter(
+                (m) => m.user.toString() !== user._id.toString()
+              );
               domain.skip_verification = true;
               // eslint-disable-next-line no-await-in-loop
               await domain.save();
-            }
-
-            // now check that if the alias already exists and is owned by this user
-            // eslint-disable-next-line no-await-in-loop
-            const alias = await Aliases.findOne({
-              user: user._id,
-              domain: domain._id,
-              name: user[fields.ubuntuUsername].toLowerCase()
-            });
-
-            // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-            if (!alias) {
               // eslint-disable-next-line no-await-in-loop
-              const count = await Aliases.countDocuments({
+              await Aliases.deleteMany({
                 user: user._id,
                 domain: domain._id
               });
-              if (match.group !== 'admin' && count > 3) {
-                const error = Boom.badRequest(
-                  i18n.api.t({
-                    phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
-                    locale: user[config.lastLocaleField]
-                  })
-                );
-                error.no_translate = true;
-                error.isCodeBug = true;
-                error.email = user.email;
-                error.ubuntuUsername = user[fields.ubuntuUsername];
-                error.ubuntuProfileID = user[fields.ubuntuProfileID];
-                logger.error(error);
-                continue;
-              }
 
+              // if user has no other aliases then mark email as unverified
+              // (this way the automated job will delete the users account in 30d)
               // eslint-disable-next-line no-await-in-loop
-              await Aliases.create({
-                // virtual to assist in preventing lookup
-                is_new_user: true,
+              const [aliasCount, domainCount] = await Promise.all([
+                Aliases.countDocuments({ user: user._id }),
+                Domains.countDocuments({ 'members.user': user._id })
+              ]);
 
-                user: user._id,
-                domain: domain._id,
-                name: user[fields.ubuntuUsername].toLowerCase(),
-                recipients: [user.email],
-                locale: user[config.lastLocaleField]
-              });
+              if (aliasCount === 0 && domainCount === 0)
+                // eslint-disable-next-line no-await-in-loop
+                await Users.findByIdAndUpdate(user._id, {
+                  $set: {
+                    [config.userFields.hasVerifiedEmail]: false
+                  }
+                });
 
               // notify admins
               if (to.length > 0)
@@ -199,82 +262,58 @@ graceful.listen();
                   message: {
                     to,
                     bcc: config.email.message.from,
-                    subject: `🎉 ~${
+                    subject: `⚠️ ~${
                       user[fields.ubuntuUsername]
-                    } added to Launchpad team ~${
+                    } removed from Launchpad team ~${
                       config.ubuntuTeamMapping[domainName]
                     }`
                   },
                   locals: {
                     message: `~${
                       user[fields.ubuntuUsername]
-                    } added to Launchpad team ~${
+                    } removed from Launchpad team ~${
                       config.ubuntuTeamMapping[domainName]
-                    }" with email ${user.email}.`
+                    } with email ${user.email}.`
                   }
                 })
                   .then()
                   .catch((err) => logger.fatal(err));
             }
-
-            continue;
-          }
-
-          //
-          // otherwise disable any aliases and remove user from membership for this domain
-          //
-          if (match && match.group === 'user') {
-            domain.members = domain.members.filter(
-              (m) => m.user.toString() !== user._id.toString()
-            );
-            domain.skip_verification = true;
-            // eslint-disable-next-line no-await-in-loop
-            await domain.save();
-            // eslint-disable-next-line no-await-in-loop
-            await Aliases.deleteMany({
-              user: user._id,
-              domain: domain._id
-            });
-
-            // if user has no other aliases then mark email as unverified
-            // (this way the automated job will delete the users account in 30d)
-            // eslint-disable-next-line no-await-in-loop
-            const [aliasCount, domainCount] = await Promise.all([
-              Aliases.countDocuments({ user: user._id }),
-              Domains.countDocuments({ 'members.user': user._id })
-            ]);
-
-            if (aliasCount === 0 && domainCount === 0)
+          } catch (err) {
+            logger.error(err);
+            // if an error occurs then check if user has any aliases
+            // in the domainName and if none then remove user
+            // if they were a non-admin of the domain
+            try {
               // eslint-disable-next-line no-await-in-loop
-              await Users.findByIdAndUpdate(user._id, {
-                $set: {
-                  [config.userFields.hasVerifiedEmail]: false
-                }
+              const domain = await Domains.findOne({
+                name: domainName,
+                plan: 'team',
+                has_txt_record: true
               });
-
-            // notify admins
-            if (to.length > 0)
-              emailHelper({
-                template: 'alert',
-                message: {
-                  to,
-                  bcc: config.email.message.from,
-                  subject: `⚠️ ~${
-                    user[fields.ubuntuUsername]
-                  } removed from Launchpad team ~${
-                    config.ubuntuTeamMapping[domainName]
-                  }`
-                },
-                locals: {
-                  message: `~${
-                    user[fields.ubuntuUsername]
-                  } removed from Launchpad team ~${
-                    config.ubuntuTeamMapping[domainName]
-                  } with email ${user.email}.`
+              if (domain) {
+                const member = domain.members.find(
+                  (m) => m.user.toString() === user._id.toString()
+                );
+                if (member && member.group !== 'admin') {
+                  // eslint-disable-next-line no-await-in-loop
+                  const count = await Aliases.countDocuments({
+                    user: user._id,
+                    domain: domain._id
+                  });
+                  if (count === 0) {
+                    domain.members = domain.members.filter(
+                      (m) => m.user.toString() !== user._id.toString()
+                    );
+                    domain.skip_verification = true;
+                    // eslint-disable-next-line no-await-in-loop
+                    await domain.save();
+                  }
                 }
-              })
-                .then()
-                .catch((err) => logger.fatal(err));
+              }
+            } catch (err) {
+              logger.error(err);
+            }
           }
         }
 
