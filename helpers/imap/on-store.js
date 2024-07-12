@@ -149,9 +149,8 @@ async function onStore(mailboxId, update, session, fn) {
               // skip messages if necessary
               if (
                 queryAll &&
-                session?.selected?.uidList &&
-                Array.isArray(session.selected.uidList) &&
-                !session.selected.uidList.includes(message.uid)
+                (!session?.selected?.uidList ||
+                  !session.selected.uidList.includes(message.uid))
               ) {
                 this.logger.debug('message skipped due to queryAll', {
                   message,

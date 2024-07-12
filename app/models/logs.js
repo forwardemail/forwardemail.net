@@ -26,7 +26,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
@@ -46,7 +46,7 @@ const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
-const isErrorConstructorName = require('#helpers/is-error-constructor-name');
+// const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -75,6 +75,7 @@ const redis = new Redis(
   webSharedConfig.redisMonitor
 );
 
+/*
 let twilioClient;
 if (
   config?.twilio?.accountSid &&
@@ -88,6 +89,7 @@ if (
     // <https://github.com/twilio/twilio-node/issues/938>
     { env: {} }
   );
+*/
 
 const resolver = createTangerine(redis, logger);
 
@@ -916,6 +918,7 @@ Logs.postCreate(async (doc, next) => {
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
 
+  /*
   // send an SMS to admins of the error
   if (twilioClient) {
     try {
@@ -936,6 +939,7 @@ Logs.postCreate(async (doc, next) => {
       if (!isErrorConstructorName(err, 'TypeError')) await logger.fatal(err);
     }
   }
+  */
 
   try {
     // send an email to admins of the error

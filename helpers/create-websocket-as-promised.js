@@ -239,8 +239,9 @@ function createWebSocketAsPromised(options = {}) {
         WebSocket: createWebSocketClass({
           maxPayload: 0, // disable max payload size
           auth,
-          rejectUnauthorized: config.env !== 'production'
-          // perMessageDeflate: false,
+          rejectUnauthorized: config.env !== 'production',
+          // <https://github.com/nodejs/node/issues/8871>
+          perMessageDeflate: false
           // headers: {
           //   authorization: 'Basic ' + Buffer.from(auth).toString('base64')
           // }

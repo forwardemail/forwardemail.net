@@ -14,6 +14,7 @@
  */
 
 const mongoose = require('mongoose');
+const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
@@ -22,6 +23,8 @@ const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
+const config = require('#config');
+const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
@@ -81,6 +84,18 @@ async function onMove(mailboxId, update, session, fn) {
         }
       );
 
+    // check that destination and source are not the same
+    if (targetMailbox._id.toString() === mailboxId.toString())
+      throw new IMAPError(
+        i18n.translate('IMAP_TARGET_AND_SOURCE_SAME', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
+        }
+      );
+
+    //
+    // TODO: we should revert if errors occur (?)
+    //
     // increment modification index to indicate a change occurred on old mailbox
     const mailbox = await Mailboxes.findOneAndUpdate(
       this,
@@ -114,14 +129,139 @@ async function onMove(mailboxId, update, session, fn) {
     const expungeEntries = [];
     const existEntries = [];
 
+    // safeguard
+    if (
+      session?.selected?.mailbox &&
+      session.selected.mailbox.toString() !== mailbox._id.toString()
+    ) {
+      const err = new IMAPError(
+        i18n.translate('IMAP_MAILBOX_SESSION_OUTDATED', session.user.locale),
+        { imapResponse: 'CANNOT' }
+      );
+      err.isCodeBug = true;
+      throw err;
+    }
+
     try {
       const condition = {
         mailbox: mailbox._id.toString()
       };
 
       // <https://github.com/nodemailer/wildduck/issues/698>
-      if (update.messages.length > 0)
+      if (update.messages.length > 0) {
         condition.uid = tools.checkRangeQuery(update.messages);
+      } else {
+        // no messages were selected
+        throw new IMAPError(
+          i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
+          { imapResponse: 'CANNOT' }
+        );
+      }
+
+      const conditionalCountSql = builder.build({
+        table: 'Messages',
+        condition,
+        fields: [
+          {
+            expression: 'count(1)'
+          }
+        ]
+      });
+
+      const conditionCount = session.db
+        .prepare(conditionalCountSql.query)
+        .pluck()
+        .get(conditionalCountSql.values);
+
+      const totalCountSql = builder.build({
+        table: 'Messages',
+        condition: {
+          mailbox: mailbox._id.toString()
+        },
+        fields: [
+          {
+            expression: 'count(1)'
+          }
+        ]
+      });
+
+      const totalCount = session.db
+        .prepare(totalCountSql.query)
+        .pluck()
+        .get(totalCountSql.values);
+
+      //
+      // safeguard to prevent moving all messages from Inbox to Trash
+      //
+      if (
+        totalCount !== 1 &&
+        totalCount === conditionCount &&
+        ((mailbox.path === 'INBOX' && targetMailbox.path === 'Trash') ||
+          (mailbox.specialUse === '\\Inbox' &&
+            targetMailbox.specialUse === '\\Trash'))
+      ) {
+        // temporary logging for admins
+        const err = new TypeError(
+          `Inbox safeguard detected for ${session.user.username}`
+        );
+        err.mailboxId = mailboxId;
+        err.update = update;
+        err.isCodeBug = true;
+        err.session = session;
+        err.totalCount = totalCount;
+        err.conditionCount = conditionCount;
+        this.logger.fatal(err);
+
+        // alert user by email
+        this.client
+          .get(`move_check:${session.user.alias_id}`)
+          .then((cache) => {
+            if (cache) return;
+            this.client
+              .set(`move_check:${session.user.alias_id}`, true, 'PX', ms('7d'))
+              .then(() => {
+                email({
+                  template: 'alert',
+                  message: {
+                    to: session.user.username,
+                    // cc: session.user.owner_full_email,
+                    bcc: config.email.message.from,
+                    subject: i18n.translate(
+                      'IMAP_INBOX_SAFEGUARD_SUBJECT',
+                      session.user.locale
+                    )
+                  },
+                  locals: {
+                    message: i18n.translate(
+                      'IMAP_INBOX_SAFEGUARD',
+                      session.user.locale
+                    ),
+                    locale: session.user.locale
+                  }
+                })
+                  .then()
+                  .catch((err) => {
+                    this.logger.fatal(err);
+                    this.client
+                      .set(
+                        `move_check:${session.user.alias_id}`,
+                        true,
+                        'PX',
+                        ms('1m')
+                      )
+                      .then()
+                      .catch((err) => this.logger.fatal(err));
+                  });
+              })
+              .catch((err) => this.logger.fatal(err));
+          })
+          .catch((err) => this.logger.fatal(err));
+
+        throw new IMAPError(
+          i18n.translate('IMAP_INBOX_SAFEGUARD', session.user.locale),
+          { imapResponse: 'CANNOT' }
+        );
+      }
 
       const sql = builder.build({
         type: 'select',

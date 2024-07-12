@@ -11,6 +11,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
+const ms = require('ms');
 const prettyBytes = require('pretty-bytes');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
@@ -793,7 +794,7 @@ Aliases.statics.isOverQuota = async function (
       )
     );
 
-  // cache the values of storageUsed and isOverQuota for 5-10s
+  // cache the values of storageUsed and isOverQuota for 1d
   if (size === 0)
     await client.set(
       `alias_quota:${alias.id}`,
@@ -802,7 +803,7 @@ Aliases.statics.isOverQuota = async function (
         maxQuotaPerAlias
       }),
       'PX',
-      10000
+      ms('1d')
     );
 
   return { storageUsed, isOverQuota, maxQuotaPerAlias };

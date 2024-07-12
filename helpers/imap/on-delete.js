@@ -100,29 +100,31 @@ async function onDelete(path, session, fn) {
     //   true // cmd === 'UID MOVE'
     // );
 
-    try {
-      const results = await onMovePromise.call(
-        this,
-        mailbox._id,
-        {
-          destination: 'Trash',
-          messages: uidList
-        },
-        {
-          ...session,
-          selected: {
-            uidList
+    if (uidList.length > 0) {
+      try {
+        const results = await onMovePromise.call(
+          this,
+          mailbox._id,
+          {
+            destination: 'Trash',
+            messages: uidList
+          },
+          {
+            ...session,
+            selected: {
+              uidList
+            }
           }
-        }
-      );
-      this.logger.debug('results', { results });
-    } catch (_err) {
-      // since we use multiArgs from pify
-      // if a promise that was wrapped with multiArgs: true
-      // throws, then the error will be an array so we need to get first key
-      let err = _err;
-      if (Array.isArray(err)) err = _err[0];
-      throw err;
+        );
+        this.logger.debug('results', { results });
+      } catch (_err) {
+        // since we use multiArgs from pify
+        // if a promise that was wrapped with multiArgs: true
+        // throws, then the error will be an array so we need to get first key
+        let err = _err;
+        if (Array.isArray(err)) err = _err[0];
+        throw err;
+      }
     }
 
     // delete mailbox

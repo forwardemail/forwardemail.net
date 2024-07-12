@@ -270,6 +270,12 @@ module.exports = {
     'Enable IMAP to receive mail for <span class="notranslate">%s</span>',
   IMAP_NOT_ENABLED_MESSAGE:
     'We detected a login to our IMAP/POP3 servers by <strong class="notranslate text-monospace">%s</strong>, however IMAP storage is not yet enabled on the alias. Please <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s">edit your alias</a> and enable IMAP to receive mail for <strong class="text-monospace notranslate">%s</strong>.',
+  IMAP_INBOX_SAFEGUARD_SUBJECT: 'Inbox Safeguard',
+  IMAP_INBOX_SAFEGUARD:
+    'You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue',
+  IMAP_SESSION_OUTDATED: 'Session mailbox change detected during request',
+  IMAP_TARGET_AND_SOURCE_SAME: 'Source mailbox and target mailbox are equal',
+  IMAP_NO_MESSAGES_SELECTED: 'No messages were selected',
   IMAP_MAILBOX_MAX_EXCEEDED: 'Maximum number of mailboxes exceeded',
   IMAP_MESSAGE_SIZE_EXCEEDED: 'Maximum message size exceeded',
   IMAP_MAILBOX_INBOX_CANNOT_STORE_DRAFTS: 'Inbox cannot store draft messages',

@@ -23,7 +23,9 @@ async function acquireLock(instance, db) {
   if (db?.lock) {
     // safeguard
     if (!db.lock?.success)
-      throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+      throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
+        imapResponse: 'INUSE'
+      });
     return db.lock;
   }
 
@@ -46,7 +48,9 @@ async function acquireLock(instance, db) {
   const lock = await instance.lock.waitAcquireLock(id, ms('30s'), ms('60s'));
 
   if (!lock.success) {
-    const err = new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'));
+    const err = new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
+      imapResponse: 'INUSE'
+    });
     err.lock = lock;
     err.db = db;
     err.instance = instance;

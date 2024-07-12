@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
+const logger = require('#helpers/logger');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 
 async function updateStorageUsed(id, client) {
@@ -74,16 +75,22 @@ async function updateStorageUsed(id, client) {
     });
 
     // reset cache for alias
-    await client.del(`alias_quota:${alias.id}`);
-    await Aliases.isOverQuota(
-      {
-        id: alias.id,
-        domain: alias.domain
-      },
-      0,
-      client,
-      true // indicates reset occurred
-    );
+    client
+      .del(`alias_quota:${alias.id}`)
+      .then(() => {
+        Aliases.isOverQuota(
+          {
+            id: alias.id,
+            domain: alias.domain
+          },
+          0,
+          client,
+          true // indicates reset occurred
+        )
+          .then()
+          .catch((err) => logger.fatal(err));
+      })
+      .catch((err) => logger.fatal(err));
 
     return size;
   }

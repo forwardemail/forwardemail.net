@@ -25,6 +25,7 @@ const { convert } = require('html-to-text');
 
 const email = require('../email');
 const isCodeBug = require('../is-code-bug');
+const isTimeoutError = require('../is-timeout-error');
 
 const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
@@ -169,7 +170,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           );
       } catch (err) {
         this.logger.fatal(err, { path, flags, date, session });
-        if (!isCodeBug(err)) {
+        if (!isCodeBug(err) && !isTimeoutError(err)) {
           // email alias user (only once a day as a reminder) if it was not a code bug
           const now = new Date();
           Aliases.findOneAndUpdate(

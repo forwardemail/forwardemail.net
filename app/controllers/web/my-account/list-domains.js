@@ -45,7 +45,6 @@ async function listDomains(ctx) {
         }
       })
         .populate('domain', 'name')
-        .lean()
         .exec();
       if (aliases.length > 0) {
         try {

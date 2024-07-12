@@ -97,16 +97,28 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
     .join(';');
 
   //
-  // NOTE: IMAP expects "response" of "NO" for permanent errors
-  // (otherwise it's a "TEMPFAIL")
-  //
+  // IMAP Response Code
+  // <https://datatracker.ietf.org/doc/html/rfc5530>
   // <https://github.com/nodemailer/wildduck/issues/511>
+  // TODO: <https://github.com/nodemailer/wildduck/issues/707>
   //
   if (isIMAP) {
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
     if (err.isCodeBug) err.response = 'TEMPFAIL';
     else if (err.responseCode >= 500) err.response = 'NO';
+    /*
+    // TODO: send PR to wildduck so it uses other than TEMPFAIL
+    if (err.isCodeBug) err.imapResponse = 'SERVERBUG';
+    else if (
+      // errors that indicate locking
+      err.code === 'SQLITE_BUSY' ||
+      err.code === 'SQLITE_LOCKED' ||
+      err.message === 'This database connection is busy executing a query'
+    )
+      err.imapResponse = 'INUSE';
+    else if (err.responseCode >= 500) err.imapResponse = 'NO'; // UNAVAILABLE ?
+    */
   }
 
   return err;

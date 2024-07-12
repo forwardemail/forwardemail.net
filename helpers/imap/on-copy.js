@@ -125,6 +125,15 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }
       );
 
+    // check that destination and source are not the same
+    if (targetMailbox._id.toString() === mailbox._id.toString())
+      throw new IMAPError(
+        i18n.translate('IMAP_TARGET_AND_SOURCE_SAME', session.user.locale),
+        {
+          imapResponse: 'CANNOT'
+        }
+      );
+
     try {
       lock = await acquireLock(this, session.db);
 
@@ -133,8 +142,15 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       };
 
       // <https://github.com/nodemailer/wildduck/issues/698>
-      if (update.messages.length > 0)
+      if (update.messages.length > 0) {
         condition.uid = tools.checkRangeQuery(update.messages);
+      } else {
+        // no messages were selected
+        throw new IMAPError(
+          i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
+          { imapResponse: 'CANNOT' }
+        );
+      }
 
       const sql = builder.build({
         type: 'select',

@@ -67,6 +67,7 @@ const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
+const IMAPError = require('#helpers/imap-error');
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
 const onCreate = require('#helpers/imap/on-create');
@@ -1513,7 +1514,10 @@ async function parsePayload(data, ws) {
           ms('1h'),
           ms('10s')
         );
-        if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
+        if (!lock.success)
+          throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
+            imapResponse: 'INUSE'
+          });
 
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
@@ -1778,7 +1782,10 @@ async function parsePayload(data, ws) {
           ms('15s'),
           ms('30s')
         );
-        if (!lock.success) throw i18n.translateError('IMAP_WRITE_LOCK_FAILED');
+        if (!lock.success)
+          throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
+            imapResponse: 'INUSE'
+          });
 
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
