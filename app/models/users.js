@@ -1206,7 +1206,7 @@ Users.postCreate(async (user, next) => {
     if (ids.length === 0) return next();
 
     // get all the admin emails
-    const to = await Users.distinct('email', {
+    const to = await user.constructor.distinct('email', {
       id: {
         $in: ids
       },

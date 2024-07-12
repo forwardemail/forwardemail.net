@@ -52,7 +52,7 @@ async function listDomains(ctx) {
           'error',
           ctx.translate(
             'RECIPIENT_MATCHES_EMAIL',
-            aliases.map((a) => `${a?.name}@${a?.domain?.name}`)
+            aliases.map((a) => `${a?.name}@${a?.domain?.name}`).join(', ')
           )
         );
       }
