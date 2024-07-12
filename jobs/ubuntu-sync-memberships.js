@@ -132,6 +132,8 @@ graceful.listen();
               (m) => m.user.toString() === user._id.toString()
             );
 
+            let needsAdded = false;
+
             if (
               json.entries.some(
                 (entry) =>
@@ -144,6 +146,7 @@ graceful.listen();
               //       unless we successfully created an alias for them
               //
               if (!match) {
+                needsAdded = true;
                 match = {
                   user: user._id,
                   group: 'user'
@@ -160,8 +163,16 @@ graceful.listen();
                 .lean()
                 .exec();
 
-              // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-              if (!alias) {
+              if (alias) {
+                // ensure the user is still on the team
+                if (needsAdded) {
+                  domain.members.push(match);
+                  domain.skip_verification = true;
+                  // eslint-disable-next-line no-await-in-loop
+                  await domain.save();
+                }
+              } else {
+                // if not, then create it, but only if there aren't already 3+ aliases owned by this user
                 // eslint-disable-next-line no-await-in-loop
                 const count = await Aliases.countDocuments({
                   user: user._id,
@@ -204,10 +215,12 @@ graceful.listen();
                 // NOTE: we don't want to add the user
                 //       unless we successfully created an alias for them
                 //
-                domain.members.push(match);
-                domain.skip_verification = true;
-                // eslint-disable-next-line no-await-in-loop
-                await domain.save();
+                if (needsAdded) {
+                  domain.members.push(match);
+                  domain.skip_verification = true;
+                  // eslint-disable-next-line no-await-in-loop
+                  await domain.save();
+                }
 
                 // notify admins
                 if (to.length > 0)
