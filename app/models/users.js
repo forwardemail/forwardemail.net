@@ -959,6 +959,8 @@ Users.pre('save', async function (next) {
             (m) => m.user.toString() === this._id.toString()
           );
 
+          let needsAdded = false;
+
           if (
             json.entries.some(
               (entry) =>
@@ -975,6 +977,7 @@ Users.pre('save', async function (next) {
             //       unless we successfully created an alias for them
             //
             if (!match) {
+              needsAdded = true;
               match = {
                 user: this._id,
                 group: 'user'
@@ -989,8 +992,19 @@ Users.pre('save', async function (next) {
               name: this[fields.ubuntuUsername].toLowerCase()
             });
 
-            // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-            if (!alias) {
+            if (alias) {
+              //
+              // NOTE: we don't want to add the user
+              //       unless we successfully created an alias for them
+              //
+              if (needsAdded) {
+                domain.members.push(match);
+                domain.skip_verification = true;
+                // eslint-disable-next-line no-await-in-loop
+                await domain.save();
+              }
+            } else {
+              // if not, then create it, but only if there aren't already 3+ aliases owned by this user
               // eslint-disable-next-line no-await-in-loop
               const count = await conn.models.Aliases.countDocuments({
                 user: this._id,
@@ -1028,10 +1042,12 @@ Users.pre('save', async function (next) {
               // NOTE: we don't want to add the user
               //       unless we successfully created an alias for them
               //
-              domain.members.push(match);
-              domain.skip_verification = true;
-              // eslint-disable-next-line no-await-in-loop
-              await domain.save();
+              if (needsAdded) {
+                domain.members.push(match);
+                domain.skip_verification = true;
+                // eslint-disable-next-line no-await-in-loop
+                await domain.save();
+              }
             }
 
             continue;
