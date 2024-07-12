@@ -48,11 +48,24 @@ async function listDomains(ctx) {
         .lean()
         .exec();
       if (aliases.length > 0) {
+        try {
+          await Promise.all(
+            aliases.map(async (alias) => {
+              alias.is_enabled = false;
+              await alias.save();
+            })
+          );
+        } catch (err) {
+          ctx.logger.error(err);
+        }
+
         ctx.flash(
           'error',
           ctx.translate(
             'RECIPIENT_MATCHES_EMAIL',
-            aliases.map((a) => `${a?.name}@${a?.domain?.name}`).join(', ')
+            aliases
+              .map((a) => `${a?.name}@${a?.domain?.name}`)
+              .join('</li><li>')
           )
         );
       }

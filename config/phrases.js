@@ -27,7 +27,7 @@ module.exports = {
   INVALID_LOCAL_PART:
     '<span class="notranslate">%s</span> is not a valid UTF-8 local part for an alias name',
   RECIPIENT_MATCHES_EMAIL:
-    'You must edit the "Recipients" for these aliases to ensure they forward to a proper destination: <span class="notranslate">%s</span>',
+    '<p>You must edit the "Recipients" for these aliases to ensure they forward to a proper destination:</p><ul class="notranslate"><li>%s<li></ul><p><strong>IMPORTANT NOTE:</strong> You must ensure that you check the checkbox for "Active" once complete to re-enable the aliases on the Edit Alias screen.</p>',
   LINK_EXPIRED_OR_INVALID:
     'Link has expired, already been claimed, or is no longer active.',
   SMTP_RATE_LIMIT_EXCEEDED:
