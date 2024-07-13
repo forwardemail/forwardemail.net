@@ -96,7 +96,9 @@ async function onStore(mailboxId, update, session, fn) {
 
     // `1:*`
     // <https://github.com/nodemailer/wildduck/pull/569>
-    if (_.isEqual(update.messages.sort(), _.sortBy(session.selected.uidList)))
+    if (
+      _.isEqual(_.sortBy(update.messages), _.sortBy(session.selected.uidList))
+    )
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else query.uid = tools.checkRangeQuery(update.messages);

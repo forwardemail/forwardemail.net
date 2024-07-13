@@ -112,7 +112,9 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // `1:*`
     // <https://github.com/nodemailer/wildduck/pull/559>
-    if (_.isEqual(options.messages.sort(), _.sortBy(session.selected.uidList)))
+    if (
+      _.isEqual(_.sortBy(options.messages), _.sortBy(session.selected.uidList))
+    )
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else pageQuery.uid = tools.checkRangeQuery(options.messages, false);
