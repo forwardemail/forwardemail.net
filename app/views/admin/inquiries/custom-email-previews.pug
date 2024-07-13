@@ -1,0 +1,122 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="x-ua-compatible", content="ie=edge")
+    if subject
+      title= subject
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    style(type='text/css').
+      iframe {
+        border: 0;
+        width: 100%;
+        height: 400px;
+        min-height: 200px;
+        display: block;
+      }
+      .iframe-container {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .iframe-content {
+        width: 1200px;
+      }
+
+      .preview-email-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 100%;
+        border: 1px solid black;
+        background: #e2e2e2;
+      }
+      .preview-email-tabs input[type="radio"] {
+        display: none;
+      }
+      .preview-email-tabs label {
+        padding: 1rem;
+        background: #e2e2e2;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .preview-email-tabs .preview-email-tab {
+        width: 100%;
+        background: #fff;
+        order: 1;
+        display: none;
+      }
+      .preview-email-tabs input[type='radio']:checked + label + .preview-email-tab {
+        display: block;
+      }
+      .preview-email-tabs input[type="radio"]:checked + label {
+        background: #fff;
+      }
+  body
+    table
+      if base64
+        tr
+          td(colspan=2, style='text-align:right;'): button(type='button', onclick='downloadRawEmail()') Download Original
+        script.
+          function downloadRawEmail() {
+            var link = document.createElement('a');
+            link.href = "data:message/rfc822;base64,#{base64}";
+            link.download = "#{messageId ? messageId.replace('<', '').replace('>', '').split('@')[0] : Date.now()}.eml";
+            link.click();
+          }
+      each headerLine, i in headerLines
+        - const index = headerLine.line.indexOf(': ')
+        - const value = headerLine.line.slice(index + 2)
+        - const header = headers.get(headerLine.key)
+        tr
+          td
+            strong= headerLine.line.slice(0, index)
+          td
+            if header
+              case headerLine.key
+                when 'content-type'
+                  //- TODO: header.params[key]
+                  = header.value || header || value
+                when 'content-disposition'
+                when 'dkim-signature'
+                  //- TODO: header.params[key]
+                  = value
+                when 'subject'
+                when 'references'
+                when 'message-id'
+                when 'in-reply-to'
+                when 'priority'
+                when 'x-priority'
+                when 'x-msmail-priority'
+                when 'importance'
+                  = header.value || header || value
+                when 'from'
+                when 'to'
+                when 'cc'
+                when 'bcc'
+                when 'sender'
+                when 'reply-to'
+                when 'delivered-to'
+                when 'return-path'
+                  if header.html
+                    != header.html
+                  else
+                    = header.value || header || value
+                default
+                  //- when 'date'
+                  = header.value || header || value
+            else
+              = value
+      if attachments && attachments.length > 0
+        tr
+          td: strong Attachments
+          td
+            ul
+              each a in attachments
+                li
+                  a(href=`data:${a.contentType};base64,${a.content.toString('base64')}`, download=a.filename, target='_blank')
+                    if a.filename
+                      code= a.filename
+                    else
+                      code= 'Unnamed file'
+    .preview-email-tabs
+    .iframe-container
+      iframe.iframe-content(sandbox='', referrerpolicy='no-referrer', seamless='seamless', srcdoc=`<base target='_top'>${html}`)#html

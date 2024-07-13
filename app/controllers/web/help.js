@@ -7,10 +7,20 @@ const sanitize = require('sanitize-html');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const nodemailer = require('nodemailer');
+const Axe = require('axe');
 
 const emailHelper = require('#helpers/email');
 const { Domains, Inquiries } = require('#models');
 const config = require('#config');
+
+const transporter = nodemailer.createTransport({
+  streamTransport: true,
+  buffer: true,
+  logger: new Axe({
+    silent: true
+  })
+});
 
 async function help(ctx) {
   const { body } = ctx.request;
@@ -36,20 +46,20 @@ async function help(ctx) {
       .lean()
       .exec();
 
+    const user = ctx.state.user.toObject();
+
     const inquiry = await Inquiries.create({
-      user: ctx.state.user._id,
-      message: body.message
+      user: user.id,
+      sender_email: user.full_email,
+      is_resolved: false
     });
 
     ctx.logger.debug('created inquiry', { inquiry });
 
-    const user = ctx.state.user.toObject();
-
     const emoji = ctx.state.emoji(user.plan === 'free' ? 'mega' : 'star');
-    const createdAt = new Date(inquiry.created_at).getTime();
     const subject = `${emoji} ${
       user.plan === 'free' ? '' : 'Premium Support: '
-    }${ctx.translate('YOUR_HELP_REQUEST')} #${createdAt}`;
+    }${ctx.translate('YOUR_HELP_REQUEST')} #${inquiry.reference}`;
 
     const email = await emailHelper({
       template: 'inquiry',
@@ -60,17 +70,20 @@ async function help(ctx) {
       locals: {
         user: ctx.state.user.toObject(),
         domains,
-        inquiry,
+        inquiry: { subject, message: body.message },
         subject
       }
     });
 
-    await Inquiries.findOneAndUpdate(
-      { id: inquiry.id },
-      {
-        $set: { references: [email.messageId], subject }
-      }
-    );
+    const info = await transporter.sendMail(email.originalMessage);
+
+    inquiry.original_message = body.message;
+    inquiry.subject = subject;
+    inquiry.messages.push({
+      raw: info.message,
+      text: body.message
+    });
+    await inquiry.save();
 
     const message = ctx.translate('SUPPORT_REQUEST_SENT');
     if (ctx.accepts('html')) {

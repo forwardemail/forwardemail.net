@@ -3,17 +3,50 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+const path = require('node:path');
+const process = require('node:process');
+const getStream = require('get-stream');
+const _ = require('lodash');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
+const previewEmail = require('preview-email');
+const nodemailer = require('nodemailer');
+const Axe = require('axe');
 
 const { Inquiries, Users } = require('#models');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 
+const transporter = nodemailer.createTransport({
+  streamTransport: true,
+  buffer: true,
+  logger: new Axe({
+    silent: true
+  })
+});
+
+const USER_SEARCH_PATHS = ['email', 'message'];
+
 async function list(ctx) {
-  let query = { $or: [] };
+  let query = {};
+
+  if (ctx.query.q) {
+    query = { $or: [] };
+    for (const field of USER_SEARCH_PATHS) {
+      query.$or.push(
+        { [field]: { $regex: ctx.query.q, $options: 'i' } },
+        { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
+      );
+    }
+
+    // filter for non-banned and verified users
+    // query[config.userFields.isBanned] = false;
+    // query[config.userFields.hasVerifiedEmail] = true;
+    query.$or.push({ is_resolved: false });
+  }
 
   let $sort = { created_at: -1 };
   if (ctx.query.sort) {
@@ -22,8 +55,6 @@ async function list(ctx) {
       [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
     };
   }
-
-  query.$or.push({ is_resolved: false });
 
   if (isSANB(ctx.query.mongodb_query)) {
     try {
@@ -39,11 +70,6 @@ async function list(ctx) {
   const [inquiries, itemCount] = await Promise.all([
     Inquiries.aggregate([
       {
-        $match: {
-          ...query
-        }
-      },
-      {
         $lookup: {
           from: 'users',
           localField: 'user',
@@ -52,23 +78,55 @@ async function list(ctx) {
         }
       },
       {
-        $unwind: '$user'
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
-        $match: {
-          'user.email': { $regex: String(ctx.query.q || ''), $options: 'i' }
+        $addFields: {
+          firstMessage: {
+            $ifNull: [
+              {
+                $arrayElemAt: [
+                  {
+                    $sortArray: {
+                      input: '$messages',
+                      sortBy: { created_at: 1 }
+                    }
+                  },
+                  0
+                ]
+              },
+              {
+                content: '$text',
+                created_at: '$created_at',
+                updated_at: '$updated_at'
+              }
+            ]
+          },
+          email: { $ifNull: ['$user.email', '$sender_email'] },
+          plan: { $ifNull: ['$user.plan', null] }
+          // mostRecentMessage: {
+          //   $ifNull: [
+          //     { $arrayElemAt: [{ $sortArray: { input: '$messages', sortBy: { created_at: 1 } } }, -1] },
+          //     { content: '$message', created_at: '$created_at', updated_at: '$updated_at' }
+          //   ]
+          // }
         }
       },
       {
         $project: {
           id: 1,
-          message: 1,
+          message: { $ifNull: ['$message', '$firstMessage.text'] },
           created_at: 1,
           updated_at: 1,
-          email: '$user.email',
-          plan: '$user.plan'
+          reference: 1,
+          email: 1,
+          plan: 1
         }
       },
+      { $match: query },
       {
         $sort
       },
@@ -103,8 +161,23 @@ async function list(ctx) {
 }
 
 async function retrieve(ctx) {
+  const emailTemplatePath = path.join(
+    process.cwd(),
+    'app/views/admin/inquiries/custom-email-previews.pug'
+  );
+
   ctx.state.result = await Inquiries.findById(ctx.params.id);
-  if (!ctx.state.result)
+  ctx.state.messages = await Promise.all(
+    ctx.state.result.messages.map(async (message) => {
+      message.html = await previewEmail(message.raw, {
+        template: emailTemplatePath,
+        ...config.previewEmailOptions
+      });
+      return message;
+    })
+  );
+
+  if (!ctx.state.messages)
     throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
   return ctx.render('admin/inquiries/retrieve');
 }
@@ -136,29 +209,55 @@ async function reply(ctx) {
   if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
 
   const user = await Users.findById(inquiry.user);
-  if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+  if (!user) {
+    ctx.logger.warn('no user found, trying sender_email');
+    if (!inquiry.sender_email)
+      throw Boom.notFound(ctx.translateError('INVALID_USER'));
+  }
 
-  const { message } = ctx.request.body;
+  // rely on historical user.email or fall back to newer sender_email
+  // for those sending direct emails instead of creating an inquiry
+  const email = user?.email ?? inquiry.sender_email;
 
-  await emailHelper({
+  const { body, files } = ctx.request;
+
+  const resolvedAttachments = await Promise.all(
+    files?.attachments.map(async (attachment) => {
+      const content = await getStream.buffer(attachment.stream);
+      return {
+        filename: attachment.originalName,
+        content,
+        content_type: attachment.detectedMimeType,
+        size: Buffer.byteLength(content)
+      };
+    })
+  );
+
+  const lastMessageIndex = inquiry.messages.length - 1;
+  const lastMessage = inquiry.messages[lastMessageIndex];
+
+  // https://github.com/nodemailer/nodemailer/issues/1312#issuecomment-891237590
+  const info = await emailHelper({
     template: 'inquiry-response',
     message: {
-      to: user[config.userFields.fullEmail],
+      to: email,
       cc: config.email.message.from,
-      inReplyTo: inquiry.references[0],
-      references: inquiry.references,
-      subject: inquiry.subject
+      inReplyTo: lastMessage.reference,
+      references: lastMessage.reference,
+      subject: inquiry.subject,
+      attachments: resolvedAttachments
     },
     locals: {
-      user: user.toObject(),
+      user: { email },
       inquiry,
-      response: { message }
+      response: { message: body?.message }
     }
   });
 
-  await Inquiries.findByIdAndUpdate(inquiry._id, {
-    $set: { is_resolved: true }
-  });
+  const raw = await transporter.sendMail(info.originalMessage);
+  inquiry.messages.push({ raw: raw.message });
+
+  await inquiry.save();
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -187,37 +286,47 @@ async function bulkReply(ctx) {
 
       // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(inquiry.user);
-      if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+      if (!user) {
+        ctx.logger.warn('no user found, trying sender_email');
+        if (!inquiry.sender_email)
+          throw Boom.notFound(ctx.translateError('INVALID_USER'));
+      }
+
+      // rely on historical user.email or fall back to newer sender_email
+      // for those sending direct emails instead of creating an inquiry
+      const email = user?.email ?? inquiry.sender_email;
 
       // if the user has multiple inquiries and we've just responded
       // in bulk to a previous message then let's skip the email
-      if (!repliedTo.has(user)) {
+      if (!repliedTo.has(email)) {
         // eslint-disable-next-line no-await-in-loop
-        await emailHelper({
+        const info = await emailHelper({
           template: 'inquiry-response',
           message: {
-            to: user[config.userFields.fullEmail],
+            to: email,
             cc: config.email.message.from,
-            inReplyTo: inquiry.references[0],
+            inReplyTo: inquiry?.messages[inquiry.messages.length - 1] || '',
             references: inquiry.references,
             subject: inquiry.subject
           },
           locals: {
-            user: user.toObject(),
+            user: { email },
             inquiry,
             response: { message }
           }
         });
+
+        // eslint-disable-next-line no-await-in-loop
+        const raw = await transporter.sendMail(info?.originalMessage);
+        inquiry.messages.push({ raw: raw.message });
+        // eslint-disable-next-line no-await-in-loop
+        await inquiry.save();
+
+        repliedTo.add(email);
       }
-
-      // eslint-disable-next-line no-await-in-loop
-      await Inquiries.findByIdAndUpdate(inquiry._id, {
-        $set: { is_resolved: true }
-      });
-
-      repliedTo.add(user);
     }
-  } catch {
+  } catch (err) {
+    ctx.logger.error(err);
     throw Boom.badImplementation(
       ctx.translateError('INQUIRY_RESPONSE_BULK_REPLY_ERROR')
     );

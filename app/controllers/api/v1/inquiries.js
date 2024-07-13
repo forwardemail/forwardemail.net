@@ -5,15 +5,16 @@
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const { isEmail } = require('validator');
 
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
 
-function findSubject(headers) {
+function findHeaderByName(name, headers) {
   for (const header of headers) {
     const key = header.key.toLowerCase();
-    if (key === 'subject') {
-      return header.line.split(': ')[1];
+    if (key === name) {
+      return header.line;
     }
   }
 
@@ -33,7 +34,7 @@ async function create(ctx) {
   )
     throw Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'));
 
-  const { attachments, headerLines, messageId, session, text } = body;
+  const { headerLines, session, text } = body;
   if (!session)
     Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'));
 
@@ -49,27 +50,53 @@ async function create(ctx) {
       Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_EMAIL'))
     );
 
-  const message = text;
-  const references = [messageId];
-  const subject = findSubject(headerLines);
+  if (
+    !Array.isArray(body?.from?.value) ||
+    body.from.value.length === 0 ||
+    typeof body.from.value[0] !== 'object' ||
+    typeof body.from.value[0].address !== 'string' ||
+    !isEmail(body.from.value[0].address)
+  )
+    throw new Error('Email address invalid');
 
-  const isResolved = false;
-  const isWebhook = true;
+  const subject = findHeaderByName('subject', headerLines);
 
   let inquiry;
   try {
-    const user = await Users.findOne({ email: sender });
-    if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
+    const user = await Users.findOne({ email: body.from.value[0].address });
+    if (!user)
+      ctx.logger.warn(`account not found for ${body.from.value[0].address}`);
 
+    const messagePayload = {
+      raw: body.raw,
+      text: body.text
+    };
+
+    const previousInquiry = await Inquiries.findOne({
+      sender_email: sender,
+      subject
+    });
+    if (previousInquiry) {
+      ctx.logger.info(
+        `previous inquiry found for user: ${sender} with subject: ${subject}`
+      );
+      previousInquiry.messages.push(messagePayload);
+      previousInquiry.is_resolved = false;
+      await previousInquiry.save();
+      ctx.body = previousInquiry;
+      return;
+    }
+
+    ctx.logger.info(
+      `new inquiry found for user: ${sender} with subject: ${subject}`
+    );
     inquiry = await Inquiries.create({
       user,
-      message,
-      is_denylist: user.is_denylist,
-      is_resolved: isResolved,
-      references,
-      subject,
-      is_webhook: isWebhook,
-      attachments
+      sender_email: sender,
+      messages: [messagePayload],
+      is_denylist: user?.is_denylist,
+      is_resolved: false,
+      subject
     });
   } catch (err) {
     ctx.logger.error(err);
