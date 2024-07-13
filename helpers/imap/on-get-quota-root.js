@@ -13,35 +13,23 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const { Builder } = require('json-sql');
+
 const Aliases = require('#models/aliases');
-// const Mailboxes = require('#models/mailboxes');
+const Mailboxes = require('#models/mailboxes');
 const IMAPError = require('#helpers/imap-error');
 const i18n = require('#helpers/i18n');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
+const builder = new Builder();
+
+//
+// NOTE: if you rewrite this to use `if (this.wsp)` like others
+//       then you also need to return the uidList and update session on IMAP side
+//
 async function onGetQuotaRoot(path, session, fn) {
   this.logger.debug('GETQUOTAROOT', { path, session });
-
-  if (this.wsp) {
-    try {
-      const data = await this.wsp.request({
-        action: 'get_quota_root',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress
-        },
-        path
-      });
-      fn(null, ...data);
-    } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
-      fn(err);
-    }
-
-    return;
-  }
 
   try {
     await this.refreshSession(session, 'GETQUOTAROOT');
@@ -51,14 +39,25 @@ async function onGetQuotaRoot(path, session, fn) {
     //
     // NOTE: this has caching mechanism to prevent more than 1 call every 10s
     //
-    syncTemporaryMailbox
-      .call(this, session)
-      .then((sync) => {
-        this.logger.debug('tmp db sync complete', { sync, session });
-      })
-      .catch((err) => this.logger.fatal(err, { session }));
+    if (this.wsp) {
+      this.wsp
+        .request({
+          action: 'sync',
+          session: { user: session.user }
+        })
+        .then((deleted) => {
+          this.logger.debug('synced messages', { deleted });
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+    } else {
+      syncTemporaryMailbox
+        .call(this, session)
+        .then((deleted) => {
+          this.logger.debug('synced messages', { deleted });
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+    }
 
-    /*
     const mailbox = await Mailboxes.findOne(this, session, {
       path
     });
@@ -70,24 +69,47 @@ async function onGetQuotaRoot(path, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
-    */
 
-    // TODO: if uids get out of order then this should trigger
-    //       a reset perhaps maybe?
+    //
+    // if the mailbox is currently selected then update the uidList
+    // <https://github.com/nodemailer/wildduck/issues/708#issuecomment-2227090990>
+    //
+    if (
+      session?.selected?.mailbox &&
+      session.selected.mailbox.toString() === mailbox._id.toString()
+    ) {
+      // update modifyIndex
+      session.selected.modifyIndex = mailbox.modifyIndex;
 
-    const exists =
-      session.db
-        .prepare(`select exists(select 1 FROM "Mailboxes" WHERE "path" = ?)`)
-        .pluck()
-        .get(path) === 1;
+      // update uidList
+      const sql = builder.build({
+        type: 'select',
+        table: 'Messages',
+        condition: {
+          mailbox: mailbox._id.toString()
+        },
+        group: 'uid',
+        fields: ['uid'],
+        sort: 'uid'
+      });
 
-    if (!exists)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          imapResponse: 'NONEXISTENT'
-        }
-      );
+      if (session.db.readonly) {
+        session.selected.uidList = await this.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          stmt: [
+            ['prepare', sql.query],
+            ['pluck', true],
+            ['all', sql.values]
+          ]
+        });
+      } else {
+        session.selected.uidList = session.db
+          .prepare(sql.query)
+          .pluck()
+          .all(sql.values);
+      }
+    }
 
     const { storageUsed, maxQuotaPerAlias } = await Aliases.isOverQuota(
       {
@@ -105,7 +127,9 @@ async function onGetQuotaRoot(path, session, fn) {
       storageUsed
     });
   } catch (err) {
-    fn(refineAndLogError(err, session, true, this));
+    const error = refineAndLogError(err, session, true, this);
+    if (error.imapResponse) return fn(null, error.imapResponse);
+    fn(error);
   }
 }
 

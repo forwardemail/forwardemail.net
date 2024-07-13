@@ -10,10 +10,13 @@ const Lock = require('ioredfour');
 const mongoose = require('mongoose');
 const ms = require('ms');
 
+const logger = require('#helpers/logger');
 const IMAPError = require('#helpers/imap-error');
 const i18n = require('#helpers/i18n');
 
 async function acquireLock(instance, db) {
+  logger.debug('acquiring lock', new Error('stack').stack);
+
   if (!(instance?.lock instanceof Lock))
     throw new TypeError('Lock not instance');
   if (db && !(db instanceof Database) && !db.wsp)
@@ -63,6 +66,7 @@ async function acquireLock(instance, db) {
 }
 
 async function releaseLock(instance, db, lock) {
+  logger.debug('releasing lock', lock?.id);
   if (!(instance?.lock instanceof Lock))
     throw new TypeError('Lock not instance');
   if (db && !(db instanceof Database) && !db.wsp)

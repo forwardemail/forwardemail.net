@@ -19,12 +19,20 @@ const env = require('#config/env');
 const TemporaryMessages = require('#models/temporary-messages');
 
 async function getTemporaryDatabase(session) {
-  // TODO: check disk space here (2x existing tmp db size)
+  // `this` is the instance of SQLite
+  // check if we have in-memory existing opened database
+  if (
+    this.temporaryDatabaseMap.has(session.user.alias_id) &&
+    this.temporaryDatabaseMap.get(session.user.alias_id).open === true &&
+    this.temporaryDatabaseMap.get(session.user.alias_id).readonly === false
+  ) {
+    return this.temporaryDatabaseMap.get(session.user.alias_id);
+  }
+
   const storagePath = getPathToDatabase({
     id: session.user.alias_id,
     storage_location: session.user.storage_location
   });
-
   const filePath = path.join(
     path.dirname(storagePath),
     `${session.user.alias_id}-tmp.sqlite`
@@ -37,6 +45,9 @@ async function getTemporaryDatabase(session) {
     // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
     verbose: config.env === 'development' ? console.log : null
   });
+
+  // store in-memory open connection
+  this.temporaryDatabaseMap.set(session.user.alias_id, tmpDb);
 
   const tmpSession = {
     ...session,

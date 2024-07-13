@@ -48,14 +48,9 @@ const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 async function onAppend(path, flags, date, raw, session, fn) {
   this.logger.debug('APPEND', { path, flags, date, session });
 
-  let thread;
-  let hasNodeBodies;
-  let maildata;
-  let mimeTreeData;
-
   if (this.wsp) {
-    // do not allow messages larger than 64 MB
     try {
+      // do not allow messages larger than 64 MB
       if (
         raw &&
         (Buffer.isBuffer(raw) ? Buffer.byteLength(raw) : raw.length) >
@@ -65,7 +60,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
           i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
         );
 
-      console.time(`append timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'append',
         session: {
@@ -78,7 +72,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
         date,
         raw
       });
-      console.timeEnd(`append timer ${session.id}`);
+      this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, response);
     } catch (err) {
@@ -88,6 +82,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     return;
   }
+
+  let thread;
+  let hasNodeBodies;
+  let maildata;
+  let mimeTreeData;
 
   try {
     await this.refreshSession(session, 'APPEND');
@@ -494,7 +493,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // update storage
     try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { message, path, flags, date, session });
@@ -518,7 +516,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session.selected.mailbox.toString() === response.mailbox.toString()
     )
       await this.wss.broadcast(
-        session,
         formatResponse.call(session, 'EXISTS', response.uid)
       );
 
@@ -544,25 +541,18 @@ async function onAppend(path, flags, date, raw, session, fn) {
         : [];
 
     if (attachmentIds.length > 0) {
-      if (session.db) {
-        try {
-          await this.attachmentStorage.deleteMany(
-            this,
-            session,
-            attachmentIds,
-            maildata.magic
-          );
-        } catch (err) {
-          this.logger.fatal(err, {
-            attachmentIds,
-            session
-          });
-        }
-      } else {
-        this.logger.fatal(
-          new TypeError('Attachment storage needs to cleanup'),
-          { attachmentIds, session }
+      try {
+        await this.attachmentStorage.deleteMany(
+          this,
+          session,
+          attachmentIds,
+          maildata.magic
         );
+      } catch (err) {
+        this.logger.fatal(err, {
+          attachmentIds,
+          session
+        });
       }
     }
 

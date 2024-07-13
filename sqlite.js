@@ -15,10 +15,12 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const ip = require('ip');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const SQLite = require('./sqlite-server');
 
+const closeDatabase = require('#helpers/close-database');
 const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -36,7 +38,30 @@ const graceful = new Graceful({
   servers: [sqlite.server],
   redisClients: [client, subscriber],
   logger,
-  customHandlers: [() => promisify(sqlite.wss.close).bind(sqlite.wss)()]
+  timeoutMs: ms('1m'),
+  customHandlers: [
+    () => promisify(sqlite.wss.close).bind(sqlite.wss)(),
+    // normal databases
+    async () => {
+      if (sqlite.databaseMap.size === 0) return;
+      await Promise.all(
+        [...sqlite.databaseMap.keys()].map(async (key) => {
+          await closeDatabase(sqlite.databaseMap.get(key));
+          sqlite.databaseMap.delete(key);
+        })
+      );
+    },
+    // temporary databases
+    async () => {
+      if (sqlite.temporaryDatabaseMap.size === 0) return;
+      await Promise.all(
+        [...sqlite.temporaryDatabaseMap.keys()].map(async (key) => {
+          await closeDatabase(sqlite.temporaryDatabaseMap.get(key));
+          sqlite.temporaryDatabaseMap.delete(key);
+        })
+      );
+    }
+  ]
 });
 graceful.listen();
 monitorServer();

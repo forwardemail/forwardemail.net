@@ -208,7 +208,7 @@ class IMAPNotifier extends EventEmitter {
             }
           },
           {
-            lock,
+            lock: lock || newLock,
             returnDocument: 'after'
           }
         );
@@ -285,11 +285,12 @@ class IMAPNotifier extends EventEmitter {
             await instance.wsp.request({
               action: 'stmt',
               session: { user: session.user },
-              lock,
+              lock: lock || newLock,
               stmt: [
                 ['prepare', sql.query],
                 ['run', sql.values]
-              ]
+              ],
+              checkpoint: 'PASSIVE'
             });
           } else {
             session.db.prepare(sql.query).run(sql.values);
@@ -366,6 +367,9 @@ class IMAPNotifier extends EventEmitter {
     // ignore unauthenticated sessions
     if (!data?.session?.user?.alias_id) return fn(null, true);
 
+    /*
+    // TODO: this should signal to sqlite to cleanup
+    //       via parse-payload function sent over websocket
     // close the db connection
     if (
       data?.session?.db?.pragma === 'function' &&
@@ -379,6 +383,7 @@ class IMAPNotifier extends EventEmitter {
         logger.fatal(err, { session: data.session });
       }
     }
+    */
 
     // decrease # connections for this alias and domain
     const key = `connections_${config.env}:${

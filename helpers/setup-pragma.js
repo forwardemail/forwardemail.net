@@ -30,6 +30,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // safeguards
   if (!db.open) throw new TypeError('Database is not open');
   if (db.memory) throw new TypeError('Memory database');
+
   // NOTE: if you change anything in here change backup in sqlite-server
   db.pragma(`cipher='${cipher}'`);
   if (typeof db.key === 'function')
@@ -106,6 +107,16 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   db.pragma(`encoding='UTF-8'`);
 
   if (db.readonly) db.pragma('query_only=true');
+
+  //
+  // Applications that use long-lived database connections
+  // should run "PRAGMA optimize=0x10002;" when the connection
+  // is first opened, and then also run "PRAGMA optimize;"
+  // periodically, perhaps once per day or once per hour.
+  //
+  // <https://www.sqlite.org/pragma.html#pragma_optimize>
+  //
+  db.pragma('optimize=0x10002;');
 
   // load regex extension for REGEX support
   try {

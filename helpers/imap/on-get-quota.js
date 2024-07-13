@@ -21,26 +21,6 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onGetQuota(path, session, fn) {
   this.logger.debug('GETQUOTA', { path, session });
 
-  if (this.wsp) {
-    try {
-      const data = await this.wsp.request({
-        action: 'get_quota',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress
-        },
-        path
-      });
-      fn(null, ...data);
-    } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
-      fn(err);
-    }
-
-    return;
-  }
-
   try {
     await this.refreshSession(session, 'GETQUOTA');
 
@@ -62,7 +42,9 @@ async function onGetQuota(path, session, fn) {
       storageUsed
     });
   } catch (err) {
-    fn(refineAndLogError(err, session, true, this));
+    const error = refineAndLogError(err, session, true, this);
+    if (error.imapResponse) return fn(null, error.imapResponse);
+    fn(error);
   }
 }
 

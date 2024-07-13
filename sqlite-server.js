@@ -51,6 +51,10 @@ class SQLite {
           })
         : http.createServer();
 
+    // in-memory database map for re-using open database connection instances
+    this.databaseMap = new Map();
+    this.temporaryDatabaseMap = new Map();
+
     //
     // bind helpers so we can re-use IMAP helper commands
     // (mirrored from `imap-server.js`)
@@ -238,12 +242,12 @@ class SQLite {
       ws.on('error', (err) => logger.error(err, { ws, request }));
 
       ws.on('ping', function () {
-        logger.debug('ping from %s', request.socket.remoteAddress);
+        // logger.debug('ping from %s', request.socket.remoteAddress);
         this.isAlive = true;
       });
 
       ws.on('pong', function () {
-        logger.debug('pong from %s', request.socket.remoteAddress);
+        // logger.debug('pong from %s', request.socket.remoteAddress);
         this.isAlive = true;
       });
 

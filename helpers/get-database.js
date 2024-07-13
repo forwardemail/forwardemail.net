@@ -486,11 +486,29 @@ async function getDatabase(
   let lock;
 
   try {
+    // if server is shutting down then don't bother getting database
+    if (!instance?.server?._handle) {
+      const err = new TypeError('Server is shutting down');
+      err.name = 'TimeoutError';
+      throw err;
+    }
+
     //
     // <https://github.com/WiseLibs/better-sqlite3/issues/1217>
     // <https://github.com/mattn/go-sqlite3/issues/274#issuecomment-1429010261>
     // <https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#:~:text=Transaction%20functions%20do,loop%20ticks%20anyways>
     //
+    // check if we have in-memory existing opened database
+    if (
+      instance.databaseMap.has(alias.id) &&
+      instance.databaseMap.get(alias.id).open === true &&
+      instance.databaseMap.get(alias.id).readonly === false
+    ) {
+      db = instance.databaseMap.get(alias.id);
+      session.db = db;
+      return db;
+    }
+
     db = new Database(dbFilePath, {
       readonly,
       fileMustExist: readonly,
@@ -498,11 +516,15 @@ async function getDatabase(
       // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
       verbose: config.env === 'production' ? null : console.log
     });
+
+    // store in-memory open connection
+    instance.databaseMap.set(alias.id, db);
+
     if (!db.lock) {
       db.lock = existingLock;
     }
 
-    await setupPragma(db, session);
+    await setupPragma(db, session); // takes about 30ms
 
     // assigns to session so we can easily re-use
     // (also used in allocateConnection in IMAP notifier)
@@ -833,6 +855,20 @@ async function getDatabase(
       logger.fatal(err, { session });
     }
 
+    if (!migrateCheck || !folderCheck || !trashCheck) {
+      try {
+        //
+        // All applications should run "PRAGMA optimize;" after a schema change,
+        // especially after one or more CREATE INDEX statements.
+        // <https://www.sqlite.org/pragma.html#pragma_optimize:~:text=All%20applications%20should%20run%20%22PRAGMA%20optimize%3B%22%20after%20a%20schema%20change%2C%20especially%20after%20one%20or%20more%20CREATE%20INDEX%20statements.>
+        //
+        db.pragma('analysis_limit=400');
+        db.pragma('optimize');
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
+
     //
     // TODO: delete orphaned attachments (those without messages that reference them)
     //       (note this is unlikely as we already take care of this in EXPUNGE)
@@ -877,11 +913,6 @@ function retryGetDatabase(...args) {
     // eslint-disable-next-line complexity
     async onFailedAttempt(error) {
       const session = args[2];
-
-      if (error.code === 'SQLITE_BUSY' || error.code === 'SQLITE_LOCKED') {
-        logger.fatal(error, { session });
-        return;
-      }
 
       if (isTimeoutError(error)) {
         logger.fatal(error, { session });

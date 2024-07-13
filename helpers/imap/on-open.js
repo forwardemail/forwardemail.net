@@ -25,27 +25,6 @@ const builder = new Builder();
 async function onOpen(path, session, fn) {
   this.logger.debug('OPEN', { path, session });
 
-  if (this.wsp) {
-    try {
-      const response = await this.wsp.request({
-        action: 'open',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress
-        },
-        path
-      });
-
-      fn(null, response);
-    } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
-      fn(err);
-    }
-
-    return;
-  }
-
   try {
     await this.refreshSession(session, 'OPEN');
 
@@ -74,10 +53,26 @@ async function onOpen(path, session, fn) {
 
     // send response
     const response = mailbox.toObject();
-    response.uidList = session.db.prepare(sql.query).pluck().all(sql.values);
+
+    if (session.db.readonly) {
+      response.uidList = await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['pluck', true],
+          ['all', sql.values]
+        ]
+      });
+    } else {
+      response.uidList = session.db.prepare(sql.query).pluck().all(sql.values);
+    }
+
     fn(null, response);
   } catch (err) {
-    fn(refineAndLogError(err, session, true, this));
+    const error = refineAndLogError(err, session, true, this);
+    if (error.imapResponse) return fn(null, error.imapResponse);
+    fn(error);
   }
 }
 

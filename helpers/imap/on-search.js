@@ -34,7 +34,6 @@ async function onSearch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`search timer ${session.id}`);
       const start = Date.now();
       const data = await this.wsp.request({
         action: 'search',
@@ -58,10 +57,10 @@ async function onSearch(mailboxId, options, session, fn) {
         logger.fatal(err);
       }
 
-      console.timeEnd(`search timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
+      // IMAP handler command supports `results.uidList` arbitrary obj
+      if (err.imapResponse) return fn(null, { uidList: err.imapResponse });
       fn(err);
     }
 
@@ -227,7 +226,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
               // <https://github.com/nodemailer/wildduck/pull/570>
               // if (
-              //   !_.isEqual(term.value.sort(), session.selected.uidList.sort())
+              //   !_.isEqual(_.sortBy(term.value), _.sortBy(session.selected.uidList))
               // )
               if (term.value.length !== session.selected.uidList.length) {
                 // not 1:*

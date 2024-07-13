@@ -32,7 +32,6 @@ async function onDelete(path, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`delete timer ${session.id}`);
       const [bool, mailboxId] = await this.wsp.request({
         action: 'delete',
         session: {
@@ -42,7 +41,6 @@ async function onDelete(path, session, fn) {
         },
         path
       });
-      console.timeEnd(`delete timer ${session.id}`);
 
       fn(null, bool, mailboxId);
     } catch (err) {
@@ -164,7 +162,6 @@ async function onDelete(path, session, fn) {
 
     // update storage
     try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { path, session });

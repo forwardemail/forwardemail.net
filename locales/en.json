@@ -7233,5 +7233,6 @@
   "You do not need to upgrade unless you're adding custom domains to your account.": "You do not need to upgrade unless you're adding custom domains to your account.",
   "You don't need to upgrade unless you add custom domains you own.": "You don't need to upgrade unless you add custom domains you own.",
   "You don't need to upgrade unless you add custom domain names.": "You don't need to upgrade unless you add custom domain names.",
-  "You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue": "You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue"
+  "You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue": "You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue",
+  "Inbox Safeguard": "Inbox Safeguard"
 }

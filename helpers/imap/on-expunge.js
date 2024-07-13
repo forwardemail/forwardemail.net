@@ -20,7 +20,6 @@ const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
-const config = require('#config');
 const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -37,7 +36,6 @@ async function onExpunge(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`expunge timer ${session.id}`);
       const [bool] = await this.wsp.request({
         action: 'expunge',
         session: {
@@ -49,7 +47,6 @@ async function onExpunge(mailboxId, update, session, fn) {
         mailboxId,
         update
       });
-      console.timeEnd(`expunge timer ${session.id}`);
 
       fn(null, bool);
     } catch (err) {
@@ -85,11 +82,12 @@ async function onExpunge(mailboxId, update, session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/702>
     //       (mirrors trashCheck in `helpers/get-database.js`)
     //
-    if (
-      config.env === 'production' &&
-      !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
-    )
-      return fn(null, true);
+    // if (
+    //   config.env === 'production' &&
+    //   !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
+    // )
+    //   return throw new IMAPError('TODO', { imapResponse: 'CANNOT' });
+    //
 
     const condition = {
       mailbox: mailbox._id.toString(),
@@ -113,7 +111,21 @@ async function onExpunge(mailboxId, update, session, fn) {
       });
 
       // delete messages
-      const messages = session.db.prepare(sql.query).all(sql.values);
+      let messages;
+      if (session.db.readonly) {
+        messages = await this.wsp.request({
+          action: 'stmt',
+          session: { user: session.user },
+          lock,
+          stmt: [
+            ['prepare', sql.query],
+            ['all', sql.values]
+          ],
+          checkpoint: 'PASSIVE'
+        });
+      } else {
+        messages = session.db.prepare(sql.query).all(sql.values);
+      }
 
       // delete attachments
       try {
@@ -160,7 +172,7 @@ async function onExpunge(mailboxId, update, session, fn) {
           );
         }
 
-        if (!update.silent && session?.selected?.uidList)
+        if (!update.silent && session?.selected?.uidList) {
           await this.wss.broadcast(session, {
             tag: '*',
             command: String(session.selected.uidList.length),
@@ -171,6 +183,7 @@ async function onExpunge(mailboxId, update, session, fn) {
               }
             ]
           });
+        }
 
         await this.server.notifier.addEntries(
           this,
@@ -203,7 +216,6 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     // update storage
     try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });

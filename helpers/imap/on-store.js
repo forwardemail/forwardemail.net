@@ -17,6 +17,7 @@ const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const _ = require('lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -42,7 +43,6 @@ async function onStore(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`store timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'store',
         session: {
@@ -54,7 +54,8 @@ async function onStore(mailboxId, update, session, fn) {
         mailboxId,
         update
       });
-      console.timeEnd(`store timer ${session.id}`);
+
+      this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, response);
     } catch (err) {
@@ -95,8 +96,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     // `1:*`
     // <https://github.com/nodemailer/wildduck/pull/569>
-    // if (_.isEqual(update.messages.sort(), session.selected.uidList.sort()))
-    if (update.messages.length === session.selected.uidList.length)
+    if (_.isEqual(update.messages.sort(), _.sortBy(session.selected.uidList)))
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else query.uid = tools.checkRangeQuery(update.messages);
@@ -434,7 +434,6 @@ async function onStore(mailboxId, update, session, fn) {
 
     if (entries.length > 0) {
       await this.server.notifier.addEntries(this, session, mailboxId, entries);
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     // send response

@@ -21,26 +21,6 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onSubscribe(path, session, fn) {
   this.logger.debug('SUBSCRIBE', { path, session });
 
-  if (this.wsp) {
-    try {
-      const data = await this.wsp.request({
-        action: 'subscribe',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress
-        },
-        path
-      });
-      fn(null, ...data);
-    } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
-      fn(err);
-    }
-
-    return;
-  }
-
   try {
     await this.refreshSession(session, 'SUBSCRIBE');
 
@@ -67,7 +47,9 @@ async function onSubscribe(path, session, fn) {
 
     fn(null, true);
   } catch (err) {
-    fn(refineAndLogError(err, session, true, this));
+    const error = refineAndLogError(err, session, true, this);
+    if (error.imapResponse) return fn(null, error.imapResponse);
+    fn(error);
   }
 }
 

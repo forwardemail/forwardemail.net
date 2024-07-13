@@ -43,6 +43,7 @@ const { Upload } = require('@aws-sdk/lib-storage');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
+const Mailboxes = require('#models/mailboxes');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
@@ -51,6 +52,8 @@ const config = require('#config');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const env = require('#config/env');
+const closeDatabase = require('#helpers/close-database');
+const copyMessages = require('#helpers/copy-messages');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -108,6 +111,8 @@ const onUnsubscribePromise = pify(onUnsubscribe, { multiArgs: true });
 
 const concurrency = os.cpus().length;
 
+const CHECKPOINTS = ['PASSIVE', 'FULL', 'RESTART', 'TRUNCATE'];
+
 const IP_ADDRESS = ip.address();
 
 const PAYLOAD_ACTIONS = new Set([
@@ -120,6 +125,9 @@ const PAYLOAD_ACTIONS = new Set([
   'backup', // no db
   'rekey', // no db
   'reset', // no db
+
+  // db required
+  'copy_messages',
 
   // none of these require db
   // (because they all have `refreshSession` calls)
@@ -221,6 +229,20 @@ async function parsePayload(data, ws) {
     // action
     if (!isSANB(payload.action) || !PAYLOAD_ACTIONS.has(payload.action))
       throw new TypeError('Payload action missing or invalid');
+
+    // if checkpoint was passed then ensure it's valid
+    if (payload.checkpoint && typeof payload.checkpoint !== 'string')
+      throw new TypeError('checkpoint is reserved for WAL_CHECKPOINT');
+
+    if (
+      typeof payload.checkpoint === 'string' &&
+      !CHECKPOINTS.includes(payload.checkpoint)
+    )
+      throw new TypeError(
+        `checkpoint was "${
+          payload.checkpoint
+        }" but must be one of: ${CHECKPOINTS.join(', ')}`
+      );
 
     // if lock was passed it must be valid
     if (_.isPlainObject(payload.lock)) {
@@ -1596,6 +1618,17 @@ async function parsePayload(data, ws) {
             }
           }
 
+          // close existing connection if any and purge it
+          if (
+            this?.databaseMap &&
+            this.databaseMap.has(payload.session.user.alias_id)
+          ) {
+            await closeDatabase(
+              this.databaseMap.get(payload.session.user.alias_id)
+            );
+            this.databaseMap.delete(payload.session.user.alias_id);
+          }
+
           // TODO: this should not fix database
           db = await getDatabase(
             this,
@@ -1776,6 +1809,98 @@ async function parsePayload(data, ws) {
         break;
       }
 
+      case 'copy_messages': {
+        if (!payload.query || !payload.values)
+          throw new TypeError('Query or values missing');
+
+        if (typeof payload.values === 'string')
+          payload.values = JSON.parse(payload.values);
+
+        if (!payload.results) throw new TypeError('Payload results missing');
+
+        if (typeof payload.results === 'string')
+          payload.results = JSON.parse(payload.results);
+
+        const { modseq, mailboxId, targetMailboxId } = payload;
+
+        if (!modseq || !mailboxId || !targetMailboxId)
+          throw new TypeError('modseq, mailbox or target mailbox ID missing');
+
+        db = await getDatabase(
+          this,
+          // alias
+          {
+            id: payload.session.user.alias_id,
+            storage_location: payload.session.user.storage_location
+          },
+          payload.session,
+          payload?.lock
+        );
+
+        const mailbox = await Mailboxes.findOne(this, payload.session, {
+          _id: mailboxId
+        });
+
+        if (!mailbox)
+          throw new IMAPError(
+            i18n.translate(
+              'IMAP_MAILBOX_DOES_NOT_EXIST',
+              payload.session.user.locale
+            ),
+            {
+              imapResponse: 'NONEXISTENT'
+            }
+          );
+
+        const targetMailbox = await Mailboxes.findOne(this, payload.session, {
+          _id: targetMailboxId
+        });
+
+        if (!targetMailbox)
+          throw new IMAPError(
+            i18n.translate(
+              'IMAP_MAILBOX_DOES_NOT_EXIST',
+              payload.session.user.locale
+            ),
+            {
+              imapResponse: 'TRYCREATE'
+            }
+          );
+
+        // check that destination and source are not the same
+        if (targetMailbox._id.toString() === mailbox._id.toString())
+          throw new IMAPError(
+            i18n.translate(
+              'IMAP_TARGET_AND_SOURCE_SAME',
+              payload.session.user.locale
+            ),
+            {
+              imapResponse: 'CANNOT'
+            }
+          );
+
+        const messages = db.prepare(payload.query).all(payload.values);
+
+        const { results } = payload;
+
+        if (messages.length > 0)
+          db.transaction(
+            copyMessages(
+              payload.session,
+              modseq,
+              mailbox,
+              targetMailbox,
+              results
+            )
+          ).immediate(messages);
+
+        response = {
+          id: payload.id,
+          data: results
+        };
+        break;
+      }
+
       case 'reset': {
         lock = await this.lock.waitAcquireLock(
           `${payload.session.user.alias_id}`,
@@ -1825,6 +1950,17 @@ async function parsePayload(data, ws) {
           this.client.del(`folder_check:${payload.session.user.alias_id}`),
           this.client.del(`trash_check:${payload.session.user.alias_id}`)
         ]);
+
+        // close existing connection if any and purge it
+        if (
+          this?.databaseMap &&
+          this.databaseMap.has(payload.session.user.alias_id)
+        ) {
+          await closeDatabase(
+            this.databaseMap.get(payload.session.user.alias_id)
+          );
+          this.databaseMap.delete(payload.session.user.alias_id);
+        }
 
         // TODO: don't allow getDatabase to perform a reset here
         db = await getDatabase(
@@ -2148,6 +2284,9 @@ async function parsePayload(data, ws) {
       }
     }
 
+    if (db && payload.checkpoint)
+      db.pragma(`wal_checkpoint(${payload.checkpoint})`);
+
     if (lock) {
       releaseLock(this, db, lock)
         .then((result) => {
@@ -2155,19 +2294,6 @@ async function parsePayload(data, ws) {
             throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
         })
         .catch((err) => logger.fatal(err, { payload }));
-    }
-
-    if (db && db.open && typeof db.close === 'function') {
-      try {
-        if (typeof db.pragma === 'function') {
-          db.pragma('analysis_limit=400');
-          db.pragma('optimize');
-        }
-
-        db.close();
-      } catch (err) {
-        logger.fatal(err, { payload });
-      }
     }
 
     if (!ws) return response.data;
@@ -2195,16 +2321,6 @@ async function parsePayload(data, ws) {
       releaseLock(this, db, lock)
         .then()
         .catch((err) => logger.fatal(err, { payload }));
-    }
-
-    if (db && db.open && typeof db.close === 'function') {
-      try {
-        db.pragma('analysis_limit=400');
-        db.pragma('optimize');
-        db.close();
-      } catch (err) {
-        logger.fatal(err, { payload });
-      }
     }
 
     if (!ws || typeof ws.send !== 'function') throw err;

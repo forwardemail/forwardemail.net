@@ -22,26 +22,6 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onStatus(path, session, fn) {
   this.logger.debug('STATUS', { path, session });
 
-  if (this.wsp) {
-    try {
-      const data = await this.wsp.request({
-        action: 'status',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress
-        },
-        path
-      });
-      fn(null, ...data);
-    } catch (err) {
-      if (err.imapResponse) return fn(null, err.imapResponse);
-      fn(err);
-    }
-
-    return;
-  }
-
   try {
     await this.refreshSession(session, 'STATUS');
 
@@ -75,7 +55,9 @@ async function onStatus(path, session, fn) {
       highestModseq: mailbox.modifyIndex || 0
     });
   } catch (err) {
-    fn(refineAndLogError(err, session, true, this));
+    const error = refineAndLogError(err, session, true, this);
+    if (error.imapResponse) return fn(null, error.imapResponse);
+    fn(error);
   }
 }
 

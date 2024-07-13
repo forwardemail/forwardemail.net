@@ -157,7 +157,8 @@ async function getThreadId(instance, session, subject, mimeTree) {
             stmt: [
               ['prepare', sql.query],
               ['get', sql.values]
-            ]
+            ],
+            checkpoint: 'PASSIVE'
           });
         } else {
           thread = session.db.prepare(sql.query).get(sql.values);

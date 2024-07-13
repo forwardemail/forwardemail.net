@@ -217,10 +217,12 @@ async function updateMany(
           stmt: [
             ['prepare', sql.query],
             ['all', sql.values]
-          ]
+          ],
+          checkpoint: 'PASSIVE'
         });
       } else {
         docs = session.db.prepare(sql.query).all(sql.values);
+        session.db.pragma('wal_checkpoint(PASSIVE)');
       }
     }
   } catch (_err) {
@@ -336,10 +338,12 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
-        ]
+        ],
+        checkpoint: 'PASSIVE'
       });
     } else {
       result = session.db.prepare(sql.query).run(sql.values);
+      session.db.pragma('wal_checkpoint(PASSIVE)');
     }
   } catch (_err) {
     err = _err;
@@ -419,10 +423,12 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
-        ]
+        ],
+        checkpoint: 'PASSIVE'
       });
     } else {
       result = session.db.prepare(sql.query).run(sql.values);
+      session.db.pragma('wal_checkpoint(PASSIVE)');
     }
   } catch (_err) {
     err = _err;
@@ -652,10 +658,12 @@ async function $__handleSave(options = {}, fn) {
             stmt: [
               ['prepare', sql.query],
               ['get', sql.values]
-            ]
+            ],
+            checkpoint: 'PASSIVE'
           });
         } else {
           doc = this.session.db.prepare(sql.query).get(sql.values);
+          this.session.db.pragma('wal_checkpoint(PASSIVE)');
         }
       } else {
         const sql = builder.build({
@@ -679,10 +687,12 @@ async function $__handleSave(options = {}, fn) {
             stmt: [
               ['prepare', sql.query],
               ['get', sql.values]
-            ]
+            ],
+            checkpoint: 'PASSIVE'
           });
         } else {
           doc = this.session.db.prepare(sql.query).get(sql.values);
+          this.session.db.pragma('wal_checkpoint(PASSIVE)');
         }
       }
     } catch (_err) {
@@ -876,10 +886,12 @@ async function findOneAndUpdate(
           stmt: [
             ['prepare', sql.query],
             ['get', sql.values]
-          ]
+          ],
+          checkpoint: 'PASSIVE'
         });
       } else {
         doc = session.db.prepare(sql.query).get(sql.values);
+        session.db.pragma('wal_checkpoint(PASSIVE)');
       }
     }
   } catch (_err) {

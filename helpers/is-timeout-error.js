@@ -3,20 +3,19 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isLockingError = require('./is-locking-error');
 const isErrorConstructorName = require('./is-error-constructor-name');
 
 // eslint-disable-next-line complexity
 function isTimeoutError(err) {
   if (typeof err !== 'object') return false;
 
-  if (err.name === 'TimeoutError' || err.name === 'AbortError') return true;
-
-  // better-sqlite3 will return this error message as a TypeError
-  if (err.message === 'This database connection is busy executing a query')
+  if (err.name === 'SocketError' || err.name === 'ServerShutdownError')
     return true;
 
-  // in case database is locked, consider it a timeout error
-  if (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED') return true;
+  if (err.name === 'TimeoutError' || err.name === 'AbortError') return true;
+
+  if (isLockingError(err)) return true;
 
   // redis/mongo connection errors should retry
   // and be considered a timeout error

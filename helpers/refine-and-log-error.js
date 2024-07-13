@@ -8,6 +8,8 @@ const splitLines = require('split-lines');
 const { convert } = require('html-to-text');
 
 const getErrorCode = require('./get-error-code');
+const isRetryableError = require('./is-retryable-error');
+const isLockingError = require('./is-locking-error');
 const isCodeBug = require('./is-code-bug');
 const logger = require('./logger');
 
@@ -100,25 +102,23 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   // IMAP Response Code
   // <https://datatracker.ietf.org/doc/html/rfc5530>
   // <https://github.com/nodemailer/wildduck/issues/511>
-  // TODO: <https://github.com/nodemailer/wildduck/issues/707>
+  // <https://github.com/nodemailer/wildduck/issues/707>
+  // <https://www.iana.org/assignments/imap-response-codes/imap-response-codes.xhtml>
   //
   if (isIMAP) {
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
-    if (err.isCodeBug) err.response = 'TEMPFAIL';
-    else if (err.responseCode >= 500) err.response = 'NO';
-    /*
-    // TODO: send PR to wildduck so it uses other than TEMPFAIL
-    if (err.isCodeBug) err.imapResponse = 'SERVERBUG';
-    else if (
-      // errors that indicate locking
-      err.code === 'SQLITE_BUSY' ||
-      err.code === 'SQLITE_LOCKED' ||
-      err.message === 'This database connection is busy executing a query'
-    )
-      err.imapResponse = 'INUSE';
-    else if (err.responseCode >= 500) err.imapResponse = 'NO'; // UNAVAILABLE ?
-    */
+    if (!err.imapResponse) {
+      if (isLockingError(err)) err.imapResponse = 'INUSE';
+      else if (
+        isRetryableError(err) ||
+        err.isCodeBug ||
+        err.responseCode >= 500
+      )
+        err.imapResponse = 'UNAVAILABLE';
+    }
+    // TODO: we could arbitrarily render alerts if we updated wildduck
+    // else if (!err.imapResponse) err.imapResponse = 'ALERT';
   }
 
   return err;

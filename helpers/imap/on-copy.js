@@ -46,7 +46,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }, ms('15s'));
       })();
 
-      console.time(`copy timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'copy',
         session: {
@@ -58,7 +57,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         mailboxId,
         update
       });
-      console.timeEnd(`copy timer ${session.id}`);
+      this.server.notifier.fire(session.user.alias_id, update.destination);
       clearTimeout(timeout);
       fn(null, bool, response);
     } catch (err) {
@@ -244,7 +243,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
               entries.push({
                 command: 'EXISTS',
                 uid: m.uid,
-                mailbox: targetMailbox._id,
+                // mailbox: targetMailbox._id,
                 message: _id
                 // thread: new mongoose.Types.ObjectId(m.thread),
                 // unseen: boolean(m.unseen),
@@ -384,7 +383,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         targetMailbox._id,
         entries
       );
-      this.server.notifier.fire(session.user.alias_id, update.destination);
     }
 
     fn(null, true, {

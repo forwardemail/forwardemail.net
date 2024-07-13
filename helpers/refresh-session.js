@@ -118,9 +118,6 @@ async function refreshSession(session, command) {
       alias.user[config.lastLocaleField] || i18n.config.defaultLocale;
     session.user.owner_full_email = alias.user.email;
 
-    // set updated imap_backup_at
-    session.imap_backup_at = alias.imap_backup_at;
-
     // a long cache period avoids MongoDB connection issues interrupting IMAP
     await this.client.set(
       `refresh_check:${session.user.alias_id}`,

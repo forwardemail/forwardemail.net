@@ -26,7 +26,6 @@ async function onCreate(path, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`create timer ${session.id}`);
       const data = await this.wsp.request({
         action: 'create',
         session: {
@@ -36,7 +35,6 @@ async function onCreate(path, session, fn) {
         },
         path
       });
-      console.timeEnd(`create timer ${session.id}`);
       fn(null, ...data);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -114,7 +112,6 @@ async function onCreate(path, session, fn) {
 
     // update storage
     try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { path, session });

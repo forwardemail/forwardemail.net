@@ -36,7 +36,7 @@ const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder();
 
-function updateAttachments(attachmentIds, magic, session) {
+async function updateAttachments(attachmentIds, magic, session, lock) {
   const sql = builder.build({
     type: 'update',
     table: 'Attachments',
@@ -56,7 +56,21 @@ function updateAttachments(attachmentIds, magic, session) {
   });
 
   // update attachment data
-  const attachments = session.db.prepare(sql.query).all(sql.values);
+  let attachments;
+  if (session.db.readonly) {
+    attachments = await this.wsp.request({
+      action: 'stmt',
+      session: { user: session.user },
+      lock,
+      stmt: [
+        ['prepare', sql.query],
+        ['all', sql.values]
+      ],
+      checkpoint: 'PASSIVE'
+    });
+  } else {
+    attachments = session.db.prepare(sql.query).all(sql.values);
+  }
 
   // delete attachments if necessary
   const $in = [];
@@ -81,7 +95,20 @@ function updateAttachments(attachmentIds, magic, session) {
         }
       }
     });
-    session.db.prepare(sql.query).run(sql.values);
+    if (session.db.readonly) {
+      await this.wsp.request({
+        action: 'stmt',
+        session: { user: session.user },
+        lock,
+        stmt: [
+          ['prepare', sql.query],
+          ['run', sql.values]
+        ],
+        checkpoint: 'PASSIVE'
+      });
+    } else {
+      session.db.prepare(sql.query).run(sql.values);
+    }
   }
 }
 
@@ -115,7 +142,21 @@ async function createAttachment(instance, session, node, isRetry = false) {
     returning: ['*']
   });
 
-  const result = session.db.prepare(sql.query).get(sql.values);
+  let result;
+  if (session.db.readonly) {
+    result = await instance.wsp.request({
+      action: 'stmt',
+      session: { user: session.user },
+      stmt: [
+        ['prepare', sql.query],
+        ['get', sql.values]
+      ],
+      checkpoint: 'PASSIVE'
+    });
+  } else {
+    result = session.db.prepare(sql.query).get(sql.values);
+  }
+
   if (result) return syncConvertResult(Attachments, result);
 
   // TODO: finish this INSERT statement with validation of a field returned
@@ -227,7 +268,13 @@ class AttachmentStorage {
     let err;
 
     try {
-      updateAttachments(attachmentIds, magic, session);
+      await updateAttachments.call(
+        instance,
+        attachmentIds,
+        magic,
+        session,
+        lock || newLock
+      );
     } catch (_err) {
       err = _err;
     }

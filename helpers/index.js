@@ -89,6 +89,8 @@ const updateStorageUsed = require('./update-storage-used');
 const getAttachments = require('./get-attachments');
 const syncTemporaryMailbox = require('./sync-temporary-mailbox');
 const getTemporaryDatabase = require('./get-temporary-database');
+const isLockingError = require('./is-locking-error');
+const closeDatabase = require('./close-database');
 
 module.exports = {
   decrypt,
@@ -178,5 +180,7 @@ module.exports = {
   updateStorageUsed,
   getAttachments,
   syncTemporaryMailbox,
-  getTemporaryDatabase
+  getTemporaryDatabase,
+  isLockingError,
+  closeDatabase
 };

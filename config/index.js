@@ -176,6 +176,13 @@ const config = {
     'ubuntustudio.com': '~ubuntustudio-core',
     'ubuntu.net': '~ubuntu-smtp-test'
   },
+  LOCK_ERRORS: new Set([
+    'SQLITE_BUSY',
+    'SQLITE_BUSY_SNAPSHOT',
+    'SQLITE_BUSY_RECOVERY',
+    'SQLITE_BUSY_TIMEOUT',
+    'SQLITE_LOCKED'
+  ]),
   INITIAL_DB_SIZE: 196608, // 200704,
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',

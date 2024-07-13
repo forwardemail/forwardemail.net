@@ -27,15 +27,15 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
 
 const DEFAULT = {
-  maxReconnectionDelay: 10000,
-  minReconnectionDelay: 1000 + Math.random() * 4000,
-  minUptime: 5000,
-  reconnectionDelayGrowFactor: 1.3,
-  connectionTimeout: 4000,
+  maxReconnectionDelay: 3000,
+  minReconnectionDelay: 500, // 1000 + Math.random() * 4000,
+  minUptime: 1000,
+  reconnectionDelayGrowFactor: 1, // 1.3,
+  connectionTimeout: 1000,
   maxRetries: Number.POSITIVE_INFINITY,
   maxEnqueuedMessages: Number.POSITIVE_INFINITY,
   startClosed: false,
-  debug: false
+  debug: config.env === 'development'
 };
 
 // <https://github.com/vitalets/websocket-as-promised/pull/49>
@@ -170,11 +170,11 @@ function _getNextDelay() {
   return delay;
 }
 
-ReconnectingWebSocket.prototype._debug = (...args) => {
-  logger.debug(...args);
-  // if (config.env === 'development')
-  //   logger.debug('reconnectingwebsocket', { args });
-};
+ReconnectingWebSocket.prototype._debug = () => {};
+// ReconnectingWebSocket.prototype._debug = (...args) => {
+// logger.debug(...args);
+// if (config.env === 'development')
+//   logger.debug('reconnectingwebsocket', { args });
 
 // <https://github.com/partykit/partykit/tree/main/packages/partysocket>
 // <https://github.com/partykit/partykit/issues/536>
@@ -246,7 +246,7 @@ function createWebSocketAsPromised(options = {}) {
           //   authorization: 'Basic ' + Buffer.from(auth).toString('base64')
           // }
         }),
-        debug: config.env === 'development'
+        ...DEFAULT
       });
 
       // bind overriden prototype functions until PR's merged
@@ -296,7 +296,7 @@ function createWebSocketAsPromised(options = {}) {
   }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
-  wsp.request = async function (data, retries = 2) {
+  wsp.request = async function (data, retries = 3) {
     try {
       // TODO: we could probably remove this validation
       if (typeof data?.action !== 'string') {
@@ -358,6 +358,9 @@ function createWebSocketAsPromised(options = {}) {
         },
         {
           retries,
+          minTimeout: config.busyTimeout / 2,
+          maxTimeout: config.busyTimeout,
+          factor: 1,
           onFailedAttempt(error) {
             error.isCodeBug = true;
             error.wsData = data;

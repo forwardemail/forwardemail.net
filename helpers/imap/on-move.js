@@ -14,7 +14,6 @@
  */
 
 const mongoose = require('mongoose');
-const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
@@ -23,8 +22,6 @@ const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
-const config = require('#config');
-const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
@@ -54,6 +51,8 @@ async function onMove(mailboxId, update, session, fn) {
         mailboxId,
         update
       });
+
+      this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, response);
     } catch (err) {
@@ -158,6 +157,7 @@ async function onMove(mailboxId, update, session, fn) {
         );
       }
 
+      /*
       const conditionalCountSql = builder.build({
         table: 'Messages',
         condition,
@@ -262,6 +262,7 @@ async function onMove(mailboxId, update, session, fn) {
           { imapResponse: 'CANNOT' }
         );
       }
+      */
 
       const sql = builder.build({
         type: 'select',
@@ -432,7 +433,6 @@ async function onMove(mailboxId, update, session, fn) {
         targetMailbox._id,
         existEntries
       );
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     // send response

@@ -18,6 +18,7 @@ const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { imapHandler } = require('wildduck/imap-core');
+const _ = require('lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -40,7 +41,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
-      console.time(`fetch timer ${session.id}`);
       const [bool, response] = await this.wsp.request({
         action: 'fetch',
         session: {
@@ -53,7 +53,7 @@ async function onFetch(mailboxId, options, session, fn) {
         mailboxId,
         options
       });
-      console.timeEnd(`fetch timer ${session.id}`);
+      this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, response);
     } catch (err) {
@@ -101,14 +101,18 @@ async function onFetch(mailboxId, options, session, fn) {
         $gt: options.changedSince
       };
 
-    let queryAll;
-
     const pageQuery = { ...query };
+
+    //
+    // NOTE: if the uid is not in the selected list then we can assume client is requesting invalid data
+    //       (e.g. `options.messages = [ 50 ]` when `50` doesn't exist, e.g. after COPY in Thunderbird)
+    //
+
+    let queryAll;
 
     // `1:*`
     // <https://github.com/nodemailer/wildduck/pull/559>
-    // if (_.isEqual(options.messages.sort(), session.selected.uidList.sort()))
-    if (options.messages.length === session.selected.uidList.length)
+    if (_.isEqual(options.messages.sort(), _.sortBy(session.selected.uidList)))
       queryAll = true;
     // NOTE: don't use uid for `1:*`
     else pageQuery.uid = tools.checkRangeQuery(options.messages, false);
@@ -185,10 +189,10 @@ async function onFetch(mailboxId, options, session, fn) {
       const message = syncConvertResult(Messages, result, projection);
 
       // don't process messages that are new since query started
+      // <https://github.com/nodemailer/wildduck/issues/708>
       if (
         queryAll &&
-        typeof session?.selected?.uidList === 'object' &&
-        Array.isArray(session.selected.uidList) &&
+        session?.selected?.uidList &&
         !session.selected.uidList.includes(message.uid)
       ) {
         continue;
@@ -333,7 +337,6 @@ async function onFetch(mailboxId, options, session, fn) {
         mailbox._id,
         entries
       );
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     fn(null, true, {
