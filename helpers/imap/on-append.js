@@ -516,6 +516,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session.selected.mailbox.toString() === response.mailbox.toString()
     )
       await this.wss.broadcast(
+        session,
         formatResponse.call(session, 'EXISTS', response.uid)
       );
 
