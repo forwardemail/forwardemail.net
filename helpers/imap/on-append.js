@@ -49,6 +49,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
   this.logger.debug('APPEND', { path, flags, date, session });
 
   if (this.wsp) {
+    console.time(`append timer ${session.id}`);
     try {
       // do not allow messages larger than 64 MB
       if (
@@ -79,6 +80,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
+
+    console.timeEnd(`append timer ${session.id}`);
 
     return;
   }

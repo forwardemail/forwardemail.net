@@ -39,6 +39,7 @@ async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
   if (this.wsp) {
+    console.time(`fetch timer ${session.id}`);
     try {
       const [bool, response] = await this.wsp.request({
         action: 'fetch',
@@ -59,6 +60,8 @@ async function onFetch(mailboxId, options, session, fn) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
+
+    console.timeEnd(`fetch timer ${session.id}`);
 
     return;
   }
