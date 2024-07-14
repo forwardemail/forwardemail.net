@@ -16,9 +16,14 @@ const { encrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
 
+const ServerShutdownError = require('#helpers/server-shutdown-error');
 const TemporaryMessages = require('#models/temporary-messages');
 
 async function getTemporaryDatabase(session) {
+  // if server is shutting down then don't bother getting database
+  if (!this?.server?._handle || this?.server?._closeTimeout)
+    throw new ServerShutdownError();
+
   // `this` is the instance of SQLite
   // check if we have in-memory existing opened database
   if (

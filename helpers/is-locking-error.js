@@ -11,6 +11,8 @@ function isLockingError(err) {
   // for instances of IMAP_WRITE_LOCK_FAILED
   if (err.imapResponse === 'INUSE') return true;
 
+  if (err.message === 'The database connection is not open') return true;
+
   // better-sqlite3 will return this error message as a TypeError
   if (err.message === 'This database connection is busy executing a query')
     return true;

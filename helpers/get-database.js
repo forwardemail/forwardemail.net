@@ -25,6 +25,7 @@ const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
+const ServerShutdownError = require('#helpers/server-shutdown-error');
 const Threads = require('#models/threads');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -487,11 +488,8 @@ async function getDatabase(
 
   try {
     // if server is shutting down then don't bother getting database
-    if (!instance?.server?._handle) {
-      const err = new TypeError('Server is shutting down');
-      err.name = 'TimeoutError';
-      throw err;
-    }
+    if (!instance?.server?._handle || instance?.server?._closeTimeout)
+      throw new ServerShutdownError();
 
     //
     // <https://github.com/WiseLibs/better-sqlite3/issues/1217>
