@@ -162,12 +162,12 @@ async function syncTemporaryMailbox(session) {
 
     if (err) throw err;
 
-    // update cache so we can try again in 10s
+    // update cache so we can try again in 1m
     await this.client.set(
       `sync_check:${session.user.alias_id}`,
       true,
       'PX',
-      ms('10s')
+      ms('1m')
     );
   }
 
