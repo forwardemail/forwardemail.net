@@ -28,9 +28,7 @@ async function onList(query, session, fn) {
       mailboxes.map((m) => m.toObject())
     );
   } catch (err) {
-    const error = refineAndLogError(err, session, true, this);
-    if (error.imapResponse) return fn(null, error.imapResponse);
-    fn(error);
+    fn(refineAndLogError(err, session, true, this));
   }
 }
 
