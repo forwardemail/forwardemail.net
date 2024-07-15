@@ -13,7 +13,7 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-// const { Builder } = require('json-sql');
+const { Builder } = require('json-sql');
 
 const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
@@ -22,7 +22,7 @@ const i18n = require('#helpers/i18n');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-// const builder = new Builder();
+const builder = new Builder();
 
 //
 // NOTE: if you rewrite this to use `if (this.wsp)` like others
@@ -71,7 +71,6 @@ async function onGetQuotaRoot(path, session, fn) {
         }
       );
 
-    /*
     //
     // if the mailbox is currently selected then update the uidList
     // <https://github.com/nodemailer/wildduck/issues/708#issuecomment-2227090990>
@@ -112,7 +111,6 @@ async function onGetQuotaRoot(path, session, fn) {
           .all(sql.values);
       }
     }
-    */
 
     const { storageUsed, maxQuotaPerAlias } = await Aliases.isOverQuota(
       {

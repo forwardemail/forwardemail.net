@@ -250,7 +250,13 @@ class SQLite {
           return;
         }
 
-        parsePayload.call(this, data, ws);
+        parsePayload
+          .call(this, data, ws)
+          .then()
+          .catch((err) => {
+            err.isCodeBug = true;
+            this.logger.fatal(err);
+          });
       });
     });
 

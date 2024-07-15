@@ -22,6 +22,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pFilter = require('p-filter');
+const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -401,17 +402,29 @@ async function checkDate(date) {
   // this should be moved to its own job but we're leaving it here for now
   //
   try {
-    const allowlistKeys = await client.keys('allowlist:*');
+    // <https://github.com/redis/ioredis?tab=readme-ov-file#streamify-scanning>
+    const allowlistKeys = new Set();
+    const domains = new Set();
+    const stream = this.client.scanStream({
+      match: 'allowlist:*'
+    });
+    stream.on('data', (keys) => {
+      for (const key of keys) {
+        allowlistKeys.add(key);
+        const domain = key.replace('allowlist:', '');
+        if (isFQDN(domain)) domains.add(domain);
+      }
+    });
+    await pEvent(stream, 'end');
     logger.info('found existing allowlist keys', {
-      count: allowlistKeys.length
+      count: allowlistKeys.size
     });
-    const domains = allowlistKeys
-      .map((key) => key.replace('allowlist:', ''))
-      .filter((key) => isFQDN(key));
     logger.info('found existing FQDN allowlist keys', {
-      count: domains.length
+      count: domains.size
     });
-    const badDomains = await pFilter(domains, isBadDomain, { concurrency });
+    const badDomains = await pFilter([...domains], isBadDomain, {
+      concurrency
+    });
     logger.info('found existing FQDN allowlist keys that were bad domains', {
       count: badDomains.length
     });
@@ -421,7 +434,7 @@ async function checkDate(date) {
       p.del(`allowlist:${domain}`);
     }
 
-    const goodDomains = domains.filter(
+    const goodDomains = [...domains].filter(
       (domain) => !badDomains.includes(domain)
     );
     const ttlSet = [];

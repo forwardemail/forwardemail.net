@@ -315,6 +315,76 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
+    //
+    // if we're on IMAP/POP3/CalDAV server then as a weekly courtesy
+    // if the user does not have IMAP storage enabled then
+    // alert them by email to inform them they need to enable IMAP
+    // (otherwise they're not going to have any mail received)
+    //
+    if (
+      alias &&
+      !alias.has_imap &&
+      (this.server instanceof IMAPServer ||
+        this.server instanceof POP3Server ||
+        this?.constructor?.name === 'CalDAV' ||
+        this?.constructor?.name === 'IMAP' ||
+        this?.constructor?.name === 'POP3')
+    ) {
+      this.client
+        .get(`imap_check:${alias.id}`)
+        .then((cache) => {
+          if (cache) return;
+          this.client
+            .set(`imap_check:${alias.id}`, true, 'PX', ms('7d'))
+            .then(() => {
+              email({
+                template: 'alert',
+                message: {
+                  to: user.owner_full_email,
+                  // bcc: config.email.message.from,
+                  subject: i18n.translate(
+                    'IMAP_NOT_ENABLED_SUBJECT',
+                    user.locale,
+                    user.username
+                  )
+                },
+                locals: {
+                  message: i18n.translate(
+                    'IMAP_NOT_ENABLED_MESSAGE',
+                    user.locale,
+                    user.username,
+                    `${config.urls.web}/${user.locale}/my-account/domains/${
+                      domain.name
+                    }/aliases?q=${encodeURIComponent(user.username)}`,
+                    user.username
+                  ),
+                  locale: user.locale
+                }
+              })
+                .then()
+                .catch((err) => {
+                  this.logger.fatal(err, { session });
+                  // backoff for 30m for the next retry
+                  this.client
+                    .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
+                    .then()
+                    .catch((err) => this.logger.fatal(err, { session }));
+                });
+            })
+            .catch((err) => this.logger.fatal(err, { session }));
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+
+      // throw an error
+      throw new SMTPError(
+        `Alias does not have IMAP enabled, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Edit" to enable IMAP storage`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+    }
+
     // if any of the domain admins are admins then don't rate limit concurrent connections
     const adminExists = domain.members.some((m) => {
       return m.group === 'admin' && m?.user?.group === 'admin';
@@ -459,63 +529,6 @@ async function onAuth(auth, session, fn) {
         })
         .then((backup) => {
           this.logger.debug('backup complete', { backup, session });
-        })
-        .catch((err) => this.logger.fatal(err, { session }));
-    }
-
-    //
-    // if we're on IMAP or POP3 server then as a weekly courtesy
-    // if the user does not have IMAP storage enabled then
-    // alert them by email to inform them they need to enable IMAP
-    // (otherwise they're not going to have any mail received)
-    //
-    if (
-      alias &&
-      !alias.has_imap &&
-      (this.server instanceof IMAPServer || this.server instanceof POP3Server)
-    ) {
-      this.client
-        .get(`imap_check:${alias.id}`)
-        .then((cache) => {
-          if (cache) return;
-          this.client
-            .set(`imap_check:${alias.id}`, true, 'PX', ms('7d'))
-            .then(() => {
-              email({
-                template: 'alert',
-                message: {
-                  to: user.owner_full_email,
-                  // bcc: config.email.message.from,
-                  subject: i18n.translate(
-                    'IMAP_NOT_ENABLED_SUBJECT',
-                    user.locale,
-                    user.username
-                  )
-                },
-                locals: {
-                  message: i18n.translate(
-                    'IMAP_NOT_ENABLED_MESSAGE',
-                    user.locale,
-                    user.username,
-                    `${config.urls.web}/${user.locale}/my-account/domains/${
-                      domain.name
-                    }/aliases?q=${encodeURIComponent(user.username)}`,
-                    user.username
-                  ),
-                  locale: user.locale
-                }
-              })
-                .then()
-                .catch((err) => {
-                  this.logger.fatal(err, { session });
-                  // backoff for 30m for the next retry
-                  this.client
-                    .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
-                    .then()
-                    .catch((err) => this.logger.fatal(err, { session }));
-                });
-            })
-            .catch((err) => this.logger.fatal(err, { session }));
         })
         .catch((err) => this.logger.fatal(err, { session }));
     }
