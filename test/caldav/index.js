@@ -137,7 +137,8 @@ test.beforeEach(async (t) => {
   const alias = await factory.create('alias', {
     user: user._id,
     domain: domain._id,
-    recipients: [user.email]
+    recipients: [user.email],
+    has_imap: true
   });
 
   const pass = await alias.createToken();
