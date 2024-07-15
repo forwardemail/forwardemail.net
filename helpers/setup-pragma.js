@@ -116,7 +116,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   //
   // <https://www.sqlite.org/pragma.html#pragma_optimize>
   //
-  // db.pragma('optimize=0x10002;');
+  db.pragma('optimize=0x10002;');
 
   // load regex extension for REGEX support
   try {

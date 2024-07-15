@@ -1470,6 +1470,7 @@ async function parsePayload(data, ws) {
         }
         */
 
+        console.time(`getting database in parse payload ${payload.id}`);
         db = await getDatabase(
           this,
           // alias
@@ -1480,7 +1481,9 @@ async function parsePayload(data, ws) {
           payload.session,
           payload?.lock
         );
+        console.timeEnd(`getting database in parse payload ${payload.id}`);
 
+        console.time(`running ops in parse payload ${payload.id}`);
         for (const op of payload.stmt) {
           // `op` must be an array with two keys
           if (!_.isArray(op)) throw new TypeError('Op must be an array');
@@ -1510,6 +1513,8 @@ async function parsePayload(data, ws) {
             }
           }
         }
+
+        console.timeEnd(`running ops in parse payload ${payload.id}`);
 
         response = {
           id: payload.id,

@@ -48,7 +48,9 @@ async function acquireLock(instance, db) {
 
   if (!id) throw new TypeError('No alias ID or DB name found');
 
+  console.time(`acquire lock ${id}`);
   const lock = await instance.lock.waitAcquireLock(id, ms('30s'), ms('60s'));
+  console.timeEnd(`acquire lock ${id}`);
 
   if (!lock.success) {
     const err = new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
@@ -77,7 +79,9 @@ async function releaseLock(instance, db, lock) {
       'releaseLock not wrapped in try/catch and was not successful'
     );
 
+  console.time(`release lock ${lock?.id}`);
   const result = await instance.lock.releaseLock(lock);
+  console.timeEnd(`release lock ${lock?.id}`);
   if (!result.success) {
     // update existing in-memory lock used for SQLite server
     if (db && db.lock && db.lock.id === result.id) db.lock = result;
