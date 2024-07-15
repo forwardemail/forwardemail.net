@@ -340,25 +340,27 @@ async function onAuth(auth, session, fn) {
               email({
                 template: 'alert',
                 message: {
-                  to: user.owner_full_email,
+                  to,
                   // bcc: config.email.message.from,
                   subject: i18n.translate(
                     'IMAP_NOT_ENABLED_SUBJECT',
-                    user.locale,
-                    user.username
+                    locale,
+                    `${alias.name}@${domain.name}`
                   )
                 },
                 locals: {
                   message: i18n.translate(
                     'IMAP_NOT_ENABLED_MESSAGE',
-                    user.locale,
-                    user.username,
-                    `${config.urls.web}/${user.locale}/my-account/domains/${
+                    locale,
+                    `${alias.name}@${domain.name}`,
+                    `${config.urls.web}/${locale}/my-account/domains/${
                       domain.name
-                    }/aliases?q=${encodeURIComponent(user.username)}`,
-                    user.username
+                    }/aliases?q=${encodeURIComponent(
+                      `${alias.name}@${domain.name}`
+                    )}`,
+                    `${alias.name}@${domain.name}`
                   ),
-                  locale: user.locale
+                  locale
                 }
               })
                 .then()
