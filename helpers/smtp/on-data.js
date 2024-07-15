@@ -75,8 +75,7 @@ async function sendRateLimitEmail(user) {
 //
 // eslint-disable-next-line complexity
 async function onData(stream, _session, fn) {
-  if (this.server._closeTimeout)
-    return setImmediate(() => fn(new ServerShutdownError()));
+  if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
   // store clone of session since it gets modified/destroyed
   const session = JSON.parse(safeStringify(_session));

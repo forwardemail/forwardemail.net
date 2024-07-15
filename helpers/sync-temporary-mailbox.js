@@ -29,7 +29,7 @@ async function syncTemporaryMailbox(session) {
 
   let err;
 
-  // only allow sync to occur once every 10s
+  // only allow sync to occur once every 1m
   const cache = await this.client.get(`sync_check:${session.user.alias_id}`);
 
   if (!cache) {

@@ -13,7 +13,12 @@ function isTimeoutError(err) {
   if (err.name === 'SocketError' || err.name === 'ServerShutdownError')
     return true;
 
-  if (err.name === 'TimeoutError' || err.name === 'AbortError') return true;
+  if (
+    err.name === 'TimeoutError' ||
+    err.name === 'AbortError' ||
+    err.name === 'KnexTimeoutError'
+  )
+    return true;
 
   if (isLockingError(err)) return true;
 

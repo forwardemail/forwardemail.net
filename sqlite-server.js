@@ -52,8 +52,8 @@ class SQLite {
         : http.createServer();
 
     // in-memory database map for re-using open database connection instances
-    this.databaseMap = new Map();
-    this.temporaryDatabaseMap = new Map();
+    // this.databaseMap = new Map();
+    // this.temporaryDatabaseMap = new Map();
 
     //
     // bind helpers so we can re-use IMAP helper commands

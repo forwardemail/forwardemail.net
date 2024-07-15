@@ -40,10 +40,13 @@ const graceful = new Graceful({
   logger,
   timeoutMs: ms('1m'),
   customHandlers: [
+    () => {
+      sqlite.isClosing = true;
+    },
     () => promisify(sqlite.wss.close).bind(sqlite.wss)(),
     // normal databases
     async () => {
-      if (sqlite.databaseMap.size === 0) return;
+      if (!sqlite.databaseMap || sqlite.databaseMap.size === 0) return;
       await Promise.all(
         [...sqlite.databaseMap.keys()].map(async (key) => {
           await closeDatabase(sqlite.databaseMap.get(key));
@@ -53,7 +56,11 @@ const graceful = new Graceful({
     },
     // temporary databases
     async () => {
-      if (sqlite.temporaryDatabaseMap.size === 0) return;
+      if (
+        !sqlite.temporaryDatabaseMap ||
+        sqlite.temporaryDatabaseMap.size === 0
+      )
+        return;
       await Promise.all(
         [...sqlite.temporaryDatabaseMap.keys()].map(async (key) => {
           await closeDatabase(sqlite.temporaryDatabaseMap.get(key));

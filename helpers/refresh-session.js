@@ -46,7 +46,7 @@ async function refreshSession(session, command) {
     throw new Error('Invalid command');
 
   // check if server is in the process of shutting down
-  if (this.server._closeTimeout) throw new ServerShutdownError();
+  if (this.isClosing) throw new ServerShutdownError();
 
   // NOTE: WildDuck POP3 doesn't expose socket on session yet (also see similar comment in onAuth helper)
   // check if socket is still connected

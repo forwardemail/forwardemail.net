@@ -14,8 +14,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 function onRcptTo(address, session, fn) {
   this.logger.debug('RCPT TO', { address, session });
 
-  if (this.server._closeTimeout)
-    return setImmediate(() => fn(new ServerShutdownError()));
+  if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
   // <https://github.com/nodemailer/smtp-server/issues/179>
   if (

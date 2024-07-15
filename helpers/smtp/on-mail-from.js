@@ -13,8 +13,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 function onMailFrom(address, session, fn) {
   this.logger.debug('MAIL FROM', { address, session });
 
-  if (this.server._closeTimeout)
-    return setImmediate(() => fn(new ServerShutdownError()));
+  if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
   // validate email address
   if (

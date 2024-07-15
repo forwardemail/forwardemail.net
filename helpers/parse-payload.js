@@ -2287,6 +2287,8 @@ async function parsePayload(data, ws) {
     if (db && payload.checkpoint)
       db.pragma(`wal_checkpoint(${payload.checkpoint})`);
 
+    if (db && !this?.databaseMap) await closeDatabase(db);
+
     if (lock) {
       releaseLock(this, db, lock)
         .then((result) => {
@@ -2316,6 +2318,8 @@ async function parsePayload(data, ws) {
     // at least early on we should get errors in advance
     err.isCodeBug = true;
     logger.fatal(err, { payload });
+
+    if (db && !this?.databaseMap) await closeDatabase(db);
 
     if (lock) {
       releaseLock(this, db, lock)

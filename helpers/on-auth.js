@@ -53,7 +53,7 @@ async function onAuth(auth, session, fn) {
       await onConnectPromise.call(this, session);
 
     // check if server is in the process of shutting down
-    if (this.server._closeTimeout) throw new ServerShutdownError();
+    if (this.isClosing) throw new ServerShutdownError();
 
     // NOTE: WildDuck POP3 server uses naming of `_closingTimeout` instead of `_closeTimeout`
     if (this.server._closingTimeout) throw new ServerShutdownError();

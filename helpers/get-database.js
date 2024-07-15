@@ -488,8 +488,7 @@ async function getDatabase(
 
   try {
     // if server is shutting down then don't bother getting database
-    if (!instance?.server?._handle || instance?.server?._closeTimeout)
-      throw new ServerShutdownError();
+    if (instance.isClosing) throw new ServerShutdownError();
 
     //
     // <https://github.com/WiseLibs/better-sqlite3/issues/1217>
@@ -498,6 +497,7 @@ async function getDatabase(
     //
     // check if we have in-memory existing opened database
     if (
+      instance.databaseMap &&
       instance.databaseMap.has(alias.id) &&
       instance.databaseMap.get(alias.id).open === true &&
       instance.databaseMap.get(alias.id).readonly === false
@@ -516,7 +516,7 @@ async function getDatabase(
     });
 
     // store in-memory open connection
-    instance.databaseMap.set(alias.id, db);
+    if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
 
     if (!db.lock) {
       db.lock = existingLock;

@@ -39,6 +39,9 @@ const graceful = new Graceful({
   redisClients: [client, subscriber],
   logger,
   customHandlers: [
+    () => {
+      imap.isClosing = true;
+    },
     // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
     () => {
       try {

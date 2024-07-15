@@ -21,12 +21,12 @@ const TemporaryMessages = require('#models/temporary-messages');
 
 async function getTemporaryDatabase(session) {
   // if server is shutting down then don't bother getting database
-  if (!this?.server?._handle || this?.server?._closeTimeout)
-    throw new ServerShutdownError();
+  if (this.isClosing) throw new ServerShutdownError();
 
   // `this` is the instance of SQLite
   // check if we have in-memory existing opened database
   if (
+    this.temporaryDatabaseMap &&
     this.temporaryDatabaseMap.has(session.user.alias_id) &&
     this.temporaryDatabaseMap.get(session.user.alias_id).open === true &&
     this.temporaryDatabaseMap.get(session.user.alias_id).readonly === false
@@ -52,7 +52,8 @@ async function getTemporaryDatabase(session) {
   });
 
   // store in-memory open connection
-  this.temporaryDatabaseMap.set(session.user.alias_id, tmpDb);
+  if (this.temporaryDatabaseMap)
+    this.temporaryDatabaseMap.set(session.user.alias_id, tmpDb);
 
   const tmpSession = {
     ...session,

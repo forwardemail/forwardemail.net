@@ -18,7 +18,7 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
 
-  if (this.server._closeTimeout) return fn(new ServerShutdownError());
+  if (this.isClosing) return fn(new ServerShutdownError());
 
   // this is used for setting Date header if missing on SMTP submission
   session.arrivalDate = new Date();
