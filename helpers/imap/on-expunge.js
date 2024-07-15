@@ -24,13 +24,11 @@ const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
@@ -57,11 +55,8 @@ async function onExpunge(mailboxId, update, session, fn) {
     return;
   }
 
-  let lock;
   try {
     await this.refreshSession(session, 'EXPUNGE');
-
-    lock = await acquireLock(this, session.db);
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -116,7 +111,6 @@ async function onExpunge(mailboxId, update, session, fn) {
         messages = await this.wsp.request({
           action: 'stmt',
           session: { user: session.user },
-          lock,
           stmt: [
             ['prepare', sql.query],
             ['all', sql.values]
@@ -136,8 +130,7 @@ async function onExpunge(mailboxId, update, session, fn) {
               this,
               session,
               attachmentIds,
-              m.magic,
-              lock
+              m.magic
             );
         });
       } catch (err) {
@@ -207,13 +200,6 @@ async function onExpunge(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // release lock
-    try {
-      await releaseLock(this, session.db, lock);
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
-
     // update storage
     try {
       await updateStorageUsed(session.user.alias_id, this.client);
@@ -226,15 +212,6 @@ async function onExpunge(mailboxId, update, session, fn) {
 
     fn(null, true);
   } catch (err) {
-    // release lock
-    if (lock?.success) {
-      try {
-        await releaseLock(this, session.db, lock);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

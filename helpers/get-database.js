@@ -37,7 +37,6 @@ const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
 const onExpunge = require('#helpers/imap/on-expunge');
 const setupPragma = require('#helpers/setup-pragma');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const onExpungePromise = pify(onExpunge, { multiArgs: true });
@@ -132,7 +131,6 @@ async function getDatabase(
   instance,
   alias,
   session,
-  existingLock,
   newlyCreated = false,
   customDbFilePath = false
 ) {
@@ -268,7 +266,6 @@ async function getDatabase(
       /*
       await instance.wsp.request({
         action: 'setup',
-        lock: existingLock,
         session: { user: session.user }
       });
       */
@@ -292,7 +289,7 @@ async function getDatabase(
       }
 
       // call this function again if it was successful
-      return getDatabase(instance, alias, session, existingLock, true);
+      return getDatabase(instance, alias, session, true);
     }
   }
 
@@ -484,7 +481,6 @@ async function getDatabase(
   */
 
   let db;
-  let lock;
 
   try {
     // if server is shutting down then don't bother getting database
@@ -518,10 +514,6 @@ async function getDatabase(
     // store in-memory open connection
     if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
 
-    if (!db.lock) {
-      db.lock = existingLock;
-    }
-
     await setupPragma(db, session); // takes about 30ms
 
     // assigns to session so we can easily re-use
@@ -532,9 +524,6 @@ async function getDatabase(
     if (readonly) {
       return db;
     }
-
-    if (!existingLock || existingLock?.success !== true)
-      lock = await acquireLock(instance, db);
 
     //
     // NOTE: this logic can be removed in the future
@@ -568,8 +557,7 @@ async function getDatabase(
                 $set: {
                   mailbox: mailboxes[0]._id
                 }
-              },
-              { lock: existingLock?.success ? existingLock : lock }
+              }
             );
             // eslint-disable-next-line no-await-in-loop
             await Mailboxes.deleteOne(
@@ -577,8 +565,7 @@ async function getDatabase(
               session,
               {
                 _id: mailbox._id
-              },
-              { lock: existingLock?.success ? existingLock : lock }
+              }
             );
           }
         }
@@ -605,8 +592,7 @@ async function getDatabase(
               $set: {
                 idate: message.hdate
               }
-            },
-            { lock: existingLock?.success ? existingLock : lock }
+            }
           );
         }
       }
@@ -733,7 +719,6 @@ async function getDatabase(
                   // Virtual helper
                   instance,
                   session,
-                  lock: existingLock?.success ? existingLock : lock,
 
                   path,
                   // NOTE: this is the same uncommented code as `helpers/imap/on-create`
@@ -751,8 +736,7 @@ async function getDatabase(
                     command: 'CREATE',
                     mailbox: mailbox._id,
                     path
-                  },
-                  existingLock?.success ? existingLock : lock
+                  }
                 );
               } catch (err) {
                 logger.fatal(err, { session });
@@ -770,15 +754,6 @@ async function getDatabase(
       }
     } catch (err) {
       logger.fatal(err, { session });
-    }
-
-    // release lock
-    try {
-      if (lock) {
-        await releaseLock(instance, db, lock);
-      }
-    } catch (err) {
-      logger.debug(err, { alias, session });
     }
 
     //
@@ -878,15 +853,6 @@ async function getDatabase(
     if (err.code === 'SQLITE_IOERR_SHORT_READ') {
       err.message +=
         '******************* PLEASE DISCONNECT FROM SQLiteStudio IF YOU ARE CONNECTED *************';
-    }
-
-    // release lock
-    if (lock) {
-      try {
-        await releaseLock(instance, db, lock);
-      } catch (err_) {
-        logger.fatal(err_, { alias, session });
-      }
     }
 
     // <https://sqlite.org/c3ref/c_abort.html>

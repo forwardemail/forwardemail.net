@@ -17,7 +17,6 @@ const fs = require('node:fs');
 const os = require('node:os');
 
 const Axe = require('axe');
-const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const POP3Server = require('wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
@@ -116,26 +115,6 @@ class POP3 {
       logger.error(err);
     });
 
-    // lock for read/writes
-    this.lock = new Lock({
-      redis: this.client,
-      namespace: config.imapLockNamespace
-    });
-
-    //
-    // in test/development listen for locking and releasing
-    // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
-    //
-    // if (config.env === 'development') {
-    //   this.lock._redisSubscriber.on('message', (channel, message) => {
-    //     logger.debug('lock message received', { channel, message });
-    //   });
-    // }
-
-    //
-    // NOTE: it is using a lock under `wildduck` prefix
-    // (to override set `this.attachmentStorage.storage.lock = new Lock(...)`)
-    //
     this.attachmentStorage = new AttachmentStorage();
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });

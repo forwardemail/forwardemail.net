@@ -70,7 +70,6 @@ async function onRename(path, newPath, session, fn) {
       }
     );
 
-    // could not write/lock mailbox
     if (!renamedMailbox)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),

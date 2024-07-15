@@ -26,7 +26,6 @@ const i18n = require('#helpers/i18n');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
@@ -68,8 +67,6 @@ async function onStore(mailboxId, update, session, fn) {
 
   try {
     await this.refreshSession(session, 'STORE');
-
-    const lock = await acquireLock(this, session.db);
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -325,12 +322,12 @@ async function onStore(mailboxId, update, session, fn) {
               const condition = prepareQuery(Messages.mapping, {
                 _id: message._id,
                 mailbox: mailbox._id,
-                uid: message.uid
+                uid: message.uid,
                 // NOTE: this causes flag updates to not work properly and not save properly
                 // <https://github.com/nodemailer/wildduck/blob/fed3d93f7f2530d468accbbac09ef6195920b28e/lib/handlers/on-store.js#L339-L341>
-                // modseq: {
-                //   $lt: newModseq
-                // }
+                modseq: {
+                  $lt: newModseq
+                }
               });
 
               const sql = builder.build({
@@ -408,15 +405,6 @@ async function onStore(mailboxId, update, session, fn) {
       }
     } catch (_err) {
       err = _err;
-    }
-
-    // release lock
-    if (lock?.success) {
-      try {
-        await releaseLock(this, session.db, lock);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
     }
 
     // if there was an error during cursor then throw

@@ -25,7 +25,6 @@ const Messages = require('#models/messages');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 const { prepareQuery } = require('#helpers/mongoose-to-sqlite');
 
 const { formatResponse } = IMAPConnection.prototype;
@@ -65,11 +64,8 @@ async function onMove(mailboxId, update, session, fn) {
     return;
   }
 
-  let lock;
   try {
     await this.refreshSession(session, 'MOVE');
-
-    lock = await acquireLock(this, session.db);
 
     const targetMailbox = await Mailboxes.findOne(this, session, {
       path: update.destination
@@ -375,13 +371,6 @@ async function onMove(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // release lock
-    try {
-      await releaseLock(this, session.db, lock);
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
-
     // throw error if any
     if (err) throw err;
 
@@ -447,15 +436,6 @@ async function onMove(mailboxId, update, session, fn) {
 
     fn(null, true, response);
   } catch (err) {
-    // release lock
-    if (lock?.success) {
-      try {
-        await releaseLock(this, session.db, lock);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
-    }
-
     fn(refineAndLogError(err, session, true, this));
   }
 }

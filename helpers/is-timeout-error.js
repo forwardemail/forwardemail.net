@@ -5,18 +5,22 @@
 
 const isLockingError = require('./is-locking-error');
 const isErrorConstructorName = require('./is-error-constructor-name');
+const isRedisError = require('./is-redis-error');
+const isMongoError = require('./is-mongo-error');
 
-// eslint-disable-next-line complexity
 function isTimeoutError(err) {
   if (typeof err !== 'object') return false;
 
-  if (err.name === 'SocketError' || err.name === 'ServerShutdownError')
+  if (
+    isErrorConstructorName(err, 'SocketError') ||
+    isErrorConstructorName(err, 'ServerShutdownError')
+  )
     return true;
 
   if (
-    err.name === 'TimeoutError' ||
-    err.name === 'AbortError' ||
-    err.name === 'KnexTimeoutError'
+    isErrorConstructorName(err, 'TimeoutError') ||
+    isErrorConstructorName(err, 'AbortError') ||
+    isErrorConstructorName(err, 'KnexTimeoutError')
   )
     return true;
 
@@ -24,24 +28,7 @@ function isTimeoutError(err) {
 
   // redis/mongo connection errors should retry
   // and be considered a timeout error
-  if (
-    err.name === 'RedisError' ||
-    err.name === 'MongooseServerSelectionError' ||
-    err.name === 'MongoBulkWriteError' ||
-    err.name === 'MongoNetworkError' ||
-    err.name === 'MongoNetworkTimeoutError' ||
-    err.name === 'PoolClearedOnNetworkError' ||
-    err.name === 'MongoPoolClearedError' ||
-    isErrorConstructorName(err, 'MongoNetworkError') ||
-    isErrorConstructorName(err, 'MongoNetworkTimeoutError') ||
-    isErrorConstructorName(err, 'MongoError') ||
-    isErrorConstructorName(err, 'MongoBulkWriteError') ||
-    isErrorConstructorName(err, 'PoolClearedOnNetworkError') ||
-    isErrorConstructorName(err, 'MongoPoolClearedError') ||
-    isErrorConstructorName(err, 'MongooseServerSelectionError') ||
-    isErrorConstructorName(err, 'RedisError')
-  )
-    return true;
+  if (isRedisError(err) || isMongoError(err)) return true;
 
   for (const key of ['message', 'response']) {
     if (typeof err[key] !== 'string') continue;

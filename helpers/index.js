@@ -91,6 +91,8 @@ const syncTemporaryMailbox = require('./sync-temporary-mailbox');
 const getTemporaryDatabase = require('./get-temporary-database');
 const isLockingError = require('./is-locking-error');
 const closeDatabase = require('./close-database');
+const isRedisError = require('./is-redis-error');
+const isMongoError = require('./is-mongo-error');
 
 module.exports = {
   decrypt,
@@ -182,5 +184,7 @@ module.exports = {
   syncTemporaryMailbox,
   getTemporaryDatabase,
   isLockingError,
-  closeDatabase
+  closeDatabase,
+  isRedisError,
+  isMongoError
 };

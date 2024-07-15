@@ -11,7 +11,6 @@ const getPathToDatabase = require('./get-path-to-database');
 const logger = require('./logger');
 const migrateSchema = require('./migrate-schema');
 const setupPragma = require('./setup-pragma');
-const { acquireLock, releaseLock } = require('./lock');
 const { encrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
@@ -70,8 +69,6 @@ async function getTemporaryDatabase(session) {
     TemporaryMessages
   });
 
-  const lock = await acquireLock(this, tmpDb);
-
   if (commands.length > 0) {
     for (const command of commands) {
       try {
@@ -96,15 +93,6 @@ async function getTemporaryDatabase(session) {
           }
         }
       }
-    }
-  }
-
-  // release lock
-  if (lock) {
-    try {
-      await releaseLock(this, tmpDb, lock);
-    } catch (err) {
-      logger.fatal(err, { session });
     }
   }
 

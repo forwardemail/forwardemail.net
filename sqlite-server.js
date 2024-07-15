@@ -10,7 +10,6 @@ const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
-const Lock = require('ioredfour');
 const MessageHandler = require('wildduck/lib/message-handler');
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
@@ -64,10 +63,6 @@ class SQLite {
     server.logger = logger;
     server.loggelf = (...args) => logger.debug(...args);
 
-    //
-    // NOTE: it is using a lock under `wildduck` prefix
-    // (to override set `this.attachmentStorage.storage.lock = new Lock(...)`)
-    //
     this.attachmentStorage = new AttachmentStorage();
 
     this.indexer = new Indexer({ attachmentStorage: this.attachmentStorage });
@@ -90,21 +85,6 @@ class SQLite {
       publisher: this.client,
       subscriber: this.subscriber
     });
-
-    this.lock = new Lock({
-      redis: this.client,
-      namespace: config.imapLockNamespace
-    });
-
-    //
-    // in test/development listen for locking and releasing
-    // <https://github.com/nodemailer/ioredfour/blob/0bc1035c34c548b2d3058352c588dc20422cfb96/lib/ioredfour.js#L48-L49>
-    //
-    // if (config.env === 'development') {
-    //   this.lock._redisSubscriber.on('message', (channel, message) => {
-    //     logger.debug('lock message received', { channel, message });
-    //   });
-    // }
 
     // this.wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
     this.wss = new WebSocketServer({

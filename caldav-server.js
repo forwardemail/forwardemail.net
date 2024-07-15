@@ -8,7 +8,6 @@ const { randomUUID } = require('node:crypto');
 const API = require('@ladjs/api');
 const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
-const Lock = require('ioredfour');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
 const mongoose = require('mongoose');
@@ -22,7 +21,6 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 
 // TODO: DNS SRV records <https://sabre.io/dav/service-discovery/#dns-srv-records>
 
@@ -447,11 +445,6 @@ class CalDAV extends API {
 
     this.wsp = options.wsp;
 
-    this.lock = new Lock({
-      redis: this.client,
-      namespace: config.imapLockNamespace
-    });
-
     this.authenticate = this.authenticate.bind(this);
     this.createCalendar = this.createCalendar.bind(this);
     this.getCalendar = this.getCalendar.bind(this);
@@ -635,14 +628,11 @@ class CalDAV extends API {
   async updateCalendar(ctx, { principalId, calendarId, user }) {
     logger.debug('updateCalendar', { principalId, calendarId, user });
     //
-    // 1) acquire a lock
-    // 2) parse `ctx.request.body` for VCALENDAR and all VEVENT's
-    // 3) update the calendar metadata based off VCALENDAR
-    // 4) delete existing VEVENTS
-    // 5) create new VEVENTS
-    // 6) release lock
+    // 1) parse `ctx.request.body` for VCALENDAR and all VEVENT's
+    // 2) update the calendar metadata based off VCALENDAR
+    // 3) delete existing VEVENTS
+    // 4) create new VEVENTS
     //
-    let lock;
     let err;
     try {
       // parse `ctx.request.body` for VCALENDAR and all VEVENT's
@@ -674,12 +664,6 @@ class CalDAV extends API {
         user
       });
 
-      // acquire a lock
-      lock = await acquireLock(this, {
-        wsp: true,
-        id: user.alias_id
-      });
-
       const update = {
         name: comp.getFirstPropertyValue('name'),
         prodId: comp.getFirstPropertyValue('prodid'),
@@ -708,9 +692,6 @@ class CalDAV extends API {
         calendar._id,
         {
           $set: update
-        },
-        {
-          lock
         }
       );
 
@@ -719,16 +700,9 @@ class CalDAV extends API {
       //
 
       // delete existing VEVENTS
-      const deleted = await CalendarEvents.deleteMany(
-        this,
-        ctx.state.session,
-        {
-          calendar: calendar._id
-        },
-        {
-          lock
-        }
-      );
+      const deleted = await CalendarEvents.deleteMany(this, ctx.state.session, {
+        calendar: calendar._id
+      });
 
       logger.debug('deleted events', {
         deleted,
@@ -769,7 +743,6 @@ class CalDAV extends API {
             // db virtual helper
             instance: this,
             session: ctx.state.session,
-            lock,
 
             // event obj
             eventId,
@@ -795,22 +768,6 @@ class CalDAV extends API {
       return calendar;
     } catch (_err) {
       err = _err;
-    }
-
-    // release lock
-    if (lock?.success) {
-      try {
-        await releaseLock(
-          this,
-          {
-            wsp: true,
-            id: user.alias_id
-          },
-          lock
-        );
-      } catch (err) {
-        logger.fatal(err, { principalId, calendarId });
-      }
     }
 
     // throw error if any

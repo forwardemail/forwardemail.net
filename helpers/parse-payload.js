@@ -43,7 +43,7 @@ const { Upload } = require('@aws-sdk/lib-storage');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
-const Mailboxes = require('#models/mailboxes');
+const Boom = require('@hapi/boom');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
@@ -53,7 +53,6 @@ const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const env = require('#config/env');
 const closeDatabase = require('#helpers/close-database');
-const copyMessages = require('#helpers/copy-messages');
 const getDatabase = require('#helpers/get-database');
 const getFingerprint = require('#helpers/get-fingerprint');
 const getPathToDatabase = require('#helpers/get-path-to-database');
@@ -66,11 +65,9 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
-const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt } = require('#helpers/encrypt-decrypt');
 
-const IMAPError = require('#helpers/imap-error');
 const onAppend = require('#helpers/imap/on-append');
 const onCopy = require('#helpers/imap/on-copy');
 const onCreate = require('#helpers/imap/on-create');
@@ -188,7 +185,6 @@ async function parsePayload(data, ws) {
   const now = Date.now();
 
   let db;
-  let lock;
   let payload;
   let response;
   try {
@@ -207,7 +203,6 @@ async function parsePayload(data, ws) {
     //
     // validate payload
     // - id (uuid)
-    // - lock (must be a lock object)
     // - action (str, enum)
     // - session = {}
     // - session.user = {}
@@ -243,41 +238,6 @@ async function parsePayload(data, ws) {
           payload.checkpoint
         }" but must be one of: ${CHECKPOINTS.join(', ')}`
       );
-
-    // if lock was passed it must be valid
-    if (_.isPlainObject(payload.lock)) {
-      // lock.id (string, type?)
-      // lock.success (boolean = true)
-      // index (number)
-      // ttl (number)
-      if (
-        Object.keys(payload.lock).sort().join(' ') !==
-        ['id', 'success', 'index', 'ttl'].sort().join(' ')
-      )
-        throw new TypeError('Payload lock has extra properties');
-      if (!isSANB(payload.lock.id))
-        throw new TypeError('Payload lock must be a string');
-      // lock id must be equal to session user alias id
-      if (payload.action === 'size') {
-        if (payload.lock.id !== payload?.alias_id)
-          throw new TypeError(
-            'Payload lock must be for the given alias session'
-          );
-      } else if (payload.lock.id !== payload?.session?.user?.alias_id) {
-        throw new TypeError('Payload lock must be for the given alias session');
-      }
-
-      if (typeof payload.lock.success !== 'boolean')
-        throw new TypeError('Payload lock success must be a boolean');
-      if (payload.lock.success === false)
-        throw new TypeError('Payload lock was unsuccessful');
-      if (!Number.isFinite(payload.lock.index))
-        throw new TypeError('Payload lock index was invalid');
-      if (!Number.isFinite(payload.lock.ttl))
-        throw new TypeError('Payload lock TTL was invalid');
-    } else {
-      delete payload.lock;
-    }
 
     //
     // neither size/tmp actions require session payload
@@ -1303,8 +1263,7 @@ async function parsePayload(data, ws) {
             id: payload.session.user.alias_id,
             storage_location: payload.session.user.storage_location
           },
-          payload.session,
-          payload?.lock
+          payload.session
         );
 
         response = {
@@ -1369,12 +1328,8 @@ async function parsePayload(data, ws) {
               id: payload.session.user.alias_id,
               storage_location: payload.session.user.storage_location
             },
-            payload.session,
-            payload?.lock
+            payload.session
           );
-
-          // lock database if not already locked
-          if (!payload?.lock) lock = await acquireLock(this, db);
 
           // run a checkpoint to copy over wal to db
           db.pragma('wal_checkpoint(PASSIVE)');
@@ -1406,7 +1361,6 @@ async function parsePayload(data, ws) {
         break;
       }
 
-      // this assumes locking already took place
       case 'stmt': {
         // payload = {
         //   ...,
@@ -1478,8 +1432,7 @@ async function parsePayload(data, ws) {
             id: payload.session.user.alias_id,
             storage_location: payload.session.user.storage_location
           },
-          payload.session,
-          payload?.lock
+          payload.session
         );
         console.timeEnd(`getting database in parse payload ${payload.id}`);
 
@@ -1524,398 +1477,21 @@ async function parsePayload(data, ws) {
         break;
       }
 
-      //
-      // NOTE: rekeying is not supported in WAL mode
-      //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/64>
-      //       e.g. this results in "SqliteError: SQL logic error"
-      //       `db.rekey(Buffer.from(decrypt(payload.new_password)));`
-      //       `db.pragma(`rekey="${decrypt(payload.new_password)}"`);`
-      //
-      case 'rekey': {
-        // leverages `payload.new_password` to rekey existing
-        if (!isSANB(payload.new_password))
-          throw new TypeError('New password missing');
-
-        lock = await this.lock.waitAcquireLock(
-          `${payload.session.user.alias_id}`,
-          ms('1h'),
-          ms('10s')
-        );
-        if (!lock.success)
-          throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
-            imapResponse: 'INUSE'
-          });
-
-        // check how much space is remaining on storage location
-        const storagePath = getPathToDatabase({
-          id: payload.session.user.alias_id,
-          storage_location: payload.session.user.storage_location
-        });
-        const diskSpace = await checkDiskSpace(storagePath);
-        const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
-        );
-
-        let stats;
-        try {
-          // <https://github.com/nodejs/node/issues/38006>
-          stats = await fs.promises.stat(storagePath);
-          if (!stats.isFile())
-            throw new TypeError(`${storagePath} was not a file`);
-        } catch (err) {
-          if (err.code !== 'ENOENT') {
-            err.isCodeBug = true;
-            throw err;
-          }
-        }
-
-        // we calculate size of db x 2 (backup + tarball)
-        const spaceRequired = Math.max(
-          maxQuotaPerAlias * 2,
-          stats && stats.size > 0 ? stats.size * 2 : 0
-        );
-
-        if (diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
-              diskSpace.free
-            )} was available`
-          );
-
-        // check if file path was <= initial db size
-        // (and if so then perform the same logic as in "reset")
-        let reset = false;
-        if (!stats || stats.size <= config.INITIAL_DB_SIZE) {
-          try {
-            await fs.promises.rm(storagePath, {
-              force: true,
-              recursive: true
-            });
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          reset = true;
-
-          const dirName = path.dirname(storagePath);
-          const ext = path.extname(storagePath);
-          const basename = path.basename(storagePath, ext);
-
-          for (const affix of ['-wal', '-shm']) {
-            const affixFilePath = path.join(
-              dirName,
-              `${basename}${affix}${ext}`
-            );
-            try {
-              // eslint-disable-next-line no-await-in-loop
-              await fs.promises.rm(affixFilePath, {
-                force: true,
-                recursive: true
-              });
-            } catch (err) {
-              if (err.code !== 'ENOENT') {
-                err.isCodeBug = true;
-                throw err;
-              }
-            }
-          }
-
-          // close existing connection if any and purge it
-          if (
-            this?.databaseMap &&
-            this.databaseMap.has(payload.session.user.alias_id)
-          ) {
-            await closeDatabase(
-              this.databaseMap.get(payload.session.user.alias_id)
-            );
-            this.databaseMap.delete(payload.session.user.alias_id);
-          }
-
-          // TODO: this should not fix database
-          db = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            },
-            {
-              ...payload.session,
-              user: {
-                ...payload.session.user,
-                password: payload.new_password
-              }
-            },
-            lock
-          );
-        } else {
-          // TODO: this should not fix database
-          db = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            },
-            payload.session,
-            lock
-          );
-        }
-
-        //
-        // NOTE: if we're not resetting database then assume we want to do a backup
-        //
-        let err;
-        if (!reset) {
-          // create backup
-          const tmp = path.join(
-            path.dirname(storagePath),
-            `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
-          );
-
-          //
-          // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
-          //       because if a page is modified during backup, it has to start over
-          //       <https://news.ycombinator.com/item?id=31387556>
-          //       <https://github.com/benbjohnson/litestream.io/issues/56>
-          //
-          //       also, if we used `backup` then for a temporary period
-          //       the database would be unencrypted on disk, and instead
-          //       we use VACUUM INTO which keeps the encryption as-is
-          //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
-          //
-          //       const results = await db.backup(tmp);
-          //
-          //       so instead we use the VACUUM INTO command with the `tmp` path
-          //
-
-          // run a checkpoint to copy over wal to db
-          db.pragma('wal_checkpoint(PASSIVE)');
-
-          // create backup
-          const results = db.exec(`VACUUM INTO '${tmp}'`);
-
-          logger.debug('results', { results });
-
-          let backup = true;
-
-          try {
-            // open the backup and encrypt it
-            const backupDb = await getDatabase(
-              this,
-              // alias
-              {
-                id: payload.session.user.alias_id,
-                storage_location: payload.session.user.storage_location
-              },
-              payload.session,
-              lock,
-              false,
-              tmp
-            );
-
-            // rekey the database with new password
-            backupDb.pragma('wal_checkpoint(PASSIVE)');
-
-            // ensure journal mode changed to delete so we can rekey database
-            const journalModeResult = backupDb.pragma('journal_mode=DELETE', {
-              simple: true
-            });
-            if (journalModeResult !== 'delete')
-              throw new TypeError('Journal mode could not be changed');
-
-            // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
-            backupDb.prepare('VACUUM').run();
-            // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
-            backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
-
-            //
-            // NOTE: do not enable this again because if so it will create
-            //       -wal and -shm files and corrupt the database
-            //       `backupDb.pragma('journal_mode=WAL');`
-            //
-            //       (the next time the database is opened the journal mode will get switched to WAL)
-            //
-
-            // NOTE: VACUUM will persist the rekey operation and write to db
-            // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
-            backupDb.prepare('VACUUM').run();
-
-            try {
-              backupDb.pragma('analysis_limit=400');
-              backupDb.pragma('optimize');
-              backupDb.close();
-            } catch (err) {
-              logger.fatal(err, { payload });
-            }
-
-            // rename backup file (overwrites existing destination file)
-            await fs.promises.rename(tmp, storagePath);
-            backup = false;
-            logger.debug('renamed', { tmp, storagePath });
-
-            // remove the old -whm and -shm files
-            const dirName = path.dirname(storagePath);
-            const ext = path.extname(storagePath);
-            const basename = path.basename(storagePath, ext);
-
-            for (const affix of ['-wal', '-shm']) {
-              const affixFilePath = path.join(
-                dirName,
-                `${basename}${affix}${ext}`
-              );
-              try {
-                // eslint-disable-next-line no-await-in-loop
-                await fs.promises.rm(affixFilePath, {
-                  force: true,
-                  recursive: true
-                });
-              } catch (err) {
-                if (err.code !== 'ENOENT') {
-                  err.isCodeBug = true;
-                  throw err;
-                }
-              }
-            }
-          } catch (_err) {
-            err = _err;
-          }
-
-          // always do cleanup in case of errors
-          if (backup) {
-            try {
-              await fs.promises.rm(tmp, {
-                force: true,
-                recursive: true
-              });
-            } catch (err) {
-              logger.fatal(err, { payload });
-            }
-          }
-        }
-
-        // update storage
-        try {
-          await updateStorageUsed(payload.session.user.alias_id, this.client);
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
-
-        if (err) throw err;
-
-        response = {
-          id: payload.id,
-          data: true
-        };
-        this.client.publish('sqlite_auth_reset', payload.session.user.alias_id);
-        break;
-      }
-
-      case 'copy_messages': {
-        if (!payload.query || !payload.values)
-          throw new TypeError('Query or values missing');
-
-        if (typeof payload.values === 'string')
-          payload.values = JSON.parse(payload.values);
-
-        if (!payload.results) throw new TypeError('Payload results missing');
-
-        if (typeof payload.results === 'string')
-          payload.results = JSON.parse(payload.results);
-
-        const { modseq, mailboxId, targetMailboxId } = payload;
-
-        if (!modseq || !mailboxId || !targetMailboxId)
-          throw new TypeError('modseq, mailbox or target mailbox ID missing');
-
-        db = await getDatabase(
-          this,
-          // alias
-          {
-            id: payload.session.user.alias_id,
-            storage_location: payload.session.user.storage_location
-          },
-          payload.session,
-          payload?.lock
-        );
-
-        const mailbox = await Mailboxes.findOne(this, payload.session, {
-          _id: mailboxId
-        });
-
-        if (!mailbox)
-          throw new IMAPError(
-            i18n.translate(
-              'IMAP_MAILBOX_DOES_NOT_EXIST',
-              payload.session.user.locale
-            ),
-            {
-              imapResponse: 'NONEXISTENT'
-            }
-          );
-
-        const targetMailbox = await Mailboxes.findOne(this, payload.session, {
-          _id: targetMailboxId
-        });
-
-        if (!targetMailbox)
-          throw new IMAPError(
-            i18n.translate(
-              'IMAP_MAILBOX_DOES_NOT_EXIST',
-              payload.session.user.locale
-            ),
-            {
-              imapResponse: 'TRYCREATE'
-            }
-          );
-
-        // check that destination and source are not the same
-        if (targetMailbox._id.toString() === mailbox._id.toString())
-          throw new IMAPError(
-            i18n.translate(
-              'IMAP_TARGET_AND_SOURCE_SAME',
-              payload.session.user.locale
-            ),
-            {
-              imapResponse: 'CANNOT'
-            }
-          );
-
-        const messages = db.prepare(payload.query).all(payload.values);
-
-        const { results } = payload;
-
-        if (messages.length > 0)
-          db.transaction(
-            copyMessages(
-              payload.session,
-              modseq,
-              mailbox,
-              targetMailbox,
-              results
-            )
-          ).immediate(messages);
-
-        response = {
-          id: payload.id,
-          data: results
-        };
-        break;
-      }
-
       case 'reset': {
-        lock = await this.lock.waitAcquireLock(
-          `${payload.session.user.alias_id}`,
-          ms('15s'),
-          ms('30s')
+        // only allow one reset at a time
+        const cache = await this.client.get(
+          `reset_check:${payload.session.user.alias_id}`
         );
-        if (!lock.success)
-          throw new IMAPError(i18n.translate('IMAP_WRITE_LOCK_FAILED'), {
-            imapResponse: 'INUSE'
-          });
+        if (cache)
+          throw Boom.clientTimeout(
+            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+          );
+        await this.client.set(
+          `reset_check:${payload.session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1m')
+        );
 
         // check how much space is remaining on storage location
         const storagePath = getPathToDatabase({
@@ -1975,8 +1551,7 @@ async function parsePayload(data, ws) {
             id: payload.session.user.alias_id,
             storage_location: payload.session.user.storage_location
           },
-          payload.session,
-          lock
+          payload.session
         );
 
         // update storage
@@ -1986,6 +1561,9 @@ async function parsePayload(data, ws) {
         } catch (err) {
           logger.fatal(err, { payload });
         }
+
+        // remove write lock
+        await this.client.del(`reset_check:${payload.session.user.alias_id}`);
 
         response = {
           id: payload.id,
@@ -2148,8 +1726,7 @@ async function parsePayload(data, ws) {
                   id: payload.session.user.alias_id,
                   storage_location: payload.session.user.storage_location
                 },
-                payload.session,
-                payload?.lock
+                payload.session
               );
 
               // run a checkpoint to copy over wal to db
@@ -2294,15 +1871,6 @@ async function parsePayload(data, ws) {
 
     if (db && !this?.databaseMap) await closeDatabase(db);
 
-    if (lock) {
-      releaseLock(this, db, lock)
-        .then((result) => {
-          if (!result.success)
-            throw i18n.translateError('IMAP_RELEASE_LOCK_FAILED');
-        })
-        .catch((err) => logger.fatal(err, { payload }));
-    }
-
     if (!ws) return response.data;
 
     ws.send(encoder.pack(response));
@@ -2325,12 +1893,6 @@ async function parsePayload(data, ws) {
     logger.fatal(err, { payload });
 
     if (db && !this?.databaseMap) await closeDatabase(db);
-
-    if (lock) {
-      releaseLock(this, db, lock)
-        .then()
-        .catch((err) => logger.fatal(err, { payload }));
-    }
 
     if (!ws || typeof ws.send !== 'function') throw err;
 

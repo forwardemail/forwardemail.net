@@ -27,7 +27,6 @@ const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
@@ -142,8 +141,8 @@ class IMAPNotifier extends EventEmitter {
     this._listeners.removeListener(session.user.alias_id, handler);
   }
 
-  // eslint-disable-next-line complexity, max-params
-  async addEntries(instance, session, mailboxId, entries, lock = false) {
+  // eslint-disable-next-line complexity
+  async addEntries(instance, session, mailboxId, entries) {
     if (!session?.db || (!(session.db instanceof Database) && !instance.wsp)) {
       const err = new TypeError('Database is missing');
       err.instance = instance;
@@ -191,9 +190,6 @@ class IMAPNotifier extends EventEmitter {
     // safeguard
     if (_.isEmpty(query) || !query._id) throw new Error('Query empty');
 
-    let newLock;
-    if (!lock) newLock = await acquireLock(instance, session.db);
-
     let err;
 
     try {
@@ -208,7 +204,6 @@ class IMAPNotifier extends EventEmitter {
             }
           },
           {
-            lock: lock || newLock,
             returnDocument: 'after'
           }
         );
@@ -285,7 +280,6 @@ class IMAPNotifier extends EventEmitter {
             await instance.wsp.request({
               action: 'stmt',
               session: { user: session.user },
-              lock: lock || newLock,
               stmt: [
                 ['prepare', sql.query],
                 ['run', sql.values]
@@ -316,15 +310,6 @@ class IMAPNotifier extends EventEmitter {
       }
     } catch (_err) {
       err = _err;
-    }
-
-    // release lock
-    if (newLock?.success) {
-      try {
-        await releaseLock(instance, session.db, newLock);
-      } catch (err) {
-        logger.fatal(err, { mailbox, updated, session });
-      }
     }
 
     if (err) throw err;

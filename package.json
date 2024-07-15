@@ -135,7 +135,6 @@
     "iconv": "3.0.1",
     "imapflow": "1.0.164",
     "into-stream": "6.0.0",
-    "ioredfour": "1.3.0-ioredis-07",
     "ip": "1.1.8",
     "ipaddr.js": "2.2.0",
     "is-ci": "3.0.1",

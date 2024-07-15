@@ -26,7 +26,6 @@ const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
@@ -101,7 +100,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     let copiedMessages = 0;
     let copiedStorage = 0;
     let err;
-    let lock;
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -137,8 +135,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       );
 
     try {
-      lock = await acquireLock(this, session.db);
-
       const condition = {
         mailbox: mailbox._id.toString()
       };
@@ -294,15 +290,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
           .immediate(messages);
     } catch (_err) {
       err = _err;
-    }
-
-    // release lock
-    if (lock?.success) {
-      try {
-        await releaseLock(this, session.db, lock);
-      } catch (err) {
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
     }
 
     if (err) throw err;

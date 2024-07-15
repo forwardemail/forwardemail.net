@@ -477,9 +477,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     data.thread = thread._id;
 
-    // virtual helper for locking if we lock in advance
-    // data.lock = lock;
-
     // db virtual helper
     data.instance = this;
     data.session = session;

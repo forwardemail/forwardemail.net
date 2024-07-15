@@ -284,8 +284,6 @@ module.exports = {
   IMAP_MAILBOX_OVER_QUOTA: 'Mailbox is over quota',
   IMAP_MAILBOX_RESERVED: 'Mailbox is reserved and cannot be removed',
   IMAP_INVALID_SEARCH: 'Invalid search query',
-  IMAP_WRITE_LOCK_FAILED: 'Failed to acquire write lock',
-  IMAP_RELEASE_LOCK_FAILED: 'Failed to release write lock',
   IMAP_MAILBOX_MESSAGE_EXCEEDS_QUOTA:
     'Mailbox quota for <span class="notranslate">%s</span> would be exceeded by message size',
   NO_DOMAINS_EXIST: 'Enter your custom domain name to continue.',

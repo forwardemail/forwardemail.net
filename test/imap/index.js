@@ -67,16 +67,8 @@ test.before(utils.defineAliasFactory);
 //       (and translations will need run from scratch again)
 //
 test.before(async () => {
-  // imapLockNamespace
-  // smtpLimitNamespace
-  const [imapLockKeys, smtpLimitKeys] = await Promise.all([
-    client.keys(`${config.imapLockNamespace}*`),
-    client.keys(`${config.smtpLimitNamespace}*`)
-  ]);
-  await Promise.all([
-    imapLockKeys.map((k) => client.del(k)),
-    smtpLimitKeys.map((k) => client.del(k))
-  ]);
+  const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
+  await smtpLimitKeys.map((k) => client.del(k));
 });
 test.after.always(utils.teardownMongoose);
 test.beforeEach(async (t) => {

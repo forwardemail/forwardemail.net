@@ -13,9 +13,7 @@ const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
 
 const env = require('#config/env');
-const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 
 const builder = new Builder();
 
@@ -122,7 +120,7 @@ async function updateMany(
     for (const key of keys) {
       if (keys.filter((k) => k === key).length > 1)
         throw new TypeError('Only one of each type is supported');
-      if (key !== 'returnDocument' && key !== 'lock')
+      if (key !== 'returnDocument')
         throw new TypeError(`Key type ${key} is not yet supported`);
       if (
         key === 'returnDocument' &&
@@ -154,10 +152,6 @@ async function updateMany(
 
   let beforeDocs = [];
 
-  // acquire lock if options.lock not set
-  let lock;
-  if (!options?.lock) lock = await acquireLock(instance, session.db);
-
   let docs;
   let err;
 
@@ -173,7 +167,6 @@ async function updateMany(
         beforeDocs = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
-          lock: options.lock || lock,
           stmt: [
             ['prepare', sql.query],
             ['all', sql.values]
@@ -213,7 +206,6 @@ async function updateMany(
         docs = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
-          lock: options.lock || lock,
           stmt: [
             ['prepare', sql.query],
             ['all', sql.values]
@@ -227,15 +219,6 @@ async function updateMany(
     }
   } catch (_err) {
     err = _err;
-  }
-
-  // release lock if options.lock not set
-  if (lock?.success) {
-    try {
-      await releaseLock(instance, session.db, lock);
-    } catch (err) {
-      logger.fatal(err, { lock });
-    }
   }
 
   // throw error if any
@@ -279,7 +262,6 @@ async function countDocuments(instance, session, filter = {}) {
     result = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
-      // lock: options.lock,
       stmt: [
         ['prepare', sql.query],
         ['get', sql.values]
@@ -310,21 +292,13 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
-  if (
-    !_.isEmpty(options) &&
-    !Object.keys(options).every((key) => key === 'lock')
-  )
-    throw new TypeError('Only lock option supported');
+  if (!_.isEmpty(options)) throw new TypeError('No options supported');
 
   const sql = builder.build({
     type: 'remove',
     table,
     condition
   });
-
-  // acquire lock if options.lock not set
-  let lock;
-  if (!options?.lock) lock = await acquireLock(instance, session.db);
 
   let result;
   let err;
@@ -334,7 +308,6 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
       result = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
-        lock: options.lock || lock,
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
@@ -349,15 +322,6 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
     err = _err;
   }
 
-  // release lock if options.lock not set
-  if (lock) {
-    try {
-      await releaseLock(instance, session.db, lock);
-    } catch (err) {
-      logger.fatal(err, { lock });
-    }
-  }
-
   // throw error if any
   if (err) throw err;
 
@@ -366,7 +330,6 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   return { deletedCount: result.changes };
 }
 
-// eslint-disable-next-line complexity
 async function deleteOne(instance, session, conditions = {}, options = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -381,14 +344,8 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   if (typeof session?.user?.password !== 'string')
     throw new TypeError('Session user and password missing');
 
-  {
-    const keys = Object.keys(options);
-    for (const key of keys) {
-      if (keys.filter((k) => k === key).length > 1)
-        throw new TypeError('Only one of each type is supported');
-      if (key === 'lock') continue;
-      throw new TypeError(`Option of ${key} is not yet supported`);
-    }
+  if (!_.isEmpty(options)) {
+    throw new TypeError('Options not yet supported');
   }
 
   const doc = await findOne.call(
@@ -407,10 +364,6 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
     condition: prepareQuery(mapping, conditions)
   });
 
-  // acquire lock if options.lock not set
-  let lock;
-  if (!options?.lock) lock = await acquireLock(instance, session.db);
-
   let result;
   let err;
   try {
@@ -419,7 +372,6 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
       result = await instance.wsp.request({
         action: 'stmt',
         session: { user: session.user },
-        lock: options.lock || lock,
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
@@ -432,15 +384,6 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
     }
   } catch (_err) {
     err = _err;
-  }
-
-  // release lock if options.lock not set
-  if (lock) {
-    try {
-      await releaseLock(instance, session.db, lock);
-    } catch (err) {
-      logger.fatal(err, { lock });
-    }
   }
 
   // throw error if any
@@ -461,9 +404,9 @@ async function find(
 ) {
   if (
     !_.isEmpty(options) &&
-    !Object.keys(options).every((key) => key === 'lock' || key === 'sort')
+    !Object.keys(options).every((key) => key === 'sort')
   )
-    throw new TypeError('Only lock and sort option supported');
+    throw new TypeError('Only sort option supported');
 
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -511,7 +454,6 @@ async function find(
     docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
-      lock: options.lock,
       stmt: [
         ['prepare', sql.query],
         ['all', sql.values]
@@ -550,7 +492,7 @@ async function findOne(
     for (const key of keys) {
       if (keys.filter((k) => k === key).length > 1)
         throw new TypeError('Only one of each type is supported');
-      if (key === 'returnDocument' || key === 'lock') continue;
+      if (key === 'returnDocument') continue;
       if (key === 'projection') {
         projections = options.projection;
         delete options.projection;
@@ -588,7 +530,6 @@ async function findOne(
     doc = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
-      lock: options.lock,
       stmt: [
         ['prepare', sql.query],
         ['get', sql.values]
@@ -603,9 +544,7 @@ async function findOne(
   return doc;
 }
 
-// eslint-disable-next-line complexity
 async function $__handleSave(options = {}, fn) {
-  let lock;
   try {
     const table =
       this?.collection?.modelName || this?.constructor?.collection?.modelName;
@@ -645,16 +584,11 @@ async function $__handleSave(options = {}, fn) {
           returning: ['*']
         });
 
-        // acquire lock if options.lock not set
-        if (!this.lock && !options?.lock)
-          lock = await acquireLock(this.instance, this.session.db);
-
         // use websockets if readonly
         if (this.session.db.readonly) {
           doc = await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
-            lock: this.lock || options.lock || lock,
             stmt: [
               ['prepare', sql.query],
               ['get', sql.values]
@@ -675,15 +609,11 @@ async function $__handleSave(options = {}, fn) {
           modifier: values,
           returning: ['*']
         });
-        // acquire lock if options.lock not set
-        if (!this.lock && !options?.lock)
-          lock = await acquireLock(this.instance, this.session.db);
         // use websockets if readonly
         if (this.session.db.readonly) {
           doc = await this.instance.wsp.request({
             action: 'stmt',
             session: { user: this.session.user },
-            lock: this.lock || options.lock || lock,
             stmt: [
               ['prepare', sql.query],
               ['get', sql.values]
@@ -699,15 +629,6 @@ async function $__handleSave(options = {}, fn) {
       err = _err;
     }
 
-    // release lock if options.lock not set
-    if (lock) {
-      try {
-        await releaseLock(this.instance, this.session.db, lock);
-      } catch (err) {
-        logger.fatal(err, { lock });
-      }
-    }
-
     // throw error if any
     if (err) throw err;
 
@@ -715,15 +636,6 @@ async function $__handleSave(options = {}, fn) {
     doc = syncConvertResult(this.constructor, doc);
     fn(null, doc);
   } catch (err) {
-    // release lock if options.lock not set
-    if (lock) {
-      try {
-        await releaseLock(this.instance, this.session.db, lock);
-      } catch (err) {
-        logger.fatal(err, { lock });
-      }
-    }
-
     fn(err);
   }
 }
@@ -778,10 +690,6 @@ async function findOneAndUpdate(
   );
   if (!beforeDoc) return null;
 
-  // acquire lock if options.lock not set
-  let lock;
-  if (!options?.lock) lock = await acquireLock(instance, session.db);
-
   let doc;
   let err;
 
@@ -792,7 +700,7 @@ async function findOneAndUpdate(
       for (const key of keys) {
         if (keys.filter((k) => k === key).length > 1)
           throw new TypeError('Only one of each type is supported');
-        if (key !== 'returnDocument' && key !== 'lock')
+        if (key !== 'returnDocument')
           throw new TypeError(`Key type ${key} is not yet supported`);
         if (
           key === 'returnDocument' &&
@@ -882,7 +790,6 @@ async function findOneAndUpdate(
         doc = await instance.wsp.request({
           action: 'stmt',
           session: { user: session.user },
-          lock: options.lock || lock,
           stmt: [
             ['prepare', sql.query],
             ['get', sql.values]
@@ -896,15 +803,6 @@ async function findOneAndUpdate(
     }
   } catch (_err) {
     err = _err;
-  }
-
-  // release lock if options.lock not set
-  if (lock) {
-    try {
-      await releaseLock(instance, session.db, lock);
-    } catch (err) {
-      logger.fatal(err, { lock });
-    }
   }
 
   // throw error if any
@@ -941,7 +839,6 @@ async function distinct(instance, session, field, conditions = {}) {
     docs = await instance.wsp.request({
       action: 'stmt',
       session: { user: session.user },
-      // lock: options.lock,
       stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
     });
   } else {
@@ -1503,15 +1400,6 @@ function sqliteVirtualDB(schema) {
         throw new TypeError('session not a valid session');
       this.__session = session;
     });
-  schema
-    .virtual('lock')
-    .get(function () {
-      return this.__lock;
-    })
-    .set(function (lock) {
-      if (!lock?.success) throw new TypeError('Lock was not successful');
-      this.__lock = lock;
-    });
   return schema;
 }
 
@@ -1523,15 +1411,6 @@ function sqliteVirtualDB(schema) {
 // <https://github.com/benbjohnson/litestream/issues/47>
 // <https://litestream.io/tips/#busy-timeout>
 //
-// TODO: only mount from one server at a time
-//       - all other servers check if mounted somewhere
-//       - if not then lock a mounting process (for up to 1h ttl?)
-//       - all but main are subscribers and send message to master
-//         master will read/write and be only location mounting from (?)
-//         and will send/receive/parse raw buffers
-//
-
-// TODO: wrap all functions with retry mechanism for up to 1m due to locking
 // TypeError + message of "This database connection is busy executing a query" -> retry for up to 1 minute
 module.exports = {
   dummyProofModel,

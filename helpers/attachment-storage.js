@@ -30,13 +30,11 @@ const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 //
 
 const Attachments = require('#models/attachments');
-const logger = require('#helpers/logger');
-const { acquireLock, releaseLock } = require('#helpers/lock');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder();
 
-async function updateAttachments(attachmentIds, magic, session, lock) {
+async function updateAttachments(attachmentIds, magic, session) {
   const sql = builder.build({
     type: 'update',
     table: 'Attachments',
@@ -61,7 +59,6 @@ async function updateAttachments(attachmentIds, magic, session, lock) {
     attachments = await this.wsp.request({
       action: 'stmt',
       session: { user: session.user },
-      lock,
       stmt: [
         ['prepare', sql.query],
         ['all', sql.values]
@@ -99,7 +96,6 @@ async function updateAttachments(attachmentIds, magic, session, lock) {
       await this.wsp.request({
         action: 'stmt',
         session: { user: session.user },
-        lock,
         stmt: [
           ['prepare', sql.query],
           ['run', sql.values]
@@ -251,8 +247,7 @@ class AttachmentStorage {
     }
   }
 
-  // eslint-disable-next-line max-params
-  async deleteMany(instance, session, attachmentIds, magic, lock = false) {
+  async deleteMany(instance, session, attachmentIds, magic) {
     if (Number.isNaN(magic) || typeof magic !== 'number') {
       const err = new TypeError('Invalid magic');
       err.attachmentIds = attachmentIds;
@@ -262,30 +257,12 @@ class AttachmentStorage {
 
     if (instance.wsp) throw new TypeError('WSP instance invalid');
 
-    let newLock;
-    if (!lock) newLock = await acquireLock(instance, session.db);
-
     let err;
 
     try {
-      await updateAttachments.call(
-        instance,
-        attachmentIds,
-        magic,
-        session,
-        lock || newLock
-      );
+      await updateAttachments.call(instance, attachmentIds, magic, session);
     } catch (_err) {
       err = _err;
-    }
-
-    // release lock
-    if (newLock?.success) {
-      try {
-        await releaseLock(instance, session.db, newLock);
-      } catch (err) {
-        logger.fatal(err, { attachmentIds, magic });
-      }
     }
 
     if (err) throw err;
