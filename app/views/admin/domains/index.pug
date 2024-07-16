@@ -9,16 +9,26 @@ block body
           action=ctx.path,
           method="GET",
           data-table="#table-domains",
-          data-search-params="name"
+          data-search-params="name,mongodb_query,q"
         )
-          .input-group.mb-3
-            input#input-keyword-search.form-control(
-              type="text",
-              value=ctx.query.name ? ctx.query.name : "",
-              name="name",
-              placeholder=t("Search by domain name or admin email")
-            )
-            .input-group-append
-              button.btn.btn-success(type="submit")= t("Search")
+          .card-body
+            .h5.card-title= t("Search for domains")
+            .form-group
+              label(for="textarea-mongodb-query") MongoDB query
+              textarea#textarea-mongodb-query.form-control(
+                name="mongodb_query",
+                rows=3,
+                placeholder="MongoDB query"
+              )= ctx.query.mongodb_query || ""
+              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
+            .form-group
+              label(for="input-keyword-search")= t("Basic search")
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.q || "",
+                name="q",
+                placeholder=t("Search by email")
+              )
+            button.btn.btn-success(type="submit")= t("Search")
         #table-domains
           include ./_table
