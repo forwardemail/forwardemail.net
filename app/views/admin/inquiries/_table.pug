@@ -33,16 +33,16 @@ include ../../_pagination
                 )
             td.align-middle
               a(
-                href=l(`/admin/users?mongodb_query={ email: "${user.email}" }`),
+                href=l(`/admin/users?mongodb_query={ email: "${inquiry.email}" }`),
                 target="_blank",
                 rel="noopener noreferrer"
               )= inquiry.email
             td.align-middle
               = inquiry.message
             td.align-middle
-              = titleize(humanize(inquiry.plan || 'none'))
+              = titleize(humanize(inquiry.plan || "none"))
             td.align-middle
-              = inquiry.reference || 'none'
+              = inquiry.reference || "none"
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
             )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
