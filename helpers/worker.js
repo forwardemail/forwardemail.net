@@ -504,7 +504,10 @@ async function backup(payload) {
       }
     );
   } catch (_err) {
+    err.isCodeBug = true;
     err = _err;
+    await logger.fatal(err, { payload });
+    console.error('error', err);
   }
 
   // always do cleanup in case of errors
@@ -558,8 +561,6 @@ async function backup(payload) {
           locale: payload.session.user.locale
         }
       });
-
-    await logger.fatal(err, { payload });
 
     throw err;
   }
