@@ -71,7 +71,7 @@ const instance = {
 };
 
 async function rekey(payload) {
-  logger.debug('rekey worker', { payload });
+  await logger.debug('rekey worker', { payload });
   let err;
 
   const storagePath = getPathToDatabase({
@@ -217,7 +217,7 @@ async function rekey(payload) {
     // rename backup file (overwrites existing destination file)
     await fs.promises.rename(tmp, storagePath);
     backup = false;
-    logger.debug('renamed', { tmp, storagePath });
+    await logger.debug('renamed', { tmp, storagePath });
 
     //
     // remove the old -whm and -shm files
@@ -260,7 +260,7 @@ async function rekey(payload) {
         recursive: true
       });
     } catch (err) {
-      logger.fatal(err, { payload });
+      await logger.fatal(err, { payload });
     }
   }
 
@@ -270,7 +270,7 @@ async function rekey(payload) {
 // eslint-disable-next-line complexity
 async function backup(payload) {
   console.time(`backup timer ${payload.id}`);
-  logger.debug('backup worker', { payload });
+  await logger.debug('backup worker', { payload });
 
   let tmp;
   let backup;
@@ -426,7 +426,7 @@ async function backup(payload) {
         recursive: true
       });
     } catch (err) {
-      logger.warn(err, { payload });
+      await logger.warn(err, { payload });
     }
 
     // create backup
@@ -515,7 +515,7 @@ async function backup(payload) {
         recursive: true
       });
     } catch (err) {
-      logger.fatal(err, { payload });
+      await logger.fatal(err, { payload });
     }
   }
 
@@ -559,7 +559,7 @@ async function backup(payload) {
         }
       });
 
-    logger.fatal(err, { payload });
+    await logger.fatal(err, { payload });
 
     throw err;
   }
