@@ -147,26 +147,38 @@ async function generateAliasPassword(ctx) {
     if (isSANB(ctx.request.body.password)) {
       // change password on existing sqlite file using supplied password and new password
       const wsp = createWebSocketAsPromised();
-      await wsp.request({
-        action: 'rekey',
-        new_password: encrypt(pass),
-        session: {
-          user: {
-            id: alias.id,
-            username: `${alias.name}@${ctx.state.domain.name}`,
-            alias_id: alias.id,
-            alias_name: alias.name,
-            domain_id: ctx.state.domain.id,
-            domain_name: ctx.state.domain.name,
-            password: encrypt(ctx.request.body.password),
-            storage_location: alias.storage_location,
-            alias_has_pgp: alias.has_pgp,
-            alias_public_key: alias.public_key,
-            locale: ctx.locale,
-            owner_full_email: ctx.state.user.email
+      //
+      // TODO: because rekey has VACUUM INTO and VACUUM calls
+      //       this operation is likely to take longer than HTTP timeout
+      //       therefore we should change messaging and functionality
+      //       so that this alerts the user via email once it is complete
+      //
+      await wsp.request(
+        {
+          action: 'rekey',
+          new_password: encrypt(pass),
+          session: {
+            user: {
+              id: alias.id,
+              username: `${alias.name}@${ctx.state.domain.name}`,
+              alias_id: alias.id,
+              alias_name: alias.name,
+              domain_id: ctx.state.domain.id,
+              domain_name: ctx.state.domain.name,
+              password: encrypt(ctx.request.body.password),
+              storage_location: alias.storage_location,
+              alias_has_pgp: alias.has_pgp,
+              alias_public_key: alias.public_key,
+              locale: ctx.locale,
+              owner_full_email: ctx.state.user.email
+            }
           }
-        }
-      });
+        },
+        // don't retry so we can email user quicker to try again
+        // and also in case of an error with the backup worker
+        // e.g. it won't keep retrying and flood it
+        0
+      );
 
       // don't save until we're sure that sqlite operations were performed
       await alias.save();
@@ -182,25 +194,31 @@ async function generateAliasPassword(ctx) {
     } else if (boolean(ctx.request.body.is_override)) {
       // reset existing mailbox and create new mailbox
       const wsp = createWebSocketAsPromised();
-      await wsp.request({
-        action: 'reset',
-        session: {
-          user: {
-            id: alias.id,
-            username: `${alias.name}@${ctx.state.domain.name}`,
-            alias_id: alias.id,
-            alias_name: alias.name,
-            domain_id: ctx.state.domain.id,
-            domain_name: ctx.state.domain.name,
-            password: encrypt(pass),
-            storage_location: alias.storage_location,
-            alias_has_pgp: alias.has_pgp,
-            alias_public_key: alias.public_key,
-            locale: ctx.locale,
-            owner_full_email: ctx.state.user.email
+      await wsp.request(
+        {
+          action: 'reset',
+          session: {
+            user: {
+              id: alias.id,
+              username: `${alias.name}@${ctx.state.domain.name}`,
+              alias_id: alias.id,
+              alias_name: alias.name,
+              domain_id: ctx.state.domain.id,
+              domain_name: ctx.state.domain.name,
+              password: encrypt(pass),
+              storage_location: alias.storage_location,
+              alias_has_pgp: alias.has_pgp,
+              alias_public_key: alias.public_key,
+              locale: ctx.locale,
+              owner_full_email: ctx.state.user.email
+            }
           }
-        }
-      });
+        },
+        // don't retry so we can email user quicker to try again
+        // and also in case of an error with the backup worker
+        // e.g. it won't keep retrying and flood it
+        0
+      );
 
       // don't save until we're sure that sqlite operations were performed
       await alias.save();
@@ -236,27 +254,38 @@ async function generateAliasPassword(ctx) {
             owner_full_email: ctx.state.user.email
           }
         }
-      });
+      },
+      // don't retry so we can email user quicker to try again
+      // and also in case of an error with the backup worker
+      // e.g. it won't keep retrying and flood it
+      0
+      );
       */
-      await wsp.request({
-        action: 'reset',
-        session: {
-          user: {
-            id: alias.id,
-            username: `${alias.name}@${ctx.state.domain.name}`,
-            alias_id: alias.id,
-            alias_name: alias.name,
-            domain_id: ctx.state.domain.id,
-            domain_name: ctx.state.domain.name,
-            password: encrypt(pass),
-            storage_location: alias.storage_location,
-            alias_has_pgp: alias.has_pgp,
-            alias_public_key: alias.public_key,
-            locale: ctx.locale,
-            owner_full_email: ctx.state.user.email
+      await wsp.request(
+        {
+          action: 'reset',
+          session: {
+            user: {
+              id: alias.id,
+              username: `${alias.name}@${ctx.state.domain.name}`,
+              alias_id: alias.id,
+              alias_name: alias.name,
+              domain_id: ctx.state.domain.id,
+              domain_name: ctx.state.domain.name,
+              password: encrypt(pass),
+              storage_location: alias.storage_location,
+              alias_has_pgp: alias.has_pgp,
+              alias_public_key: alias.public_key,
+              locale: ctx.locale,
+              owner_full_email: ctx.state.user.email
+            }
           }
-        }
-      });
+        },
+        // don't retry so we can email user quicker to try again
+        // and also in case of an error with the backup worker
+        // e.g. it won't keep retrying and flood it
+        0
+      );
 
       // save alias
       await alias.save();

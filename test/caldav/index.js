@@ -21,6 +21,7 @@ const utils = require('../utils');
 const CalDAV = require('../../caldav-server');
 const SQLite = require('../../sqlite-server');
 
+const Emails = require('#models/emails');
 const Users = require('#models/users');
 const calDAVConfig = require('#config/caldav');
 const config = require('#config');
@@ -422,6 +423,44 @@ test('calendarMultiGet should be able to get information about multiple calendar
   t.true(deleteResult2.ok);
   t.log('deleteResult3', deleteResult3);
   t.true(deleteResult3.ok);
+});
+
+test('it should send calendar invite', async (t) => {
+  let str = await fsp.readFile(
+    path.join(__dirname, 'data', 'invite.ics'),
+    'utf8'
+  );
+
+  // replace organizer line with alias
+  str = str.replace(
+    '$ORGANIZER',
+    `${t.context.alias.name}@${t.context.domain.name}`
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+  const response = await createObject({
+    url: new URL('invite.ics', calendars[0].url).href,
+    data: str,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  const email = await Emails.findOne({
+    alias: t.context.alias._id,
+    status: 'queued',
+    subject: '15 Min Meeting between Forward Email and You'
+  })
+    .lean()
+    .exec();
+  t.true(typeof email === 'object');
+  t.log('email created', email);
 });
 
 test('fetchCalendarObjects should be able to fetch calendar objects', async (t) => {

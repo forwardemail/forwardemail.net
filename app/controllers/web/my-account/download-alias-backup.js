@@ -121,10 +121,11 @@ async function downloadAliasBackup(ctx) {
       await ctx.client.del(`backup_check:${alias.id}`);
 
       const wsp = createWebSocketAsPromised();
-      wsp
-        .request({
+      await wsp.request(
+        {
           action: 'backup',
           backup_at: new Date().toISOString(),
+          email: ctx.state.user[config.userFields.fullEmail],
           session: {
             user: {
               id: alias.id,
@@ -141,46 +142,19 @@ async function downloadAliasBackup(ctx) {
               owner_full_email: ctx.state.user.email
             }
           }
-        })
-        .then(() => {
-          ctx.logger.debug('backup performed');
-          // send email to user
-          email({
-            template: 'alert',
-            message: {
-              to: ctx.state.user[config.userFields.fullEmail],
-              subject: ctx.translate(
-                'ALIAS_BACKUP_READY_SUBJECT',
-                `${alias.name}@${ctx.state.domain.name}`
-              )
-            },
-            locals: {
-              user: ctx.state.user,
-              message: ctx.translate(
-                'ALIAS_BACKUP_READY',
-                `${alias.name}@${ctx.state.domain.name}`
-              )
-            }
-          })
-            .then()
-            .catch((err) => ctx.logger.fatal(err));
+        },
+        // don't retry so we can email user quicker to try again
+        // and also in case of an error with the backup worker
+        // e.g. it won't keep retrying and flood it
+        0
+      );
 
-          // close websocket
-          try {
-            wsp.close();
-          } catch (err) {
-            ctx.logger.fatal(err);
-          }
-        })
-        .catch((err) => {
-          ctx.logger.fatal(err);
-          // close websocket
-          try {
-            wsp.close();
-          } catch (err) {
-            ctx.logger.fatal(err);
-          }
-        });
+      // close websocket
+      try {
+        wsp.close();
+      } catch (err) {
+        ctx.logger.fatal(err);
+      }
 
       // otherwise flash message that email will be sent once download ready
       ctx.flash(

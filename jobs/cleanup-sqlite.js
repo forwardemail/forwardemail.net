@@ -72,15 +72,6 @@ if (parentPort)
 
 graceful.listen();
 
-//
-// find all files that end with:
-// - `-backup.sqlite`
-// - `-backup-wal.sqlite`
-// - `-backup-shm.sqlite`
-//
-//
-const AFFIXES = ['-backup', '-backup-wal', '-backup-shm'];
-
 const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
 (async () => {
@@ -111,26 +102,35 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         if (!file.isFile()) continue;
         if (path.extname(file.name) !== '.sqlite') continue;
         const basename = path.basename(file.name, path.extname(file.name));
+
         // TODO: automated job to detect files on block storage
         //       and R2 that don't correspond to actual aliases (e.g. is_banned and/or is_removed)
-        for (const affix of AFFIXES) {
-          if (!basename.endsWith(affix)) {
-            ids.add(basename.replace('-tmp', ''));
-            continue;
-          }
 
-          const filePath = path.join(mountDir, dirent.name, file.name);
+        if (!basename.endsWith('-backup')) {
+          ids.add(basename.replace('-tmp', ''));
+          continue;
+        }
+
+        // if basename does not include ":" it's a safeguard
+        // (since all backups are in "x:y-backup.sqlite" format)
+        if (!basename.includes(':')) continue;
+
+        const filePath = path.join(mountDir, dirent.name, file.name);
+        try {
           // eslint-disable-next-line no-await-in-loop
           const stat = await fs.promises.stat(filePath);
           if (!stat.isFile()) continue; // safeguard
           // delete any backups that are 4h+ old
           if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('4h')) {
             // eslint-disable-next-line no-await-in-loop
-            await fs.promises.unlink(filePath);
+            await fs.promises.rm(filePath, {
+              force: true,
+              recursive: true
+            });
             filePaths.push(filePath);
           }
-
-          break;
+        } catch (err) {
+          logger.warn(err);
         }
       }
     }
@@ -377,8 +377,9 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             //   config.env !== 'production' &&
             //   err.message === 'Alias does not exist'
             // ) {
-            //   await fs.promises.unlink(
-            //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`)
+            //   await fs.promises.rm(
+            //     path.join(mountDir, config.defaultStoragePath, `${id}.sqlite`),
+            //     { force: true, recursive: true }
             //   );
             // }
           }

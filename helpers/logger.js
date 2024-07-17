@@ -123,6 +123,9 @@ async function hook(err, message, meta) {
   )
     return;
 
+  // silent messages should be ignored from sending upstream
+  if (meta[silentSymbol]) return;
+
   //
   // return early if we wish to ignore this
   // (this prevents recursion; see end of this fn)
@@ -329,7 +332,7 @@ for (const level of logger.config.levels) {
     if (hash) meta.app.hash = hash;
 
     if (
-      (typeof message === 'string' && message.includes('{ tnx:')) ||
+      (typeof message === 'string' && message.includes(" tnx: '")) ||
       (meta && meta.ignore_hook === true) ||
       (err && err.is_duplicate_log === true) ||
       (err && err.ignoreHook === true)

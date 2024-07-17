@@ -6,11 +6,13 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
+const path = require('node:path');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const MessageHandler = require('wildduck/lib/message-handler');
+const Piscina = require('piscina');
 const auth = require('basic-auth');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -38,6 +40,12 @@ class SQLite {
     this.client = options.client;
     this.subscriber = options.subscriber;
     this.resolver = createTangerine(this.client, logger);
+
+    // worker pool threads
+    this.piscina = new Piscina({
+      filename: path.resolve(__dirname, 'helpers', 'worker.js'),
+      maxQueue: 'auto'
+    });
 
     // start server with either http or https
     const server =

@@ -11,10 +11,15 @@ const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
 const mongoose = require('mongoose');
+const { boolean } = require('boolean');
+const { isEmail } = require('validator');
 const { rrulestr } = require('rrule');
 
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
@@ -460,6 +465,8 @@ class CalDAV extends API {
     this.getCalendarId = this.getCalendarId.bind(this);
     this.getETag = this.getETag.bind(this);
 
+    this.sendEmailWithICS = this.sendEmailWithICS.bind(this);
+
     this.app.use(
       caldavAdapter({
         authenticate: this.authenticate,
@@ -488,6 +495,252 @@ class CalDAV extends API {
         }
       })
     );
+  }
+
+  // send email calendar invite with ICS
+  //
+  //
+  // NOTE: this uses `queue` as opposed to `await emailHelper`
+  //       because we want the email to retry, use their DKIM keys,
+  //       and we also want to use up the users email credits
+  //
+  // eslint-disable-next-line complexity, max-params
+  async sendEmailWithICS(ctx, calendar, calendarEvent, method, oldCalStr) {
+    try {
+      const [alias, domain] = await Promise.all([
+        // get alias (and populate user, which is required for Emails.queue method)
+        Aliases.findOne({ id: ctx.state.user.alias_id })
+          .populate('user')
+          .lean()
+          .exec(),
+
+        // get domain (and populate members, which is required for Emails.queue method)
+        Domains.findOne({ id: ctx.state.user.domain_id })
+          .populate(
+            'members.user',
+            `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+          )
+          .lean()
+          .exec()
+      ]);
+
+      //
+      // build ICS string so we can parse and re-render with REQUEST method
+      //
+      const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
+      if (!comp) throw new TypeError('Component not parsed');
+
+      // safeguard in case more than one event
+      // TODO: we may need to find by eventId -> uid match
+      const vevents = comp.getAllSubcomponents('vevent');
+      if (vevents.length > 1)
+        throw new TypeError('more than one vevent for sending invite');
+
+      const vevent = comp.getFirstSubcomponent('vevent');
+      if (!vevent)
+        throw new TypeError('comp.getFirstSubcomponent was not successful');
+
+      // if method was CANCEL then STATUS on vevent needs to be CANCELLED
+      if (method === 'CANCEL')
+        vevent.updatePropertyWithValue('status', 'CANCELLED');
+
+      const event = new ICAL.Event(vevent);
+
+      let isValid = true;
+
+      //
+      // TODO: what is "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:FALSE" for (?)
+      //       (seems to be sending to each attendee as BCC instead)
+      //       <https://github.com/mozilla/releases-comm-central/blob/6c887d441f46c56b3e40081b69c34222b909bf78/calendar/itip/CalItipOutgoingMessage.sys.mjs#L67-L90>
+      //       (but only for iTip instance/server?)
+      //
+      // if X-MOZ-SEND-INVITATIONS is `FALSE` then don't send invitation updates
+      if (
+        comp.getFirstPropertyValue('x-moz-send-invitations') &&
+        !boolean(comp.getFirstPropertyValue('x-moz-send-invitations'))
+      )
+        isValid = false;
+      // mirror sabre/dav behavior
+      //
+      // must have organizer matching alias
+      // and at least one attendee
+      //
+      else if (!event.organizer) isValid = false;
+      // event.organizer = 'mailto:foo@bar.com'
+      else if (
+        event.organizer.replace('mailto:', '').trim().toLowerCase() !==
+        ctx.state.user.username
+      )
+        isValid = false;
+
+      // if attendee removed then send CANCEL to those removed
+      if (oldCalStr) {
+        const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
+        if (!oldComp) throw new TypeError('Old component not parsed');
+
+        // TODO: we may need to find by eventId -> uid match
+        // safeguard in case more than one event
+        const oldEvents = oldComp.getAllSubcomponents('vevent');
+        if (oldEvents.length > 1)
+          throw new TypeError('more than one old vevent for sending invite');
+
+        const oldEvent = oldComp.getFirstSubComponent('vevent');
+        if (!oldEvent)
+          throw new TypeError(
+            'old comp.getFirstSubcomponent was not successful'
+          );
+
+        oldEvent.updatePropertyWithValue('status', 'CANCELLED');
+
+        if (oldEvent.attendees.length > 0) {
+          for (const attendee of oldEvent.attendees) {
+            let oldEmail = attendee.getFirstValue();
+            if (!oldEmail) continue;
+            oldEmail = oldEmail.replace('mailto:', '').toLowerCase().trim();
+            const match = event.attendees.find((attendee) => {
+              return (
+                attendee.getFirstValue() &&
+                attendee
+                  .getFirstValue()
+                  .replace('mailto:', '')
+                  .toLowerCase()
+                  .trim() === oldEmail
+              );
+            });
+
+            // if there was a match found then that means the user wasn't removed
+            if (match) continue;
+
+            const commonName = attendee.getParameter('cn');
+
+            const to = commonName ? `"${commonName}" ${oldEmail}` : oldEmail;
+
+            //
+            // here is where we send cancelled to this user (with the old event object)
+            // since they were not a part of the updated event
+            // (note they won't get a duplicate REQUEST email below because they're not in `event.attendees`)
+            //
+            try {
+              const vc = new ICAL.Component(['vcalendar', [], []]);
+              vc.addSubcomponent(oldEvent);
+
+              // eslint-disable-next-line no-await-in-loop
+              const ics = await this.buildICS(
+                ctx,
+                [
+                  {
+                    eventId: calendarEvent.eventId,
+                    calendar: calendar._id,
+                    ical: vc.toString()
+                  }
+                ],
+                calendar,
+                method
+              );
+
+              // eslint-disable-next-line no-await-in-loop
+              await Emails.queue({
+                message: {
+                  from: ctx.state.user.username,
+                  to,
+                  bcc: ctx.state.user.username,
+                  subject: `${i18n.translate('CANCELLED', ctx.locale)}: ${
+                    oldEvent.summary
+                  }`,
+                  icalEvent: {
+                    method,
+                    filename: 'event.ics',
+                    content: ics
+                  }
+                },
+                alias,
+                domain,
+                user: alias ? alias.user : undefined,
+                date: new Date(),
+                catchall: false,
+                isPending: false
+              });
+            } catch (err) {
+              logger.fatal(err);
+            }
+          }
+        }
+      }
+
+      if (isValid) {
+        const to = [];
+        for (const attendee of event.attendees) {
+          // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
+          // const scheduleAgent = attendee.getParameter('schedule-agent');
+          // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
+
+          // skip attendees that were already DECLINED
+          const partStat = attendee.getParameter('partstat');
+          if (partStat && partStat.toLowerCase() === 'declined') continue;
+
+          let email = attendee.getFirstValue();
+          if (!email) continue;
+
+          email = email.replace('mailto:', '').toLowerCase().trim();
+
+          if (!isEmail(email)) continue;
+
+          const commonName = attendee.getParameter('cn');
+          if (commonName) {
+            to.push(`"${commonName}" <${email}>`);
+          } else {
+            to.push(email);
+          }
+        }
+
+        if (to.length > 0) {
+          const vc = new ICAL.Component(['vcalendar', [], []]);
+          vc.addSubcomponent(vevent);
+
+          const ics = await this.buildICS(
+            ctx,
+            [
+              {
+                eventId: calendarEvent.eventId,
+                calendar: calendar._id,
+                ical: vc.toString()
+              }
+            ],
+            calendar,
+            method
+          );
+
+          logger.debug('ics output', ics);
+
+          let subject = event.summary;
+
+          if (method === 'CANCEL')
+            subject = `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`;
+
+          await Emails.queue({
+            message: {
+              from: ctx.state.user.username,
+              to,
+              bcc: ctx.state.user.username,
+              subject,
+              icalEvent: {
+                method,
+                filename: 'event.ics',
+                content: ics
+              }
+            },
+            alias,
+            domain,
+            user: alias ? alias.user : undefined,
+            date: new Date(),
+            catchall: false,
+            isPending: false
+          });
+        }
+      }
+    } catch (err) {
+      logger.fatal(err);
+    }
   }
 
   async authenticate(ctx, { username, password, principalId }) {
@@ -751,14 +1004,21 @@ class CalDAV extends API {
           });
         }
 
-        const createdEvents = await CalendarEvents.create(
+        const calendarEvents = await CalendarEvents.create(
           this,
           ctx.state.session,
           events
         );
 
+        // already wrapped with try/catch
+        await Promise.all(
+          calendarEvents.map((calendarEvent) =>
+            this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
+          )
+        );
+
         logger.debug('created events', {
-          createdEvents,
+          calendarEvents,
           principalId,
           calendarId,
           user
@@ -987,12 +1247,6 @@ class CalDAV extends API {
     };
 
     //
-    // TODO: if user logs into CalDAV and does not have SMTP enabled and verified
-    //       then send the user an email and notify them that calendar invites
-    //       will not get automatically emailed until they set this up properly
-    //       at https://forwardemail.net/my-account/domains/yourdomain.com/verify-smtp
-    //
-
     // NOTE: here is Thunderbird's implementation of itip
     //       <https://github.com/mozilla/releases-comm-central/blob/0b146e856d83fc7189a6e79800871916fc00e725/calendar/base/modules/utils/calItipUtils.sys.mjs#L31>
 
@@ -1001,13 +1255,11 @@ class CalDAV extends API {
     //       <https://github.com/nextcloud/calendar/wiki/Developer-Resources#rfcs>
 
     //
-    // TODO: actually send invites via email and attach ics file
+    // NOTE: this is how invites get sent
     //       <https://datatracker.ietf.org/doc/html/rfc6047#section-2.5>
     //       <https://sabre.io/dav/scheduling/>
     //       <https://datatracker.ietf.org/doc/html/rfc6047>
     //
-    // X-MOZ-SEND-INVITATIONS:TRUE
-    // X-MOZ-SEND-INVITATIONS-UNDISCLOSED:FALSE
     //
     // if SCHEDULE-AGENT=CLIENT then do not send invite
     //
@@ -1056,7 +1308,12 @@ class CalDAV extends API {
 
     logger.debug('create calendar event', { calendarEvent });
 
-    return CalendarEvents.create(calendarEvent);
+    const eventCreated = await CalendarEvents.create(calendarEvent);
+
+    // already wrapped with try/catch
+    await this.sendEmailWithICS(ctx, calendar, eventCreated, 'REQUEST');
+
+    return eventCreated;
   }
 
   // NOTE: `ical` String is also ctx.request.body in this method
@@ -1095,13 +1352,17 @@ class CalDAV extends API {
     // so we can call `save()`
     e.isNew = false;
 
+    const oldCalStr = String(e.ical);
+
     // TODO: is this not updating?
     // console.log('UPDATING BODY', ctx.request.body);
-
     e.ical = ctx.request.body;
 
     // save event
     e = await e.save();
+
+    // already wrapped with try/catch
+    await this.sendEmailWithICS(ctx, calendar, e, 'REQUEST', oldCalStr);
 
     return e;
   }
@@ -1131,6 +1392,9 @@ class CalDAV extends API {
       await CalendarEvents.deleteOne(this, ctx.state.session, {
         _id: event._id
       });
+
+      // already wrapped with try/catch
+      await this.sendEmailWithICS(ctx, calendar, event, 'CANCEL');
     }
 
     return event;
@@ -1141,13 +1405,22 @@ class CalDAV extends API {
   //       however it wasn't in conformity with the RFC specification
   //       and after finding numerous issues we decided to simply re-use the existing ICS file
   //
-  async buildICS(ctx, events, calendar) {
+  async buildICS(ctx, events, calendar, method = false) {
     logger.debug('buildICS', { events, calendar });
     if (!events || Array.isArray(events)) {
       // <https://github.com/kewisch/ical.js/wiki/Creating-basic-iCalendar>
       const comp = new ICAL.Component(['vcalendar', [], []]);
 
       comp.updatePropertyWithValue('version', '2.0');
+
+      // used for invites, cancelled events, and replies
+      if (method) {
+        if (!['REQUEST', 'REPLY', 'CANCEL'].includes(method))
+          throw new TypeError(
+            'Method must be either REQUEST, REPLY, or CANCEL'
+          );
+        comp.updatePropertyWithValue('method', method);
+      }
 
       //
       // NOTE: these are required fields

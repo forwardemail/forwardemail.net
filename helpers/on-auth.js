@@ -228,24 +228,6 @@ async function onAuth(auth, session, fn) {
         0
       );
       if (count >= config.smtpLimitAuth) {
-        // alert admins of failed login by IP address
-        // (until this gets out of hand)
-        if (session.resolvedClientHostname) {
-          this.logger.error(
-            new TypeError(
-              `${session.resolvedClientHostname} (${parseRootDomain(
-                session.resolvedClientHostname
-              )}) has exceeded failed login attempts`
-            )
-          );
-        } else {
-          this.logger.error(
-            new TypeError(
-              `${session.remoteAddress} has exceeded failed login attempts`
-            )
-          );
-        }
-
         throw new SMTPError(
           `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`
           // { ignoreHook: true }
@@ -316,6 +298,57 @@ async function onAuth(auth, session, fn) {
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
     //
+    // if we're on CalDAV server then as a weekly courtesy
+    // if the user does not have SMTP enabled on the domain then
+    // alert them by email to inform them they need to enable SMTP
+    // (otherwise calendar invites will not be sent out automatically)
+    //
+    if (alias && this?.constructor?.name === 'CalDAV' && !domain.has_smtp) {
+      this.client
+        .get(`caldav_smtp_check:${domain.id}`)
+        .then(async (cache) => {
+          if (cache) return;
+          try {
+            await this.client.set(
+              `caldav_smtp_check:${domain.id}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+            await email({
+              template: 'alert',
+              message: {
+                to,
+                bcc: config.email.message.from,
+                subject: i18n.translate(
+                  'CALDAV_SMTP_NOT_ENABLED_SUBJECT',
+                  locale,
+                  domain.name
+                )
+              },
+              locals: {
+                message: i18n.translate(
+                  'CALDAV_SMTP_NOT_ENABLED_MESSAGE',
+                  locale,
+                  `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`,
+                  domain.name
+                ),
+                locale
+              }
+            });
+          } catch (err) {
+            this.logger.fatal(err, { session });
+            // backoff for 30m for the next retry
+            this.client
+              .set(`caldav_smtp_check:${domain.id}`, true, 'PX', ms('30m'))
+              .then()
+              .catch((err) => this.logger.fatal(err, { session }));
+          }
+        })
+        .catch((err) => this.logger.fatal(err, { session }));
+    }
+
+    //
     // if we're on IMAP/POP3/CalDAV server then as a weekly courtesy
     // if the user does not have IMAP storage enabled then
     // alert them by email to inform them they need to enable IMAP
@@ -332,48 +365,48 @@ async function onAuth(auth, session, fn) {
     ) {
       this.client
         .get(`imap_check:${alias.id}`)
-        .then((cache) => {
+        .then(async (cache) => {
           if (cache) return;
-          this.client
-            .set(`imap_check:${alias.id}`, true, 'PX', ms('7d'))
-            .then(() => {
-              email({
-                template: 'alert',
-                message: {
-                  to,
-                  // bcc: config.email.message.from,
-                  subject: i18n.translate(
-                    'IMAP_NOT_ENABLED_SUBJECT',
-                    locale,
+          try {
+            await this.client.set(
+              `imap_check:${alias.id}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+            await email({
+              template: 'alert',
+              message: {
+                to,
+                subject: i18n.translate(
+                  'IMAP_NOT_ENABLED_SUBJECT',
+                  locale,
+                  `${alias.name}@${domain.name}`
+                )
+              },
+              locals: {
+                message: i18n.translate(
+                  'IMAP_NOT_ENABLED_MESSAGE',
+                  locale,
+                  `${alias.name}@${domain.name}`,
+                  `${config.urls.web}/${locale}/my-account/domains/${
+                    domain.name
+                  }/aliases?q=${encodeURIComponent(
                     `${alias.name}@${domain.name}`
-                  )
-                },
-                locals: {
-                  message: i18n.translate(
-                    'IMAP_NOT_ENABLED_MESSAGE',
-                    locale,
-                    `${alias.name}@${domain.name}`,
-                    `${config.urls.web}/${locale}/my-account/domains/${
-                      domain.name
-                    }/aliases?q=${encodeURIComponent(
-                      `${alias.name}@${domain.name}`
-                    )}`,
-                    `${alias.name}@${domain.name}`
-                  ),
-                  locale
-                }
-              })
-                .then()
-                .catch((err) => {
-                  this.logger.fatal(err, { session });
-                  // backoff for 30m for the next retry
-                  this.client
-                    .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
-                    .then()
-                    .catch((err) => this.logger.fatal(err, { session }));
-                });
-            })
-            .catch((err) => this.logger.fatal(err, { session }));
+                  )}`,
+                  `${alias.name}@${domain.name}`
+                ),
+                locale
+              }
+            });
+          } catch (err) {
+            this.logger.fatal(err, { session });
+            // backoff for 30m for the next retry
+            this.client
+              .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
+              .then()
+              .catch((err) => this.logger.fatal(err, { session }));
+          }
         })
         .catch((err) => this.logger.fatal(err, { session }));
 
@@ -426,13 +459,52 @@ async function onAuth(auth, session, fn) {
       const count = await this.client.incrby(key, 0);
       if (count < 0) await this.client.del(key); // safeguard
       else if (!adminExists && count > 60) {
-        // early monitoring for admins (probably remove this later once it becomes a burden)
-        const err = new TypeError(
-          `Too many concurrent connections from ${
-            alias ? `${alias.name}@${domain.name}` : domain.name
-          } with key "${key}"`
-        );
-        this.logger.error(err, { session });
+        // alert owner by email
+        this.client
+          .get(`concurrent_check:${alias ? alias.id : domain.id}`)
+          .then(async (cache) => {
+            if (cache) return;
+            try {
+              await this.client.set(
+                `concurrent_check:${alias ? alias.id : domain.id}`,
+                true,
+                'PX',
+                ms('7d')
+              );
+              await email({
+                template: 'alert',
+                message: {
+                  to,
+                  subject: i18n.translate(
+                    'CONCURRENCY_EXCEEDED_SUBJECT',
+                    locale,
+                    alias ? `${alias.name}@${domain.name}` : domain.name
+                  )
+                },
+                locals: {
+                  message: i18n.translate(
+                    'CONCURRENCY_EXCEEDED_MESSAGE',
+                    locale,
+                    alias ? `${alias.name}@${domain.name}` : domain.name
+                  ),
+                  locale
+                }
+              });
+            } catch (err) {
+              this.logger.fatal(err, { session });
+              // backoff for 30m for the next retry
+              this.client
+                .set(
+                  `concurrent_check:${alias ? alias.id : domain.id}`,
+                  true,
+                  'PX',
+                  ms('30m')
+                )
+                .then()
+                .catch((err) => this.logger.fatal(err, { session }));
+            }
+          })
+          .catch((err) => this.logger.fatal(err, { session }));
         throw new SMTPError('Too many concurrent connections', {
           responseCode: 421
         });

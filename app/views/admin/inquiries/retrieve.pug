@@ -7,7 +7,7 @@ block body
         include ../../_breadcrumbs
         .threaded-messages
           each message in messages
-            - const isSenderEmail = message?.sender_email?.includes('support@');
+            - const isSenderEmail = message?.sender_email?.includes("support@");
             iframe.bg-white.border-dark(
               sandbox="allow-downloads allow-scripts",
               referrerpolicy="no-referrer",
@@ -17,7 +17,11 @@ block body
               width="100%"
             )
             hr
-        form.confirm-prompt(action=ctx.path, method="POST", enctype="multipart/form-data")
+        form.confirm-prompt(
+          action=ctx.path,
+          method="POST",
+          enctype="multipart/form-data"
+        )
           .card.border-themed.card-custom
             .card-body
               .form-group.floating-label
@@ -32,7 +36,11 @@ block body
                 )
                 label(for="input-message")= t("Reply")
               .form-group
-                input#input-attachments.form-control(type="file", name="attachments", multiple)
+                input#input-attachments.form-control(
+                  type="file",
+                  name="attachments",
+                  multiple
+                )
             .card-footer
               button.btn.btn-block.btn-primary.btn-lg(
                 type="submit",

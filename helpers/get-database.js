@@ -5,7 +5,6 @@
 
 const fs = require('node:fs');
 const os = require('node:os');
-const path = require('node:path');
 
 // <https://github.com/knex/knex-schema-inspector/pull/146>
 const Database = require('better-sqlite3-multiple-ciphers');
@@ -44,8 +43,6 @@ const onExpungePromise = pify(onExpunge, { multiArgs: true });
 const builder = new Builder();
 
 const HOSTNAME = os.hostname();
-
-const AFFIXES = ['-wal', '-shm'];
 
 const REQUIRED_PATHS = [
   'INBOX',
@@ -728,16 +725,17 @@ async function getDatabase(
                   retention: 0
                 });
 
-                await instance.server.notifier.addEntries(
-                  instance,
-                  session,
-                  mailbox,
-                  {
-                    command: 'CREATE',
-                    mailbox: mailbox._id,
-                    path
-                  }
-                );
+                if (instance?.server?.notifier?.addEntries)
+                  await instance.server.notifier.addEntries(
+                    instance,
+                    session,
+                    mailbox,
+                    {
+                      command: 'CREATE',
+                      mailbox: mailbox._id,
+                      path
+                    }
+                  );
               } catch (err) {
                 logger.fatal(err, { session });
               }
@@ -981,31 +979,47 @@ function retryGetDatabase(...args) {
           //
           // remove db file and all related files
           //
-          const dirName = path.dirname(error.dbFilePath);
-          const ext = path.extname(error.dbFilePath);
-          const basename = path.basename(error.dbFilePath, ext);
+          try {
+            await fs.promises.rm(error.dbFilePath, {
+              force: true,
+              recursive: true
+            });
+          } catch (err) {
+            if (err.code !== 'ENOENT') {
+              err.isCodeBug = true;
+              throw err;
+            }
+          }
 
-          await fs.promises.rm(error.dbFilePath, {
-            force: true,
-            recursive: true
-          });
-
-          for (const affix of AFFIXES) {
-            const affixFilePath = path.join(
-              dirName,
-              `${basename}${affix}${ext}`
-            );
-            try {
-              // eslint-disable-next-line no-await-in-loop
-              await fs.promises.rm(affixFilePath, {
+          // -wal
+          try {
+            await fs.promises.rm(
+              error.dbFilePath.replace('.sqlite', '.sqlite-wal'),
+              {
                 force: true,
                 recursive: true
-              });
-            } catch (err) {
-              if (err.code !== 'ENOENT') {
-                err.isCodeBug = true;
-                logger.fatal(err);
               }
+            );
+          } catch (err) {
+            if (err.code !== 'ENOENT') {
+              err.isCodeBug = true;
+              throw err;
+            }
+          }
+
+          // -shm
+          try {
+            await fs.promises.rm(
+              error.dbFilePath.replace('.sqlite', '.sqlite-shm'),
+              {
+                force: true,
+                recursive: true
+              }
+            );
+          } catch (err) {
+            if (err.code !== 'ENOENT') {
+              err.isCodeBug = true;
+              throw err;
             }
           }
 

@@ -494,7 +494,7 @@ async function regenerateAliasPassword(ctx) {
           owner_full_email: user.email
         }
       }
-    });
+    }, 0);
 
     // don't save until we're sure that sqlite operations were performed
     await alias.save();

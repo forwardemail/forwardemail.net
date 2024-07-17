@@ -77,6 +77,10 @@ module.exports = {
     'Alias backup for <span class="notranslate">%s</span> is ready for download',
   ALIAS_BACKUP_STARTED:
     'Alias backup has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed once it is ready for download.',
+  ALIAS_BACKUP_FAILED_SUBJECT:
+    'Alias backup for <span class="notranslate">%s</span> has failed due to an error',
+  ALIAS_BACKUP_FAILED_MESSAGE:
+    '<p>The alias backup download for <span class="notranslate text-monospace font-weight-bold">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>',
   ALIAS_BACKUP_DOWNLOAD_SUBJECT: `New alias backup download for <span class="notranslate">%s</span>`,
   ALIAS_BACKUP_DOWNLOAD:
     'Alias mailbox backup was downloaded by <span class="font-weight-bold text-monospace notranslate">%s</span>.  It was for <span class="font-weight-bold text-monospace notranslate">%s</span>.',
@@ -266,10 +270,14 @@ module.exports = {
     'We tried to create a new account with this email address, but it already exists.  Please log in with this email address if it belongs to you and then try again.',
   LOGOUT_REQUIRED: 'Please log out to view the page you requested.',
   ALIAS_DOES_NOT_EXIST: 'Alias does not exist on the domain.',
+  CALDAV_SMTP_NOT_ENABLED_SUBJECT:
+    'Configure Outbound SMTP for <span class="notranslate">%s</span> to send calendar invites',
+  CALDAV_SMTP_NOT_ENABLED_MESSAGE:
+    'You need to <a href="%s" target="_blank" rel="noopener noreferrer">configure Outbound SMTP</a> (and be approved) for <span class="notranslate">%s</span> in order for calendar invites to be sent by email to attendees.',
   IMAP_NOT_ENABLED_SUBJECT:
-    'Enable IMAP to receive mail for <span class="notranslate">%s</span>',
+    'Enable <span class="notranslate">IMAP/POP3/CalDAV</span> for <span class="notranslate">%s</span>',
   IMAP_NOT_ENABLED_MESSAGE:
-    'We detected a login to our IMAP/POP3 servers by <strong class="notranslate text-monospace">%s</strong>, however IMAP storage is not yet enabled on the alias. Please <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s">edit your alias</a> and enable IMAP to receive mail for <strong class="text-monospace notranslate">%s</strong>.',
+    'We detected a login to our <span class="notranslate">IMAP/POP3/CalDAV</span> servers by <strong class="notranslate text-monospace">%s</strong>, however this feature is not yet enabled on the alias. Please <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s">edit your alias</a> and enable IMAP to receive mail for <strong class="text-monospace notranslate">%s</strong>.',
   IMAP_INBOX_SAFEGUARD_SUBJECT: 'Inbox Safeguard',
   IMAP_INBOX_SAFEGUARD:
     'You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue',
@@ -468,6 +476,10 @@ module.exports = {
   DOMAINS: 'Domains',
   ALIASES: 'Aliases',
   PAYMENTS: 'Payments',
+  CONCURRENCY_EXCEEDED_SUBJECT:
+    'Exceeded max concurrent connections for <span class="notranslate">%s</span>',
+  CONCURRENCY_EXCEEDED_MESSAGE:
+    'You have exceeded the maximum number of concurrent connections (60) for <span class="notranslate">%s</span>.',
   ALIAS_WITH_PLUS_UNSUPPORTED:
     'Aliases cannot have a "+" symbol as this is a built-in filtering feature (similar to Gmail).',
   EMAIL_FAILED_TO_SEND:
@@ -480,6 +492,8 @@ module.exports = {
     'The email address <span class="notranslate">%s</span> already exists.',
   EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
   EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
+  CANCELLED: 'Cancelled',
+  UPDATED_INVITATION: 'Updated Invitation',
   PAYMENT_DESCRIPTION:
     '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
   PAYMENT_REFERENCE_INVALID: 'Payment reference was invalid or did not exist.',

@@ -139,7 +139,11 @@ router
   )
   .post(
     '/emails',
+    // TODO: rate limiting needs to be handled by Emails.queue
     rateLimit(config.smtpLimitMessages, 'create emails'),
+    // NOTE: we can uncomment this later:
+    // otherwise it encounters the default limit of 1000
+    // rateLimit(100000, 'create emails'), // allow up to 100K max (safeguard)
     bodyParser({
       jsonLimit: '51mb'
     }),

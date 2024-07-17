@@ -287,7 +287,7 @@ function createWebSocketAsPromised(options = {}) {
     // 'onMessage',
     // 'onUnpackedMessage',
     // 'onResponse',
-    'onClose',
+    // 'onClose',
     'onError'
   ]) {
     wsp[event].addListener((...args) =>

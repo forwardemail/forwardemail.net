@@ -208,6 +208,7 @@
     "passport-local-mongoose": "7.1.2",
     "paypal-rest-sdk": "1.8.1",
     "pify": "5",
+    "piscina": "4.6.1",
     "pluralize": "8.0.0",
     "pm2": "5.4.2",
     "popper.js": "1.16.1",

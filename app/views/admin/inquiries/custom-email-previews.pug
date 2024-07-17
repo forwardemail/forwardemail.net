@@ -6,7 +6,7 @@ html
     if subject
       title= subject
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    style(type='text/css').
+    style(type="text/css").
       iframe {
         border: 0;
         width: 100%;
@@ -44,7 +44,7 @@ html
         order: 1;
         display: none;
       }
-      .preview-email-tabs input[type='radio']:checked + label + .preview-email-tab {
+      .preview-email-tabs input[type="radio"]:checked + label + .preview-email-tab {
         display: block;
       }
       .preview-email-tabs input[type="radio"]:checked + label {
@@ -54,18 +54,21 @@ html
     table
       if base64
         tr
-          td(colspan=2, style='text-align:right;'): button(type='button', onclick='downloadRawEmail()') Download Original
+          td(colspan=2, style="text-align: right"): button(
+            type="button",
+            onclick="downloadRawEmail()"
+          ) Download Original
         script.
           function downloadRawEmail() {
-            var link = document.createElement('a');
+            var link = document.createElement("a");
             link.href = "data:message/rfc822;base64,#{base64}";
             link.download = "#{messageId ? messageId.replace('<', '').replace('>', '').split('@')[0] : Date.now()}.eml";
             link.click();
           }
       each headerLine, i in headerLines
-        - const index = headerLine.line.indexOf(': ')
-        - const value = headerLine.line.slice(index + 2)
-        - const header = headers.get(headerLine.key)
+        - const index = headerLine.line.indexOf(": ");
+        - const value = headerLine.line.slice(index + 2);
+        - const header = headers.get(headerLine.key);
         tr
           td
             strong= headerLine.line.slice(0, index)
@@ -112,11 +115,20 @@ html
             ul
               each a in attachments
                 li
-                  a(href=`data:${a.contentType};base64,${a.content.toString('base64')}`, download=a.filename, target='_blank')
+                  a(
+                    href=`data:${a.contentType};base64,${a.content.toString('base64')}`,
+                    download=a.filename,
+                    target="_blank"
+                  )
                     if a.filename
                       code= a.filename
                     else
-                      code= 'Unnamed file'
+                      code= "Unnamed file"
     .preview-email-tabs
     .iframe-container
-      iframe.iframe-content(sandbox='', referrerpolicy='no-referrer', seamless='seamless', srcdoc=`<base target='_top'>${html}`)#html
+      iframe#html.iframe-content(
+        sandbox="",
+        referrerpolicy="no-referrer",
+        seamless="seamless",
+        srcdoc=`<base target='_top'>${html}`
+      )

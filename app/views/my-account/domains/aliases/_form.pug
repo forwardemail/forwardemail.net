@@ -98,7 +98,7 @@ if alias
             = t("Add new domain")
 if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
   .form-group
-    = t("IMAP Storage")
+    = "IMAP/POP3/CalDAV"
     = " "
     span.text-muted= t("(optional)")
   .alert.alert-success
@@ -110,11 +110,11 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
         value="true"
       )
       label.form-check-label(for="input-has-imap")
-        = t("This will enable our new IMAP storage feature for this alias.")
+        != t('This will enable <span class="notranslate">IMAP/POP3/CalDAV</span> for this alias.')
         = " "
-        = t("You can have both IMAP storage and forwarding recipients enabled at the same time.")
+        = t("You can have this and forwarding recipients enabled at the same time.")
         = " "
-        != t('If you would like to learn more about our new IMAP storage feature, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l("/blog/docs/best-quantum-safe-encrypted-email-service"))
+        != t('If you would like to learn more about storage, please <a class="alert-link" href="%s" target="_blank">click here to read our deep dive on Encrypted Email.</a>', l("/blog/docs/best-quantum-safe-encrypted-email-service"))
 .form-group
   label(for="textarea-alias-recipients")
     = t("Forwarding Recipients")
@@ -174,12 +174,12 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       checked=alias ? alias.has_pgp : false
     )
     label.form-check-label(for="input-has-pgp")
-      = t("OpenPGP for IMAP Storage")
+      = t("OpenPGP for Storage")
       = " "
       span.text-muted= t("(optional)")
       = " "
       span.badge.badge-success= t("New")
-    p.form-text.small.text-black.text-themed-50= t("Our IMAP Storage service is already encrypted using ChaCha20-Poly1305 encryption.  However if you'd like double the level of encryption, then if you have IMAP Storage enabled and if you also check this, then all future email stored will also be encrypted with the public key below.")
+    p.form-text.small.text-black.text-themed-50!= t('Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you\'d like double the level of encryption, then if you have <span class="notranslate">IMAP/POP3/CalDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.')
   label(for="textarea-public-key")
     = t('End-to-end Encryption ("E2EE")')
     = " "

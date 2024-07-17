@@ -27,13 +27,23 @@ const RATELIMIT_ALLOWLIST =
     ? env.RATELIMIT_ALLOWLIST
     : [];
 
+const rateLimit = {
+  ...sharedAPIConfig.rateLimit,
+  ...config.rateLimit
+};
+
+if (!Array.isArray(rateLimit.ignoredPathGlobs)) rateLimit.ignoredPathGlobs = [];
+
+//
+// add `/v1/emails` so users can
+// POST /v1/emails more than 1000 times (default limit)
+//
+rateLimit.ignoredPathGlobs.push('/v1/emails');
+
 module.exports = {
   ...sharedAPIConfig,
   ...config,
-  rateLimit: {
-    ...sharedAPIConfig.rateLimit,
-    ...config.rateLimit
-  },
+  rateLimit,
   routes: routes.api,
   logger,
   i18n,
