@@ -1841,7 +1841,6 @@ async function parsePayload(data, ws) {
     //   delete err.payload.session.user.password;
 
     // at least early on we should get errors in advance
-    err.isCodeBug = true;
     logger.fatal(err, { payload });
 
     if (db && !this?.databaseMap) await closeDatabase(db);

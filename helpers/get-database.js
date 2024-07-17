@@ -605,11 +605,11 @@ async function getDatabase(
     }
     */
 
-    let migrateCheck = false;
-    let folderCheck = false;
-    let trashCheck = false;
+    let migrateCheck = !instance.server;
+    let folderCheck = !instance.server;
+    let trashCheck = !instance.server;
 
-    if (instance.client) {
+    if (instance.client && instance.server) {
       try {
         const results = await instance.client.mget([
           `migrate_check:${session.user.alias_id}`,
