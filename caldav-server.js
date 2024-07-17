@@ -548,7 +548,8 @@ class CalDAV extends API {
 
       // if X-MOZ-SEND-INVITATIONS is set then don't send invitation updates
       // (since the client will be the one sending them, or perhaps user didn't want to)
-      if (comp.getFirstPropertyValue('x-moz-send-invitations')) isValid = false;
+      if (vevent.getFirstPropertyValue('x-moz-send-invitations'))
+        isValid = false;
       // mirror sabre/dav behavior
       //
       // must have organizer matching alias
@@ -734,9 +735,11 @@ class CalDAV extends API {
           if (
             // NOTE: the Thunderbird interface always sets this to false/disables it when you uncheck X-MOZ-SEND-INVITATIONS
             //       so this edge case would never get reached, but we are doing it anyways as a safeguard
-            comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed') &&
+            vevent.getFirstPropertyValue(
+              'x-moz-send-invitations-undisclosed'
+            ) &&
             boolean(
-              comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
+              vevent.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
             )
           ) {
             for (const rcpt of to) {
