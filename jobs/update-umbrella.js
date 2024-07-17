@@ -405,7 +405,7 @@ async function checkDate(date) {
     // <https://github.com/redis/ioredis?tab=readme-ov-file#streamify-scanning>
     const allowlistKeys = new Set();
     const domains = new Set();
-    const stream = this.client.scanStream({
+    const stream = client.scanStream({
       match: 'allowlist:*'
     });
     stream.on('data', (keys) => {
