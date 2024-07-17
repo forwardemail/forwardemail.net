@@ -610,7 +610,7 @@ async function onAuth(auth, session, fn) {
         .then((backup) => {
           this.logger.debug('backup complete', { backup, session });
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) => this.logger.warn(err, { session }));
     }
   } catch (err) {
     // NOTE: if err.response === 'NO' then WildDuck POP3 will return error message too

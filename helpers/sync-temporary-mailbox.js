@@ -43,6 +43,9 @@ async function syncTemporaryMailbox(session) {
 
     const tmpDb = await getTemporaryDatabase.call(this, session);
 
+    // sync entire db from WAL over to get all messages
+    tmpDb.pragma('wal_checkpoint(FULL)');
+
     const sql = builder.build({
       table: 'TemporaryMessages',
       fields: [
@@ -79,6 +82,7 @@ async function syncTemporaryMailbox(session) {
           break;
         }
 
+        console.time(`syncing ${messages.length} for ${session.user.username}`);
         for (const m of messages) {
           try {
             const message = syncConvertResult(TemporaryMessages, m);
@@ -133,14 +137,16 @@ async function syncTemporaryMailbox(session) {
             break;
           }
         }
+
+        console.timeEnd(
+          `syncing ${messages.length} for ${session.user.username}`
+        );
       }
     }
 
     try {
       // run a checkpoint to copy over wal to db
       tmpDb.pragma('wal_checkpoint(PASSIVE)');
-      // vacuum temporary database
-      tmpDb.prepare('VACUUM').run();
     } catch (err) {
       logger.fatal(err, { session });
     }
@@ -152,13 +158,12 @@ async function syncTemporaryMailbox(session) {
       logger.fatal(err, { session });
     }
 
-    try {
-      tmpDb.pragma('analysis_limit=400');
-      tmpDb.pragma('optimize');
-      tmpDb.close();
-    } catch (err) {
-      logger.fatal(err, { session });
-    }
+    // NOTE: we don't want to close DB because we re-use it
+    // try {
+    //   await closeDatabase(tmpDb);
+    // } catch (err) {
+    //   logger.fatal(err, { session });
+    // }
 
     if (err) throw err;
 
