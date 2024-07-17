@@ -12,10 +12,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
+const delay = require('delay');
 const hasha = require('hasha');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -31,6 +33,7 @@ const {
 const { Upload } = require('@aws-sdk/lib-storage');
 
 const Aliases = require('#models/aliases');
+const ServerShutdownError = require('#helpers/server-shutdown-error');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -54,6 +57,29 @@ const S3 = new S3Client({
 
 const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
+
+// TODO: do better graceful shutdown
+let isClosing = false;
+
+const graceful = new Graceful({
+  //
+  // NOTE: we are explicitly not gracefully closing these
+  //       to allow the backups to complete if they were being uploaded
+  //
+  // mongooses: [mongoose],
+  // redisClients: [client],
+  logger,
+  timeoutMs: ms('1m'),
+  customHandlers: [
+    async () => {
+      isClosing = true;
+      await delay(ms('30s'));
+    }
+  ]
+});
+
+graceful.listen();
+
 client.setMaxListeners(0);
 
 //
@@ -70,7 +96,10 @@ const instance = {
   client
 };
 
+// eslint-disable-next-line complexity
 async function rekey(payload) {
+  if (isClosing) throw new ServerShutdownError();
+
   await logger.debug('rekey worker', { payload });
   let err;
 
@@ -133,6 +162,8 @@ async function rekey(payload) {
     `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
   );
 
+  if (isClosing) throw new ServerShutdownError();
+
   //
   // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
   //       because if a page is modified during backup, it has to start over
@@ -167,6 +198,8 @@ async function rekey(payload) {
 
   await closeDatabase(db);
 
+  if (isClosing) throw new ServerShutdownError();
+
   let backup = true;
 
   try {
@@ -196,6 +229,7 @@ async function rekey(payload) {
     // TODO: we need to remove VACUUM call here somehow
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
     backupDb.prepare('VACUUM').run();
+    if (isClosing) throw new ServerShutdownError();
     // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
     backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
 
@@ -210,6 +244,7 @@ async function rekey(payload) {
     // TODO: we need to remove VACUUM call here somehow
     // NOTE: VACUUM will persist the rekey operation and write to db
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
+    if (isClosing) throw new ServerShutdownError();
     backupDb.prepare('VACUUM').run();
 
     await closeDatabase(backupDb);
@@ -269,6 +304,7 @@ async function rekey(payload) {
 
 // eslint-disable-next-line complexity
 async function backup(payload) {
+  if (isClosing) throw new ServerShutdownError();
   console.log(`backup for ${payload.session.user.username}`);
   console.time(`backup timer ${payload.id}`);
   await logger.debug('backup worker', { payload });
@@ -297,6 +333,8 @@ async function backup(payload) {
       err.stats = stats;
       throw err;
     }
+
+    if (isClosing) throw new ServerShutdownError();
 
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
@@ -340,6 +378,8 @@ async function backup(payload) {
       throw err;
     }
 
+    if (isClosing) throw new ServerShutdownError();
+
     // create bucket on s3 if it doesn't already exist
     // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
     const bucket = `${config.env}-${dashify(
@@ -374,6 +414,8 @@ async function backup(payload) {
       }
     }
 
+    if (isClosing) throw new ServerShutdownError();
+
     //
     // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
     //       because if a page is modified during backup, it has to start over
@@ -397,6 +439,8 @@ async function backup(payload) {
       },
       payload.session
     );
+
+    if (isClosing) throw new ServerShutdownError();
 
     console.log(
       `backup got memory and db for ${payload.session.user.username}`
@@ -449,6 +493,8 @@ async function backup(payload) {
 
     await closeDatabase(db);
 
+    if (isClosing) throw new ServerShutdownError();
+
     backup = true;
 
     // open the backup to ensure that encryption still valid
@@ -487,6 +533,8 @@ async function backup(payload) {
     } catch (err) {
       if (err.name !== 'NotFound') throw err;
     }
+
+    if (isClosing) throw new ServerShutdownError();
 
     console.timeEnd(`checking hash ${tmp}`);
 
