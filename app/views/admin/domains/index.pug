@@ -25,9 +25,9 @@ block body
               label(for="input-keyword-search")= t("Basic search")
               input#input-keyword-search.form-control(
                 type="text",
-                value=ctx.query.q || "",
-                name="q",
-                placeholder=t("Search by email")
+                value=ctx.query.name || "",
+                name="name",
+                placeholder=t("Search by domain name (RegExp supported) or email")
               )
             button.btn.btn-success(type="submit")= t("Search")
         #table-domains
