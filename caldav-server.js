@@ -15,11 +15,11 @@ const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { rrulestr } = require('rrule');
 
-// const Aliases = require('#models/aliases');
-// const Domains = require('#models/domains');
+const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
-// const Emails = require('#models/emails');
+const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
@@ -46,9 +46,6 @@ function bumpSyncToken(synctoken) {
     (Number.parseInt(parts[parts.length - 1], 10) + 1)
   );
 }
-
-// TODO: preconditions need better checking in caldav-adapter
-//       <https://github.com/sabre-io/dav/blob/7a736b73bea7040a7b6535fd92ff6de9981e5190/lib/DAV/Server.php#L1269-L1289>
 
 // TODO: support SMS reminders for VALARM
 
@@ -510,7 +507,6 @@ class CalDAV extends API {
   // eslint-disable-next-line complexity, max-params
   async sendEmailWithICS(ctx, calendar, calendarEvent, method, oldCalStr) {
     try {
-      /*
       const [alias, domain] = await Promise.all([
         // get alias (and populate user, which is required for Emails.queue method)
         Aliases.findOne({ id: ctx.state.user.alias_id })
@@ -527,7 +523,6 @@ class CalDAV extends API {
           .lean()
           .exec()
       ]);
-      */
 
       //
       // build ICS string so we can parse and re-render with REQUEST method
@@ -571,12 +566,6 @@ class CalDAV extends API {
       )
         isValid = false;
 
-      //
-      // TODO: if organizer is not the logged in user
-      //       then we can assume it is a REPLY
-      //       (e.g. two users on our service talking to one another)
-      //
-
       // if attendee removed then send CANCEL to those removed
       if (oldCalStr) {
         const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
@@ -619,8 +608,9 @@ class CalDAV extends API {
             // if there was a match found then that means the user wasn't removed
             if (match) continue;
 
-            // const commonName = attendee.getParameter('cn');
-            // const to = commonName ? `"${commonName}" ${oldEmail}` : oldEmail;
+            const commonName = attendee.getParameter('cn');
+
+            const to = commonName ? `"${commonName}" ${oldEmail}` : oldEmail;
 
             //
             // here is where we send cancelled to this user (with the old event object)
@@ -631,7 +621,6 @@ class CalDAV extends API {
               const vc = new ICAL.Component(['vcalendar', [], []]);
               vc.addSubcomponent(oldEvents[0]);
 
-              /*
               // eslint-disable-next-line no-await-in-loop
               const ics = await this.buildICS(
                 ctx,
@@ -668,7 +657,6 @@ class CalDAV extends API {
                 catchall: false,
                 isPending: false
               });
-              */
             } catch (err) {
               logger.fatal(err);
             }
@@ -732,11 +720,12 @@ class CalDAV extends API {
 
           logger.debug('ics output', ics);
 
-          // let subject = event.summary;
-          // subject =
-          //   method === 'CANCEL'
-          //     ? `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`
-          //     : `${i18n.translate('INVITATION', ctx.locale)}: ${subject}`;
+          let subject = event.summary;
+
+          subject =
+            method === 'CANCEL'
+              ? `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`
+              : `${i18n.translate('INVITATION', ctx.locale)}: ${subject}`;
 
           //
           // if "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:TRUE" then
@@ -751,7 +740,6 @@ class CalDAV extends API {
               comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
             )
           ) {
-            /*
             for (const rcpt of to) {
               try {
                 // eslint-disable-next-line no-await-in-loop
@@ -777,9 +765,7 @@ class CalDAV extends API {
                 logger.fatal(err);
               }
             }
-            */
           } else {
-            /*
             await Emails.queue({
               message: {
                 from: ctx.state.user.username,
@@ -798,7 +784,6 @@ class CalDAV extends API {
               catchall: false,
               isPending: false
             });
-            */
           }
         }
       }
