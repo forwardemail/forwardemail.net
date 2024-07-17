@@ -269,6 +269,7 @@ async function rekey(payload) {
 
 // eslint-disable-next-line complexity
 async function backup(payload) {
+  console.log(`backup for ${payload.session.user.username}`);
   console.time(`backup timer ${payload.id}`);
   await logger.debug('backup worker', { payload });
 
@@ -316,11 +317,18 @@ async function backup(payload) {
           return os.freemem() > spaceRequired;
         },
         {
-          interval: ms('30s'),
-          timeout: ms('5m')
+          interval: ms('5s'),
+          timeout: ms('1m')
         }
       );
     } catch (err) {
+      console.log(
+        `backup waiting for memory for ${
+          payload.session.user.username
+        } (${prettyBytes(spaceRequired)} but only ${prettyBytes(
+          os.freemem()
+        )}) available`
+      );
       if (isTimeoutError(err)) {
         err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
         err.isCodeBug = true;
@@ -388,6 +396,10 @@ async function backup(payload) {
         storage_location: payload.session.user.storage_location
       },
       payload.session
+    );
+
+    console.log(
+      `backup got memory and db for ${payload.session.user.username}`
     );
 
     //
