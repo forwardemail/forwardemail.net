@@ -44,6 +44,7 @@ const i18n = require('#helpers/i18n');
 const isTimeoutError = require('#helpers/is-timeout-error');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const setupMongoose = require('#helpers/setup-mongoose');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const S3 = new S3Client({
@@ -99,6 +100,8 @@ const instance = {
 // eslint-disable-next-line complexity
 async function rekey(payload) {
   if (isClosing) throw new ServerShutdownError();
+
+  await setupMongoose(logger);
 
   await logger.debug('rekey worker', { payload });
   let err;
@@ -305,6 +308,9 @@ async function rekey(payload) {
 // eslint-disable-next-line complexity
 async function backup(payload) {
   if (isClosing) throw new ServerShutdownError();
+
+  await setupMongoose(logger);
+
   console.log(`backup for ${payload.session.user.username}`);
   console.time(`backup timer ${payload.id}`);
   await logger.debug('backup worker', { payload });
@@ -324,11 +330,7 @@ async function backup(payload) {
 
     // <https://github.com/nodejs/node/issues/38006>
     const stats = await fs.promises.stat(storagePath);
-    if (
-      !stats.isFile() ||
-      stats.size === 0 ||
-      stats.size <= config.INITIAL_DB_SIZE
-    ) {
+    if (!stats.isFile() || stats.size === 0) {
       const err = new TypeError('Database empty');
       err.stats = stats;
       throw err;
@@ -432,6 +434,7 @@ async function backup(payload) {
     //       so instead we use the VACUUM INTO command with the `tmp` path
     //
     const db = await getDatabase(
+      instance,
       // alias
       {
         id: payload.session.user.alias_id,
@@ -564,8 +567,8 @@ async function backup(payload) {
       }
     );
   } catch (_err) {
-    err.isCodeBug = true;
     err = _err;
+    err.isCodeBug = true;
     await logger.fatal(err, { payload });
     console.error('error', err);
   }
