@@ -8,14 +8,15 @@ const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
 const { isMainThread, workerData } = require('node:worker_threads');
-// const {
-//   getHeapStatistics,
-//   writeHeapSnapshot
-//   setHeapSnapshotNearHeapLimit
-// } = require('node:v8');
+const {
+  // getHeapStatistics,
+  writeHeapSnapshot
+  // setHeapSnapshotNearHeapLimit
+} = require('node:v8');
 
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
+const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const osu = require('node-os-utils');
@@ -59,6 +60,7 @@ const mountMapping = {};
 //   );
 // });
 
+// eslint-disable-next-line complexity
 async function check() {
   // ensure that `netstat`, `tcpdump`, `get`, `curl`, `nc`, `gcc` is not installed
   // TODO: apparmor
@@ -81,8 +83,8 @@ async function check() {
     // (so we can optimize each job and monitor in real-time)
     //
     const memoryInfo = process.memoryUsage();
-    if (memoryInfo.heapTotal > bytes('2GB')) {
-      let message = `Exceeded 2GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
+    if (memoryInfo.heapTotal > bytes('3GB')) {
+      let message = `Exceeded 3GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
       if (!isMainThread && workerData?.job?.name) {
         message += ` (${workerData.job.name})`;
       }
@@ -91,6 +93,16 @@ async function check() {
       err.memoryUsed = prettyBytes(memoryInfo.heapTotal);
       err.memoryInfo = memoryInfo;
       logger.fatal(err);
+
+      if (HOSTNAME === 'imap.forwardemail.net')
+        writeHeapSnapshot(
+          path.join(
+            os.tmpdir(),
+            `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
+              process.pid
+            }.heapsnapshot`
+          )
+        );
     }
 
     // only monitor main thread
@@ -195,7 +207,7 @@ async function check() {
 function monitorServer() {
   if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') return;
   check();
-  const interval = setInterval(check, ms('1m'));
+  const interval = setInterval(check, ms('10s'));
   return interval;
 }
 
