@@ -7,6 +7,8 @@ const RE2 = require('re2');
 const ip = require('ip');
 const zoneMTABounces = require('zone-mta/lib/bounces');
 
+const isRetryableError = require('#helpers/is-retryable-error');
+
 const IP_ADDRESS = ip.address();
 
 const REGEX_SPOOFING = new RE2(/spoof|impersonation|impersonate/im);
@@ -51,6 +53,10 @@ function getBounceInfo(err) {
   ) {
     if (REGEX_VIRUS.test(response)) bounceInfo.category = 'virus';
     else if (REGEX_SPAM.test(response)) bounceInfo.category = 'spam';
+    else if (isRetryableError()) {
+      bounceInfo.category = 'network';
+      bounceInfo.action = 'defer';
+    }
   }
 
   // WHM/cPanel generic country error
