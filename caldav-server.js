@@ -646,7 +646,7 @@ class CalDAV extends API {
                   }`,
                   icalEvent: {
                     method,
-                    filename: 'event.ics',
+                    filename: 'invite.ics',
                     content: ics
                   }
                 },
@@ -666,6 +666,10 @@ class CalDAV extends API {
 
       if (isValid) {
         const to = [];
+        const organizerEmail = event.organizer
+          .replace('mailto:', '')
+          .trim()
+          .toLowerCase();
         for (const attendee of event.attendees) {
           // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
           // const scheduleAgent = attendee.getParameter('schedule-agent');
@@ -686,6 +690,8 @@ class CalDAV extends API {
           email = email.replace('mailto:', '').toLowerCase().trim();
 
           if (!isEmail(email)) continue;
+
+          if (email === organizerEmail) continue;
 
           const commonName = attendee.getParameter('cn');
           if (commonName) {
@@ -716,8 +722,10 @@ class CalDAV extends API {
 
           let subject = event.summary;
 
-          if (method === 'CANCEL')
-            subject = `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`;
+          subject =
+            method === 'CANCEL'
+              ? `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`
+              : `${i18n.translate('INVITATION', ctx.locale)}: ${subject}`;
 
           //
           // if "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:TRUE" then
@@ -739,11 +747,10 @@ class CalDAV extends API {
                   message: {
                     from: ctx.state.user.username,
                     to: rcpt,
-                    bcc: ctx.state.user.username,
                     subject,
                     icalEvent: {
                       method,
-                      filename: 'event.ics',
+                      filename: 'invite.ics',
                       content: ics
                     }
                   },
@@ -763,11 +770,10 @@ class CalDAV extends API {
               message: {
                 from: ctx.state.user.username,
                 to,
-                bcc: ctx.state.user.username,
                 subject,
                 icalEvent: {
                   method,
-                  filename: 'event.ics',
+                  filename: 'invite.ics',
                   content: ics
                 }
               },

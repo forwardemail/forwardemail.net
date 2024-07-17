@@ -493,6 +493,7 @@ module.exports = {
   EMAIL_CHANGE_DOES_NOT_EXIST: 'Email change request does not exist.',
   EMAIL_CHANGE_CANCELLED: 'Email change request has been cancelled.',
   CANCELLED: 'Cancelled',
+  INVITATION: 'Invitation',
   UPDATED_INVITATION: 'Updated Invitation',
   PAYMENT_DESCRIPTION:
     '<span class="notranslate">%s</span> payment for <span class="notranslate">%s</span> of the <span class="notranslate">%s</span> plan.',
