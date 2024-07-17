@@ -4,7 +4,7 @@ include ../../../_pagination
 mixin renderProgressBar(domain, alias, isMobile = false)
   if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
     - alias.storage_used = typeof alias.storage_used === "number" ? alias.storage_used : 0;
-    - const storageUsedBySpecificAlias ? Math.round((alias.storage_used / domain.storage_quota) * 100) : 0;
+    - const storageUsedBySpecificAlias = Math.round((alias.storage_used / domain.storage_quota) * 100);
     - const storageUsedByAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
     - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
     - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
