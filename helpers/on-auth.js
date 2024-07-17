@@ -585,10 +585,13 @@ async function onAuth(auth, session, fn) {
     ) {
       // sync with tmp db
       this.wsp
-        .request({
-          action: 'sync',
-          session: { user }
-        })
+        .request(
+          {
+            action: 'sync',
+            session: { user }
+          },
+          0
+        )
         .then((sync) => {
           this.logger.debug('tmp db sync complete', { sync, session });
         })
@@ -596,11 +599,14 @@ async function onAuth(auth, session, fn) {
 
       // daily backup (run in background)
       this.wsp
-        .request({
-          action: 'backup',
-          backup_at: new Date().toISOString(),
-          session: { user }
-        })
+        .request(
+          {
+            action: 'backup',
+            backup_at: new Date().toISOString(),
+            session: { user }
+          },
+          0
+        )
         .then((backup) => {
           this.logger.debug('backup complete', { backup, session });
         })

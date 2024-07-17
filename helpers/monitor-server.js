@@ -16,13 +16,13 @@ const {
 } = require('node:v8');
 */
 
-const nodeOomHeapdump = require('node-oom-heapdump')({
-  heapdumpOnOOM: false
-});
+// const nodeOomHeapdump = require('node-oom-heapdump')({
+//   heapdumpOnOOM: false
+// });
 
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
-const dayjs = require('dayjs-with-plugins');
+// const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const osu = require('node-os-utils');
@@ -102,27 +102,30 @@ async function check() {
 
       if (HOSTNAME === 'imap.forwardemail.net') {
         // this gets auto-cleaned up in `jobs/cleanup-tmp.js`
-        const snapshotPath = path.join(
-          os.tmpdir(),
-          `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
-            process.pid
-          }.heapsnapshot`
-        );
+        // const snapshotPath = path.join(
+        //   os.tmpdir(),
+        //   `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
+        //     process.pid
+        //   }.heapsnapshot`
+        // );
         // writeHeapSnapshot(snapshotPath); // <-- does not seem to work! (0b file size)
-        nodeOomHeapdump
-          .createHeapSnapshot(snapshotPath)
-          .then(() => {
-            // alert admins
-            const err = new TypeError(
-              `New snapshot created on ${HOSTNAME} (${IP_ADDRESS} for ${prettyBytes(
-                memoryInfo.heapTotal
-              )} heap size`
-            );
-            err.snapshotPath = snapshotPath;
-            err.isCodeBug = true;
-            logger.fatal(err);
-          })
-          .catch((err) => logger.fatal(err));
+        //
+        // doesn't run unless you have inspector running:
+        //
+        // nodeOomHeapdump
+        //   .createHeapSnapshot(snapshotPath)
+        //   .then(() => {
+        //     // alert admins
+        //     const err = new TypeError(
+        //       `New snapshot created on ${HOSTNAME} (${IP_ADDRESS} for ${prettyBytes(
+        //         memoryInfo.heapTotal
+        //       )} heap size`
+        //     );
+        //     err.snapshotPath = snapshotPath;
+        //     err.isCodeBug = true;
+        //     logger.fatal(err);
+        //   })
+        //   .catch((err) => logger.fatal(err));
       }
     }
 
