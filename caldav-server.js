@@ -546,12 +546,9 @@ class CalDAV extends API {
 
       let isValid = true;
 
-      // if X-MOZ-SEND-INVITATIONS is `FALSE` then don't send invitation updates
-      if (
-        comp.getFirstPropertyValue('x-moz-send-invitations') &&
-        !boolean(comp.getFirstPropertyValue('x-moz-send-invitations'))
-      )
-        isValid = false;
+      // if X-MOZ-SEND-INVITATIONS is set then don't send invitation updates
+      // (since the client will be the one sending them, or perhaps user didn't want to)
+      if (comp.getFirstPropertyValue('x-moz-send-invitations')) isValid = false;
       // mirror sabre/dav behavior
       //
       // must have organizer matching alias
@@ -735,6 +732,8 @@ class CalDAV extends API {
           // https://github.com/mozilla/releases-comm-central/blob/0dd0febc7a7815833119eb056f8cc1acf59ddc04/calendar/base/content/item-editing/calendar-item-iframe.js#L734-L738
           //
           if (
+            // NOTE: the Thunderbird interface always sets this to false/disables it when you uncheck X-MOZ-SEND-INVITATIONS
+            //       so this edge case would never get reached, but we are doing it anyways as a safeguard
             comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed') &&
             boolean(
               comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
@@ -1367,6 +1366,16 @@ class CalDAV extends API {
 
   // NOTE: `ical` String is also ctx.request.body in this method
   async updateEvent(ctx, { eventId, principalId, calendarId, user }) {
+    //
+    // TODO: caldav-adapter v7.0.0 changed in that if-none-match then it doesn't 412 anymore
+    //       so we should implement this logic ourselves here, see these commits and this reference:
+    //
+    // if (ctx.get('if-none-match') === '*') {
+    //   log.warn('if-none-match: * header present, precondition failed');
+    //   ctx.status = 412;
+    //   ctx.body = preconditionFail(ctx.url, 'no-uid-conflict');
+    //   return;
+    // }
     logger.debug('updateEvent', {
       eventId,
       principalId,
@@ -1384,6 +1393,29 @@ class CalDAV extends API {
       eventId,
       calendar: calendar._id
     });
+
+    //
+    // NOTE: temporary logging to investigate pre-condition issue
+    //
+    if (ctx.get('if-none-match') === '*') {
+      console.error('~~~~~~~~ if-none-match ~~~~~~~');
+      console.error(
+        JSON.stringify(
+          {
+            url: ctx.url,
+            headers: ctx.headers,
+            eventId,
+            principalId,
+            calendarId,
+            username: ctx.state.user.username,
+            existingBody: e ? e.ical : false,
+            newBody: ctx.request.body
+          },
+          null,
+          2
+        )
+      );
+    }
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));
 
