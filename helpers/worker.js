@@ -506,29 +506,32 @@ async function backup(payload) {
     // NOTE: out of scope asynchronous code will NOT get run
     //       (so we cannot do `then()` here to run after throwing)
     //
-    await email({
-      template: 'alert',
-      message: {
-        to: payload.email,
-        cc: config.email.message.from,
-        subject: i18n.translate(
-          'ALIAS_BACKUP_FAILED_SUBJECT',
-          payload.session.user.locale,
-          payload.session.user.username
-        )
-      },
-      locals: {
-        message: i18n.translate(
-          'ALIAS_BACKUP_FAILED_MESSAGE',
-          payload.session.user.locale,
-          payload.session.user.username,
-          err.message === 'Database empty'
-            ? err.message
-            : refineAndLogError(err, payload.session).message
-        ),
-        locale: payload.session.user.locale
-      }
-    });
+    if (payload.email)
+      await email({
+        template: 'alert',
+        message: {
+          to: payload.email,
+          cc: config.email.message.from,
+          subject: i18n.translate(
+            'ALIAS_BACKUP_FAILED_SUBJECT',
+            payload.session.user.locale,
+            payload.session.user.username
+          )
+        },
+        locals: {
+          message: i18n.translate(
+            'ALIAS_BACKUP_FAILED_MESSAGE',
+            payload.session.user.locale,
+            payload.session.user.username,
+            err.message === 'Database empty'
+              ? err.message
+              : refineAndLogError(err, payload.session).message
+          ),
+          locale: payload.session.user.locale
+        }
+      });
+
+    logger.fatal(err, { payload });
 
     throw err;
   }
@@ -538,25 +541,26 @@ async function backup(payload) {
   //       (so we cannot do `then()` here to run after returning)
   //
   // send email to user
-  await email({
-    template: 'alert',
-    message: {
-      to: payload.email,
-      subject: i18n.translate(
-        'ALIAS_BACKUP_READY_SUBJECT',
-        payload.session.user.locale,
-        payload.session.user.username
-      )
-    },
-    locals: {
-      message: i18n.translate(
-        'ALIAS_BACKUP_READY',
-        payload.session.user.locale,
-        payload.session.user.username
-      ),
-      locale: payload.session.user.locale
-    }
-  });
+  if (payload.email)
+    await email({
+      template: 'alert',
+      message: {
+        to: payload.email,
+        subject: i18n.translate(
+          'ALIAS_BACKUP_READY_SUBJECT',
+          payload.session.user.locale,
+          payload.session.user.username
+        )
+      },
+      locals: {
+        message: i18n.translate(
+          'ALIAS_BACKUP_READY',
+          payload.session.user.locale,
+          payload.session.user.username
+        ),
+        locale: payload.session.user.locale
+      }
+    });
 }
 
 module.exports = { rekey, backup };
