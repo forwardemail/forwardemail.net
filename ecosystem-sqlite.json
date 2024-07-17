@@ -7,7 +7,7 @@
       "max_memory_restart": "20G",
       "wait_ready": true,
       "exec_mode": "cluster",
-      "instances": "8",
+      "instances": "4",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"

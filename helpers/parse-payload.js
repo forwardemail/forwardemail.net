@@ -1614,7 +1614,7 @@ async function parsePayload(data, ws) {
         }
 
         // remove write lock
-        await this.client.del(`reset_check:${payload.session.user.alias_id}`);
+        // await this.client.del(`reset_check:${payload.session.user.alias_id}`);
 
         if (err) throw err;
 
@@ -1738,7 +1738,7 @@ async function parsePayload(data, ws) {
         }
 
         // remove write lock
-        await this.client.del(`reset_check:${payload.session.user.alias_id}`);
+        // await this.client.del(`reset_check:${payload.session.user.alias_id}`);
 
         response = {
           id: payload.id,
@@ -1753,50 +1753,58 @@ async function parsePayload(data, ws) {
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
 
-        // only allow one backup a day
+        // only allow one backup every 30m (even if err/restart/shutdown)
         const cache = await this.client.get(
           `backup_check:${payload.session.user.alias_id}`
         );
 
-        if (!cache) {
-          // set cache so we don't run two backups at once
-          await this.client.set(
-            `backup_check:${payload.session.user.alias_id}`,
-            true,
-            'PX',
-            ms('1d')
+        if (cache)
+          throw Boom.clientTimeout(
+            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
           );
 
-          // check when we actually did the last user backup
-          const alias = await Aliases.findById(payload.session.user.alias_id)
-            .lean()
-            .exec();
-          if (!alias) throw new TypeError('Alias does not exist');
+        // set cache so we don't run two backups at once
+        await this.client.set(
+          `backup_check:${payload.session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30m')
+        );
 
-          let runBackup = true;
+        // check when we actually did the last user backup
+        const alias = await Aliases.findById(payload.session.user.alias_id)
+          .lean()
+          .exec();
+        if (!alias) throw new TypeError('Alias does not exist');
 
-          if (
-            _.isDate(alias.imap_backup_at) &&
-            // if it's less than 24h ago then we should not do another backup
-            new Date(alias.imap_backup_at).getTime() >
-              dayjs().subtract(1, 'day').toDate().getTime()
-          )
-            runBackup = false;
+        let runBackup = true;
 
-          //
-          // NOTE: if maxQueue exceeded then this will error and reject
-          //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-          //       (note all of these error messages are in TimeoutError checking)
-          //
-          // run in worker pool to offset from main thread (because of VACUUM)
-          if (runBackup) {
-            // run this in the background
-            this.piscina
-              .run(payload, { name: 'backup' })
-              .then()
-              .catch((err) => logger.fatal(err, { payload }));
-          }
-        }
+        if (
+          // if it was not requested by a user for download
+          !payload.email &&
+          // and if it's less than 24h ago then we should not do another backup
+          _.isDate(alias.imap_backup_at) &&
+          new Date(alias.imap_backup_at).getTime() >
+            dayjs().subtract(1, 'day').toDate().getTime()
+        )
+          runBackup = false;
+
+        //
+        // NOTE: if maxQueue exceeded then this will error and reject
+        //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
+        //       (note all of these error messages are in TimeoutError checking)
+        //
+        // run in worker pool to offset from main thread (because of VACUUM)
+        if (!runBackup)
+          throw Boom.clientTimeout(
+            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+          );
+
+        // run this in the background
+        this.piscina
+          .run(payload, { name: 'backup' })
+          .then()
+          .catch((err) => logger.fatal(err, { payload }));
 
         response = {
           id: payload.id,

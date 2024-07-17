@@ -51,7 +51,6 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: mx server forwarding (e.g. can forward to another mailserver such as gmail)
 // TODO: auto-reply/vacation responder
 // TODO: enforce maxDownload and maxUpload
-// TODO: enforce 10-15 max connections per alias
 // TODO: each R2 bucket seems like it's 18 TB max?
 // TODO: use error.cause instead of `original_error` or some other stuff
 //       <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause>
@@ -70,7 +69,6 @@ const refreshSession = require('#helpers/refresh-session');
 // - [ ] message.exp needs to be deleted after time (message.rtime) via background job
 // - [ ] mailboxes with retention not 0 need all messages purged after that time
 // - [ ] messages expunged need removed after retention time
-// - [ ] cleanup journal items (e.g. expire after 30d or something)
 
 // TODO: other items
 // - [ ] axe should parse out streams
@@ -182,6 +180,13 @@ class IMAP {
         generateIndexedHeaders: MessageHandler.prototype.generateIndexedHeaders
       })
     );
+
+    // every hour attempt to run a backup on the connected users
+    // (initial auth may attempt to backup, but could fail)
+    this.backupConnections = this.backupConnections.bind(this);
+    setTimeout(() => {
+      this.backupConnections();
+    }, ms('1h'));
 
     // listen for websocket write stream
     this.wsp.onUnpackedMessage.addListener(async (data) => {
@@ -322,6 +327,46 @@ class IMAP {
     this.refreshSession = refreshSession.bind(this);
     this.listen = this.listen.bind(this);
     this.close = this.close.bind(this);
+  }
+
+  async backupConnections() {
+    try {
+      if (!this?.server?.connections || this.server.connections.size === 0) {
+        setTimeout(() => {
+          this.backupConnections();
+        }, ms('1h'));
+        return;
+      }
+
+      const ids = new Set();
+
+      for (const connection of this.server.connections) {
+        if (!connection?.session?.user?.alias_id) continue;
+        if (ids.has(connection.session.user.alias_id)) continue;
+        ids.add(connection.session.user.alias_id);
+
+        try {
+          // iterate in series with delay
+          // to prevent piscina worker flooding
+          // eslint-disable-next-line no-await-in-loop
+          await this.wsp.request({
+            action: 'backup',
+            backup_at: new Date().toISOString(),
+            session: { user: connection.session.user }
+          });
+          // eslint-disable-next-line no-await-in-loop
+          await ms('1s');
+        } catch (err) {
+          this.logger.debug(err, { session: connection.session.user });
+        }
+      }
+
+      setTimeout(() => {
+        this.backupConnections();
+      }, ms('1h'));
+    } catch (err) {
+      this.logger.fatal(err);
+    }
   }
 
   async listen(port = env.IMAP_PORT, host = '::', ...args) {

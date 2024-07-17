@@ -117,9 +117,6 @@ async function downloadAliasBackup(ctx) {
 
     // send backup request
     if (isSANB(ctx.request.body.password)) {
-      // purge cache so we can run another backup
-      await ctx.client.del(`backup_check:${alias.id}`);
-
       const wsp = createWebSocketAsPromised();
       await wsp.request(
         {

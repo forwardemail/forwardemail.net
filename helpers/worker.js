@@ -94,7 +94,8 @@ client.setMaxListeners(0);
 //
 const instance = {
   constructor: { name: 'SQLite' },
-  client
+  client,
+  logger
 };
 
 // eslint-disable-next-line complexity
@@ -311,9 +312,7 @@ async function backup(payload) {
 
   await setupMongoose(logger);
 
-  console.log(`backup for ${payload.session.user.username}`);
-  console.time(`backup timer ${payload.id}`);
-  await logger.debug('backup worker', { payload });
+  logger.debug('backup worker', { payload });
 
   let tmp;
   let backup;
@@ -362,13 +361,6 @@ async function backup(payload) {
         }
       );
     } catch (err) {
-      console.log(
-        `backup waiting for memory for ${
-          payload.session.user.username
-        } (${prettyBytes(spaceRequired)} but only ${prettyBytes(
-          os.freemem()
-        )}) available`
-      );
       if (isTimeoutError(err)) {
         err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
         err.isCodeBug = true;
@@ -445,10 +437,6 @@ async function backup(payload) {
 
     if (isClosing) throw new ServerShutdownError();
 
-    console.log(
-      `backup got memory and db for ${payload.session.user.username}`
-    );
-
     //
     // NOTE: we could set a flag with timestamp of database being backed up
     //       and then modify `getDatabase` to return early if we detect it's in progress
@@ -490,9 +478,7 @@ async function backup(payload) {
 
     // create backup
     // takes approx 5-10s per GB
-    console.time(`vacuum into ${tmp}`);
     db.exec(`VACUUM INTO '${tmp}'`);
-    console.timeEnd(`vacuum into ${tmp}`);
 
     await closeDatabase(db);
 
@@ -519,7 +505,6 @@ async function backup(payload) {
     await closeDatabase(backupDb);
 
     // calculate hash of file
-    console.time(`checking hash ${tmp}`);
     const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
 
     // check if hash already exists in s3
@@ -539,9 +524,6 @@ async function backup(payload) {
 
     if (isClosing) throw new ServerShutdownError();
 
-    console.timeEnd(`checking hash ${tmp}`);
-
-    console.time(`upload file ${tmp}`);
     const upload = new Upload({
       client: S3,
       params: {
@@ -552,7 +534,6 @@ async function backup(payload) {
       }
     });
     await upload.done();
-    console.timeEnd(`upload file ${tmp}`);
 
     // update alias imap backup date using provided time
     await Aliases.findOneAndUpdate(
@@ -570,7 +551,6 @@ async function backup(payload) {
     err = _err;
     err.isCodeBug = true;
     await logger.fatal(err, { payload });
-    console.error('error', err);
   }
 
   // always do cleanup in case of errors
@@ -586,7 +566,6 @@ async function backup(payload) {
   }
 
   // if an error occurred then allow cache to attempt again
-  // (but wait 30 minutes instead of 1 day)
   if (err) {
     //
     // NOTE: out of scope asynchronous code will NOT get run
@@ -653,8 +632,6 @@ async function backup(payload) {
         locale: payload.session.user.locale
       }
     });
-
-  console.timeEnd(`backup timer ${payload.id}`);
 }
 
 module.exports = { rekey, backup };
