@@ -85,6 +85,7 @@ graceful.listen();
       //
       if (
         path.extname(file.name) !== '.html' &&
+        path.extname(file.name) !== '.heapsnapshot' &&
         !file.name.startsWith('puppeteer_dev_chrome_profile') &&
         !file.name.startsWith('.org.chromium.Chromium') &&
         !file.name.startsWith('.com.google.chrome.for.testing')
@@ -97,8 +98,8 @@ graceful.listen();
         // eslint-disable-next-line no-await-in-loop
         const stat = await fs.promises.stat(filePath);
 
-        // delete if file/folder is 1h+ old
-        if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('1h')) {
+        // delete if file/folder is 1d+ old
+        if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('1d')) {
           // eslint-disable-next-line no-await-in-loop
           await fs.promises.rm(filePath, {
             force: true,

@@ -8,11 +8,17 @@ const os = require('node:os');
 const path = require('node:path');
 const process = require('node:process');
 const { isMainThread, workerData } = require('node:worker_threads');
+/*
 const {
-  // getHeapStatistics,
+  getHeapStatistics,
   writeHeapSnapshot
-  // setHeapSnapshotNearHeapLimit
+  setHeapSnapshotNearHeapLimit
 } = require('node:v8');
+*/
+
+const nodeOomHeapdump = require('node-oom-heapdump')({
+  heapdumpOnOOM: false
+});
 
 const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
@@ -83,8 +89,8 @@ async function check() {
     // (so we can optimize each job and monitor in real-time)
     //
     const memoryInfo = process.memoryUsage();
-    if (memoryInfo.heapTotal > bytes('3GB')) {
-      let message = `Exceeded 3GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
+    if (memoryInfo.heapTotal > bytes('2GB')) {
+      let message = `Exceeded 2GB threshold memory usage on ${HOSTNAME} (${IP_ADDRESS})`;
       if (!isMainThread && workerData?.job?.name) {
         message += ` (${workerData.job.name})`;
       }
@@ -94,15 +100,30 @@ async function check() {
       err.memoryInfo = memoryInfo;
       logger.fatal(err);
 
-      if (HOSTNAME === 'imap.forwardemail.net')
-        writeHeapSnapshot(
-          path.join(
-            os.tmpdir(),
-            `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
-              process.pid
-            }.heapsnapshot`
-          )
+      if (HOSTNAME === 'imap.forwardemail.net') {
+        // this gets auto-cleaned up in `jobs/cleanup-tmp.js`
+        const snapshotPath = path.join(
+          os.tmpdir(),
+          `heap-snapshot-${dayjs().format('YYYYMMDD-hhmmss')}-${
+            process.pid
+          }.heapsnapshot`
         );
+        // writeHeapSnapshot(snapshotPath); // <-- does not seem to work! (0b file size)
+        nodeOomHeapdump
+          .createHeapSnapshot(snapshotPath)
+          .then(() => {
+            // alert admins
+            const err = new TypeError(
+              `New snapshot created on ${HOSTNAME} (${IP_ADDRESS} for ${prettyBytes(
+                memoryInfo.heapTotal
+              )} heap size`
+            );
+            err.snapshotPath = snapshotPath;
+            err.isCodeBug = true;
+            logger.fatal(err);
+          })
+          .catch((err) => logger.fatal(err));
+      }
     }
 
     // only monitor main thread
