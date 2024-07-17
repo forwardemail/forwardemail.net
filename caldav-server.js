@@ -533,12 +533,10 @@ class CalDAV extends API {
       // safeguard in case more than one event
       // TODO: we may need to find by eventId -> uid match
       const vevents = comp.getAllSubcomponents('vevent');
-      if (vevents.length > 1)
-        throw new TypeError('more than one vevent for sending invite');
+      if (vevents.length !== 1)
+        throw new TypeError('0 or more than one vevent for sending invite');
 
-      const vevent = comp.getFirstSubcomponent('vevent');
-      if (!vevent)
-        throw new TypeError('comp.getFirstSubcomponent was not successful');
+      const vevent = vevents[0];
 
       // if method was CANCEL then STATUS on vevent needs to be CANCELLED
       if (method === 'CANCEL')
@@ -548,12 +546,6 @@ class CalDAV extends API {
 
       let isValid = true;
 
-      //
-      // TODO: what is "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:FALSE" for (?)
-      //       (seems to be sending to each attendee as BCC instead)
-      //       <https://github.com/mozilla/releases-comm-central/blob/6c887d441f46c56b3e40081b69c34222b909bf78/calendar/itip/CalItipOutgoingMessage.sys.mjs#L67-L90>
-      //       (but only for iTip instance/server?)
-      //
       // if X-MOZ-SEND-INVITATIONS is `FALSE` then don't send invitation updates
       if (
         comp.getFirstPropertyValue('x-moz-send-invitations') &&
@@ -568,6 +560,7 @@ class CalDAV extends API {
       else if (!event.organizer) isValid = false;
       // event.organizer = 'mailto:foo@bar.com'
       else if (
+        // TODO: fallback to EMAIL param somehow here for ORGANIZER (?)
         event.organizer.replace('mailto:', '').trim().toLowerCase() !==
         ctx.state.user.username
       )
@@ -581,31 +574,35 @@ class CalDAV extends API {
         // TODO: we may need to find by eventId -> uid match
         // safeguard in case more than one event
         const oldEvents = oldComp.getAllSubcomponents('vevent');
-        if (oldEvents.length > 1)
-          throw new TypeError('more than one old vevent for sending invite');
-
-        const oldEvent = oldComp.getFirstSubComponent('vevent');
-        if (!oldEvent)
+        if (oldEvents.length !== 1)
           throw new TypeError(
-            'old comp.getFirstSubcomponent was not successful'
+            '0 or more than one old vevent for sending invite'
           );
 
-        oldEvent.updatePropertyWithValue('status', 'CANCELLED');
+        const oldEvent = new ICAL.Event(oldEvents[0]);
+
+        oldEvents[0].updatePropertyWithValue('status', 'CANCELLED');
 
         if (oldEvent.attendees.length > 0) {
           for (const attendee of oldEvent.attendees) {
             let oldEmail = attendee.getFirstValue();
+            if (!oldEmail || !/^mailto:/i.test(oldEmail)) {
+              // fallback to EMAIL param
+              oldEmail = attendee.getParameter('email');
+            }
+
             if (!oldEmail) continue;
             oldEmail = oldEmail.replace('mailto:', '').toLowerCase().trim();
             const match = event.attendees.find((attendee) => {
-              return (
-                attendee.getFirstValue() &&
-                attendee
-                  .getFirstValue()
-                  .replace('mailto:', '')
-                  .toLowerCase()
-                  .trim() === oldEmail
-              );
+              let address = attendee.getFirstValue();
+              if (!address || !/^mailto:/i.test(address)) {
+                // fallback to EMAIL param
+                address = attendee.getParameter('email');
+              }
+
+              if (!address) return;
+              address = address.replace('mailto:', '').toLowerCase().trim();
+              return address === oldEmail;
             });
 
             // if there was a match found then that means the user wasn't removed
@@ -622,7 +619,7 @@ class CalDAV extends API {
             //
             try {
               const vc = new ICAL.Component(['vcalendar', [], []]);
-              vc.addSubcomponent(oldEvent);
+              vc.addSubcomponent(oldEvents[0]);
 
               // eslint-disable-next-line no-await-in-loop
               const ics = await this.buildICS(
@@ -679,6 +676,11 @@ class CalDAV extends API {
           if (partStat && partStat.toLowerCase() === 'declined') continue;
 
           let email = attendee.getFirstValue();
+          if (!email || !email.startsWith('mailto:')) {
+            // fallback to EMAIL param
+            email = attendee.getParameter('email');
+          }
+
           if (!email) continue;
 
           email = email.replace('mailto:', '').toLowerCase().trim();
@@ -717,25 +719,66 @@ class CalDAV extends API {
           if (method === 'CANCEL')
             subject = `${i18n.translate('CANCELLED', ctx.locale)}: ${subject}`;
 
-          await Emails.queue({
-            message: {
-              from: ctx.state.user.username,
-              to,
-              bcc: ctx.state.user.username,
-              subject,
-              icalEvent: {
-                method,
-                filename: 'event.ics',
-                content: ics
+          //
+          // if "X-MOZ-SEND-INVITATIONS-UNDISCLOSED:TRUE" then
+          // the Thunderbird checkbox was checked for
+          // "Separate invitation per attendee"
+          // <https://github.com/mozilla/releases-comm-central/blob/6c887d441f46c56b3e40081b69c34222b909bf78/calendar/itip/CalItipOutgoingMessage.sys.mjs#L67-L90>
+          // https://github.com/mozilla/releases-comm-central/blob/0dd0febc7a7815833119eb056f8cc1acf59ddc04/calendar/base/content/item-editing/calendar-item-iframe.js#L734-L738
+          //
+          if (
+            comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed') &&
+            boolean(
+              comp.getFirstPropertyValue('x-moz-send-invitations-undisclosed')
+            )
+          ) {
+            for (const rcpt of to) {
+              try {
+                // eslint-disable-next-line no-await-in-loop
+                await Emails.queue({
+                  message: {
+                    from: ctx.state.user.username,
+                    to: rcpt,
+                    bcc: ctx.state.user.username,
+                    subject,
+                    icalEvent: {
+                      method,
+                      filename: 'event.ics',
+                      content: ics
+                    }
+                  },
+                  alias,
+                  domain,
+                  user: alias ? alias.user : undefined,
+                  date: new Date(),
+                  catchall: false,
+                  isPending: false
+                });
+              } catch (err) {
+                logger.fatal(err);
               }
-            },
-            alias,
-            domain,
-            user: alias ? alias.user : undefined,
-            date: new Date(),
-            catchall: false,
-            isPending: false
-          });
+            }
+          } else {
+            await Emails.queue({
+              message: {
+                from: ctx.state.user.username,
+                to,
+                bcc: ctx.state.user.username,
+                subject,
+                icalEvent: {
+                  method,
+                  filename: 'event.ics',
+                  content: ics
+                }
+              },
+              alias,
+              domain,
+              user: alias ? alias.user : undefined,
+              date: new Date(),
+              catchall: false,
+              isPending: false
+            });
+          }
         }
       }
     } catch (err) {
