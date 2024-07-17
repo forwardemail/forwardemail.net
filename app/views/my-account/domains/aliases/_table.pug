@@ -4,7 +4,6 @@ include ../../../_pagination
 mixin renderProgressBar(domain, alias, isMobile = false)
   if (typeof domain.storage_used === 'number' && typeof domain.storage_used_by_aliases === 'number' && typeof domain.storage_quota === 'number')
     - alias.storage_used = typeof alias.storage_used === "number" ? alias.storage_used : 0;
-    - const storageUsedBySpecificAlias = Math.round((alias.storage_used / domain.storage_quota) * 100);
     - const storageUsedByAliases = Math.round(((domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
     - const pooledStorageUsed = Math.round(((domain.storage_used - domain.storage_used_by_aliases - alias.storage_used) / domain.storage_quota) * 100);
     - const availableStorage = Math.round(((domain.storage_quota - domain.storage_used) / domain.storage_quota) * 100);
@@ -46,17 +45,18 @@ mixin renderProgressBar(domain, alias, isMobile = false)
           = t("available")
       else
         //- Render Storage Used by Specific Alias
-        if storageUsedBySpecificAlias > 0
+        if alias.storage_used > 0
+          - const storageUsedBySpecificAlias ? Math.round((alias.storage_used / domain.storage_quota) * 100) : 0;
           .progress-bar.progress-bar-striped.progress-bar-animated.bg-primary.min-width-25(
-            data-width=`${storageUsedBySpecificAlias}%`,
-            aria-valuenow=storageUsedBySpecificAlias,
+            data-width=`${storageUsedBySpecificAlias || 1}%`,
+            aria-valuenow=storageUsedBySpecificAlias || 1,
             aria-valuemin=0,
             aria-valuemax=100,
             data-toggle="tooltip",
             data-title=t("Storage used by this alias"),
             data-placement="bottom",
             role="button"
-          )= `${storageUsedBySpecificAlias}%`
+          )= storageUsedBySpecificAlias === 0 ? "<1%" : `${storageUsedBySpecificAlias}%`
 
         //- Render Storage Used By Aliases
         if storageUsedByAliases > 0
@@ -98,7 +98,7 @@ mixin renderProgressBar(domain, alias, isMobile = false)
             role="button"
           )= `${availableStorage}%`
     ul.list-unstyled.small.mt-1.mb-0
-      if storageUsedBySpecificAlias > 0
+      if alias.storage_used > 0
         li.text-primary
           = prettyBytes(alias.storage_used)
           = " "

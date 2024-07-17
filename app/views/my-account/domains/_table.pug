@@ -124,7 +124,9 @@ p.text-center.d-lg-none
         th(scope="col", colspan=2)
           +sortHeader('name', 'Domain Name', '#table-domains', 'text-left')
         if !isOnlyUbuntuDomains
-          th.text-center.align-middle.d-none.d-lg-table-cell.text-nowrap(scope="col")
+          th.text-center.align-middle.d-none.d-lg-table-cell.text-nowrap(
+            scope="col"
+          )
             = t("Storage Usage")
             a.btn.btn-link.text-uppercase.text-white(
               href=l("/blog/docs/best-quantum-safe-encrypted-email-service"),
