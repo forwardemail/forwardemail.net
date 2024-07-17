@@ -44,7 +44,7 @@ class SQLite {
     // worker pool threads
     this.piscina = new Piscina({
       filename: path.resolve(__dirname, 'helpers', 'worker.js'),
-      maxQueue: 'auto'
+      maxQueue: 4 // rudimentary limit, could also be "auto"
     });
 
     // start server with either http or https

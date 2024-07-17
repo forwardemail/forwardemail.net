@@ -163,11 +163,9 @@ async function rekey(payload) {
   db.pragma('wal_checkpoint(FULL)');
 
   // create backup
-  const results = db.exec(`VACUUM INTO '${tmp}'`);
+  db.exec(`VACUUM INTO '${tmp}'`);
 
   await closeDatabase(db);
-
-  logger.debug('results', { results });
 
   let backup = true;
 
@@ -195,8 +193,7 @@ async function rekey(payload) {
     if (journalModeResult !== 'delete')
       throw new TypeError('Journal mode could not be changed');
 
-    // NOTE: the two VACUUM calls here need to go into a piscina worker thread pool
-
+    // TODO: we need to remove VACUUM call here somehow
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
     backupDb.prepare('VACUUM').run();
     // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
@@ -210,6 +207,7 @@ async function rekey(payload) {
     //       (the next time the database is opened the journal mode will get switched to WAL)
     //
 
+    // TODO: we need to remove VACUUM call here somehow
     // NOTE: VACUUM will persist the rekey operation and write to db
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
     backupDb.prepare('VACUUM').run();
@@ -271,6 +269,7 @@ async function rekey(payload) {
 
 // eslint-disable-next-line complexity
 async function backup(payload) {
+  console.time(`backup timer ${payload.id}`);
   logger.debug('backup worker', { payload });
 
   let tmp;
@@ -333,8 +332,6 @@ async function backup(payload) {
       throw err;
     }
 
-    // TODO: this needs moved into piscina
-
     // create bucket on s3 if it doesn't already exist
     // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
     const bucket = `${config.env}-${dashify(
@@ -393,7 +390,27 @@ async function backup(payload) {
       payload.session
     );
 
-    // run a checkpoint to copy over wal to db
+    //
+    // NOTE: we could set a flag with timestamp of database being backed up
+    //       and then modify `getDatabase` to return early if we detect it's in progress
+    //       (otherwise if it's been in progress for more than like 5-10m then to unset flag)
+    //
+    //       <https://github.com/sqlitebrowser/sqlitebrowser/issues/366#issue-90377336>
+    //       user_version is 32-bit signed integer
+    //       (maximum value is 2,147,483,647) so we can't use `Date.now()`
+    //       instead we could use the UTC h:mm format converted and then write a special parser
+    //       > require('dayjs')().format('hhmm')
+    //       '0140'
+    //       > Number(require('dayjs')().format('hhmm'))
+    //       140
+    //
+    //       but this is rather complicated, so instead we rely on checkpoint
+    //       and then we check that we can open up the db we just copied
+    //
+    //       db.pragma(`user_version=${...}`);
+    //
+
+    // run a checkpoint to copy over wal to db (and block others from writing)
     db.pragma('wal_checkpoint(PASSIVE)');
 
     // cleanup tmp if it already exists
@@ -409,12 +426,16 @@ async function backup(payload) {
         recursive: true
       });
     } catch (err) {
-      logger.fatal(err, { payload });
+      logger.warn(err, { payload });
     }
 
     // create backup
     // takes approx 5-10s per GB
+    console.time(`vacuum into ${tmp}`);
     db.exec(`VACUUM INTO '${tmp}'`);
+    console.timeEnd(`vacuum into ${tmp}`);
+
+    await closeDatabase(db);
 
     backup = true;
 
@@ -432,9 +453,12 @@ async function backup(payload) {
       tmp
     );
 
+    backupDb.pragma('wal_checkpoint(PASSIVE)');
+
     await closeDatabase(backupDb);
 
     // calculate hash of file
+    console.time(`checking hash ${tmp}`);
     const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
 
     // check if hash already exists in s3
@@ -452,6 +476,9 @@ async function backup(payload) {
       if (err.name !== 'NotFound') throw err;
     }
 
+    console.timeEnd(`checking hash ${tmp}`);
+
+    console.time(`upload file ${tmp}`);
     const upload = new Upload({
       client: S3,
       params: {
@@ -462,6 +489,7 @@ async function backup(payload) {
       }
     });
     await upload.done();
+    console.timeEnd(`upload file ${tmp}`);
 
     // update alias imap backup date using provided time
     await Aliases.findOneAndUpdate(
@@ -561,6 +589,8 @@ async function backup(payload) {
         locale: payload.session.user.locale
       }
     });
+
+  console.timeEnd(`backup timer ${payload.id}`);
 }
 
 module.exports = { rekey, backup };

@@ -4,10 +4,10 @@
       "name": "sqlite",
       "script": "sqlite.js",
       "max_restarts": 999,
-      "max_memory_restart": "20G",
+      "max_memory_restart": "30G",
       "wait_ready": true,
-      "exec_mode": "cluster",
-      "instances": "max",
+      "exec_mode": "fork",
+      "instances": "1",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production"
@@ -17,7 +17,7 @@
       "name": "sqlite-bree",
       "script": "sqlite-bree.js",
       "max_restarts": 999,
-      "max_memory_restart": "20G",
+      "max_memory_restart": "30G",
       "exec_mode": "fork",
       "wait_ready": true,
       "instances": "1",
