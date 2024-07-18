@@ -877,6 +877,10 @@ test('updateObject should be able to update object', async (t) => {
   t.true(result.ok);
   const text = await result.text();
 
+  t.log('text', text);
+
+  t.log('updatedICalString', updatedICalString);
+
   const list1 = extractVEvent(text);
   const list2 = extractVEvent(updatedICalString);
   t.log('list1', list1);

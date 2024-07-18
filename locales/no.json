@@ -7511,5 +7511,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Aliaskopiering for <span class=\"notranslate\">%s</span> mislyktes på grunn av en feil",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Nedlastingen av alias-sikkerhetskopi for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> mislyktes, og vi har blitt varslet.</p><p> Du kan fortsette å prøve på nytt om nødvendig, og vi kan snart sende deg en e-post for å gi deg hjelp om nødvendig.</p><p> Feilen mottatt under sikkerhetskopieringen var: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Nedlastingen av alias-sikkerhetskopi for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> mislyktes, og vi har blitt varslet.</p><p> Du kan fortsette å prøve på nytt om nødvendig, og vi kan snart sende deg en e-post for å gi deg hjelp om nødvendig.</p><p> Feilen mottatt under sikkerhetskopieringen var:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Invitasjon"
+  "Invitation": "Invitasjon",
+  "How do I connect and configure my calendars": "Hvordan kobler jeg til og konfigurerer mine kalendere",
+  "How do I add more calendars and manage existing calendars": "Hvordan legger jeg til flere kalendere og administrerer eksisterende kalendere",
+  "(or simply": "(eller ganske enkelt",
+  "if your client allows it)": "hvis klienten din tillater det)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Hvis du vil legge til flere kalendere, legger du bare til en ny kalender-URL for:",
+  "be sure to replace": "pass på å erstatte",
+  "with your desired calendar name": "med ønsket kalendernavn",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Du kan endre navn og farge på en kalender etter at den er opprettet – bare bruk din foretrukne kalenderapplikasjon (f.eks. Apple Mail eller"
 }

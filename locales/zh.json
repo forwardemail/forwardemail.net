@@ -7199,5 +7199,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "由于错误， <span class=\"notranslate\">%s</span>别名备份失败",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>的别名备份下载失败，我们已收到警报。</p><p>如有必要，您可以继续重试，我们也可能会很快给您发送电子邮件以提供帮助。</p><p>备份过程中收到的错误是： <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>的别名备份下载失败，我们已收到警报。</p><p>如有必要，您可以继续重试，我们也可能会很快给您发送电子邮件以提供帮助。</p><p>备份过程中收到的错误是：</p><pre> <code>%s</code></pre>",
-  "Invitation": "邀请"
+  "Invitation": "邀请",
+  "How do I connect and configure my calendars": "如何连接和配置我的日历",
+  "How do I add more calendars and manage existing calendars": "如何添加更多日历和管理现有日历",
+  "(or simply": "（或者简单地",
+  "if your client allows it)": "如果您的客户允许）",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "如果您想添加其他日历，只需添加新的日历 URL：",
+  "be sure to replace": "一定要更换",
+  "with your desired calendar name": "用您想要的日历名称",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "您可以在创建日历后更改其名称和颜色 - 只需使用您喜欢的日历应用程序（例如 Apple Mail 或"
 }

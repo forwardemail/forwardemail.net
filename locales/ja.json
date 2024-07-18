@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "エラーのため、 <span class=\"notranslate\">%s</span>のエイリアス バックアップに失敗しました",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>のエイリアス バックアップのダウンロードが失敗したため、警告が出されました。</p><p>必要に応じて再試行してください。また、必要に応じてサポートを提供するためにすぐにメールを送信する場合があります。</p><p>バックアップ処理中に受信したエラー: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>のエイリアス バックアップのダウンロードが失敗したため、警告が出されました。</p><p>必要に応じて再試行してください。また、必要に応じてサポートを提供するためにすぐにメールを送信する場合があります。</p><p>バックアップ プロセス中に受信したエラーは次のとおりです:</p><pre> <code>%s</code></pre>",
-  "Invitation": "招待"
+  "Invitation": "招待",
+  "How do I connect and configure my calendars": "カレンダーを接続して設定するにはどうすればいいですか",
+  "How do I add more calendars and manage existing calendars": "カレンダーを追加したり、既存のカレンダーを管理したりするにはどうすればいいですか",
+  "(or simply": "（または単に",
+  "if your client allows it)": "クライアントが許可した場合）",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "追加のカレンダーを追加する場合は、次の新しいカレンダー URL を追加します。",
+  "be sure to replace": "必ず交換してください",
+  "with your desired calendar name": "ご希望のカレンダー名",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "カレンダーを作成した後でも名前や色を変更することができます。お好みのカレンダーアプリケーション（Apple Mailや"
 }

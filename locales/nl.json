@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Aliasback-up voor <span class=\"notranslate\">%s</span> is mislukt vanwege een fout",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Het downloaden van de aliasback-up voor <span class=\"notranslate text-monospace font-weight-bold\">%s</span> is mislukt en we zijn gewaarschuwd.</p><p> Indien nodig kunt u het opnieuw proberen en indien nodig kunnen we u binnenkort een e-mail sturen om u te helpen.</p><p> De fout die tijdens het back-upproces werd ontvangen, was: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Het downloaden van de aliasback-up voor <span class=\"notranslate text-monospace font-weight-bold\">%s</span> is mislukt en we zijn gewaarschuwd.</p><p> Indien nodig kunt u het opnieuw proberen en indien nodig kunnen we u binnenkort een e-mail sturen om u te helpen.</p><p> De fout die tijdens het back-upproces werd ontvangen, was:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Uitnodiging"
+  "Invitation": "Uitnodiging",
+  "How do I connect and configure my calendars": "Hoe kan ik mijn agenda's aansluiten en configureren?",
+  "How do I add more calendars and manage existing calendars": "Hoe voeg ik meer agenda's toe en beheer ik bestaande agenda's?",
+  "(or simply": "(of gewoon",
+  "if your client allows it)": "als uw klant dit toestaat)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Als je extra agenda's wilt toevoegen, voeg dan gewoon een nieuwe agenda-URL toe:",
+  "be sure to replace": "zeker vervangen",
+  "with your desired calendar name": "met uw gewenste kalendernaam",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "U kunt de naam en kleur van een agenda wijzigen nadat deze is gemaakt. Gebruik hiervoor gewoon de agenda-applicatie van uw voorkeur (bijvoorbeeld Apple Mail of"
 }

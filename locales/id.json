@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Pencadangan alias untuk <span class=\"notranslate\">%s</span> gagal karena terjadi kesalahan",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Pengunduhan cadangan alias untuk <span class=\"notranslate text-monospace font-weight-bold\">%s</span> telah gagal dan kami telah diperingatkan.</p><p> Anda dapat melanjutkan untuk mencoba lagi jika diperlukan, dan kami akan segera mengirimkan email kepada Anda untuk memberikan bantuan jika diperlukan.</p><p> Kesalahan yang diterima selama proses pencadangan adalah: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Pengunduhan cadangan alias untuk <span class=\"notranslate text-monospace font-weight-bold\">%s</span> telah gagal dan kami telah diperingatkan.</p><p> Anda dapat melanjutkan untuk mencoba lagi jika diperlukan, dan kami akan segera mengirimkan email kepada Anda untuk memberikan bantuan jika diperlukan.</p><p> Kesalahan yang diterima selama proses pencadangan adalah:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Undangan"
+  "Invitation": "Undangan",
+  "How do I connect and configure my calendars": "Bagaimana cara menghubungkan dan mengkonfigurasi kalender saya",
+  "How do I add more calendars and manage existing calendars": "Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang ada",
+  "(or simply": "(atau sederhananya",
+  "if your client allows it)": "jika klien Anda mengizinkannya)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Jika Anda ingin menambahkan kalender tambahan, cukup tambahkan URL kalender baru:",
+  "be sure to replace": "pastikan untuk mengganti",
+  "with your desired calendar name": "dengan nama kalender yang Anda inginkan",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Anda dapat mengubah nama dan warna kalender setelah pembuatan – cukup gunakan aplikasi kalender pilihan Anda (misalnya Apple Mail atau"
 }

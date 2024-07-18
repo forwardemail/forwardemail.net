@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Zálohování aliasu pro <span class=\"notranslate\">%s</span> selhalo kvůli chybě",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Stažení zálohy aliasu pro <span class=\"notranslate text-monospace font-weight-bold\">%s</span> se nezdařilo a byli jsme upozorněni.</p><p> V případě potřeby to můžete zkusit znovu a brzy vám můžeme poslat e-mail, abychom vám v případě potřeby poskytli pomoc.</p><p> Chyba přijatá během procesu zálohování byla: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Stažení zálohy aliasu pro <span class=\"notranslate text-monospace font-weight-bold\">%s</span> se nezdařilo a byli jsme upozorněni.</p><p> V případě potřeby to můžete zkusit znovu a brzy vám můžeme poslat e-mail, abychom vám v případě potřeby poskytli pomoc.</p><p> Chyba přijatá během procesu zálohování byla:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Pozvání"
+  "Invitation": "Pozvání",
+  "How do I connect and configure my calendars": "Jak se připojím a nakonfiguruji své kalendáře",
+  "How do I add more calendars and manage existing calendars": "Jak mohu přidat další kalendáře a spravovat stávající kalendáře",
+  "(or simply": "(nebo jednoduše",
+  "if your client allows it)": "pokud to váš klient dovolí)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Pokud chcete přidat další kalendáře, stačí přidat novou adresu URL kalendáře:",
+  "be sure to replace": "určitě vyměnit",
+  "with your desired calendar name": "s požadovaným názvem kalendáře",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Název a barvu kalendáře můžete po vytvoření změnit – stačí použít vaši preferovanou kalendářovou aplikaci (např"
 }

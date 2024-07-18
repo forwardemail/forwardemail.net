@@ -7244,5 +7244,13 @@
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>",
   "Alias mailbox backup was downloaded by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  It was for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.": "Alias mailbox backup was downloaded by <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.  It was for <span class=\"font-weight-bold text-monospace notranslate\">%s</span>.",
-  "Invitation": "Invitation"
+  "Invitation": "Invitation",
+  "How do I connect and configure my calendars": "How do I connect and configure my calendars",
+  "How do I add more calendars and manage existing calendars": "How do I add more calendars and manage existing calendars",
+  "(or simply": "(or simply",
+  "if your client allows it)": "if your client allows it)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "If you'd like to add additional calendars, then just add a new calendar URL of:",
+  "be sure to replace": "be sure to replace",
+  "with your desired calendar name": "with your desired calendar name",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or"
 }

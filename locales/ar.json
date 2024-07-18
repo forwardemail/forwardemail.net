@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "فشل النسخ الاحتياطي للاسم المستعار لـ <span class=\"notranslate\">%s</span> بسبب حدوث خطأ",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p style=\";text-align:right;direction:rtl\">فشل تنزيل النسخة الاحتياطية للاسم المستعار لـ <span class=\"notranslate text-monospace font-weight-bold\">%s</span> وتم تنبيهنا.</p><p style=\";text-align:right;direction:rtl\"> يمكنك المتابعة لإعادة المحاولة إذا لزم الأمر، وقد نرسل إليك بريدًا إلكترونيًا قريبًا لتقديم المساعدة إذا لزم الأمر.</p><p style=\";text-align:right;direction:rtl\"> الخطأ الذي تم تلقيه أثناء عملية النسخ الاحتياطي هو: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p style=\";text-align:right;direction:rtl\">فشل تنزيل النسخة الاحتياطية للاسم المستعار لـ <span class=\"notranslate text-monospace font-weight-bold\">%s</span> وتم تنبيهنا.</p><p style=\";text-align:right;direction:rtl\"> يمكنك المتابعة لإعادة المحاولة إذا لزم الأمر، وقد نرسل إليك بريدًا إلكترونيًا قريبًا لتقديم المساعدة إذا لزم الأمر.</p><p style=\";text-align:right;direction:rtl\"> الخطأ الذي تم تلقيه أثناء عملية النسخ الاحتياطي هو:</p><pre style=\";text-align:right;direction:rtl\"> <code>%s</code></pre>",
-  "Invitation": "دعوة"
+  "Invitation": "دعوة",
+  "How do I connect and configure my calendars": "كيف أقوم بتوصيل وتكوين التقويمات الخاصة بي",
+  "How do I add more calendars and manage existing calendars": "كيف يمكنني إضافة المزيد من التقويمات وإدارة التقويمات الموجودة",
+  "(or simply": "(أو ببساطة",
+  "if your client allows it)": "إذا سمح عميلك بذلك)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "إذا كنت ترغب في إضافة تقاويم إضافية، فما عليك سوى إضافة عنوان URL الجديد للتقويم وهو:",
+  "be sure to replace": "تأكد من استبدال",
+  "with your desired calendar name": "مع اسم التقويم المطلوب",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "يمكنك تغيير اسم التقويم ولونه بعد إنشائه - ما عليك سوى استخدام تطبيق التقويم المفضل لديك (مثل Apple Mail أو"
 }

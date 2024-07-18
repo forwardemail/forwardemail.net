@@ -7353,5 +7353,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Alias-varmuuskopiointi kohteelle <span class=\"notranslate\">%s</span> epäonnistui virheen vuoksi",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Alias-varmuuskopion lataus kohteelle <span class=\"notranslate text-monospace font-weight-bold\">%s</span> epäonnistui ja olemme saaneet hälytyksen.</p><p> Voit yrittää tarvittaessa uudelleen, ja voimme lähettää sinulle pian sähköpostitse apua tarvittaessa.</p><p> Varmuuskopiointiprosessin aikana saatu virhe oli: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Alias-varmuuskopion lataus kohteelle <span class=\"notranslate text-monospace font-weight-bold\">%s</span> epäonnistui ja olemme saaneet hälytyksen.</p><p> Voit yrittää tarvittaessa uudelleen, ja voimme lähettää sinulle pian sähköpostitse apua tarvittaessa.</p><p> Varmuuskopiointiprosessin aikana saatu virhe oli:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Kutsu"
+  "Invitation": "Kutsu",
+  "How do I connect and configure my calendars": "Kuinka yhdistän ja määritän kalenterini",
+  "How do I add more calendars and manage existing calendars": "Kuinka lisään kalentereita ja hallitsen olemassa olevia kalentereita",
+  "(or simply": "(tai yksinkertaisesti",
+  "if your client allows it)": "jos asiakkaasi sallii)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Jos haluat lisätä muita kalentereita, lisää vain uusi kalenterin URL-osoite:",
+  "be sure to replace": "muista vaihtaa",
+  "with your desired calendar name": "haluamallasi kalenterin nimellä",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Voit muuttaa kalenterin nimeä ja väriä luomisen jälkeen – käytä vain haluamaasi kalenterisovellusta (esim. Apple Mail tai"
 }

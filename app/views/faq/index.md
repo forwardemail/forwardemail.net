@@ -22,6 +22,8 @@
 * [Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")](#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)
 * [Do you support POP3](#do-you-support-pop3)
 * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
+  * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
+  * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -1216,8 +1218,6 @@ Yes, as of December 4, 2023 we support [POP3](https://en.wikipedia.org/wiki/Post
 
 Yes, as of February 5, 2024 we have added this feature.  Our server is `caldav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
 
-**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net/dav/principals/user@example.com` (be sure to replace `user@example.com` with your alias)
-
 It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 
 | Login    | Example                    | Description                                                                                                                                                                               |
@@ -1226,6 +1226,18 @@ It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
 | Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
 
 In order to use calendar support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### How do I connect and configure my calendars
+
+**To configure your calendar, use the CalDAV URL of:** `https://caldav.forwardemail.net` (or simply `caldav.forwardemail.net` if your client allows it)
+
+<img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Forward Email Calendar CalDAV Thunderbird Example Setup" />
+
+### How do I add more calendars and manage existing calendars
+
+If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
+
+You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
 
 
 ## How to Send Mail As using Gmail

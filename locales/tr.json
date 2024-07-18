@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "<span class=\"notranslate\">%s</span> için takma ad yedeklemesi bir hata nedeniyle başarısız oldu",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> için takma ad yedekleme indirme işlemi başarısız oldu ve biz uyarıldık.</p><p> Gerekirse yeniden denemeye devam edebilirsiniz ve gerekirse yardım sağlamak için yakında size e-posta gönderebiliriz.</p><p> Yedekleme işlemi sırasında alınan hata şuydu: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> için takma ad yedekleme indirme işlemi başarısız oldu ve biz uyarıldık.</p><p> Gerekirse yeniden denemeye devam edebilirsiniz ve gerekirse yardım sağlamak için yakında size e-posta gönderebiliriz.</p><p> Yedekleme işlemi sırasında alınan hata şuydu:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Davet"
+  "Invitation": "Davet",
+  "How do I connect and configure my calendars": "Takvimlerimi nasıl bağlarım ve yapılandırırım?",
+  "How do I add more calendars and manage existing calendars": "Nasıl daha fazla takvim eklerim ve mevcut takvimleri nasıl yönetirim?",
+  "(or simply": "(ya da sadece",
+  "if your client allows it)": "müşteriniz izin veriyorsa)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Başka takvimler eklemek istiyorsanız aşağıdakilerin yeni bir takvim URL'sini eklemeniz yeterlidir:",
+  "be sure to replace": "değiştirdiğinizden emin olun",
+  "with your desired calendar name": "istediğiniz takvim adıyla",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Bir takvimin adını ve rengini oluşturduktan sonra değiştirebilirsiniz; yalnızca tercih ettiğiniz takvim uygulamasını kullanın (örn. Apple Mail veya"
 }

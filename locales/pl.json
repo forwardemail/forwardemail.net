@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Tworzenie kopii zapasowej aliasu dla <span class=\"notranslate\">%s</span> nie powiodło się z powodu błędu",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Pobieranie kopii zapasowej aliasu dla <span class=\"notranslate text-monospace font-weight-bold\">%s</span> nie powiodło się i zostaliśmy o tym powiadomieni.</p><p> W razie potrzeby możesz ponowić próbę. Wkrótce wyślemy Ci wiadomość e-mail z prośbą o pomoc, jeśli zajdzie taka potrzeba.</p><p> Podczas tworzenia kopii zapasowej wystąpił błąd: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Pobieranie kopii zapasowej aliasu dla <span class=\"notranslate text-monospace font-weight-bold\">%s</span> nie powiodło się i zostaliśmy o tym powiadomieni.</p><p> W razie potrzeby możesz ponowić próbę. Wkrótce wyślemy Ci wiadomość e-mail z prośbą o pomoc, jeśli zajdzie taka potrzeba.</p><p> Błąd otrzymany podczas procesu tworzenia kopii zapasowej:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Zaproszenie"
+  "Invitation": "Zaproszenie",
+  "How do I connect and configure my calendars": "Jak podłączyć i skonfigurować kalendarze",
+  "How do I add more calendars and manage existing calendars": "Jak dodać więcej kalendarzy i zarządzać istniejącymi kalendarzami",
+  "(or simply": "(lub po prostu",
+  "if your client allows it)": "jeśli Twój klient na to pozwala)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Jeśli chcesz dodać dodatkowe kalendarze, po prostu dodaj nowy adres URL kalendarza:",
+  "be sure to replace": "koniecznie wymienić",
+  "with your desired calendar name": "z wybraną nazwą kalendarza",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Możesz zmienić nazwę i kolor kalendarza po utworzeniu – wystarczy skorzystać z preferowanej aplikacji kalendarza (np. Apple Mail lub"
 }

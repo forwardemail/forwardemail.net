@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "การสำรองข้อมูลนามแฝงสำหรับ <span class=\"notranslate\">%s</span> ล้มเหลวเนื่องจากเกิดข้อผิดพลาด",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>การดาวน์โหลดสำรองนามแฝงสำหรับ <span class=\"notranslate text-monospace font-weight-bold\">%s</span> ล้มเหลว และเราได้รับการแจ้งเตือนแล้ว</p><p> คุณสามารถลองอีกครั้งได้หากจำเป็น และเราอาจส่งอีเมลถึงคุณเร็วๆ นี้เพื่อให้ความช่วยเหลือหากจำเป็น</p><p> ข้อผิดพลาดที่ได้รับระหว่างกระบวนการสำรองข้อมูลคือ: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>การดาวน์โหลดสำรองนามแฝงสำหรับ <span class=\"notranslate text-monospace font-weight-bold\">%s</span> ล้มเหลว และเราได้รับการแจ้งเตือนแล้ว</p><p> คุณสามารถลองอีกครั้งได้หากจำเป็น และเราอาจส่งอีเมลถึงคุณเร็วๆ นี้เพื่อให้ความช่วยเหลือหากจำเป็น</p><p> ข้อผิดพลาดที่ได้รับระหว่างกระบวนการสำรองข้อมูลคือ:</p><pre> <code>%s</code></pre>",
-  "Invitation": "การเชิญ"
+  "Invitation": "การเชิญ",
+  "How do I connect and configure my calendars": "ฉันจะเชื่อมต่อและกำหนดค่าปฏิทินของฉันได้อย่างไร",
+  "How do I add more calendars and manage existing calendars": "ฉันจะเพิ่มปฏิทินและจัดการปฏิทินที่มีอยู่ได้อย่างไร",
+  "(or simply": "(หรือเพียงแค่",
+  "if your client allows it)": "หากลูกค้าของคุณอนุญาต)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "หากคุณต้องการเพิ่มปฏิทินเพิ่มเติม เพียงเพิ่ม URL ปฏิทินใหม่ของ:",
+  "be sure to replace": "ต้องแน่ใจว่าได้เปลี่ยน",
+  "with your desired calendar name": "ด้วยชื่อปฏิทินที่คุณต้องการ",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "คุณสามารถเปลี่ยนชื่อและสีของปฏิทินได้หลังการสร้าง เพียงใช้แอปพลิเคชันปฏิทินที่คุณต้องการ (เช่น Apple Mail หรือ"
 }

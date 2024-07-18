@@ -5015,5 +5015,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Sao lưu bí danh cho <span class=\"notranslate\">%s</span> không thành công do có lỗi",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Quá trình tải xuống bản sao lưu bí danh cho <span class=\"notranslate text-monospace font-weight-bold\">%s</span> đã không thành công và chúng tôi đã được cảnh báo.</p><p> Bạn có thể tiếp tục thử lại nếu cần và chúng tôi có thể sớm gửi email cho bạn để cung cấp trợ giúp nếu cần.</p><p> Lỗi nhận được trong quá trình sao lưu là: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Quá trình tải xuống bản sao lưu bí danh cho <span class=\"notranslate text-monospace font-weight-bold\">%s</span> đã không thành công và chúng tôi đã được cảnh báo.</p><p> Bạn có thể tiếp tục thử lại nếu cần và chúng tôi có thể sớm gửi email cho bạn để cung cấp trợ giúp nếu cần.</p><p> Lỗi nhận được trong quá trình sao lưu là:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Lời mời"
+  "Invitation": "Lời mời",
+  "How do I connect and configure my calendars": "Làm cách nào để kết nối và định cấu hình lịch của tôi",
+  "How do I add more calendars and manage existing calendars": "Làm cách nào để thêm nhiều lịch hơn và quản lý lịch hiện có",
+  "(or simply": "(hoặc đơn giản",
+  "if your client allows it)": "nếu khách hàng của bạn cho phép)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Nếu bạn muốn thêm lịch bổ sung thì chỉ cần thêm URL lịch mới của:",
+  "be sure to replace": "hãy chắc chắn để thay thế",
+  "with your desired calendar name": "với tên lịch bạn muốn",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Bạn có thể thay đổi tên và màu của lịch sau khi tạo – chỉ cần sử dụng ứng dụng lịch ưa thích của bạn (ví dụ: Apple Mail hoặc"
 }

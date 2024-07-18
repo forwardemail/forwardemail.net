@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Alias backup för <span class=\"notranslate\">%s</span> misslyckades på grund av ett fel",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Nedladdningen av alias backup för <span class=\"notranslate text-monospace font-weight-bold\">%s</span> har misslyckats och vi har blivit varnade.</p><p> Du kan fortsätta att försöka igen om det behövs, och vi kan snart skicka ett e-postmeddelande för att ge dig hjälp om det behövs.</p><p> Felet som togs emot under säkerhetskopieringen var: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Nedladdningen av alias backup för <span class=\"notranslate text-monospace font-weight-bold\">%s</span> har misslyckats och vi har blivit varnade.</p><p> Du kan fortsätta att försöka igen om det behövs, och vi kan snart skicka ett e-postmeddelande för att ge dig hjälp om det behövs.</p><p> Felet som mottogs under säkerhetskopieringen var:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Inbjudan"
+  "Invitation": "Inbjudan",
+  "How do I connect and configure my calendars": "Hur ansluter jag och konfigurerar mina kalendrar",
+  "How do I add more calendars and manage existing calendars": "Hur lägger jag till fler kalendrar och hanterar befintliga kalendrar",
+  "(or simply": "(eller bara",
+  "if your client allows it)": "om din klient tillåter det)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Om du vill lägga till ytterligare kalendrar lägger du bara till en ny kalender-URL för:",
+  "be sure to replace": "se till att byta ut",
+  "with your desired calendar name": "med ditt önskade kalendernamn",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Du kan ändra en kalenders namn och färg efter att den skapats – använd bara ditt föredragna kalenderprogram (t.ex. Apple Mail eller"
 }

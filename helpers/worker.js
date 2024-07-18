@@ -70,11 +70,11 @@ const graceful = new Graceful({
   // mongooses: [mongoose],
   // redisClients: [client],
   logger,
-  timeoutMs: ms('1m'),
+  timeoutMs: config.env === 'test' ? ms('5s') : ms('1m'),
   customHandlers: [
     async () => {
       isClosing = true;
-      await delay(ms('30s'));
+      if (config.env === 'production') await delay(ms('30s'));
     }
   ]
 });

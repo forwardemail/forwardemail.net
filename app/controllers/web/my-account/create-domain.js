@@ -9,7 +9,55 @@ const { boolean } = require('boolean');
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
 
+const config = require('#config');
+const logger = require('#helpers/logger');
+
+// eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
+  if (
+    !ctx.state.user[config.userFields.hasVerifiedEmail] &&
+    ctx.state.user.plan === 'free'
+  ) {
+    const names = await Domains.distinct('name', {
+      'members.user': ctx.state.user._id,
+      plan: 'free',
+      is_global: false
+    });
+
+    //
+    // if user already has 1+ domain on their account
+    // and if they are on the free plan then don't allow them
+    // to continue without verifying their email address first
+    // (this slows down spammers from flooding our database)
+    //
+    if (names.length > 0) {
+      // alert admins we prevented possible spammer
+      const err = new TypeError(
+        `${
+          ctx.state.user.email
+        } (unverified) attempted to create multiple domains${
+          ctx.api ? ' (API)' : ''
+        }`
+      );
+      err.isCodeBug = true;
+      err.names = names;
+      logger.fatal(err);
+
+      if (ctx.api)
+        return ctx.throw(
+          Boom.unauthorized(ctx.translateError('EMAIL_VERIFICATION_REQUIRED'))
+        );
+
+      ctx.flash('warning', ctx.translate('EMAIL_VERIFICATION_REQUIRED'));
+
+      const redirectTo = ctx.state.l(config.verifyRoute);
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+
+      return;
+    }
+  }
+
   try {
     ctx.state.domain = await Domains.create({
       is_api: boolean(ctx.api),

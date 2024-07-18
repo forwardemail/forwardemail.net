@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Резервное копирование псевдонима для <span class=\"notranslate\">%s</span> не удалось из-за ошибки.",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Загрузка резервной копии псевдонима для <span class=\"notranslate text-monospace font-weight-bold\">%s</span> не удалась, и мы получили предупреждение.</p><p> При необходимости вы можете повторить попытку, и мы отправим вам электронное письмо в ближайшее время, чтобы оказать помощь, если это необходимо.</p><p> Ошибка, полученная во время процесса резервного копирования: <span class=\"text-monospace\">%s.</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Загрузка резервной копии псевдонима для <span class=\"notranslate text-monospace font-weight-bold\">%s</span> не удалась, и мы получили предупреждение.</p><p> При необходимости вы можете повторить попытку, и мы отправим вам электронное письмо в ближайшее время, чтобы оказать помощь, если это необходимо.</p><p> Ошибка, полученная в процессе резервного копирования:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Приглашение"
+  "Invitation": "Приглашение",
+  "How do I connect and configure my calendars": "Как мне подключить и настроить свои календари",
+  "How do I add more calendars and manage existing calendars": "Как добавить дополнительные календари и управлять существующими календарями",
+  "(or simply": "(или просто",
+  "if your client allows it)": "если ваш клиент это позволяет)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Если вы хотите добавить дополнительные календари, просто добавьте URL-адрес нового календаря:",
+  "be sure to replace": "обязательно замените",
+  "with your desired calendar name": "с желаемым названием календаря",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Вы можете изменить имя и цвет календаря после создания — просто используйте предпочитаемое приложение календаря (например, Apple Mail или"
 }

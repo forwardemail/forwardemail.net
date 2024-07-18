@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "오류로 인해 <span class=\"notranslate\">%s</span> 에 대한 별칭 백업이 실패했습니다.",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대한 별칭 백업 다운로드가 실패하여 경고를 받았습니다.</p><p> 필요한 경우 다시 시도할 수 있으며 필요한 경우 도움을 제공하기 위해 곧 이메일을 보내드릴 수도 있습니다.</p><p> 백업 프로세스 중에 수신된 오류: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대한 별칭 백업 다운로드가 실패하여 경고를 받았습니다.</p><p> 필요한 경우 다시 시도할 수 있으며 필요한 경우 도움을 제공하기 위해 곧 이메일을 보내드릴 수도 있습니다.</p><p> 백업 프로세스 중에 수신된 오류는 다음과 같습니다.</p><pre> <code>%s</code></pre>",
-  "Invitation": "초대"
+  "Invitation": "초대",
+  "How do I connect and configure my calendars": "내 캘린더를 연결하고 구성하려면 어떻게 해야 하나요?",
+  "How do I add more calendars and manage existing calendars": "캘린더를 더 추가하고 기존 캘린더를 관리하려면 어떻게 해야 하나요?",
+  "(or simply": "(또는 단순히",
+  "if your client allows it)": "고객이 허용하는 경우)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "캘린더를 더 추가하려면 다음의 새 캘린더 URL을 추가하세요.",
+  "be sure to replace": "꼭 교체하세요",
+  "with your desired calendar name": "원하는 캘린더 이름으로",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "캘린더를 만든 후에는 캘린더의 이름과 색상을 변경할 수 있습니다. 선호하는 캘린더 애플리케이션(예: Apple Mail 또는"
 }

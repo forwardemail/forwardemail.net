@@ -5505,5 +5505,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "גיבוי כינוי עבור <span class=\"notranslate\">%s</span> נכשל עקב שגיאה",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p style=\";text-align:right;direction:rtl\">הורדת הגיבוי הכינוי עבור <span class=\"notranslate text-monospace font-weight-bold\">%s</span> נכשלה וקיבלנו התראה.</p><p style=\";text-align:right;direction:rtl\"> תוכל להמשיך ולנסות שוב במידת הצורך, ואנו עשויים לשלוח לך דוא&quot;ל בקרוב כדי לספק עזרה במידת הצורך.</p><p style=\";text-align:right;direction:rtl\"> השגיאה שהתקבלה במהלך תהליך הגיבוי הייתה: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p style=\";text-align:right;direction:rtl\">הורדת הגיבוי הכינוי עבור <span class=\"notranslate text-monospace font-weight-bold\">%s</span> נכשלה וקיבלנו התראה.</p><p style=\";text-align:right;direction:rtl\"> תוכל להמשיך ולנסות שוב במידת הצורך, ואנו עשויים לשלוח לך דוא&quot;ל בקרוב כדי לספק עזרה במידת הצורך.</p><p style=\";text-align:right;direction:rtl\"> השגיאה שהתקבלה במהלך תהליך הגיבוי הייתה:</p><pre style=\";text-align:right;direction:rtl\"> <code>%s</code></pre>",
-  "Invitation": "הַזמָנָה"
+  "Invitation": "הַזמָנָה",
+  "How do I connect and configure my calendars": "איך אני מחבר ומגדיר את היומנים שלי",
+  "How do I add more calendars and manage existing calendars": "כיצד אוכל להוסיף עוד יומנים ולנהל יומנים קיימים",
+  "(or simply": "(או בפשטות",
+  "if your client allows it)": "אם הלקוח שלך מאפשר זאת)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "אם תרצה להוסיף יומנים נוספים, פשוט הוסף כתובת אתר חדשה של לוח שנה של:",
+  "be sure to replace": "הקפד להחליף",
+  "with your desired calendar name": "עם שם לוח השנה הרצוי",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "אתה יכול לשנות שם וצבע של לוח שנה לאחר היצירה - פשוט השתמש באפליקציית היומן המועדפת עליך (למשל Apple Mail או"
 }

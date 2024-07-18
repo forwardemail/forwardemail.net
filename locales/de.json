@@ -6544,5 +6544,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "Die Aliassicherung für <span class=\"notranslate\">%s</span> ist aufgrund eines Fehlers fehlgeschlagen",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>Der Download des Alias-Backups für <span class=\"notranslate text-monospace font-weight-bold\">%s</span> ist fehlgeschlagen und wir wurden benachrichtigt.</p><p> Sie können es bei Bedarf erneut versuchen. Wir werden Ihnen in Kürze möglicherweise eine E-Mail mit der Bitte um Hilfe schicken.</p><p> Der während des Sicherungsvorgangs aufgetretene Fehler war: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>Der Download des Alias-Backups für <span class=\"notranslate text-monospace font-weight-bold\">%s</span> ist fehlgeschlagen und wir wurden benachrichtigt.</p><p> Sie können es bei Bedarf erneut versuchen. Wir werden Ihnen in Kürze möglicherweise eine E-Mail mit der Bitte um Hilfe schicken.</p><p> Der während des Sicherungsvorgangs aufgetretene Fehler war:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Einladung"
+  "Invitation": "Einladung",
+  "How do I connect and configure my calendars": "Wie verbinde und konfiguriere ich meine Kalender?",
+  "How do I add more calendars and manage existing calendars": "Wie füge ich weitere Kalender hinzu und verwalte vorhandene Kalender",
+  "(or simply": "(oder einfach",
+  "if your client allows it)": "wenn Ihr Kunde es erlaubt)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Wenn Sie weitere Kalender hinzufügen möchten, fügen Sie einfach die folgende neue Kalender-URL hinzu:",
+  "be sure to replace": "ersetzen Sie unbedingt",
+  "with your desired calendar name": "mit Deinem Wunschkalendernamen",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "Sie können den Namen und die Farbe eines Kalenders nach der Erstellung ändern – verwenden Sie dazu einfach Ihre bevorzugte Kalenderanwendung (z. B. Apple Mail oder"
 }

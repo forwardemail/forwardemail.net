@@ -7506,5 +7506,13 @@
   "Alias backup for <span class=\"notranslate\">%s</span> has failed due to an error": "A(z) <span class=\"notranslate\">%s</span> alias biztonsági mentése hiba miatt meghiúsult",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was: <span class=\"text-monospace\">%s</span></p>": "<p>A <span class=\"notranslate text-monospace font-weight-bold\">%s</span> alias biztonsági másolatának letöltése meghiúsult, és figyelmeztetést kaptunk.</p><p> Ha szükséges, próbálkozhat újra, és hamarosan e-mailt küldhetünk Önnek, hogy szükség esetén segítséget nyújthassunk.</p><p> A biztonsági mentési folyamat során kapott hiba: <span class=\"text-monospace\">%s</span></p>",
   "<p>The alias backup download for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the backup process was:</p><pre><code>%s</code></pre>": "<p>A <span class=\"notranslate text-monospace font-weight-bold\">%s</span> alias biztonsági másolatának letöltése meghiúsult, és figyelmeztetést kaptunk.</p><p> Ha szükséges, próbálkozhat újra, és hamarosan e-mailt küldhetünk Önnek, hogy szükség esetén segítséget nyújthassunk.</p><p> A biztonsági mentési folyamat során kapott hiba a következő volt:</p><pre> <code>%s</code></pre>",
-  "Invitation": "Meghívás"
+  "Invitation": "Meghívás",
+  "How do I connect and configure my calendars": "Hogyan csatlakoztathatom és konfigurálhatom a naptáraimat",
+  "How do I add more calendars and manage existing calendars": "Hogyan adhatok hozzá további naptárakat és kezelhetem a meglévő naptárakat",
+  "(or simply": "(vagy egyszerűen",
+  "if your client allows it)": "ha az ügyfele megengedi)",
+  "If you'd like to add additional calendars, then just add a new calendar URL of:": "Ha további naptárakat szeretne hozzáadni, akkor egyszerűen adjon hozzá egy új naptár URL-címét:",
+  "be sure to replace": "feltétlenül cserélje ki",
+  "with your desired calendar name": "a kívánt naptárnévvel",
+  "You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or": "A létrehozás után megváltoztathatja a naptár nevét és színét – csak használja a kívánt naptáralkalmazást (pl. Apple Mail vagy"
 }
