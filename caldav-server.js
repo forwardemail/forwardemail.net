@@ -888,6 +888,10 @@ class CalDAV extends API {
       calendar = await Calendars.findOne(this, ctx.state.session, {
         calendarId
       });
+    if (!calendar && !mongoose.isObjectIdOrHexString(calendarId))
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: calendarId
+      });
     if (!calendar)
       calendar = await Calendars.create({
         // db virtual helper
@@ -899,7 +903,9 @@ class CalDAV extends API {
 
         // calendar obj
         // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
-        name: ctx.translate('CALENDAR'),
+        name: mongoose.isObjectIdOrHexString(calendarId)
+          ? ctx.translate('CALENDAR')
+          : calendarId,
         description: config.urls.web,
         prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
         //

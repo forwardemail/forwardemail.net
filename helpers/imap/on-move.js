@@ -125,6 +125,7 @@ async function onMove(mailboxId, update, session, fn) {
     const existEntries = [];
 
     // safeguard
+    /*
     if (
       session?.selected?.mailbox &&
       session.selected.mailbox.toString() !== mailbox._id.toString()
@@ -136,6 +137,7 @@ async function onMove(mailboxId, update, session, fn) {
       err.isCodeBug = true;
       throw err;
     }
+    */
 
     try {
       const condition = {
