@@ -31,6 +31,7 @@ test('throws error', (t) => {
 
 test('creates instance', async (t) => {
   const client = new Redis();
+  client.setMaxListeners(0);
   const tangerine = createTangerine(client);
   await tangerine.resolve('forwardemail.net');
   const result = await client.get('tangerine:a:forwardemail.net');

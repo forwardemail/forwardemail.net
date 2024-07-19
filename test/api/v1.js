@@ -31,6 +31,7 @@ const { Logs, Domains, Emails } = require('#models');
 
 const IP_ADDRESS = ip.address();
 const client = new Redis();
+client.setMaxListeners(0);
 const resolver = createTangerine(client);
 
 test.before(utils.setupMongoose);

@@ -52,6 +52,7 @@ exports.setupWebServer = async (t) => {
     logger,
     webSharedConfig.redisMonitor
   );
+  client.setMaxListeners(0);
   await client.flushall();
   const web = new Web(
     {
@@ -73,6 +74,7 @@ exports.setupApiServer = async (t) => {
     logger,
     apiSharedConfig.redisMonitor
   );
+  client.setMaxListeners(0);
   await client.flushall();
   const api = new API(
     {
@@ -94,6 +96,7 @@ exports.setupSMTPServer = async (t) => {
     logger,
     breeSharedConfig.redisMonitor
   );
+  client.setMaxListeners(0);
   await client.flushall();
   t.context.client = client;
 };

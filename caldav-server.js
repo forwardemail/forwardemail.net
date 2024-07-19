@@ -22,6 +22,7 @@ const Calendars = require('#models/calendars');
 const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
+const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
@@ -476,7 +477,7 @@ class CalDAV extends API {
         principalRoot: 'principals',
         // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/src/koa.ts#L130-L131>
         disableWellKnown: false,
-        logEnabled: config.env !== 'production',
+        logEnabled: !env.AXE_SILENT,
         logLevel: 'debug',
         data: {
           createCalendar: this.createCalendar,

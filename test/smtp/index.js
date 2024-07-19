@@ -37,6 +37,7 @@ const { Emails } = require('#models');
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const client = new Redis();
+client.setMaxListeners(0);
 const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);

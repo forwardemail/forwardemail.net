@@ -40,6 +40,7 @@ const subscriber = new Redis();
 const tlsOptions = { rejectUnauthorized: false };
 const IP_ADDRESS = ip.address();
 
+client.setMaxListeners(0);
 subscriber.setMaxListeners(0);
 
 test.before(utils.setupMongoose);

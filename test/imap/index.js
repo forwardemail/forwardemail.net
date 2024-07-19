@@ -54,6 +54,7 @@ const client = new Redis();
 const subscriber = new Redis();
 const tls = { rejectUnauthorized: false };
 
+client.setMaxListeners(0);
 subscriber.setMaxListeners(0);
 
 test.before(utils.setupMongoose);

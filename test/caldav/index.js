@@ -78,6 +78,8 @@ test.beforeEach(async (t) => {
     logger,
     caldavSharedConfig.redisMonitor
   );
+  client.setMaxListeners(0);
+  subscriber.setMaxListeners(0);
   await client.flushall();
   await subscriber.flushall();
 
