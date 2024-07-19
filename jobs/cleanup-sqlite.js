@@ -313,8 +313,11 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             }
           );
         } catch (err) {
-          err.isCodeBug = true;
-          err.alias_id = id;
+          if (err.message === 'Alias does not exist') {
+            err.isCodeBug = true;
+            err.alias_id = id;
+          }
+
           logger.error(err);
           // commented out as a safeguard
           // easy way to cleanup non-production environments tmpdir folders
