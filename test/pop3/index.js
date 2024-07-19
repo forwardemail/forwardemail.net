@@ -223,7 +223,6 @@ test('example pop3 session', async (t) => {
   {
     // eslint-disable-next-line new-cap
     const stat = await t.context.pop3Command.STAT();
-    t.log('stat', stat);
     t.is(stat, '0 0');
   }
 
@@ -231,7 +230,6 @@ test('example pop3 session', async (t) => {
   {
     // eslint-disable-next-line new-cap
     const list = await t.context.pop3Command.LIST();
-    t.log('list', list);
     t.deepEqual(list, []);
   }
 
@@ -244,7 +242,6 @@ test('example pop3 session', async (t) => {
     //   eventName: 'error',
     //   message: 'no such message, only 0 messages in maildrop',
     // }
-    t.log('retr1', retr1);
     t.is(retr1.command, 'RETR 1');
     t.is(retr1.eventName, 'error');
     t.is(retr1.message, 'no such message, only 0 messages in maildrop');
@@ -318,7 +315,6 @@ ZXhhbXBsZQo=
   {
     // eslint-disable-next-line new-cap
     const stat = await t.context.pop3Command.STAT();
-    t.log('stat', stat);
     t.is(stat, '1 645');
   }
 
@@ -326,7 +322,6 @@ ZXhhbXBsZQo=
   {
     // eslint-disable-next-line new-cap
     const list = await t.context.pop3Command.LIST();
-    t.log('list', list);
     t.deepEqual(list, [['1', '645']]);
   }
 
@@ -334,7 +329,6 @@ ZXhhbXBsZQo=
   {
     // eslint-disable-next-line new-cap
     const retr1 = await t.context.pop3Command.RETR(1);
-    t.log('retr1', retr1);
     //
     // TODO: line break near boundary is broken in WildDuck
     // <https://github.com/nodemailer/wildduck/issues/571>
@@ -372,7 +366,6 @@ ZXhhbXBsZQo=
   // DELE 1
   // eslint-disable-next-line new-cap
   const dele1 = await t.context.pop3Command.DELE(1);
-  t.log('dele1', dele1);
 
   t.is(dele1, 'message 1 deleted');
 

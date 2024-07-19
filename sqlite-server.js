@@ -54,11 +54,7 @@ class SQLite {
       // 48
       // (conditionally for when we detect we're in PM2)
       // (otherwise the tests take super long to run, e.g. in CI)
-      ...(process.env.pm2_env
-        ? {
-            maxThreads: 2
-          }
-        : {})
+      maxThreads: process.env.pm2_env ? 2 : 4
     });
 
     this.piscina = piscina;

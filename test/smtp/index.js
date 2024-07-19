@@ -744,7 +744,6 @@ Test`.trim()
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },
@@ -912,7 +911,6 @@ test('automatic openpgp support', async (t) => {
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },
@@ -933,7 +931,6 @@ test('automatic openpgp support', async (t) => {
     client
   });
 
-  t.log('info', info);
   t.true(info[0].pgp);
 });
 
@@ -1182,7 +1179,6 @@ test(`IDN domain`, async (t) => {
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },
@@ -1358,7 +1354,6 @@ test(`10MB message size`, async (t) => {
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },
@@ -1534,7 +1529,6 @@ test(`16MB message size`, async (t) => {
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },
@@ -1883,7 +1877,6 @@ Test`.trim()
       stream.pipe(writer);
       stream.on('end', () => {
         // const buffer = Buffer.concat(chunks);
-        // t.log(buffer.toString());
         fn();
       });
     },

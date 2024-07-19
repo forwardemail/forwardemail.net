@@ -769,7 +769,6 @@ test('onUnsubscribe', async (t) => {
 
 test('LIST', async (t) => {
   const result = await t.context.imapFlow.exec('LIST', ['', '*']);
-  t.log('result', result);
   t.is(result.response.command, 'OK');
 });
 
@@ -875,8 +874,6 @@ test('onGetQuotaRoot', async (t) => {
     t.is(quota.path, 'INBOX');
     t.is(quota.storage.limit, config.maxQuotaPerAlias);
     t.is(quota.storage.status, '0%');
-    t.log('quota', quota);
-    t.log('quota.storage.usage', quota.storage.usage);
     t.is(quota.storage.usage, config.INITIAL_DB_SIZE);
     // TODO: figure out why config.INITIAL_DB_SIZE is sometimes off here (e.g. its sometimes 200704)
     // t.deepEqual(quota, {
@@ -890,9 +887,6 @@ test('onGetQuotaRoot', async (t) => {
   }
 
   await imapFlow.mailboxCreate('boopboop');
-
-  const mailboxes = await imapFlow.list();
-  t.log('mailboxes', mailboxes);
 
   {
     await t.context.wsp.request({
@@ -1029,7 +1023,6 @@ test
   await t.context.imapFlow.mailboxCreate('backup');
   const result = await t.context.imapFlow.messageCopy('1:*', 'backup');
   t.true(result !== false);
-  t.log(result);
   t.is(result.path, 'copy');
   t.is(result.destination, 'backup');
   t.is(result.uidMap.size, 10);
@@ -1211,7 +1204,6 @@ test
   // move all messages to a mailbox called "was-moved" (ust exist)
   await t.context.imapFlow.mailboxCreate('was-moved');
   const result = await t.context.imapFlow.messageMove('1:*', 'was-moved');
-  t.log('result', result);
   t.is(result.path, 'move');
   t.is(result.destination, 'was-moved');
   t.is(result.uidMap.size, 10);
@@ -1405,7 +1397,6 @@ test
     messages: true,
     unseen: true
   });
-  t.log('status', status);
   t.is(status.path, 'yoyo');
   t.is(status.messages, 20);
   t.is(status.unseen, 10);

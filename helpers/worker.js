@@ -67,8 +67,12 @@ const graceful = new Graceful({
   // NOTE: we are explicitly not gracefully closing these
   //       to allow the backups to complete if they were being uploaded
   //
-  // mongooses: [mongoose],
-  // redisClients: [client],
+  ...(config.env === 'test'
+    ? {
+        mongooses: [mongoose],
+        redisClients: [client]
+      }
+    : {}),
   logger,
   timeoutMs: config.env === 'test' ? ms('5s') : ms('1m'),
   customHandlers: [

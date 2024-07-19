@@ -235,14 +235,10 @@ test.beforeEach(async (t) => {
     headers: t.context.authHeaders
   });
 
-  t.log('account', t.context.account);
-
   t.context.calendars = await fetchCalendars({
     account: t.context.account,
     headers: t.context.authHeaders
   });
-
-  t.log('calendars', t.context.calendars);
 });
 
 //
@@ -312,8 +308,7 @@ test('fetchCalendars should be able to fetch calendars', async (t) => {
     t.is(calendars.length, 1);
   }
 
-  t.log('t.context.account', t.context.account);
-  const result = await makeCalendar({
+  await makeCalendar({
     url: t.context.serverUrl,
     props: {
       [`${DAVNamespaceShort.DAV}:displayname`]: 'test',
@@ -323,7 +318,6 @@ test('fetchCalendars should be able to fetch calendars', async (t) => {
     },
     headers: t.context.authHeaders
   });
-  t.log('makeCalendar result', result);
 
   {
     const calendars = await fetchCalendars({
@@ -398,10 +392,6 @@ test('calendarMultiGet should be able to get information about multiple calendar
     headers: t.context.authHeaders
   });
 
-  t.log('objectUrl1', objectUrl1);
-  t.log('objectUrl2', objectUrl2);
-  t.log('objectUrl3', objectUrl3);
-  t.log('calendarObjects', calendarObjects);
   t.true(calendarObjects.length > 0);
 
   const deleteResult1 = await deleteObject({
@@ -419,11 +409,8 @@ test('calendarMultiGet should be able to get information about multiple calendar
     headers: t.context.authHeaders
   });
 
-  t.log('deleteResult1', deleteResult1);
   t.true(deleteResult1.ok);
-  t.log('deleteResult2', deleteResult2);
   t.true(deleteResult2.ok);
-  t.log('deleteResult3', deleteResult3);
   t.true(deleteResult3.ok);
 });
 
@@ -462,7 +449,6 @@ test('it should send calendar invite', async (t) => {
     .lean()
     .exec();
   t.true(typeof email === 'object');
-  t.log('email created', email);
 });
 
 test('fetchCalendarObjects should be able to fetch calendar objects', async (t) => {
@@ -568,7 +554,6 @@ test('fetchCalendarObjects should be able to fetch target calendar objects when 
   });
 
   t.is(objects.length, 1);
-  t.log('objects[0]', objects[0]);
   t.is(objects[0].url, objectUrl3);
 
   const deleteResult1 = await deleteObject({
@@ -794,8 +779,6 @@ test('createObject should be able to create object', async (t) => {
 
   const objectUrl = new URL('9.ics', t.context.calendars[0].url).href;
 
-  t.log('objectUrl', objectUrl);
-
   const response = await createObject({
     url: objectUrl,
     data: iCalString,
@@ -814,14 +797,9 @@ test('createObject should be able to create object', async (t) => {
   t.true(response.ok);
   t.true(calendarObject.url.length > 0);
   t.true(calendarObject.etag.length > 0);
-  t.log('calendarObject', calendarObject);
-  t.log('iCalString', iCalString);
-  t.log('calendarObject.data', calendarObject.data);
 
   const list1 = extractVEvent(calendarObject.data);
   const list2 = extractVEvent(iCalString);
-  t.log('list1', list1);
-  t.log('list2', list2);
   t.deepEqual(list1, list2);
   // t.is(calendarObject.data.split('\r\n').join('\n'), iCalString);
 
@@ -879,14 +857,8 @@ test('updateObject should be able to update object', async (t) => {
   t.true(result.ok);
   const text = await result.text();
 
-  t.log('text', text);
-
-  t.log('updatedICalString', updatedICalString);
-
   const list1 = extractVEvent(text);
   const list2 = extractVEvent(updatedICalString);
-  t.log('list1', list1);
-  t.log('list2', list2);
   t.deepEqual(list1, list2);
   // t.is(text.split('\r\n').join('\n'), updatedICalString);
 
