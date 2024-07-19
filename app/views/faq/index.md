@@ -99,19 +99,21 @@ Think of us as the service that can power `you@yourdomain.com`.  We're the best 
 
 You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
-We provide email hosting and email forwarding service to notable users such as:
+We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-* The Linux Foundation
 * Netflix
+* The Linux Foundation
 * Disney Ad Sales
 * jQuery
 * LineageOS
-* Government of South Australia
-* Government of Dominican Republic
 * The University of Maryland
 * The University of Washington
-* David Heinemeier Hansson
-* 500,000+ custom domain names
+* Tufts University
+* Swarthmore College
+* Government of South Australia
+* Government of Dominican Republic
+* Isaac Z. Schlueter (Inventor of npm package manager)
+* David Heinemeier Hansson (Creator of Ruby on Rails)
 
 You can learn more about Forward Email on [our About page](/about).
 

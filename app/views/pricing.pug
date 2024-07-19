@@ -30,54 +30,71 @@ block body
               data-src="https://www.youtube-nocookie.com/embed/N6zjv40zuIY?autoplay=0"
             )
 
-  if !isBot(ctx.get('User-Agent'))
-    .fixed-bottom.text-center.d-print-none.d-lg-none
-      .bg-dark.p-2.border-top.border-themed
-        ul.list-inline.mb-0
-          li.list-inline-item
-            a.btn.btn-sm.btn-light(href="#free")
-              = t("Free")
-              = " "
-              i.fa.fa-search-plus
-          li.list-inline-item
-            a.btn.btn-sm.btn-success(href="#enhanced")
-              = t("Enhanced")
-              = " "
-              i.fa.fa-search-plus
-          li.list-inline-item
-            a.btn.btn-sm.btn-primary(href="#team")
-              = t("Team")
-              = " "
-              i.fa.fa-search-plus
+  //-.
+    if !isBot(ctx.get('User-Agent'))
+      .fixed-bottom.text-center.d-print-none.d-lg-none
+        .bg-dark.p-2.border-top.border-themed
+          ul.list-inline.mb-0
+            li.list-inline-item
+              a.btn.btn-sm.btn-light(href="#free")
+                = t("Free")
+                = " "
+                i.fa.fa-search-plus
+            li.list-inline-item
+              a.btn.btn-sm.btn-success(href="#enhanced")
+                = t("Enhanced")
+                = " "
+                i.fa.fa-search-plus
+            li.list-inline-item
+              a.btn.btn-sm.btn-primary(href="#team")
+                = t("Team")
+                = " "
+                i.fa.fa-search-plus
 
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    .min-vh-100.d-flex.flex-column(
-      id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
+    .min-vh-100.d-flex.flex-column.pb-5(
+      id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale)) && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
       class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
     )
       - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
-      if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
-        #stars.user-select-none
+      if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email' || Object.keys(useCases).includes(ctx.pathWithoutLocale)) && !isBot(ctx.get('User-Agent')))
+        #stars.user-select-none(data-ignore-hash-change)
         if !isSafari
-          #rocket.user-select-none
-        #waving.user-select-none(class=isSafari ? "" : "floating-animation")
+          #rocket.user-select-none(data-ignore-hash-change)
+        #waving.user-select-none(
+          class=isSafari ? "" : "floating-animation",
+          data-ignore-hash-change
+        )
       .container.my-auto.pt-5
         .row
           .col-12.text-center
             h1.mb-3.text-sans-serif
-              = t("Encrypted Business Email")
-            if isBot(ctx.get("User-Agent"))
-              p
-                = t("Create your free, private, and professional business email.")
-                = " "
-                != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.')
+              if Object.keys(useCases).includes(ctx.pathWithoutLocale)
+                .text-left!= t(useCases[ctx.pathWithoutLocale][0])
+              else
+                != meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+            p
+              if Object.keys(useCases).includes(ctx.pathWithoutLocale)
+                .text-left!= meta.description
+              else
+                != meta.description
+
             if !isBot(ctx.get("User-Agent"))
-              a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
-                href=l("/register"),
-                data-toggle="modal-anchor",
-                data-target="#modal-sign-up"
-              )
-                = t("Sign up free")
+              if Object.keys(useCases).includes(ctx.pathWithoutLocale)
+                .text-left
+                  a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
+                    href=l("/register"),
+                    data-toggle="modal-anchor",
+                    data-target="#modal-sign-up"
+                  )
+                    = t("Sign up free")
+              else
+                a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
+                  href=l("/register"),
+                  data-toggle="modal-anchor",
+                  data-target="#modal-sign-up"
+                )
+                  = t("Sign up free")
             if isBot(ctx.get("User-Agent"))
               ul.list-inline
                 li.list-inline-item.d-block.d-md-inline
@@ -114,37 +131,7 @@ block body
                       i.fa.fa-code
                       = " "
                       = t("Developers")
-        if !isBot(ctx.get('User-Agent'))
-          .row
-            .col-8.offset-2.text-center
-              p.lead.text-white.font-weight-bold= t("Used by")
-              ul.list-inline.lead.d-none.d-lg-block
-                li.list-inline-item.badge.badge-dark The Linux Foundation
-                li.list-inline-item.badge.badge-dark Netflix
-                li.list-inline-item.badge.badge-dark Disney Ad Sales
-                li.list-inline-item.badge.badge-dark jQuery
-                li.list-inline-item.badge.badge-dark LineageOS
-                li.list-inline-item.badge.badge-dark Government of South Australia
-                li.list-inline-item.badge.badge-dark Government of Dominican Republic
-                li.list-inline-item.badge.badge-dark The University of Maryland
-                li.list-inline-item.badge.badge-dark The University of Washington
-                li.list-inline-item.badge.badge-dark David Heinemeier Hansson
-                li.list-inline-item.badge.badge-dark
-                  = t("500,000+ custom domain names")
-              ul.list-inline.d-lg-none
-                li.list-inline-item.badge.badge-dark The Linux Foundation
-                li.list-inline-item.badge.badge-dark Netflix
-                li.list-inline-item.badge.badge-dark Disney Ad Sales
-                li.list-inline-item.badge.badge-dark jQuery
-                li.list-inline-item.badge.badge-dark LineageOS
-                li.list-inline-item.badge.badge-dark Government of South Australia
-                li.list-inline-item.badge.badge-dark Government of Dominican Republic
-                li.list-inline-item.badge.badge-dark The University of Maryland
-                li.list-inline-item.badge.badge-dark The University of Washington
-                li.list-inline-item.badge.badge-dark David Heinemeier Hansson
-                li.list-inline-item.badge.badge-dark
-                  = t("500,000+ custom domain names")
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto(
+      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
         href="#learn-more"
       )
         i.fa.fa-angle-double-down
@@ -157,62 +144,17 @@ block body
       data-ignore-hash-change
     )
       .container.text-center
-        .row
+        include _marketing
+        .row.mb-3
           .col-12
-            h2.display-5.font-weight-bold.mt-5.mb-3= t("Why use us as your email provider?")
-            .lead
-              include _feature-list
-        hr
-        .row
-          .col-12
-            h2.display-5.font-weight-bold.my-3= t("What makes us different than others?")
-            .lead
-              ul.list-unstyled.mb-3
-                li.mb-3
-                  i.fa.fa-fw.fa-check-circle.text-success
-                  = " "
-                  != t('We\'re <strong class="text-decoration-underline">the only 100% open-source provider</strong>')
-                li.mb-3
-                  i.fa.fa-fw.fa-check-circle.text-success
-                  = " "
-                  = t("We don't rely on any third parties (we don't use Amazon SES or an alternative like others)")
-                li.mb-3
-                  i.fa.fa-fw.fa-check-circle.text-success
-                  = " "
-                  = t("Our pricing allows you to scale cost effectively (we don't charge per user and you can pay as you go for storage)")
-                li.mb-3
-                  i.fa.fa-fw.fa-check-circle.text-success
-                  = " "
-                  = t("Unlike others, your email with us is not stored in a shared relational database alongside everyone else")
-                li
-                  i.fa.fa-fw.fa-check-circle.text-success
-                  = " "
-                  != t("We're the world's first and only email service to use <strong>quantum-safe</strong> and <strong>individually encrypted SQLite mailboxes</strong>")
-            a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
-              href=l("/blog/best-email-service"),
-              target="_blank"
+            a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
+              href="#features"
             )
-              != t("Read Email Service Comparison")
+              i.fa.fa-angle-double-down
               = " "
-              i.fa.fa-angle-right.align-middle
-        hr
-        .row
-          .col-12
-            h2.display-5.font-weight-bold.my-3= t("Did you know?")
-            p.lead
-              != t('Other email services advertise as open-source, but <strong class="text-danger">they do not release the source code to their back-end</strong>.')
+              = t("Features and Pricing")
               = " "
-              != t("The back-end is the <strong>most sensitive part</strong> of an email provider.")
-              = " "
-              != t("It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.")
-          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
-            href="#features"
-          )
-            i.fa.fa-angle-double-down
-            = " "
-            = t("Features and Pricing")
-            = " "
-            i.fa.fa-angle-double-down
+              i.fa.fa-angle-double-down
 
   .bg-fixed.lazyload.py-3.py-md-4.py-lg-5(
     id=user || (!isBot(ctx.get("User-Agent")) && boolean(ctx.query.pricing)) ? false : "features",
@@ -228,8 +170,8 @@ block body
             != t("<strong>Don't worry</strong> &ndash; you can instantly switch plans at anytime.")
       .row.row-cols-1.row-cols-lg-3
         #free.col
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .px-md-3.py-md-3.my-3.my-md-0
+          .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .card-body
               .h3.text-center.font-weight-bold
                 = t("Free")
               p.text-center.mb-3= t("Only supports email forwarding")
@@ -375,12 +317,10 @@ block body
                       = " "
                       i.fa.fa-angle-right
         #enhanced.col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .px-md-3.py-md-3.my-3.my-md-0
+          .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .card-body
               .h3.text-center.font-weight-bold
                 = t("Enhanced")
-                = " "
-                i.fa.fa-lock
               p.text-center.mb-3!= t('Send &amp; receive as <span class="notranslate">you@yourdomain.com</span>')
               .lead.text-center.mb-3.text-nowrap
                 if user && user.plan !== 'free'
@@ -583,7 +523,7 @@ block body
                   target="_blank"
                 )
                   = t("30-day guarantee")
-                span.ml-1.small
+                span.ml-1.small.text-nowrap
                   = "("
                   = t("instant refunds")
                   = ")"
@@ -628,13 +568,12 @@ block body
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 = " "
                 = t("99.99% service uptime")
-        #team.col.mt-3.mt-lg-0
-          .d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
-            .px-md-3.py-md-3.my-3.my-md-0
+
+        #team.col
+          .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .card-body
               .h3.text-center.font-weight-bold
                 = t("Team")
-                = " "
-                i.fas.fa-rocket
               p.text-center.mb-3= t("For groups and organizations")
               .lead.text-center.mb-3.text-nowrap
                 if user && user.plan === 'team'
@@ -711,6 +650,43 @@ block body
                 i.fa.fa-fw.fa-drafting-compass.text-themed.mr-3
                 = " "
                 = t("Early access to new features")
+
+      .row
+        #enterprise.col.mt-3
+          .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
+            .card-body
+              .h3.text-center.font-weight-bold
+                = t("Enterprise")
+              p.text-center.mb-3
+                != t('For <a href="%s">education</a>, <a href="%s">alumni email forwarding</a>, <a href="%s">healthcare</a>, <a href="%s">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/alumni-email-hosting-forwarding"), l("/healthcare-email-hosting-forwarding"), l("/government-email-hosting-forwarding"))
+              a.btn.btn-block.btn-success.font-weight-bold(href=l("/help"))
+                = t("Contact us to schedule a call")
+                = " "
+                i.fa.fa-angle-double-right.align-middle
+            ul.list-group.list-group-flush.mb-1
+              li.list-group-item.d-flex.align-items-center.border-top.border-themed.bg-dark.text-white.font-weight-bold
+                i.fa.fa-fw.fa-arrow-up.mr-3.d-lg-none
+                i.fa.fa-fw.fa-arrow-left.mr-3.d-none.d-lg-inline
+                = " "
+                = t("Everything in Team plus:")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fas.fa-user-secret.text-themed.mr-3
+                = " "
+                = t("Risk and security assessment completion (e.g. OneTrust)")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fas.fa-comment-dots.text-themed.mr-3
+                = " "
+                = t("Dedicated customer support chatroom via Signal and Matrix")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-file-signature.text-themed.mr-3
+                = " "
+                = t("Enterprise contract agreement sent via DocuSign")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-life-ring.text-themed.mr-3
+                = " "
+                = t("Onboarding assistance and real-time engineering support")
+            .card-footer.small.text-muted.text-center
+              != t('You can also directly email us at <a href="mailto:support@forwardemail.net" class="notranslate">support@forwardemail.net</a> to share your use case and ask questions.')
   .bg-dark.py-3.py-md-5.d-block
     .container
       .row

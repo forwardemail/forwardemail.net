@@ -90,7 +90,7 @@ async function onSearch(mailboxId, options, session, fn) {
       mailbox: mailbox._id
     };
 
-    const uidList = [];
+    const uidList = new Set();
 
     let highestModseq = 0;
     let returned;
@@ -666,7 +666,7 @@ async function onSearch(mailboxId, options, session, fn) {
       //   if (set.size > 0 && !set.has(message._id)) continue;
 
       //   if (highestModseq < message.modseq) highestModseq = message.modseq;
-      //   uidList.push(message.uid);
+      //   uidList.add(message.uid);
       // }
 
       // less memory consumption
@@ -675,7 +675,7 @@ async function onSearch(mailboxId, options, session, fn) {
         if (set.size > 0 && !set.has(message._id)) continue;
 
         if (highestModseq < message.modseq) highestModseq = message.modseq;
-        uidList.push(message.uid);
+        uidList.add(message.uid);
       }
     } catch (err) {
       this.logger.fatal(err, { mailboxId, options, session });
@@ -684,7 +684,7 @@ async function onSearch(mailboxId, options, session, fn) {
 
     // send response
     fn(null, {
-      uidList,
+      uidList: [...uidList],
       highestModseq
     });
   } catch (err) {

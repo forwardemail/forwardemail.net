@@ -297,6 +297,24 @@ async function onAuth(auth, session, fn) {
     // Clear authentication limit for this IP address
     await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
 
+    // this also ensures that at least one admin has a verified email address
+    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+    const to = [];
+
+    // set default locale for translation for the session
+    let locale = i18n.config.defaultLocale;
+    locale =
+      alias && alias.user[config.lastLocaleField]
+        ? alias.user[config.lastLocaleField]
+        : obj.locale;
+
+    if (alias && alias.user.email) {
+      to.push(alias.user.email);
+    } else {
+      to.push(...obj.to);
+    }
+
     //
     // if we're on CalDAV server then as a weekly courtesy
     // if the user does not have SMTP enabled on the domain then
@@ -424,24 +442,6 @@ async function onAuth(auth, session, fn) {
     const adminExists = domain.members.some((m) => {
       return m.group === 'admin' && m?.user?.group === 'admin';
     });
-
-    // this also ensures that at least one admin has a verified email address
-    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
-
-    const to = [];
-
-    // set default locale for translation for the session
-    let locale = i18n.config.defaultLocale;
-    locale =
-      alias && alias.user[config.lastLocaleField]
-        ? alias.user[config.lastLocaleField]
-        : obj.locale;
-
-    if (alias && alias.user.email) {
-      to.push(alias.user.email);
-    } else {
-      to.push(...obj.to);
-    }
 
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)

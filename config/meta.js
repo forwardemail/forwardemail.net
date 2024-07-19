@@ -28,7 +28,8 @@ const {
   developerDocs,
   nsProviders,
   platforms,
-  getServersOrClientsList
+  getServersOrClientsList,
+  useCases
 } = require('#config/utilities');
 
 // eslint-disable-next-line complexity
@@ -57,9 +58,10 @@ module.exports = function (config) {
       'Free Email Forwarder for Custom Domains',
       `Learn more about ${config.appName} and the history of our service.`
     ],
+    ...useCases,
     '/private-business-email': [
       'Private Business Email for Custom Domains',
-      'Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains.'
+      'Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.'
     ],
     '/faq': [
       'Frequently Asked Questions About Email',

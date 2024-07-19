@@ -38,7 +38,12 @@ const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-const { developerDocs, nsProviders, platforms } = require('#config/utilities');
+const {
+  developerDocs,
+  nsProviders,
+  platforms,
+  useCases
+} = require('#config/utilities');
 const { web } = require('#controllers');
 
 const MAX_AGE = ms('1y') / 1000;
@@ -447,6 +452,15 @@ localeRouter
     rateLimit(5, 'create user'),
     web.auth.register
   );
+
+for (const route of Object.keys(useCases)) {
+  localeRouter.get(
+    route,
+    web.myAccount.retrieveDomains,
+    web.myAccount.sortedDomains,
+    render('pricing')
+  );
+}
 
 for (const doc of developerDocs) {
   // legacy redirect

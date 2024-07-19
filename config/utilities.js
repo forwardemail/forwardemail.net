@@ -1041,6 +1041,86 @@ function getServersOrClientsList(platform, isEmailClients = false) {
   return providers;
 }
 
+// various use cases (SEO related)
+const useCases = {
+  '/education-email-hosting-forwarding': [
+    'Email Hosting & Forwarding for Education, K-12, Colleges, Universities, Schools, Students, Teachers',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for education, K-12, colleges, school districts, universities, students, and teachers."
+  ],
+  '/alumni-email-hosting-forwarding': [
+    'Email Hosting & Forwarding for Alumni, Graduates, Sports, Clubs, Schools',
+    'We provide email forwarding and hosting for alumni, graduates, universities, schools, clubs, sports teams, students, teachers, and more.'
+  ],
+  '/healthcare-email-hosting-forwarding': [
+    'Email Hosting & Forwarding for Healthcare, Doctors, Patients, HIPAA',
+    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for healthcare, doctors, patients, and HIPAA-complaint related needs."
+  ],
+  '/nonprofit-clubs-churches-sports-email-hosting-forwarding': [
+    'Email Hosting & Forwarding for Non-profits, Churches, Workship, Clubs, Sports Teams',
+    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for non-profits, churches, workship, clubs, sports teams, and more."
+  ],
+  '/government-email-hosting-forwarding': [
+    'Email Hosting & Forwarding for Federal, State, Local, County, and Municipal Governments',
+    "We can provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for federal, state, local, county, and municipal governments."
+  ],
+  '/crypto-email-hosting': [
+    'Email Hosting & Forwarding for Crypto Businesses',
+    "We give crypto businesses access to email hosting, forwarding, API's, and much more with a focus on privacy and security."
+  ],
+  '/email-hosting-content-creators': [
+    'Email Hosting & Forwarding for Content Creators',
+    "We provide email hosting and forwarding services for content creators, vloggers, bloggers, YouTuber's, and live streamers."
+  ],
+  '/real-estate-agent-email-hosting': [
+    'Email Hosting & Forwarding for Real Estate Agents',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for real estate agents."
+  ],
+  '/email-hosting-ecommerce-online-stores': [
+    'Email Hosting & Forwarding for E-Commerce and Online Stores',
+    'We provide email hosting and forwarding services for e-commerce and online stores such as Shopify, WiX, WooCommerce, BigCommerce, Square, BigCartel, and GumRoad.'
+  ],
+  '/gdpr-compliant-email-hosting': [
+    'Email Hosting & Forwarding for GDPR Compliance Needs',
+    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for GDPR-complaint related needs."
+  ],
+  '/enterprise-email-hosting': [
+    'Email Hosting & Forwarding for Enterprise Businesses',
+    'We are an enterprise-grade email hosting service focused on security, privacy, and reliability.'
+  ],
+  '/small-business-email-hosting': [
+    'Email Hosting & Forwarding for Small Businesses',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for small businesses."
+  ],
+  '/startup-email-hosting': [
+    'Email Hosting & Forwarding for Startups & Bootstrappers',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for startups and bootstrappers."
+  ],
+  '/mx-server-proxy-port-forwarding-service': [
+    'Custom MX Server Port Forwarding',
+    'You can use our email hosting and forwarding service for MX exchange server proxy and port forwarding needs.'
+  ],
+  '/custom-domain-email-hosting-microsoft-outlook-365': [
+    'Custom Domain Email Hosting for Microsoft Outlook 365',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for custom domains using Microsoft Outlook 365."
+  ],
+  '/custom-domain-email-hosting-apple-mail': [
+    'Custom Domain Email Hosting for Apple Mail',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for custom domains using Apple Mail."
+  ],
+  '/custom-domain-email-hosting-mozilla-thunderbird': [
+    'Custom Domain Email Hosting for Mozilla Thunderbird',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for custom domains using Mozilla Thunderbird."
+  ],
+  '/secure-business-email-provider': [
+    'Secure Business Email Provider',
+    'We are a secure email service provider for busineses and organizations with a focus on privacy.'
+  ],
+  '/privacy-focused-email-service': [
+    'Privacy Focused Email Service',
+    'We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.'
+  ]
+};
+
 module.exports = {
   _,
   ajc,
@@ -1075,5 +1155,6 @@ module.exports = {
   convert: convertFn,
   getServersOrClientsList,
   highlightWords,
-  randomstring
+  randomstring,
+  useCases
 };

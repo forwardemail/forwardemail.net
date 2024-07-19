@@ -60,7 +60,7 @@ const imapSharedConfig = sharedConfig('IMAP');
 const client = new Redis(imapSharedConfig.redis, logger);
 
 // TODO: do better graceful shutdown
-let isClosing = false;
+let isCancelled = false;
 
 const graceful = new Graceful({
   //
@@ -73,7 +73,7 @@ const graceful = new Graceful({
   timeoutMs: config.env === 'test' ? ms('5s') : ms('1m'),
   customHandlers: [
     async () => {
-      isClosing = true;
+      isCancelled = true;
       if (config.env === 'production') await delay(ms('30s'));
     }
   ]
@@ -100,7 +100,7 @@ const instance = {
 
 // eslint-disable-next-line complexity
 async function rekey(payload) {
-  if (isClosing) throw new ServerShutdownError();
+  if (isCancelled) throw new ServerShutdownError();
 
   await setupMongoose(logger);
 
@@ -166,7 +166,7 @@ async function rekey(payload) {
     `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
   );
 
-  if (isClosing) throw new ServerShutdownError();
+  if (isCancelled) throw new ServerShutdownError();
 
   //
   // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
@@ -202,7 +202,7 @@ async function rekey(payload) {
 
   await closeDatabase(db);
 
-  if (isClosing) throw new ServerShutdownError();
+  if (isCancelled) throw new ServerShutdownError();
 
   let backup = true;
 
@@ -233,7 +233,7 @@ async function rekey(payload) {
     // TODO: we need to remove VACUUM call here somehow
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
     backupDb.prepare('VACUUM').run();
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
     // backupDb.rekey(Buffer.from(decrypt(payload.new_password)));
     backupDb.pragma(`rekey="${decrypt(payload.new_password)}"`);
 
@@ -248,7 +248,7 @@ async function rekey(payload) {
     // TODO: we need to remove VACUUM call here somehow
     // NOTE: VACUUM will persist the rekey operation and write to db
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
     backupDb.prepare('VACUUM').run();
 
     await closeDatabase(backupDb);
@@ -308,7 +308,7 @@ async function rekey(payload) {
 
 // eslint-disable-next-line complexity
 async function backup(payload) {
-  if (isClosing) throw new ServerShutdownError();
+  if (isCancelled) throw new ServerShutdownError();
 
   await setupMongoose(logger);
 
@@ -335,7 +335,7 @@ async function backup(payload) {
       throw err;
     }
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
@@ -372,7 +372,7 @@ async function backup(payload) {
       throw err;
     }
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     // create bucket on s3 if it doesn't already exist
     // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
@@ -408,7 +408,7 @@ async function backup(payload) {
       }
     }
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     //
     // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
@@ -435,7 +435,7 @@ async function backup(payload) {
       payload.session
     );
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     //
     // NOTE: we could set a flag with timestamp of database being backed up
@@ -482,7 +482,7 @@ async function backup(payload) {
 
     await closeDatabase(db);
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     backup = true;
 
@@ -522,7 +522,7 @@ async function backup(payload) {
       if (err.name !== 'NotFound') throw err;
     }
 
-    if (isClosing) throw new ServerShutdownError();
+    if (isCancelled) throw new ServerShutdownError();
 
     const upload = new Upload({
       client: S3,

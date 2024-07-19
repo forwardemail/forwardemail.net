@@ -67,7 +67,7 @@ if !user && !registerOrLogin
             .modal-header.text-center.d-block
               .h4.d-inline-block.ml-4(id=`modal-${dashify(verb)}-title`)
                 if verb === 'sign up'
-                  = t("Sign up free")
+                  != t("Sign up now &ndash; it's free!")
                 else
                   = t("Welcome back!")
               button.close(
@@ -211,10 +211,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                span.d-none.d-md-inline-block
-                  = t("Signup")
-                span.d-none.d-lg-inline-block
-                  = t("Sign up free")
+                = t("Signup")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
       button.navbar-toggler.d-lg-none.no-js.text-themed(
@@ -369,11 +366,35 @@ nav.navbar(class=navbarClasses.join(" "))
                     = " "
                     = "Terminal"
 
+          //- Solutions aka Use Cases (bots only)
+          if isBot(ctx.get('User-Agent'))
+            li.nav-item.dropdown.no-js
+              - const isUseCasesPage = Object.keys(useCases).includes(ctx.pathWithoutLocale);
+              form.mb-0
+                button#navbar-dropdown-solutions.btn.dropdown-toggle.d-block.text-left.no-js(
+                  data-toggle="dropdown",
+                  data-boundary="window",
+                  aria-haspopup="true",
+                  aria-expanded="false",
+                  class=isUseCasesPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                )
+                  = t("Solutions")
+                .dropdown-menu(aria-labelledby="navbar-dropdown-solutions")
+                  each useCase in Object.keys(useCases)
+                    a.dropdown-item.small(
+                      href=l(useCase),
+                      class=ctx.pathWithoutLocale === useCase ? "active" : ""
+                    )
+                      if isBot(ctx.get('User-Agent'))
+                        != t(useCases[useCase][0])
+                      else
+                        != t(useCases[useCase][0].replace("Email Hosting & Forwarding for", "").replace("Custom Domain Email Hosting for", ""))
+
           //- Resources
           if !isBot(ctx.get('User-Agent'))
             - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/privacy", "/terms", "/report-abuse"];
-            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || resourcePages.includes(ctx.pathWithoutLocale) || companyPages.includes(ctx.pathWithoutLocale));
+            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && !boolean(ctx.query.pricing)) || companyPages.includes(ctx.pathWithoutLocale));
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
@@ -702,13 +723,13 @@ nav.navbar(class=navbarClasses.join(" "))
                     data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                     data-target=isRegisterOrLogin ? false : "#modal-sign-up"
                   )
-                    = t("Sign up free")
+                    = t("Signup")
                   a.btn.btn-success.text-left.text-uppercase.font-weight-bold.d-none.d-lg-block(
                     href=l("/register"),
                     data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                     data-target=isRegisterOrLogin ? false : "#modal-sign-up"
                   )
-                    = t("Sign up free")
+                    = t("Signup")
 if user
   noscript
     .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")

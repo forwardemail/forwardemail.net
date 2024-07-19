@@ -276,7 +276,7 @@ footer.mt-auto
             )= t("Port 25 blocked by ISP")
           hr.d-lg-none.w-100
           h2.h5.mb-2: a.text-white(href=l("/resources"))= t("Resources")
-          ul.list-unstyled.mb-0
+          ul.list-unstyled(class=isBot(ctx.get("User-Agent")) ? "" : "mb-0")
             - let pricingPageHref = domain && domain.name ? l(`/private-business-email?domain=${domain.name}`) : l("/private-business-email");
             if !isBot(ctx.get('User-Agent'))
               - pricingPageHref += "?pricing=true";
@@ -303,6 +303,17 @@ footer.mt-auto
             )= t("Reserved Email Addresses")
             if !isBot(ctx.get('User-Agent'))
               li: a.d-block.text-white.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
+          if isBot(ctx.get('User-Agent'))
+            hr.d-lg-none.w-100
+            h2.h5.mb-2= t("Use Cases")
+            ul.list-unstyled.mb-0
+              each useCase in Object.keys(useCases)
+                li
+                  a.d-block.text-white.py-2.py-md-0(href=l(useCase))
+                    if isBot(ctx.get('User-Agent'))
+                      != t(useCases[useCase][0])
+                    else
+                      != t(useCases[useCase][0].replace("Email Hosting & Forwarding for", "").replace("Custom Domain Email Hosting for", ""))
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.mr-lg-3
           h2.h5.mb-2: a.text-white(href=l("/blog/docs"))= t("Developers")

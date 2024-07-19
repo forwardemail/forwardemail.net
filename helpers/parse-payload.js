@@ -586,7 +586,7 @@ async function parsePayload(data, ws) {
               a.id === undefined ||
               !mongoose.isObjectIdOrHexString(a.id) ||
               typeof a.address !== 'string' ||
-              !isEmail(a.address)
+              !isEmail(a.address, { ignore_max_length: true })
           )
         )
           throw new TypeError('Invalid aliases');

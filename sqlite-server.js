@@ -42,10 +42,19 @@ class SQLite {
     this.resolver = createTangerine(this.client, logger);
 
     // worker pool threads
-    this.piscina = new Piscina({
+    // <https://github.com/piscinajs/piscina?tab=readme-ov-file#constructor-new-piscinaoptions>
+    const piscina = new Piscina({
       filename: path.resolve(__dirname, 'helpers', 'worker.js'),
-      maxQueue: 1 // rudimentary limit, could also be "auto"
+      maxQueue: 'auto', // maxThreads^2 = 4
+      // if we left it unset, then `maxThreads` would be `48`
+      // for EACH process in Node.js in production sqlite
+      // > os.availableParallelism * 1.5
+      // 48
+      maxThreads: 2,
+      idleTimeout: ms('10s')
     });
+
+    this.piscina = piscina;
 
     // start server with either http or https
     const server =
