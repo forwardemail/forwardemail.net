@@ -7,7 +7,6 @@ const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
 const path = require('node:path');
-const process = require('node:process');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
@@ -54,7 +53,7 @@ class SQLite {
       // 48
       // (conditionally for when we detect we're in PM2)
       // (otherwise the tests take super long to run, e.g. in CI)
-      maxThreads: process.env.pm2_env ? 2 : 4
+      maxThreads: 1 // config.env === 'test' ? 1 : 2
     });
 
     this.piscina = piscina;
