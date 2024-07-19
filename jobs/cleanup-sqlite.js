@@ -33,9 +33,9 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
-const wsp = require('#helpers/wsp-server');
 const monitorServer = require('#helpers/monitor-server');
+const setupMongoose = require('#helpers/setup-mongoose');
+const updateStorageUsed = require('#helpers/update-storage-used');
 
 monitorServer();
 
@@ -251,16 +251,12 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
               if (err.name !== 'TimeoutError') logger.error(err);
             }
 
-            // update `storage_used` for given alias
-
-            await wsp.request(
-              {
-                action: 'size',
-                timeout: ms('15s'),
-                alias_id: id
-              },
-              0
-            );
+            // update storage
+            try {
+              await updateStorageUsed(id, client);
+            } catch (err) {
+              logger.fatal(err, { id });
+            }
 
             // get total storage used for an alias (includes across all relevant domains/aliases)
             alias = await Aliases.findOne({ id });

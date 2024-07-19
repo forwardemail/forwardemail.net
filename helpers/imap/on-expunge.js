@@ -83,7 +83,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       config.env === 'production' &&
       !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
     )
-      throw new IMAPError('IMAP_INBOX_SAFEGUARD', { imapResponse: 'CANNOT' });
+      throw new IMAPError('EXPUNGE_RESERVED', { imapResponse: 'CANNOT' });
 
     const condition = {
       mailbox: mailbox._id.toString(),
