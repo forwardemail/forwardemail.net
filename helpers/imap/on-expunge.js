@@ -18,6 +18,7 @@ const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
+const config = require('#config');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
@@ -29,6 +30,7 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
+// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
@@ -77,18 +79,18 @@ async function onExpunge(mailboxId, update, session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/702>
     //       (mirrors trashCheck in `helpers/get-database.js`)
     //
-    // if (
-    //   config.env === 'production' &&
-    //   !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
-    // )
-    //   return throw new IMAPError('TODO', { imapResponse: 'CANNOT' });
-    //
+    if (
+      config.env === 'production' &&
+      !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
+    )
+      throw new IMAPError('IMAP_INBOX_SAFEGUARD', { imapResponse: 'CANNOT' });
 
     const condition = {
       mailbox: mailbox._id.toString(),
       undeleted: 0
     };
 
+    // NOTE: this edge case would never get hit right now since `onExpunge` cmd in wildduck always passes `isUid: false`
     if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
 
     this.logger.debug('expunge query', { condition });

@@ -279,6 +279,10 @@ module.exports = {
   IMAP_NOT_ENABLED_MESSAGE:
     'We detected a login to our <span class="notranslate">IMAP/POP3/CalDAV</span> servers by <strong class="notranslate text-monospace">%s</strong>, however this feature is not yet enabled on the alias. Please <a target="_blank" rel="noopener noreferrer" class="font-weight-bold" href="%s">edit your alias</a> and enable IMAP to receive mail for <strong class="text-monospace notranslate">%s</strong>.',
   IMAP_INBOX_SAFEGUARD_SUBJECT: 'Inbox Safeguard',
+  IMAP_MAILBOX_SESSION_OUTDATED:
+    'Mailbox needs to call OPEN/SELECT prior to MOVE',
+  EXPUNGE_RESERVED:
+    'EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE',
   IMAP_INBOX_SAFEGUARD:
     'You cannot move all messages in the Inbox at once to Trash; please make partial moves to continue',
   IMAP_SESSION_OUTDATED: 'Session mailbox change detected during request',

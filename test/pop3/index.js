@@ -30,13 +30,14 @@ const POP3 = require('../../pop3-server');
 
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
+const logger = require('#logger');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });
-const client = new Redis();
-const subscriber = new Redis();
+const client = new Redis({}, logger);
+const subscriber = new Redis({}, logger);
 const tlsOptions = { rejectUnauthorized: false };
 const IP_ADDRESS = ip.address();
 

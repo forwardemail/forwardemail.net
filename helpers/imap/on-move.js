@@ -14,7 +14,6 @@
  */
 
 const mongoose = require('mongoose');
-const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
@@ -124,8 +123,7 @@ async function onMove(mailboxId, update, session, fn) {
     const expungeEntries = [];
     const existEntries = [];
 
-    // safeguard
-    /*
+    // safeguard since MOVE command in wildduck uses session.selected.uidList
     if (
       session?.selected?.mailbox &&
       session.selected.mailbox.toString() !== mailbox._id.toString()
@@ -137,7 +135,6 @@ async function onMove(mailboxId, update, session, fn) {
       err.isCodeBug = true;
       throw err;
     }
-    */
 
     try {
       const condition = {
@@ -146,7 +143,9 @@ async function onMove(mailboxId, update, session, fn) {
 
       // <https://github.com/nodemailer/wildduck/issues/698>
       if (update.messages.length > 0) {
-        condition.uid = tools.checkRangeQuery(update.messages);
+        // <https://github.com/nodemailer/wildduck/issues/710>
+        // condition.uid = tools.checkRangeQuery(update.messages);
+        condition.uid = { $in: update.messages };
       } else {
         // no messages were selected
         throw new IMAPError(

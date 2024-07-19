@@ -50,8 +50,8 @@ const createPassword = require('#helpers/create-password');
 
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
-const client = new Redis();
-const subscriber = new Redis();
+const client = new Redis({}, logger);
+const subscriber = new Redis({}, logger);
 const tls = { rejectUnauthorized: false };
 
 client.setMaxListeners(0);
