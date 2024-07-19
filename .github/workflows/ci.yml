@@ -13,10 +13,13 @@ jobs:
           - 18
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
     env:
-      TRUTH_SOURCES: "truthsource.com"
-      WEB_HOST: "example.com"
-      SRS_SECRET: ${{ secrets.SRS_SECRET }}
+      # ... TODO: AWS
+      AXE_SILENT: ${{ secrets.AXE_SILENT }}
+      AUTH_GITHUB_ENABLED: "false"
+      AUTH_GOOGLE_ENABLED: "false"
       HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
+      I18N_SYNC_FILES: "true"
+      I18N_UPDATE_FILES: "true"
       PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
       PAYPAL_ENHANCED_PLAN_180D: ${{ secrets.PAYPAL_ENHANCED_PLAN_180D }}
       PAYPAL_ENHANCED_PLAN_1Y: ${{ secrets.PAYPAL_ENHANCED_PLAN_1Y }}
@@ -30,15 +33,14 @@ jobs:
       PAYPAL_TEAM_PLAN_60D: ${{ secrets.PAYPAL_TEAM_PLAN_60D }}
       PAYPAL_TEAM_PLAN_90D: ${{ secrets.PAYPAL_TEAM_PLAN_90D }}
       PAYPAL_WEBHOOK_ID: ${{ secrets.PAYPAL_WEBHOOK_ID }}
+      PREVIEW_EMAIL: "false"
+      SRS_SECRET: ${{ secrets.SRS_SECRET }}
       STRIPE_ENDPOINT_SECRET: ${{ secrets.STRIPE_ENDPOINT_SECRET }}
       STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-      AUTH_GOOGLE_ENABLED: "false"
-      AUTH_GITHUB_ENABLED: "false"
-      I18N_SYNC_FILES: "true"
-      I18N_UPDATE_FILES: "true"
+      TRUTH_SOURCES: "truthsource.com"
       TURNSTILE_ENABLED: "false"
-      PREVIEW_EMAIL: "false"
+      WEB_HOST: "example.com"
     steps:
       - uses: actions/checkout@v4
       - name: setup node

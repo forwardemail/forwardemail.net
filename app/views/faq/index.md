@@ -103,6 +103,8 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 
 * Netflix
 * The Linux Foundation
+* The PHP Foundation
+* Fox News Radio
 * Disney Ad Sales
 * jQuery
 * LineageOS
@@ -112,8 +114,11 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Swarthmore College
 * Government of South Australia
 * Government of Dominican Republic
-* Isaac Z. Schlueter (Inventor of npm package manager)
-* David Heinemeier Hansson (Creator of Ruby on Rails)
+* RCD Hotels
+* International Correspondence Chess Federation
+* John Graham-Cumming (Cloudflare)
+* Isaac Z. Schlueter (npm)
+* David Heinemeier Hansson (Ruby on Rails)
 
 You can learn more about Forward Email on [our About page](/about).
 
