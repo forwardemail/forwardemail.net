@@ -9,13 +9,13 @@ const { SitemapStream } = require('sitemap');
 const config = require('#config');
 
 // in-memory caching
-let cache = false;
+const cache = new Map();
 
 // <https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap>
 async function sitemap(ctx) {
-  if (cache) {
+  if (cache.has(ctx.path)) {
     ctx.set('Content-Type', 'application/xml');
-    ctx.body = cache;
+    ctx.body = cache.get(ctx.path);
     return;
   }
 
@@ -57,7 +57,9 @@ async function sitemap(ctx) {
   }
 
   // for each language, iterate over each key, and write to sitemap
-  for (const language of ctx.state.availableLanguages) {
+  for (const language of ctx.path === '/sitemap.xml'
+    ? ctx.state.availableLanguages
+    : [ctx.locale]) {
     // language.locale
     for (const key of keys) {
       const obj = {
@@ -76,8 +78,9 @@ async function sitemap(ctx) {
   smStream.end();
 
   ctx.set('Content-Type', 'application/xml');
-  cache = await getStream.buffer(smStream);
-  ctx.body = cache;
+  const body = await getStream.buffer(smStream);
+  ctx.body = body;
+  cache.set(ctx.path, body);
 }
 
 module.exports = sitemap;

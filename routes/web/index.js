@@ -181,6 +181,9 @@ localeRouter
     return next();
   })
 
+  // locale specific sitemap
+  .get('/sitemap.xml', web.sitemap)
+
   //
   // ips
   //
