@@ -47,7 +47,7 @@ async function getTemporaryDatabase(session) {
     // fileMustExist: true,
     timeout: config.busyTimeout,
     // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-    verbose: config.env === 'development' ? console.log : null
+    verbose: env.AXE_SILENT ? null : console.log
   });
 
   // store in-memory open connection

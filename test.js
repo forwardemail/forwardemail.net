@@ -84,7 +84,6 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     const pass = await alias.createToken();
     await alias.save();
 
-    console.time('read and write to database');
     const session = {
       user: {
         id: alias.id,
@@ -204,7 +203,6 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
     });
 
     console.log('message', message);
-    console.timeEnd('read and write to database');
 
     db.pragma('analysis_limit=400');
     db.pragma('optimize');

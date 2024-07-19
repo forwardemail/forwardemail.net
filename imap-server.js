@@ -16,7 +16,6 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const Axe = require('axe');
 const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
@@ -95,7 +94,7 @@ class IMAP {
       namespace: config.smtpLimitNamespace
     });
 
-    this.logger = config.env === 'test' ? new Axe({ silent: true }) : logger;
+    this.logger = logger;
 
     const server = new IMAPServer({
       secure,

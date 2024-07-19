@@ -33,7 +33,6 @@ async function onSearch(mailboxId, options, session, fn) {
   this.logger.debug('SEARCH', { mailboxId, options, session, fn });
 
   if (this.wsp) {
-    console.time(`search timer ${mailboxId} ${session.id}`);
     try {
       const start = Date.now();
       const data = await this.wsp.request({
@@ -64,8 +63,6 @@ async function onSearch(mailboxId, options, session, fn) {
       if (err.imapResponse) return fn(null, { uidList: err.imapResponse });
       fn(err);
     }
-
-    console.timeEnd(`search timer ${mailboxId} ${session.id}`);
 
     return;
   }

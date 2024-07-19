@@ -82,7 +82,6 @@ async function syncTemporaryMailbox(session) {
           break;
         }
 
-        console.time(`syncing ${messages.length} for ${session.user.username}`);
         for (const m of messages) {
           try {
             const message = syncConvertResult(TemporaryMessages, m);
@@ -137,10 +136,6 @@ async function syncTemporaryMailbox(session) {
             break;
           }
         }
-
-        console.timeEnd(
-          `syncing ${messages.length} for ${session.user.username}`
-        );
       }
     }
 

@@ -181,7 +181,6 @@ graceful.listen();
 
   console.log('AFTER NEW ALIASES', aliases.length);
 
-  console.time('insert db');
   const results = await Aliases.collection.bulkWrite(
     aliases.map((a) => {
       const doc = new Aliases({
@@ -220,7 +219,6 @@ graceful.listen();
     }
   );
 
-  console.timeEnd('insert db');
   console.log('results', results);
 
   /*
@@ -255,7 +253,6 @@ graceful.listen();
   console.log('results', results);
   */
 
-  console.time('extra check');
   const bulk2 = Aliases.collection.initializeUnorderedBulkOp();
   for await (const alias of Aliases.find({
     domain: domain._id,
@@ -275,7 +272,6 @@ graceful.listen();
 
   const results2 = await bulk2.execute();
 
-  console.timeEnd('extra check');
   console.log('results2', results2);
 
   process.exit(0);

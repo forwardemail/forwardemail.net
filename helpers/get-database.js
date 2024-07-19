@@ -308,12 +308,10 @@ async function getDatabase(
   // (so that users don't accidentally delete the files)
   //
   /*
-  console.time('mkdirp and exists');
   let exists = false;
   try {
     // <https://github.com/nodejs/node/issues/38006>
     // const stats = await fs.promises.stat(readmeFilePath);
-    console.time('execsync test');
     const stats = fs.statSync(readmeFilePath);
     if (!stats.isFile())
       throw new TypeError('README did not exist at path as a file');
@@ -331,12 +329,10 @@ async function getDatabase(
     //   exists = true;
     // } catch {}
 
-    console.timeEnd('execsync test');
   } catch (err) {
     if (err.code !== 'ENOENT') throw err;
     await mkdirp(dir);
   }
-  console.timeEnd('mkdirp and exists');
   */
 
   //
@@ -368,7 +364,6 @@ async function getDatabase(
   console.log('exists', exists);
 
   if (!exists) {
-    console.time('mounting');
     const stdout = '';
     const stderr = '';
     const touch = await Promise.all([
@@ -452,7 +447,6 @@ async function getDatabase(
 
     if (mount !== 0) throw new TypeError('Mount error occurred');
 
-    console.time('pWaitFor');
     // TODO: if a timeout occurs here then we should attempt to kill rclone
     // TODO: we should also notify admins of the error
     // wait for file to appear locally on vfs
@@ -472,8 +466,6 @@ async function getDatabase(
         timeout: ms('15s')
       }
     );
-    console.timeEnd('pWaitFor');
-    console.timeEnd('mounting');
   }
   */
 
@@ -505,7 +497,7 @@ async function getDatabase(
       fileMustExist: readonly,
       timeout: config.busyTimeout,
       // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: config.env === 'production' ? null : console.log
+      verbose: env.AXE_SILENT ? null : console.log
     });
 
     // store in-memory open connection
@@ -532,7 +524,6 @@ async function getDatabase(
     try {
       // since we didn't originally have "UNIQUE" constraint on "path"
       // we need to keep this in here for a while until we're sure it's fixed
-      console.time('iterating over required paths');
       for (const path of REQUIRED_PATHS) {
         // eslint-disable-next-line no-await-in-loop
         const mailboxes = await Mailboxes.find(instance, session, {
@@ -568,7 +559,6 @@ async function getDatabase(
         }
       }
 
-      console.timeEnd('iterating over required paths');
 
       // for any idate values that were set from `new Date(false)`
       // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)

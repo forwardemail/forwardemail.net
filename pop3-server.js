@@ -16,7 +16,6 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const Axe = require('axe');
 const MessageHandler = require('wildduck/lib/message-handler');
 const POP3Server = require('wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
@@ -59,7 +58,7 @@ class POP3 {
       namespace: config.smtpLimitNamespace
     });
 
-    this.logger = config.env === 'test' ? new Axe({ silent: true }) : logger;
+    this.logger = logger;
 
     const server = new POP3Server({
       secure,

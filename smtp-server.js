@@ -5,7 +5,6 @@
 
 const fs = require('node:fs');
 
-const Axe = require('axe');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const ms = require('ms');
@@ -56,7 +55,7 @@ class SMTP {
       namespace: config.smtpLimitNamespace
     });
 
-    this.logger = config.env === 'test' ? new Axe({ silent: true }) : logger;
+    this.logger = logger;
 
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>

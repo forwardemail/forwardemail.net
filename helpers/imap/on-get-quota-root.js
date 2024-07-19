@@ -29,7 +29,6 @@ const builder = new Builder();
 //       then you also need to return the uidList and update session on IMAP side
 //
 async function onGetQuotaRoot(path, session, fn) {
-  console.time(`getquotaroot ${session.id} ${path}`);
   this.logger.debug('GETQUOTAROOT', { path, session });
 
   try {
@@ -132,8 +131,6 @@ async function onGetQuotaRoot(path, session, fn) {
     if (error.imapResponse) return fn(null, error.imapResponse);
     fn(error);
   }
-
-  console.timeEnd(`getquotaroot ${session.id} ${path}`);
 }
 
 module.exports = onGetQuotaRoot;

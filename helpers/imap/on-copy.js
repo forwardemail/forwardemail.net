@@ -36,7 +36,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
   if (this.wsp) {
     // start notifying connection of progress
     let timeout;
-    console.time(`copy timer ${session.id}`);
     try {
       (function update() {
         clearTimeout(timeout);
@@ -65,8 +64,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
     }
-
-    console.timeEnd(`copy timer ${session.id}`);
 
     return;
   }
