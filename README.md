@@ -47,17 +47,17 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 
 ### macOS
 
-1. Install [n][] and Node v18.16.0:
+1. Install [n][] and Node v18.20.4:
 
    ```sh
-   curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y 18.16.0
+   curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y 18.20.4
    ```
 
-2. Ensure that you are running on Node v18.6.0:
+2. Ensure that you are running on Node v18.20.4:
 
    ```sh
    node --version
-   v18.16.0
+   v18.20.4
    ```
 
 3. Install [brew][] and the following dependencies using `brew` command:
@@ -94,17 +94,17 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 
 ### Ubuntu
 
-1. Install [n][] and Node v18.16.0:
+1. Install [n][] and Node v18.20.4:
 
    ```sh
-   curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y 18.16.0
+   curl -L https://raw.githubusercontent.com/mklement0/n-install/stable/bin/n-install | bash -s -- -y 18.20.4
    ```
 
-2. Ensure that you are running on Node v18.6.0:
+2. Ensure that you are running on Node v18.20.4:
 
    ```sh
    node --version
-   v18.16.0
+   v18.20.4
    ```
 
 3. Install [pnpm][]:

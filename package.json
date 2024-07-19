@@ -356,7 +356,7 @@
     "xo": "0.53.1"
   },
   "engines": {
-    "node": ">=18.16.0"
+    "node": "18.20.4"
   },
   "homepage": "https://github.com/forwardemail/forwardemail.net",
   "imports": {
