@@ -115,7 +115,7 @@ p.text-center.d-lg-none
     = " "
     i.fa.fa-info-circle
 
-- const isOnlyUbuntuDomains = domains.length > 0 && domains.every((d) => d.plan === "team" && d.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(d.name));
+- const isOnlyUbuntuDomains = isSANB(ctx.query.q) ? false : domains.length > 0 && domains.every((d) => d.plan === "team" && d.has_txt_record && Object.keys(config.ubuntuTeamMapping).includes(d.name));
 
 .table-responsive
   table.table.table-hover.table-bordered.table-sm

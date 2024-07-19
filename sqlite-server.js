@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const https = require('node:https');
 const path = require('node:path');
+const process = require('node:process');
 const { promisify } = require('node:util');
 const { randomUUID } = require('node:crypto');
 
@@ -46,12 +47,18 @@ class SQLite {
     const piscina = new Piscina({
       filename: path.resolve(__dirname, 'helpers', 'worker.js'),
       maxQueue: 'auto', // maxThreads^2 = 4
+      idleTimeout: ms('10s'),
       // if we left it unset, then `maxThreads` would be `48`
       // for EACH process in Node.js in production sqlite
       // > os.availableParallelism * 1.5
       // 48
-      maxThreads: 2,
-      idleTimeout: ms('10s')
+      // (conditionally for when we detect we're in PM2)
+      // (otherwise the tests take super long to run, e.g. in CI)
+      ...(process.env.pm2_env
+        ? {
+            maxThreads: 2
+          }
+        : {})
     });
 
     this.piscina = piscina;
