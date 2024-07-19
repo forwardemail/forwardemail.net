@@ -59,7 +59,7 @@ async function sitemap(ctx) {
   // for each language, iterate over each key, and write to sitemap
   for (const language of ctx.path === '/sitemap.xml'
     ? ctx.state.availableLanguages
-    : [ctx.locale]) {
+    : ctx.state.availableLanguages.filter((l) => l.locale === ctx.locale)) {
     // language.locale
     for (const key of keys) {
       const obj = {
