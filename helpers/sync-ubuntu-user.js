@@ -373,8 +373,11 @@ async function syncUbuntuUser(user, map) {
               domain.members = domain.members.filter(
                 (m) => m.user.toString() !== user._id.toString()
               );
-              domain.skip_verification = true;
-              await domain.save();
+              await Domains.findByIdAndUpdate(domain._id, {
+                $set: {
+                  members: domain.members
+                }
+              });
             }
           }
         } catch (err) {
@@ -428,8 +431,11 @@ async function syncUbuntuUser(user, map) {
             domain.members = domain.members.filter(
               (m) => m.user && m.user._id.toString() !== user._id.toString()
             );
-            domain.skip_verification = true;
-            await domain.save();
+            await Domains.findByIdAndUpdate(domain._id, {
+              $set: {
+                members: domain.members
+              }
+            });
 
             // remove aliases that belonged to user
             await Aliases.deleteMany({
