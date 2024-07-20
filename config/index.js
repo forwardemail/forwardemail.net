@@ -1317,6 +1317,7 @@ const config = {
     'it',
     'je',
     'jp',
+    'ke',
     'kr',
     'la',
     'li',
