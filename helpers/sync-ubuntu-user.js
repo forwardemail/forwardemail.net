@@ -36,9 +36,9 @@ function setDebugInfoForError(err, user) {
   err.email = user.email;
 }
 
-function logErrorWithUser(err, user) {
+async function logErrorWithUser(err, user) {
   setDebugInfoForError(err, user);
-  logger.error(err);
+  await logger.error(err);
 }
 
 function getAdminEmailsForDomain(domain) {
@@ -146,6 +146,7 @@ async function syncUbuntuUser(user, map) {
     await pMap(
       map.keys(),
 
+      // eslint-disable-next-line complexity
       async (name) => {
         try {
           const domain = await Domains.findOne({
@@ -158,7 +159,7 @@ async function syncUbuntuUser(user, map) {
           );
 
           if (!domain) {
-            logger.fatal(
+            await logger.fatal(
               new TypeError(`${name} was not found with team and TXT`)
             );
             // return early
@@ -251,29 +252,31 @@ async function syncUbuntuUser(user, map) {
               }
 
               // email admins if we found the user had same matching email as forwarding address
-              emailHelper({
-                template: 'alert',
-                message: {
-                  to: adminEmailsForDomain,
-                  bcc: config.email.message.from,
-                  subject: isEqual
-                    ? `${emoji('warning')} ${alias.name}@${
-                        domain.name
-                      } disabled due to matching addresses`
-                    : `${emoji('tada')} ${alias.name}@${domain.name} created`
-                },
-                locals: {
-                  message: `${alias.name}@${
-                    domain.name
-                  } was created since they are a member of ${teamName}${
-                    isEqual
-                      ? ', yet it was disabled due to matching addresses.'
-                      : '.'
-                  }`
-                }
-              })
-                .then()
-                .catch((err) => logger.fatal(err));
+              try {
+                await emailHelper({
+                  template: 'alert',
+                  message: {
+                    to: adminEmailsForDomain,
+                    bcc: config.email.message.from,
+                    subject: isEqual
+                      ? `${emoji('warning')} ${alias.name}@${
+                          domain.name
+                        } disabled due to matching addresses`
+                      : `${emoji('tada')} ${alias.name}@${domain.name} created`
+                  },
+                  locals: {
+                    message: `${alias.name}@${
+                      domain.name
+                    } was created since they are a member of ${teamName}${
+                      isEqual
+                        ? ', yet it was disabled due to matching addresses.'
+                        : '.'
+                    }`
+                  }
+                });
+              } catch (err) {
+                logger.fatal(err);
+              }
             }
 
             // return early
@@ -323,26 +326,28 @@ async function syncUbuntuUser(user, map) {
           }
 
           // email admins
-          emailHelper({
-            template: 'alert',
-            message: {
-              to: adminEmailsForDomain,
-              bcc: config.email.message.from,
-              subject: `${emoji('wastebasket')} ${user[
-                fields.ubuntuUsername
-              ].toLowerCase()}@${domain.name} removed`
-            },
-            locals: {
-              message: `${user[fields.ubuntuUsername].toLowerCase()}@${
-                domain.name
-              } was removed since they are no longer a member of ${teamName}.`
-            }
-          })
-            .then()
-            .catch((err) => logger.fatal(err));
+          try {
+            await emailHelper({
+              template: 'alert',
+              message: {
+                to: adminEmailsForDomain,
+                bcc: config.email.message.from,
+                subject: `${emoji('wastebasket')} ${user[
+                  fields.ubuntuUsername
+                ].toLowerCase()}@${domain.name} removed`
+              },
+              locals: {
+                message: `${user[fields.ubuntuUsername].toLowerCase()}@${
+                  domain.name
+                } was removed since they are no longer a member of ${teamName}.`
+              }
+            });
+          } catch (err) {
+            await logger.fatal(err);
+          }
         } catch (err) {
           err.domainName = name;
-          logErrorWithUser(err, user);
+          await logErrorWithUser(err, user);
         }
 
         //
@@ -381,7 +386,7 @@ async function syncUbuntuUser(user, map) {
             }
           }
         } catch (err) {
-          logErrorWithUser(err, user);
+          await logErrorWithUser(err, user);
         }
       },
       { concurrency: config.concurrency }
@@ -444,27 +449,29 @@ async function syncUbuntuUser(user, map) {
             });
 
             // email admins
-            emailHelper({
-              template: 'alert',
-              message: {
-                to: adminEmailsForDomain,
-                bcc: config.email.message.from,
-                subject: `${emoji('wastebasket')} ${user[
-                  fields.ubuntuUsername
-                ].toLowerCase()}@${domain.name} removed due to invalidity`
-              },
-              locals: {
-                message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
-                  domain.name
-                } was removed for the following invalidity reason from ${teamName}:</p><p>${
-                  err.message
-                }</p>`
-              }
-            })
-              .then()
-              .catch((err) => logger.fatal(err));
+            try {
+              await emailHelper({
+                template: 'alert',
+                message: {
+                  to: adminEmailsForDomain,
+                  bcc: config.email.message.from,
+                  subject: `${emoji('wastebasket')} ${user[
+                    fields.ubuntuUsername
+                  ].toLowerCase()}@${domain.name} removed due to invalidity`
+                },
+                locals: {
+                  message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
+                    domain.name
+                  } was removed for the following invalidity reason from ${teamName}:</p><p>${
+                    err.message
+                  }</p>`
+                }
+              });
+            } catch (err) {
+              await logger.fatal(err);
+            }
           } catch (err) {
-            logErrorWithUser(err, user);
+            await logErrorWithUser(err, user);
           }
         },
         { concurrency: config.concurrency }

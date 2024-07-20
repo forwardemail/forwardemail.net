@@ -68,7 +68,7 @@ graceful.listen();
           await syncUbuntuUser(user, map);
         } catch (err) {
           err.isCodeBug = true;
-          logger.fatal(err);
+          await logger.fatal(err);
         }
       });
   } catch (err) {
