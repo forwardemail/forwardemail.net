@@ -138,7 +138,7 @@ p.text-center.d-lg-none
         th.align-middle.text-nowrap(scope="col")= t("Quick Links")
     tbody
       if domains.length === 0
-        td.alert.alert-info(colspan=3 - (isOnlyUbuntuDomains ? 1 : 0))= t("No domains exist for that search.")
+        td.alert.alert-info(colspan=3)= t("No domains exist for that search.")
       else
         each domain in domains
           - domain.plan = domain.plan || "free";
