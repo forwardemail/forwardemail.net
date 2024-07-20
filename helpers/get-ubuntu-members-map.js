@@ -107,11 +107,11 @@ async function getUbuntuMembersMap() {
         // update total size in-memory (in case it changes)
         totalSize = json.total_size;
 
-        // update retrieved in-memory
-        retrieved += json.entries.length;
-
         // add to set
         addToSet(json.entries, set);
+
+        // update retrieved in-memory
+        retrieved += json.entries.length;
       }
     }
 
