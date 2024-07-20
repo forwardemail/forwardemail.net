@@ -475,7 +475,7 @@ async function createDomainBilling(ctx) {
       );
     }
 
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(err);
   }
 }
 

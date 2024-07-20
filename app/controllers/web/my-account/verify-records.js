@@ -188,7 +188,7 @@ async function verifyRecords(ctx) {
       }
     }
 
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(err);
   }
 }
 

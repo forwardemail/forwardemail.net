@@ -79,11 +79,11 @@ async function onExpunge(mailboxId, update, session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/702>
     //       (mirrors trashCheck in `helpers/get-database.js`)
     //
-    if (
-      config.env === 'production' &&
-      !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
-    )
-      throw new IMAPError('EXPUNGE_RESERVED', { imapResponse: 'CANNOT' });
+    // if (
+    //   config.env === 'production' &&
+    //   !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
+    // )
+    //   throw new IMAPError('EXPUNGE_RESERVED', { imapResponse: 'CANNOT' });
 
     const condition = {
       mailbox: mailbox._id.toString(),
