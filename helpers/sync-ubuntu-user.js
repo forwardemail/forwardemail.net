@@ -145,6 +145,7 @@ async function syncUbuntuUser(user, map) {
     //
     await pMap(
       map.keys(),
+
       async (name) => {
         try {
           const domain = await Domains.findOne({
@@ -192,7 +193,7 @@ async function syncUbuntuUser(user, map) {
           // check if the user was in the Set from Map
           // to see if they were a member of the team or not
           //
-          if (map.get(domain).has(user[fields.ubuntuUsername])) {
+          if (map.get(name).has(user[fields.ubuntuUsername])) {
             // ensure alias exists else create it
             let alias = await Aliases.findOne({
               user: user._id,
@@ -242,8 +243,11 @@ async function syncUbuntuUser(user, map) {
 
               if (needsAdded) {
                 domain.members.push(member);
-                domain.skip_verification = true;
-                await domain.save();
+                await Domains.findByIdAndUpdate(domain._id, {
+                  $set: {
+                    members: domain.members
+                  }
+                });
               }
 
               // email admins if we found the user had same matching email as forwarding address
@@ -287,10 +291,13 @@ async function syncUbuntuUser(user, map) {
           if (needsAdded || member?.group === 'admin') return;
 
           domain.members = domain.members.filter(
-            (m) => m?.user?.id !== user._id.toString()
+            (m) => m.user && m.user._id.toString() !== user._id.toString()
           );
-          domain.skip_verification = true;
-          await domain.save();
+          await Domains.findByIdAndUpdate(domain._id, {
+            $set: {
+              members: domain.members
+            }
+          });
 
           await Aliases.deleteMany({
             user: user._id,
@@ -334,6 +341,7 @@ async function syncUbuntuUser(user, map) {
             .then()
             .catch((err) => logger.fatal(err));
         } catch (err) {
+          err.domainName = name;
           logErrorWithUser(err, user);
         }
 
@@ -418,7 +426,7 @@ async function syncUbuntuUser(user, map) {
 
             // remove user from members
             domain.members = domain.members.filter(
-              (m) => m.user.toString() !== user._id.toString()
+              (m) => m.user && m.user._id.toString() !== user._id.toString()
             );
             domain.skip_verification = true;
             await domain.save();
