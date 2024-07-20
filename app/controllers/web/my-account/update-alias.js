@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
 const toObject = require('#helpers/to-object');

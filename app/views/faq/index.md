@@ -2398,6 +2398,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">it</code></li>
   <li class="list-inline-item"><code class="notranslate">je</code></li>
   <li class="list-inline-item"><code class="notranslate">jp</code></li>
+  <li class="list-inline-item"><code class="notranslate">ke</code></li>
   <li class="list-inline-item"><code class="notranslate">kr</code></li>
   <li class="list-inline-item"><code class="notranslate">la</code></li>
   <li class="list-inline-item"><code class="notranslate">li</code></li>

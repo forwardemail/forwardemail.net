@@ -18,7 +18,6 @@ const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 
-const config = require('#config');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
@@ -30,7 +29,6 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
