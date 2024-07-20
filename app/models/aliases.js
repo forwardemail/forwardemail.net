@@ -414,13 +414,15 @@ Aliases.pre('save', async function (next) {
         .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
-      Users.findOne({
-        _id: alias.user,
-        [config.userFields.isBanned]: false
-      })
-        .lean()
-        .select('id plan group')
-        .exec()
+      alias.is_new_user
+        ? Promise.resolve()
+        : Users.findOne({
+            _id: alias.user,
+            [config.userFields.isBanned]: false
+          })
+            .lean()
+            .select('id plan group')
+            .exec()
     ]);
 
     if (!domain)
