@@ -29,10 +29,10 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Payments = require('./payments');
 
 const email = require('#helpers/email');
-const retryRequest = require('#helpers/retry-request');
 const logger = require('#helpers/logger');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
+const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
 
 if (config.passportLocalMongoose.usernameField !== 'email') {
   throw new Error(
@@ -905,279 +905,21 @@ Users.pre('save', function (next) {
 // when ubuntu users sign in we need to check their membership
 // (and probably need some automated job that checks this for active memberships)
 //
-// eslint-disable-next-line complexity
+
 Users.pre('save', async function (next) {
   if (
     !isSANB(this[fields.ubuntuProfileID]) ||
     !isSANB(this[fields.ubuntuUsername])
   )
     return next();
+
   try {
-    const response = await retryRequest(
-      `https://api.launchpad.net/1.0/~${
-        this[fields.ubuntuUsername]
-      }/memberships_details`
-    );
-
-    const json = await response.body.json();
-
-    if (
-      !_.isObject(json) ||
-      !_.isNumber(json.start) ||
-      !_.isNumber(json.total_size) ||
-      !_.isArray(json.entries)
-    ) {
-      const error = Boom.badRequest(
-        i18n.api.t({
-          phrase: config.i18n.phrases.UBUNTU_API_RESPONSE_INVALID,
-          locale: this[config.lastLocaleField]
-        })
-      );
-      error.no_translate = true;
-      throw error;
-    }
-
-    // TODO: support pagination for users that have paginated memberships
-
-    //
-    // now we need to find the @ubuntu.com domain
-    // and create the user their alias if not already exists
-    //
-    if (!_.isEmpty(json.entries)) {
-      for (const domainName of Object.keys(config.ubuntuTeamMapping)) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const domain = await conn.models.Domains.findOne({
-            name: domainName,
-            plan: 'team',
-            has_txt_record: true
-          });
-
-          if (!domain) continue;
-
-          let match = domain.members.find(
-            (m) => m.user.toString() === this._id.toString()
-          );
-
-          let needsAdded = false;
-
-          if (
-            json.entries.some(
-              (entry) =>
-                entry.team_link ===
-                `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[domainName]}`
-            )
-          ) {
-            //
-            // otherwise check that the domain includes this user id
-            // and if not, then add it to the group as a user
-            //
-            //
-            // NOTE: we don't want to add the user
-            //       unless we successfully created an alias for them
-            //
-            if (!match) {
-              needsAdded = true;
-              match = {
-                user: this._id,
-                group: 'user'
-              };
-            }
-
-            // now check that if the alias already exists and is owned by this user
-            // eslint-disable-next-line no-await-in-loop
-            const alias = await conn.models.Aliases.findOne({
-              user: this._id,
-              domain: domain._id,
-              name: this[fields.ubuntuUsername].toLowerCase()
-            });
-
-            if (alias) {
-              //
-              // NOTE: we don't want to add the user
-              //       unless we successfully created an alias for them
-              //
-              if (needsAdded) {
-                domain.members.push(match);
-                domain.skip_verification = true;
-                // eslint-disable-next-line no-await-in-loop
-                await domain.save();
-              }
-            } else {
-              // if not, then create it, but only if there aren't already 3+ aliases owned by this user
-              // eslint-disable-next-line no-await-in-loop
-              const count = await conn.models.Aliases.countDocuments({
-                user: this._id,
-                domain: domain._id
-              });
-              if (match.group !== 'admin' && count > 3) {
-                const error = Boom.badRequest(
-                  i18n.api.t({
-                    phrase: config.i18n.phrases.UBUNTU_MAX_LIMIT,
-                    locale: this[config.lastLocaleField]
-                  })
-                );
-                error.no_translate = true;
-                throw error;
-              }
-
-              // eslint-disable-next-line no-await-in-loop
-              await conn.models.Aliases.create({
-                //
-                // virtual to assist with member lookup
-                // (so we don't create a user we don't want to yet)
-                //
-                virtual_member: match,
-                // virtual to assist in preventing lookup
-                is_new_user: true,
-
-                user: this._id,
-                domain: domain._id,
-                name: this[fields.ubuntuUsername].toLowerCase(),
-                recipients: [this.email],
-                locale: this[config.lastLocaleField]
-              });
-
-              //
-              // NOTE: we don't want to add the user
-              //       unless we successfully created an alias for them
-              //
-              if (needsAdded) {
-                domain.members.push(match);
-                domain.skip_verification = true;
-                // eslint-disable-next-line no-await-in-loop
-                await domain.save();
-              }
-            }
-
-            continue;
-          }
-
-          //
-          // otherwise disable any aliases and remove user from membership for this domain
-          //
-          if (match && match.group === 'user') {
-            domain.members = domain.members.filter(
-              (m) => m.user.toString() !== this._id.toString()
-            );
-            domain.skip_verification = true;
-            // eslint-disable-next-line no-await-in-loop
-            await domain.save();
-            // eslint-disable-next-line no-await-in-loop
-            await conn.models.Aliases.deleteMany({
-              user: this._id,
-              domain: domain._id
-            });
-
-            // if user has no other aliases then mark email as unverified
-            // (this way the automated job will delete the users account in 30d)
-            // eslint-disable-next-line no-await-in-loop
-            const [aliasCount, domainCount] = await Promise.all([
-              conn.models.Aliases.countDocuments({ user: this._id }),
-              conn.models.Domains.countDocuments({ 'members.user': this._id })
-            ]);
-
-            if (aliasCount === 0 && domainCount === 0)
-              this[config.userFields.hasVerifiedEmail] = false;
-
-            // if user was ubuntu then notify admins of any ubuntu domain
-            // eslint-disable-next-line no-await-in-loop
-            const domains = await conn.models.Domains.find({
-              name: { $in: Object.keys(config.ubuntuTeamMapping) },
-              plan: 'team',
-              has_txt_record: true
-            })
-              .lean()
-              .exec();
-
-            const ids = [];
-            for (const domain of domains) {
-              for (const m of domain.members) {
-                if (m.group === 'admin') ids.push(m.user.toString());
-              }
-            }
-
-            if (ids.length > 0) {
-              // get all the admin emails
-              // eslint-disable-next-line no-await-in-loop
-              const to = await this.constructor.distinct('email', {
-                id: {
-                  $in: ids
-                },
-                [config.userFields.hasVerifiedEmail]: true,
-                [config.userFields.isBanned]: false
-              });
-
-              // notify admins
-              if (to.length > 0)
-                email({
-                  template: 'alert',
-                  message: {
-                    to,
-                    bcc: config.email.message.from,
-                    subject: `⚠️ ~${
-                      this[fields.ubuntuUsername]
-                    } removed from Launchpad team ${
-                      config.ubuntuTeamMapping[domainName]
-                    }`
-                  },
-                  locals: {
-                    message: `~${
-                      this[fields.ubuntuUsername]
-                    } removed from Launchpad team ${
-                      config.ubuntuTeamMapping[domainName]
-                    } with email ${this.email}.`
-                  }
-                })
-                  .then()
-                  .catch((err) => logger.fatal(err));
-            }
-          }
-        } catch (err) {
-          // alert admins by email
-          err.isCodeBug = true;
-          err.ubuntuProfileID = this[fields.ubuntuProfileID];
-          err.ubuntuUsername = this[fields.ubuntuUsername];
-          err.email = this.email;
-          logger.fatal(err);
-        }
-      }
-    }
-
-    /*
-    {
-      "start": 0,
-      "total_size": 5,
-      "entries": [
-        {
-          "self_link": "https://api.launchpad.net/1.0/~some-team/+member/nickname",
-          "web_link": "https://launchpad.net/~some-team/+member/nickname",
-          "resource_type_link": "https://api.launchpad.net/1.0/#team_membership",
-          "team_link": "https://api.launchpad.net/1.0/~some-team",
-          "member_link": "https://api.launchpad.net/1.0/~nickname",
-          "last_changed_by_link": "https://api.launchpad.net/1.0/~some-nickname",
-          "date_joined": "2016-09-19T08:24:53.878044+00:00",
-          "date_expires": null,
-          "last_change_comment": "some comment",
-          "status": "Administrator",
-          "http_etag": "\"some-etag\""
-        },
-        ...
-      ],
-      "resource_type_link": "https://api.launchpad.net/1.0/#team_membership-page-resource"
-    }
-    */
-
-    next();
+    await syncUbuntuUser(this);
   } catch (err) {
-    // alert admins by email
-    err.isCodeBug = true;
-    err.ubuntuProfileID = this[fields.ubuntuProfileID];
-    err.ubuntuUsername = this[fields.ubuntuUsername];
-    err.email = this.email;
     logger.fatal(err);
-    next();
   }
+
+  next();
 });
 
 Users.postCreate(async (user, next) => {

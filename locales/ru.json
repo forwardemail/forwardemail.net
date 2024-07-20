@@ -7577,5 +7577,7 @@
   "Privacy Focused Email Service": "Служба электронной почты, ориентированная на конфиденциальность",
   "We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.": "Мы являемся безопасной и ориентированной на конфиденциальность почтовой службой, которая обеспечивает хостинг электронной почты, пересылку, IMAP, POP3, календарь, почтовые ящики и многое другое.",
   "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Создайте бесплатную, частную, зашифрованную и безопасную электронную почту для профессиональных предприятий, предприятий и пользовательских доменов. Отправляйте и получайте электронную почту на адрес <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
-  "Isaac Z. Schlueter (npm)": "Исаак З. Шлютер (npm)"
+  "Isaac Z. Schlueter (npm)": "Исаак З. Шлютер (npm)",
+  "Mailbox needs to call OPEN/SELECT prior to MOVE": "Почтовому ящику необходимо вызвать OPEN/SELECT перед MOVE.",
+  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Команда УДАЛИТЬ зарезервирована только для мусора/спама/спама. ПЕРЕМЕЩИТЕ сообщения в одну из этих папок, чтобы УДАЛИТЬ."
 }

@@ -7577,5 +7577,7 @@
   "Privacy Focused Email Service": "Layanan Email yang Berfokus pada Privasi",
   "We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.": "Kami adalah layanan email yang aman dan berfokus pada privasi yang menyediakan hosting email, penerusan, IMAP, POP3, kalender, kotak surat, dan banyak lagi.",
   "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Buat email gratis, pribadi, terenkripsi, dan aman untuk bisnis profesional, perusahaan, dan domain khusus. Kirim dan terima email sebagai <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
-  "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)"
+  "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)",
+  "Mailbox needs to call OPEN/SELECT prior to MOVE": "Kotak surat perlu memanggil OPEN/SELECT sebelum PINDAH",
+  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Perintah EXPUNGE dikhususkan untuk Sampah/Sampah/Spam saja, harap PINDAHKAN pesan ke salah satu folder ini ke EXPUNGE"
 }

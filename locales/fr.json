@@ -5081,5 +5081,7 @@
   "Privacy Focused Email Service": "Service de messagerie axé sur la confidentialité",
   "We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.": "Nous sommes un service de messagerie sécurisé et axé sur la confidentialité qui fournit l'hébergement, le transfert de courrier électronique, IMAP, POP3, un calendrier, des boîtes aux lettres et bien plus encore.",
   "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Créez votre messagerie gratuite, privée, cryptée et sécurisée pour les entreprises professionnelles, les entreprises et les domaines personnalisés. Envoyez et recevez des e-mails en tant que <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
-  "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)"
+  "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)",
+  "Mailbox needs to call OPEN/SELECT prior to MOVE": "La boîte aux lettres doit appeler OPEN/SELECT avant MOVE",
+  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "La commande EXPUNGE est réservée uniquement à la corbeille/indésirable/spam, veuillez DÉPLACER les messages vers l'un de ces dossiers pour EXPUNGE."
 }
