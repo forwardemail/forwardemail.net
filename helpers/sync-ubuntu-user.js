@@ -48,7 +48,7 @@ function getAdminEmailsForDomain(domain) {
         m.group === 'admin' &&
         m.user &&
         !m.user[config.userFields.isBanned] &&
-        m[config.userFields.hasVerifiedEmail]
+        m.user[config.userFields.hasVerifiedEmail]
     )
     .map((m) => m[config.userFields.fullEmail]);
 }
@@ -89,7 +89,9 @@ async function syncUbuntuUser(user, map) {
       throw new TypeError('Map supplied was missing or empty');
 
     // safeguard to ensure every key exists
-    if (!map.keys().every((name) => Boolean(config.ubuntuTeamMapping[name])))
+    if (
+      ![...map.keys()].every((name) => Boolean(config.ubuntuTeamMapping[name]))
+    )
       throw new TypeError('Map supplied had invalid team names');
 
     // if the user was banned then don't allow
@@ -112,16 +114,16 @@ async function syncUbuntuUser(user, map) {
         throw new TypeError(`Boolean property "${key}" is missing`);
     }
 
-    if (json.is_valid)
-      throw new InvalidUbuntuUserError('Property "is_valid" was not true', {
+    if (!json.is_valid)
+      throw new InvalidUbuntuUserError('Property "is_valid" was false', {
         url,
         response,
         json
       });
 
-    if (json.is_ubuntu_coc_signer)
+    if (!json.is_ubuntu_coc_signer)
       throw new InvalidUbuntuUserError(
-        'Property "is_ubuntu_coc_signer" was not true',
+        'Property "is_ubuntu_coc_signer" was false',
         {
           url,
           response,
