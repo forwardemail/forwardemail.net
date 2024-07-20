@@ -29,7 +29,6 @@ const { convert } = require('html-to-text');
 const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
-const Users = require('./users');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -606,7 +605,7 @@ Domains.pre('validate', async function (next) {
       const root = parseRootDomain(domain.name);
       // Domain cannot be one of the trusted senders
       if (config.truthSources.has(root)) {
-        const users = await Users.find({
+        const users = await conn.models.Users.find({
           _id: {
             $in: domain.members
               .filter((member) => member.group === 'admin')
@@ -699,7 +698,7 @@ Domains.pre('validate', async function (next) {
       domain.name
     );
 
-    const users = await Users.find({
+    const users = await conn.models.Users.find({
       _id: { $in: domain.members.map((m) => m.user) }
     })
       .lean()
@@ -1763,7 +1762,7 @@ Domains.statics.getNameRestrictions = getNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
   // Get all the admins we should send the email to
-  let users = await Users.find({
+  let users = await conn.models.Users.find({
     _id: {
       $in: domain.members
         .filter((member) => member.group === 'admin')

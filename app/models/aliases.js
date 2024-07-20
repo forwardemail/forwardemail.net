@@ -24,9 +24,6 @@ const { randomstring } = require('@sidoshi/random-string');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const Domains = require('./domains');
-const Users = require('./users');
-
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
 const getKeyInfo = require('#helpers/get-key-info');
@@ -398,7 +395,7 @@ Aliases.pre('save', async function (next) {
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
     const [domain, user] = await Promise.all([
-      Domains.findOne({
+      conn.models.Domains.findOne({
         $or: [
           {
             _id: alias.domain,
@@ -414,15 +411,13 @@ Aliases.pre('save', async function (next) {
         .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
-      alias.is_new_user
-        ? Promise.resolve()
-        : Users.findOne({
-            _id: alias.user,
-            [config.userFields.isBanned]: false
-          })
-            .lean()
-            .select('id plan group')
-            .exec()
+      conn.models.Users.findOne({
+        _id: alias.user,
+        [config.userFields.isBanned]: false
+      })
+        .lean()
+        .select('id plan group')
+        .exec()
     ]);
 
     if (!domain)
@@ -603,7 +598,7 @@ Aliases.pre('save', async function (next) {
       if (domain.is_global && !alias.is_new_user && user) {
         // user must be on a paid plan to use a global domain
         if (user.plan === 'free' && !alias.is_update) {
-          const domainIds = await Domains.distinct('_id', {
+          const domainIds = await conn.models.Domains.distinct('_id', {
             is_global: true
           });
           const aliasCount = await alias.constructor.countDocuments({
@@ -702,7 +697,7 @@ async function updateDomainCatchallRegexBooleans(alias) {
       else if (name.startsWith('/')) hasRegex = true;
     }
 
-    await Domains.findByIdAndUpdate(alias.domain, {
+    await conn.models.Domains.findByIdAndUpdate(alias.domain, {
       $set: {
         has_catchall: hasCatchall,
         has_regex: hasRegex
@@ -742,7 +737,10 @@ Aliases.post('save', updateDomainCatchallRegexBooleans);
 //       won't affect their storage quota for their own domains on their own enhanced plan
 //
 async function getStorageUsed(alias, locale = i18n.config.defaultLocale) {
-  return Domains.getStorageUsed(alias.domain, alias.locale || locale);
+  return conn.models.Domains.getStorageUsed(
+    alias.domain,
+    alias.locale || locale
+  );
 }
 
 Aliases.statics.getStorageUsed = getStorageUsed;
@@ -778,7 +776,7 @@ Aliases.statics.isOverQuota = async function (
   //       but this is only relative here if the user is an admin of their aliases domain
 
   if (!maxQuotaPerAlias)
-    maxQuotaPerAlias = await Domains.getMaxQuota(
+    maxQuotaPerAlias = await conn.models.Domains.getMaxQuota(
       alias?.domain?._id || alias.domain
     );
 
