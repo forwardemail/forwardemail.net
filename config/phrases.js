@@ -168,7 +168,9 @@ module.exports = {
     'From header must end with <span class="notranslate">%s</span>',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
-  ENCRYPTED_VALUE: 'encrypted value',
+  ENCRYPTED_VALUE:
+    'You have successfully generated the encrypted value below &ndash; you must copy before closing this window.</strong><br /><br /><code class="notranslate">forward-email=%s</code>',
+  INPUT_HAD_FE_SV: 'You do not need to encrypt site verification records',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',
   PAYPAL_NOT_LOADED: 'Please wait for PayPal to load and try again.',

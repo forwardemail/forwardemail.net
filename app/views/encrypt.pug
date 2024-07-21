@@ -1,0 +1,31 @@
+extends layout
+
+block body
+.min-vh-80.d-flex.flex-column
+  .container.py-3
+    .text-center: h1.my-3.py-3= t("Encrypt TXT Record")
+    .row
+      .col-sm-12.col-md-8.offset-md-2.col-lg-6.offset-lg-3
+        p.lead
+          = t("We allow you to encrypt records even on the free plan at no cost.")
+          = " "
+          = t("Privacy should not be a feature, it should be inherently built-in to all aspects of a product.")
+          = " "
+          = t('As highly requested in a <a target="_blank" rel="noopener noreferrer" href="https://discuss.privacyguides.net/t/forward-email-email-provider/13370">Privacy Guides discussion</a> and on <a target="_blank" rel="noopener noreferrer" href="https://github.com/forwardemail/forwardemail.net/issues/254">our GitHub issues</a> we\'ve added this.')
+        .alert.alert-primary.text-center.mb-4
+          != t("Enter your plaintext TXT record below to encrypt it &ndash; which will effectively hide and mask your forwarding configuration from being publicly searchable.")
+        form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
+          .form-group
+            label(for="input-txt")= t("Plaintext TXT Record")
+            textarea#input-txt.form-control.form-control-lg(
+              name="input",
+              required,
+              rows=3,
+              maxlength=1000,
+              placeholder="user@gmail.com"
+            )= `forward-email=${user ? user.email : "user@gmail.com"}`
+          if config.turnstileEnabled
+            noscript
+              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+            .cf-explicit-turnstile
+          button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Encrypt")

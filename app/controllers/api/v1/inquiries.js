@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
+const config = require('#config');
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
 
@@ -32,11 +33,15 @@ async function create(ctx) {
     !ctx.allowlistValue ||
     ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
   )
-    throw Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'));
+    return ctx.throw(
+      Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'))
+    );
 
   const { headerLines, session, text } = body;
   if (!session)
-    Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'));
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
+    );
 
   if (!isSANB(text))
     return ctx.throw(
@@ -72,24 +77,34 @@ async function create(ctx) {
       text: body.text
     };
 
-    const previousInquiry = await Inquiries.findOne({
-      sender_email: sender,
-      subject
-    });
-    if (previousInquiry) {
-      ctx.logger.info(
-        `previous inquiry found for user: ${sender} with subject: ${subject}`
-      );
-      previousInquiry.messages.push(messagePayload);
-      previousInquiry.is_resolved = false;
-      await previousInquiry.save();
-      ctx.body = previousInquiry;
-      return;
+    // TODO: does config.email.message.from to itself trigger this webhook?
+    const index = subject.indexOf('#');
+    if (index !== -1) {
+      const reference = subject
+        .slice(index + 1)
+        .split(' ')[0]
+        .trim();
+      const previousInquiry = await Inquiries.findOne({
+        ...(sender === config.supportEmail ? {} : { sender_email: sender }),
+        reference
+      });
+
+      if (previousInquiry) {
+        ctx.logger.info(
+          `previous inquiry found for user: ${sender} with subject: ${subject}`
+        );
+        previousInquiry.messages.push(messagePayload);
+        previousInquiry.is_resolved = false;
+        await previousInquiry.save();
+        ctx.body = previousInquiry;
+        return;
+      }
     }
 
     ctx.logger.info(
       `new inquiry found for user: ${sender} with subject: ${subject}`
     );
+
     inquiry = await Inquiries.create({
       user,
       sender_email: sender,

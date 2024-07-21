@@ -67,6 +67,10 @@ module.exports = function (config) {
       'Frequently Asked Questions About Email',
       'How to configure email for custom domain names, outbound SMTP service, and more.'
     ],
+    '/encrypt': [
+      'Encrypt Plaintext TXT Record',
+      'Encrypt your plaintext TXT record from being publicly searchable in DNS records.'
+    ],
     '/email-api': [
       'Developer Email API for Custom Domains and Webhooks',
       'Developers love our RESTful email forwarding API for custom domains.'

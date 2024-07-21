@@ -184,6 +184,10 @@ localeRouter
   // locale specific sitemap
   .get('/sitemap.xml', web.sitemap)
 
+  // encrypt domain txt record
+  .get('/encrypt', render('encrypt'))
+  .post('/encrypt', web.encryptTxt)
+
   //
   // ips
   //

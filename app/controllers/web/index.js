@@ -27,6 +27,7 @@ const { gzip } = require('node-gzip');
 const admin = require('./admin');
 const api = require('./api');
 const auth = require('./auth');
+const encryptTxt = require('./encrypt');
 const faq = require('./faq');
 const help = require('./help');
 const myAccount = require('./my-account');
@@ -595,6 +596,7 @@ module.exports = {
   api,
   auth,
   breadcrumbs,
+  encryptTxt,
   faq,
   help,
   myAccount,
