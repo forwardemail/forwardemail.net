@@ -28,7 +28,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parsePayload = require('#helpers/parse-payload');
 const refreshSession = require('#helpers/refresh-session');
@@ -152,7 +152,7 @@ class SQLite {
             });
             return true;
           } catch (err) {
-            if (isTimeoutError(err)) return false;
+            if (isRetryableError(err)) return false;
             throw err;
           }
         },

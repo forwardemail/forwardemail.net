@@ -23,22 +23,21 @@ const splitLines = require('split-lines');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
 
-const email = require('../email');
-const isCodeBug = require('../is-code-bug');
-const isTimeoutError = require('../is-timeout-error');
-
-const Domains = require('#models/domains');
 const Aliases = require('#models/aliases');
+const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const config = require('#config');
+const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
-const updateStorageUsed = require('#helpers/update-storage-used');
+const isCodeBug = require('#helpers/is-code-bug');
+const isRetryableError = require('#helpers/is-retryable-error');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+const updateStorageUsed = require('#helpers/update-storage-used');
 
 const { formatResponse } = IMAPConnection.prototype;
 
@@ -169,7 +168,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           );
       } catch (err) {
         this.logger.fatal(err, { path, flags, date, session });
-        if (!isCodeBug(err) && !isTimeoutError(err)) {
+        if (!isCodeBug(err) && !isRetryableError(err)) {
           // email alias user (only once a day as a reminder) if it was not a code bug
           const now = new Date();
           Aliases.findOneAndUpdate(

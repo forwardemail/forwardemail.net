@@ -675,8 +675,14 @@ async function onSearch(mailboxId, options, session, fn) {
         uidList.add(message.uid);
       }
     } catch (err) {
-      this.logger.fatal(err, { mailboxId, options, session });
-      throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'));
+      err.isCodeBug = true;
+      err.mailboxId = mailboxId;
+      err.options = options;
+      err.condition = condition;
+      this.logger.fatal(err, { session });
+      throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'), {
+        imapResponse: 'CANNOT'
+      });
     }
 
     // send response

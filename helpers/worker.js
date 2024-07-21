@@ -41,7 +41,7 @@ const env = require('#config/env');
 const getDatabase = require('#helpers/get-database');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -153,7 +153,7 @@ async function rekey(payload) {
       }
     );
   } catch (err) {
-    if (isTimeoutError(err)) {
+    if (isRetryableError(err)) {
       err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
       err.isCodeBug = true;
     }
@@ -365,7 +365,7 @@ async function backup(payload) {
         }
       );
     } catch (err) {
-      if (isTimeoutError(err)) {
+      if (isRetryableError(err)) {
         err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
         err.isCodeBug = true;
       }

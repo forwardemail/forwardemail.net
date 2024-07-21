@@ -18,7 +18,7 @@ const { WebSocket } = require('ws');
 
 const config = require('#config');
 const env = require('#config/env');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parseError = require('#helpers/parse-error');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -366,7 +366,7 @@ function createWebSocketAsPromised(options = {}) {
             error.wsData = data;
             logger.error(error);
 
-            if (isTimeoutError(error)) {
+            if (isRetryableError(error)) {
               return;
             }
 

@@ -20,6 +20,7 @@ PISCINA_ERROR_MESSAGES.add(Errors.NoTaskQueueAvailable().message);
 // eslint-disable-next-line new-cap
 PISCINA_ERROR_MESSAGES.add(Errors.CloseTimeout().message);
 
+// eslint-disable-next-line complexity
 function isTimeoutError(err) {
   if (typeof err !== 'object') return false;
 
@@ -37,6 +38,10 @@ function isTimeoutError(err) {
     return true;
 
   if (
+    // undici
+    isErrorConstructorName(err, 'ConnectTimeoutError') ||
+    isErrorConstructorName(err, 'HeadersTimeoutError') ||
+    isErrorConstructorName(err, 'BodyTimeoutError') ||
     isErrorConstructorName(err, 'TimeoutError') ||
     isErrorConstructorName(err, 'AbortError') ||
     isErrorConstructorName(err, 'KnexTimeoutError')
