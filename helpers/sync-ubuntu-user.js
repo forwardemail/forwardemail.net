@@ -300,7 +300,12 @@ async function syncUbuntuUser(user, map) {
                       }</p>`
                     }
                   });
-                  await cache.set(hash, true, 'PX', ms('30d'));
+                  await cache.set(
+                    `sync_ubuntu_error:${hash}`,
+                    true,
+                    'PX',
+                    ms('30d')
+                  );
                 }
 
                 throw err;
