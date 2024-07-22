@@ -302,7 +302,7 @@ async function syncUbuntuUser(user, map) {
                       }</p>`
                     }
                   });
-                  await cache.set(key, true, 'PX', ms('30d'));
+                  await client.set(key, true, 'PX', ms('30d'));
                 }
 
                 throw err;
@@ -554,7 +554,7 @@ async function syncUbuntuUser(user, map) {
                     }</p>`
                   }
                 });
-                await cache.set(key, true, 'PX', ms('30d'));
+                await client.set(key, true, 'PX', ms('30d'));
               } catch (err) {
                 await logger.fatal(err);
               }
