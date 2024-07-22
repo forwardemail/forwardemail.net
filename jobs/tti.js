@@ -86,7 +86,7 @@ const graceful = new Graceful({
     async () => {
       if (imapClients.size === 0) return;
       await Promise.all(
-        [imapClients.values()].map(async (client) => {
+        [...imapClients.values()].map(async (client) => {
           try {
             await client.logout();
           } catch (err) {
