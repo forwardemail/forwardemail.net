@@ -47,6 +47,7 @@ async function getMessage(imapClient, info, provider) {
             try {
               await imapClient.messageDelete({ all: true });
             } catch (err) {
+              err.isCodeBug = true;
               logger.fatal(err);
             }
           }

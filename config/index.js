@@ -35,6 +35,21 @@ const zxcvbn = require('#helpers/zxcvbn');
 
 // now we can set up imap clients for all providers and get their values all at once
 const imapConfigurations = [
+  // Forward Email
+  {
+    name: 'Forward Email',
+    forwarder: env.TTI_FE_FORWARDER,
+    config: {
+      host: 'imap.forwardemail.net',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_FE_IMAP_USER,
+        pass: env.TTI_FE_IMAP_PASS
+      }
+    }
+  },
+
   // Gmail
   // <https://support.google.com/mail/answer/7126229?hl=en>
   {
@@ -118,21 +133,6 @@ const imapConfigurations = [
       auth: {
         user: env.TTI_YAHOO_IMAP_USER,
         pass: env.TTI_YAHOO_IMAP_PASS
-      }
-    }
-  },
-
-  // Forward Email
-  {
-    name: 'Forward Email',
-    forwarder: env.TTI_FE_FORWARDER,
-    config: {
-      host: 'imap.forwardemail.net',
-      port: 993,
-      secure: true,
-      auth: {
-        user: env.TTI_FE_IMAP_USER,
-        pass: env.TTI_FE_IMAP_PASS
       }
     }
   }

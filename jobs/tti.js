@@ -211,6 +211,7 @@ test`.trim();
                 client
               });
             } catch (err) {
+              err.isCodeBug = true;
               logger.error(err);
               // attempt to send email with our SMTP server
               // (e.g. in case bree.forwardemail.net is blocked)
@@ -243,7 +244,10 @@ test`.trim();
               imapClient = imapClients.get(provider.name);
             } else {
               imapClients.delete(provider.name);
-              imapClient = new ImapFlow(provider.config);
+              imapClient = new ImapFlow({
+                ...provider.config,
+                socketTimeout: ms('1d') // long-lived IMAP connections
+              });
               await imapClient.connect();
               await imapClient.mailboxOpen('INBOX');
               imapClients.set(provider.name, imapClient);
@@ -335,6 +339,7 @@ test`.trim();
       }
     }
   } catch (err) {
+    err.isCodeBug = true;
     await logger.error(err);
   }
 
