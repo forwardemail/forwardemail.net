@@ -3,10 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const ms = require('ms');
 const pMap = require('p-map');
+const revHash = require('rev-hash');
+const sharedConfig = require('@ladjs/shared-config');
+const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -18,6 +22,12 @@ const retryRequest = require('#helpers/retry-request');
 const { emoji } = require('#config/utilities');
 
 const { fields } = config.passport;
+
+const breeSharedConfig = sharedConfig('BREE');
+
+// TODO: re-use existing connection from web
+const client = new Redis(breeSharedConfig.redis, logger);
+client.setMaxListeners(0);
 
 class InvalidUbuntuUserError extends TypeError {
   constructor(message, options) {
@@ -236,24 +246,65 @@ async function syncUbuntuUser(user, map) {
                 user.email ===
                 `${user[fields.ubuntuUsername].toLowerCase()}@${domain.name}`;
 
-              alias = await Aliases.create({
-                //
-                // virtual to assist with member lookup
-                // (so we don't create a user we don't want to yet)
-                //
-                virtual_member: member,
-                // virtual to assist in preventing lookup
-                is_new_user: true,
+              //
+              // if this throws a Boom error (e.g. restricted username, e.g. mark@)
+              // then we should email the uesr and cc admins
+              // (but if and only if revhash of error message doesn't exist in cache for 30d)
+              try {
+                alias = await Aliases.create({
+                  //
+                  // virtual to assist with member lookup
+                  // (so we don't create a user we don't want to yet)
+                  //
+                  virtual_member: member,
+                  // virtual to assist in preventing lookup
+                  is_new_user: true,
 
-                user: user._id,
-                domain: domain._id,
-                name: user[fields.ubuntuUsername].toLowerCase(),
-                recipients: [user.email],
-                locale: user[config.lastLocaleField],
+                  user: user._id,
+                  domain: domain._id,
+                  name: user[fields.ubuntuUsername].toLowerCase(),
+                  recipients: [user.email],
+                  locale: user[config.lastLocaleField],
 
-                // set alias state to disabled if it matched
-                is_enabled: !isEqual
-              });
+                  // set alias state to disabled if it matched
+                  is_enabled: !isEqual
+                });
+              } catch (err) {
+                if (err && err.isBoom) {
+                  const hash = revHash(
+                    [
+                      user[fields.ubuntuUsername].toLowerCase(),
+                      domain.name,
+                      err.message
+                    ].join(':')
+                  );
+                  const cache = await client.get(`sync_ubuntu_error:${hash}`);
+                  if (cache) throw err;
+                  await emailHelper({
+                    template: 'alert',
+                    message: {
+                      to: user.email,
+                      cc: adminEmailsForDomain,
+                      bcc: config.email.message.from,
+                      subject: `${emoji('warning')} ${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${domain.name} could not be created`
+                    },
+                    locals: {
+                      message: `<p>${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${
+                        domain.name
+                      } could not be created as a member of ${teamName} due to the following reason:</p><p>${
+                        err.message
+                      }</p>`
+                    }
+                  });
+                  await cache.set(hash, true, 'PX', ms('30d'));
+                }
+
+                throw err;
+              }
 
               if (needsAdded) {
                 domain.members.push(member);
