@@ -7579,5 +7579,6 @@
   "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Utwórz bezpłatną, prywatną, zaszyfrowaną i bezpieczną pocztę e-mail dla profesjonalnych firm, przedsiębiorstw i domen niestandardowych. Wysyłaj i odbieraj wiadomości e-mail pod adresem <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
   "Isaac Z. Schlueter (npm)": "Izaak Z. Schlueter (npm)",
   "Mailbox needs to call OPEN/SELECT prior to MOVE": "Skrzynka pocztowa musi wywołać opcję OPEN/SELECT przed PRZENIESIENIEM",
-  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Polecenie USUŃ jest zarezerwowane wyłącznie dla Kosza/Śmieci/Spamu. Proszę PRZENIEŚ wiadomości do jednego z tych folderów w celu USUNIĘCIA"
+  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Polecenie USUŃ jest zarezerwowane wyłącznie dla Kosza/Śmieci/Spamu. Proszę PRZENIEŚ wiadomości do jednego z tych folderów w celu USUNIĘCIA",
+  "Canonical, Ubuntu, Kubuntu, and <span class=\"notranslate\">U1</span> are registered trademarks of Canonical Ltd.": "Canonical, Ubuntu, Kubuntu i <span class=\"notranslate\">U1</span> są zastrzeżonymi znakami towarowymi firmy Canonical Ltd."
 }

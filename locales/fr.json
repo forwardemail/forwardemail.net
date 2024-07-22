@@ -5084,7 +5084,8 @@
   "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)",
   "Mailbox needs to call OPEN/SELECT prior to MOVE": "La boîte aux lettres doit appeler OPEN/SELECT avant MOVE",
   "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "La commande EXPUNGE est réservée uniquement à la corbeille/indésirable/spam, veuillez DÉPLACER les messages vers l'un de ces dossiers pour EXPUNGE.",
-  "Pending invitations are listed below.": "Pending invitations are listed below.",
-  "Email Address": "Email Address",
-  "Delete Invite": "Delete Invite"
+  "Pending invitations are listed below.": "Les invitations en attente sont répertoriées ci-dessous.",
+  "Email Address": "Adresse e-mail",
+  "Delete Invite": "Supprimer l'invitation",
+  "Canonical, Ubuntu, Kubuntu, and <span class=\"notranslate\">U1</span> are registered trademarks of Canonical Ltd.": "Canonical, Ubuntu, Kubuntu et <span class=\"notranslate\">U1</span> sont des marques déposées de Canonical Ltd."
 }

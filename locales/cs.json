@@ -7579,5 +7579,6 @@
   "Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span>.": "Vytvořte si svůj bezplatný, soukromý, šifrovaný a bezpečný e-mail pro profesionální firmy, podniky a vlastní domény. Odesílejte a přijímejte e-maily jako <span class=\"notranslate font-weight-bold text-nowrap\">you@yourdomain.com</span> .",
   "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)",
   "Mailbox needs to call OPEN/SELECT prior to MOVE": "Schránka musí před přesunem zavolat OPEN/SELECT",
-  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Příkaz EXPUNGE je vyhrazen pouze pro koš/nevyžádanou poštu/spam, PŘESUNOUT zprávy do jedné z těchto složek do EXPUNGE"
+  "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "Příkaz EXPUNGE je vyhrazen pouze pro koš/nevyžádanou poštu/spam, PŘESUNOUT zprávy do jedné z těchto složek do EXPUNGE",
+  "Canonical, Ubuntu, Kubuntu, and <span class=\"notranslate\">U1</span> are registered trademarks of Canonical Ltd.": "Canonical, Ubuntu, Kubuntu a <span class=\"notranslate\">U1</span> jsou registrované ochranné známky společnosti Canonical Ltd."
 }

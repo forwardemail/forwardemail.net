@@ -4510,9 +4510,10 @@
   "Isaac Z. Schlueter (npm)": "Isaac Z. Schlueter (npm)",
   "Mailbox needs to call OPEN/SELECT prior to MOVE": "Mailbox skal ringe OPEN/SELECT før FLYTNING",
   "EXPUNGE command is reserved for Trash/Junk/Spam only, please MOVE the messages to one of these folders to EXPUNGE": "EXPUNGE-kommandoen er kun forbeholdt Papirkurv/Junk/Spam. FLYT venligst beskederne til en af disse mapper til EXPUNGE",
-  "Congratulations &ndash; you completed setup!": "Congratulations &ndash; you completed setup!",
-  "Verify Setup": "Verify Setup",
-  "Pending invitations are listed below.": "Pending invitations are listed below.",
-  "Email Address": "Email Address",
-  "Delete Invite": "Delete Invite"
+  "Congratulations &ndash; you completed setup!": "Tillykke &ndash; du har fuldført opsætningen!",
+  "Verify Setup": "Bekræft opsætning",
+  "Pending invitations are listed below.": "Afventende invitationer er anført nedenfor.",
+  "Email Address": "Email adresse",
+  "Delete Invite": "Slet invitation",
+  "Canonical, Ubuntu, Kubuntu, and <span class=\"notranslate\">U1</span> are registered trademarks of Canonical Ltd.": "Canonical, Ubuntu, Kubuntu og <span class=\"notranslate\">U1</span> er registrerede varemærker tilhørende Canonical Ltd."
 }
