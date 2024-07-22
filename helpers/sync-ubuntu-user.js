@@ -102,14 +102,13 @@ async function syncUbuntuUser(user, map) {
     // GET https://api.launchpad.net/1.0/~kotodamatest
     // - ensure `is_valid`
     // - ensure `is_ubuntu_coc_signer`
-    // - ensure NOT `is_probationary`
     //
     const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url);
     const json = await response.body.json();
 
     // validate booleans
-    for (const key of ['is_valid', 'is_ubuntu_coc_signer', 'is_probationary']) {
+    for (const key of ['is_valid', 'is_ubuntu_coc_signer']) {
       if (typeof json[key] !== 'boolean')
         throw new TypeError(`Boolean property "${key}" is missing`);
     }
@@ -131,12 +130,26 @@ async function syncUbuntuUser(user, map) {
         }
       );
 
-    if (json.is_probationary)
-      throw new InvalidUbuntuUserError('Property "is_probationary" was true', {
-        url,
-        response,
-        json
-      });
+    //
+    // NOTE: we do not need to check for `is_probationary`
+    //       <https://git.launchpad.net/launchpad/tree/lib/lp/registry/model/person.py#n1444>
+    //
+    //       ```py
+    //       def is_probationary(self):
+    //           """See `IPerson`.
+    //
+    //           Users without karma have not demonstrated their intentions may not
+    //           have the same privileges as users who have made contributions.
+    //           """
+    //           return not self.is_team and self.karma == 0
+    //       ```
+    //
+    // if (json.is_probationary)
+    //   throw new InvalidUbuntuUserError('Property "is_probationary" was true', {
+    //     url,
+    //     response,
+    //     json
+    //   });
 
     //
     // iterate in parallel for each domain for the user

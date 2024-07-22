@@ -12,7 +12,7 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
 
-const BOOLEAN_KEYS = ['is_valid', 'is_ubuntu_coc_signer', 'is_probationary'];
+const BOOLEAN_KEYS = ['is_valid', 'is_ubuntu_coc_signer'];
 
 function addToSet(entries, set) {
   if (!_.isArray(entries))
@@ -37,8 +37,9 @@ function addToSet(entries, set) {
     // add to set if valid
     if (
       entry.is_valid &&
-      entry.is_ubuntu_coc_signer &&
-      !entry.is_probationary
+      entry.is_ubuntu_coc_signer
+      // we do not need to check for is_probationary, see `helpers/sync-ubuntu-user.js`
+      // !entry.is_probationary
     ) {
       logger.debug(`adding ${entry.name}`);
       set.add(entry.name);
