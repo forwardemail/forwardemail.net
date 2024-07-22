@@ -6,8 +6,6 @@
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 
-const logger = require('#helpers/logger');
-
 async function getMessage(imapClient, info, provider) {
   let received;
   let err;
@@ -40,15 +38,6 @@ async function getMessage(imapClient, info, provider) {
               //       nor can we rely on message envelope date
               //
               received = new Date();
-            }
-          }
-
-          if (received) {
-            try {
-              await imapClient.messageDelete({ all: true });
-            } catch (err) {
-              err.isCodeBug = true;
-              logger.fatal(err);
             }
           }
         } catch (_err) {

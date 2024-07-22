@@ -21,7 +21,6 @@ const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const pMapSeries = require('p-map-series');
 const prettyMilliseconds = require('pretty-ms');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
@@ -173,9 +172,26 @@ async function checkTTI() {
     // get the data
     const providers = await Promise.all(
       config.imapConfigurations.map(async (provider) => {
-        const [directMs, forwardingMs] = await pMapSeries(
-          [provider.config.auth.user, provider.forwarder],
-          async (to, i) => {
+        let imapClient;
+        // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
+        if (
+          imapClients.has(provider.name) &&
+          imapClients.get(provider.name).usable
+        ) {
+          imapClient = imapClients.get(provider.name);
+        } else {
+          imapClients.delete(provider.name);
+          imapClient = new ImapFlow({
+            ...provider.config,
+            socketTimeout: ms('1d') // long-lived IMAP connections
+          });
+          await imapClient.connect();
+          await imapClient.mailboxOpen('INBOX');
+          imapClients.set(provider.name, imapClient);
+        }
+
+        const [directMs, forwardingMs] = await Promise.all(
+          [provider.config.auth.user, provider.forwarder].map(async (to, i) => {
             const messageId = `<${randomstring({
               characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
               length: 10
@@ -259,24 +275,6 @@ Forward Email
             // rewrite messageId since `raw` overrides this
             info.messageId = messageId;
 
-            let imapClient;
-            // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
-            if (
-              imapClients.has(provider.name) &&
-              imapClients.get(provider.name).usable
-            ) {
-              imapClient = imapClients.get(provider.name);
-            } else {
-              imapClients.delete(provider.name);
-              imapClient = new ImapFlow({
-                ...provider.config,
-                socketTimeout: ms('1d') // long-lived IMAP connections
-              });
-              await imapClient.connect();
-              await imapClient.mailboxOpen('INBOX');
-              imapClients.set(provider.name, imapClient);
-            }
-
             const { received, err } = await getMessage(
               imapClient,
               info,
@@ -302,8 +300,16 @@ Forward Email
             }
 
             return _.isDate(received) ? received.getTime() - date.getTime() : 0;
-          }
+          })
         );
+
+        // delete all messages once done
+        try {
+          await imapClient.messageDelete({ all: true });
+        } catch (err) {
+          err.isCodeBug = true;
+          logger.fatal(err);
+        }
 
         return {
           name: provider.name,
