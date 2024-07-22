@@ -16,6 +16,7 @@ const DKIM = require('nodemailer/lib/dkim');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const falso = require('@ngneat/falso');
 const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -174,7 +175,7 @@ async function checkTTI() {
       config.imapConfigurations.map(async (provider) => {
         const [directMs, forwardingMs] = await pMapSeries(
           [provider.config.auth.user, provider.forwarder],
-          async (to) => {
+          async (to, i) => {
             const messageId = `<${randomstring({
               characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
               length: 10
@@ -186,11 +187,22 @@ Content-Language: en-US
 To: ${to}
 From: ${config.supportEmail}
 Message-ID: ${messageId}
-Subject: test
+Subject: ${
+              i === 0 ? 'Direct' : 'Forward'
+            }: ${falso.randEmoji()} ${falso.randCatchPhrase()}
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-test`.trim();
+Hi there,
+
+${falso.randParagraph()}
+
+--
+Thank you,
+Forward Email
+
+"${falso.randCatchPhrase()}"
+`.trim();
 
             const envelope = {
               from: config.supportEmail,
