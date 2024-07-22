@@ -81,7 +81,7 @@ const imapConfigurations = [
         pass: env.TTI_APPLE_IMAP_PASS
       }
     }
-  }
+  },
 
   // NOTE: removing fastmail since it requires a paid account after 30d
   // Fastmail
@@ -101,26 +101,26 @@ const imapConfigurations = [
   // }
 
   //
-  // NOTE: Yahoo does not allow App Passwords to be generated
-  //       therefore it is not possible to access Yahoo via IMAP
+  // NOTE: Yahoo didn't have App Passwords working in the past
+  //       therefore it previously wasn't possible to access Yahoo via IMAP
   //       <https://old.reddit.com/r/yahoo/comments/v5hkc6/yahoo_mail_app_password_not_working/>
   //       <https://archive.is/SPAAT>
   //
   // Yahoo/AOL
   // <https://help.yahoo.com/kb/SLN4075.html>
-  // {
-  //   name: 'Yahoo/AOL',
-  //   forwarder: env.TTI_YAHOO_FORWARDER,
-  //   config: {
-  //     host: 'imap.mail.yahoo.com',
-  //     port: 993,
-  //     secure: true,
-  //     auth: {
-  //       user: env.TTI_YAHOO_IMAP_USER,
-  //       pass: env.TTI_YAHOO_IMAP_PASS
-  //     }
-  //   }
-  // }
+  {
+    name: 'Yahoo/AOL',
+    forwarder: env.TTI_YAHOO_FORWARDER,
+    config: {
+      host: 'imap.mail.yahoo.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_YAHOO_IMAP_USER,
+        pass: env.TTI_YAHOO_IMAP_PASS
+      }
+    }
+  }
 ];
 
 const STRIPE_LOCALES = new Set([
