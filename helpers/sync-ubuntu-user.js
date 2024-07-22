@@ -50,7 +50,7 @@ function getAdminEmailsForDomain(domain) {
         !m.user[config.userFields.isBanned] &&
         m.user[config.userFields.hasVerifiedEmail]
     )
-    .map((m) => m[config.userFields.fullEmail]);
+    .map((m) => m.user[config.userFields.fullEmail]);
 }
 
 //
@@ -168,7 +168,7 @@ async function syncUbuntuUser(user, map) {
             has_txt_record: true
           }).populate(
             'members.user',
-            `_id id ${config.userFields.fullEmail} ${config.passport.fields.displayName} ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
+            `_id id ${config.userFields.fullEmail} ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
           );
 
           if (!domain) {
@@ -431,7 +431,7 @@ async function syncUbuntuUser(user, map) {
               }
             }).populate(
               'members.user',
-              `_id id ${config.userFields.fullEmail} ${config.passport.fields.displayName} ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
+              `_id id ${config.userFields.fullEmail} ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
             );
 
             // return early if possible
