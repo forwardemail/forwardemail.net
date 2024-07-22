@@ -1043,57 +1043,21 @@ function getServersOrClientsList(platform, isEmailClients = false) {
 
 // various use cases (SEO related)
 const useCases = {
-  '/education-email-hosting-forwarding': [
-    'Email Hosting & Forwarding for Education, K-12, Colleges, Universities, Schools, Students, Teachers',
-    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for education, K-12, colleges, school districts, universities, students, and teachers."
-  ],
-  '/alumni-email-hosting-forwarding': [
-    'Email Hosting & Forwarding for Alumni, Graduates, Sports, Clubs, Schools',
-    'We provide email forwarding and hosting for alumni, graduates, universities, schools, clubs, sports teams, students, teachers, and more.'
-  ],
-  '/healthcare-email-hosting-forwarding': [
-    'Email Hosting & Forwarding for Healthcare, Doctors, Patients, HIPAA',
-    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for healthcare, doctors, patients, and HIPAA-complaint related needs."
-  ],
-  '/nonprofit-clubs-churches-sports-email-hosting-forwarding': [
-    'Email Hosting & Forwarding for Non-profits, Churches, Workship, Clubs, Sports Teams',
-    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for non-profits, churches, workship, clubs, sports teams, and more."
-  ],
   '/government-email-hosting-forwarding': [
     'Email Hosting & Forwarding for Federal, State, Local, County, and Municipal Governments',
     "We can provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for federal, state, local, county, and municipal governments."
   ],
-  '/crypto-email-hosting': [
-    'Email Hosting & Forwarding for Crypto Businesses',
-    "We give crypto businesses access to email hosting, forwarding, API's, and much more with a focus on privacy and security."
+  '/education-email-hosting-forwarding': [
+    'Email Forwarding for Education, K-12, Colleges, Universities, Schools, Students, Teachers',
+    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for education, K-12, colleges, school districts, universities, students, and teachers."
   ],
-  '/email-hosting-content-creators': [
-    'Email Hosting & Forwarding for Content Creators',
-    "We provide email hosting and forwarding services for content creators, vloggers, bloggers, YouTuber's, and live streamers."
-  ],
-  '/real-estate-agent-email-hosting': [
-    'Email Hosting & Forwarding for Real Estate Agents',
-    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for real estate agents."
-  ],
-  '/email-hosting-ecommerce-online-stores': [
-    'Email Hosting & Forwarding for E-Commerce and Online Stores',
-    'We provide email hosting and forwarding services for e-commerce and online stores such as Shopify, WiX, WooCommerce, BigCommerce, Square, BigCartel, and GumRoad.'
+  '/healthcare-email-hosting-forwarding-hipaa': [
+    'Email Forwarding for Healthcare, Doctors, Patients, HIPAA',
+    "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for healthcare, doctors, patients, and HIPAA-complaint related needs."
   ],
   '/gdpr-compliant-email-hosting': [
-    'Email Hosting & Forwarding for GDPR Compliance Needs',
+    'Email Forwarding for GDPR Compliance Needs',
     "We provide email hosting and forwarding, API's, IMAP, POP3, mailboxes, calendars, and more for GDPR-complaint related needs."
-  ],
-  '/enterprise-email-hosting': [
-    'Email Hosting & Forwarding for Enterprise Businesses',
-    'We are an enterprise-grade email hosting service focused on security, privacy, and reliability.'
-  ],
-  '/small-business-email-hosting': [
-    'Email Hosting & Forwarding for Small Businesses',
-    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for small businesses."
-  ],
-  '/startup-email-hosting': [
-    'Email Hosting & Forwarding for Startups & Bootstrappers',
-    "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for startups and bootstrappers."
   ],
   '/mx-server-proxy-port-forwarding-service': [
     'Custom MX Server Port Forwarding',
@@ -1120,6 +1084,118 @@ const useCases = {
     'We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.'
   ]
 };
+
+const nouns = [
+  'Actors and Actresses',
+  'Adult Social Sports',
+  'Alumni',
+  'Anime Clubs',
+  'Artists and Designer Guilds',
+  'Basketball Clubs',
+  'Board Game Groups',
+  'Book Clubs',
+  'Bootstrappers',
+  'Boutiques',
+  'Churches',
+  'Colleges',
+  'Comedy Clubs',
+  'Concerts',
+  'Content Creators',
+  'Cooking Clubs',
+  'Corporate Clubs',
+  'Crypto',
+  'Dance Academy',
+  'Dating Communities',
+  'Developer Meetups',
+  'Directory',
+  'E-Commerce',
+  'Education',
+  'Employees',
+  'Enterprise',
+  'Ethnic Communities',
+  'Fan Clubs',
+  'Farmers Market',
+  'Flag Football Clubs',
+  'Football Clubs',
+  'Fraternities',
+  'Gaming Clubs and E-Sports Teams',
+  'Government',
+  'Gyms and Fitness Centers',
+  'Healthcare',
+  'Hotels',
+  'Independent Contractors',
+  'K-12',
+  'Live Shows',
+  'Live Streamers',
+  'Meetup Groups',
+  'Music Bands and DJ',
+  'Nomads and Remote Workers',
+  'Non-Profit Clubs',
+  'Non-Profits',
+  'Organizations',
+  'Pickleball Clubs',
+  'Poker and Gambling Clubs',
+  'Political Advocacy Clubs',
+  'Racial Communities',
+  'Real Estate Agent',
+  'Remote Workers',
+  'Restaurants',
+  'Role-playing and Cosplaying',
+  'Run Clubs',
+  'Schools',
+  'Senior Groups',
+  'Shops',
+  'Small Business',
+  'Soccer Clubs',
+  'Social Clubs',
+  'Softball Clubs',
+  'Sole Proprietors',
+  'Sororities',
+  'Speed Dating',
+  'Sporting Teams',
+  'Staff',
+  'Startup',
+  'Stores',
+  'Student Groups',
+  'Support Groups',
+  'Swim Teams',
+  'Teachers',
+  'Tennis Groups',
+  'Theater Organizations',
+  'Therapy Groups',
+  'Travel Clubs',
+  'Trivia Events and Meetups',
+  'Tutoring',
+  'Universities',
+  'Volleyball Clubs',
+  'Worship Centers',
+  'Yoga Studios',
+  'Youth Groups',
+  'Youth Teams'
+];
+
+for (const noun of nouns) {
+  for (const title of [
+    'Free Email Forwarding',
+    'Free Email Provider',
+    'Free Email Hosting',
+    'Free Email Service',
+    'Free Email Newsletters',
+    'Free Email API',
+    'Free Email Masking',
+    'Free Email Marketing',
+    'Free Bulk Email Service',
+    'Free Mass Email Service'
+  ]) {
+    let desc = title.toLowerCase().replace('free', '').trim();
+    if (desc === 'email api') desc = 'an email api';
+    else if (desc === 'email provider') desc = 'an email platform';
+    useCases[`/${dashify(noun)}-${dashify(title)}`] = [
+      `${title} for ${noun}`,
+      `We provide ${desc} for ${noun.toLowerCase()} and more. Sign up today for free and setup email hosting and forwarding in seconds.`
+    ];
+  }
+}
 
 module.exports = {
   _,

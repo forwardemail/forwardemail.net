@@ -280,7 +280,10 @@ const purgeCssOptions = {
       'fa-minus',
       'fa-plus',
       'fa-sort',
-      'pt-md-5'
+      'pt-md-5',
+      // reduced navbar for certain locales
+      // (manually curated, see `app/views/_nav.pug`)
+      'navbar-small'
     ])
   ]
 };

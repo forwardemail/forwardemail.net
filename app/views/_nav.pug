@@ -87,6 +87,11 @@ else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
 if !isBot(ctx.get("User-Agent"))
   - navbarClasses.unshift("navbar-expand-lg", "fixed-top");
+
+//- these locales require decreased font-size in navbar <a class="btn"> tags
+if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.locale)
+  - navbarClasses.unshift("navbar-small");
+
 nav.navbar(class=navbarClasses.join(" "))
   div(
     class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
@@ -211,7 +216,10 @@ nav.navbar(class=navbarClasses.join(" "))
                 data-toggle=isRegisterOrLogin ? false : "modal-anchor",
                 data-target=isRegisterOrLogin ? false : "#modal-sign-up"
               )
-                = t("Signup")
+                if ctx.locale === 'de'
+                  = t("Register")
+                else
+                  = t("Signup")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
       button.navbar-toggler.d-lg-none.no-js.text-themed(
@@ -385,10 +393,7 @@ nav.navbar(class=navbarClasses.join(" "))
                       href=l(useCase),
                       class=ctx.pathWithoutLocale === useCase ? "active" : ""
                     )
-                      if isBot(ctx.get('User-Agent'))
-                        != t(useCases[useCase][0])
-                      else
-                        != t(useCases[useCase][0].replace("Email Hosting & Forwarding for", "").replace("Custom Domain Email Hosting for", ""))
+                      != t(useCases[useCase][0])
 
           //- Resources
           if !isBot(ctx.get('User-Agent'))

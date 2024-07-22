@@ -7,6 +7,7 @@ const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const pEvent = require('p-event');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
 const sharedConfig = require('@ladjs/shared-config');
@@ -35,6 +36,10 @@ class InvalidUbuntuUserError extends TypeError {
     Error.captureStackTrace(this, InvalidUbuntuUserError);
     Object.assign(this, options);
   }
+}
+
+function getKeyPrefix(user, domain) {
+  return `sync_ubuntu_error:${revHash([user.id, domain.id].join(':'))}`;
 }
 
 function setDebugInfoForError(err, user) {
@@ -167,7 +172,7 @@ async function syncUbuntuUser(user, map) {
     // off if they are a member or not
     //
     await pMap(
-      map.keys(),
+      [...map.keys()],
 
       // eslint-disable-next-line complexity
       async (name) => {
@@ -188,6 +193,9 @@ async function syncUbuntuUser(user, map) {
             // return early
             return;
           }
+
+          // key prefix for errors related to this user (so we don't send duplicate emails)
+          const keyPrefix = getKeyPrefix(user, domain);
 
           const teamName = config.ubuntuTeamMapping[name];
 
@@ -271,14 +279,8 @@ async function syncUbuntuUser(user, map) {
                 });
               } catch (err) {
                 if (err && err.isBoom) {
-                  const hash = revHash(
-                    [
-                      user[fields.ubuntuUsername].toLowerCase(),
-                      domain.name,
-                      err.message
-                    ].join(':')
-                  );
-                  const cache = await client.get(`sync_ubuntu_error:${hash}`);
+                  const key = `${keyPrefix}:${revHash(err.message)}`;
+                  const cache = await client.get(key);
                   if (cache) throw err;
                   await emailHelper({
                     template: 'alert',
@@ -300,12 +302,7 @@ async function syncUbuntuUser(user, map) {
                       }</p>`
                     }
                   });
-                  await cache.set(
-                    `sync_ubuntu_error:${hash}`,
-                    true,
-                    'PX',
-                    ms('30d')
-                  );
+                  await cache.set(key, true, 'PX', ms('30d'));
                 }
 
                 throw err;
@@ -414,6 +411,20 @@ async function syncUbuntuUser(user, map) {
           } catch (err) {
             await logger.fatal(err);
           }
+
+          //
+          // reset purge_cache of any sync_ubuntu_error errors for this user + domain id
+          //
+          const stream = client.scanStream({
+            match: `${keyPrefix}:*`
+          });
+          const keysToClear = [];
+          stream.on('data', (keys) => {
+            if (keys && keys.length > 0) keysToClear.push(...keys);
+          });
+          await pEvent(stream, 'end');
+          if (keysToClear.length > 0)
+            await Promise.all(keysToClear.map((key) => client.del(key)));
         } catch (err) {
           err.domainName = name;
           await logErrorWithUser(err, user);
@@ -470,7 +481,7 @@ async function syncUbuntuUser(user, map) {
     //
     if (err instanceof InvalidUbuntuUserError) {
       await pMap(
-        map.keys(),
+        [...map.keys()],
         async (name) => {
           try {
             const teamName = config.ubuntuTeamMapping[name];
@@ -478,13 +489,7 @@ async function syncUbuntuUser(user, map) {
             const domain = await Domains.findOne({
               name,
               plan: 'team',
-              has_txt_record: true,
-              members: {
-                $elemMatch: {
-                  user: user._id,
-                  group: 'user'
-                }
-              }
+              has_txt_record: true
             }).populate(
               'members.user',
               `_id id ${config.userFields.fullEmail} ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail}`
@@ -492,6 +497,9 @@ async function syncUbuntuUser(user, map) {
 
             // return early if possible
             if (!domain) return;
+
+            // key prefix for errors related to this user (so we don't send duplicate emails)
+            const keyPrefix = getKeyPrefix(user, domain);
 
             const adminEmailsForDomain = getAdminEmailsForDomain(domain);
 
@@ -502,14 +510,20 @@ async function syncUbuntuUser(user, map) {
               );
 
             // remove user from members
-            domain.members = domain.members.filter(
-              (m) => m.user && m.user._id.toString() !== user._id.toString()
-            );
-            await Domains.findByIdAndUpdate(domain._id, {
-              $set: {
-                members: domain.members
-              }
-            });
+            if (
+              domain.members.some(
+                (m) => m.user && m.user._id.toString() === user._id.toString()
+              )
+            ) {
+              domain.members = domain.members.filter(
+                (m) => m.user && m.user._id.toString() !== user._id.toString()
+              );
+              await Domains.findByIdAndUpdate(domain._id, {
+                $set: {
+                  members: domain.members
+                }
+              });
+            }
 
             // remove aliases that belonged to user
             await Aliases.deleteMany({
@@ -518,26 +532,32 @@ async function syncUbuntuUser(user, map) {
             });
 
             // email admins
-            try {
-              await emailHelper({
-                template: 'alert',
-                message: {
-                  to: adminEmailsForDomain,
-                  bcc: config.email.message.from,
-                  subject: `${emoji('wastebasket')} ${user[
-                    fields.ubuntuUsername
-                  ].toLowerCase()}@${domain.name} removed due to invalidity`
-                },
-                locals: {
-                  message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
-                    domain.name
-                  } was removed for the following invalidity reason from ${teamName}:</p><p>${
-                    err.message
-                  }</p>`
-                }
-              });
-            } catch (err) {
-              await logger.fatal(err);
+            const key = `${keyPrefix}:${revHash(err.message)}`;
+            const cache = await client.get(key);
+
+            if (!cache) {
+              try {
+                await emailHelper({
+                  template: 'alert',
+                  message: {
+                    to: adminEmailsForDomain,
+                    bcc: config.email.message.from,
+                    subject: `${emoji('wastebasket')} ${user[
+                      fields.ubuntuUsername
+                    ].toLowerCase()}@${domain.name} removed due to invalidity`
+                  },
+                  locals: {
+                    message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
+                      domain.name
+                    } was removed for the following invalidity reason from ${teamName}:</p><p>${
+                      err.message
+                    }</p>`
+                  }
+                });
+                await cache.set(key, true, 'PX', ms('30d'));
+              } catch (err) {
+                await logger.fatal(err);
+              }
             }
           } catch (err) {
             await logErrorWithUser(err, user);

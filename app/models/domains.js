@@ -2264,18 +2264,19 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
       }
     ]);
 
-    // Results [ { _id: '', storage_used: 91360 } ]
+    // Results [ { _id: '', storage_used: 91360 } ] or []
     if (
-      results.length !== 1 ||
-      typeof results[0] !== 'object' ||
-      typeof results[0].storage_used !== 'number'
+      results.length > 1 ||
+      (results.length === 1 &&
+        (typeof results[0] !== 'object' ||
+          typeof results[0].storage_used !== 'number'))
     ) {
       throw Boom.notFound(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
     }
 
-    storageUsed += results[0].storage_used;
+    if (results.length === 1) storageUsed += results[0].storage_used;
   }
 
   return storageUsed;
