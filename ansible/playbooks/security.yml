@@ -19,6 +19,18 @@
         state: absent
         path: /etc/systemd/resolved.conf.d/DigitalOcean.conf
 
+    - name: Remove Ubuntu Advantage Tools
+      apt:
+        pkg: ubuntu-advantage-tools
+        state: absent
+
+    - name: Purge Ubuntu Advantage Tools
+      apt:
+        autoremove: yes
+        purge: true
+        name:
+          - ubuntu-advantage-tools
+
     - name: Insert/Update disable core dumps
       blockinfile:
         path: /etc/security/limits.conf
