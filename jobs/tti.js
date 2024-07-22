@@ -7,14 +7,17 @@
 require('#config/env');
 
 const os = require('node:os');
+const fs = require('node:fs');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const DKIM = require('nodemailer/lib/dkim');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const ip = require('ip');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
@@ -29,11 +32,20 @@ const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const env = require('#config/env');
 const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+
+const dkim = new DKIM({
+  domainName: env.DKIM_DOMAIN_NAME,
+  keySelector: env.DKIM_KEY_SELECTOR,
+  privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
+    ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
+    : undefined
+});
 
 monitorServer();
 
@@ -202,9 +214,9 @@ test`.trim();
                 target: to.split('@')[1],
                 port: 25,
                 envelope,
-                raw: `Date: ${date
-                  .toUTCString()
-                  .replace(/GMT/, '+0000')}\n${raw}`,
+                raw: dkim.sign(
+                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+                ),
                 localAddress: IP_ADDRESS,
                 localHostname: HOSTNAME,
                 resolver,
@@ -218,9 +230,9 @@ test`.trim();
               date = new Date();
               info = await config.email.transport.sendMail({
                 envelope,
-                raw: `Date: ${date
-                  .toUTCString()
-                  .replace(/GMT/, '+0000')}\n${raw}`
+                raw: dkim.sign(
+                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+                )
               });
             }
 
@@ -228,7 +240,7 @@ test`.trim();
             const date = new Date();
             const info = await config.email.transport.sendMail({
               envelope,
-              raw: `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+              raw: dkim.sign(`Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`)
             });
             */
 
