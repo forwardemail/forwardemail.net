@@ -7,8 +7,6 @@
 require('#config/env');
 
 const os = require('node:os');
-const process = require('node:process');
-const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -23,6 +21,7 @@ const pMapSeries = require('p-map-series');
 const prettyMilliseconds = require('pretty-ms');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
+const { ImapFlow } = require('imapflow');
 const { randomstring } = require('@sidoshi/random-string');
 
 const config = require('#config');
@@ -38,6 +37,37 @@ const monitorServer = require('#helpers/monitor-server');
 
 monitorServer();
 
+//
+// every 30s ensure that IMAP connection is established
+// (this ensures that all providers are always connected)
+//
+setInterval(async () => {
+  try {
+    await Promise.all(
+      config.imapConfigurations.map(async (provider) => {
+        try {
+          // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
+          if (
+            imapClients.has(provider.name) &&
+            imapClients.get(provider.name).usable
+          )
+            return;
+
+          imapClients.delete(provider.name);
+          const imapClient = new ImapFlow(provider.config);
+          await imapClient.connect();
+          await imapClient.mailboxOpen('INBOX');
+          imapClients.set(provider.name, imapClient);
+        } catch (err) {
+          logger.fatal(err);
+        }
+      })
+    );
+  } catch (err) {
+    logger.fatal(err);
+  }
+}, ms('30s'));
+
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 const cache = createMtaStsCache(client);
@@ -45,10 +75,27 @@ const resolver = createTangerine(client, logger);
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 
+const imapClients = new Map();
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   redisClients: [client],
-  logger
+  logger,
+  timeoutMs: ms('30s'),
+  customHandlers: [
+    async () => {
+      if (imapClients.size === 0) return;
+      await Promise.all(
+        [imapClients.values()].map(async (client) => {
+          try {
+            await client.logout();
+          } catch (err) {
+            logger.fatal(err);
+          }
+        })
+      );
+    }
+  ]
 });
 
 graceful.listen();
@@ -60,6 +107,10 @@ graceful.listen();
 //
 (async () => {
   await setupMongoose(logger);
+  await checkTTI();
+})();
+
+async function checkTTI() {
   // TODO: dashboard with chart for admin
   try {
     // check existing (within past 5 mins don't run)
@@ -79,8 +130,13 @@ graceful.listen();
             p.forwardingMs <= 10000
         )
       ) {
-        if (parentPort) parentPort.postMessage('done');
-        else process.exit(0);
+        setTimeout(
+          () =>
+            checkTTI()
+              .then()
+              .catch((err) => logger.fatal(err)),
+          ms('1m')
+        );
         return;
       }
     }
@@ -88,8 +144,13 @@ graceful.listen();
     // check if there is an existing lock
     const lock = await client.get('tti_lock');
     if (lock) {
-      if (parentPort) parentPort.postMessage('done');
-      else process.exit(0);
+      setTimeout(
+        () =>
+          checkTTI()
+            .then()
+            .catch((err) => logger.fatal(err)),
+        ms('1m')
+      );
       return;
     }
 
@@ -173,7 +234,26 @@ test`.trim();
             // rewrite messageId since `raw` overrides this
             info.messageId = messageId;
 
-            const { received, err } = await getMessage(info, provider);
+            let imapClient;
+            // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
+            if (
+              imapClients.has(provider.name) &&
+              imapClients.get(provider.name).usable
+            ) {
+              imapClient = imapClients.get(provider.name);
+            } else {
+              imapClients.delete(provider.name);
+              imapClient = new ImapFlow(provider.config);
+              await imapClient.connect();
+              await imapClient.mailboxOpen('INBOX');
+              imapClients.set(provider.name, imapClient);
+            }
+
+            const { received, err } = await getMessage(
+              imapClient,
+              info,
+              provider
+            );
 
             if (err) {
               delete info.source;
@@ -265,6 +345,11 @@ test`.trim();
     logger.error(err);
   }
 
-  if (parentPort) parentPort.postMessage('done');
-  else process.exit(0);
-})();
+  setTimeout(
+    () =>
+      checkTTI()
+        .then()
+        .catch((err) => logger.fatal(err)),
+    ms('1m')
+  );
+}
