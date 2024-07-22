@@ -120,6 +120,21 @@ const imapConfigurations = [
         pass: env.TTI_YAHOO_IMAP_PASS
       }
     }
+  },
+
+  // Forward Email
+  {
+    name: 'Forward Email',
+    forwarder: env.TTI_FE_FORWARDER,
+    config: {
+      host: 'imap.forwardemail.net',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_FE_IMAP_USER,
+        pass: env.TTI_FE_IMAP_PASS
+      }
+    }
   }
 ];
 
