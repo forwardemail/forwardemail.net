@@ -510,11 +510,13 @@ async function syncUbuntuUser(user, map) {
               );
 
             // remove user from members
+            let isMember = false;
             if (
               domain.members.some(
                 (m) => m.user && m.user._id.toString() === user._id.toString()
               )
             ) {
+              isMember = true;
               domain.members = domain.members.filter(
                 (m) => m.user && m.user._id.toString() !== user._id.toString()
               );
@@ -540,16 +542,21 @@ async function syncUbuntuUser(user, map) {
                 await emailHelper({
                   template: 'alert',
                   message: {
-                    to: adminEmailsForDomain,
+                    to: user.email,
+                    cc: adminEmailsForDomain,
                     bcc: config.email.message.from,
                     subject: `${emoji('wastebasket')} ${user[
                       fields.ubuntuUsername
-                    ].toLowerCase()}@${domain.name} removed due to invalidity`
+                    ].toLowerCase()}@${domain.name} ${
+                      isMember ? 'removed' : 'not added'
+                    } due to invalidity`
                   },
                   locals: {
                     message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
                       domain.name
-                    } was removed for the following invalidity reason from ${teamName}:</p><p>${
+                    } was ${
+                      isMember ? 'removed' : 'not added'
+                    } for the following invalidity reason from ${teamName}:</p><p>${
                       err.message
                     }</p>`
                   }
