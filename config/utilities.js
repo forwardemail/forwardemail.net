@@ -1190,10 +1190,11 @@ for (const noun of nouns) {
     let desc = title.toLowerCase().replace('free', '').trim();
     if (desc === 'email api') desc = 'an email api';
     else if (desc === 'email provider') desc = 'an email platform';
-    useCases[`/${dashify(noun)}-${dashify(title)}`] = [
-      `${title} for ${noun}`,
-      `We provide ${desc} for ${noun.toLowerCase()} and more. Sign up today for free and setup email hosting and forwarding in seconds.`
-    ];
+    useCases[`/${dashify(noun)}-${dashify(title.replace('Free', '').trim())}`] =
+      [
+        `${title} for ${noun}`,
+        `We provide ${desc} for ${noun.toLowerCase()} and more. Sign up today for free and setup email hosting and forwarding in seconds.`
+      ];
   }
 }
 
