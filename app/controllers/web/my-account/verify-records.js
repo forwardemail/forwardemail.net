@@ -176,7 +176,7 @@ async function verifyRecords(ctx) {
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
   } catch (err) {
-    ctx.logger.warn(err);
+    ctx.logger.error(err);
 
     if (Array.isArray(err.errors)) {
       if (ctx.api) {
