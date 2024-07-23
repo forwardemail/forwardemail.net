@@ -261,7 +261,7 @@ Aliases.pre('validate', function (next) {
     !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
     (!this.name.trim().startsWith('/') && this.name.includes('+'))
   )
-    return next(new Error('Alias name was invalid.'));
+    return next(Boom.badRequest('Alias name was invalid.'));
 
   // trim and convert to lowercase
   this.name = this.name.trim().toLowerCase();
@@ -283,7 +283,9 @@ Aliases.pre('validate', function (next) {
 
   // alias must not start with ! exclamation (since that denotes it is ignored)
   if (this.name.indexOf('!') === 0)
-    return next(new Error('Alias must not start with an exclamation point.'));
+    return next(
+      Boom.badRequest('Alias must not start with an exclamation point.')
+    );
 
   // make all recipients kinds unique by email address, FQDN, or IP
   for (const prop of [
@@ -309,7 +311,7 @@ Aliases.pre('validate', function (next) {
     this.recipients.some((r) => !isEmail(r))
   )
     return next(
-      new Error(
+      Boom.badRequest(
         'Alias with recipient verification must have email-only recipients.'
       )
     );
@@ -326,7 +328,7 @@ Aliases.pre('validate', function (next) {
     (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
   )
     return next(
-      new Error('Alias must have at least one recipient or IMAP enabled.')
+      Boom.badRequest('Alias must have at least one recipient or IMAP enabled.')
     );
 
   next();
@@ -337,7 +339,7 @@ Aliases.pre('validate', function (next) {
 Aliases.pre('validate', function (next) {
   if (this.name === '*' && !this.is_enabled)
     return next(
-      new Error(
+      Boom.badRequest(
         'Alias that is a catch-all must be enabled or deleted entirely to be disabled.'
       )
     );
@@ -348,7 +350,7 @@ Aliases.pre('validate', function (next) {
 Aliases.pre('validate', function (next) {
   if (this.has_imap && (this.name === '*' || this.name.startsWith('/')))
     return next(
-      new Error(
+      Boom.badRequest(
         'You cannot enable IMAP for catch-all/regular expression alias names.  Please go back and create a unique/individual alias (e.g. "you@yourdomain.com") and try again.'
       )
     );

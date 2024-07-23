@@ -175,17 +175,21 @@ async function verifyRecords(ctx) {
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
-  } catch (err) {
-    ctx.logger.error(err);
+  } catch (_err) {
+    ctx.logger.error(_err);
 
+    let err = _err;
     if (Array.isArray(err.errors)) {
+      let message;
       if (ctx.api) {
-        err.message = err.errors.map((e) => e.message);
+        message = err.errors.map((e) => e.message);
       } else {
-        err.message = `<ul class="text-left mb-0">${err.errors
+        message = `<ul class="text-left mb-0">${err.errors
           .map((e) => `<li class="mb-3">${e && e.message ? e.message : e}</li>`)
           .join('')}</ul>`;
       }
+
+      err = Boom.badRequest(message);
     }
 
     ctx.throw(err);

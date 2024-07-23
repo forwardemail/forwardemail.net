@@ -1780,7 +1780,7 @@ async function getToAndMajorityLocaleByDomain(domain) {
     .exec();
 
   if (users.length === 0) {
-    throw new Error('Domain had zero admins');
+    throw Boom.badRequest('Domain had zero admins');
   }
 
   users = users.filter((u) => u[config.userFields.hasVerifiedEmail]);
@@ -1945,7 +1945,7 @@ async function getTxtAddresses(
           !isURL(addr[1], config.isURLOptions))
       ) {
         errors.push(
-          new Error(
+          Boom.badRequest(
             // TODO: we may want to replace this with "Invalid Recipients"
             `Domain has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
