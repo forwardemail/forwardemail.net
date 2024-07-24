@@ -25,7 +25,6 @@ async function encryptTxt(ctx) {
   )
     throw Boom.badRequest(ctx.translateError('INPUT_HAD_FE_SV'));
 
-  // this is the output from encrypt() invocation
   const encryptedValue = await encrypt(
     ctx.request.body.input,
     12,

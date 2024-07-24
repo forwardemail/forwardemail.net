@@ -3,49 +3,47 @@
 
 ## Table of Contents
 
-- [Email API](#email-api)
-  - [Table of Contents](#table-of-contents)
-  - [Libraries](#libraries)
-  - [Base URI](#base-uri)
-  - [Authentication](#authentication)
-  - [Errors](#errors)
-  - [Localization](#localization)
-  - [Pagination](#pagination)
-  - [Logs](#logs)
-    - [Retrieve logs](#retrieve-logs)
-  - [Account](#account)
-    - [Create account](#create-account)
-    - [Retrieve account](#retrieve-account)
-    - [Update account](#update-account)
-  - [Emails](#emails)
-    - [Get email limit](#get-email-limit)
-    - [List emails](#list-emails)
-    - [Create email](#create-email)
-    - [Retrieve email](#retrieve-email)
-    - [Delete email](#delete-email)
-  - [Domains](#domains)
-    - [List domains](#list-domains)
-    - [Create domain](#create-domain)
-    - [Retrieve domain](#retrieve-domain)
-    - [Verify domain records](#verify-domain-records)
-    - [Update domain](#update-domain)
-    - [Delete domain](#delete-domain)
-  - [Invites](#invites)
-    - [Accept domain invite](#accept-domain-invite)
-    - [Create domain invite](#create-domain-invite)
-    - [Remove domain invite](#remove-domain-invite)
-  - [Members](#members)
-    - [Update domain member](#update-domain-member)
-    - [Remove domain member](#remove-domain-member)
-  - [Aliases](#aliases)
-    - [Generate an alias password](#generate-an-alias-password)
-    - [List domain aliases](#list-domain-aliases)
-    - [Create new domain alias](#create-new-domain-alias)
-    - [Retrieve domain alias](#retrieve-domain-alias)
-    - [Update domain alias](#update-domain-alias)
-    - [Delete domain alias](#delete-domain-alias)
-  - [Encrypt](#encrypt)
-    - [Encrypt TXT Record](#encrypt-txt-record)
+* [Libraries](#libraries)
+* [Base URI](#base-uri)
+* [Authentication](#authentication)
+* [Errors](#errors)
+* [Localization](#localization)
+* [Pagination](#pagination)
+* [Logs](#logs)
+  * [Retrieve logs](#retrieve-logs)
+* [Account](#account)
+  * [Create account](#create-account)
+  * [Retrieve account](#retrieve-account)
+  * [Update account](#update-account)
+* [Emails](#emails)
+  * [Get email limit](#get-email-limit)
+  * [List emails](#list-emails)
+  * [Create email](#create-email)
+  * [Retrieve email](#retrieve-email)
+  * [Delete email](#delete-email)
+* [Domains](#domains)
+  * [List domains](#list-domains)
+  * [Create domain](#create-domain)
+  * [Retrieve domain](#retrieve-domain)
+  * [Verify domain records](#verify-domain-records)
+  * [Update domain](#update-domain)
+  * [Delete domain](#delete-domain)
+* [Invites](#invites)
+  * [Accept domain invite](#accept-domain-invite)
+  * [Create domain invite](#create-domain-invite)
+  * [Remove domain invite](#remove-domain-invite)
+* [Members](#members)
+  * [Update domain member](#update-domain-member)
+  * [Remove domain member](#remove-domain-member)
+* [Aliases](#aliases)
+  * [Generate an alias password](#generate-an-alias-password)
+  * [List domain aliases](#list-domain-aliases)
+  * [Create new domain alias](#create-new-domain-alias)
+  * [Retrieve domain alias](#retrieve-domain-alias)
+  * [Update domain alias](#update-domain-alias)
+  * [Delete domain alias](#delete-domain-alias)
+* [Encrypt](#encrypt)
+  * [Encrypt TXT Record](#encrypt-txt-record)
 
 
 ## Libraries
@@ -637,6 +635,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
+
 ## Encrypt
 
 We allow you to encrypt records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product.  As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on [our GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.
@@ -645,9 +644,9 @@ We allow you to encrypt records even on the free plan at no cost.  Privacy shoul
 
 > `POST /v1/encrypt`
 
-| Body Parameter               | Required | Type            | Description                                                                                                                                                                                                                                                                                                                                                                                 |
-| ---------------------------- | -------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `input`                      | Yes      | String          | Any valid Forward Email plaintext TXT record                                                                                                                                                                                                                                                                                                                                                                                  |
+| Body Parameter | Required | Type   | Description                                  |
+| -------------- | -------- | ------ | -------------------------------------------- |
+| `input`        | Yes      | String | Any valid Forward Email plaintext TXT record |
 
 > Example Request:
 
