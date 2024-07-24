@@ -49,7 +49,7 @@ if alias
           = t('Use an asterisk "*" for a catch-all alias.')
           if !domain
             = " "
-            = t('Catch-all aliases are not supported on vanity and disposable domains that we provide.')
+            = t("Catch-all aliases are not supported on vanity and disposable domains that we provide.")
       if !domain || !domain.is_global
         li.list-inline-item.small.text-black.text-themed-50!= t('We also support <a href="%s" target="_blank">regular expressions</a>.', l("/faq#do-you-support-regular-expressions-or-regex"))
   if !domain
