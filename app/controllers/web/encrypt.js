@@ -15,8 +15,8 @@ async function encryptTxt(ctx) {
     throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
 
   ctx.request.body.input = ctx.request.body.input
-    .replace('forward-email=', '')
-    .replace('forward-email-port=', '');
+    .replace(/forward-email=/i, '')
+    .replace(/forward-email-port=/i, '');
 
   if (
     ctx.request.body.input
@@ -25,7 +25,6 @@ async function encryptTxt(ctx) {
   )
     throw Boom.badRequest(ctx.translateError('INPUT_HAD_FE_SV'));
 
-  // this is the output from encrypt() invocation
   const encryptedValue = await encrypt(
     ctx.request.body.input,
     12,
