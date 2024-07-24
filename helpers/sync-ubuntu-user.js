@@ -533,37 +533,44 @@ async function syncUbuntuUser(user, map) {
               domain: domain._id
             });
 
-            // email admins
-            const key = `${keyPrefix}:${revHash(err.message)}`;
-            const cache = await client.get(key);
+            //
+            // only email admins if one of two cases:
+            // 1) the user was found in the `map` for the team
+            // 2) the user was a member of the team already
+            //
+            if (isMember || map.get(name).has(user[fields.ubuntuUsername])) {
+              // email admins
+              const key = `${keyPrefix}:${revHash(err.message)}`;
+              const cache = await client.get(key);
 
-            if (!cache) {
-              try {
-                await emailHelper({
-                  template: 'alert',
-                  message: {
-                    to: user.email,
-                    cc: adminEmailsForDomain,
-                    bcc: config.email.message.from,
-                    subject: `${emoji('wastebasket')} ${user[
-                      fields.ubuntuUsername
-                    ].toLowerCase()}@${domain.name} ${
-                      isMember ? 'removed' : 'not added'
-                    } due to invalidity`
-                  },
-                  locals: {
-                    message: `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
-                      domain.name
-                    } was ${
-                      isMember ? 'removed' : 'not added'
-                    } for the following invalidity reason from ${teamName}:</p><p>${
-                      err.message
-                    }</p>`
-                  }
-                });
-                await client.set(key, true, 'PX', ms('30d'));
-              } catch (err) {
-                await logger.fatal(err);
+              if (!cache) {
+                try {
+                  await emailHelper({
+                    template: 'alert',
+                    message: {
+                      to: user.email,
+                      cc: adminEmailsForDomain,
+                      bcc: config.email.message.from,
+                      subject: `${emoji('wastebasket')} ${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${domain.name} ${
+                        isMember ? 'removed' : 'not added'
+                      } due to invalidity`
+                    },
+                    locals: {
+                      message: `<p>${user[
+                        fields.ubuntuUsername
+                      ].toLowerCase()}@${domain.name} was ${
+                        isMember ? 'removed' : 'not added'
+                      } for the following invalidity reason from ${teamName}:</p><p>${
+                        err.message
+                      }</p>`
+                    }
+                  });
+                  await client.set(key, true, 'PX', ms('30d'));
+                } catch (err) {
+                  await logger.fatal(err);
+                }
               }
             }
           } catch (err) {
