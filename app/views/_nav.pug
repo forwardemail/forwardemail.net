@@ -398,7 +398,7 @@ nav.navbar(class=navbarClasses.join(" "))
           //- Resources
           if !isBot(ctx.get('User-Agent'))
             - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
-            - const companyPages = ["/about", "/privacy", "/terms", "/report-abuse"];
+            - const companyPages = ["/about", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
             - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && !boolean(ctx.query.pricing)) || companyPages.includes(ctx.pathWithoutLocale));
             li.nav-item.dropdown.no-js
               form.mb-0
@@ -470,7 +470,12 @@ nav.navbar(class=navbarClasses.join(" "))
                       href=l(companyPage),
                       class=ctx.pathWithoutLocale === companyPage ? "active" : ""
                     )
-                      = t(titleize(humanize(companyPage.replace("/", ""))))
+                      if companyPage === '/gdpr'
+                        = t("GDPR")
+                      else if companyPage === '/dpa'
+                        = t("DPA")
+                      else
+                        = t(titleize(humanize(companyPage.replace("/", ""))))
                   a.dropdown-item(
                     href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
                     target="_blank",

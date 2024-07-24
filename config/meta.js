@@ -83,6 +83,11 @@ module.exports = function (config) {
       'Terms of Service',
       'Read our terms and conditions of use for our email forwarding service.'
     ],
+    '/gdpr': ['GDPR Compliance', 'Read how our service is GDPR compliant.'],
+    '/dpa': [
+      'Data Processing Agreement',
+      'Read our data processing agreement, terms of service, and how our service is GDPR compliant.'
+    ],
     '/report-abuse': [
       'Report Abuse',
       'Information on how to report abuse for the general public and law enforcement.'

@@ -18,12 +18,11 @@ Please defer to our [Terms](/terms) as it applies sitewide.
 
 ## Information Not Collected
 
-**With the [exception of errors](/faq#do-you-store-error-logs), [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp), and/or when spam or malicious activity is detected:**
+**With the exception of [errors](/faq#do-you-store-error-logs), [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp), and/or when spam or malicious activity is detected (e.g. for rate limiting):**
 
 * We do not store any emails to disk storage nor databases.
-* We do not store any metadata about emails.
-* We do not store any logs for SMTP traffic.
-* We do not store any IP addresses for SMTP traffic.
+* We do not store any metadata about emails to disk storage nor databases.
+* We do not store any logs or IP addresses to disk storage nor databases.
 
 
 ## Information Collected
@@ -32,12 +31,18 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 
 **Strictly for functionality and to improve our service, we collect and store securely the following information:**
 
+* We store emails and calendar information in your [encrypted SQLite database](/blog/docs/best-quantum-safe-encrypted-email-service) strictly for your IMAP/POP3/CalDAV access and mailbox functionality.
+  * Note that if you are using our email forwarding services only, then no emails are stored to disk or database store as described in [Information Not Collected](#information-not-collected).  Our email forwarding services operate in-memory only.
 * We store a cookie in a session for your website traffic.
 * We store your email address that you provide us with.
-* We store your domain names, aliases, and outbound SMTP emails that you provide us with.
-* We store logs for 30 days for website and API traffic.
+* We store your domain names, aliases, and configurations that you provide us with.
 * We store `4xx` and `5xx` SMTP response code [error logs](/faq#do-you-store-error-logs) for 7 days.
-* We store [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp) for \~30 days – this varies based off the "Date" header; since we allow emails to be sent in the future if a future "Date" header exists. **Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.**  If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between `0` and `30`. Some users enjoy using the [My Account > Emails](/my-account/emails) preview feature to see how their emails are rendered, therefore we support a configurable retention period.
+* We store [outbound SMTP emails](/faq#do-you-support-sending-email-with-smtp) for \~30 days.
+  * This length varies based off the "Date" header; since we allow emails to be sent in the future if a future "Date" header exists.
+  * **Note that once an email is successfully delivered or permanently errors, then we will redact and purge the message body.**
+  * If you would like to configure your outbound SMTP email message body to be retained longer than the default of 0 days (after successfully delivery or permanent error), then go to Advanced Settings for your domain and enter a value between `0` and `30`.
+  * Some users enjoy using the [My Account > Emails](/my-account/emails) preview feature to see how their emails are rendered, therefore we support a configurable retention period.
+  * Note that we also support [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 * Any additional information you voluntarily provide us, such as comments or questions submitted to us by email or on our <a href="/help">help</a> page.
 
 

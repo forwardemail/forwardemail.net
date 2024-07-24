@@ -386,6 +386,8 @@ localeRouter
     ctx.redirect(ctx.state.l('/'));
   })
   .get('/terms', render('terms'))
+  .get('/gdpr', render('gdpr'))
+  .get('/dpa', render('dpa'))
   .get('/report-abuse', render('report-abuse'))
   .get('/privacy', render('privacy'))
   .get('/open-startup', (ctx) => {

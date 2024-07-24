@@ -47,7 +47,9 @@ Further, Forward Email does not warrant or make any representations concerning t
 * Materials that cause harm or has the potential to cause harm to minors, impersonate another individual or entity, and/or misrepresent an affiliation with an individual or entity.
 * Materials that contain spam, viruses, malware, NSFW materials (indecent, provocative, or profane content), corrupted files, and/or any other software or programs that may damage or has the potential to cause harm to an individual, entity, computer, network, government, service, and/or any other matter.
 
-The materials contained in this web site are protected by applicable copyright and trade mark law.
+The materials contained in this web site are protected by applicable copyright and trademark law.
+
+Your access of our website and usage of our service indicates that you have agreed to our [Privacy Policy](/privacy) and [Data Processing Agreement](/dpa) (e.g. for GDPR compliance).
 
 
 ## Unlimited Usage
