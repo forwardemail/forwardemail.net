@@ -42,10 +42,13 @@
             = " "
           = t("Published")
         .dayjs(
-          data-time=dayjs().startOf("month").toDate().getTime(),
+          data-time=publishedISOString ? new Date(publishedISOString).getTime() : dayjs().startOf("month").toDate().getTime(),
           data-time-style="false"
         )
-          = dayjs().startOf("month").format("M/D/YY")
+          if publishedISOString
+            = dayjs(new Date(publishedISOString)).format("M/D/YY")
+          else
+            = dayjs().startOf("month").format("M/D/YY")
     .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed
       div
         .small

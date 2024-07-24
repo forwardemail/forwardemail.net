@@ -463,6 +463,10 @@ for (const route of Object.keys(useCases)) {
     route,
     web.myAccount.retrieveDomains,
     web.myAccount.sortedDomains,
+    (ctx, next) => {
+      ctx.state.canonical = `${config.urls.web}/${ctx.locale}/private-business-email`;
+      return next();
+    },
     render('pricing')
   );
 }
@@ -490,7 +494,7 @@ if (platforms.length > 0) {
   localeRouter.get('/blog/open-source', render('open-source'));
 }
 
-for (const platform of platforms) {
+for (const [x, platform] of platforms.entries()) {
   // legacy redirect
   localeRouter.get(`/open-source/${dashify(platform)}-email-server`, (ctx) => {
     ctx.status = 301;
@@ -501,6 +505,11 @@ for (const platform of platforms) {
   localeRouter.get(
     `/blog/open-source/${dashify(platform)}-email-server`,
     (ctx, next) => {
+      // override open graph to arbitrarily update publish time
+      ctx.state.publishedISOString = dayjs()
+        .startOf('day')
+        .subtract(x, 'days')
+        .toISOString();
       ctx.state.platform = platform;
       return next();
     },
@@ -516,6 +525,11 @@ for (const platform of platforms) {
   localeRouter.get(
     `/blog/open-source/${dashify(platform)}-email-clients`,
     (ctx, next) => {
+      // override open graph to arbitrarily update publish time
+      ctx.state.publishedISOString = dayjs()
+        .startOf('day')
+        .subtract(x, 'days')
+        .toISOString();
       ctx.state.platform = platform;
       return next();
     },
@@ -534,10 +548,16 @@ localeRouter.get('/guides/name.com', (ctx) => {
   ctx.redirect(ctx.state.l('/guides/name-com'));
 });
 
-for (const provider of nsProviders) {
+for (const [x, provider] of nsProviders.entries()) {
   localeRouter.get(
     `/guides/${provider.slug}`,
     (ctx, next) => {
+      // override open graph to arbitrarily update publish time
+      ctx.state.publishedISOString = dayjs()
+        .startOf('day')
+        .subtract(x, 'days')
+        .toISOString();
+
       // set open graph data
       if (provider.video) ctx.state.video = provider.video;
       if (provider.gif) ctx.state.gif = provider.gif;
@@ -626,7 +646,8 @@ localeRouter.get('/blog/best-email-api-developer-service', (ctx) => {
   return ctx.render('compare');
 });
 
-for (const alternative of config.alternatives) {
+for (let x = 0; x < config.alternatives.length; x++) {
+  const alternative = config.alternatives[x];
   localeRouter.get(`/blog/best-${alternative.slug}-alternative`, (ctx) => {
     // sort and push to top (below FE)
     const alts = [];
@@ -642,16 +663,59 @@ for (const alternative of config.alternatives) {
       alts.push(alt);
     }
 
+    let sample;
+    if (x < 3) {
+      sample = 'Top';
+    } else if (x < 6) {
+      sample = 'Best';
+    } else if (x < 9) {
+      sample = 'Top-Rated';
+    } else if (x < 12) {
+      sample = 'Most Popular';
+    } else if (x < 15) {
+      sample = 'Highest-Rated';
+    } else if (x < 18) {
+      sample = 'Greatest';
+    } else if (x < 21) {
+      sample = 'Amazing';
+    } else if (x < 24) {
+      sample = 'Excellent';
+    } else if (x < 27) {
+      sample = 'Favorited';
+    } else if (x < 30) {
+      sample = 'Notable';
+    } else if (x < 33) {
+      sample = 'Leading';
+    } else if (x < 36) {
+      sample = 'Outstanding';
+    } else if (x < 39) {
+      sample = 'Important';
+    } else if (x < 41) {
+      sample = 'Mighty';
+    } else if (x < 44) {
+      sample = 'Best';
+    } else {
+      sample = 'Top';
+    }
+
+    // override open graph to arbitrarily update publish time
+    ctx.state.publishedISOString = dayjs()
+      .startOf('day')
+      .subtract(x, 'days')
+      .toISOString();
+
     ctx.state.meta.title = ctx.state.t(
-      '<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>',
+      '<span class="notranslate">%d</span> <span class="notranslate">%s</span> <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>',
       config.alternatives.length - 1,
+      ctx.state.t(sample),
       alternative.name,
       dayjs().format('YYYY')
     );
 
     ctx.state.meta.description = ctx.state.t(
-      'Reviews, comparison, screenshots and more for the <span class="notranslate">%d</span> best alternatives to <span class="notranslate">%s</span> email service.',
+      'Reviews, comparison, screenshots and more for the <span class="notranslate">%d</span> <span class="notranslate">%s</span> alternatives to <span class="notranslate">%s</span> email service.',
       config.alternatives.length - 1,
+      ctx.state.t(sample.toLowerCase()),
       alternative.name
     );
 
