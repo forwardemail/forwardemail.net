@@ -12,7 +12,7 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
 
-const BOOLEAN_KEYS = ['is_valid', 'is_ubuntu_coc_signer'];
+// const BOOLEAN_KEYS = ['is_valid', 'is_ubuntu_coc_signer'];
 
 function addToSet(entries, set) {
   if (!_.isArray(entries))
@@ -28,6 +28,7 @@ function addToSet(entries, set) {
     if (!isSANB(entry.name))
       throw new TypeError('Entry in "entries" was missing "name" property');
 
+    /*
     // validate booleans
     for (const key of BOOLEAN_KEYS) {
       if (typeof entry[key] !== 'boolean')
@@ -44,6 +45,8 @@ function addToSet(entries, set) {
       logger.debug(`adding ${entry.name}`);
       set.add(entry.name);
     }
+    */
+    set.add(entry.name);
   }
 }
 

@@ -778,6 +778,12 @@ Aliases.statics.isOverQuota = async function (
     }
   }
 
+  //
+  // TODO: this gets the storage used across the entire domain
+  // so we need to check this + `size` against either
+  // the larger value of either user.storage_quota
+  // or the sum of all admins's storage quota on team plan if domain is on team plan
+  //
   if (!storageUsed) storageUsed = await getStorageUsed.call(this, alias);
 
   // TODO: allow users to purchase more storage (tied to their user.storage_quota)
