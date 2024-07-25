@@ -9623,7 +9623,7 @@
   "Note that you": "Huomaa, että sinä",
   "should": "pitäisi",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "Säilytä \":\"-kartoitus, koska se on pakollinen, jos päätät joskus kytkeä tämän pois päältä (ja sitä käytetään myös tuomiseen, jos päivität johonkin maksullisista sopimuksistamme).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Hiljaiselle hylkäämiselle (näkyy lähettäjälle kuin viesti olisi lähetetty onnistuneesti, mutta todellisuudessa ei mene minnekään) (tilakoodi",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Hiljaiselle hylkäämiselle (näkyy lähettäjälle kuin viesti olisi lähetetty onnistuneesti, mutta todellisuudessa ei mene minnekään) (tilakoodi",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Jos lisäät aliaksen eteen \"!\" (yksi huutomerkki), se palauttaa onnistuneen tilakoodin",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "lähettäjille, jotka yrittävät lähettää tähän osoitteeseen, mutta itse sähköpostit eivät mene minnekään (esim. mustaan aukkoon tai",
   "For soft reject (status code": "Pehmeälle hylkäämiselle (tilakoodi",

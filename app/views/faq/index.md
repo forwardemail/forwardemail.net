@@ -3223,7 +3223,7 @@ Yes, simply edit your DNS <strong class="notranslate">TXT</strong> record and pr
 
 Note that you *should* preserve the ":" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).
 
-**For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
+**For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code `250`):** If you prefix an alias with "!" (single exclamation mark) then it will return a successful status code of `250` to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or `/dev/null`).
 
 **For soft reject (status code `421`):** If you prefix an alias with "!!" (double exclamation mark) then it will return a soft error status code of `421` to senders attempting to send to this address, and the emails will often be retried for up to 5 days before rejection and bounce.
 

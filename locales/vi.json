@@ -7300,7 +7300,7 @@
   "Note that you": "Lưu ý rằng bạn",
   "should": "nên",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "giữ nguyên ánh xạ ://, vì điều này là bắt buộc nếu bạn quyết định tắt tính năng này (và nó cũng được sử dụng để nhập nếu bạn nâng cấp lên một trong các gói trả phí của chúng tôi).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Để từ chối thầm lặng (xuất hiện với người gửi như thể tin nhắn đã được gửi thành công nhưng thực tế không đi đến đâu) (mã trạng thái",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Để từ chối thầm lặng (xuất hiện với người gửi như thể tin nhắn đã được gửi thành công nhưng thực tế không đi đến đâu) (mã trạng thái",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Nếu bạn đặt tiền tố bí danh bằng \"!\" (dấu chấm than đơn) thì sẽ trả về mã trạng thái thành công là",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "tới những người gửi đang cố gắng gửi đến địa chỉ này, nhưng bản thân các email sẽ chẳng đi đến đâu (ví dụ: lỗ đen hoặc",
   "For soft reject (status code": "Đối với từ chối mềm (mã trạng thái",

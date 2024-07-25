@@ -9776,7 +9776,7 @@
   "Note that you": "Perhatikan bahwa Anda",
   "should": "sebaiknya",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "pertahankan pemetaan \":\", karena ini diperlukan jika Anda memutuskan untuk menonaktifkannya (dan ini juga digunakan untuk mengimpor jika Anda meningkatkan ke salah satu paket berbayar kami).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Untuk penolakan diam-diam (tampak bagi pengirim seolah-olah pesan berhasil dikirim, namun sebenarnya tidak sampai ke mana pun) (kode status",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Untuk penolakan diam-diam (tampak bagi pengirim seolah-olah pesan berhasil dikirim, namun sebenarnya tidak sampai ke mana pun) (kode status",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Jika Anda mengawali alias dengan \"!\" (tanda seru tunggal) maka akan mengembalikan kode status sukses",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "kepada pengirim yang mencoba mengirim ke alamat ini, namun emailnya sendiri tidak akan kemana-mana (misalnya lubang hitam atau",
   "For soft reject (status code": "Untuk penolakan lunak (kode status",

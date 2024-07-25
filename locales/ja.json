@@ -9776,7 +9776,7 @@
   "Note that you": "注意してください",
   "should": "すべき",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "「:」マッピングを保持してください。これは、これをオフにすることにした場合に必要になります (有料プランのいずれかにアップグレードする場合、インポートにも使用されます)。",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "静かな拒否（送信者にはメッセージが正常に送信されたように見えるが、実際にはどこにも送信されない）（ステータスコード",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "静かな拒否（送信者にはメッセージが正常に送信されたように見えるが、実際にはどこにも送信されない）（ステータスコード",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "エイリアスの前に「！」（感嘆符1つ）を付けると、成功のステータスコードが返されます。",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "このアドレスに送信しようとする送信者にはメールが届きますが、メール自体はどこにも届きません（ブラックホールや",
   "For soft reject (status code": "ソフト拒否（ステータスコード",

@@ -9776,7 +9776,7 @@
   "Note that you": "Observera att du",
   "should": "skall",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "bevara \":\"-mappningen, eftersom denna krävs om du någonsin bestämmer dig för att stänga av den här (och den används också för import om du uppgraderar till en av våra betalplaner).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "För tyst avvisning (för avsändaren verkar det som om meddelandet skickades framgångsrikt, men går faktiskt ingenstans) (statuskod",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "För tyst avvisning (för avsändaren verkar det som om meddelandet skickades framgångsrikt, men går faktiskt ingenstans) (statuskod",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Om du prefix ett alias med \"!\" (enkelt utropstecken) så kommer den att returnera en framgångsrik statuskod på",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "till avsändare som försöker skicka till den här adressen, men själva e-postmeddelandena kommer ingenstans (t.ex. ett svart hål eller",
   "For soft reject (status code": "För mjukt avslag (statuskod",

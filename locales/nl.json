@@ -9776,7 +9776,7 @@
   "Note that you": "Merk op dat jij",
   "should": "zou moeten",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "bewaar de phor-toewijzing, aangezien dit vereist is als u ooit besluit dit uit te schakelen (en het wordt ook gebruikt voor het importeren als u upgradet naar een van onze betaalde abonnementen).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Voor stille weigering (lijkt voor de afzender alsof het bericht succesvol is verzonden, maar leidt feitelijk nergens toe) (statuscode",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Voor stille weigering (lijkt voor de afzender alsof het bericht succesvol is verzonden, maar leidt feitelijk nergens toe) (statuscode",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Als u een alias voorafgaat met \"!\" (enkel uitroepteken), dan retourneert het een succesvolle statuscode van",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "aan afzenders die naar dit adres proberen te verzenden, maar de e-mails zelf zullen nergens heen gaan (bijvoorbeeld een zwart gat of",
   "For soft reject (status code": "Voor zachte afwijzing (statuscode",

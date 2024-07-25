@@ -9776,7 +9776,7 @@
   "Note that you": "Všimněte si, že vy",
   "should": "by měl",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "zachovejte mapování \":\", protože je vyžadováno, pokud se někdy rozhodnete toto vypnout (a také se používá pro import, pokud upgradujete na jeden z našich placených plánů).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Pro tiché odmítnutí (odesílateli se jeví, jako by byla zpráva odeslána úspěšně, ale ve skutečnosti nikam nevede) (stavový kód",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Pro tiché odmítnutí (odesílateli se jeví, jako by byla zpráva odeslána úspěšně, ale ve skutečnosti nikam nevede) (stavový kód",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Pokud před aliasem přidáte \"!\" (jeden vykřičník), pak vrátí úspěšný stavový kód",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "odesílatelům, kteří se pokoušejí odeslat na tuto adresu, ale samotné e-maily nikam neodejdou (např. černá díra nebo",
   "For soft reject (status code": "Pro měkké odmítnutí (stavový kód",

@@ -7791,7 +7791,7 @@
   "Note that you": "שימו לב שאתם",
   "should": "צריך",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "שמרו על המיפוי \":\", שכן זה נדרש אם אי פעם תחליט לכבות זאת (והוא משמש גם לייבוא אם אתה משדרג לאחת מהתוכניות בתשלום שלנו).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "לדחייה שקטה (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אבל למעשה לא הולכת לשום מקום) (קוד סטטוס",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "לדחייה שקטה (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אבל למעשה לא הולכת לשום מקום) (קוד סטטוס",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "אם תקדימו כינוי עם \"!\" (סימן קריאה בודד) ואז הוא יחזיר קוד סטטוס מוצלח של",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "לשולחים המנסים לשלוח לכתובת זו, אך המיילים עצמם לא יגיעו לשום מקום (למשל חור שחור או",
   "For soft reject (status code": "לדחייה רכה (קוד סטטוס",

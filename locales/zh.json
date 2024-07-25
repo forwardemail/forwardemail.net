@@ -9469,7 +9469,7 @@
   "Note that you": "请注意",
   "should": "应该",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "保留“：”映射，因为如果您决定关闭此功能，则需要此功能（如果您升级到我们的付费计划之一，它也会用于导入）。",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "对于静默拒绝（在发送者看来，消息已成功发送，但实际上没有到达任何地方）（状态代码",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "对于静默拒绝（在发送者看来，消息已成功发送，但实际上没有到达任何地方）（状态代码",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "如果在别名前加上“！”（单个感叹号），则它将返回成功状态代码",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "发件人尝试发送邮件到此地址，但邮件本身却无处可去（例如黑洞或",
   "For soft reject (status code": "对于软拒绝（状态代码",

@@ -6728,7 +6728,7 @@
   "Note that you": "Bemærk at du",
   "should": "bør",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "bevar \":\"-tilknytningen, da dette er påkrævet, hvis du nogensinde beslutter dig for at slå dette fra (og det bruges også til import, hvis du opgraderer til en af vores betalte planer).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "For stille afvisning (ser ud for afsenderen, som om beskeden blev sendt med succes, men går faktisk ingen vegne) (statuskode",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "For stille afvisning (ser ud for afsenderen, som om beskeden blev sendt med succes, men går faktisk ingen vegne) (statuskode",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Hvis du præfikser et alias med \"!\" (enkelt udråbstegn), så vil den returnere en vellykket statuskode på",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "til afsendere, der forsøger at sende til denne adresse, men selve e-mails vil ikke gå nogen steder (f.eks. et sort hul eller",
   "For soft reject (status code": "For blød afvisning (statuskode",

@@ -7295,7 +7295,7 @@
   "Note that you": "Notez que vous",
   "should": "devrait",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "conservez le mappage \":\", car il est requis si jamais vous décidez de le désactiver (et il est également utilisé pour l'importation si vous passez à l'un de nos forfaits payants).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Pour un rejet discret (apparaît à l'expéditeur comme si le message avait été envoyé avec succès, mais ne mène en réalité nulle part) (code d'état",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Pour un rejet discret (apparaît à l'expéditeur comme si le message avait été envoyé avec succès, mais ne mène en réalité nulle part) (code d'état",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Si vous préfixez un alias avec \"!\" (un seul point d'exclamation), il renverra un code d'état réussi de",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "aux expéditeurs qui tentent d'envoyer à cette adresse, mais les e-mails eux-mêmes n'iront nulle part (par exemple un trou noir ou",
   "For soft reject (status code": "Pour le rejet logiciel (code d'état",

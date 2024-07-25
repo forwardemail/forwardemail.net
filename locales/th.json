@@ -9776,7 +9776,7 @@
   "Note that you": "โปรดทราบว่าคุณ",
   "should": "ควร",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "คงการแมป /// เอาไว้ เนื่องจากจำเป็นหากคุณตัดสินใจที่จะปิดการทำงานนี้ (และยังใช้สำหรับการนำเข้าหากคุณอัปเกรดเป็นแผนแบบชำระเงินแผนใดแผนหนึ่งของเรา)",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "สำหรับการปฏิเสธแบบเงียบ (ปรากฏต่อผู้ส่งราวกับว่าข้อความถูกส่งสำเร็จ แต่จริงๆ แล้วไม่ได้ไปไหนเลย) (รหัสสถานะ",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "สำหรับการปฏิเสธแบบเงียบ (ปรากฏต่อผู้ส่งราวกับว่าข้อความถูกส่งสำเร็จ แต่จริงๆ แล้วไม่ได้ไปไหนเลย) (รหัสสถานะ",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "หากคุณนำหน้านามแฝงด้วย \"!\" (เครื่องหมายอัศเจรีย์เดียว) จากนั้นจะส่งคืนรหัสสถานะที่สำเร็จของ",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "ถึงผู้ส่งที่พยายามส่งไปยังที่อยู่นี้ แต่ตัวอีเมลเองจะไม่ไปไหนเลย (เช่น หลุมดำ หรือ",
   "For soft reject (status code": "สำหรับการปฏิเสธแบบนุ่มนวล (รหัสสถานะ",

@@ -9776,7 +9776,7 @@
   "Note that you": "Обратите внимание, что вы",
   "should": "должен",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "сохраните сопоставление «:», так как оно потребуется, если вы когда-нибудь решите отключить его (а также оно будет использоваться для импорта, если вы перейдете на один из наших платных планов).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Для тихого отклонения (отправителю кажется, что сообщение было отправлено успешно, но на самом деле оно никуда не уходит) (код состояния",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Для тихого отклонения (отправителю кажется, что сообщение было отправлено успешно, но на самом деле оно никуда не уходит) (код состояния",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Если вы добавляете к псевдониму префикс \"!\" (один восклицательный знак), то он вернет успешный код состояния",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "отправителям, пытающимся отправить на этот адрес, но сами электронные письма никуда не пойдут (например, в черную дыру или",
   "For soft reject (status code": "Для мягкого отклонения (код состояния",

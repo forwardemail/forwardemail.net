@@ -9776,7 +9776,7 @@
   "Note that you": "당신은",
   "should": "~해야 한다",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "\":\" 매핑을 유지하세요. 이 기능을 끄기로 결정한 경우 필요하므로 이 매핑은 유료 플랜 중 하나로 업그레이드하는 경우 가져오기에도 사용됩니다.",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "조용한 거부(발신자에게는 메시지가 성공적으로 전송된 것처럼 보이지만 실제로는 아무데도 가지 않음)(상태 코드",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "조용한 거부(발신자에게는 메시지가 성공적으로 전송된 것처럼 보이지만 실제로는 아무데도 가지 않음)(상태 코드",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "별칭 앞에 \"!\"를 붙인 경우 (느낌표 하나) 다음과 같은 성공 상태 코드가 반환됩니다.",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "이 주소로 전송을 시도하는 발신자에게 전송되지만 이메일 자체는 아무데도 가지 않습니다(예: 블랙홀 또는",
   "For soft reject (status code": "소프트 거부의 경우(상태 코드",

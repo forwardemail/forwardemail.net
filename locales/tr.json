@@ -9776,7 +9776,7 @@
   "Note that you": "unutmayın ki",
   "should": "meli",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "\":\" eşlemesini koruyun, çünkü bunu kapatmaya karar verirseniz bu gereklidir (ve ayrıca ücretli planlarımızdan birine yükseltme yaptığınızda içe aktarma için de kullanılır).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Sessiz reddetme için (gönderene mesaj başarılı bir şekilde gönderilmiş gibi görünür ancak aslında hiçbir yere gitmez) (durum kodu)",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Sessiz reddetme için (gönderene mesaj başarılı bir şekilde gönderilmiş gibi görünür ancak aslında hiçbir yere gitmez) (durum kodu)",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Bir takma adın önüne \"!\" eklerseniz (tek ünlem işareti), başarılı bir durum kodu döndürecektir.",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "Bu adrese gönderim yapmaya çalışan gönderenlere, ancak e-postaların kendisi hiçbir yere gitmeyecektir (örn. bir kara delik veya",
   "For soft reject (status code": "Geçici reddetme için (durum kodu",

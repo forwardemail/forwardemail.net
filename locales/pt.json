@@ -9776,7 +9776,7 @@
   "Note that you": "Observe que você",
   "should": "deve",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "preserve o mapeamento \":\", pois ele será necessário se você decidir desativá-lo (e também será usado para importação se você atualizar para um de nossos planos pagos).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Para rejeição silenciosa (parece ao remetente que a mensagem foi enviada com sucesso, mas na verdade não leva a lugar nenhum) (código de status",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Para rejeição silenciosa (parece ao remetente que a mensagem foi enviada com sucesso, mas na verdade não leva a lugar nenhum) (código de status",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Se você prefixar um alias com \"!\" (ponto de exclamação único), ele retornará um código de status de sucesso de",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "para remetentes que tentam enviar para este endereço, mas os próprios e-mails não levarão a lugar nenhum (por exemplo, um buraco negro ou",
   "For soft reject (status code": "Para rejeição suave (código de status",

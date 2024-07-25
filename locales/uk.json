@@ -9776,7 +9776,7 @@
   "Note that you": "Зверніть увагу, що ви",
   "should": "повинен",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "збережіть зіставлення \":\", оскільки це потрібно, якщо ви колись вирішите вимкнути це (і воно також використовується для імпорту, якщо ви оновитесь до одного з наших платних планів).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Для тихого відхилення (здається відправнику, ніби повідомлення було надіслано успішно, але насправді нікуди не йде) (код стану",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Для тихого відхилення (здається відправнику, ніби повідомлення було надіслано успішно, але насправді нікуди не йде) (код стану",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Якщо перед псевдонімом додати \"!\" (один знак оклику), тоді він поверне успішний код статусу",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "відправникам, які намагаються надіслати на цю адресу, але самі електронні листи нікуди не підуть (наприклад, чорна діра або",
   "For soft reject (status code": "Для м’якого відхилення (код стану",

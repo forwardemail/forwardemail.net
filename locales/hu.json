@@ -9776,7 +9776,7 @@
   "Note that you": "Vegye figyelembe, hogy Ön",
   "should": "kellene",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "őrizze meg a \":\" leképezést, mivel ez szükséges, ha úgy dönt, hogy kikapcsolja (és az importáláshoz is felhasználja, ha valamelyik fizetős csomagunkra frissít).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Csendes elutasításhoz (a feladónak úgy tűnik, mintha az üzenetet sikeresen elküldték volna, de valójában nem megy sehova) (állapotkód",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Csendes elutasításhoz (a feladónak úgy tűnik, mintha az üzenetet sikeresen elküldték volna, de valójában nem megy sehova) (állapotkód",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Ha egy aliast \"!\" (egyetlen felkiáltójel), akkor a sikeres állapotkódot adja vissza",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "azoknak a feladóknak, akik erre a címre próbálnak küldeni, de maguk az e-mailek sehova sem mennek (pl. fekete lyuk vagy",
   "For soft reject (status code": "Lágy elutasításhoz (állapotkód",

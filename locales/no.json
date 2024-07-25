@@ -9781,7 +9781,7 @@
   "Note that you": "Merk at du",
   "should": "bør",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "behold \":\"-tilordningen, siden dette er nødvendig hvis du noen gang bestemmer deg for å slå dette av (og det brukes også til import hvis du oppgraderer til en av våre betalte planer).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "For stille avvisning (ser ut for avsender som om meldingen ble sendt vellykket, men går faktisk ingensteds) (statuskode",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "For stille avvisning (ser ut for avsender som om meldingen ble sendt vellykket, men går faktisk ingensteds) (statuskode",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Hvis du prefikser et alias med \"!\" (enkelt utropstegn) så vil den returnere en vellykket statuskode på",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "til avsendere som prøver å sende til denne adressen, men selve e-postene vil ikke gå noen vei (f.eks. et svart hull eller",
   "For soft reject (status code": "For myk avvisning (statuskode",

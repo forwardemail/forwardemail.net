@@ -8814,7 +8814,7 @@
   "Note that you": "Beachten Sie, dass Sie",
   "should": "sollen",
   "preserve the \":\" mapping, as this is required if you ever decide to toggle this off (and it's also used for importing if you upgrade to one of our paid plans).": "Behalten Sie die „:“-Zuordnung bei, da diese erforderlich ist, falls Sie sich jemals dazu entscheiden, sie auszuschalten (und sie wird auch für den Import verwendet, wenn Sie auf einen unserer kostenpflichtigen Pläne upgraden).",
-  "For quiet reject (appears to sender as if the message was sent succesfully, but actually goes nowhere) (status code": "Für stille Ablehnung (es sieht für den Absender so aus, als ob die Nachricht erfolgreich gesendet wurde, geht aber in Wirklichkeit nirgendwo hin) (Statuscode",
+  "For quiet reject (appears to sender as if the message was sent successfully, but actually goes nowhere) (status code": "Für stille Ablehnung (es sieht für den Absender so aus, als ob die Nachricht erfolgreich gesendet wurde, geht aber in Wirklichkeit nirgendwo hin) (Statuscode",
   "If you prefix an alias with \"!\" (single exclamation mark) then it will return a successful status code of": "Wenn Sie einem Alias ein \"!\" (einzelnes Ausrufezeichen) voranstellen, wird ein erfolgreicher Statuscode zurückgegeben von",
   "to senders attempting to send to this address, but the emails themselves will go nowhere (e.g. a blackhole or": "an Absender, die versuchen, an diese Adresse zu senden, aber die E-Mails selbst werden nirgendwo hingehen (z. B. ein Blackhole oder",
   "For soft reject (status code": "Für Soft Reject (Statuscode",
