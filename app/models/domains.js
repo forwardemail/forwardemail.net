@@ -1929,9 +1929,23 @@ async function getTxtAddresses(
       // addr[1] = forwardemail@gmail.com (forwarding email)
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
+        // !foo
+        let name = addr[0].slice(1);
+        let errorCode = 250;
+        if (addr[0].indexOf('!!!') === 0) {
+          // !!!foo -> 550
+          name = addr[0].slice(3);
+          errorCode = 550;
+        } else if (addr[0].indexOf('!!') === 0) {
+          // !!foo -> 421
+          name = addr[0].slice(2);
+          errorCode = 421;
+        }
+
         ignoredAddresses.push({
-          name: addr[0].slice(1),
-          recipient: isSANB(addr[1]) ? addr[1] : false
+          name,
+          recipient: isSANB(addr[1]) ? addr[1] : false,
+          error_code_if_disabled: errorCode
         });
         continue;
       }

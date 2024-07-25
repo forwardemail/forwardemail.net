@@ -170,6 +170,22 @@ if !domain || (domain && !domain.is_global)
   )
   label.form-check-label(for="input-is-enabled")= t("Active")
   p.form-text.small.text-black.text-themed-50= t("If you uncheck this, then this email will be deactivated and no emails will flow through.  However emails will NOT bounce until this alias is completely deleted.")
+//- error_code_if_disabled
+.form-group
+  label(for='select-error-code-if-disabled')= t("If the alias is not active (disabled), then this error code will be returned when a sender attempts to send email to this alias.")
+  select#select-error-code-if-disabled.form-control(name='error_code_if_disabled')
+    option(value=250, selected=!alias || alias.error_code_if_disabled === 250)
+      = '250'
+      = ' '
+      = t("Quiet reject; routed nowhere (e.g. blackhole)")
+    option(value=421, selected=alias && alias.error_code_if_disabled === 421)
+      = '421'
+      = ' '
+      = t("Soft reject; retry for approximately 5 days")
+    option(value=550, selected=alias && alias.error_code_if_disabled === 550)
+      = '550'
+      = ' '
+      = t("Hard reject; permanent failure, (e.g. mailbox does not exist)")
 if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
   .form-group.form-check
     input#input-has-pgp.form-check-input(

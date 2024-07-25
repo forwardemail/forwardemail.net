@@ -20,7 +20,8 @@ function validateAlias(ctx, next) {
     'name',
     'description',
     'labels',
-    'recipients'
+    'recipients',
+    'error_code_if_disabled'
   ]);
 
   if (!isSANB(body.name)) delete body.name;
@@ -73,6 +74,24 @@ function validateAlias(ctx, next) {
       ctx.request.body.has_recipient_verification
     );
   }
+
+  //
+  // error_code_if_disabled
+  //
+  if (body.error_code_if_disabled === 'string')
+    body.error_code_if_disabled = Number.parseInt(
+      body.error_code_if_disabled,
+      10
+    );
+
+  if (
+    body.error_code_if_disabled !== undefined &&
+    (!Number.isFinite(body.error_code_if_disabled) ||
+      ![250, 421, 550].includes(body.error_code_if_disabled))
+  )
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('INVALID_ERROR_CODE_IF_DISABLED'))
+    );
 
   if (typeof ctx.request.body.is_enabled !== 'undefined' || !ctx.api)
     body.is_enabled = boolean(ctx.request.body.is_enabled);

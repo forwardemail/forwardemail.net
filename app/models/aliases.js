@@ -183,6 +183,11 @@ const Aliases = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  error_code_if_disabled: {
+    type: Number,
+    default: 250,
+    enum: [250, 421, 550]
+  },
   has_recipient_verification: {
     type: Boolean,
     default: false
