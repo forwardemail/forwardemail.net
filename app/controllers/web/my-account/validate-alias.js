@@ -78,7 +78,7 @@ function validateAlias(ctx, next) {
   //
   // error_code_if_disabled
   //
-  if (body.error_code_if_disabled === 'string')
+  if (typeof body.error_code_if_disabled === 'string')
     body.error_code_if_disabled = Number.parseInt(
       body.error_code_if_disabled,
       10
