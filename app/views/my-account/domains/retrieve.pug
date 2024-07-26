@@ -388,16 +388,46 @@ block body
                         td.align-middle: strong.px-2 TXT
                         td.align-middle
                         td.align-middle.text-left.py-3
-                          code#copy-txt.d-block.text-themed.text-nowrap
-                            if domain.plan === 'free'
-                              = `${config.recordPrefix}=${user.email}`
-                            else
-                              = `${config.recordPrefix}-site-verification=${domain.verification_record}`
-                          if !domain.has_txt_record
+                          if domain.plan === 'free'
+                            ul.list-inline
+                              li.list-inline-item
+                                input#copy-fe-record-prefix(
+                                  type="hidden",
+                                  value=`${config.recordPrefix}=${user.email}`
+                                )
+                                button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                                  type="button",
+                                  data-toggle="clipboard",
+                                  data-clipboard-target="#copy-fe-record-prefix"
+                                )
+                                  i.fa.fa-clipboard
+                                  = " "
+                                  = t("Copy")
+                              li.list-inline-item
+                                form.ajax-form.confirm-prompt.d-block(
+                                  action=l("/encrypt"),
+                                  method="POST"
+                                )
+                                  input(
+                                    type="hidden",
+                                    name="input",
+                                    value=user.email
+                                  )
+                                  button.btn.btn-dark.btn-sm.mt-1(
+                                    type="submit"
+                                  )
+                                    i.fas.fa-user-secret
+                                    = " "
+                                    = t("Encrypt")
+                          else
+                            input#copy-fe-sv(
+                              type="hidden",
+                              value=`${config.recordPrefix}-site-verification=${domain.verification_record}`
+                            )
                             button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                               type="button",
                               data-toggle="clipboard",
-                              data-clipboard-target="#copy-txt"
+                              data-clipboard-target="#copy-fe-sv"
                             )
                               i.fa.fa-clipboard
                               = " "

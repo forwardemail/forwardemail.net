@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const crypto = require('node:crypto');
+
 const test = require('ava');
 const Redis = require('ioredis-mock');
 
 const createTangerine = require('#helpers/create-tangerine');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 // <https://github.com/luin/ioredis/issues/1179>
 Redis.Command.setArgumentTransformer('set', (args) => {
@@ -38,4 +41,30 @@ test('creates instance', async (t) => {
   t.true(typeof result === 'object');
   t.true(result.answers.length > 0);
   t.true(result.answers[0].name === 'forwardemail.net');
+});
+
+test('encrypt and decrypt with aes-256-cbc', (t) => {
+  const text = 'thisisan@email.com';
+  const algorithm = 'aes-256-cbc';
+
+  const encryptionKey = crypto.randomBytes(16).toString('hex');
+
+  const encryptedText = encrypt(text, 16, encryptionKey, algorithm);
+  t.truthy(encryptedText, 'encrypted text should be generated');
+
+  const decryptedText = decrypt(encryptedText, encryptionKey, algorithm);
+  t.is(decryptedText, text, 'decrypted text should match original text');
+});
+
+test('encrypt and decrypt with chacha20-poly1305', (t) => {
+  const text = 'thisisan@email.com';
+  const algorithm = 'chacha20-poly1305';
+
+  const encryptionKey = crypto.randomBytes(16).toString('hex');
+
+  const encryptedText = encrypt(text, 12, encryptionKey, algorithm);
+  t.truthy(encryptedText, 'encrypted text should be generated');
+
+  const decryptedText = decrypt(encryptedText, encryptionKey, algorithm);
+  t.is(decryptedText, text, 'decrypted text should match original text');
 });

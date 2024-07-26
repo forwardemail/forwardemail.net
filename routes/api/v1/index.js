@@ -80,6 +80,7 @@ router
   // public
   //
   .post('/account', rateLimit(5, 'create user'), api.v1.users.create)
+  .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
   .get(
     '/account',
     policies.ensureApiToken,
