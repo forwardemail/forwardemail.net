@@ -72,7 +72,8 @@ block body
           = " "
           = t("Email Setup Guide")
         //- p!= meta.description
-        p!= t("Follow the steps below to setup free email forwarding and send/receive email with <span class='notranslate'>%s</span>.", provider.name)
+        p!= meta.description
+        //- p!= t("Follow the steps below to setup free email forwarding and send/receive email with <span class='notranslate'>%s</span>.", provider.name)
         include ../_author
     if provider && provider.video
       .row
@@ -368,30 +369,31 @@ block body
             strong= t("Notice of Non-Affiliation and Disclaimer:")
             = " "
             != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', provider.name, provider.name)
-  .container.py-3.no-search
-    .position-relative
-      .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
-        .col-12.d-flex
-          .p-3.p-md-5.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3!= t('Send emails with your <span class="notranslate">%s</span> domain', provider.name)
-            p.lead.mb-3!= t("Read our <span class='notranslate'>%s</span> email setup guide to send email with your custom domain name and alias.", provider.name)
-            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l("/guides/send-email-with-custom-domain-smtp"),
-              target="_blank",
-              rel="noopener noreferrer"
-            )
-              != t("Send email with <span class='notranslate'>%s</span> domain", provider.name)
-              = " "
-              i.fa.fa-angle-double-right.align-middle
-        .col-12.d-flex
-          .p-3.p-md-5.mt-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
-            p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
-            a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
-              href=l("/help"),
-              role="button",
-              data-target="#modal-help"
-            )
-              = t("Ask us a question")
-              = " "
-              i.fa.fa-angle-double-right.align-middle
+  if !isBot(ctx.get('User-Agent'))
+    .container.py-3.no-search
+      .position-relative
+        .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
+          .col-12.d-flex
+            .p-3.p-md-5.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+              h2.display-5.font-weight-bold.mb-3!= t('Send emails with your <span class="notranslate">%s</span> domain', provider.name)
+              p.lead.mb-3!= t("Read our <span class='notranslate'>%s</span> email setup guide to send email with your custom domain name and alias.", provider.name)
+              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+                href=l("/guides/send-email-with-custom-domain-smtp"),
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                != t("Send email with <span class='notranslate'>%s</span> domain", provider.name)
+                = " "
+                i.fa.fa-angle-double-right.align-middle
+          .col-12.d-flex
+            .p-3.p-md-5.mt-3.rounded-lg.border.border-themed.bg-white.bg-themed.border-dark-50.border.d-flex.flex-column.flex-grow-1.align-items-start
+              h2.display-5.font-weight-bold.mb-3= t("Still need help with something?")
+              p.lead.mb-3!= t("We are here to answer your questions, but please be sure to read our FAQ section first.")
+              a.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
+                href=l("/help"),
+                role="button",
+                data-target="#modal-help"
+              )
+                = t("Ask us a question")
+                = " "
+                i.fa.fa-angle-double-right.align-middle

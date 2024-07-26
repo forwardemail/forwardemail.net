@@ -97,7 +97,7 @@ async function lookup(ctx) {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   let aliases = await Aliases.find(aliasQuery)
     .select(
-      'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+      'id user has_imap recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
     )
     .lean()
     .exec();
@@ -119,7 +119,7 @@ async function lookup(ctx) {
       name: punycode.toUnicode(username)
     })
       .select(
-        'id user has_imap recipients name is_enabled has_recipient_verification verified_recipients'
+        'id user has_imap recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
       )
       .lean()
       .exec();
@@ -314,7 +314,7 @@ async function lookup(ctx) {
 
   function pushToBody(alias) {
     // alias.name = "*" (wildcard catchall) otherwise an alias
-    // alias.is_enabled = "!" prefixed alias name
+    // alias.is_enabled = "!" prefixed alias name (or !! or !!!)
     // alias.recipients = comma separated (split with a colon)
 
     // NOTE: we don't allow catch-all's to be disabled (see logic in alias model)
@@ -369,9 +369,21 @@ async function lookup(ctx) {
     if (alias.recipients.length > 0)
       body.mapping.push(
         alias.recipients
-          .map((recipient) =>
-            alias.is_enabled ? `${alias.name}:${recipient}` : `!${alias.name}`
-          )
+          .map((recipient) => {
+            if (alias.is_enabled) return `${alias.name}:${recipient}`;
+            if (
+              !alias.error_code_if_disabled ||
+              alias.error_code_if_disabled === 250
+            )
+              return `!${alias.name}`;
+            if (alias.error_code_if_disabled === 421) return `!!${alias.name}`;
+            if (alias.error_code_if_disabled === 550) return `!!!${alias.name}`;
+            // safeguard
+            const err = new TypeError(`Invalid error code`);
+            err.alias = alias;
+            err.isCodeBug = true;
+            throw err;
+          })
           .join(',')
       );
   }

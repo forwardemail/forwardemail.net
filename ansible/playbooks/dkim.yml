@@ -1,0 +1,41 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- hosts: imap:pop3:smtp:http:bree:sqlite
+  name: DKIM
+  vars_prompt:
+    - name: input_key
+      prompt: Enter path to DKIM private key file (e.g. /path/to/.dkim-key)
+      private: false
+
+  tasks:
+    # key file
+    - name: Check if key file exists
+      local_action: stat path={{ input_key }}
+      become: false
+      register: local_key_file
+    - name: Fail when local key file does not exist
+      fail:
+        msg: "key file does not exist: {{ input_key }}"
+      when: not local_key_file.stat.exists
+
+    # remote dir
+    - name: Check if remote dir exists
+      stat:
+        path: /var/www/production
+      register: remote_dir
+
+    - name: Fail when remote dir does not exist
+      fail:
+        msg: pm2 dir not yet created
+      when: not remote_dir.stat.exists or not remote_dir.stat.isdir
+
+    # copy local key
+    - name: Copy local key file to server
+      copy:
+        src: "{{ input_key }}"
+        dest: /var/www/production/.dkim-key
+        owner: deploy
+        # https://chmodcommand.com/chmod-660/
+        mode: "0660"

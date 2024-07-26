@@ -81,7 +81,8 @@ async function importAliases(ctx) {
         user: ctx.state.user._id,
         domain: ctx.state.domain._id,
         name: element.name,
-        recipients: [element.recipient || ctx.state.user.email]
+        recipients: [element.recipient || ctx.state.user.email],
+        error_code_if_disabled: element.error_code_if_disabled || 250
       });
     }
   }

@@ -93,6 +93,8 @@ const isLockingError = require('./is-locking-error');
 const closeDatabase = require('./close-database');
 const isRedisError = require('./is-redis-error');
 const isMongoError = require('./is-mongo-error');
+const syncUbuntuUser = require('./sync-ubuntu-user');
+const getUbuntuMembersMap = require('./get-ubuntu-members-map');
 
 module.exports = {
   decrypt,
@@ -186,5 +188,7 @@ module.exports = {
   isLockingError,
   closeDatabase,
   isRedisError,
-  isMongoError
+  isMongoError,
+  syncUbuntuUser,
+  getUbuntuMembersMap
 };

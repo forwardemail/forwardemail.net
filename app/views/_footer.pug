@@ -1,4 +1,4 @@
-footer.mt-auto
+footer.mt-auto(aria-label=t("Footer"))
   if ctx.pathWithoutLocale !== '/'
     include _tti
   //-.
@@ -25,89 +25,90 @@ footer.mt-auto
               )= t("Need help?")
   .bg-dark.text-white
     .container.py-3.py-md-4.py-lg-5.text-center.text-lg-left
-      if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
-        //- Empty on purpose
-      else
-        .text-center.mb-3
-          a(
-            href="https://www.trustpilot.com/review/forwardemail.net",
-            target="_blank",
-            rel="noopener noreferrer"
-          )
-            noscript
-              img(
+      if !isBot(ctx.get('User-Agent'))
+        if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+          //- Empty on purpose
+        else
+          .text-center.mb-3
+            a(
+              href="https://www.trustpilot.com/review/forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
+              noscript
+                img(
+                  alt=t("Review us on Trustpilot"),
+                  src=manifest("img/trustpilot.png"),
+                  width="216.5",
+                  height="52"
+                )
+              img.lazyload(
                 alt=t("Review us on Trustpilot"),
-                src=manifest("img/trustpilot.png"),
+                data-src=manifest("img/trustpilot.png"),
                 width="216.5",
                 height="52"
               )
-            img.lazyload(
-              alt=t("Review us on Trustpilot"),
-              data-src=manifest("img/trustpilot.png"),
-              width="216.5",
-              height="52"
-            )
-        ul.list-inline.mb-3.text-center
-          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
-            i.fa.fa-lock.mr-2
-            = t("Privacy Protected")
-          li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
-            i.fa.fa-shield.mr-2
-            = t("Secure Checkout")
-        ul.list-inline.mb-3.text-center.mb-5
-          li.list-inline-item
-            strong= t("Payment Methods Accepted:")
-          li.list-inline-item
-            i.fab.fa-paypal
-            = " PayPal"
-          li.list-inline-item
-            i.fab.fa-cc-visa
-            = " Visa"
-          li.list-inline-item
-            i.fab.fa-cc-mastercard
-            = " Mastercard"
-          li.list-inline-item
-            i.fab.fa-cc-amex
-            = " American Express"
-          li.list-inline-item
-            i.fab.fa-cc-discover
-            = " Discover"
-          li.list-inline-item
-            i.fab.fa-cc-diners-club
-            = " Diners Club"
-          li.list-inline-item
-            i.fab.fa-cc-jcb
-            = " JCB"
-          li.list-inline-item
-            = " China UnionPay"
-          li.list-inline-item
-            i.fab.fa-alipay
-            = " Alipay"
-          li.list-inline-item
-            i.fab.fa-cc-apple-pay
-            = " Apple Pay"
-          li.list-inline-item
-            i.fab.fa-google-pay
-            = " Google Pay"
-          li.list-inline-item
-            i.fab.fa-amazon-pay
-            = " Amazon Pay"
-          li.list-inline-item Cash App
-          li.list-inline-item Link
-          li.list-inline-item Bancontact
-          li.list-inline-item EPS
-          li.list-inline-item giropay
-          li.list-inline-item
-            i.fab.fa-ideal
-            = " iDEAL"
-          li.list-inline-item Przelewy24
-          li.list-inline-item Sofort
-          li.list-inline-item Affirm
-          li.list-inline-item Afterpay / Clearpay
-          li.list-inline-item Klarna
-          li.list-inline-item= t("SEPA Direct Debit")
-          li.list-inline-item= t("Canadian pre-authorized debits")
-          li.list-inline-item= t("ACH Direct Debit")
+          ul.list-inline.mb-3.text-center
+            li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
+              i.fa.fa-lock.mr-2
+              = t("Privacy Protected")
+            li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
+              i.fa.fa-shield.mr-2
+              = t("Secure Checkout")
+          ul.list-inline.mb-3.text-center.mb-5
+            li.list-inline-item
+              strong= t("Payment Methods Accepted:")
+            li.list-inline-item
+              i.fab.fa-paypal
+              = " PayPal"
+            li.list-inline-item
+              i.fab.fa-cc-visa
+              = " Visa"
+            li.list-inline-item
+              i.fab.fa-cc-mastercard
+              = " Mastercard"
+            li.list-inline-item
+              i.fab.fa-cc-amex
+              = " American Express"
+            li.list-inline-item
+              i.fab.fa-cc-discover
+              = " Discover"
+            li.list-inline-item
+              i.fab.fa-cc-diners-club
+              = " Diners Club"
+            li.list-inline-item
+              i.fab.fa-cc-jcb
+              = " JCB"
+            li.list-inline-item
+              = " China UnionPay"
+            li.list-inline-item
+              i.fab.fa-alipay
+              = " Alipay"
+            li.list-inline-item
+              i.fab.fa-cc-apple-pay
+              = " Apple Pay"
+            li.list-inline-item
+              i.fab.fa-google-pay
+              = " Google Pay"
+            li.list-inline-item
+              i.fab.fa-amazon-pay
+              = " Amazon Pay"
+            li.list-inline-item Cash App
+            li.list-inline-item Link
+            li.list-inline-item Bancontact
+            li.list-inline-item EPS
+            li.list-inline-item giropay
+            li.list-inline-item
+              i.fab.fa-ideal
+              = " iDEAL"
+            li.list-inline-item Przelewy24
+            li.list-inline-item Sofort
+            li.list-inline-item Affirm
+            li.list-inline-item Afterpay / Clearpay
+            li.list-inline-item Klarna
+            li.list-inline-item= t("SEPA Direct Debit")
+            li.list-inline-item= t("Canadian pre-authorized debits")
+            li.list-inline-item= t("ACH Direct Debit")
       .d-flex.flex-column.flex-lg-row
         if !isBot(ctx.get('User-Agent'))
           .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3
@@ -303,17 +304,15 @@ footer.mt-auto
             )= t("Reserved Email Addresses")
             if !isBot(ctx.get('User-Agent'))
               li: a.d-block.text-white.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
-          if isBot(ctx.get('User-Agent'))
-            hr.d-lg-none.w-100
-            h2.h5.mb-2= t("Use Cases")
-            ul.list-unstyled.mb-0
-              each useCase in Object.keys(useCases)
-                li
-                  a.d-block.text-white.py-2.py-md-0(href=l(useCase))
-                    if isBot(ctx.get('User-Agent'))
+          //-.
+            if isBot(ctx.get('User-Agent'))
+              hr.d-lg-none.w-100
+              h2.h5.mb-2= t("Use Cases")
+              ul.list-unstyled.mb-0
+                each useCase in Object.keys(useCases)
+                  li
+                    a.d-block.text-white.py-2.py-md-0(href=l(useCase))
                       != t(useCases[useCase][0])
-                    else
-                      != t(useCases[useCase][0].replace("Email Hosting & Forwarding for", "").replace("Custom Domain Email Hosting for", ""))
         hr.d-lg-none.w-100
         .flex-wrap.flex-fill.mr-lg-3
           h2.h5.mb-2: a.text-white(href=l("/blog/docs"))= t("Developers")
@@ -404,6 +403,8 @@ footer.mt-auto
               li: a.d-block.text-white.py-2.py-md-0(href=l("/about"))= t("About")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/terms"))= t("Terms")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/gdpr"))= t("GDPR")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/dpa"))= t("DPA")
               li: a.d-block.text-white.py-2.py-md-0(
                 href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
                 target="_blank",
@@ -599,10 +600,7 @@ footer.mt-auto
           //- <https://www.mozilla.org/en-US/foundation/trademarks/list/>
           //- <https://www-archive.mozilla.org/foundation/trademarks/policy>
           li= t("Mozilla, Firefox, and Thunderbird are trademarks or registered trademarks of the Mozilla Foundation.")
-          li= t("Ubuntu, Ubuntu One, Kubuntu, and Canonical are registered trademarks of Canonical Ltd.")
-          li= t("Lubuntu.me is a registered trademark.")
-          li= t("Edubuntu is not affiliated with Canonical Ltd.")
-          li= t("Ubuntu Studio is not affiliated with Canonical Ltd.")
+          li!= t('Canonical, Ubuntu, Kubuntu, and <span class="notranslate">U1</span> are registered trademarks of Canonical Ltd.')
           //- <https://www.linuxfoundation.org/legal/trademark-usage>
           //- <https://isc.tamu.edu/~lewing/linux/> (Tux the Penguin)
           li= t("Linux is the registered trademark of Linus Torvalds.")

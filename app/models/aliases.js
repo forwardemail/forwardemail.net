@@ -24,9 +24,6 @@ const { randomstring } = require('@sidoshi/random-string');
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
-const Domains = require('./domains');
-const Users = require('./users');
-
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
 const getKeyInfo = require('#helpers/get-key-info');
@@ -96,6 +93,7 @@ const Aliases = new mongoose.Schema({
     lowercase: true,
     validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
   },
+  imap_not_enabled_sent_at: Date,
   imap_backup_at: Date,
   last_vacuum_at: Date,
   //
@@ -185,6 +183,11 @@ const Aliases = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  error_code_if_disabled: {
+    type: Number,
+    default: 250,
+    enum: [250, 421, 550]
+  },
   has_recipient_verification: {
     type: Boolean,
     default: false
@@ -264,7 +267,7 @@ Aliases.pre('validate', function (next) {
     !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
     (!this.name.trim().startsWith('/') && this.name.includes('+'))
   )
-    return next(new Error('Alias name was invalid.'));
+    return next(Boom.badRequest('Alias name was invalid.'));
 
   // trim and convert to lowercase
   this.name = this.name.trim().toLowerCase();
@@ -286,7 +289,9 @@ Aliases.pre('validate', function (next) {
 
   // alias must not start with ! exclamation (since that denotes it is ignored)
   if (this.name.indexOf('!') === 0)
-    return next(new Error('Alias must not start with an exclamation point.'));
+    return next(
+      Boom.badRequest('Alias must not start with an exclamation point.')
+    );
 
   // make all recipients kinds unique by email address, FQDN, or IP
   for (const prop of [
@@ -312,7 +317,7 @@ Aliases.pre('validate', function (next) {
     this.recipients.some((r) => !isEmail(r))
   )
     return next(
-      new Error(
+      Boom.badRequest(
         'Alias with recipient verification must have email-only recipients.'
       )
     );
@@ -329,7 +334,7 @@ Aliases.pre('validate', function (next) {
     (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
   )
     return next(
-      new Error('Alias must have at least one recipient or IMAP enabled.')
+      Boom.badRequest('Alias must have at least one recipient or IMAP enabled.')
     );
 
   next();
@@ -340,7 +345,7 @@ Aliases.pre('validate', function (next) {
 Aliases.pre('validate', function (next) {
   if (this.name === '*' && !this.is_enabled)
     return next(
-      new Error(
+      Boom.badRequest(
         'Alias that is a catch-all must be enabled or deleted entirely to be disabled.'
       )
     );
@@ -351,7 +356,7 @@ Aliases.pre('validate', function (next) {
 Aliases.pre('validate', function (next) {
   if (this.has_imap && (this.name === '*' || this.name.startsWith('/')))
     return next(
-      new Error(
+      Boom.badRequest(
         'You cannot enable IMAP for catch-all/regular expression alias names.  Please go back and create a unique/individual alias (e.g. "you@yourdomain.com") and try again.'
       )
     );
@@ -398,7 +403,7 @@ Aliases.pre('save', async function (next) {
     // user must be a member of the domain
     // name@domain.name must be unique for given domain
     const [domain, user] = await Promise.all([
-      Domains.findOne({
+      conn.models.Domains.findOne({
         $or: [
           {
             _id: alias.domain,
@@ -414,7 +419,7 @@ Aliases.pre('save', async function (next) {
         .populate('members.user', `id ${config.userFields.isBanned}`)
         .lean()
         .exec(),
-      Users.findOne({
+      conn.models.Users.findOne({
         _id: alias.user,
         [config.userFields.isBanned]: false
       })
@@ -601,7 +606,7 @@ Aliases.pre('save', async function (next) {
       if (domain.is_global && !alias.is_new_user && user) {
         // user must be on a paid plan to use a global domain
         if (user.plan === 'free' && !alias.is_update) {
-          const domainIds = await Domains.distinct('_id', {
+          const domainIds = await conn.models.Domains.distinct('_id', {
             is_global: true
           });
           const aliasCount = await alias.constructor.countDocuments({
@@ -700,7 +705,7 @@ async function updateDomainCatchallRegexBooleans(alias) {
       else if (name.startsWith('/')) hasRegex = true;
     }
 
-    await Domains.findByIdAndUpdate(alias.domain, {
+    await conn.models.Domains.findByIdAndUpdate(alias.domain, {
       $set: {
         has_catchall: hasCatchall,
         has_regex: hasRegex
@@ -740,7 +745,10 @@ Aliases.post('save', updateDomainCatchallRegexBooleans);
 //       won't affect their storage quota for their own domains on their own enhanced plan
 //
 async function getStorageUsed(alias, locale = i18n.config.defaultLocale) {
-  return Domains.getStorageUsed(alias.domain, alias.locale || locale);
+  return conn.models.Domains.getStorageUsed(
+    alias.domain,
+    alias.locale || locale
+  );
 }
 
 Aliases.statics.getStorageUsed = getStorageUsed;
@@ -770,13 +778,19 @@ Aliases.statics.isOverQuota = async function (
     }
   }
 
+  //
+  // TODO: this gets the storage used across the entire domain
+  // so we need to check this + `size` against either
+  // the larger value of either user.storage_quota
+  // or the sum of all admins's storage quota on team plan if domain is on team plan
+  //
   if (!storageUsed) storageUsed = await getStorageUsed.call(this, alias);
 
   // TODO: allow users to purchase more storage (tied to their user.storage_quota)
   //       but this is only relative here if the user is an admin of their aliases domain
 
   if (!maxQuotaPerAlias)
-    maxQuotaPerAlias = await Domains.getMaxQuota(
+    maxQuotaPerAlias = await conn.models.Domains.getMaxQuota(
       alias?.domain?._id || alias.domain
     );
 

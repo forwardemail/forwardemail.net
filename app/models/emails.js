@@ -263,10 +263,10 @@ Emails.index(
 //
 Emails.pre('validate', function (next) {
   try {
-    if (!_.isObject(this.envelope)) throw new Error('Envelope missing');
+    if (!_.isObject(this.envelope)) throw Boom.badRequest('Envelope missing');
 
     if (!isSANB(this.envelope.from) || !isEmail(this.envelope.from))
-      throw new Error('Envelope from missing');
+      throw Boom.badRequest('Envelope from missing');
 
     if (
       isSANB(this.envelope.to) &&
@@ -277,7 +277,7 @@ Emails.pre('validate', function (next) {
     // list of email addresses to sent to
     // (combined To, Cc, Bcc - and then Bcc is removed from headers)
     if (!_.isArray(this.envelope.to) || _.isEmpty(this.envelope.to))
-      throw new Error('Envelope to missing');
+      throw Boom.badRequest('Envelope to missing');
 
     // if the envelope is in address object format then convert it
     // make the envelope to unique
@@ -298,7 +298,7 @@ Emails.pre('validate', function (next) {
     if (
       !this.envelope.to.every((to) => isEmail(to, { ignore_max_length: true }))
     )
-      throw new Error('Envelope to requires valid email addresses');
+      throw Boom.badRequest('Envelope to requires valid email addresses');
 
     // prevent sending to no-reply address
     if (
@@ -306,14 +306,17 @@ Emails.pre('validate', function (next) {
         NO_REPLY_USERNAMES.has(to.replace(/[^\da-z]/g, ''))
       )
     )
-      throw new Error('Envelope to cannot contain a "no-reply" email address');
+      throw Boom.badRequest(
+        'Envelope to cannot contain a "no-reply" email address'
+      );
 
     this.envelope = _.pick(this.envelope, ['from', 'to']);
 
-    if (this.envelope.to.length === 0) throw new Error('Envelope to missing');
+    if (this.envelope.to.length === 0)
+      throw Boom.badRequest('Envelope to missing');
 
     if (this.envelope.to.length > 50)
-      throw new Error('Exceeded max recipient size');
+      throw Boom.badRequest('Exceeded max recipient size');
 
     next();
   } catch (err) {
@@ -350,7 +353,7 @@ Emails.pre('validate', function (next) {
         typeof e.recipient !== 'string' ||
         !isEmail(e.recipient, { ignore_max_length: true })
       )
-        throw new Error('Recipient was missing from error');
+        throw Boom.badRequest('Recipient was missing from error');
       // always set date if not set already
       if (typeof e.date === 'undefined' || !(e.date instanceof Date))
         e.date = new Date();
@@ -406,7 +409,7 @@ Emails.pre('save', function (next) {
   try {
     // ensure date is greater than 1s after Unix epoch
     if (this.date.getTime() < ONE_SECOND_AFTER_UNIX_EPOCH)
-      throw new Error(
+      throw Boom.badRequest(
         'Date header must be valid date that is at least 1s after Unix epoch.'
       );
 
@@ -415,7 +418,7 @@ Emails.pre('save', function (next) {
       this.date.getTime() >
       this.created_at.getTime() + MAX_DAYS_IN_ADVANCE_TO_MS
     )
-      throw new Error(
+      throw Boom.badRequest(
         `Date header must not be more than ${HUMAN_MAX_DAYS_IN_ADVANCE} in the future.`
       );
 
@@ -557,12 +560,12 @@ Emails.pre('save', async function (next) {
 
     // ensure message exists and is a buffer
     if (!Buffer.isBuffer(this.message))
-      throw new Error('Buffer must be a message');
+      throw Boom.badRequest('Buffer must be a message');
 
     // ensure the message is not more than 50 MB
     const messageBytes = Buffer.byteLength(this.message);
     if (messageBytes > MAX_BYTES)
-      throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
+      throw Boom.badRequest(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
 
     // if the doc was was <= 15 MB then return early
     if (messageBytes <= BYTES_15MB) return next();
@@ -710,27 +713,28 @@ Emails.statics.getMessage = async function (obj) {
   //   contentType: 'message/rfc822'
   // }
 
-  if (typeof obj !== 'object') throw new Error('Invalid GridFS object');
+  if (typeof obj !== 'object') throw Boom.badRequest('Invalid GridFS object');
 
   if (!obj?._id || !mongoose.isObjectIdOrHexString(obj._id))
-    throw new Error('Invalid GridFS ObjectId');
+    throw Boom.badRequest('Invalid GridFS ObjectId');
 
-  if (typeof obj.length !== 'number') throw new Error('Invalid GridFS length');
+  if (typeof obj.length !== 'number')
+    throw Boom.badRequest('Invalid GridFS length');
 
   if (typeof obj.chunkSize !== 'number')
-    throw new Error('Invalid GridFS chunkSize');
+    throw Boom.badRequest('Invalid GridFS chunkSize');
 
   if (!obj?.uploadDate || !(obj.uploadDate instanceof Date))
-    throw new Error('Invalid GridFS uploadDate');
+    throw Boom.badRequest('Invalid GridFS uploadDate');
 
   if (typeof obj.filename !== 'string' || !obj.filename.endsWith('.eml'))
-    throw new Error('Invalid GridFS filename');
+    throw Boom.badRequest('Invalid GridFS filename');
 
   if (
     typeof obj.contentType !== 'string' ||
     obj.contentType !== 'message/rfc822'
   )
-    throw new Error('Invalid GridFS contentType');
+    throw Boom.badRequest('Invalid GridFS contentType');
 
   // TODO: move bucket to root
   const bucket = new mongoose.mongo.GridFSBucket(this.db);
@@ -763,7 +767,7 @@ Emails.statics.queue = async function (
   // ensure the message is not more than 50 MB
   const messageBytes = Buffer.byteLength(info.message);
   if (messageBytes > MAX_BYTES)
-    throw new Error(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
+    throw Boom.badRequest(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
 
   const splitter = new Splitter();
   const joiner = new Joiner();

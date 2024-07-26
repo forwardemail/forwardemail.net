@@ -13,7 +13,10 @@ function validateAlias(alias, domain, name) {
       { responseCode: 535, ignoreHook: true }
     );
 
-  if (!alias.user) throw new SMTPError('Alias user does not exist');
+  if (!alias.user)
+    throw new SMTPError('Alias user does not exist', {
+      imapResponse: 'AUTHENTICATIONFAILED'
+    });
 
   //
   // TODO: adjust refineAndLogError to detect this error
@@ -22,17 +25,27 @@ function validateAlias(alias, domain, name) {
   //
   // alias must not have banned user
   if (alias.user[config.userFields.isBanned])
-    throw new SMTPError('Alias user is banned');
+    throw new SMTPError('Alias user is banned', {
+      imapResponse: 'AUTHENTICATIONFAILED'
+    });
 
   // alias must be enabled
-  if (!alias.is_enabled) throw new SMTPError('Alias is disabled');
+  if (!alias.is_enabled)
+    throw new SMTPError('Alias is disabled', {
+      imapResponse: 'AUTHENTICATIONFAILED'
+    });
 
   // alias must not be catch-all
-  if (alias.name === '*') throw new SMTPError('Alias cannot be a catch-all');
+  if (alias.name === '*')
+    throw new SMTPError('Alias cannot be a catch-all', {
+      imapResponse: 'AUTHENTICATIONFAILED'
+    });
 
   // alias cannot be regex
   if (alias.name.startsWith('/'))
-    throw new SMTPError('Alias cannot be a regex');
+    throw new SMTPError('Alias cannot be a regex', {
+      imapResponse: 'AUTHENTICATIONFAILED'
+    });
 }
 
 module.exports = validateAlias;

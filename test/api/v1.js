@@ -1368,3 +1368,101 @@ test('smtp email blocklist', async (t) => {
     );
   }
 });
+
+test('error_code_if_disabled', async (t) => {
+  const user = await factory.create('user', {
+    plan: 'enhanced_protection',
+    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+  });
+
+  let domain;
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .send({
+        domain: 'example.com'
+      });
+    t.is(res.status, 200);
+    t.is(res.body.name, 'example.com');
+    domain = res.body;
+  }
+
+  // create an alias with ! -> 250
+  {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .send({
+        name: 'foo',
+        is_enabled: false,
+        error_code_if_disabled: 250
+      });
+    t.is(res.status, 200);
+    t.is(res.body.name, 'foo');
+    t.is(res.body.is_enabled, false);
+    t.is(res.body.error_code_if_disabled, 250);
+  }
+
+  // create an alias with !! -> 421
+  {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .send({
+        name: 'bar',
+        is_enabled: false,
+        error_code_if_disabled: 421
+      });
+    t.is(res.status, 200);
+    t.is(res.body.name, 'bar');
+    t.is(res.body.is_enabled, false);
+    t.is(res.body.error_code_if_disabled, 421);
+  }
+
+  // create an alias with !!! -> 550
+  {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .send({
+        name: 'baz',
+        is_enabled: false,
+        error_code_if_disabled: 550
+      });
+    t.is(res.status, 200);
+    t.is(res.body.name, 'baz');
+    t.is(res.body.is_enabled, false);
+    t.is(res.body.error_code_if_disabled, 550);
+  }
+
+  // errors when attempts to use invalid status code
+  {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .send({
+        name: 'beep',
+        is_enabled: false,
+        error_code_if_disabled: 123
+      });
+    t.is(res.status, 400);
+    t.is(
+      res.body.message,
+      'Error code if disabled must be either 250, 421, or 550.'
+    );
+  }
+
+  const res = await t.context.api
+    .get('/v1/lookup')
+    .auth(env.API_SECRETS[0])
+    .query({
+      verification_record: domain.verification_record
+    });
+  t.is(res.status, 200);
+  t.deepEqual(res.body, {
+    alias_ids: [],
+    has_imap: false,
+    mapping: [user.email, '!foo', '!!bar', '!!!baz']
+  });
+});

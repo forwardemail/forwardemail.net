@@ -35,6 +35,21 @@ const zxcvbn = require('#helpers/zxcvbn');
 
 // now we can set up imap clients for all providers and get their values all at once
 const imapConfigurations = [
+  // Forward Email
+  {
+    name: 'Forward Email',
+    forwarder: env.TTI_FE_FORWARDER,
+    config: {
+      host: 'imap.forwardemail.net',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_FE_IMAP_USER,
+        pass: env.TTI_FE_IMAP_PASS
+      }
+    }
+  },
+
   // Gmail
   // <https://support.google.com/mail/answer/7126229?hl=en>
   {
@@ -81,7 +96,7 @@ const imapConfigurations = [
         pass: env.TTI_APPLE_IMAP_PASS
       }
     }
-  }
+  },
 
   // NOTE: removing fastmail since it requires a paid account after 30d
   // Fastmail
@@ -101,26 +116,26 @@ const imapConfigurations = [
   // }
 
   //
-  // NOTE: Yahoo does not allow App Passwords to be generated
-  //       therefore it is not possible to access Yahoo via IMAP
+  // NOTE: Yahoo didn't have App Passwords working in the past
+  //       therefore it previously wasn't possible to access Yahoo via IMAP
   //       <https://old.reddit.com/r/yahoo/comments/v5hkc6/yahoo_mail_app_password_not_working/>
   //       <https://archive.is/SPAAT>
   //
   // Yahoo/AOL
   // <https://help.yahoo.com/kb/SLN4075.html>
-  // {
-  //   name: 'Yahoo/AOL',
-  //   forwarder: env.TTI_YAHOO_FORWARDER,
-  //   config: {
-  //     host: 'imap.mail.yahoo.com',
-  //     port: 993,
-  //     secure: true,
-  //     auth: {
-  //       user: env.TTI_YAHOO_IMAP_USER,
-  //       pass: env.TTI_YAHOO_IMAP_PASS
-  //     }
-  //   }
-  // }
+  {
+    name: 'Yahoo/AOL',
+    forwarder: env.TTI_YAHOO_FORWARDER,
+    config: {
+      host: 'imap.mail.yahoo.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_YAHOO_IMAP_USER,
+        pass: env.TTI_YAHOO_IMAP_PASS
+      }
+    }
+  }
 ];
 
 const STRIPE_LOCALES = new Set([
@@ -1317,6 +1332,7 @@ const config = {
     'it',
     'je',
     'jp',
+    'ke',
     'kr',
     'la',
     'li',

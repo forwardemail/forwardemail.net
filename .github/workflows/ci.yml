@@ -10,7 +10,7 @@ jobs:
         os:
           - ubuntu-latest
         node_version:
-          - 18
+          - "18.20.4"
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
     env:
       # ... TODO: AWS

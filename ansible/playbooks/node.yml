@@ -7,7 +7,7 @@
   become: true
   become_user: root
   vars:
-    node_version: "18.16.0"
+    node_version: "18.20.4"
   tasks:
     # install n and node lts
     - name: Check that n exists

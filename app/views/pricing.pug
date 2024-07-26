@@ -658,7 +658,7 @@ block body
               .h3.text-center.font-weight-bold
                 = t("Enterprise")
               p.text-center.mb-3
-                != t('For <a href="%s">education</a>, <a href="%s">alumni email forwarding</a>, <a href="%s">healthcare</a>, <a href="%s">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/alumni-email-hosting-forwarding"), l("/healthcare-email-hosting-forwarding"), l("/government-email-hosting-forwarding"))
+                != t('For <a href="%s">education</a>, <a href="%s">alumni email forwarding</a>, <a href="%s">healthcare</a>, <a href="%s">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
               a.btn.btn-block.btn-success.font-weight-bold(href=l("/help"))
                 = t("Contact us to schedule a call")
                 = " "
@@ -676,7 +676,7 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fas.fa-comment-dots.text-themed.mr-3
                 = " "
-                = t("Dedicated customer support chatroom via Signal and Matrix")
+                = t("Dedicated customer support chatroom via Matrix")
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-file-signature.text-themed.mr-3
                 = " "

@@ -30,7 +30,7 @@ const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
@@ -866,7 +866,7 @@ function retryGetDatabase(...args) {
     async onFailedAttempt(error) {
       const session = args[2];
 
-      if (isTimeoutError(error)) {
+      if (isRetryableError(error)) {
         logger.fatal(error, { session });
         return;
       }

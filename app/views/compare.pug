@@ -7,7 +7,10 @@ mixin renderCard(alternative)
         span.badge.badge-success.mr-3.mt-3
           = emoji("star")
           = " "
-          = t("Recommended")
+          if isBot(ctx.get("User-Agent"))
+            = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
+          else
+            = t("Recommended")
       span.badge.mr-3.mt-3(
         class=alternative.oss === true ? "badge-success" : "badge-danger"
       )= alternative.oss === true ? t("Open-source") : t("Closed-source")
@@ -19,11 +22,19 @@ mixin renderCard(alternative)
           span.badge.badge-success.mr-3
             = emoji("star")
             = " "
+            if isBot(ctx.get("User-Agent"))
+              = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
+            else
             = t("Recommended")
       p
         != str
         = " "
-        != t('The official description from its website says, "<span class="notranslate">%s</span>".', t(alternative.description))
+        if isBot(ctx.get("User-Agent"))
+          = t(_.sample(["Its descriptoin from its website is:", "Their official description reads:", "Their website says:", "According to their website:"]))
+          = " "
+          = t(alternative.description)
+        else
+          != t('The official description from its website says, "<span class="notranslate">%s</span>".', t(alternative.description))
       .text-center
         noscript
           a(
@@ -53,9 +64,18 @@ mixin renderCard(alternative)
           href=alternative.screenshot,
           target="_blank",
           rel="noopener noreferrer"
-        )= t("Screenshot by Forward Email")
+        )
+          if isBot(ctx.get("User-Agent"))
+            = _.sample([t("Photograph by Forward Email"), t("Photo by Forward Email"), t("Screenshot by Forward Email")])
+          else
+            = t("Screenshot by Forward Email")
       else
-        .small.text-center.mt-3: small.text-muted= t("Screenshot by Forward Email")
+        .small.text-center.mt-3
+          small.text-muted
+            if isBot(ctx.get("User-Agent"))
+              = _.sample([t("Photograph by Forward Email"), t("Photo by Forward Email"), t("Screenshot by Forward Email")])
+            else
+              = t("Screenshot by Forward Email")
     .card-footer
       a.btn.btn-md.btn-dark.btn-block(
         href=alternative.website,
@@ -63,7 +83,11 @@ mixin renderCard(alternative)
         rel="noopener noreferrer",
         title=striptags(t('<span class="notranslate">%s</span> <span class="notranslate">%s</span> Email Service', alternative.name))
       )
-        span.text-uppercase.font-weight-bold.align-middle!= t("Visit Website")
+        span.text-uppercase.font-weight-bold.align-middle
+          if isBot(ctx.get("User-Agent"))
+            != _.sample([t("Visit Website"), t("Go to site"), t("Visit Website")])
+          else
+            != t("Visit Website")
         = " "
         i.fa.fa-external-link.align-middle
 
@@ -233,7 +257,10 @@ block body
                         span.badge.badge-success
                           = emoji("star")
                           = " "
-                          = t("Recommended")
+                          if isBot(ctx.get("User-Agent"))
+                            = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
+                          else
+                            = t("Recommended")
                     .text-center.mb-3
                       noscript
                         a(
@@ -435,7 +462,10 @@ block body
                         span.badge.badge-success
                           = emoji("star")
                           = " "
-                          = t("Recommended")
+                          if isBot(ctx.get("User-Agent"))
+                            = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
+                          else
+                            = t("Recommended")
                     .text-center.mb-3
                       noscript
                         a(
@@ -946,7 +976,10 @@ block body
                     span.badge.badge-success
                       = emoji("star")
                       = " "
-                      = t("Recommended")
+                      if isBot(ctx.get("User-Agent"))
+                        = t(_.sample(["Recommended", "Preferred", "Top Rated", "Suggested"]))
+                      else
+                        = t("Recommended")
                 //- Description
                 blockquote.mb-1= t(alternative.description)
                 ul.list-inline.mb-1
@@ -1240,236 +1273,237 @@ block body
                 strong= t("Notice of Non-Affiliation and Disclaimer:")
                 = " "
                 != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(externalalternatives.map((p) => p.name)), arrayJoinConjunction(externalalternatives.map((p) => p.name)))
-  .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
-    data-ignore-hash-change
-  )
-    .container.text-center
-      include _marketing
-      .row.mb-3
-        .col-12
-          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
-            href="#testimonials"
-          )
-            i.fa.fa-angle-double-down
-            = " "
-            = t("Testimonials")
-            = " "
-            i.fa.fa-angle-double-down
-  #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
-    data-src=manifest("img/art/postcard.svg"),
-    data-ignore-hash-change
-  )
-    .text-center.d-block.d-lg-none.mt-3
-      .h2.display-3.mb-1.text-danger
-        i.fa.fa-heart
-      .h1!= t("Happy users")
-    .container.py-3.py-lg-5.d-block
-      .row.row-cols-1.row-cols-md-2
-        //- DHH
-        .col
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
+  if !isBot(ctx.get('User-Agent'))
+    .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
+      data-ignore-hash-change
+    )
+      .container.text-center
+        include _marketing
+        .row.mb-3
+          .col-12
+            a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
+              href="#testimonials"
+            )
+              i.fa.fa-angle-double-down
+              = " "
+              = t("Testimonials")
+              = " "
+              i.fa.fa-angle-double-down
+    #testimonials.bg-fixed.border-md-top.border-themed.lazyload(
+      data-src=manifest("img/art/postcard.svg"),
+      data-ignore-hash-change
+    )
+      .text-center.d-block.d-lg-none.mt-3
+        .h2.display-3.mb-1.text-danger
+          i.fa.fa-heart
+        .h1!= t("Happy users")
+      .container.py-3.py-lg-5.d-block
+        .row.row-cols-1.row-cols-md-2
+          //- DHH
+          .col
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    width=50,
+                    height=50,
+                    src=manifest("img/testimonials/dhh.jpg"),
+                    alt="dhh"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  src=manifest("img/testimonials/dhh.jpg"),
+                  data-src=manifest("img/testimonials/dhh.jpg"),
                   alt="dhh"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/dhh.jpg"),
-                alt="dhh"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
                   div
-                    | DHH
-                    noscript
-                      img.ml-1(
-                        src=manifest("img/testimonials/twitter-verified.svg"),
+                    div
+                      | DHH
+                      noscript
+                        img.ml-1(
+                          src=manifest("img/testimonials/twitter-verified.svg"),
+                          width=20,
+                          height=20,
+                          alt="Verified"
+                        )
+                      img.lazyload.ml-1(
+                        data-src=manifest("img/testimonials/twitter-verified.svg"),
                         width=20,
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.ml-1(
-                      data-src=manifest("img/testimonials/twitter-verified.svg"),
-                      width=20,
-                      height=20,
-                      alt="Verified"
-                    )
-                  .small.text-muted @dhh
-            .mt-3
-              | Congrats for fully launching Forward Email – a forwarding service
-              | for email that doesn't keep logs or store emails, and which works with ARC to ensure
-              | signed forwards don't trip email filters
-              = " "
-              = emoji("clap")
-              | . I'm a happy user!
-              = " "
-              = emoji("heart")
-            .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
-        //- Abhi Nemani
-        .col.mt-4.mt-md-0
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
+                    .small.text-muted @dhh
+              .mt-3
+                | Congrats for fully launching Forward Email – a forwarding service
+                | for email that doesn't keep logs or store emails, and which works with ARC to ensure
+                | signed forwards don't trip email filters
+                = " "
+                = emoji("clap")
+                | . I'm a happy user!
+                = " "
+                = emoji("heart")
+              .mt-2.small.text-muted Creator of Ruby on Rails, Founder & CTO at Basecamp & HEY
+          //- Abhi Nemani
+          .col.mt-4.mt-md-0
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    width=50,
+                    height=50,
+                    src=manifest("img/testimonials/abhinemani.jpg"),
+                    alt="abhinemani"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  src=manifest("img/testimonials/abhinemani.jpg"),
+                  data-src=manifest("img/testimonials/abhinemani.jpg"),
                   alt="abhinemani"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/abhinemani.jpg"),
-                alt="abhinemani"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
                   div
-                    | abhi nemani
-                    noscript
-                      img.ml-1(
-                        src=manifest("img/testimonials/twitter-verified.svg"),
+                    div
+                      | abhi nemani
+                      noscript
+                        img.ml-1(
+                          src=manifest("img/testimonials/twitter-verified.svg"),
+                          width=20,
+                          height=20,
+                          alt="Verified"
+                        )
+                      img.lazyload.ml-1(
+                        data-src=manifest("img/testimonials/twitter-verified.svg"),
                         width=20,
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.ml-1(
-                      data-src=manifest("img/testimonials/twitter-verified.svg"),
-                      width=20,
-                      height=20,
-                      alt="Verified"
-                    )
-                  .small.text-muted @abhinemani
-            .mt-3
-              | Have now switched email forwarding from MailGun to
-              = " "
-              | ForwardEmail.net
-              | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
-            .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
-      .row.row-cols-1.row-cols-md-2
-        //- Andrew Escobar
-        .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
-                  src=manifest("img/testimonials/andrewe.jpg"),
+                    .small.text-muted @abhinemani
+              .mt-3
+                | Have now switched email forwarding from MailGun to
+                = " "
+                | ForwardEmail.net
+                | . Simple and painless (and free!). Just some DNS changes, and it just works. Thanks
+              .mt-2.small.text-muted Government Technology Advisor, Sacramento and Los Angeles
+        .row.row-cols-1.row-cols-md-2
+          //- Andrew Escobar
+          .col.mt-4
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    src=manifest("img/testimonials/andrewe.jpg"),
+                    width=50,
+                    height=50,
+                    alt="Verified"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  alt="Verified"
+                  data-src=manifest("img/testimonials/andrewe.jpg"),
+                  alt="andrewe"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/andrewe.jpg"),
-                alt="andrewe"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
                   div
-                    | Andrew Escobar (Andres)
-                    noscript
-                      img.ml-1(
-                        src=manifest("img/testimonials/twitter-verified.svg"),
+                    div
+                      | Andrew Escobar (Andres)
+                      noscript
+                        img.ml-1(
+                          src=manifest("img/testimonials/twitter-verified.svg"),
+                          width=20,
+                          height=20,
+                          alt="Verified"
+                        )
+                      img.lazyload.ml-1(
+                        data-src=manifest("img/testimonials/twitter-verified.svg"),
                         width=20,
                         height=20,
                         alt="Verified"
                       )
-                    img.lazyload.ml-1(
-                      data-src=manifest("img/testimonials/twitter-verified.svg"),
-                      width=20,
-                      height=20,
-                      alt="Verified"
-                    )
-                  .small.text-muted @andrewe
-            .mt-3
-              | This is so dope. Thank you.
-              = " "
-              | forwardemail.net
-            .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
-        //- Ullrich Schäfer
-        .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
+                    .small.text-muted @andrewe
+              .mt-3
+                | This is so dope. Thank you.
+                = " "
+                | forwardemail.net
+              .mt-2.small.text-muted Fintech Explorer and Open Finance Advocate
+          //- Ullrich Schäfer
+          .col.mt-4
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    width=50,
+                    height=50,
+                    src=manifest("img/testimonials/stigi.jpg"),
+                    alt="stigi"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  src=manifest("img/testimonials/stigi.jpg"),
+                  data-src=manifest("img/testimonials/stigi.jpg"),
                   alt="stigi"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/stigi.jpg"),
-                alt="stigi"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
-                  div Ullrich Schäfer
-                  .small.text-muted @stigi
-            .mt-3
-              | Thanks so much for
-              = " "
-              | forwardemail.net
-              | ! It solves a real problem for our little org!
-            .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
-      .row.row-cols-1.row-cols-md-2
-        //- Andre Goncalves
-        .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                  div
+                    div Ullrich Schäfer
+                    .small.text-muted @stigi
+              .mt-3
+                | Thanks so much for
+                = " "
+                | forwardemail.net
+                | ! It solves a real problem for our little org!
+              .mt-2.small.text-muted Mobile Lead at Pitch, Formerly at Facebook and Soundcloud
+        .row.row-cols-1.row-cols-md-2
+          //- Andre Goncalves
+          .col.mt-4
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    width=50,
+                    height=50,
+                    src=manifest("img/testimonials/andregce.jpg"),
+                    alt="andregce"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  src=manifest("img/testimonials/andregce.jpg"),
+                  data-src=manifest("img/testimonials/andregce.jpg"),
                   alt="andregce"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/andregce.jpg"),
-                alt="andregce"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
-                  div Andre Goncalves
-                  .small.text-muted @andregce
-            .mt-3
-              | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
-              = " "
-              | forwardemail.net
-            .mt-2.small.text-muted Computer Engineer, Software Developer
-        //- Phil Cockfield
-        .col.mt-4
-          .p-4.border.border-themed.bg-white.bg-themed.border-05rem
-            .d-flex.align-items-top
-              noscript
-                img.rounded-circle(
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                  div
+                    div Andre Goncalves
+                    .small.text-muted @andregce
+              .mt-3
+                | So they made this cool app that forwards email from your own domain to your Gmail inbox. There is even a catch all option, so sales@, support@, etc all goes to your own inbox. Check it out! It's free!
+                = " "
+                | forwardemail.net
+              .mt-2.small.text-muted Computer Engineer, Software Developer
+          //- Phil Cockfield
+          .col.mt-4
+            .p-4.border.border-themed.bg-white.bg-themed.border-05rem
+              .d-flex.align-items-top
+                noscript
+                  img.rounded-circle(
+                    width=50,
+                    height=50,
+                    src=manifest("img/testimonials/philcockfield.jpg"),
+                    alt="philcockfield"
+                  )
+                img.lazyload.rounded-circle(
                   width=50,
                   height=50,
-                  src=manifest("img/testimonials/philcockfield.jpg"),
+                  data-src=manifest("img/testimonials/philcockfield.jpg"),
                   alt="philcockfield"
                 )
-              img.lazyload.rounded-circle(
-                width=50,
-                height=50,
-                data-src=manifest("img/testimonials/philcockfield.jpg"),
-                alt="philcockfield"
-              )
-              .d-flex.flex-column.ml-2.font-weight-bold.text-themed
-                div
-                  div Phil
-                  .small.text-muted @philcockfield
-            .mt-3
-              | Thanks for your
-              = " "
-              | forwardemail.net
-              | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
-            .mt-2.small.text-muted hypersheet, db.team
+                .d-flex.flex-column.ml-2.font-weight-bold.text-themed
+                  div
+                    div Phil
+                    .small.text-muted @philcockfield
+              .mt-3
+                | Thanks for your
+                = " "
+                | forwardemail.net
+                | . What you've done is a beautiful thing! Your FAQ just smacks of integrity, and is just the thing I need.
+              .mt-2.small.text-muted hypersheet, db.team

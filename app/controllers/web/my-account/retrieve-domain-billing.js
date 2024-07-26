@@ -1778,7 +1778,7 @@ async function retrieveDomainBilling(ctx) {
       return ctx.redirect(redirectTo);
     }
 
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(err);
   }
 }
 

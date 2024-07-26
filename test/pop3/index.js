@@ -30,7 +30,7 @@ const POP3 = require('../../pop3-server');
 
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
-const logger = require('#logger');
+const logger = require('#helpers/logger');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');

@@ -13,6 +13,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
 const { isEmail } = require('validator');
+const _ = require('lodash');
 
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
@@ -198,7 +199,8 @@ async function onAuth(auth, session, fn) {
           `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
           {
             responseCode: 535,
-            ignoreHook: true
+            ignoreHook: true,
+            imapResponse: 'AUTHENTICATIONFAILED'
           }
         );
     } else if (
@@ -211,7 +213,8 @@ async function onAuth(auth, session, fn) {
         `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
-          ignoreHook: true
+          ignoreHook: true,
+          imapResponse: 'AUTHENTICATIONFAILED'
         }
       );
 
@@ -229,8 +232,11 @@ async function onAuth(auth, session, fn) {
       );
       if (count >= config.smtpLimitAuth) {
         throw new SMTPError(
-          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`
-          // { ignoreHook: true }
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+          // { ignoreHook: true },
+          {
+            imapResponse: 'CONTACTADMIN'
+          }
         );
       }
     }
@@ -288,7 +294,8 @@ async function onAuth(auth, session, fn) {
       throw new SMTPError(
         `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
         {
-          responseCode: 535
+          responseCode: 535,
+          imapResponse: 'AUTHENTICATIONFAILED'
           // ignoreHook: true
         }
       );
@@ -375,6 +382,7 @@ async function onAuth(auth, session, fn) {
     if (
       alias &&
       !alias.has_imap &&
+      !_.isDate(alias.imap_not_enabled_sent_at) &&
       (this.server instanceof IMAPServer ||
         this.server instanceof POP3Server ||
         this?.constructor?.name === 'CalDAV' ||
@@ -384,14 +392,18 @@ async function onAuth(auth, session, fn) {
       this.client
         .get(`imap_check:${alias.id}`)
         .then(async (cache) => {
-          if (cache) return;
           try {
-            await this.client.set(
-              `imap_check:${alias.id}`,
-              true,
-              'PX',
-              ms('7d')
-            );
+            // TODO: we can remove imap_check cache check in future
+            //       (this is for legacy compat for those that were sent in past 7d)
+            if (cache) {
+              await Aliases.findByIdAndUpdate(alias._id, {
+                $set: {
+                  imap_not_enabled_sent_at: new Date()
+                }
+              });
+              return;
+            }
+
             await email({
               template: 'alert',
               message: {
@@ -415,6 +427,12 @@ async function onAuth(auth, session, fn) {
                   `${alias.name}@${domain.name}`
                 ),
                 locale
+              }
+            });
+
+            await Aliases.findByIdAndUpdate(alias._id, {
+              $set: {
+                imap_not_enabled_sent_at: new Date()
               }
             });
           } catch (err) {

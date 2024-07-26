@@ -29,7 +29,6 @@ const { convert } = require('html-to-text');
 const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
-const Users = require('./users');
 
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -606,7 +605,7 @@ Domains.pre('validate', async function (next) {
       const root = parseRootDomain(domain.name);
       // Domain cannot be one of the trusted senders
       if (config.truthSources.has(root)) {
-        const users = await Users.find({
+        const users = await conn.models.Users.find({
           _id: {
             $in: domain.members
               .filter((member) => member.group === 'admin')
@@ -699,7 +698,7 @@ Domains.pre('validate', async function (next) {
       domain.name
     );
 
-    const users = await Users.find({
+    const users = await conn.models.Users.find({
       _id: { $in: domain.members.map((m) => m.user) }
     })
       .lean()
@@ -1763,7 +1762,7 @@ Domains.statics.getNameRestrictions = getNameRestrictions;
 
 async function getToAndMajorityLocaleByDomain(domain) {
   // Get all the admins we should send the email to
-  let users = await Users.find({
+  let users = await conn.models.Users.find({
     _id: {
       $in: domain.members
         .filter((member) => member.group === 'admin')
@@ -1781,7 +1780,7 @@ async function getToAndMajorityLocaleByDomain(domain) {
     .exec();
 
   if (users.length === 0) {
-    throw new Error('Domain had zero admins');
+    throw Boom.badRequest('Domain had zero admins');
   }
 
   users = users.filter((u) => u[config.userFields.hasVerifiedEmail]);
@@ -1930,9 +1929,23 @@ async function getTxtAddresses(
       // addr[1] = forwardemail@gmail.com (forwarding email)
       // check if we have a match (and if it is ignored)
       if (_.isString(addr[0]) && addr[0].indexOf('!') === 0) {
+        // !foo
+        let name = addr[0].slice(1);
+        let errorCode = 250;
+        if (addr[0].indexOf('!!!') === 0) {
+          // !!!foo -> 550
+          name = addr[0].slice(3);
+          errorCode = 550;
+        } else if (addr[0].indexOf('!!') === 0) {
+          // !!foo -> 421
+          name = addr[0].slice(2);
+          errorCode = 421;
+        }
+
         ignoredAddresses.push({
-          name: addr[0].slice(1),
-          recipient: isSANB(addr[1]) ? addr[1] : false
+          name,
+          recipient: isSANB(addr[1]) ? addr[1] : false,
+          error_code_if_disabled: errorCode
         });
         continue;
       }
@@ -1946,7 +1959,7 @@ async function getTxtAddresses(
           !isURL(addr[1], config.isURLOptions))
       ) {
         errors.push(
-          new Error(
+          Boom.badRequest(
             // TODO: we may want to replace this with "Invalid Recipients"
             `Domain has an invalid "${config.recordPrefix}" TXT record due to an invalid email address of "${element}".`
           )
@@ -2265,18 +2278,19 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
       }
     ]);
 
-    // Results [ { _id: '', storage_used: 91360 } ]
+    // Results [ { _id: '', storage_used: 91360 } ] or []
     if (
-      results.length !== 1 ||
-      typeof results[0] !== 'object' ||
-      typeof results[0].storage_used !== 'number'
+      results.length > 1 ||
+      (results.length === 1 &&
+        (typeof results[0] !== 'object' ||
+          typeof results[0].storage_used !== 'number'))
     ) {
       throw Boom.notFound(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
     }
 
-    storageUsed += results[0].storage_used;
+    if (results.length === 1) storageUsed += results[0].storage_used;
   }
 
   return storageUsed;

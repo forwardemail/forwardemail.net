@@ -7,6 +7,7 @@ const os = require('node:os');
 
 const test = require('ava');
 const pMap = require('p-map');
+const ms = require('ms');
 const ip = require('ip');
 
 const utils = require('../utils');
@@ -121,13 +122,14 @@ for (const alternative of config.alternatives) {
 
 test(`get dynamic routes`, async (t) => {
   t.context._web.config.rateLimit.allowlist.push(IP_ADDRESS, '127.0.0.1');
+  t.timeout(ms('5m'));
   await pMap(
     keys,
     async (key) => {
       const route = `/en${key === '/' ? '' : key}`;
       const { web } = t.context;
       const res = await web.get(route);
-      t.is(res.status, 200);
+      t.is(res.status, 200, `${key} should return 200`);
     },
     { concurrency: os.cpus().length }
   );

@@ -35,7 +35,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const imap = require('#helpers/imap');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
@@ -237,7 +237,7 @@ class IMAP {
                 onFailedAttempt(err) {
                   logger.error(err);
 
-                  if (isTimeoutError(err)) {
+                  if (isRetryableError(err)) {
                     return;
                   }
 

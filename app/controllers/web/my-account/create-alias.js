@@ -109,7 +109,7 @@ async function createAlias(ctx, next) {
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(err);
   }
 }
 

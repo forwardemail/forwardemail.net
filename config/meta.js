@@ -87,6 +87,11 @@ module.exports = function (config) {
       'Terms of Service',
       'Read our terms and conditions of use for our email forwarding service.'
     ],
+    '/gdpr': ['GDPR Compliance', 'Read how our service is GDPR compliant.'],
+    '/dpa': [
+      'Data Processing Agreement',
+      'Read our data processing agreement, terms of service, and how our service is GDPR compliant.'
+    ],
     '/report-abuse': [
       'Report Abuse',
       'Information on how to report abuse for the general public and law enforcement.'
@@ -210,16 +215,56 @@ module.exports = function (config) {
     ]
   };
 
-  // guides for each provider
-  for (const provider of nsProviders) {
-    meta[`/guides/${provider.slug}`] = [
-      `How to Setup Email with <span class="notranslate">${
-        provider.name
-      }</span> in <span class="notranslate">${dayjs(now).format(
-        'YYYY'
-      )}</span>`,
-      `How to send and receive emails with <span class="notranslate">${provider.name}</span> DNS and setup free email forwarding for <span class="notranslate">${provider.name}</span> with video and step by step instructions.`
-    ];
+  // guides for each provider (39 total at time of this writing)
+  for (const [x, provider] of nsProviders.entries()) {
+    const name = `<span class="notranslate">${provider.name}</span>`;
+
+    const year = `<span class="notranslate">${dayjs(now).format(
+      'YYYY'
+    )}</span>`;
+
+    let title = `Free Email Setup for ${name} in ${year}`;
+    let description = `How to send and receive emails with ${name} DNS and setup free email forwarding for ${name} with video and step by step instructions.`;
+
+    if (x >= 3 && x < 6) {
+      title = `Free Email Forwarding for ${name}`;
+      description = `Setup free email forwarding with ${name} DNS records in seconds.`;
+    } else if (x < 9) {
+      title = `${year} Email Hosting Guide for ${name}`;
+      description = `Learn about how to setup free email hosting for ${name} using ${name} DNS records.`;
+    } else if (x < 12) {
+      title = `Setup Free Email for ${name} in ${year}`;
+      description = `Free email forwarding and setup guide for ${name} with step by step instructions.`;
+    } else if (x < 15) {
+      title = `Free ${year} Email Guide for ${name}`;
+      description = `Follow our free email setup guide for ${name} and configure DNS records in minutes.`;
+    } else if (x < 18) {
+      title = `Free Email Forwarding in ${year} for ${name}`;
+      description = `Learn how to setup free email forwarding for ${name} in minutes with our step by step guide.`;
+    } else if (x < 21) {
+      title = `Step by Step ${year} Email Guide for ${name}`;
+      description = `Follow our step by step email setup guide for ${name} and setup email forwarding in minutes.`;
+    } else if (x < 24) {
+      title = `${year} Email Setup Instructions for ${name}`;
+      description = `Quick and easy email setup instructions for ${name} to setup email forwarding and hosting.`;
+    } else if (x < 27) {
+      title = `Free Email Hosting for ${name} ${year}`;
+      description = `Learn how to setup free email hosting and forwarding for ${name} using our step by step guide.`;
+    } else if (x < 30) {
+      title = `Email Hosting DNS Setup for ${name}`;
+      description = `Need to configure your DNS records to setup email for ${name}?  Follow our step by step email hosting DNS setup guide.`;
+    } else if (x < 33) {
+      title = `Simple Email Setup for ${name} in ${year}`;
+      description = `Simple and painless email setup guide for ${name}, which will let you setup email forwarding in minutes.`;
+    } else if (x < 36) {
+      title = `Easy Email Forwarding for ${name} (${year})`;
+      description = `The easiest to follow guide for setting up email forwarding and hosting for ${name}.`;
+    } else if (x < 39) {
+      title = `(${year}) Quick Email Setup for ${name}`;
+      description = `Quickly setup email in minutes for ${name} using our instructional guide and verification tool.`;
+    }
+
+    meta[`/guides/${provider.slug}`] = [title, description];
   }
 
   if (platforms.length > 0) {

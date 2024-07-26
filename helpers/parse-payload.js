@@ -48,7 +48,7 @@ const getPathToDatabase = require('#helpers/get-path-to-database');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
-const isTimeoutError = require('#helpers/is-timeout-error');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
@@ -957,7 +957,7 @@ async function parsePayload(data, ws) {
                 }
               } catch (_err) {
                 const err = Array.isArray(_err) ? _err[0] : _err;
-                if (isTimeoutError(err)) {
+                if (isRetryableError(err)) {
                   err.isCodeBug = true;
                   err.payload = _.omit(payload, 'raw');
                   logger.error(err);

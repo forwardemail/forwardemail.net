@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
 const toObject = require('#helpers/to-object');
@@ -50,7 +49,7 @@ async function updateAlias(ctx, next) {
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(Boom.badRequest(err.message));
+    ctx.throw(err);
   }
 }
 

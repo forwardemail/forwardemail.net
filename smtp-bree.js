@@ -26,6 +26,9 @@ const bree = new Bree({
       timeout: 0
     },
     {
+      // this is a long running job as well
+      // (with setTimeout upon completion)
+      // (so it never exits, but this is just in case it does)
       // time to inbox monitoring
       name: 'tti',
       interval: '1m',

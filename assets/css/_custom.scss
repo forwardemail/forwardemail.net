@@ -62,6 +62,21 @@ body.app {
   }
 }
 
+@include media-breakpoint-up(sm) {
+  .navbar-small {
+    .navbar-collapse {
+      a.btn, button.btn {
+        font-size: 0.8rem !important;
+      }
+      &.show {
+        a.btn, button.btn {
+          font-size: 1rem !important;
+        }
+      }
+    }
+  }
+}
+
 @media (prefers-color-scheme: light) {
   .text-themed a, a.text-themed, a.text-themed.btn-link {
     color: inherit;

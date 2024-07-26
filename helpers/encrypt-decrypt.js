@@ -87,7 +87,8 @@ function decrypt(
     // extract the IV from the prefix as `<iv>-<data>`
     if (
       err.message.includes('Invalid initialization vector') ||
-      err.message.includes('Unsupported state or unable to authenticate data')
+      err.message.includes('Unsupported state or unable to authenticate data') ||
+      err.message.includes('Unsupported state')
     ) {
       const textParts = text.includes('-') ? text.split('-') : [];
       const iv = Buffer.from(textParts.shift() || '', 'binary');
