@@ -186,7 +186,7 @@ localeRouter
 
   // encrypt domain txt record
   .get('/encrypt', render('encrypt'))
-  .post('/encrypt', web.encryptTxt)
+  .post('/encrypt', policies.ensureTurnstile, web.encryptTxt)
 
   //
   // ips

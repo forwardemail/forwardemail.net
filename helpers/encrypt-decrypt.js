@@ -8,8 +8,6 @@ const { Buffer } = require('node:buffer');
 
 const env = require('#config/env');
 
-console.log('env.HELPER_ENCRYPTION_KEY', env.HELPER_ENCRYPTION_KEY);
-
 //
 // inspiration from the following gist, except we swapped ":" for "-" to be more URL-friendly
 // https://gist.github.com/vlucas/2bd40f62d20c1d49237a109d491974eb?permalink_comment_id=3771967#gistcomment-3771967
@@ -49,7 +47,7 @@ function encrypt(
 function decrypt(
   text,
   encryptionKey = env.HELPER_ENCRYPTION_KEY,
-  algorithm = 'aes-256-cbc'
+  algorithm = 'chacha20-poly1305'
 ) {
   if (!text) throw new TypeError('Text value missing');
 
@@ -92,7 +90,7 @@ function decrypt(
       const iv = Buffer.from(textParts.shift() || '', 'binary');
       const encryptedText = Buffer.from(textParts.join('-'), 'hex');
       const decipher = crypto.createDecipheriv(
-        algorithm,
+        'aes-256-cbc',
         Buffer.from(encryptionKey),
         iv
       );

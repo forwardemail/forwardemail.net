@@ -77,7 +77,6 @@ async function create(ctx) {
       text: body.text
     };
 
-    // TODO: does config.email.message.from to itself trigger this webhook?
     const index = subject.indexOf('#');
     if (index !== -1) {
       const reference = subject

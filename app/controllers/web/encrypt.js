@@ -15,8 +15,8 @@ async function encryptTxt(ctx) {
     throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
 
   ctx.request.body.input = ctx.request.body.input
-    .replace('forward-email=', '')
-    .replace('forward-email-port=', '');
+    .replace(/forward-email=/i, '')
+    .replace(/forward-email-port=/i, '');
 
   if (
     ctx.request.body.input
