@@ -18,7 +18,7 @@ function encrypt(
   text,
   ivLength = 16,
   encryptionKey = env.HELPER_ENCRYPTION_KEY,
-  algorithm = 'aes-256-cbc'
+  algorithm = 'chacha20-poly1305'
 ) {
   if (!text) throw new Error('Text value missing');
 
@@ -85,7 +85,11 @@ function decrypt(
   } catch (err) {
     // for backwards compatibility, let's use the same logic previously to
     // extract the IV from the prefix as `<iv>-<data>`
-    if (err.message.includes('Invalid initialization vector')) {
+    if (
+      err.message.includes('Invalid initialization vector') ||
+      err.message.includes('Unsupported state or unable to authenticate data') ||
+      err.message.includes('Unsupported state')
+    ) {
       const textParts = text.includes('-') ? text.split('-') : [];
       const iv = Buffer.from(textParts.shift() || '', 'binary');
       const encryptedText = Buffer.from(textParts.join('-'), 'hex');
