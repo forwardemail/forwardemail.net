@@ -16,7 +16,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('wildduck/lib/message-handler');
+const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const mongoose = require('mongoose');
@@ -25,7 +25,7 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
-const { IMAPServer } = require('wildduck/imap-core');
+const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -158,6 +158,7 @@ class IMAP {
     server.onStore = imap.onStore.bind(this);
     server.onSubscribe = imap.onSubscribe.bind(this);
     server.onUnsubscribe = imap.onUnsubscribe.bind(this);
+    server.onXAPPLEPUSHSERVICE = imap.onXAPPLEPUSHSERVICE.bind(this);
 
     // kind of hacky but I filed a GH issue
     // <https://github.com/nodemailer/smtp-server/issues/135>

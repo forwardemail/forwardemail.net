@@ -31,6 +31,7 @@ const onStatus = require('./on-status');
 const onStore = require('./on-store');
 const onSubscribe = require('./on-subscribe');
 const onUnsubscribe = require('./on-unsubscribe');
+const onXAPPLEPUSHSERVICE = require('./on-xapplepushservice');
 
 module.exports = {
   onAppend,
@@ -50,5 +51,6 @@ module.exports = {
   onStatus,
   onStore,
   onSubscribe,
-  onUnsubscribe
+  onUnsubscribe,
+  onXAPPLEPUSHSERVICE
 };

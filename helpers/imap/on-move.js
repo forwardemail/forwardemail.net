@@ -16,7 +16,9 @@
 const mongoose = require('mongoose');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
-const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const {
+  IMAPConnection
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

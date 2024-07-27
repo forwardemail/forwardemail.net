@@ -52,6 +52,7 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const recursivelyParse = require('#helpers/recursively-parse');
+const sendApn = require('#helpers/send-apn');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const { encoder, decoder } = require('#helpers/encoder-decoder');
@@ -1147,6 +1148,11 @@ async function parsePayload(data, ws) {
                     err.payload = _.omit(payload, 'raw');
                     logger.fatal(err);
                   }
+
+                  // send user push notification if applicable
+                  sendApn(alias.id)
+                    .then()
+                    .catch((err) => logger.fatal(err, { session }));
 
                   //
                   // increase rate limiting size and count

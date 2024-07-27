@@ -35,7 +35,8 @@ const IMAP_COMMANDS = new Set([
   'STATUS',
   'STORE',
   'SUBSCRIBE',
-  'UNSUBSCRIBE'
+  'UNSUBSCRIBE',
+  'XAPPLEPUSHSERVICE'
 ]);
 
 // eslint-disable-next-line complexity

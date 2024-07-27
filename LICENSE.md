@@ -32,6 +32,7 @@ licensed under the [Mozilla Public License 2.0](mozilla-public-license-20) below
 * [helpers/get-query-response.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-query-response.js)
 * [helpers/imap-notifier.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap-notifier.js)
 * [helpers/imap/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap)
+  - With the exception of [helpers/imap/on-xapplepushservice.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/imap/on-xapplepushservice.js) which is licensed under BSL (see below).
 * [helpers/indexer.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/indexer.js)
 * [helpers/is-message-encrypted.js](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-message-encrypted.js)
 * [helpers/pop3/\*\*/\*](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/pop3)

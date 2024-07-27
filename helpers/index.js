@@ -95,6 +95,7 @@ const isRedisError = require('./is-redis-error');
 const isMongoError = require('./is-mongo-error');
 const syncUbuntuUser = require('./sync-ubuntu-user');
 const getUbuntuMembersMap = require('./get-ubuntu-members-map');
+const sendApn = require('./send-apn');
 
 module.exports = {
   decrypt,
@@ -190,5 +191,6 @@ module.exports = {
   isRedisError,
   isMongoError,
   syncUbuntuUser,
-  getUbuntuMembersMap
+  getUbuntuMembersMap,
+  sendApn
 };

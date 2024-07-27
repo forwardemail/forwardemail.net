@@ -68,6 +68,13 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // apple push notification support
+  // <https://github.com/nodemailer/wildduck/issues/711>
+  aps_account_id: String,
+  aps_device_token: String,
+  aps_subtopic: String,
+  aps_mailboxes: String,
+
   // pgp encryption support
   has_pgp: {
     type: Boolean,
@@ -367,7 +374,15 @@ Aliases.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api', 'tokens', 'pgp_error_sent_at'],
+  omitExtraFields: [
+    'is_api',
+    'tokens',
+    'pgp_error_sent_at',
+    'aps_account_id',
+    'aps_device_token',
+    'aps_subtopic',
+    'aps_mailboxes'
+  ],
   defaultLocale: i18n.getLocale()
 });
 

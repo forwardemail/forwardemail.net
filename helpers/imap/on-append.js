@@ -20,7 +20,9 @@ const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const splitLines = require('split-lines');
-const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const {
+  IMAPConnection
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
 
 const Aliases = require('#models/aliases');
@@ -38,6 +40,7 @@ const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
+const sendApn = require('#helpers/send-apn');
 
 const { formatResponse } = IMAPConnection.prototype;
 
@@ -72,6 +75,12 @@ async function onAppend(path, flags, date, raw, session, fn) {
         raw
       });
       this.server.notifier.fire(session.user.alias_id);
+
+      // send apple push notification if the path was INBOX
+      if (path === 'INBOX')
+        sendApn(session.user.alias_id)
+          .then()
+          .catch((err) => this.logger.fatal(err, { session }));
 
       fn(null, bool, response);
     } catch (err) {
