@@ -9545,5 +9545,9 @@
   "our GitHub issues": "our GitHub issues",
   "we've added this.": "we've added this.",
   "Any valid Forward Email plaintext TXT record": "Any valid Forward Email plaintext TXT record",
-  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record"
+  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record",
+  "We do not store any forwarded emails to disk storage nor databases.": "We do not store any forwarded emails to disk storage nor databases.",
+  "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).",
+  "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either",
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on"
 }

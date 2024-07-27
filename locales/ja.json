@@ -9810,5 +9810,9 @@
   "Any valid Forward Email plaintext TXT record": "有効な転送メールのプレーンテキストTXTレコード",
   "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this pop-up. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "以下のエイリアス パスワードが正常に生成されました。このポップアップを閉じる前に、それをコピーして安全に保存する必要があります。 <strong class=\"text-decoration-underline\"><br /><br />「OK」をクリックすると、以下のパスワードは再度表示されなくなります。</strong><br /><br /><strong>ユーザー名:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>パスワード:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />このウィンドウは30秒後に自動的に閉じます。<br />",
   "You do not need to encrypt site verification records": "サイト検証記録を暗号化する必要はありません",
-  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "プレーンテキスト<span class=\"notranslate\">TXT</span>レコードを暗号化する"
+  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "プレーンテキスト<span class=\"notranslate\">TXT</span>レコードを暗号化する",
+  "We do not store any forwarded emails to disk storage nor databases.": "転送された電子メールはディスク ストレージやデータベースに保存されません。",
+  "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "当社の電子メール転送サービスはメモリ内でのみ動作します (ディスク ストレージやデータベースへの書き込みは行われません)。",
+  "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAVストレージは保存時に暗号化され、次のいずれかのブロックストレージボリュームに保存されます。",
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAVストレージのバックアップは保存時に暗号化され、"
 }

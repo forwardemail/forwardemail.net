@@ -1543,6 +1543,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             txt = true;
           }
         } else if (
+          !result.hasRegex &&
           !result.hasBase64 &&
           result.forwardingAddresses.length === 0 &&
           result.globalForwardingAddresses.length === 0 &&
@@ -1839,12 +1840,13 @@ function splitString(string_) {
     : [string_];
 }
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity, max-params
 async function getTxtAddresses(
   domainName,
   locale,
   allowEmpty = false,
-  resolver
+  resolver,
+  purgeCache = true
 ) {
   if (!isFQDN(domainName)) {
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));
@@ -1857,7 +1859,7 @@ async function getTxtAddresses(
     throw new TypeError('Resolver missing');
   }
 
-  const records = await resolver.resolveTxt(domainName, { purgeCache: true });
+  const records = await resolver.resolveTxt(domainName, { purgeCache });
 
   // Verification records that contain `forward-email-site-verification=` prefix
   const verifications = [];
@@ -1913,11 +1915,19 @@ async function getTxtAddresses(
   //
   let hasBase64 = false;
 
+  //
+  // Store if user has regex
+  //
+  let hasRegex = false;
+
   for (const element of addresses) {
     // Convert addresses to lowercase
     const lowerCaseAddress = element.toLowerCase();
 
-    if (
+    // rudimentary regex support
+    if (element.indexOf('/') === 0 && element.lastIndexOf('/') !== 0) {
+      hasRegex = true;
+    } else if (
       (lowerCaseAddress.includes(':') || lowerCaseAddress.indexOf('!') === 0) &&
       !isURL(element, config.isURLOptions)
     ) {
@@ -1926,10 +1936,7 @@ async function getTxtAddresses(
       // 'foo'
       // > str.slice(str.indexOf(':') + 1)
       // 'https://foo.com'
-      const isRegex = element.indexOf('/') === 0;
-      const index = isRegex
-        ? element.lastIndexOf('/:') + 1
-        : element.lastIndexOf(':'); // Last index because of regex usage
+      const index = element.indexOf(':');
       const addr =
         index === -1
           ? [element]
@@ -2000,6 +2007,7 @@ async function getTxtAddresses(
 
   return {
     hasBase64,
+    hasRegex,
     verifications,
     forwardingAddresses,
     globalForwardingAddresses,

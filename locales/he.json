@@ -7827,5 +7827,9 @@
   "Any valid Forward Email plaintext TXT record": "כל רשומת TXT חוקית של העבר אימייל רגיל",
   "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this pop-up. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "יצרת בהצלחה את סיסמת הכינוי למטה - עליך להעתיק ולאחסן אותה בצורה מאובטחת לפני סגירת החלון הקופץ הזה. <strong class=\"text-decoration-underline\"><br /><br />הסיסמה למטה לא תוצג שוב לאחר שתלחץ על אישור.</strong><br /><br /> <strong>שם משתמש:</strong> <code class=\"notranslate\">%s</code><br /><br /> <strong>סיסמה:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br /> חלון זה ייסגר אוטומטית תוך 30 שניות.<br />",
   "You do not need to encrypt site verification records": "אינך צריך להצפין את רשומות אימות האתר",
-  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "הצפנת רשומת <span class=\"notranslate\">TXT</span> רגילה"
+  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "הצפנת רשומת <span class=\"notranslate\">TXT</span> רגילה",
+  "We do not store any forwarded emails to disk storage nor databases.": "אנו לא מאחסנים הודעות דוא\"ל המועברות לאחסון דיסק או למאגרי מידע.",
+  "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "שירותי העברת הדואר האלקטרוני שלנו פועלים בזיכרון בלבד (ללא כתיבה לאחסון דיסק או לבסיסי נתונים).",
+  "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "אחסון IMAP/POP3/CalDAV מוצפן במצב מנוחה ונשמר בנפח אחסון בלוק באחד מהשניים",
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "גיבויים לאחסון ה-IMAP/POP3/CalDAV שלך מוצפנים במצב מנוחה ונשמרים על"
 }

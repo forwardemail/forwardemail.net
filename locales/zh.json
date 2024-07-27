@@ -9503,5 +9503,9 @@
   "Any valid Forward Email plaintext TXT record": "任何有效的转发电子邮件纯文本 TXT 记录",
   "You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this pop-up. <strong class=\"text-decoration-underline\"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>Password:</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />": "您已成功生成以下别名密码 - 您必须在关闭此弹出窗口之前复制并安全存储它。<strong class=\"text-decoration-underline\"><br /><br />单击“确定”后，以下密码将不再显示。</strong><br /><br /><strong>用户名：</strong> <code class=\"notranslate\">%s</code><br /><br /><strong>密码：</strong> <code class=\"notranslate\">%s</code><br /><br /><br /><br />此窗口将在30秒后自动关闭。<br />",
   "You do not need to encrypt site verification records": "您不需要加密站点验证记录",
-  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "加密纯文本<span class=\"notranslate\">TXT</span>记录"
+  "Encrypt Plaintext <span class=\"notranslate\">TXT</span> Record": "加密纯文本<span class=\"notranslate\">TXT</span>记录",
+  "We do not store any forwarded emails to disk storage nor databases.": "我们不会将任何转发的电子邮件存储到磁盘存储或数据库中。",
+  "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "我们的电子邮件转发服务仅在内存中运行（不写入磁盘存储或数据库）。",
+  "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV 存储在静态时加密，并保留在任一块存储卷上",
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "您的 IMAP/POP3/CalDAV 存储的备份在静态时加密并保留在"
 }
