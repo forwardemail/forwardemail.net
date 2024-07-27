@@ -80,7 +80,6 @@
 * [Can I "send mail as" in Apple Mail and iCloud Mail with this](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
 * [Can I forward unlimited emails with this](#can-i-forward-unlimited-emails-with-this)
 * [How do I add a profile picture to my email address](#how-do-i-add-a-profile-picture-to-my-email-address)
-* [What is the difference between Free and Enhanced Protection](#what-is-the-difference-between-free-and-enhanced-protection)
 * [Do you support MTA-STS](#do-you-support-mta-sts)
 * [Do you support email best practices](#do-you-support-email-best-practices)
 * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
@@ -396,7 +395,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=user@gmail.com</code></td>
+      <td>
+        <code>forward-email=user@gmail.com</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -437,7 +438,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=hello:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=hello:user@gmail.com</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -468,7 +471,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -499,31 +504,41 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=hello:user@gmail.com,support:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=hello:user@gmail.com,support:user@gmail.com</code>
+      </td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=help:user@gmail.com,foo:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=help:user@gmail.com,foo:user@gmail.com</code>
+      </td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=orders:user@gmail.com,baz:user@gmail.com</code>
+      </td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=info:user@gmail.com,beep:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=info:user@gmail.com,beep:user@gmail.com</code>
+      </td>
     </tr>
     <tr>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=errors:user@gmail.com,boop:user@gmail.com</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -554,7 +569,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=example.net</code></td>
+      <td>
+        <code>forward-email=example.net</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -585,7 +602,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+      <td>
+        <code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -626,7 +645,9 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td>
+      <td>
+        <code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -3646,15 +3667,6 @@ If you're using Gmail, then follow these steps below:
 12. Upload a new photo or avatar for your account
 13. Changes will take approximately 1-2 hours to propagate, but sometimes may be very quick.
 14. Send a test email and the profile photo should appear.
-
-
-## What is the difference between Free and Enhanced Protection
-
-The Free plan requires you to use public DNS records to store your forwarding configuration. Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan. Unlike the Free plan, the Enhanced Protection plan uses a cryptographically generated random string to store your forwarding configuration privately.
-
-|            Free Plan           |           Enhanced Protection Plan           |
-| :----------------------------: | :------------------------------------------: |
-| `forward-email=user@gmail.com` | `forward-email-site-verification=m8d7o8K4Il` |
 
 
 ## Do you support MTA-STS

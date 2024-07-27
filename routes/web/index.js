@@ -78,6 +78,8 @@ router
   // report URI support (not locale specific)
   .post('/report', web.report)
 
+  .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
+
   // mermaid charts
   // TODO: once svg fixed we can use that instead
   // <https://github.com/mermaid-js/mermaid-cli/issues/632>
@@ -186,7 +188,7 @@ localeRouter
 
   // encrypt domain txt record
   .get('/encrypt', render('encrypt'))
-  .post('/encrypt', policies.ensureTurnstile, web.encryptTxt)
+  .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
 
   //
   // ips

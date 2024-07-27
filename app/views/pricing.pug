@@ -730,28 +730,6 @@ block body
           h2= t("Frequently Asked Questions")
           p.lead
             = t("Browse commonly asked questions and answers about pricing below.")
-      .row.my-3
-        .col-12
-          h3.h5.border-bottom.border-dark-50= t("What is the difference between Free and Enhanced?")
-          p
-            = t("The Free plan requires you to use public DNS records to store your forwarding configuration.")
-            = " "
-            = t("Anyone with a computer can lookup your forwarding configuration in a terminal if you are on the Free plan.")
-            = " "
-            = t("Unlike the Free plan, the Enhanced plan uses a cryptographically generated random string to store your forwarding configuration privately.")
-      .row.my-3
-        .col-12.col-sm-6.text-center
-          h4.border-dark-50.mb-4= t("Free")
-          strong.bg-danger.rounded.p-3.text-white
-            i.fa.fa-lock-open
-            = " "
-            = user ? user.email : "user@gmail.com"
-        .col-12.col-sm-6.text-center.mt-5.mt-sm-0
-          h4.border-dark-50.mb-4= t("Enhanced")
-          strong.bg-success.rounded.p-3.text-white
-            i.fa.fa-lock
-            = " "
-            != new Array(16).fill("&bull;").join("")
       .row.my-3.mt-5
         .col
           h3.h5.border-bottom.border-dark-50= t("Do you offer unlimited domains for one price?")

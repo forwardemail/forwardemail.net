@@ -248,7 +248,7 @@ $body.on(
 );
 $body.on(
   'click.confirmPrompt',
-  'button.confirm-prompt, input.confirm-prompt',
+  'a.confirm-prompt, button.confirm-prompt, input.confirm-prompt',
   confirmPrompt
 );
 

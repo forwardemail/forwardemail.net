@@ -388,17 +388,18 @@ block body
                         td.align-middle: strong.px-2 TXT
                         td.align-middle
                         td.align-middle.text-left.py-3
+                          code#copy-txt.d-block.text-themed.text-nowrap
+                            if domain.plan === 'free'
+                              = `${config.recordPrefix}=${user.email}`
+                            else
+                              = `${config.recordPrefix}-site-verification=${domain.verification_record}`
                           if domain.plan === 'free'
                             ul.list-inline
                               li.list-inline-item
-                                input#copy-fe-record-prefix(
-                                  type="hidden",
-                                  value=`${config.recordPrefix}=${user.email}`
-                                )
                                 button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                                   type="button",
                                   data-toggle="clipboard",
-                                  data-clipboard-target="#copy-fe-record-prefix"
+                                  data-clipboard-target="#copy-txt"
                                 )
                                   i.fa.fa-clipboard
                                   = " "
@@ -419,15 +420,32 @@ block body
                                     i.fas.fa-user-secret
                                     = " "
                                     = t("Encrypt")
+                                  = " "
+                                  - let eHTML = t("We allow you to encrypt records even on the free plan at no cost.");
+                                  - eHTML += " ";
+                                  - eHTML += t("Privacy should not be a feature, it should be inherently built-in to all aspects of a product.");
+                                  - eHTML += " ";
+                                  - eHTML += t('As highly requested in a <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://discuss.privacyguides.net/t/forward-email-email-provider/13370">Privacy Guides discussion</a> and on <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://github.com/forwardemail/forwardemail.net/issues/254">our GitHub issues</a> we\'ve added this.');
+                                  - eHTML += "<br /><br />";
+                                  - eHTML += t("Need to encrypt a different value?");
+                                  - eHTML += "<br />";
+                                  - eHTML += t("<a href='%s' target='_blank' class='font-weight-bold'>Click here for our Encrypt TXT page.</a>", l("/encrypt"));
+                                  a.btn.btn-link.confirm-prompt(
+                                    href=l("/encrypt"),
+                                    target="_blank",
+                                    role="button",
+                                    aria-label=t("Encrypt TXT"),
+                                    data-confirm-type="info",
+                                    data-confirm-show-cancel-button="false",
+                                    data-confirm-prompt-title=t("Encrypt TXT"),
+                                    data-confirm-prompt-html=eHTML
+                                  )
+                                    i.fa.fa-info-circle
                           else
-                            input#copy-fe-sv(
-                              type="hidden",
-                              value=`${config.recordPrefix}-site-verification=${domain.verification_record}`
-                            )
                             button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                               type="button",
                               data-toggle="clipboard",
-                              data-clipboard-target="#copy-fe-sv"
+                              data-clipboard-target="#copy-txt"
                             )
                               i.fa.fa-clipboard
                               = " "

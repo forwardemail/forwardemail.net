@@ -16,7 +16,7 @@ const env = require('#config/env');
 //
 function encrypt(
   text,
-  ivLength = 16,
+  ivLength = 12,
   encryptionKey = env.HELPER_ENCRYPTION_KEY,
   algorithm = 'chacha20-poly1305'
 ) {
@@ -87,7 +87,9 @@ function decrypt(
     // extract the IV from the prefix as `<iv>-<data>`
     if (
       err.message.includes('Invalid initialization vector') ||
-      err.message.includes('Unsupported state or unable to authenticate data') ||
+      err.message.includes(
+        'Unsupported state or unable to authenticate data'
+      ) ||
       err.message.includes('Unsupported state')
     ) {
       const textParts = text.includes('-') ? text.split('-') : [];

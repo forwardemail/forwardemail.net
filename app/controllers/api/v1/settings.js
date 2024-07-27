@@ -3,13 +3,18 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+
 const Boom = require('@hapi/boom');
+const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isPort } = require('validator');
 
+const env = require('#config/env');
 const config = require('#config');
 const Domains = require('#models/domains');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const HTTP_RETRY_ERROR_CODES = new Set([
   'ETIMEDOUT',
@@ -23,6 +28,7 @@ const HTTP_RETRY_ERROR_CODES = new Set([
   'EAI_AGAIN'
 ]);
 
+// eslint-disable-next-line complexity
 async function settings(ctx) {
   try {
     if (!isSANB(ctx.query.domain) || !isFQDN(ctx.query.domain))
@@ -95,6 +101,17 @@ async function settings(ctx) {
         if (ports.length > 1)
           ctx.logger.warn(ctx.translateError('MULTIPLE_PORT_RECORDS'));
         port = ports[0];
+        // if it was base64 then attempt to decrypt it
+        if (isBase64(port)) {
+          try {
+            port = decrypt(
+              Buffer.from(port, 'base64').toString('hex'),
+              env.TXT_ENCRYPTION_KEY
+            );
+          } catch (err) {
+            ctx.logger.debug(err);
+          }
+        }
       }
 
       if (!isPort(port)) {

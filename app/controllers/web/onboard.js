@@ -14,6 +14,7 @@ const pug = require('pug');
 const { boolean } = require('boolean');
 const { isEmail, isIP } = require('validator');
 const { ValidationError } = require('mongoose/lib/error');
+const { parse } = require('node-html-parser');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -104,7 +105,66 @@ async function onboard(ctx, next) {
       }
     }
 
-    ctx.body = html;
+    const root = parse(html);
+    let i = 0;
+    const codes = root.querySelectorAll('code');
+    for (const code of codes) {
+      if (!code.rawText.startsWith('forward-email')) continue;
+      const id = `code-fe-${i}`;
+      code.setAttribute('id', id);
+      let eHTML = ctx.state.t(
+        'We allow you to encrypt records even on the free plan at no cost.'
+      );
+      eHTML += ' ';
+      eHTML += ctx.state.t(
+        'Privacy should not be a feature, it should be inherently built-in to all aspects of a product.'
+      );
+      eHTML += ' ';
+      eHTML += ctx.state.t(
+        'As highly requested in a <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://discuss.privacyguides.net/t/forward-email-email-provider/13370">Privacy Guides discussion</a> and on <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://github.com/forwardemail/forwardemail.net/issues/254">our GitHub issues</a> we\'ve added this.'
+      );
+      eHTML += '<br /><br />';
+      eHTML += ctx.state.t('Need to encrypt a different value?');
+      eHTML += '<br />';
+      eHTML += ctx.state.t(
+        '<a href="%s" target="_blank" class="font-weight-bold">Click here for our Encrypt TXT page.</a>',
+        ctx.state.l('/encrypt')
+      );
+      code.insertAdjacentHTML(
+        'afterend',
+        `
+         <ul class="pl-0 list-inline">
+           <li class="list-inline-item">
+             <button type="button" class="btn btn-dark btn-sm mt-1" data-toggle="clipboard" data-clipboard-target="#${id}">
+               <i class="fa fa-clipboard"></i> ${ctx.state.t('Copy')}
+             </button>
+           </li>
+           <li class="list-inline-item">
+             <form class="ajax-form confirm-prompt d-block" action="/encrypt" method="POST">
+               <input type="hidden" name="input" value="${code.rawText}" />
+               <button type="submit" class="btn btn-dark btn-sm mt-1">
+                 <i class="fas fa-user-secret"></i> ${ctx.state.t('Encrypt')}
+               </button>
+               <a
+                 class="btn btn-link confirm-prompt"
+                 href="${ctx.state.l('/encrypt')}",
+                 target="_blank",
+                 role="button",
+                 aria-label="${ctx.state.t('Encrypt TXT')}",
+                 data-confirm-type="info",
+                 data-confirm-show-cancel-button="false",
+                 data-confirm-prompt-title="${ctx.state.t('Encrypt TXT')}",
+                 data-confirm-prompt-html="${eHTML.replaceAll('"', "'")}"
+               ><i class="fa fa-info-circle"></i></a>
+             </form>
+           </li>
+         </ul>
+      `.trim()
+      );
+      i++;
+    }
+
+    ctx.body = root.toString();
     return;
   }
 

@@ -124,8 +124,9 @@ module.exports = {
   ALIAS_PASSWORD_EMAIL:
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
-    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this window. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
+    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this pop-up. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
   FASTEST_EMAIL: 'The Fastest Email Service',
+  CLOSE_POPUP: 'Close Pop-up',
   PAST_DUE_OR_INVALID_ADMIN:
     'Domain has past due balance or does not have at least one valid admin.',
   ALIAS_ACCOUNT_BANNED: 'Alias user is banned.',
@@ -169,7 +170,7 @@ module.exports = {
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE:
-    'You have successfully generated the encrypted value below &ndash; you must copy before closing this window.</strong><br /><br /><code class="notranslate">forward-email=%s</code>',
+    'You have successfully generated the encrypted value below &ndash; you must copy it before closing this pop-up.</strong><br /><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code>',
   INPUT_HAD_FE_SV: 'You do not need to encrypt site verification records',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',

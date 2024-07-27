@@ -397,7 +397,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Resources
           if !isBot(ctx.get('User-Agent'))
-            - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
+            - const resourcePages = ["/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
             - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && !boolean(ctx.query.pricing)) || companyPages.includes(ctx.pathWithoutLocale));
             li.nav-item.dropdown.no-js
@@ -426,6 +426,12 @@ nav.navbar(class=navbarClasses.join(" "))
                         href=pricingPageHref,
                         class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
                       )!= t("Features &amp; Pricing")
+                    else if resourcePage === '/encrypt'
+                      a.dropdown-item(
+                        href=l(resourcePage),
+                        class=ctx.pathWithoutLocale === resourcePage ? "active" : ""
+                      )
+                        != t('Encrypt Plaintext <span class="notranslate">TXT</span> Record')
                     else
                       a.dropdown-item(
                         href=l(resourcePage),

@@ -111,6 +111,7 @@ async function createCatchAllPassword(ctx) {
       allowEscapeKey: false,
       allowOutsideClick: false,
       focusConfirm: false,
+      confirmButtonText: ctx.translate('CLOSE_POPUP'),
       grow: 'fullscreen',
       backdrop: 'rgba(0,0,0,0.8)',
       customClass: {

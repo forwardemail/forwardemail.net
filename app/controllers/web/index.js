@@ -548,6 +548,7 @@ async function regenerateAliasPassword(ctx) {
       position: 'top',
       allowEscapeKey: false,
       allowOutsideClick: false,
+      confirmButtonText: ctx.translate('CLOSE_POPUP'),
       focusConfirm: false,
       grow: 'fullscreen',
       backdrop: 'rgba(0,0,0,0.8)',
