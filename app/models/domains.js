@@ -6,6 +6,7 @@
 const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
+const { Buffer } = require('node:buffer');
 const { promisify } = require('node:util');
 
 const Boom = require('@hapi/boom');
@@ -16,6 +17,7 @@ const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
+const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -30,13 +32,14 @@ const { isIP, isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 
+const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
-const { encrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -1540,6 +1543,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             txt = true;
           }
         } else if (
+          !result.hasBase64 &&
           result.forwardingAddresses.length === 0 &&
           result.globalForwardingAddresses.length === 0 &&
           result.ignoredAddresses.length === 0
@@ -1903,6 +1907,12 @@ async function getTxtAddresses(
   // Store errors
   const errors = [];
 
+  //
+  // Store if base64 encryption or not (e.g. free plan)
+  // https://forwardemail.net/encrypt
+  //
+  let hasBase64 = false;
+
   for (const element of addresses) {
     // Convert addresses to lowercase
     const lowerCaseAddress = element.toLowerCase();
@@ -1975,10 +1985,21 @@ async function getTxtAddresses(
       globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isURL(element, config.isURLOptions)) {
       globalForwardingAddresses.push(element);
+    } else if (isBase64(element)) {
+      try {
+        decrypt(
+          Buffer.from(element, 'base64').toString('hex'),
+          env.TXT_ENCRYPTION_KEY
+        );
+        hasBase64 = true;
+      } catch (err) {
+        logger.debug(err);
+      }
     }
   }
 
   return {
+    hasBase64,
     verifications,
     forwardingAddresses,
     globalForwardingAddresses,
