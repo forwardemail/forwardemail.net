@@ -11,17 +11,24 @@ const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 
-const apnProvider = new apn.Provider({
-  token: {
-    key: env.APPLE_KEY_PATH,
-    keyId: env.APPLE_KEY_ID,
-    teamId: env.APPLE_TEAM_ID
-  },
-  production: config.env === 'production'
-});
+const apnProvider =
+  env.APPLE_KEY_PATH && env.APPLE_KEY_ID && env.APPLE_TEAM_ID
+    ? new apn.Provider({
+        token: {
+          key: env.APPLE_KEY_PATH,
+          keyId: env.APPLE_KEY_ID,
+          teamId: env.APPLE_TEAM_ID
+        },
+        production: config.env === 'production'
+      })
+    : false;
 
 // <https://github.com/nodemailer/wildduck/issues/711>
 async function sendApn(id) {
+  if (!apnProvider)
+    throw new TypeError(
+      'APPLE_KEY_PATH, APPLE_KEY_ID, and APPLE_TEAM_ID required for APN Apple Push Notifications'
+    );
   const alias = await Aliases.findOne({
     id,
     aps_account_id: { $exists: true },
