@@ -27,14 +27,17 @@ async function onXAPPLEPUSHSERVICE(
   try {
     await this.refreshSession(session, 'XAPPLEPUSHSERVICE');
     // update the alias with the provided data
-    await Aliases.findByIdAndUpdate(session.user.alias_id, {
-      $set: {
-        aps_account_id: accountID,
-        aps_device_token: deviceToken,
-        aps_subtopic: subTopic,
-        aps_mailboxes: mailboxes
+    await Aliases.findOneAndUpdate(
+      { id: session.user.alias_id },
+      {
+        $set: {
+          aps_account_id: accountID,
+          aps_device_token: deviceToken,
+          aps_subtopic: subTopic,
+          aps_mailboxes: mailboxes
+        }
       }
-    });
+    );
     fn();
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));

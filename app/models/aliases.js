@@ -68,12 +68,16 @@ Token.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // TODO: add array support
   // apple push notification support
   // <https://github.com/nodemailer/wildduck/issues/711>
   aps_account_id: String,
   aps_device_token: String,
-  aps_subtopic: String,
-  aps_mailboxes: String,
+  aps_subtopic: {
+    type: String,
+    enum: ['com.apple.mobilemail']
+  },
+  aps_mailboxes: [String],
 
   // pgp encryption support
   has_pgp: {
