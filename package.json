@@ -28,7 +28,7 @@
     "@forevolve/bootstrap-dark": "4.0.2",
     "@fortawesome/fontawesome-free": "5.15.4",
     "@forwardemail/passport-fido2-webauthn": "0.1.0",
-    "@forwardemail/wildduck": "2.0.0",
+    "@forwardemail/wildduck": "2.0.1",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",
     "@koa/multer": "3.0.2",
