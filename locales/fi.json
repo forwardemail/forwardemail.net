@@ -9661,5 +9661,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Emme tallenna edelleenlähetettyjä sähköposteja levymuistiin tai tietokantoihin.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Sähköpostin välityspalvelumme toimivat vain muistissa (ei kirjoitusta levymuistiin tai tietokantoihin).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV-tallennus on salattu lepotilassa ja säilytetään lohkotallennustilalla jommallakummalla",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAV-tallennustilasi varmuuskopiot on salattu lepotilassa ja säilytetään"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAV-tallennustilasi varmuuskopiot on salattu lepotilassa ja säilytetään",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "Julkaisimme maalis-heinäkuun 2024 aikana merkittäviä optimointeja ja parannuksia IMAP-, POP3- ja CalDAV-palveluihimme.  Tavoitteenamme oli tehdä palvelustamme näppärä – ja yhtä nopea, ellei nopeampi kuin vaihtoehdot.",
+  "In July 2024,": "Heinäkuussa 2024",
+  "we added iOS Push support": "lisäsimme iOS Push -tuen",
+  "since Apple Mail on iOS does not support IMAP": "koska iOS:n Apple Mail ei tue IMAP-protokollaa",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "komento.  Nyt käyttäjät voivat saada reaaliaikaisia ilmoituksia uusista viesteistä Apple iOS -laitteillaan.  Lisäsimme myös oman palvelumme (\"TTI\") -ajan postilaatikon seurantaan – sekä Yahoo/AOL:n (nyt kun ne tukevat jälleen sovellusten luomia salasanoja) verkkosivustomme jokaisen sivun alatunnisteeseen.  Lisäksi annamme nyt käyttäjien salata selkeän tekstin DNS TXT -tietueet jopa ilmaisella sopimuksella maksutta.  Yksityisyyden suojan ei pitäisi olla ominaisuus, sen tulee olla luonnostaan sisäänrakennettu tuotteen kaikkiin osa-alueisiin. Kuten erittäin pyydettiin a",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "olemme lisänneet tämän.  Lopuksi lisäsimme aliaksien mahdollisuuden hylätä joko hiljaa",
+  ", soft reject": ", pehmeä hylkäys",
+  ", or hard reject": ", tai kova hylkääminen",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "jos he ovat vammaisia.  Aiemmin käytöstä poistetut aliakset ohjattiin vain mustaan aukkoon (esim.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") ja lähettäjät näyttivät siltä, että heidän viestinsä näille käytöstä poistetuille aliaksille onnistuivat."
 }

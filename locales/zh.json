@@ -9507,5 +9507,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "我们不会将任何转发的电子邮件存储到磁盘存储或数据库中。",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "我们的电子邮件转发服务仅在内存中运行（不写入磁盘存储或数据库）。",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV 存储在静态时加密，并保留在任一块存储卷上",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "您的 IMAP/POP3/CalDAV 存储的备份在静态时加密并保留在"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "您的 IMAP/POP3/CalDAV 存储的备份在静态时加密并保留在",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "2024 年 3 月至 7 月期间，我们对 IMAP、POP3 和 CalDAV 服务进行了重大优化和改进。我们的目标是让我们的服务变得快速 — — 并且速度与其他服务一样快，甚至更快。",
+  "In July 2024,": "2024年7月，",
+  "we added iOS Push support": "我们添加了 iOS Push 支持",
+  "since Apple Mail on iOS does not support IMAP": "因为 iOS 上的 Apple Mail 不支持 IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "命令。现在用户可以在 Apple iOS 设备上实时收到新邮件通知。我们还在网站每个页面的页脚中添加了收件箱时间（“TTI”）监控，以监控我们自己的服务以及 Yahoo/AOL（现在它们再次支持应用程序生成的密码）。此外，我们现在允许用户免费加密他们的纯文本 DNS TXT 记录，即使是在免费计划中。隐私不应该是一项功能，它应该内置于产品的各个方面。正如在",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "我们添加了这个。最后，我们添加了别名可以悄悄拒绝的功能",
+  ", soft reject": "，软拒绝",
+  ", or hard reject": "或硬拒绝",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "如果它们被禁用。以前，禁用的别名只会路由到黑洞（例如",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ")，并且对于发件人来说，他们向这些已禁用别名发送的消息似乎已成功发送。"
 }

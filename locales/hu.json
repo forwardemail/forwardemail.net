@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "A továbbított e-maileket nem tároljuk lemeztáron vagy adatbázisban.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "E-mail továbbítási szolgáltatásaink csak a memóriában működnek (nincs írás sem lemeztárra, sem adatbázisokra).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "Az IMAP/POP3/CalDAV tároló nyugalmi állapotban titkosítva van, és a blokktároló köteten marad",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Az IMAP/POP3/CalDAV tárhely biztonsági másolatai nyugalmi állapotban titkosítva vannak, és"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Az IMAP/POP3/CalDAV tárhely biztonsági másolatai nyugalmi állapotban titkosítva vannak, és",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "2024 márciusa és júliusa között jelentős optimalizálásokat és fejlesztéseket adtunk ki IMAP-, POP3- és CalDAV-szolgáltatásunkhoz.  Célunk az volt, hogy szolgáltatásunkat lendületessé tegyük – és olyan gyorsan, ha nem gyorsabban, mint az alternatívák.",
+  "In July 2024,": "2024 júliusában",
+  "we added iOS Push support": "hozzáadtuk az iOS Push támogatást",
+  "since Apple Mail on iOS does not support IMAP": "mivel az iOS Apple Mail nem támogatja az IMAP-ot",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "parancs.  Mostantól a felhasználók valós idejű értesítéseket kaphatnak az új levelekről Apple iOS-eszközeiken.  Webhelyünk minden oldalának láblécéhez hozzáadtuk a beérkező levelek (\"TTI\") felügyeletét saját szolgáltatásunkhoz, valamint a Yahoo/AOL-hoz (most, hogy újra támogatják az alkalmazások által generált jelszavakat).  Ezenkívül mostantól lehetővé tesszük a felhasználók számára, hogy ingyenesen titkosítsák egyszerű szöveges DNS TXT rekordjaikat, még az ingyenes csomagban is.  Az adatvédelem nem lehet szolgáltatás, hanem magától értetődően be kell építeni a termék minden aspektusába. Ahogy azt nagyon kérték a",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "ezt hozzáadtuk.  Végül hozzáadtuk az álnevek csendes elutasításának lehetőségét",
+  ", soft reject": ", lágy selejt",
+  ", or hard reject": ", vagy kemény elutasítás",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "ha mozgássérültek.  Korábban a letiltott álnevek csak fekete lyukhoz voltak irányítva (pl.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ")."
 }

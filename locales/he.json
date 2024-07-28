@@ -7831,5 +7831,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "אנו לא מאחסנים הודעות דוא\"ל המועברות לאחסון דיסק או למאגרי מידע.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "שירותי העברת הדואר האלקטרוני שלנו פועלים בזיכרון בלבד (ללא כתיבה לאחסון דיסק או לבסיסי נתונים).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "אחסון IMAP/POP3/CalDAV מוצפן במצב מנוחה ונשמר בנפח אחסון בלוק באחד מהשניים",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "גיבויים לאחסון ה-IMAP/POP3/CalDAV שלך מוצפנים במצב מנוחה ונשמרים על"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "גיבויים לאחסון ה-IMAP/POP3/CalDAV שלך מוצפנים במצב מנוחה ונשמרים על",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "במהלך מרץ עד יולי 2024, פרסמנו אופטימיזציות ושיפורים גדולים לשירות ה-IMAP, POP3 ו-CalDAV שלנו.  המטרה שלנו הייתה להפוך את השירות שלנו למהיר - ומהיר באותה מידה, אם לא מהר יותר מאשר אלטרנטיבות.",
+  "In July 2024,": "ביולי 2024,",
+  "we added iOS Push support": "הוספנו תמיכת iOS Push",
+  "since Apple Mail on iOS does not support IMAP": "מכיוון ש-Apple Mail ב-iOS אינו תומך ב-IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "פקודה.  כעת משתמשים יכולים לקבל התראות בזמן אמת על דואר חדש במכשירי Apple iOS שלהם.  הוספנו גם זמן לניטור תיבת הדואר הנכנס (\"TTI\") עבור השירות שלנו - כמו גם Yahoo/AOL (כעת שהם תומכים שוב בסיסמאות שנוצרו על ידי אפליקציות) לכותרת התחתונה של כל עמוד באתר שלנו.  בנוסף, אנו מאפשרים כעת למשתמשים להצפין את רשומות ה-DNS TXT שלהם בטקסט רגיל אפילו בתוכנית החינמית ללא עלות.  פרטיות לא צריכה להיות תכונה, היא צריכה להיות מובנית מטבעה בכל ההיבטים של המוצר. כפי שהתבקש מאוד ב-a",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "הוספנו את זה.  לבסוף, הוספנו את היכולת של כינויים לדחות בשקט",
+  ", soft reject": ", דחייה רכה",
+  ", or hard reject": ", או דחייה קשה",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "אם הם מושבתים.  בעבר, כינויים מושבתים נותבו רק לחור שחור (למשל.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") ונראה לשולחים כאילו ההודעות שלהם לכינויים המושבתים הללו הצליחו."
 }

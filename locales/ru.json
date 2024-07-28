@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Мы не храним перенаправленные электронные письма ни в дисковом хранилище, ни в базах данных.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Наши службы пересылки электронной почты работают только в памяти (без записи в дисковое хранилище или базы данных).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "Хранилище IMAP/POP3/CalDAV шифруется и сохраняется в томе блочного хранилища на любом",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Резервные копии вашего хранилища IMAP/POP3/CalDAV шифруются и хранятся"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Резервные копии вашего хранилища IMAP/POP3/CalDAV шифруются и хранятся",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "В период с марта по июль 2024 года мы выпустили значительные оптимизации и улучшения наших служб IMAP, POP3 и CalDAV.  Нашей целью было сделать наш сервис быстрым и таким же быстрым, если не быстрее, чем альтернативы.",
+  "In July 2024,": "В июле 2024 г.",
+  "we added iOS Push support": "мы добавили поддержку iOS Push",
+  "since Apple Mail on iOS does not support IMAP": "поскольку Apple Mail на iOS не поддерживает IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "команда.  Теперь пользователи могут получать уведомления о новой почте в режиме реального времени на своих устройствах Apple iOS.  Мы также добавили время для мониторинга входящих сообщений («TTI») для нашей собственной службы, а также Yahoo/AOL (теперь, когда они снова поддерживают пароли, сгенерированные приложениями) в нижний колонтитул каждой страницы нашего веб-сайта.  Кроме того, теперь мы разрешаем пользователям бесплатно шифровать свои текстовые записи DNS TXT даже в бесплатном плане.  Конфиденциальность не должна быть особенностью, она должна быть неотъемлемой частью всех аспектов продукта. По настоятельной просьбе в",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "мы добавили это.  Наконец, мы добавили возможность для псевдонимов либо незаметно отклонять",
+  ", soft reject": ", мягкий отказ",
+  ", or hard reject": ", или жестко отклонить",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "если они отключены.  Раньше отключенные псевдонимы направлялись только в черную дыру (например,",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": "), и отправителям казалось, что их сообщения на эти отключенные псевдонимы прошли успешно."
 }

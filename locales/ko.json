@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "우리는 전달된 이메일을 디스크 저장소나 데이터베이스에 저장하지 않습니다.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "당사의 이메일 전달 서비스는 메모리 내에서만 작동합니다(디스크 저장소나 데이터베이스에 쓰지 않음).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV 스토리지는 미사용 시 암호화되어 둘 중 하나의 블록 스토리지 볼륨에 보관됩니다.",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAV 저장소의 백업은 저장 시 암호화되어 보관됩니다."
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAV 저장소의 백업은 저장 시 암호화되어 보관됩니다.",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "2024년 3월부터 7월까지 우리는 IMAP, POP3, CalDAV 서비스에 대한 주요 최적화 및 개선 사항을 출시했습니다.  우리의 목표는 서비스를 빠르고, 다른 서비스보다 빠르지는 않더라도 빠르게 만드는 것이었습니다.",
+  "In July 2024,": "2024년 7월,",
+  "we added iOS Push support": "iOS 푸시 지원을 추가했습니다.",
+  "since Apple Mail on iOS does not support IMAP": "iOS의 Apple Mail은 IMAP을 지원하지 않기 때문에",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "명령.  이제 사용자는 Apple iOS 장치에서 새 메일에 대한 실시간 알림을 받을 수 있습니다.  또한 웹사이트의 모든 페이지 바닥글에 Yahoo/AOL(이제 앱 생성 비밀번호를 다시 지원함)뿐만 아니라 자체 서비스에 대한 받은 편지함(\"TTI\") 모니터링도 추가했습니다.  또한 이제 사용자는 무료 플랜에서도 일반 텍스트 DNS TXT 레코드를 무료로 암호화할 수 있습니다.  개인정보 보호는 하나의 기능이 되어서는 안 되며, 제품의 모든 측면에 본질적으로 내장되어야 합니다. 많은 요청에 따라",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "우리는 이것을 추가했습니다.  마지막으로 별칭을 조용히 거부하거나 거부하는 기능을 추가했습니다.",
+  ", soft reject": ", 소프트 리젝트",
+  ", or hard reject": "또는 하드 거부",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "비활성화된 경우.  이전에는 비활성화된 별칭이 블랙홀로만 라우팅되었습니다(예:",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") 보낸 사람에게는 비활성화된 별칭으로 보낸 메시지가 성공한 것처럼 보였습니다."
 }

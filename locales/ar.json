@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "نحن لا نقوم بتخزين أي رسائل بريد إلكتروني مُعاد توجيهها إلى وحدة تخزين القرص أو قواعد البيانات.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "تعمل خدمات إعادة توجيه البريد الإلكتروني لدينا في الذاكرة فقط (لا توجد إمكانية الكتابة إلى وحدة تخزين القرص أو قواعد البيانات).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "يتم تشفير وحدة تخزين IMAP/POP3/CalDAV في حالة عدم النشاط ويتم الاحتفاظ بها على وحدة تخزين كتلة على أي منهما",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "يتم تشفير النسخ الاحتياطية لوحدة تخزين IMAP/POP3/CalDAV الخاصة بك في حالة عدم النشاط والاحتفاظ بها"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "يتم تشفير النسخ الاحتياطية لوحدة تخزين IMAP/POP3/CalDAV الخاصة بك في حالة عدم النشاط والاحتفاظ بها",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "طوال الفترة من مارس إلى يوليو 2024، أصدرنا تحسينات وتحسينات كبيرة على خدمة IMAP وPOP3 وCalDAV.  كان هدفنا هو جعل خدمتنا سريعة - وبنفس السرعة، إن لم تكن أسرع من البدائل.",
+  "In July 2024,": "في يوليو 2024،",
+  "we added iOS Push support": "أضفنا دعم iOS Push",
+  "since Apple Mail on iOS does not support IMAP": "نظرًا لأن Apple Mail على iOS لا يدعم IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "يأمر.  الآن يمكن للمستخدمين الحصول على إشعارات في الوقت الحقيقي للبريد الجديد على أجهزة Apple iOS الخاصة بهم.  أضفنا أيضًا وقتًا لمراقبة البريد الوارد (\"TTI\") لخدمتنا - بالإضافة إلى Yahoo/AOL (الآن بعد أن أصبحا يدعمان كلمات المرور التي ينشئها التطبيق مرة أخرى) إلى تذييل كل صفحة على موقعنا.  بالإضافة إلى ذلك، نسمح الآن للمستخدمين بتشفير سجلات DNS TXT ذات النص العادي حتى على الخطة المجانية دون أي تكلفة.  لا ينبغي أن تكون الخصوصية ميزة، بل يجب أن تكون مدمجة في جميع جوانب المنتج. كما هو مطلوب بشدة في أ",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "لقد أضفنا هذا.  وأخيرًا، أضفنا إمكانية رفض الأسماء المستعارة بهدوء",
+  ", soft reject": "، رفض ناعم",
+  ", or hard reject": "، أو الرفض الصعب",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "إذا كانوا معطلين.  في السابق، تم توجيه الأسماء المستعارة المعطلة فقط إلى الثقب الأسود (على سبيل المثال:",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") وبدا للمرسلين كما لو أن رسائلهم إلى هذه الأسماء المستعارة المعطلة قد نجحت."
 }

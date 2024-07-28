@@ -52,4 +52,8 @@ In December 2023, [we added support](/faq#do-you-support-pop3) for [POP3](https:
 
 In February 2024, [we added calendar (CalDAV) support](/faq#do-you-support-calendars-caldav).
 
+Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.
+
+In July 2024, [we added iOS Push support](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) since Apple Mail on iOS does not support IMAP `IDLE` command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox ("TTI") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on [our GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.  Lastly, we added the ability for aliases to either quietly reject `250`, soft reject `421`, or hard reject `550` if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g. `/dev/null`) and it appeared to senders as if their messages to these disabled aliases succeeded.
+
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

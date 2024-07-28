@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "転送された電子メールはディスク ストレージやデータベースに保存されません。",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "当社の電子メール転送サービスはメモリ内でのみ動作します (ディスク ストレージやデータベースへの書き込みは行われません)。",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAVストレージは保存時に暗号化され、次のいずれかのブロックストレージボリュームに保存されます。",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAVストレージのバックアップは保存時に暗号化され、"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "IMAP/POP3/CalDAVストレージのバックアップは保存時に暗号化され、",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "2024 年 3 月から 7 月にかけて、IMAP、POP3、CalDAV サービスに大幅な最適化と改善を加えました。私たちの目標は、サービスを迅速に、そして他のサービスと同等かそれ以上に高速にすることでした。",
+  "In July 2024,": "2024年7月、",
+  "we added iOS Push support": "iOSプッシュサポートを追加しました",
+  "since Apple Mail on iOS does not support IMAP": "iOSのApple MailはIMAPをサポートしていないため",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "コマンド。これで、ユーザーは Apple iOS デバイスで新着メールのリアルタイム通知を受け取ることができます。また、当社独自のサービスと Yahoo/AOL (アプリ生成パスワードを再びサポート) の受信トレイ時間 (\"TTI\") モニタリングを、当社 Web サイトのすべてのページのフッターに追加しました。さらに、無料プランでもユーザーがプレーンテキストの DNS TXT レコードを暗号化できるようになりました。プライバシーは機能ではなく、製品のすべての側面に本来組み込まれている必要があります。",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "これを追加しました。最後に、エイリアスに静かに拒否する機能を追加しました",
+  ", soft reject": "、ソフト拒否",
+  ", or hard reject": "、または拒否",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "無効になっている場合。以前は、無効なエイリアスはブラックホールにのみルーティングされていました (例:",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") であり、送信者にはこれらの無効なエイリアスへのメッセージが成功したように見えました。"
 }

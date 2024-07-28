@@ -6775,5 +6775,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Vi gemmer ikke videresendte e-mails til disklager eller databaser.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Vores e-mail-videresendelsestjenester fungerer kun i hukommelsen (ingen skrivning til disklager eller databaser).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV-lager er krypteret i hvile og bevares på en bloklagervolumen på enten",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Sikkerhedskopier til dit IMAP/POP3/CalDAV-lager krypteres i hvile og bevares på"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Sikkerhedskopier til dit IMAP/POP3/CalDAV-lager krypteres i hvile og bevares på",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "I hele marts til juli 2024 udgav vi store optimeringer og forbedringer af vores IMAP-, POP3- og CalDAV-tjeneste.  Vores mål var at gøre vores service hurtig – og lige så hurtig, hvis ikke hurtigere end alternativer.",
+  "In July 2024,": "I juli 2024,",
+  "we added iOS Push support": "vi tilføjede iOS Push-understøttelse",
+  "since Apple Mail on iOS does not support IMAP": "da Apple Mail på iOS ikke understøtter IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "kommando.  Nu kan brugere få meddelelser i realtid om ny mail på deres Apple iOS-enheder.  Vi tilføjede også tid til indbakke (\"TTI\")-overvågning for vores egen tjeneste – såvel som Yahoo/AOL (nu hvor de understøtter app-genererede adgangskoder igen) til sidefoden på hver side på vores hjemmeside.  Derudover tillader vi nu brugere at kryptere deres DNS TXT-poster i almindelig tekst, selv på den gratis plan uden omkostninger.  Privatlivets fred bør ikke være en funktion, det bør være indbygget i alle aspekter af et produkt. Som meget efterspurgt i en",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "vi har tilføjet dette.  Til sidst tilføjede vi muligheden for, at aliaser enten stille og roligt kan afvise",
+  ", soft reject": ", blødt afslag",
+  ", or hard reject": ", eller hårdt afvise",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "hvis de er deaktiveret.  Tidligere blev deaktiverede aliaser kun dirigeret til et sort hul (f.eks.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": "), og det så ud for afsendere, som om deres beskeder til disse deaktiverede aliaser lykkedes."
 }

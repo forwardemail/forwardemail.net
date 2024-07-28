@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Ми не зберігаємо переслані електронні листи на дисковому сховищі чи в базах даних.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Наші служби пересилання електронної пошти працюють лише в пам’яті (не записуються ні на диск, ні в бази даних).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "Сховище IMAP/POP3/CalDAV зашифровано в стані спокою та зберігається на блочному томі сховища",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Резервні копії для вашого сховища IMAP/POP3/CalDAV шифруються в стані спокою та зберігаються на"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Резервні копії для вашого сховища IMAP/POP3/CalDAV шифруються в стані спокою та зберігаються на",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "З березня по липень 2024 року ми випустили основні оптимізації та вдосконалення наших служб IMAP, POP3 і CalDAV.  Наша мета полягала в тому, щоб зробити наш сервіс швидким – і таким же швидким, якщо не швидшим, ніж альтернативи.",
+  "In July 2024,": "У липні 2024 р.",
+  "we added iOS Push support": "ми додали підтримку iOS Push",
+  "since Apple Mail on iOS does not support IMAP": "оскільки Apple Mail на iOS не підтримує IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "команда.  Тепер користувачі можуть отримувати сповіщення про нову пошту в реальному часі на своїх пристроях Apple iOS.  Ми також додали час для моніторингу вхідних повідомлень («TTI») для нашої власної служби, а також Yahoo/AOL (тепер, коли вони знову підтримують паролі, створені програмами), у нижній колонтитул кожної сторінки нашого веб-сайту.  Крім того, тепер ми дозволяємо користувачам безкоштовно шифрувати свої TXT-записи DNS у відкритому вигляді навіть у безкоштовному плані.  Конфіденційність не має бути функцією, вона має бути вбудованою в усі аспекти продукту. На настійне прохання в a",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "ми додали це.  Нарешті, ми додали можливість тихо відхиляти псевдоніми",
+  ", soft reject": ", м'яке відхилення",
+  ", or hard reject": "або жорстко відхилити",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "якщо вони вимкнені.  Раніше вимкнені псевдоніми спрямовувалися лише до чорної діри (наприклад,",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") і відправникам здавалося, що їхні повідомлення до цих вимкнених псевдонімів успішно відправлені."
 }

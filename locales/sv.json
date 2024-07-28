@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Vi lagrar inga vidarebefordrade e-postmeddelanden till disklagring eller databaser.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Våra tjänster för vidarebefordran av e-post fungerar endast i minnet (ingen skrivning till disklagring eller databaser).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "IMAP/POP3/CalDAV-lagring krypteras i vila och behålls på en blocklagringsvolym på antingen",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Säkerhetskopieringar för din IMAP/POP3/CalDAV-lagring krypteras i vila och behålls på"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Säkerhetskopieringar för din IMAP/POP3/CalDAV-lagring krypteras i vila och behålls på",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "Under hela mars till juli 2024 släppte vi stora optimeringar och förbättringar av vår IMAP-, POP3- och CalDAV-tjänst.  Vårt mål var att göra vår tjänst snabb – och lika snabb, om inte snabbare än alternativen.",
+  "In July 2024,": "I juli 2024,",
+  "we added iOS Push support": "vi lade till iOS Push-stöd",
+  "since Apple Mail on iOS does not support IMAP": "eftersom Apple Mail på iOS inte stöder IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "kommando.  Nu kan användare få realtidsmeddelanden om ny e-post på sina Apple iOS-enheter.  Vi har också lagt till tid till inkorgen (\"TTI\")-övervakning för vår egen tjänst – såväl som Yahoo/AOL (nu när de stödjer appgenererade lösenord igen) i sidfoten på varje sida på vår webbplats.  Dessutom tillåter vi nu användare att kryptera sina klartext DNS TXT-poster även på gratisplanen utan kostnad.  Sekretess ska inte vara en funktion, den ska vara inbyggd i alla aspekter av en produkt. Som mycket efterfrågat i en",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "vi har lagt till detta.  Slutligen lade vi till möjligheten för alias att antingen tyst avvisa",
+  ", soft reject": ", mjukt avslag",
+  ", or hard reject": ", eller hårt avvisa",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "om de är inaktiverade.  Tidigare har inaktiverade alias endast dirigerats till ett svarthål (t.ex.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") och det verkade för avsändare som om deras meddelanden till dessa inaktiverade alias lyckades."
 }

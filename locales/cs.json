@@ -9814,5 +9814,15 @@
   "We do not store any forwarded emails to disk storage nor databases.": "Neukládáme žádné přeposlané e-maily na diskové úložiště ani do databází.",
   "Our email forwarding services operate in-memory only (no writing to disk storage nor databases).": "Naše služby přeposílání e-mailů fungují pouze v paměti (žádný zápis na diskové úložiště ani do databází).",
   "IMAP/POP3/CalDAV storage is encrypted at rest and retained on a block storage volume on either": "Úložiště IMAP/POP3/CalDAV je v klidu šifrováno a uchováváno na svazku blokového úložiště na obou",
-  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Zálohy pro vaše úložiště IMAP/POP3/CalDAV jsou v klidu šifrovány a uchovávány"
+  "Backups for your IMAP/POP3/CalDAV storage is encrypted at rest and retained on": "Zálohy pro vaše úložiště IMAP/POP3/CalDAV jsou v klidu šifrovány a uchovávány",
+  "Throughout March to July 2024, we released major optimizations and improvements to our IMAP, POP3, and CalDAV service.  Our goal was to make our service snappy –  and as fast, if not faster than alternatives.": "V průběhu března až července 2024 jsme vydali hlavní optimalizace a vylepšení naší služby IMAP, POP3 a CalDAV.  Naším cílem bylo, aby naše služby byly rychlé – a stejně rychlé, ne-li rychlejší než alternativy.",
+  "In July 2024,": "V červenci 2024",
+  "we added iOS Push support": "přidali jsme podporu iOS Push",
+  "since Apple Mail on iOS does not support IMAP": "protože Apple Mail na iOS nepodporuje IMAP",
+  "command.  Now users can get real-time notifications of new mail on their Apple iOS devices.  We also added time to inbox (\"TTI\") monitoring for our own service – as well as Yahoo/AOL (now that they support app-generated passwords again) to the footer of every page on our website.  Additionally, we now allow users to encrypt their plaintext DNS TXT records even on the free plan at no cost.  Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a": "příkaz.  Nyní mohou uživatelé dostávat oznámení o nové poště v reálném čase na svých zařízeních Apple iOS.  Do zápatí každé stránky na našem webu jsme také přidali čas sledování doručené pošty („TTI“) pro naši vlastní službu – a také Yahoo/AOL (nyní, když opět podporují hesla generovaná aplikacemi).  Kromě toho nyní uživatelům umožňujeme bezplatně šifrovat své záznamy DNS TXT v prostém textu i v bezplatném plánu.  Soukromí by nemělo být funkcí, mělo by být neodmyslitelně integrováno do všech aspektů produktu. Jak je vysoce požadováno v a",
+  "we've added this.  Lastly, we added the ability for aliases to either quietly reject": "přidali jsme toto.  Nakonec jsme přidali možnost aliasů buď tiše odmítnout",
+  ", soft reject": ", měkké odmítnutí",
+  ", or hard reject": "nebo tvrdé odmítnutí",
+  "if they are disabled.  Previously, disabled aliases only routed to a blackhole (e.g.": "pokud jsou invalidní.  Dříve byly zakázané aliasy směrovány pouze do černé díry (např.",
+  ") and it appeared to senders as if their messages to these disabled aliases succeeded.": ") a odesílatelům se zdálo, že jejich zprávy na tyto zakázané aliasy byly úspěšné."
 }
