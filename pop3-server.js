@@ -16,8 +16,8 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
-const POP3Server = require('@forwardemail/wildduck/lib/pop3/server');
+const MessageHandler = require('wildduck/lib/message-handler');
+const POP3Server = require('wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
 const ms = require('ms');
 const pify = require('pify');

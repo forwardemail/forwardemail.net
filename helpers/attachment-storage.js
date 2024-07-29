@@ -21,7 +21,7 @@ const revHash = require('rev-hash');
 const _ = require('lodash');
 const { Builder } = require('json-sql');
 
-const WildDuckAttachmentStorage = require('@forwardemail/wildduck/lib/attachment-storage');
+const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 
 //
 // we don't use base64 decoding/encoding of attachments (unlike wildduck)

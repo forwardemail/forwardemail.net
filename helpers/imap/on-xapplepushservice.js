@@ -26,18 +26,34 @@ async function onXAPPLEPUSHSERVICE(
   });
   try {
     await this.refreshSession(session, 'XAPPLEPUSHSERVICE');
+
     // update the alias with the provided data
-    await Aliases.findOneAndUpdate(
-      { id: session.user.alias_id },
-      {
-        $set: {
-          aps_account_id: accountID,
-          aps_device_token: deviceToken,
-          aps_subtopic: subTopic,
-          aps_mailboxes: mailboxes
-        }
-      }
+    const alias = await Aliases.findOne({ id: session.user.alias_id })
+      .select('+aps')
+      .exec();
+
+    if (!alias) throw new TypeError('Alias does not exist');
+
+    if (!Array.isArray(alias.aps)) alias.aps = [];
+
+    const match = alias.aps.find(
+      (a) => a.account_id === accountID && a.device_token === deviceToken
     );
+
+    if (match) {
+      match.subtopic = subTopic;
+      match.mailboxes = mailboxes;
+    } else {
+      alias.aps.push({
+        account_id: accountID,
+        device_token: deviceToken,
+        subtopic: subTopic,
+        mailboxes
+      });
+    }
+
+    await alias.save();
+
     fn();
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));

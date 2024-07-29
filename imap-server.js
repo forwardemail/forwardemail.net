@@ -16,7 +16,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 
-const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
+const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const mongoose = require('mongoose');
@@ -25,7 +25,7 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
-const { IMAPServer } = require('@forwardemail/wildduck/imap-core');
+const { IMAPServer } = require('wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -97,6 +97,9 @@ class IMAP {
     this.logger = logger;
 
     const server = new IMAPServer({
+      aps: {
+        enabled: env.APPLE_KEY_PATH && env.APPLE_KEY_ID && env.APPLE_TEAM_ID
+      },
       secure,
       secured: false,
       disableSTARTTLS: secure,

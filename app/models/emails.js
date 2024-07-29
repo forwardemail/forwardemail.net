@@ -308,7 +308,7 @@ Emails.pre('validate', function (next) {
     // prevent sending to no-reply address
     if (
       this.envelope.to.some((to) =>
-        NO_REPLY_USERNAMES.has(to.replace(/[^\da-z]/g, ''))
+        NO_REPLY_USERNAMES.has(to.toLowerCase().replace(/[^\da-z]/g, ''))
       )
     )
       throw Boom.badRequest(
@@ -447,7 +447,14 @@ Emails.pre('save', function (next) {
       return next();
 
     // if all recipients were accepted, then status is "sent"
-    if (this.accepted.sort().join(',') === this.envelope.to.sort().join(',')) {
+    if (
+      _.uniq(this.accepted.map((s) => s.toLowerCase()))
+        .sort()
+        .join(',') ===
+      _.uniq(this.envelope.to.map((s) => s.toLowerCase()))
+        .sort()
+        .join(',')
+    ) {
       this.status = 'sent';
       this.is_locked = false;
       this.locked_by = undefined;

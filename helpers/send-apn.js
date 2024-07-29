@@ -5,6 +5,8 @@
 
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
+const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
@@ -30,30 +32,78 @@ async function sendApn(id) {
       'APPLE_KEY_PATH, APPLE_KEY_ID, and APPLE_TEAM_ID required for APN Apple Push Notifications'
     );
   const alias = await Aliases.findOne({
-    id,
-    aps_account_id: { $exists: true },
-    aps_device_token: { $exists: true }
+    id
   })
     .lean()
-    .select('+aps_account_id +aps_device_doken')
+    .select('+aps')
     .exec();
 
-  if (!alias) return;
+  if (!alias || !Array.isArray(alias.aps) || alias.aps.length === 0) return;
 
-  const note = new apn.Notification();
-  note.topic = 'com.apple.mobilemail';
-  note.expiry = dayjs().add(1, 'day').toDate().getTime();
-  note.payload = {
-    'account-id': alias.aps_account_id
-  };
+  await pMapSeries(alias.aps, async (obj) => {
+    try {
+      const note = new apn.Notification();
+      note.topic = 'com.apple.mobilemail';
+      note.expiry = dayjs().add(1, 'day').toDate().getTime();
+      note.payload = {
+        'account-id': obj.account_id
+      };
 
-  logger.debug('note', note);
+      logger.debug('note', note);
 
-  // note they have commented out code at this below link for setting priority in note
-  // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
+      // note they have commented out code at this below link for setting priority in note
+      // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L162-L163>
 
-  const result = await apnProvider.send(note, alias.aps_device_token);
-  logger.debug('apnProvider.send', { result });
+      const result = await apnProvider.send(note, obj.device_token);
+
+      // if device returns 410 then unsubscribe on our side too
+      if (Array.isArray(result.failed) && result.failed.length > 0) {
+        const unregisteredDeviceTokens = result.failed
+          .filter((r) => Number.parseInt(r.status, 10) === 410)
+          .map((r) => r.device);
+
+        // since there's only one device token
+        if (
+          unregisteredDeviceTokens.length !== 1 ||
+          unregisteredDeviceTokens[0] !== obj.device_token
+        )
+          throw new TypeError(
+            `Device token mismatch ${
+              obj.device_token
+            } vs. ${unregisteredDeviceTokens.join(', ')}`
+          );
+
+        const aliases = await Aliases.find({
+          // unsure of likelihood of apple having two of the same device tokens
+          // however we have a safeguard below to filter out for pair matches
+          'aps.device_token': obj.device_token
+        })
+          .select('+aps')
+          .lean()
+          .exec();
+
+        await pMap(
+          aliases.map(async (alias) => {
+            await Aliases.findByIdAndUpdate(alias._id, {
+              $set: {
+                aps: alias.aps.filter(
+                  (a) =>
+                    // filter for pair safeguard
+                    a.account_id !== obj.account_id &&
+                    a.device_token !== obj.device_token
+                )
+              }
+            });
+          }),
+          { concurrency: config.concurrency }
+        );
+      }
+
+      logger.debug('apnProvider.send', { result });
+    } catch (err) {
+      logger.fatal(err, { obj });
+    }
+  });
 }
 
 module.exports = sendApn;
