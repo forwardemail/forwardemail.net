@@ -279,13 +279,17 @@ Emails.pre('validate', function (next) {
     if (!_.isArray(this.envelope.to) || _.isEmpty(this.envelope.to))
       throw Boom.badRequest('Envelope to missing');
 
+    //
+    // NOTE: we don't convert to lowercase here because of SRS
+    // (e.g. srs0 is invalid but SRS0 is valid in RCPT TO)
+    //
     // if the envelope is in address object format then convert it
     // make the envelope to unique
     this.envelope.to = _.uniq(
       this.envelope.to.map((to) =>
         typeof to === 'object' && typeof to.address === 'string'
-          ? to.address.trim().toLowerCase()
-          : to.trim().toLowerCase()
+          ? to.address.trim()
+          : to.trim()
       )
     );
 
@@ -338,7 +342,7 @@ Emails.pre('validate', function (next) {
     if (!Array.isArray(this.rejectedErrors)) this.rejectedErrors = [];
 
     // ensure accepted is lowercased and unique
-    this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase())).sort();
+    this.accepted = _.uniq(this.accepted).sort();
 
     // ensure that all `rejectedErrors` are Objects not Errors
     this.rejectedErrors = this.rejectedErrors.map((err) => {
