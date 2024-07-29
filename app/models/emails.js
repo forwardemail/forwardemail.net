@@ -36,11 +36,12 @@ const { simpleParser } = require('mailparser');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Users = require('./users');
+const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
-const getErrorCode = require('#helpers/get-error-code');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
+const getErrorCode = require('#helpers/get-error-code');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
@@ -288,8 +289,8 @@ Emails.pre('validate', function (next) {
     this.envelope.to = _.uniq(
       this.envelope.to.map((to) =>
         typeof to === 'object' && typeof to.address === 'string'
-          ? to.address.trim()
-          : to.trim()
+          ? checkSRS(to.address.trim())
+          : checkSRS(to.trim())
       )
     );
 
@@ -549,6 +550,42 @@ Emails.pre('save', async function (next) {
     this.priority = adminExists ? 1 : 0;
     next();
   } catch (err) {
+    next(err);
+  }
+});
+
+// NOTE: this must come BEFORE the next pre save hook
+Emails.pre('save', async function (next) {
+  if (!this.isNew) return next();
+
+  try {
+    // if "To" header in `raw` was SRS then rewrite
+    const splitter = new Splitter();
+    const joiner = new Joiner();
+
+    splitter.on('data', (data) => {
+      if (data.type !== 'node' || data.root !== true) return;
+      const headerLines = Buffer.concat(data._headersLines, data._headerlen);
+      const headers = new Headers(headerLines, { Iconv });
+      const lines = headers.getList();
+      const header = lines.find((line) => line.key === 'to');
+      if (!header) return;
+      const { value } = libmime.decodeHeader(header.line);
+      if (!isSANB(value)) return;
+      if (checkSRS(value) !== value)
+        data.headers.update(header.line.split(': ')[0], checkSRS(value));
+    });
+
+    // not necessary, but a safeguard in case pre hooks moved around
+    const existingMessage = await this.constructor.getMessage(this.message);
+
+    this.message = await getStream.buffer(
+      intoStream(existingMessage).pipe(splitter).pipe(joiner)
+    );
+
+    next();
+  } catch (err) {
+    logger.fatal(err);
     next(err);
   }
 });
