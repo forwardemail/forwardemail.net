@@ -75,10 +75,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
       this.server.notifier.fire(session.user.alias_id);
 
       // send apple push notification if the path was INBOX
-      if (path === 'INBOX')
-        sendApn(session.user.alias_id)
-          .then()
-          .catch((err) => this.logger.fatal(err, { session }));
+      sendApn(session.user.alias_id)
+        .then()
+        .catch((err) => this.logger.fatal(err, { session }));
 
       fn(null, bool, response);
     } catch (err) {

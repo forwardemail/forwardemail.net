@@ -111,7 +111,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       Domains.findById(email.domain)
         .populate(
           'members.user',
-          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt}`
+          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
         )
         .exec(),
       Aliases.findById(email.alias)
