@@ -22,7 +22,7 @@
     "Forward Email (https://forwardemail.net)"
   ],
   "dependencies": {
-    "@aws-sdk/client-s3": "3.614.0",
+    "@aws-sdk/client-s3": "3.621.0",
     "@aws-sdk/lib-storage": "3.614.0",
     "@aws-sdk/s3-request-presigner": "3.614.0",
     "@forevolve/bootstrap-dark": "4.0.2",
