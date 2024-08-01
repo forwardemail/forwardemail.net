@@ -8,6 +8,7 @@ const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
 const Boom = require('@hapi/boom');
+const QRCode = require('qrcode');
 const Meta = require('koa-meta');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
@@ -39,6 +40,7 @@ const guides = require('./guides');
 const sitemap = require('./sitemap');
 const search = require('./search');
 const ips = require('./ips');
+const mobileConfig = require('./mobile-config');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -532,29 +534,54 @@ async function regenerateAliasPassword(ctx) {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
+    // we use shortID to generate shorter querystring for less complicated QR code
+    // (this same logic is in app/controllers/web/my-account/generate-alias-password.js)
+    const username = `${alias.name}@${domain.name}`;
+    const appleLink = `${
+      config.urls.web
+    }/c/${username}.mobileconfig?a=${shortID.longToShort(alias.id)}&p=${
+      ctx.params.encrypted_password
+    }`;
+    const appleImgSrc = await QRCode.toDataURL(appleLink, {
+      margin: 0,
+      width: 200
+    });
+    const k9Link = `${
+      config.urls.web
+    }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${
+      ctx.params.encrypted_password
+    }`;
+    const k9ImgSrc = await QRCode.toDataURL(k9Link, {
+      margin: 0,
+      width: 200
+    });
+
     // render modal with pass
     const html = ctx.translate(
       'ALIAS_GENERATED_PASSWORD',
-      `${alias.name}@${domain.name}`,
-      decrypt(ctx.params.encrypted_password)
-      // pass
+      username,
+      username,
+      decrypt(ctx.params.encrypted_password),
+      decrypt(ctx.params.encrypted_password),
+      appleImgSrc,
+      appleLink,
+      `${username}.mobileconfig`,
+      k9ImgSrc,
+      k9Link,
+      `${username}.k9s`
     );
 
     const swal = {
       title: ctx.request.t('Success'),
       html,
       type: 'success',
-      timer: 30000,
+      timer: ms('10m'),
       position: 'top',
       allowEscapeKey: false,
       allowOutsideClick: false,
-      confirmButtonText: ctx.translate('CLOSE_POPUP'),
       focusConfirm: false,
-      grow: 'fullscreen',
-      backdrop: 'rgba(0,0,0,0.8)',
-      customClass: {
-        container: 'swal2-grow-fullscreen'
-      }
+      confirmButtonText: ctx.translate('CLOSE_POPUP'),
+      grow: 'row'
     };
 
     ctx.flash('custom', swal);
@@ -612,5 +639,6 @@ module.exports = {
   generateOpenGraphImage,
   regenerateAliasPassword,
   search,
-  ips
+  ips,
+  mobileConfig
 };

@@ -30,6 +30,7 @@ module.exports = {
     '<p>You must edit the "Recipients" for these aliases to ensure they forward to a proper destination:</p><ul class="notranslate"><li>%s<li></ul><p><strong>IMPORTANT NOTE:</strong> You must ensure that you check the checkbox for "Active" once complete to re-enable the aliases on the Edit Alias screen.</p>',
   LINK_EXPIRED_OR_INVALID:
     'Link has expired, already been claimed, or is no longer active.',
+  RATE_LIMITED: 'You have been rate limited, please try again later.',
   SMTP_RATE_LIMIT_EXCEEDED:
     'You have exceeded your daily SMTP outbound rate limit.',
   UBUNTU_NOT_ALLOWED_EMAIL:
@@ -124,7 +125,9 @@ module.exports = {
   ALIAS_PASSWORD_EMAIL:
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
-    'You have successfully generated the alias password below &ndash; you must copy and securely store it before closing this pop-up. <strong class="text-decoration-underline"><br /><br />The password below will not be shown again once you click OK.</strong><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><br /><br /><br /><br />This window will automatically close in 30 seconds.<br />',
+    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered if lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><small class="alert alert-primary d-inline-block font-weight-bold">Scan the QR codes below and open them to easily setup your account.</small><ul class="list-inline mt-3 mb-0"><li class="list-inline-item"><strong>Apple Mail (macOS/iOS)</strong><br /><br /><img alt="" src="%s" class="bg-white p-3" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li><li class="list-inline-item ml-md-5"><strong>K-9 Mail (Android)</strong><br /><br /><img alt="" src="%s" class="p-3 bg-white" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li></ul><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
+  ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG:
+    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
   FASTEST_EMAIL: 'The Fastest Email Service',
   CLOSE_POPUP: 'Close Pop-up',
   PAST_DUE_OR_INVALID_ADMIN:
@@ -170,7 +173,7 @@ module.exports = {
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE:
-    'You have successfully generated the encrypted value below &ndash; you must copy it before closing this pop-up.</strong><br /><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code>',
+    '<br /><small class="alert alert-danger d-inline-block">You must copy the encrypted output below before closing this pop-up; it will not be shown again.</small><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code><br /><br /><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button>',
   INPUT_HAD_FE_SV: 'You do not need to encrypt site verification records',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',

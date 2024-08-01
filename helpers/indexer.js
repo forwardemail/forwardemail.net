@@ -16,7 +16,7 @@
 const { Buffer } = require('node:buffer');
 const { PassThrough } = require('node:stream');
 
-const WildDuckIndexer = require('wildduck/imap-core/lib/indexer/indexer');
+const WildDuckIndexer = require('@forwardemail/wildduck/imap-core/lib/indexer/indexer');
 
 const storeNodeBodies = require('#helpers/store-node-bodies');
 

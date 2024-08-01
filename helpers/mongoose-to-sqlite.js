@@ -1356,11 +1356,12 @@ async function convertResult(
     if (Model.mapping[key]) {
       obj[key] = Model.mapping[key].getter(doc[key]);
     } else {
-      // sometimes we have a legacy column such as "uid"
-      // which is a type String and so we can easily add mapping
-      if (typeof doc[key] !== 'string')
-        throw new TypeError(`Mapping for ${key} does not exist`);
-      obj[key] = doc[key];
+      // sometimes we have a legacy column such as "uid" (or "method" for CalendarEvents)
+      // which is a type String or it just has a null value, so we can easily add mapping
+      // if (doc[key] !== null && typeof doc[key] !== 'string')
+      //   throw new TypeError(`Mapping for ${key} does not exist`);
+      // obj[key] = doc[key];
+      delete doc[key];
     }
   }
 

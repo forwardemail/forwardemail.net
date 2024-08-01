@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const striptags = require('striptags');
+const ms = require('ms');
 
 const Domains = require('#models/domains');
 const config = require('#config');
@@ -96,9 +97,13 @@ async function createCatchAllPassword(ctx) {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
+    const username = `*@${domain.name}`;
+
     const html = ctx.translate(
-      'ALIAS_GENERATED_PASSWORD',
-      `*@${domain.name}`,
+      'ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG',
+      username,
+      username,
+      password,
       password
     );
 
@@ -106,17 +111,13 @@ async function createCatchAllPassword(ctx) {
       title: ctx.request.t('Success'),
       html,
       type: 'success',
-      timer: 30000,
+      timer: ms('10m'),
       position: 'top',
       allowEscapeKey: false,
       allowOutsideClick: false,
       focusConfirm: false,
       confirmButtonText: ctx.translate('CLOSE_POPUP'),
-      grow: 'fullscreen',
-      backdrop: 'rgba(0,0,0,0.8)',
-      customClass: {
-        container: 'swal2-grow-fullscreen'
-      }
+      grow: 'row'
     };
     // TODO: blog about how we use `?hash=hash` to avoid the issue where
     //       window.location = someUrlWith#hash doesn't actually redirect user

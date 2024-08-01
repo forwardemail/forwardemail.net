@@ -2,35 +2,12 @@ extends ../../layout
 
 include ../../_onboard
 
-block append scripts
-  script(
-    defer,
-    src=manifest("js/ekko-lightbox.js"),
-    integrity=manifest("js/ekko-lightbox.js", "integrity"),
-    crossorigin="anonymous"
-  )
-
 block body
-  if !isBot(ctx.get('User-Agent'))
-    script(defer, nonce=nonce).
-      window.addEventListener(
-        "load",
-        function load() {
-          if (!window.jQuery) return setTimeout(load, 50);
-          $(function () {
-            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
-              ev.preventDefault();
-              $(this).ekkoLightbox();
-            });
-          });
-        },
-        false
-      );
   .container.py-3.py-md-4.py-lg-5
     .row
       .col-12.text-center
-        h1= t("Encrypted SQLite mailboxes for your privacy")
-        p!= t("<strong>Unlike other email services</strong>, we ensure that <strong class='text-decoration-underline'>only you have access to your mailbox</strong> at all times.")
+        h1= t("Best Security Audit Companies in %d", new Date().getFullYear())
+        p!= meta.description
         include ../../_author
   .container.pb-5
     .row

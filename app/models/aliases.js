@@ -119,7 +119,10 @@ const Aliases = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
+    validate: (value) =>
+      typeof value === 'string'
+        ? isEmail(value, { ignore_max_length: true })
+        : true
   },
   imap_not_enabled_sent_at: Date,
   imap_backup_at: Date,
@@ -227,7 +230,7 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value)
+      validate: (value) => isEmail(value, { ignore_max_length: true })
     }
   ],
   // this is an array of emails that have been sent a verification email
@@ -236,7 +239,7 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value)
+      validate: (value) => isEmail(value, { ignore_max_length: true })
     }
   ],
   recipients: [
@@ -249,7 +252,7 @@ const Aliases = new mongoose.Schema({
         validator: (value) =>
           isIP(value) ||
           isFQDN(value) ||
-          isEmail(value) ||
+          isEmail(value, { ignore_max_length: true }) ||
           isURL(value, config.isURLOptions),
         message:
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
@@ -332,7 +335,8 @@ Aliases.pre('validate', function (next) {
       _.uniq(
         this[prop].map((r) => {
           // some webhooks are case-sensitive
-          if (isEmail(r)) return r.toLowerCase().trim();
+          if (isEmail(r, { ignore_max_length: true }))
+            return r.toLowerCase().trim();
           return r.trim();
         })
       )
@@ -342,7 +346,7 @@ Aliases.pre('validate', function (next) {
   // all recipients must be emails if it requires verification
   if (
     this.has_recipient_verification &&
-    this.recipients.some((r) => !isEmail(r))
+    this.recipients.some((r) => !isEmail(r, { ignore_max_length: true }))
   )
     return next(
       Boom.badRequest(
@@ -516,7 +520,10 @@ Aliases.pre('save', async function (next) {
       );
 
     // if it starts with a forward slash then it must be a regex
-    if (!alias.name.startsWith('/') && !isEmail(`${alias.name}@${domain.name}`))
+    if (
+      !alias.name.startsWith('/') &&
+      !isEmail(`${alias.name}@${domain.name}`, { ignore_max_length: true })
+    )
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     // determine the domain membership for the user

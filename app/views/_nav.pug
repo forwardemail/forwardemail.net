@@ -617,7 +617,10 @@ nav.navbar(class=navbarClasses.join(" "))
                         if !isBot(ctx.get('User-Agent')) && doc.icon
                           i(class=doc.icon)
                           = " "
-                        = t(doc.title)
+                        if isBot(ctx.get('User-Agent'))
+                          = t(doc.title)
+                        else
+                          = t(doc.title.replace('Best ', ''))
                 if platforms.length > 0 && isBot(ctx.get('User-Agent'))
                   hr.dropdown-divider
                   h6.dropdown-header= t("Open Source")

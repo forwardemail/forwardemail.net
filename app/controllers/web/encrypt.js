@@ -43,17 +43,14 @@ async function encryptTxt(ctx) {
     'ENCRYPTED_VALUE',
     striptags(ctx.request.body.input.trim()),
     isPort ? 'forward-email-port' : 'forward-email',
-    b64encryptedValue
+    b64encryptedValue,
+    `${isPort ? 'forward-email-port' : 'forward-email'}=${b64encryptedValue}`
   );
 
   const swal = {
     title: ctx.request.t('Success'),
     html,
-    grow: 'fullscreen',
-    backdrop: 'rgba(0,0,0,0.8)',
-    customClass: {
-      container: 'swal2-grow-fullscreen'
-    },
+    grow: 'row',
     confirmButtonText: ctx.translate('CLOSE_POPUP'),
     type: 'success',
     allowEscapeKey: false,

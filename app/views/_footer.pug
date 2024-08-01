@@ -350,7 +350,10 @@ footer.mt-auto(aria-label=t("Footer"))
                     if !isBot(ctx.get('User-Agent')) && doc.icon
                       i(class=doc.icon)
                       = " "
-                    = t(doc.title)
+                    if isBot(ctx.get('User-Agent'))
+                      = t(doc.title)
+                    else
+                      = t(doc.title.replace('Best ', ''))
           if platforms.length > 0 && isBot(ctx.get('User-Agent'))
             hr.d-lg-none.w-100
             h2.h5.mb-2: a.text-white(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")

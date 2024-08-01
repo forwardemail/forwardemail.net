@@ -96,6 +96,7 @@ const isMongoError = require('./is-mongo-error');
 const syncUbuntuUser = require('./sync-ubuntu-user');
 const getUbuntuMembersMap = require('./get-ubuntu-members-map');
 const sendApn = require('./send-apn');
+const getApnCerts = require('./get-apn-certs');
 
 module.exports = {
   decrypt,
@@ -192,5 +193,6 @@ module.exports = {
   isMongoError,
   syncUbuntuUser,
   getUbuntuMembersMap,
-  sendApn
+  sendApn,
+  getApnCerts
 };

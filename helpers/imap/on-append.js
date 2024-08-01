@@ -20,7 +20,9 @@ const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const splitLines = require('split-lines');
-const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const {
+  IMAPConnection
+} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
 
 const Aliases = require('#models/aliases');
@@ -74,8 +76,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
       });
       this.server.notifier.fire(session.user.alias_id);
 
-      // send apple push notification if the path was INBOX
-      sendApn(session.user.alias_id)
+      // send apple push notification
+      sendApn(this.client, session.user.alias_id, path)
         .then()
         .catch((err) => this.logger.fatal(err, { session }));
 

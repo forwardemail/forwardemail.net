@@ -1149,8 +1149,8 @@ async function parsePayload(data, ws) {
                     logger.fatal(err);
                   }
 
-                  // send user push notification if applicable
-                  sendApn(alias.id)
+                  // send user push notification
+                  sendApn(this.client, alias.id)
                     .then()
                     .catch((err) => logger.fatal(err, { session }));
 
@@ -1501,13 +1501,13 @@ async function parsePayload(data, ws) {
         );
         if (cache)
           throw Boom.clientTimeout(
-            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
           true,
           'PX',
-          ms('30m')
+          ms('30s')
         );
 
         // check if file path was <= initial db size
@@ -1634,13 +1634,13 @@ async function parsePayload(data, ws) {
         );
         if (cache)
           throw Boom.clientTimeout(
-            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
           true,
           'PX',
-          ms('30m')
+          ms('30s')
         );
 
         // check how much space is remaining on storage location
@@ -1761,7 +1761,7 @@ async function parsePayload(data, ws) {
 
         if (cache)
           throw Boom.clientTimeout(
-            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
 
         // set cache so we don't run two backups at once
@@ -1798,7 +1798,7 @@ async function parsePayload(data, ws) {
         // run in worker pool to offset from main thread (because of VACUUM)
         if (!runBackup)
           throw Boom.clientTimeout(
-            i18n.translateError('UNKNOWN_ERROR', payload.session.user.locale)
+            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
 
         // run this in the background

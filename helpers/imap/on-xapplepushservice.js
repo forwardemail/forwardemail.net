@@ -5,6 +5,7 @@
 
 const Aliases = require('#models/aliases');
 
+const getApnCerts = require('#helpers/get-apn-certs');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 // <https://github.com/nodemailer/wildduck/issues/711>
@@ -54,7 +55,8 @@ async function onXAPPLEPUSHSERVICE(
 
     await alias.save();
 
-    fn();
+    const certs = await getApnCerts(this.client);
+    fn(null, certs.Mail.topic);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

@@ -1,4 +1,4 @@
-# Deep dive: How we use quantum safe encrypted SQLite mailboxes for our privacy-focused and secure email service
+# Quantum Safe Email: How we use encrypted SQLite mailboxes to keep your email safe
 
 
 ## Table of Contents

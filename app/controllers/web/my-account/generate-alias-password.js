@@ -4,12 +4,15 @@
  */
 
 const Boom = require('@hapi/boom');
+const QRCode = require('qrcode');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const sanitizeHtml = require('sanitize-html');
+const shortID = require('mongodb-short-id');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
+const ms = require('ms');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
@@ -374,12 +377,40 @@ async function generateAliasPassword(ctx) {
       .then()
       .catch((err) => ctx.logger.fatal(err));
 
+    // we use shortID to generate shorter querystring for less complicated QR code
+    // (this same logic is in app/controllers/web/index.js)
+    const username = `${alias.name}@${ctx.state.domain.name}`;
+    const appleLink = `${
+      config.urls.web
+    }/c/${username}.mobileconfig?a=${shortID.longToShort(alias.id)}&p=${encrypt(
+      pass
+    )}`;
+    const appleImgSrc = await QRCode.toDataURL(appleLink, {
+      margin: 0,
+      width: 200
+    });
+    const k9Link = `${
+      config.urls.web
+    }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${encrypt(pass)}`;
+    const k9ImgSrc = await QRCode.toDataURL(k9Link, {
+      margin: 0,
+      width: 200
+    });
+
     const html = emailedInstructions
       ? ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions)
       : ctx.translate(
           'ALIAS_GENERATED_PASSWORD',
-          `${alias.name}@${ctx.state.domain.name}`,
-          pass
+          username,
+          username,
+          pass,
+          pass,
+          appleImgSrc,
+          appleLink,
+          `${username}.mobileconfig`,
+          k9ImgSrc,
+          k9Link,
+          `${username}.k9s`
         );
 
     if (ctx.api) {
@@ -408,17 +439,13 @@ async function generateAliasPassword(ctx) {
       ...(emailedInstructions
         ? {}
         : {
-            timer: 30000,
+            timer: ms('10m'),
             position: 'top',
             allowEscapeKey: false,
             allowOutsideClick: false,
             focusConfirm: false,
             confirmButtonText: ctx.translate('CLOSE_POPUP'),
-            grow: 'fullscreen',
-            backdrop: 'rgba(0,0,0,0.8)',
-            customClass: {
-              container: 'swal2-grow-fullscreen'
-            }
+            grow: 'row'
           })
     };
     ctx.flash('custom', swal);

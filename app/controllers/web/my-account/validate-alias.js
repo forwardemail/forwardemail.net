@@ -147,7 +147,7 @@ function validateAlias(ctx, next) {
     if (
       _.isArray(body.recipients) &&
       body.recipients.some(
-        (r) => isEmail(r) && r.endsWith(`@${ctx.state.domain.name}`)
+        (r) => isEmail(r, { ignore_max_length: true }) && r.endsWith(`@${ctx.state.domain.name}`)
       )
     )
       return ctx.throw(

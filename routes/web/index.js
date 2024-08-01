@@ -62,6 +62,23 @@ router
 
     return next();
   })
+
+  //
+  // NOTE: we allow users to scan a QR code which links them to download a file
+  //       (which lets them easily set up their accounts without having to type out config/ports)
+  //
+  // TODO: we should make this into a template and use it ourselves too
+  //       <https://github.com/Monogramm/autodiscover-email-settings>
+  //
+  // iOS config download
+  .get(
+    '/c/:username.mobileconfig',
+    rateLimit(20, 'config download'),
+    web.mobileConfig
+  )
+  // K-9 config download
+  .get('/c/:username.k9s', rateLimit(20, 'config download'), web.mobileConfig)
+
   // ips
   .get('/ips.txt', web.ips)
   .get('/ips.json', web.ips)

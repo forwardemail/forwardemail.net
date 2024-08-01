@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
 const toObject = require('#helpers/to-object');
@@ -10,6 +11,10 @@ const { Users, Domains, Aliases } = require('#models');
 
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
+  if (!ctx.state.alias)
+    return ctx.throw(
+      Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
+    );
   ctx.state.alias = _.extend(ctx.state.alias, ctx.state.body);
   try {
     ctx.state.alias.locale = ctx.locale;

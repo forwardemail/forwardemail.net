@@ -16,7 +16,6 @@ const intoStream = require('into-stream');
 const ip = require('ip');
 const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
@@ -24,7 +23,6 @@ const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
-const { fetch, Agent } = require('undici');
 const { isEmail } = require('validator');
 const { readKey } = require('openpgp');
 
@@ -831,6 +829,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 //
                 const wkd = new WKD();
 
+                /*
+                // NOTE: this does not work as it will sometimes return a body stream
                 wkd._fetch = (url) => {
                   return fetch(url, {
                     signal: AbortSignal.timeout(
@@ -855,6 +855,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                     })
                   });
                 };
+                */
 
                 logger.info('address', { address });
 
@@ -876,8 +877,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 const publicKey = await readKey({
                   binaryKey
                 });
-
-                logger.info('publicKey', { publicKey });
 
                 if (publicKey) {
                   try {

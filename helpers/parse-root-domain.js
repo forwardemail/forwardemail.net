@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+// TODO: we might want to rewrite this to use psl instead
+// <https://github.com/postalsys/mailauth/issues/60>
+
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
 
 function parseRootDomain(name) {

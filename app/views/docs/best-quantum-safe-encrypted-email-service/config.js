@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  title: 'Best Quantum Safe Encrypted Email Service',
+  title: 'Quantum Safe Email Service',
   description:
     'Encrypted quantum safe mailboxes to protect your privacy. Privacy-focused and secure email for your business and custom domains. 100% open-source software.',
   icon: 'fa fa-fw fa-lock',

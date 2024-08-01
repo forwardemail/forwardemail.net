@@ -109,7 +109,13 @@ async function onboard(ctx, next) {
     let i = 0;
     const codes = root.querySelectorAll('code');
     for (const code of codes) {
-      if (!code.rawText.startsWith('forward-email')) continue;
+      if (
+        !code.rawText.startsWith('forward-email') ||
+        code.rawText === 'forward-email=' ||
+        code.rawText === 'forward-email-site-verification=' ||
+        code.rawText === 'forward-email-port='
+      )
+        continue;
       const id = `code-fe-${i}`;
       code.setAttribute('id', id);
       let eHTML = ctx.state.t(
