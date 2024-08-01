@@ -30,8 +30,6 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
     try {
       const certs = await getApnCerts(client);
 
-      console.log('certs', certs);
-
       // const caName = await client.get('aps_ca');
 
       const provider = new apn.Provider({

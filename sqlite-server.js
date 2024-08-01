@@ -188,7 +188,11 @@ class SQLite {
             )
           );
 
-        if (!env.API_SECRETS.includes(decrypt(credentials.name)))
+        if (
+          !env.API_SECRETS.includes(
+            decrypt(credentials.name + ':').slice(0, -1)
+          )
+        )
           return fn(
             Boom.unauthorized(
               i18n.translateError(
