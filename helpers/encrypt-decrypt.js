@@ -32,7 +32,7 @@ function encrypt(
   );
 
   const encrypted = Buffer.concat([
-    cipher.update(text, 'utf8'),
+    cipher.update(Buffer.from(text, 'utf8')),
     cipher.final()
   ]);
 
