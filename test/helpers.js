@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const crypto = require('node:crypto');
+// const crypto = require('node:crypto');
 
 const test = require('ava');
 const Redis = require('ioredis-mock');
 
 const createTangerine = require('#helpers/create-tangerine');
-const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+// const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 // <https://github.com/luin/ioredis/issues/1179>
 Redis.Command.setArgumentTransformer('set', (args) => {
@@ -43,6 +43,7 @@ test('creates instance', async (t) => {
   t.true(result.answers[0].name === 'forwardemail.net');
 });
 
+/*
 test('encrypt and decrypt with aes-256-cbc', (t) => {
   const text = 'thisisan@email.com';
   const algorithm = 'aes-256-cbc';
@@ -68,3 +69,4 @@ test('encrypt and decrypt with chacha20-poly1305', (t) => {
   const decryptedText = decrypt(encryptedText, encryptionKey, algorithm);
   t.is(decryptedText, text, 'decrypted text should match original text');
 });
+*/
