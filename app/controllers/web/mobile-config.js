@@ -437,6 +437,10 @@ async function mobileConfig(ctx, next) {
       // .mobileconfig is normally "text/xml" but if signed
       // it is then "application/octet-stream"
       ctx.type = 'application/octet-stream';
+      ctx.set(
+        'Content-Disposition',
+        `attachment; filename="${username}.mobileconfig"`
+      );
 
       const plistData = mobileConfigTemplate(
         name,
@@ -463,6 +467,7 @@ async function mobileConfig(ctx, next) {
     // (ty SW)
     if (ctx.path.endsWith('.k9s')) {
       ctx.type = 'text/xml';
+      ctx.set('Content-Disposition', `attachment; filename="${username}.k9s"`);
       ctx.body = k9s(name, username);
       return;
     }
