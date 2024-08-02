@@ -60,7 +60,7 @@ function decrypt(
     // chacha20-poly1305 backwards compatible support
     const data = Buffer.from(text, 'hex');
 
-    const ivLength = 16;
+    const ivLength = 12;
     const iv = data.slice(0, ivLength);
 
     const authTagLength = 16;
