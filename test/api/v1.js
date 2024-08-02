@@ -1455,7 +1455,7 @@ test('error_code_if_disabled', async (t) => {
 
   const res = await t.context.api
     .get('/v1/lookup')
-    .auth(env.API_SECRETS[0])
+    .auth(Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS)
     .query({
       verification_record: domain.verification_record
     });

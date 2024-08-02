@@ -58,7 +58,9 @@ async function getTemporaryDatabase(session) {
     ...session,
     user: {
       ...session.user,
-      password: encrypt(env.API_SECRETS[0])
+      password: encrypt(
+        Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
+      )
     }
   };
 

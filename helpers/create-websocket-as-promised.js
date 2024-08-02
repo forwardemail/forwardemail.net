@@ -217,7 +217,10 @@ function createWebSocketAsPromised(options = {}) {
   //
   const protocol =
     options.protocol || config.env === 'production' ? 'wss' : 'ws';
-  const auth = `${encrypt(env.API_SECRETS[0])}:`;
+
+  const auth = `${encrypt(
+    Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS
+  )}:`;
   const host = options.host || env.SQLITE_HOST;
   const port = options.port || env.SQLITE_PORT;
   const url = `${protocol}://${host}:${port}`;

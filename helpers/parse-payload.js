@@ -696,7 +696,11 @@ async function parsePayload(data, ws) {
                   alias_name: alias.name,
                   domain_id: alias.domain.id,
                   domain_name: alias.domain.name,
-                  password: encrypt(env.API_SECRETS[0]),
+                  password: encrypt(
+                    Array.isArray(env.API_SECRETS)
+                      ? env.API_SECRETS[0]
+                      : env.API_SECRETS
+                  ),
                   storage_location: alias.storage_location,
                   alias_has_pgp: alias.has_pgp,
                   alias_public_key: alias.public_key,
