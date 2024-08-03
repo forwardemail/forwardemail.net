@@ -57,32 +57,43 @@ function decrypt(
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
   } catch {
-    // chacha20-poly1305 backwards compatible support
-    const data = Buffer.from(text, 'hex');
+    try {
+      // chacha20-poly1305 backwards compatible support
+      const data = Buffer.from(text, 'hex');
 
-    const ivLength = 12;
-    const iv = data.slice(0, ivLength);
+      const ivLength = 12;
+      const iv = data.slice(0, ivLength);
 
-    const authTagLength = 16;
-    const authTag = data.slice(ivLength, ivLength + authTagLength);
+      const authTagLength = 16;
+      const authTag = data.slice(ivLength, ivLength + authTagLength);
 
-    const encrypted = data.slice(ivLength + authTagLength);
+      const encrypted = data.slice(ivLength + authTagLength);
 
-    const decipher = crypto.createDecipheriv(
-      'chacha20-poly1305',
-      encryptionKey,
-      iv,
-      { authTagLength: 16 }
-    );
+      const decipher = crypto.createDecipheriv(
+        'chacha20-poly1305',
+        encryptionKey,
+        iv,
+        { authTagLength: 16 }
+      );
 
-    decipher.setAuthTag(authTag);
+      decipher.setAuthTag(authTag);
 
-    const decrypted = Buffer.concat([
-      decipher.update(encrypted),
-      decipher.final()
-    ]);
+      const decrypted = Buffer.concat([
+        decipher.update(encrypted),
+        decipher.final()
+      ]);
 
-    return decrypted.toString('utf8');
+      return decrypted.toString('utf8');
+    } catch (err) {
+      // legacy fallback support
+      if (
+        env.HELPER_ENCRYPTION_KEY_LEGACY &&
+        encryptionKey !== env.HELPER_ENCRYPTION_KEY_LEGACY
+      )
+        return decrypt(text, env.HELPER_ENCRYPTION_KEY_LEGACY, algorithm);
+
+      throw err;
+    }
   }
 }
 
