@@ -61,9 +61,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
       note.aps = {
         'account-id': obj.account_id,
         // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
-        // TODO: does it need to be an Array or single value?
-        // m: crypto.createHash('md5').update(mailboxPath).digest('hex')
-        m: [crypto.createHash('md5').update(mailboxPath).digest('hex')]
+        m: crypto.createHash('md5').update(mailboxPath).digest('hex')
       };
 
       // <https://github.com/parse-community/node-apn/issues/114>
