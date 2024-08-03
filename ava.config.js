@@ -17,5 +17,5 @@ module.exports = {
   // <https://github.com/JCMais/node-libcurl/issues/414>
   // workerThreads: false,
 
-  timeout: isCI ? '3m' : '1.5m'
+  timeout: isCI ? '1m' : '30s'
 };
