@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
+const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 
@@ -39,6 +40,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
         // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L26>
         // ca: GEO_TRUST_CA,
         // rejectUnauthorized: false, // only needed if GEO_TRUST_CA passed
+        requestTimeout: ms('15s'),
         production: true // always required
       });
 
