@@ -16,7 +16,7 @@ const Redis = require('@ladjs/redis');
 const Mongoose = require('@ladjs/mongoose');
 const sharedConfig = require('@ladjs/shared-config');
 
-const logger = console;
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const sendApn = require('#helpers/send-apn');
 
