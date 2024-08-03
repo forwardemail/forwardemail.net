@@ -1208,11 +1208,11 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
     try {
       await pMap(
         records,
-        (record) => {
+        async (record) => {
           const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
           url.searchParams.append('domain', record.domain);
           url.searchParams.append('type', record.type);
-          return retryRequest(url, {
+          const response = await retryRequest(url, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -1221,6 +1221,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
             timeout: ms('3s'),
             retries: 1
           });
+          // consume body
+          await response.body.dump();
         },
         { concurrency }
       );
@@ -1420,11 +1422,11 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
     try {
       await pMap(
         CACHE_TYPES,
-        (type) => {
+        async (type) => {
           const url = new URL(CLOUDFLARE_PURGE_CACHE_URL);
           url.searchParams.append('domain', domain.name);
           url.searchParams.append('type', type);
-          return retryRequest(url, {
+          const response = await retryRequest(url, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -1433,6 +1435,8 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             timeout: ms('3s'),
             retries: 1
           });
+          // consume body
+          await response.body.dump();
         },
         { concurrency }
       );

@@ -337,4 +337,8 @@ p.text-center.d-lg-none
                           a.dropdown-item.small.text-muted(
                             href=l(`/private-business-email?domain=${domain.name}`)
                           )= t("See all plan features")
+.alert.alert-secondary.small.text-center
+  strong= t("Need to remove a domain?")
+  = " "
+  != t("Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain")
 +paginate('#table-domains')

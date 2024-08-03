@@ -67,6 +67,10 @@ function isTimeoutError(err) {
       return true;
   }
 
+  // crypto decryption error
+  if (err.message === 'Unsupported state or unable to authenticate data')
+    return true;
+
   return false;
 }
 

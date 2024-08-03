@@ -20,6 +20,7 @@ const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
+const undici = require('undici');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
@@ -831,23 +832,33 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 // <https://github.com/nodejs/undici/issues/421#issuecomment-1491441971>
                 // <https://keys.openpgp.org/about/api#rate-limiting>
                 //
+                // Undici had a core bug with arrayBuffer() memory leak
+                // <https://github.com/nodejs/undici/issues/3435>
+                //
                 const wkd = new WKD();
-
-                wkd._fetch = async (url) => {
-                  const controller = new AbortController();
-                  const reason = new DOMException(
-                    'signal timed out',
-                    'TimeoutError'
-                  );
-                  const timeoutId = setTimeout(
-                    () => controller.abort(reason),
-                    ms('2s')
-                  );
-                  const res = await fetch(url, {
-                    signal: controller.signal
+                wkd._fetch = (url) => {
+                  return undici.fetch(url, {
+                    signal: AbortSignal.timeout(
+                      config.env === 'test' ? ms('2s') : ms('30s')
+                    ),
+                    dispatcher: new undici.Agent({
+                      headersTimeout:
+                        config.env === 'test' ? ms('2s') : ms('30s'),
+                      connectTimeout:
+                        config.env === 'test' ? ms('2s') : ms('30s'),
+                      bodyTimeout: config.env === 'test' ? ms('2s') : ms('30s'),
+                      connect: {
+                        lookup(hostname, options, fn) {
+                          resolver
+                            .lookup(hostname, options)
+                            .then((result) => {
+                              fn(null, result?.address, result?.family);
+                            })
+                            .catch((err) => fn(err));
+                        }
+                      }
+                    })
                   });
-                  clearTimeout(timeoutId);
-                  return res;
                 };
 
                 logger.info('address', { address });

@@ -6,8 +6,10 @@
 const undici = require('undici');
 const delay = require('delay');
 const ms = require('ms');
+const isStream = require('is-stream');
 
 const isRetryableError = require('./is-retryable-error');
+const logger = require('./logger');
 
 class RetryClient extends undici.Client {
   constructor(opts) {
@@ -27,9 +29,22 @@ class RetryClient extends undici.Client {
 
     this.request = async (options, count = 1) => {
       try {
-        options.signal = AbortSignal.timeout(timeout);
         options.throwOnError = true;
+        options.signal = AbortSignal.timeout(timeout);
+
         const response = await this._request(options);
+
+        // <https://github.com/nodejs/undici/issues/3353#issuecomment-2184635954>
+
+        if (
+          response?.body &&
+          isStream(response.body) &&
+          typeof response.body.on === 'function'
+        )
+          response.body.on('error', (err) => {
+            logger.error(err, { response });
+          });
+
         // the error code is between 200-400 (e.g. 302 redirect)
         // in order to mirror the behavior of `throwOnError` we will re-use the undici errors
         // <https://github.com/nodejs/undici/issues/2093>

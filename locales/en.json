@@ -9611,5 +9611,9 @@
   "Quantum Safe Email Service in <span class=\"notranslate\">2024</span>": "Quantum Safe Email Service in <span class=\"notranslate\">2024</span>",
   "Best Security Audit Companies in <span class=\"notranslate\">2024</span>": "Best Security Audit Companies in <span class=\"notranslate\">2024</span>",
   "Best Security Audit Companies in %d": "Best Security Audit Companies in %d",
-  "Encrypted SQLite mailboxes for your privacy": "Encrypted SQLite mailboxes for your privacy"
+  "Encrypted SQLite mailboxes for your privacy": "Encrypted SQLite mailboxes for your privacy",
+  "Need to remove a domain?": "Need to remove a domain?",
+  "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain",
+  "Need to remove this domain?": "Need to remove this domain?",
+  "Click here to go Delete Domain": "Click here to go Delete Domain"
 }

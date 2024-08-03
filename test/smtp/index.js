@@ -1752,16 +1752,18 @@ test('smtp outbound queue', async (t) => {
     length: 10
   })}@${domain.name}>`;
 
+  const RCPT_TO = [
+    'a@xyz.com',
+    'b@xyz.com',
+    'beep@boop.com',
+    'foo@bar.com',
+    'test@foo.com'
+  ];
+
   const info = await transporter.sendMail({
     envelope: {
       from: `${alias.name}@${domain.name}`,
-      to: [
-        'test@foo.com',
-        'beep@boop.com',
-        'foo@bar.com',
-        'a@xyz.com',
-        'b@xyz.com'
-      ]
+      to: RCPT_TO
     },
     raw: `
 Sender: baz@beep.com
@@ -1805,16 +1807,7 @@ Test`.trim()
 
   // validate envelope
   t.is(email.envelope.from, `${alias.name}@${domain.name}`);
-  t.deepEqual(
-    email.envelope.to.sort(),
-    [
-      'test@foo.com',
-      'beep@boop.com',
-      'foo@bar.com',
-      'a@xyz.com',
-      'b@xyz.com'
-    ].sort()
-  );
+  t.deepEqual(email.envelope.to, RCPT_TO);
 
   // validate message-id
   t.is(email.messageId, messageId);
@@ -1822,11 +1815,11 @@ Test`.trim()
   //
   // spoof envelope RCPT TO mx records
   //
-  // - test@foo.com
+  // - a@xyz.com
+  // - b@xyz.com
   // - beep@boop.com
   // - foo@bar.com
-  // - a@xyz.com <-- accepted
-  // - b@xyz.com <-- rejected
+  // - test@foo.com <-- last one gets rejected
   //
   {
     const map = new Map();
@@ -1936,7 +1929,7 @@ Test`.trim()
   email = await Emails.findById(email._id).lean().exec();
   delete email.message; // suppress buffer output from console log
   t.is(email.status, 'sent');
-  t.deepEqual(email.accepted.sort(), email.envelope.to.sort());
+  t.deepEqual(email.accepted.sort(), email.envelope.to);
   t.deepEqual(email.rejectedErrors, []);
 });
 
