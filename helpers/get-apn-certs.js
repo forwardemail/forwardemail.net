@@ -20,6 +20,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
+const CSR = require('node-pkcs10');
 const X509 = require('@peculiar/x509');
 const _ = require('lodash');
 const ms = require('ms');
@@ -168,6 +169,9 @@ async function parseResponse(xml, certs) {
   return obj;
 }
 
+/*
+// NOTE: this doesn't seem to work in production and Ubuntu environments
+// <https://github.com/PeculiarVentures/x509/issues/81>
 async function createCsrs(certs, key) {
   const alg = {
     name: 'RSASSA-PKCS1-v1_5',
@@ -179,20 +183,63 @@ async function createCsrs(certs, key) {
     key === 'Alerts'
       ? 'com.apple.server.apns.alerts'
       : `com.apple.servermgrd.apns.${key.toLowerCase()}`;
+  // TODO: pass `serialNumber` re-using existing if renewal occurring (?)
   const csr = await X509.Pkcs10CertificateRequestGenerator.create({
-    // TODO: pass `serialNumber` re-using existing if renewal occurring
-    // const serialNumber = getCertSerialNumber(certs, key);
-    default: 'SHA-1',
-    name: `CN=${commonName}`,
+    name: `CN=${commonName}, CN=US, O=Apple Inc.`,
+    // extensions: [
+    //   new X509.KeyUsagesExtension(X509.KeyUsageFlags.digitalSignature | X509.KeyUsageFlags.keyEncipherment),
+    // ],
+    extensions: [],
+    attributes: [],
+    signingAlgorithm: alg,
     keys: {
       publicKey: certs[key].publicKey,
       privateKey: certs[key].privateKey
-    },
-    // TODO: country name 'US' <------------ required
-    signingAlgorithm: alg,
-    extensions: []
+    }
   });
   return csr.toString('base64');
+}
+*/
+
+async function createCsrs(certs, key) {
+  const [cryptoPublicKey, cryptoPrivateKey] = await Promise.all([
+    crypto.subtle.importKey(
+      'jwk',
+      await crypto.subtle.exportKey('jwk', certs[key].publicKey),
+      { hash: 'SHA-1', name: 'RSASSA-PKCS1-v1_5' },
+      true,
+      ['verify']
+    ),
+    crypto.subtle.importKey(
+      'jwk',
+      await crypto.subtle.exportKey('jwk', certs[key].privateKey),
+      { hash: 'SHA-1', name: 'RSASSA-PKCS1-v1_5' },
+      true,
+      ['sign']
+    )
+  ]);
+  const publicKey = crypto.KeyObject.from(cryptoPublicKey);
+  const privateKey = crypto.KeyObject.from(cryptoPrivateKey);
+  const commonName =
+    key === 'Alerts'
+      ? 'com.apple.server.apns.alerts'
+      : `com.apple.servermgrd.apns.${key.toLowerCase()}`;
+  //
+  // NOTE: we may need to fork our own version of this project
+  //       since they only supported a single algorithm
+  //       <https://github.com/meadhbh-hamrick/node-pkcs10/blob/09be1d40e491a3a3fd22395ad9ea5e2208f92f21/lib/csr.js#L263>
+  //
+  //       "RSA-SHA256" and we may need "RSA-SHA1"
+  //
+  // TODO: if it works with SHA256 then we should alert dovecot folks
+  //
+  const csr = new CSR({
+    privateKey,
+    publicKey,
+    subjectName: `/C=US/CN=${commonName}/O=Apple Inc.`
+  });
+  csr.generate();
+  return csr.toBuffer().toString('base64');
 }
 
 // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/pkg/apple_xserver_certs/request.go#L268-L277>
