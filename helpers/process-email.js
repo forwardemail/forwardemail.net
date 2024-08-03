@@ -838,15 +838,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 const wkd = new WKD();
                 wkd._fetch = (url) => {
                   return undici.fetch(url, {
-                    signal: AbortSignal.timeout(
-                      config.env === 'test' ? ms('2s') : ms('30s')
-                    ),
+                    signal: AbortSignal.timeout(ms('2s')),
                     dispatcher: new undici.Agent({
-                      headersTimeout:
-                        config.env === 'test' ? ms('2s') : ms('30s'),
-                      connectTimeout:
-                        config.env === 'test' ? ms('2s') : ms('30s'),
-                      bodyTimeout: config.env === 'test' ? ms('2s') : ms('30s'),
+                      headersTimeout: ms('2s'),
+                      connectTimeout: ms('2s'),
+                      bodyTimeout: ms('2s'),
                       connect: {
                         lookup(hostname, options, fn) {
                           resolver
