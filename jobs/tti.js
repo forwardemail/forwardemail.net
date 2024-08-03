@@ -255,13 +255,13 @@ Forward Email
               logger.error(err);
               // attempt to send email with our SMTP server
               // (e.g. in case bree.forwardemail.net is blocked)
-              date = new Date();
-              info = await config.email.transport.sendMail({
-                envelope,
-                raw: dkim.sign(
-                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-                )
-              });
+              // date = new Date();
+              // info = await config.email.transport.sendMail({
+              //   envelope,
+              //   raw: dkim.sign(
+              //     `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+              //   )
+              // });
             }
 
             /*
