@@ -559,14 +559,14 @@
     - role: dns
       dns_nameservers:
         # cloudflare and google (ipv4/ipv6 and rotated)
-        - 8.8.8.8
-        - 2001:4860:4860::8888
-        - 8.8.4.4
-        - 2001:4860:4860::8844
         - 1.1.1.1
         - 2606:4700:4700::1111
         - 1.0.0.1
         - 2606:4700:4700::1001
+        - 8.8.8.8
+        - 2001:4860:4860::8888
+        - 8.8.4.4
+        - 2001:4860:4860::8844
 
     # https://github.com/Oefenweb/ansible-ntp
     - role: ntp
