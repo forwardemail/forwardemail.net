@@ -253,15 +253,18 @@ Forward Email
             } catch (err) {
               err.isCodeBug = true;
               logger.error(err);
+              throw err;
               // attempt to send email with our SMTP server
               // (e.g. in case bree.forwardemail.net is blocked)
-              date = new Date();
-              info = await config.email.transport.sendMail({
-                envelope,
-                raw: dkim.sign(
-                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-                )
-              });
+              // date = new Date();
+              // TODO: handle transporter cleanup
+              // TODO: handle mx socket close
+              // info = await config.email.transport.sendMail({
+              //   envelope,
+              //   raw: dkim.sign(
+              //     `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+              //   )
+              // });
             }
 
             /*

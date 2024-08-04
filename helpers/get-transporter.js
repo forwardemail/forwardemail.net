@@ -205,7 +205,7 @@ async function getTransporter(options = {}, err) {
     ...(mx.socket ? { connection: mx.socket } : {})
   });
 
-  const pool = {
+  return {
     truthSource,
     mx,
     requireTLS,
@@ -214,8 +214,6 @@ async function getTransporter(options = {}, err) {
     tls,
     transporter
   };
-
-  return pool;
 }
 
 module.exports = getTransporter;

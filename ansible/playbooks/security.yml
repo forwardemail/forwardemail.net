@@ -179,6 +179,8 @@
     - name: Install deps
       apt:
         name:
+          - iptables
+          - ipset
           - build-essential
           - curl
           - git
@@ -191,6 +193,14 @@
           - ripgrep
           - redis-tools
         update_cache: true
+
+    # prevents port scanning
+    # https://github.com/forwardemail/portscan-protection
+    # (we maintain our own fork since it has an auto-update in place)
+    # https://unix.stackexchange.com/a/580520
+    - name: Prevent port scanning
+      shell: |
+        curl -s https://raw.githubusercontent.com/forwardemail/portscan-protection/master/portscan-protection.sh | sudo bash /dev/stdin -i
 
     # create devops group
     - name: Create devops group

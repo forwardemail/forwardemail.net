@@ -79,6 +79,8 @@ async function sendEmail({
     session.opportunisticTLS = opportunisticTLS;
     session.tls = tls;
 
+    // TODO: handle transporter cleanup
+    // TODO: handle mx socket close
     const info = await transporter.sendMail({
       envelope,
       raw
@@ -171,6 +173,8 @@ async function sendEmail({
       session.opportunisticTLS = requireTLS;
       session.tls = tls;
 
+      // TODO: handle transporter cleanup
+      // TODO: handle mx socket close
       try {
         const info = await transporter.sendMail({
           envelope,
