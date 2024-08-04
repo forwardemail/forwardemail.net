@@ -90,3 +90,4 @@ temp/
 .ssl-csr
 *.p8
 .gpg-security-key
+.dkim-key
