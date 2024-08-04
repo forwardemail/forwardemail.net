@@ -231,7 +231,7 @@ Forward Email
               to
             };
 
-            let date;
+            const date = new Date();
             let info;
 
             const newRaw = Buffer.from(
@@ -260,7 +260,6 @@ Forward Email
             const signatures = Buffer.from(signResult.signatures, 'utf8');
 
             try {
-              date = new Date();
               info = await sendEmail({
                 session: createSession({
                   envelope: {
