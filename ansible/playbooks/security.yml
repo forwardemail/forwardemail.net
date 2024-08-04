@@ -201,6 +201,8 @@
     - name: Prevent port scanning
       shell: |
         curl -s https://raw.githubusercontent.com/forwardemail/portscan-protection/master/portscan-protection.sh | sudo bash /dev/stdin -i
+      register: port_scan
+      failed_when: port_scan.rc != 1
 
     # create devops group
     - name: Create devops group
