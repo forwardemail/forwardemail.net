@@ -8,11 +8,11 @@ require('#config/env');
 
 const os = require('node:os');
 const fs = require('node:fs');
+const { Buffer } = require('node:buffer');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const DKIM = require('nodemailer/lib/dkim');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
@@ -24,10 +24,12 @@ const ms = require('ms');
 const prettyMilliseconds = require('pretty-ms');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
+const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { ImapFlow } = require('imapflow');
 const { randomstring } = require('@sidoshi/random-string');
 
 const config = require('#config');
+const combineErrors = require('#helpers/combine-errors');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
@@ -39,13 +41,17 @@ const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
 
-const dkim = new DKIM({
-  domainName: env.DKIM_DOMAIN_NAME,
-  keySelector: env.DKIM_KEY_SELECTOR,
-  privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
-    ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
-    : undefined
-});
+const signatureData = [
+  {
+    signingDomain: env.DKIM_DOMAIN_NAME,
+    selector: env.DKIM_KEY_SELECTOR,
+    privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
+      ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
+      : undefined,
+    algorithm: 'rsa-sha256',
+    canonicalization: 'relaxed/relaxed'
+  }
+];
 
 monitorServer();
 
@@ -228,6 +234,31 @@ Forward Email
             let date;
             let info;
 
+            const newRaw = Buffer.from(
+              `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+            );
+
+            const signResult = await dkimSign(newRaw, {
+              canonicalization: 'relaxed/relaxed',
+              algorithm: 'rsa-sha256',
+              signTime: new Date(),
+              signatureData
+            });
+
+            if (signResult.errors.length > 0) {
+              const err = combineErrors(
+                signResult.errors.map((error) => error.err)
+              );
+              // we may want to remove cyclical reference
+              // for (const error of signResult.errors) {
+              //   delete error.err;
+              // }
+              err.signResult = signResult;
+              throw err;
+            }
+
+            const signatures = Buffer.from(signResult.signatures, 'utf8');
+
             try {
               date = new Date();
               info = await sendEmail({
@@ -242,8 +273,9 @@ Forward Email
                 target: to.split('@')[1],
                 port: 25,
                 envelope,
-                raw: dkim.sign(
-                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+                raw: Buffer.concat(
+                  [signatures, newRaw],
+                  signatures.length + newRaw.length
                 ),
                 localAddress: IP_ADDRESS,
                 localHostname: HOSTNAME,
