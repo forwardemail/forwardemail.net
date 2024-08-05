@@ -9585,5 +9585,7 @@
   "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "发送方已解析的根客户端主机名或 IP 地址（以及与发送方的根客户端主机名相关的所有 IP 地址，如果通过反向查找解析）返回的状态代码。",
   "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "此外，如果非允许名单用户检测到大规模暴力破解/套接字垃圾邮件攻击（例如，在受到限制并接收的情况下尝试连接超过 25 次",
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "在不到 5 分钟内），则发件人将被限制 1 天。请注意，符合行业标准且配置正确的邮件服务器应后退并重试（如果软重试错误代码为",
-  "is detected).": "被检测到）。"
+  "is detected).": "被检测到）。",
+  "Time to Inbox Monitoring & Deliverability": "收件箱监控和送达时间",
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "收件箱时间（“TTI”）是指电子邮件从发送至送达用户邮箱所需的时间。我们公开测量并比较了所有主要电子邮件提供商（包括 Gmail、Outlook/Hotmail、Apple iCloud 和 Yahoo/AOL）的电子邮件转发和直接出站 SMTP 的送达率和时间。"
 }

@@ -9892,5 +9892,7 @@
   "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "보낸 사람의 확인된 루트 클라이언트 호스트 이름 또는 IP 주소(및 역방향 조회를 통해 확인된 경우 보낸 사람의 루트 클라이언트 호스트 이름과 관련된 모든 IP 주소)에 대해 반환된 상태 코드입니다.",
   "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "또한 허용 목록에 없는 사용자가 대규모 무차별 대입/소켓 스팸 공격을 감지한 경우(예: 제한되어 수신되는 동안 25회 이상의 연결 시도)",
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "5분 이내), 발신자는 1일 동안 제한됩니다.  업계 표준 및 적절하게 구성된 메일 서버는 백오프하고 재시도해야 하며 소프트 재시도 오류 코드가 다음과 같은 경우 무차별 스팸을 보내서는 안 됩니다.",
-  "is detected).": "감지됩니다)."
+  "is detected).": "감지됩니다).",
+  "Time to Inbox Monitoring & Deliverability": "받은 편지함까지의 시간 모니터링 및 배달 가능성",
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "받은 편지함까지 소요되는 시간(\"TTI\")은 이메일이 전송된 시점부터 사용자의 편지함에 배달될 때까지 걸리는 시간입니다.  우리는 모든 주요 이메일 제공업체(Gmail, Outlook/Hotmail, Apple iCloud, Yahoo/AOL 포함)에 걸쳐 이메일 전달 및 직접 아웃바운드 SMTP에 대한 전달 가능성과 타이밍을 공개적으로 측정하고 비교합니다."
 }

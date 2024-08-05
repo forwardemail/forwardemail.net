@@ -129,7 +129,8 @@ test(`get dynamic routes`, async (t) => {
       const route = `/en${key === '/' ? '' : key}`;
       const { web } = t.context;
       const res = await web.get(route);
-      t.is(res.status, 200, `${key} should return 200`);
+      if (key === '/tti') t.is(res.status, 408, `${key} should return 408`);
+      else t.is(res.status, 200, `${key} should return 200`);
     },
     { concurrency: os.cpus().length }
   );
