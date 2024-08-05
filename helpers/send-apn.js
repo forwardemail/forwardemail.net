@@ -7,9 +7,9 @@ const crypto = require('node:crypto');
 
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
+const delay = require('delay');
 const ms = require('ms');
 const pMap = require('p-map');
-const pMapSeries = require('p-map-series');
 const revHash = require('rev-hash');
 
 const Aliases = require('#models/aliases');
@@ -19,6 +19,28 @@ const logger = require('#helpers/logger');
 
 let certs;
 let provider;
+
+function createNote(obj, mailboxPath) {
+  // <https://github.com/argon/push_notify/blob/05b3d8025b217694e45eab8202f3d460f9237652/lib/controller.js#L48>
+  // https://github.com/argon/push_notify/pull/6#issue-179062203
+  const note = new apn.Notification();
+
+  // NOTE: without this fix, the notificatin is sent and not displayed (?)
+  // <https://github.com/node-apn/node-apn/issues/638>
+  note.urlArgs = [];
+
+  note.pushType = 'alert';
+  note.topic = certs.Mail.topic;
+  note.expiry = Math.floor(dayjs().add(24, 'hour').toDate().getTime() / 1000);
+
+  note.aps = {
+    'account-id': obj.account_id,
+    // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
+    m: crypto.createHash('md5').update(mailboxPath).digest('hex')
+  };
+
+  return note;
+}
 
 // <https://github.com/nodemailer/wildduck/issues/711>
 async function sendApn(client, id, mailboxPath = 'INBOX') {
@@ -56,7 +78,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
     });
   }
 
-  await pMapSeries(alias.aps, async (obj) => {
+  await pMap(alias.aps, async (obj) => {
     try {
       //
       // NOTE: we only attempt to send to the account ID + device token pair once every minute
@@ -68,25 +90,10 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
       if (cache) return;
       await client.set(key, true, 'PX', ms('1m'));
 
-      // <https://github.com/argon/push_notify/blob/05b3d8025b217694e45eab8202f3d460f9237652/lib/controller.js#L48>
-      // https://github.com/argon/push_notify/pull/6#issue-179062203
-      const note = new apn.Notification();
+      // artificial 10s delay
+      await delay(ms('10s'));
 
-      // NOTE: without this fix, the notificatin is sent and not displayed (?)
-      // <https://github.com/node-apn/node-apn/issues/638>
-      note.urlArgs = [];
-
-      note.pushType = 'alert';
-      note.topic = certs.Mail.topic;
-      note.expiry = Math.floor(
-        dayjs().add(24, 'hour').toDate().getTime() / 1000
-      );
-
-      note.aps = {
-        'account-id': obj.account_id,
-        // <https://github.com/freswa/dovecot-xaps-daemon/issues/39#issuecomment-2262987315>
-        m: crypto.createHash('md5').update(mailboxPath).digest('hex')
-      };
+      const note = createNote(obj, mailboxPath);
 
       // <https://github.com/parse-community/node-apn/issues/114>
       const result = await provider.send(note, obj.device_token);
@@ -156,6 +163,15 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
           }),
           { concurrency: config.concurrency }
         );
+      } else {
+        // trigger sending the note again in another 20s
+        // (just to be sure the device refreshes)
+        await delay(ms('20s'));
+        const note = createNote(obj, mailboxPath);
+        provider
+          .send(note, obj.device_token)
+          .then()
+          .catch((err) => logger.fatal(err));
       }
     } catch (err) {
       logger.fatal(err, { obj });
