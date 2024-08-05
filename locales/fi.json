@@ -9730,5 +9730,14 @@
   "Need to remove a domain?": "Onko verkkotunnus poistettava?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Mene<i class='fa fa-fw fa-tools'></i> Asetukset → Poista verkkotunnus",
   "Need to remove this domain?": "Onko tämä verkkotunnus poistettava?",
-  "Click here to go Delete Domain": "Napsauta tästä siirtyäksesi Poista verkkotunnus"
+  "Click here to go Delete Domain": "Napsauta tästä siirtyäksesi Poista verkkotunnus",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV-salattu sähköpostin tallennustila",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Saat rajattomasti verkkotunnuksia ja aliaksia vain yhdellä kuukausihinnalla 3 $/kk.  Kaikki maksulliset sopimukset sisältävät 10 Gt SSD-tuettua salattua SQLite-tallennustilaa (IMAP/POP3/CalDAV).  Lisätallennustilaa voi ostaa hintaan 3 dollaria kuukaudessa 10 Gt:n SSD-tukeen lisätallennustilaa kohden.",
+  "Our MX servers limit": "MX-palvelinrajoitus",
+  "non-allowlisted": "ei-sallittu",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "lähettäjät eivät muodosta yli 5 yhteyttä 30 sekunnin välein, mikä johtaa 1 tunnin tilapäiseen",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "tilakoodi, joka palautettiin lähettäjän ratkaistun pääasiakkaan isäntänimen tai IP-osoitteen kohdalla (ja kaikki liittyvät IP-osoitteet lähettäjän juuriasiakkaan isäntänimeen, jos se on ratkaistu käänteisellä haulla).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Lisäksi, jos ei-sallittu käyttäjä havaitsee massiivisen brute force / socket-roskapostihyökkäyksen (esim. yli 25 yhteysyritystä rajoituksen ja vastaanottamisen aikana",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "< 5 minuutin kuluttua), lähettäjää rajoitetaan 1 päiväksi.  Huomaa, että alan standardinmukaisten ja oikein määritettyjen sähköpostipalvelimien tulee vetäytyä ja yrittää uudelleen (eikä raa'an pakottavan roskapostin, jos pehmeä uudelleenyritys -virhekoodi",
+  "is detected).": "havaitaan)."
 }

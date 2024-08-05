@@ -8921,5 +8921,14 @@
   "Need to remove a domain?": "Müssen Sie eine Domäne entfernen?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Gehe zu<i class='fa fa-fw fa-tools'></i> Einstellungen → Domain löschen",
   "Need to remove this domain?": "Müssen Sie diese Domäne entfernen?",
-  "Click here to go Delete Domain": "Klicken Sie hier, um die Domain zu löschen"
+  "Click here to go Delete Domain": "Klicken Sie hier, um die Domain zu löschen",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV-verschlüsselter E-Mail-Speicher",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Sie erhalten eine unbegrenzte Anzahl an Domains und Aliasnamen für nur 3 USD/Monat. Alle kostenpflichtigen Tarife umfassen 10 GB SSD-gestützten, verschlüsselten SQLite-Speicher (IMAP/POP3/CalDAV). Zusätzlicher Speicher kann für 3 USD/Monat pro 10 GB zusätzlichen SSD-gestützten Speichers erworben werden.",
+  "Our MX servers limit": "Unsere MX-Server begrenzen",
+  "non-allowlisted": "nicht auf der Positivliste",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "Absender können nicht mehr als 5 Verbindungen alle 30 Sekunden aufbauen und es kommt zu einer 1 Stunde dauernden temporären",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "Statuscode, der für den aufgelösten Root-Client-Hostnamen oder die IP-Adresse des Absenders zurückgegeben wird (und für alle zugehörigen IP-Adressen mit dem Root-Client-Hostnamen des Absenders, wenn dieser per Reverse-Lookup aufgelöst wurde).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Wenn zusätzlich ein massiver Brute-Force-/Socket-Spam-Angriff von einem nicht auf der Whitelist stehenden Benutzer erkannt wird (z. B. mehr als 25 Verbindungsversuche bei gedrosselter Verbindung und Empfang von",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "in < 5 Minuten), dann wird der Absender für 1 Tag gedrosselt. Beachten Sie, dass Industriestandard- und richtig konfigurierte Mailserver einen Rückzieher machen und es erneut versuchen sollten (und keinen Brute-Force-Spam, wenn ein Soft-Retry-Fehlercode von",
+  "is detected).": "ist angeschlossen)."
 }

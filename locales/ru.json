@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Нужно удалить домен?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Идти к<i class='fa fa-fw fa-tools'></i> Настройки → Удалить домен",
   "Need to remove this domain?": "Нужно удалить этот домен?",
-  "Click here to go Delete Domain": "Нажмите здесь, чтобы удалить домен."
+  "Click here to go Delete Domain": "Нажмите здесь, чтобы удалить домен.",
+  "IMAP/POP3/CalDAV encrypted email storage": "Хранение электронной почты с шифрованием IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Вы получаете неограниченное количество доменов и псевдонимов всего за одну ежемесячную ставку в размере 3 долларов США в месяц.  Все платные планы включают 10 ГБ зашифрованного хранилища SQLite на базе SSD (IMAP/POP3/CalDAV).  Дополнительное хранилище можно приобрести по цене 3 доллара США в месяц за 10 ГБ дополнительного хранилища на SSD-накопителе.",
+  "Our MX servers limit": "Ограничение наших MX-серверов",
+  "non-allowlisted": "вне белого списка",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "отправители не смогут устанавливать более 5 соединений каждые 30 секунд, что приведет к временной задержке на 1 час.",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "код состояния, возвращаемый для разрешенного имени хоста или IP-адреса корневого клиента отправителя (и всех связанных IP-адресов с именем хоста корневого клиента отправителя, если оно было разрешено посредством обратного поиска).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Кроме того, если массовая атака методом перебора/сокетного спама обнаружена пользователем, не внесенным в белый список (например, более 25 попыток подключения во время регулирования и получения",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "менее чем за 5 минут), то отправитель будет ограничен на 1 день.  Обратите внимание, что стандартные и правильно настроенные почтовые серверы должны выполнять отсрочку и повторную попытку (а не спам методом перебора, если код ошибки мягкой повторной попытки равен",
+  "is detected).": "обнаружен)."
 }

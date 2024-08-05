@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Bir alanı kaldırmanız mı gerekiyor?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Git<i class='fa fa-fw fa-tools'></i> Ayarlar → Etki Alanını Sil",
   "Need to remove this domain?": "Bu etki alanını kaldırmanız mı gerekiyor?",
-  "Click here to go Delete Domain": "Alan Adı Silme işlemine gitmek için burayı tıklayın"
+  "Click here to go Delete Domain": "Alan Adı Silme işlemine gitmek için burayı tıklayın",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV şifreli e-posta depolama alanı",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Aylık yalnızca 3$ karşılığında sınırsız alan adı ve takma ad elde edersiniz.  Tüm ücretli planlar, 10 GB SSD destekli şifreli SQLite depolama alanı (IMAP/POP3/CalDAV) içerir.  Ek depolama alanı, 10 GB ek SSD destekli depolama başına aylık 3 ABD doları karşılığında satın alınabilir.",
+  "Our MX servers limit": "MX sunucularımızın sınırı",
+  "non-allowlisted": "izin verilenler listesinde olmayan",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "gönderenlerin her 30 saniyede 5'ten fazla bağlantı kurmasını engelleyecek ve 1 saatlik geçici bağlantıyla sonuçlanacaktır.",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "gönderenin çözümlenen kök istemci ana bilgisayar adı veya IP adresi (ve geriye doğru arama yoluyla çözümlendiyse, gönderenin kök istemci ana bilgisayar adıyla ilişkili tüm IP adresleri) için döndürülen durum kodu.",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Ayrıca, izin verilenler listesinde olmayan bir kullanıcı tarafından büyük bir kaba kuvvet/soket spam saldırısı tespit edilirse (ör. kısıtlanırken ve bağlantı alınırken 25'ten fazla bağlantı girişiminde bulunulması)",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "< 5 dakika sonra), gönderen 1 gün süreyle kısıtlanacaktır.  Endüstri standardı ve uygun şekilde yapılandırılmış posta sunucularının geri çekilip yeniden denemesi gerektiğini (ve yazılımla yeniden deneme hata kodu varsa kaba kuvvet spamı yapmaması gerektiğini) unutmayın.",
+  "is detected).": "Tespit edildi)."
 }

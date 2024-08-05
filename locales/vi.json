@@ -7409,5 +7409,14 @@
   "Need to remove a domain?": "Bạn cần xóa miền?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Đi đến<i class='fa fa-fw fa-tools'></i> Cài đặt → Xóa tên miền",
   "Need to remove this domain?": "Bạn cần xóa miền này?",
-  "Click here to go Delete Domain": "Bấm vào đây để xóa tên miền"
+  "Click here to go Delete Domain": "Bấm vào đây để xóa tên miền",
+  "IMAP/POP3/CalDAV encrypted email storage": "Lưu trữ email được mã hóa IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Bạn nhận được số miền và bí danh không giới hạn chỉ với mức giá hàng tháng là $3/tháng.  Tất cả các gói trả phí đều bao gồm 10 GB dung lượng lưu trữ SQLite mã hóa được hỗ trợ bởi SSD (IMAP/POP3/CalDAV).  Bạn có thể mua thêm dung lượng lưu trữ với giá 3 USD/tháng cho mỗi 10 GB dung lượng lưu trữ bổ sung được hỗ trợ bằng SSD.",
+  "Our MX servers limit": "Giới hạn máy chủ MX của chúng tôi",
+  "non-allowlisted": "không có trong danh sách cho phép",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "người gửi khỏi việc thiết lập hơn 5 kết nối cứ sau 30 giây và sẽ dẫn đến việc tạm thời mất 1 giờ",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "mã trạng thái được trả về cho tên máy chủ hoặc địa chỉ IP của máy khách gốc đã được giải quyết của người gửi (và tất cả các địa chỉ IP được liên kết với tên máy chủ của máy khách gốc của người gửi, nếu nó được giải quyết thông qua tra cứu ngược).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Ngoài ra, nếu người dùng không có trong danh sách cho phép phát hiện một cuộc tấn công spam mạnh mẽ / ổ cắm quy mô lớn (ví dụ: hơn 25 lần thử kết nối trong khi bị điều tiết và nhận",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "trong < 5 phút), thì người gửi sẽ bị hạn chế trong 1 ngày.  Lưu ý rằng các máy chủ thư được cấu hình đúng và tiêu chuẩn ngành phải quay lại và thử lại (và không gửi thư rác mạnh mẽ nếu mã lỗi thử lại mềm của",
+  "is detected).": "được phát hiện)."
 }

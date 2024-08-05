@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "도메인을 제거해야 합니까?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "이동<i class='fa fa-fw fa-tools'></i> 설정 → 도메인 삭제",
   "Need to remove this domain?": "이 도메인을 제거해야 합니까?",
-  "Click here to go Delete Domain": "도메인 삭제로 이동하려면 여기를 클릭하세요."
+  "Click here to go Delete Domain": "도메인 삭제로 이동하려면 여기를 클릭하세요.",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV 암호화 이메일 저장소",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "월 $3/월의 단 한 번의 요금으로 도메인과 별칭을 무제한으로 이용할 수 있습니다.  모든 유료 플랜에는 10GB의 SSD 지원 암호화 SQLite 스토리지(IMAP/POP3/CalDAV)가 포함됩니다.  추가 스토리지는 추가 SSD 지원 스토리지 10GB당 $3/월로 구매할 수 있습니다.",
+  "Our MX servers limit": "MX 서버 제한",
+  "non-allowlisted": "허용 목록에 없음",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "발신자는 30초마다 5개 이상의 연결을 설정하지 못하므로 일시적인 1시간의 연결이 발생합니다.",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "보낸 사람의 확인된 루트 클라이언트 호스트 이름 또는 IP 주소(및 역방향 조회를 통해 확인된 경우 보낸 사람의 루트 클라이언트 호스트 이름과 관련된 모든 IP 주소)에 대해 반환된 상태 코드입니다.",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "또한 허용 목록에 없는 사용자가 대규모 무차별 대입/소켓 스팸 공격을 감지한 경우(예: 제한되어 수신되는 동안 25회 이상의 연결 시도)",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "5분 이내), 발신자는 1일 동안 제한됩니다.  업계 표준 및 적절하게 구성된 메일 서버는 백오프하고 재시도해야 하며 소프트 재시도 오류 코드가 다음과 같은 경우 무차별 스팸을 보내서는 안 됩니다.",
+  "is detected).": "감지됩니다)."
 }

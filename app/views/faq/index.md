@@ -2546,6 +2546,10 @@ The MX servers also limit messages being forwarded to one or more recipients thr
 
 Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary `421` status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).
+
+Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving `421` in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of `421` is detected).
+
 
 ## How do you protect against backscatter
 

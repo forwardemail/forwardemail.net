@@ -44,6 +44,7 @@ function isTimeoutError(err) {
     isErrorConstructorName(err, 'BodyTimeoutError') ||
     isErrorConstructorName(err, 'TimeoutError') ||
     isErrorConstructorName(err, 'AbortError') ||
+    isErrorConstructorName(err, 'DOMException') ||
     isErrorConstructorName(err, 'KnexTimeoutError')
   )
     return true;

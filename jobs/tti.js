@@ -318,7 +318,7 @@ Forward Email
                 envelope,
                 raw: Buffer.concat(
                   [signatures, newRaw],
-                  [signatures.length + newRaw.length]
+                  signatures.length + newRaw.length
                 )
               });
             }

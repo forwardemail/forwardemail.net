@@ -7,6 +7,7 @@ const undici = require('undici');
 const delay = require('delay');
 const ms = require('ms');
 
+const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');
 
 class RetryClient extends undici.Client {
@@ -28,9 +29,18 @@ class RetryClient extends undici.Client {
     this.request = async (options, count = 1) => {
       try {
         options.throwOnError = true;
-        options.signal = AbortSignal.timeout(timeout);
+        const abortController = new AbortController();
+        options.signal = abortController.signal;
+
+        const t = setTimeout(() => {
+          if (!abortController?.signal?.aborted)
+            abortController.abort(
+              new TimeoutError(`Request took longer than ${timeout}ms}`)
+            );
+        }, timeout);
 
         const response = await this._request(options);
+        clearTimeout(t);
 
         // <https://github.com/nodejs/undici/issues/3353#issuecomment-2184635954>
         // the error code is between 200-400 (e.g. 302 redirect)

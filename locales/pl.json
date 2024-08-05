@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Chcesz usunąć domenę?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Iść do<i class='fa fa-fw fa-tools'></i> Ustawienia → Usuń domenę",
   "Need to remove this domain?": "Chcesz usunąć tę domenę?",
-  "Click here to go Delete Domain": "Kliknij tutaj, aby przejść do opcji Usuń domenę"
+  "Click here to go Delete Domain": "Kliknij tutaj, aby przejść do opcji Usuń domenę",
+  "IMAP/POP3/CalDAV encrypted email storage": "Szyfrowana pamięć e-mail IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Otrzymujesz nieograniczoną liczbę domen i aliasów za tylko jedną miesięczną stawkę w wysokości 3 USD miesięcznie.  Wszystkie płatne plany obejmują 10 GB zaszyfrowanej pamięci SQLite z zabezpieczeniem SSD (IMAP/POP3/CalDAV).  Dodatkową przestrzeń dyskową można kupić w cenie 3 USD miesięcznie za 10 GB dodatkowej pamięci masowej na dysku SSD.",
+  "Our MX servers limit": "Limit naszych serwerów MX",
+  "non-allowlisted": "nie na liście dozwolonych",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "nadawcom nie będzie nawiązywał więcej niż 5 połączeń co 30 sekund, co spowoduje tymczasowe 1-godzinne opóźnienie",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "kod stanu zwrócony dla rozpoznanej nazwy hosta klienta głównego lub adresu IP nadawcy (oraz wszystkich skojarzonych adresów IP z nazwą hosta klienta głównego nadawcy, jeśli został on rozwiązany poprzez wyszukiwanie wsteczne).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Dodatkowo, jeśli użytkownik spoza listy dozwolonych wykryje masowy atak spamowy typu brute-force/socket (np. ponad 25 prób połączeń w czasie, gdy jest on ograniczany i odbierany",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "w < 5 minut), wówczas nadawca zostanie zablokowany na 1 dzień.  Należy pamiętać, że standardowe i odpowiednio skonfigurowane serwery pocztowe powinny wycofywać się i ponawiać próby (a nie spamować metodą brute-force, jeśli zostanie wyświetlony kod błędu miękkiej próby",
+  "is detected).": "zostanie wykryty)."
 }

@@ -10,11 +10,15 @@ const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
+const revHash = require('rev-hash');
 
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const getApnCerts = require('#helpers/get-apn-certs');
 const logger = require('#helpers/logger');
+
+let certs;
+let provider;
 
 // <https://github.com/nodemailer/wildduck/issues/711>
 async function sendApn(client, id, mailboxPath = 'INBOX') {
@@ -27,22 +31,42 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
 
   if (!alias || !Array.isArray(alias.aps) || alias.aps.length === 0) return;
 
+  //
+  // long-lived cached provider
+  //
+  // NOTE: we do not call `provider.shutdown(fn)` because we keep it alive
+  //
+  if (
+    !provider ||
+    !provider?.client?.session ||
+    provider?.client?.session?.closed ||
+    provider?.client?.session?.destroyed
+  ) {
+    // const caName = await client.get('aps_ca');
+    certs = await getApnCerts(client);
+    provider = new apn.Provider({
+      logger,
+      cert: certs.Mail.certificate,
+      key: certs.Mail.privateKey,
+      // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L26>
+      // ca: GEO_TRUST_CA,
+      // rejectUnauthorized: false, // only needed if GEO_TRUST_CA passed
+      requestTimeout: ms('15s'),
+      production: true // always required
+    });
+  }
+
   await pMapSeries(alias.aps, async (obj) => {
     try {
-      const certs = await getApnCerts(client);
-
-      // const caName = await client.get('aps_ca');
-
-      const provider = new apn.Provider({
-        logger,
-        cert: certs.Mail.certificate,
-        key: certs.Mail.privateKey,
-        // <https://github.com/freswa/dovecot-xaps-daemon/blob/abce2f14cf1b5afa56329ebb4d923c9c2aebdfe3/internal/apns.go#L26>
-        // ca: GEO_TRUST_CA,
-        // rejectUnauthorized: false, // only needed if GEO_TRUST_CA passed
-        requestTimeout: ms('15s'),
-        production: true // always required
-      });
+      //
+      // NOTE: we only attempt to send to the account ID + device token pair once every minute
+      //
+      const key = `aps_check:${revHash(obj.account_id)}:${revHash(
+        obj.device_token
+      )}`;
+      const cache = await client.get(key);
+      if (cache) return;
+      await client.set(key, true, 'PX', ms('1m'));
 
       // <https://github.com/argon/push_notify/blob/05b3d8025b217694e45eab8202f3d460f9237652/lib/controller.js#L48>
       // https://github.com/argon/push_notify/pull/6#issue-179062203
@@ -66,9 +90,6 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
 
       // <https://github.com/parse-community/node-apn/issues/114>
       const result = await provider.send(note, obj.device_token);
-
-      // cleanup resources/memory
-      provider.shutdown();
 
       //
       // NOTE: it's not as simple as setting topic to `com.apple.mobilemail`

@@ -35,6 +35,7 @@ async function onCreate(path, session, fn) {
         },
         path
       });
+      this.server.notifier.fire(session.user.alias_id);
       fn(null, ...data);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -108,7 +109,6 @@ async function onCreate(path, session, fn) {
       mailbox: mailbox._id,
       path
     });
-    this.server.notifier.fire(session.user.alias_id);
 
     // update storage
     try {

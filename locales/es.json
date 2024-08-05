@@ -4659,7 +4659,7 @@
   "or a": "o un",
   "file:": "archivo:",
   "In this example, we use the": "En este ejemplo, usamos el",
-  "Nodemailer": "Nodemailer",
+  "Nodemailer": "correo de nodo",
   "library and its official sponsor": "biblioteca y su patrocinador oficial",
   "to send and preview outbound mail.": "para enviar y obtener una vista previa del correo saliente.",
   "You will need to": "Necesitaras",
@@ -9881,5 +9881,14 @@
   "Need to remove a domain?": "¿Necesitas eliminar un dominio?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Ir a<i class='fa fa-fw fa-tools'></i> Configuración → Eliminar dominio",
   "Need to remove this domain?": "¿Necesitas eliminar este dominio?",
-  "Click here to go Delete Domain": "Haga clic aquí para ir a Eliminar dominio"
+  "Click here to go Delete Domain": "Haga clic aquí para ir a Eliminar dominio",
+  "IMAP/POP3/CalDAV encrypted email storage": "Almacenamiento de correo electrónico cifrado IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Obtienes dominios y alias ilimitados por solo una tarifa mensual de $3/mes.  Todos los planes pagos incluyen 10 GB de almacenamiento SQLite cifrado respaldado por SSD (IMAP/POP3/CalDAV).  Se puede comprar almacenamiento adicional por $3 al mes por 10 GB de almacenamiento adicional respaldado por SSD.",
+  "Our MX servers limit": "Nuestros servidores MX limitan",
+  "non-allowlisted": "no permitido",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "los remitentes establezcan más de 5 conexiones cada 30 segundos, y resultará en una interrupción temporal de 1 hora.",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "código de estado devuelto para el nombre de host o dirección IP del cliente raíz resuelto del remitente (y todas las direcciones IP asociadas con el nombre de host del cliente raíz del remitente, si se resolvió mediante búsqueda inversa).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Además, si un usuario no incluido en la lista de permitidos detecta un ataque masivo de fuerza bruta/spam de socket (por ejemplo, más de 25 intentos de conexión mientras se está acelerando y recibiendo",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "en < 5 minutos), el remitente se limitará durante 1 día.  Tenga en cuenta que los servidores de correo estándar de la industria y configurados correctamente deben retroceder y reintentar (y no enviar spam por fuerza bruta si aparece un código de error de reintento suave de",
+  "is detected).": "se detecta)."
 }

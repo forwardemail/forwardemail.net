@@ -1153,11 +1153,6 @@ async function parsePayload(data, ws) {
                     logger.fatal(err);
                   }
 
-                  // send user push notification
-                  sendApn(this.client, alias.id)
-                    .then()
-                    .catch((err) => logger.fatal(err, { session }));
-
                   //
                   // increase rate limiting size and count
                   //
@@ -1183,6 +1178,12 @@ async function parsePayload(data, ws) {
 
                 if (tmpDb && !this.temporaryDatabaseMap)
                   await closeDatabase(tmpDb);
+
+                // send user push notification
+                if (!err)
+                  sendApn(this.client, alias.id)
+                    .then()
+                    .catch((err) => logger.fatal(err, { session }));
 
                 if (err) throw err;
               }

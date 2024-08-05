@@ -9888,5 +9888,14 @@
   "Need to remove a domain?": "Trenger du å fjerne et domene?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Gå til<i class='fa fa-fw fa-tools'></i> Innstillinger → Slett domene",
   "Need to remove this domain?": "Trenger du å fjerne dette domenet?",
-  "Click here to go Delete Domain": "Klikk her for å gå til Slett domene"
+  "Click here to go Delete Domain": "Klikk her for å gå til Slett domene",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV kryptert e-postlagring",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Du får ubegrenset med domener og aliaser for bare én månedlig rate på $3/mnd.  Alle betalte planer inkluderer 10 GB SSD-støttet kryptert SQLite-lagring (IMAP/POP3/CalDAV).  Ekstra lagringsplass kan kjøpes for $3/mnd per 10 GB ekstra SSD-støttet lagring.",
+  "Our MX servers limit": "Våre MX-servere begrenser",
+  "non-allowlisted": "ikke-godkjent",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "avsendere fra å etablere mer enn 5 tilkoblinger hvert 30. sekund, og vil resultere i en 1 time midlertidig",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "statuskode returnert for avsenderens løste rotklientvertsnavn eller IP-adresse (og alle tilknyttede IP-adresser med avsenderens rotklientvertsnavn, hvis det ble løst via omvendt oppslag).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "I tillegg, hvis et massivt brute force / socket spam-angrep oppdages av en ikke-godkjent bruker (f.eks. mer enn 25 forsøk på tilkoblinger mens han blir strupet og mottatt",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "om < 5 minutter), vil avsenderen strupes i 1 dag.  Vær oppmerksom på at bransjestandard og riktig konfigurerte e-postservere bør gå tilbake og prøve på nytt (og ikke brute-force spam hvis en myk forsøksfeilkode av",
+  "is detected).": "er oppdaget)."
 }

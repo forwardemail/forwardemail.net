@@ -7404,5 +7404,14 @@
   "Need to remove a domain?": "Besoin de supprimer un domaine ?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Aller à<i class='fa fa-fw fa-tools'></i> Paramètres → Supprimer le domaine",
   "Need to remove this domain?": "Besoin de supprimer ce domaine ?",
-  "Click here to go Delete Domain": "Cliquez ici pour supprimer le domaine"
+  "Click here to go Delete Domain": "Cliquez ici pour supprimer le domaine",
+  "IMAP/POP3/CalDAV encrypted email storage": "Stockage de courrier électronique crypté IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Vous bénéficiez de domaines et d'alias illimités pour un seul tarif mensuel de 3 $/mois.  Tous les forfaits payants incluent 10 Go de stockage SQLite crypté sur SSD (IMAP/POP3/CalDAV).  Du stockage supplémentaire peut être acheté pour 3 $/mois pour 10 Go de stockage supplémentaire sur SSD.",
+  "Our MX servers limit": "Limite de nos serveurs MX",
+  "non-allowlisted": "non autorisé",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "les expéditeurs d'établir plus de 5 connexions toutes les 30 secondes, ce qui entraînera une interruption temporaire d'une heure.",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "code d'état renvoyé pour le nom d'hôte ou l'adresse IP du client racine résolu de l'expéditeur (et toutes les adresses IP associées au nom d'hôte du client racine de l'expéditeur, s'il a été résolu via une recherche inversée).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "De plus, si une attaque massive de spam par force brute/socket est détectée par un utilisateur non autorisé (par exemple, plus de 25 tentatives de connexion alors qu'il était limité et recevait",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "en < 5 minutes), l'expéditeur sera alors limité pendant 1 jour.  Notez que les serveurs de messagerie conformes aux normes de l'industrie et correctement configurés doivent interrompre et réessayer (et non envoyer du spam par force brute si un code d'erreur de nouvelle tentative logicielle de",
+  "is detected).": "est détecté)."
 }

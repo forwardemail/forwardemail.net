@@ -7900,5 +7900,14 @@
   "Need to remove a domain?": "צריך להסיר דומיין?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "לך ל<i class='fa fa-fw fa-tools'></i> הגדרות ← מחק דומיין",
   "Need to remove this domain?": "צריך להסיר את הדומיין הזה?",
-  "Click here to go Delete Domain": "לחץ כאן כדי לעבור למחק דומיין"
+  "Click here to go Delete Domain": "לחץ כאן כדי לעבור למחק דומיין",
+  "IMAP/POP3/CalDAV encrypted email storage": "אחסון דוא\"ל מוצפן IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "אתה מקבל דומיינים וכינויים ללא הגבלה בתעריף חודשי אחד בלבד של $3 לחודש.  כל התוכניות בתשלום כוללות 10 ג'יגה-בייט של אחסון SQLite מוצפן בגיבוי SSD (IMAP/POP3/CalDAV).  ניתן לרכוש אחסון נוסף תמורת 3 דולר לחודש לכל 10 ג'יגה-בייט של אחסון נוסף בגיבוי SSD.",
+  "Our MX servers limit": "הגבלת שרתי ה-MX שלנו",
+  "non-allowlisted": "לא מורשים",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "שולחים מיצירת יותר מ-5 חיבורים כל 30 שניות, ויגרום לשעה זמנית",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "קוד סטטוס הוחזר עבור שם המארח או כתובת ה-IP של לקוח השורש של השולח (וכל כתובות ה-IP המשויכות לשם המארח של לקוח השורש של השולח, אם זה נפתר באמצעות חיפוש הפוך).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "בנוסף, אם מתגלה מתקפת ספאם מסיבית של כוח אכזרי/שקע על ידי משתמש שאינו מורשה (למשל, יותר מ-25 ניסיונות חיבורים תוך כדי מצערת וקבלה",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "תוך פחות מ-5 דקות), ואז השולח יוחנק למשך יום אחד.  שים לב ששרתי דואר סטנדרטיים ומוגדרים כהלכה צריכים לסגת ולנסות שוב (ולא ספאם בכוח גס אם קוד שגיאה רך של ניסיון חוזר",
+  "is detected).": "זוהה)."
 }

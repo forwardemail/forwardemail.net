@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "هل تحتاج إلى إزالة النطاق؟",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "اذهب إلى<i class='fa fa-fw fa-tools'></i> الإعدادات → حذف المجال",
   "Need to remove this domain?": "هل تحتاج إلى إزالة هذا المجال؟",
-  "Click here to go Delete Domain": "انقر هنا للذهاب حذف المجال"
+  "Click here to go Delete Domain": "انقر هنا للذهاب حذف المجال",
+  "IMAP/POP3/CalDAV encrypted email storage": "تخزين البريد الإلكتروني المشفر عبر IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "يمكنك الحصول على نطاقات وأسماء مستعارة غير محدودة مقابل معدل شهري واحد فقط قدره 3 دولارات شهريًا.  تشتمل جميع الخطط المدفوعة على 10 جيجابايت من مساحة تخزين SQLite المشفرة والمدعومة بـ SSD (IMAP/POP3/CalDAV).  يمكن شراء مساحة تخزين إضافية مقابل 3 دولارات شهريًا لكل 10 جيجابايت من مساحة التخزين الإضافية المدعومة بـ SSD.",
+  "Our MX servers limit": "حدود خوادم MX لدينا",
+  "non-allowlisted": "غير المدرجة في القائمة المسموح بها",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "المرسلين من إنشاء أكثر من 5 اتصالات كل 30 ثانية، وسيؤدي ذلك إلى ساعة مؤقتة",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "تم إرجاع رمز الحالة لاسم مضيف العميل الجذر الذي تم حله للمرسل أو عنوان IP (وجميع عناوين IP المرتبطة باسم مضيف العميل الجذر للمرسل، إذا تم حلها عبر البحث العكسي).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "بالإضافة إلى ذلك، إذا اكتشف مستخدم غير مدرج في القائمة المسموح بها هجومًا ضخمًا عنيفًا / مأخذ توصيل عشوائيًا (على سبيل المثال، أكثر من 25 محاولة اتصال أثناء تقييده واستقباله)",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "في أقل من 5 دقائق)، فسيتم اختناق المرسل لمدة يوم واحد.  لاحظ أن خوادم البريد القياسية الصناعية والتي تم تكوينها بشكل صحيح يجب أن تتراجع وتعيد المحاولة (وليس البريد العشوائي العشوائي إذا كان رمز خطأ إعادة المحاولة البسيط",
+  "is detected).": "تم الكشف عن)."
 }

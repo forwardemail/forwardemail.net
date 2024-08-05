@@ -28,6 +28,7 @@ const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
+const TimeoutError = require('./timeout-error');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -836,9 +837,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 // <https://github.com/nodejs/undici/issues/3435>
                 //
                 const wkd = new WKD();
-                wkd._fetch = (url) => {
-                  return undici.fetch(url, {
-                    signal: AbortSignal.timeout(ms('2s')),
+                wkd._fetch = async (url) => {
+                  const abortController = new AbortController();
+                  const t = setTimeout(() => {
+                    if (!abortController?.signal?.aborted)
+                      abortController.abort(
+                        new TimeoutError(`${url} took longer than 2s`)
+                      );
+                  }, ms('2s'));
+                  const response = await undici.fetch(url, {
+                    signal: abortController.signal,
                     dispatcher: new undici.Agent({
                       headersTimeout: ms('2s'),
                       connectTimeout: ms('2s'),
@@ -855,6 +863,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
                       }
                     })
                   });
+                  clearTimeout(t);
+                  return response;
                 };
 
                 logger.info('address', { address });

@@ -9615,5 +9615,14 @@
   "Need to remove a domain?": "Need to remove a domain?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain",
   "Need to remove this domain?": "Need to remove this domain?",
-  "Click here to go Delete Domain": "Click here to go Delete Domain"
+  "Click here to go Delete Domain": "Click here to go Delete Domain",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV encrypted email storage",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.",
+  "Our MX servers limit": "Our MX servers limit",
+  "non-allowlisted": "non-allowlisted",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of",
+  "is detected).": "is detected)."
 }

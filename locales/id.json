@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Perlu menghapus domain?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Pergi ke<i class='fa fa-fw fa-tools'></i> Pengaturan → Hapus Domain",
   "Need to remove this domain?": "Perlu menghapus domain ini?",
-  "Click here to go Delete Domain": "Klik di sini untuk pergi Hapus Domain"
+  "Click here to go Delete Domain": "Klik di sini untuk pergi Hapus Domain",
+  "IMAP/POP3/CalDAV encrypted email storage": "Penyimpanan email terenkripsi IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Anda mendapatkan domain dan alias tanpa batas hanya dengan satu tarif bulanan sebesar $3/bln.  Semua paket berbayar mencakup penyimpanan SQLite terenkripsi sebesar 10 GB yang didukung SSD (IMAP/POP3/CalDAV).  Penyimpanan tambahan dapat dibeli seharga $3/bln per 10 GB penyimpanan tambahan yang didukung SSD.",
+  "Our MX servers limit": "Batasan server MX kami",
+  "non-allowlisted": "tidak diizinkan",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "pengirim membuat lebih dari 5 koneksi setiap 30 detik, dan akan menghasilkan waktu sementara 1 jam",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "kode status dikembalikan untuk nama host klien akar atau alamat IP pengirim yang telah diselesaikan (dan semua alamat IP yang terkait dengan nama host klien akar pengirim, jika diselesaikan melalui pencarian terbalik).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Selain itu, jika serangan spam brute force/soket besar-besaran terdeteksi oleh pengguna yang tidak diizinkan (misalnya lebih dari 25 percobaan koneksi saat sedang dibatasi dan menerima",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "dalam < 5 menit), maka pengirim akan di-throttle selama 1 hari.  Perhatikan bahwa server email standar industri dan dikonfigurasi dengan benar harus mundur dan mencoba lagi (dan bukan spam paksa jika kode kesalahan coba ulang lunak",
+  "is detected).": "terdeteksi)."
 }

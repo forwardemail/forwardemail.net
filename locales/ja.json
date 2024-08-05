@@ -5046,7 +5046,7 @@
   "Encryption-at-rest": "保存時の暗号化",
   "Sandboxed": "サンドボックス化",
   "Used Everywhere": "どこでも使用される",
-  "SQLite": "SQLite",
+  "SQLite": "の",
   "✅ Yes with": "✅ はい",
   "SQLite3MultipleCiphers": "SQLite3複数の暗号",
   "✅ Public Domain": "✅ パブリックドメイン",
@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "ドメインを削除する必要がありますか?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "へ移動<i class='fa fa-fw fa-tools'></i>設定 → ドメインの削除",
   "Need to remove this domain?": "このドメインを削除する必要がありますか?",
-  "Click here to go Delete Domain": "ドメインを削除するにはここをクリックしてください"
+  "Click here to go Delete Domain": "ドメインを削除するにはここをクリックしてください",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV 暗号化メールストレージ",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "月額 3 ドルの単一料金で、無制限のドメインとエイリアスを利用できます。すべての有料プランには、10 GB の SSD バックアップ暗号化 SQLite ストレージ (IMAP/POP3/CalDAV) が含まれます。追加のストレージは、10 GB の追加 SSD バックアップ ストレージあたり月額 3 ドルで購入できます。",
+  "Our MX servers limit": "MXサーバーの制限",
+  "non-allowlisted": "非許可リスト",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "送信者が30秒ごとに5回以上の接続を確立することを禁止し、1時間の一時的な",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "送信者の解決されたルート クライアント ホスト名または IP アドレス (および逆引きによって解決された場合は、送信者のルート クライアント ホスト名に関連付けられたすべての IP アドレス) に対して返されるステータス コード。",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "さらに、許可リストに登録されていないユーザーによる大規模なブルートフォース攻撃やソケットスパム攻撃が検出された場合（例：スロットリング中に25回以上の接続を試行し、",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "5分未満の場合、送信者は1日間制限されます。業界標準の適切に構成されたメールサーバーは、バックオフして再試行する必要があります（ソフト再試行エラーコードが",
+  "is detected).": "が検出されました。"
 }

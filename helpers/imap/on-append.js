@@ -76,11 +76,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
       });
       this.server.notifier.fire(session.user.alias_id);
 
-      // send apple push notification
-      sendApn(this.client, session.user.alias_id, path)
-        .then()
-        .catch((err) => this.logger.fatal(err, { session }));
-
       fn(null, bool, response);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -533,7 +528,11 @@ async function onAppend(path, flags, date, raw, session, fn) {
       mailbox: mailbox._id,
       message: message._id
     });
-    this.server.notifier.fire(session.user.alias_id);
+
+    // send apple push notification
+    sendApn(this.client, session.user.alias_id, path)
+      .then()
+      .catch((err) => this.logger.fatal(err, { session }));
 
     fn(null, true, response);
   } catch (err) {

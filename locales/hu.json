@@ -6559,7 +6559,7 @@
   "We are actively working to resolve time to inbox monitoring issues.": "Aktívan dolgozunk a beérkező levelek figyelésével kapcsolatos problémák megoldásán.",
   "passkeys and WebAuthn": "jelszavak és a WebAuthn",
   "time to inbox": "ideje beérkezni",
-  "monitoring.": "monitoring.",
+  "monitoring.": "megfigyelés.",
   "The Fastest Email Service": "A leggyorsabb e-mail szolgáltatás",
   "You successfully created a new alias: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Sikeresen létrehozott egy új aliast: <a href=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
   "You successfully created a new alias: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>": "Sikeresen létrehozott egy új aliast: <a class=\"font-weight-bold alert-link\" href=\"%s\">%s</a>",
@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "El kell távolítani egy domaint?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Menj<i class='fa fa-fw fa-tools'></i> Beállítások → Domain törlése",
   "Need to remove this domain?": "El kell távolítani ezt a domaint?",
-  "Click here to go Delete Domain": "Kattintson ide a Domain törléséhez"
+  "Click here to go Delete Domain": "Kattintson ide a Domain törléséhez",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV titkosított e-mail tárhely",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Korlátlan számú domainhez és aliashoz juthat mindössze egy havi 3 USD/hó díjért.  Minden fizetős csomag tartalmaz 10 GB SSD-vel támogatott titkosított SQLite tárhelyet (IMAP/POP3/CalDAV).  További tárhely 3 USD/hó áron vásárolható 10 GB további SSD-alapú tárhely után.",
+  "Our MX servers limit": "MX szervereink korlátja",
+  "non-allowlisted": "nem engedélyezett listán",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "a feladók 30 másodpercenként 5-nél több kapcsolatot létesítenek, ami 1 órás átmeneti időszakot eredményez",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "állapotkód a küldő feloldott root kliens gazdagépnevéhez vagy IP-címéhez (és a küldő gyökérügyfél gazdagépnevéhez tartozó összes kapcsolódó IP-címhez, ha fordított kereséssel oldották meg).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Továbbá, ha egy nem engedélyezett felhasználó hatalmas brute force/socket spam támadást észlel (pl. több mint 25 csatlakozási kísérlet, miközben korlátozták és fogadják",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "< 5 percen belül), akkor a küldő 1 napra korlátozva lesz.  Vegye figyelembe, hogy az ipari szabvány és megfelelően konfigurált levelezőszervereknek meg kell hátrálniuk és újra kell próbálkozniuk (és nem kell brute-force spamet, ha egy lágy újrapróbálkozási hibakód",
+  "is detected).": "észlelik)."
 }

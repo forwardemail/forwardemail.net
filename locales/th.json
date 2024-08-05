@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "ต้องการลบโดเมนหรือไม่?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "ไปที่<i class='fa fa-fw fa-tools'></i> การตั้งค่า → ลบโดเมน",
   "Need to remove this domain?": "ต้องการลบโดเมนนี้หรือไม่",
-  "Click here to go Delete Domain": "คลิกที่นี่เพื่อไปลบโดเมน"
+  "Click here to go Delete Domain": "คลิกที่นี่เพื่อไปลบโดเมน",
+  "IMAP/POP3/CalDAV encrypted email storage": "พื้นที่เก็บข้อมูลอีเมลที่เข้ารหัส IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "คุณได้รับโดเมนและนามแฝงไม่จำกัดในราคาเพียงเดือนเดียวที่ $3/เดือน  แผนแบบชำระเงินทั้งหมดประกอบด้วยพื้นที่จัดเก็บข้อมูล SQLite ที่เข้ารหัสด้วย SSD ขนาด 10 GB (IMAP/POP3/CalDAV)  สามารถซื้อพื้นที่จัดเก็บเพิ่มเติมได้ในราคา 3 ดอลลาร์ต่อเดือนต่อพื้นที่จัดเก็บข้อมูลที่สนับสนุน SSD เพิ่มเติม 10 GB",
+  "Our MX servers limit": "เซิร์ฟเวอร์ MX ของเรามีขีดจำกัด",
+  "non-allowlisted": "ไม่อยู่ในรายการที่อนุญาต",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "ผู้ส่งจากการสร้างการเชื่อมต่อมากกว่า 5 ครั้งทุกๆ 30 วินาที และจะส่งผลให้ใช้เวลาชั่วคราว 1 ชั่วโมง",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "รหัสสถานะที่ส่งคืนสำหรับชื่อโฮสต์หรือที่อยู่ IP ของไคลเอนต์รูทที่แก้ไขแล้วของผู้ส่ง (และที่อยู่ IP ที่เกี่ยวข้องทั้งหมดที่มีชื่อโฮสต์ของไคลเอนต์รูทของผู้ส่ง หากได้รับการแก้ไขผ่านการค้นหาแบบย้อนกลับ)",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "นอกจากนี้ หากตรวจพบการโจมตีสแปมแบบ bruteforce / socket ขนาดใหญ่โดยผู้ใช้ที่ไม่อยู่ในรายการที่อนุญาต (เช่น พยายามเชื่อมต่อมากกว่า 25 ครั้งในขณะที่ถูกจำกัดปริมาณและรับ",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "ภายใน < 5 นาที) จากนั้นผู้ส่งจะถูกควบคุมปริมาณเป็นเวลา 1 วัน  โปรดทราบว่าเซิร์ฟเวอร์อีเมลมาตรฐานอุตสาหกรรมและการกำหนดค่าอย่างเหมาะสมควรถอยกลับและลองอีกครั้ง (และไม่ใช่สแปมแบบดุร้ายหากรหัสข้อผิดพลาดการลองอีกครั้งแบบ soft ของ",
+  "is detected).": "ถูกตรวจพบ)"
 }

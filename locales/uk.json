@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Потрібно видалити домен?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Йти до<i class='fa fa-fw fa-tools'></i> Параметри → Видалити домен",
   "Need to remove this domain?": "Потрібно видалити цей домен?",
-  "Click here to go Delete Domain": "Натисніть тут, щоб видалити домен"
+  "Click here to go Delete Domain": "Натисніть тут, щоб видалити домен",
+  "IMAP/POP3/CalDAV encrypted email storage": "Зашифроване сховище електронної пошти IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Ви отримуєте необмежену кількість доменів і псевдонімів лише за один місячний тариф у 3 долари США на місяць.  Усі платні плани включають 10 ГБ зашифрованого сховища SQLite із підтримкою SSD (IMAP/POP3/CalDAV).  Додаткове сховище можна придбати за 3 долари на місяць за 10 ГБ додаткового сховища з підтримкою SSD.",
+  "Our MX servers limit": "Ліміт наших серверів MX",
+  "non-allowlisted": "не в білому списку",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "відправники не встановлюють більше 5 з’єднань кожні 30 секунд, що призведе до 1 години тимчасового",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "код статусу, який повертається для розпізнаного імені хоста або IP-адреси кореневого клієнта відправника (та всіх пов’язаних IP-адрес із іменем хоста кореневого клієнта відправника, якщо його було розпізнано через зворотний пошук).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Крім того, якщо користувач, який не внесено до дозволеного списку, виявив масову грубу силу/атаку спаму через сокет (наприклад, більше 25 спроб підключень під час обмеження та отримання",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "через < 5 хвилин), тоді відправник буде придушено на 1 день.  Зауважте, що галузевий стандарт і належним чином налаштовані поштові сервери мають відключитися та повторити спробу (а не спам грубої сили, якщо код помилки м’якої повторної спроби",
+  "is detected).": "виявлено)."
 }

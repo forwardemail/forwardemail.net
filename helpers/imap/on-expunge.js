@@ -48,6 +48,8 @@ async function onExpunge(mailboxId, update, session, fn) {
         update
       });
 
+      this.server.notifier.fire(session.user.alias_id);
+
       fn(null, bool);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -196,7 +198,6 @@ async function onExpunge(mailboxId, update, session, fn) {
             // idate: message.idate
           }))
         );
-        this.server.notifier.fire(session.user.alias_id);
       }
     } catch (_err) {
       err = _err;

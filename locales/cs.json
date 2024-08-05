@@ -9883,5 +9883,14 @@
   "Need to remove a domain?": "Potřebujete odstranit doménu?",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "Jít do<i class='fa fa-fw fa-tools'></i> Nastavení → Smazat doménu",
   "Need to remove this domain?": "Potřebujete odstranit tuto doménu?",
-  "Click here to go Delete Domain": "Kliknutím sem přejděte na Odstranit doménu"
+  "Click here to go Delete Domain": "Kliknutím sem přejděte na Odstranit doménu",
+  "IMAP/POP3/CalDAV encrypted email storage": "E-mailové úložiště šifrované IMAP/POP3/CalDAV",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "Získáte neomezený počet domén a aliasů pouze za jednu měsíční sazbu 3 $/měsíc.  Všechny placené plány zahrnují 10 GB šifrovaného úložiště SQLite (IMAP/POP3/CalDAV) zálohované SSD.  Další úložiště lze zakoupit za 3 $/měsíc za 10 GB dalšího úložiště zálohovaného SSD.",
+  "Our MX servers limit": "Limit našich serverů MX",
+  "non-allowlisted": "nepovolené",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "odesílatelů z navázání více než 5 připojení každých 30 sekund a bude mít za následek 1 hodinu dočasné",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "stavový kód vrácený pro vyřešený kořenový název hostitele klienta nebo IP adresu odesílatele (a všechny přidružené adresy IP s názvem hostitele kořenového klienta odesílatele, pokud byl vyřešen zpětným vyhledáváním).",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Pokud navíc nepovolený uživatel detekuje masivní útok hrubou silou/zásuvkovým spamem (např. více než 25 pokusů o připojení při omezování a přijímání",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "za < 5 minut), pak bude odesílatel omezen na 1 den.  Všimněte si, že průmyslové standardní a správně nakonfigurované poštovní servery by měly ustoupit a zkusit to znovu (a nikoli spam hrubou silou, pokud se zobrazí chybový kód měkkého opakování",
+  "is detected).": "je detekován)."
 }

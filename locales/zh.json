@@ -9576,5 +9576,14 @@
   "Need to remove a domain?": "需要删除域名吗？",
   "Go to <i class='fa fa-fw fa-tools'></i> Settings &rarr; Delete Domain": "去<i class='fa fa-fw fa-tools'></i>设置 → 删除域",
   "Need to remove this domain?": "需要删除该域名吗？",
-  "Click here to go Delete Domain": "点击此处删除域名"
+  "Click here to go Delete Domain": "点击此处删除域名",
+  "IMAP/POP3/CalDAV encrypted email storage": "IMAP/POP3/CalDAV 加密电子邮件存储",
+  "You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.": "您只需支付每月 3 美元的费用即可获得无限数量的域名和别名。所有付费计划均包含 10 GB 的 SSD 加密 SQLite 存储（IMAP/POP3/CalDAV）。您可以以每 10 GB 额外的 SSD 存储 3 美元/月的价格购买额外的存储空间。",
+  "Our MX servers limit": "我们的 MX 服务器限制",
+  "non-allowlisted": "未列入白名单",
+  "senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary": "发送者每 30 秒建立超过 5 个连接，将导致 1 小时的临时",
+  "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "发送方已解析的根客户端主机名或 IP 地址（以及与发送方的根客户端主机名相关的所有 IP 地址，如果通过反向查找解析）返回的状态代码。",
+  "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "此外，如果非允许名单用户检测到大规模暴力破解/套接字垃圾邮件攻击（例如，在受到限制并接收的情况下尝试连接超过 25 次",
+  "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "在不到 5 分钟内），则发件人将被限制 1 天。请注意，符合行业标准且配置正确的邮件服务器应后退并重试（如果软重试错误代码为",
+  "is detected).": "被检测到）。"
 }

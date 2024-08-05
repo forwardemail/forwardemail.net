@@ -32,7 +32,7 @@ async function onDelete(path, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, mailboxId] = await this.wsp.request({
+      const [bool, mailboxId, hasDeleted] = await this.wsp.request({
         action: 'delete',
         session: {
           id: session.id,
@@ -41,6 +41,8 @@ async function onDelete(path, session, fn) {
         },
         path
       });
+
+      if (hasDeleted) this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, mailboxId);
     } catch (err) {
@@ -138,7 +140,6 @@ async function onDelete(path, session, fn) {
         command: 'DELETE',
         mailbox: mailbox._id
       });
-      this.server.notifier.fire(session.user.alias_id);
     }
 
     //
@@ -167,7 +168,7 @@ async function onDelete(path, session, fn) {
       this.logger.fatal(err, { path, session });
     }
 
-    fn(null, true, mailbox._id);
+    fn(null, true, mailbox._id, results.deletedCount > 0);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }
