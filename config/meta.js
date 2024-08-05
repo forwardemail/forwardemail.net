@@ -63,6 +63,10 @@ module.exports = function (config) {
       'Private Business Email for Custom Domains',
       'Create your free, private, encrypted, and secure email for professional businesses, enterprises, and custom domains. Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span>.'
     ],
+    '/tti': [
+      'Time to Inbox Monitoring & Deliverability',
+      'Time to inbox ("TTI") is the duration it takes from when an email is sent until it is delivered to the user\'s mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).'
+    ],
     '/faq': [
       'Frequently Asked Questions About Email',
       'How to configure email for custom domain names, outbound SMTP service, and more.'
