@@ -231,9 +231,9 @@ Forward Email
               to
             };
 
-            const date = new Date();
             let info;
 
+            let date = new Date();
             const newRaw = Buffer.from(
               `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
             );
@@ -284,18 +284,43 @@ Forward Email
             } catch (err) {
               err.isCodeBug = true;
               logger.error(err);
-              throw err;
+              // TODO: this needs to retry from another server
               // attempt to send email with our SMTP server
               // (e.g. in case bree.forwardemail.net is blocked)
-              // date = new Date();
+              date = new Date();
               // TODO: handle transporter cleanup
               // TODO: handle mx socket close
-              // info = await config.email.transport.sendMail({
-              //   envelope,
-              //   raw: dkim.sign(
-              //     `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-              //   )
-              // });
+              const newRaw = Buffer.from(
+                `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
+              );
+
+              const signResult = await dkimSign(newRaw, {
+                canonicalization: 'relaxed/relaxed',
+                algorithm: 'rsa-sha256',
+                signTime: new Date(),
+                signatureData
+              });
+
+              if (signResult.errors.length > 0) {
+                const err = combineErrors(
+                  signResult.errors.map((error) => error.err)
+                );
+                // we may want to remove cyclical reference
+                // for (const error of signResult.errors) {
+                //   delete error.err;
+                // }
+                err.signResult = signResult;
+                throw err;
+              }
+
+              const signatures = Buffer.from(signResult.signatures, 'utf8');
+              info = await config.email.transport.sendMail({
+                envelope,
+                raw: Buffer.concat(
+                  [signatures, newRaw],
+                  [signatures.length + newRaw.length]
+                )
+              });
             }
 
             /*
