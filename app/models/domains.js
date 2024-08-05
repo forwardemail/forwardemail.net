@@ -1222,7 +1222,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
             retries: 1
           });
           // consume body
-          await response.body.dump();
+          if (!response?.signal?.aborted) await response.body.dump();
         },
         { concurrency }
       );
@@ -1436,7 +1436,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
             retries: 1
           });
           // consume body
-          await response.body.dump();
+          if (!response?.signal?.aborted) await response.body.dump();
         },
         { concurrency }
       );
