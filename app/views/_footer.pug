@@ -296,6 +296,9 @@ footer.mt-auto(aria-label=t("Footer"))
                 data-target=isHelp ? false : "#modal-help"
               )= t("Help")
             li: a.d-block.text-white.py-2.py-md-0(
+              href=l("/tti")
+            )= t("Time to Inbox")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/disposable-addresses")
             )= t("Disposable Addresses")
             li: a.d-block.text-white.py-2.py-md-0(href=l("/domain-registration"))= t("Domain Registration")

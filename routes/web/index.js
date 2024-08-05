@@ -241,8 +241,7 @@ localeRouter
     web.onboard
   )
 
-  .get('/tti', async (ctx, next) => {
-    if (ctx.accepts('html')) return next();
+  .get('/tti', async (ctx) => {
     // get TTI stats for footer (v1 rudimentary approach)
     ctx.state.tti = false;
     try {
@@ -253,6 +252,12 @@ localeRouter
       }
     } catch (err) {
       ctx.logger.error(err);
+    }
+
+    if (ctx.accepts('html')) {
+      if (!ctx.state.tti)
+        throw Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE'));
+      return ctx.render('time-to-inbox');
     }
 
     const html = pug.renderFile(filePath, {
