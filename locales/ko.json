@@ -9897,5 +9897,7 @@
   "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "받은 편지함까지 소요되는 시간(\"TTI\")은 이메일이 전송된 시점부터 사용자의 편지함에 배달될 때까지 걸리는 시간입니다.  우리는 모든 주요 이메일 제공업체(Gmail, Outlook/Hotmail, Apple iCloud, Yahoo/AOL 포함)에 걸쳐 이메일 전달 및 직접 아웃바운드 SMTP에 대한 전달 가능성과 타이밍을 공개적으로 측정하고 비교합니다.",
   "(US; hosting provider),": "(미국, 호스팅 제공업체),",
   "(US; payment processor),": "(미국; 결제 처리자),",
-  "(US; payment processor)": "(미국; 결제 처리자)"
+  "(US; payment processor)": "(미국; 결제 처리자)",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "이 항목을 선택하고 아래에 공개 키를 입력하지 않으면 <a href=\"%s\" target=\"_blank\">웹 키 디렉터리(&quot;WKD&quot;)를 사용하여</a> 조회를 시도합니다.",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "귀하의 이메일 클라이언트가 어떤 IMAP 서버에 연결되어 있는지에 관계없이 우리는 100% 정확도로 실시간으로 귀하의 데이터베이스에서 연결을 읽기를 원합니다.  이는 WebSocket을 통해 수행됩니다."
 }

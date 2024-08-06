@@ -295,6 +295,7 @@ class SQLite {
     //
     if (isSANB(env.SQLITE_TMPDIR)) await mkdirp(env.SQLITE_TMPDIR);
 
+    // TODO: all subscribe/unsubscribe calls need `await`'ed
     this.subscriber.subscribe('sqlite_auth_response');
 
     this.wsInterval = setInterval(() => {

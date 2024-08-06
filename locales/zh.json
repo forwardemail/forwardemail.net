@@ -9590,5 +9590,7 @@
   "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "收件箱时间（“TTI”）是指电子邮件从发送至送达用户邮箱所需的时间。我们公开测量并比较了所有主要电子邮件提供商（包括 Gmail、Outlook/Hotmail、Apple iCloud 和 Yahoo/AOL）的电子邮件转发和直接出站 SMTP 的送达率和时间。",
   "(US; hosting provider),": "（美国；托管服务提供商），",
   "(US; payment processor),": "（美国；支付处理器），",
-  "(US; payment processor)": "（美国；支付处理器）"
+  "(US; payment processor)": "（美国；支付处理器）",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "如果选中此项并且下面没有输入公钥，那么我们将尝试<a href=\"%s\" target=\"_blank\">使用 Web 密钥目录</a>（“WKD”）执行查找。",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "无论您的电子邮件客户端连接到哪个 IMAP 服务器，我们都希望该连接能够以 100% 的准确度实时读取您的数据库。这是通过 WebSockets 实现的。"
 }

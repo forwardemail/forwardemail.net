@@ -97,6 +97,7 @@ const syncUbuntuUser = require('./sync-ubuntu-user');
 const getUbuntuMembersMap = require('./get-ubuntu-members-map');
 const sendApn = require('./send-apn');
 const getApnCerts = require('./get-apn-certs');
+const WKD = require('./wkd');
 
 module.exports = {
   decrypt,
@@ -194,5 +195,6 @@ module.exports = {
   syncUbuntuUser,
   getUbuntuMembersMap,
   sendApn,
-  getApnCerts
+  getApnCerts,
+  WKD
 };

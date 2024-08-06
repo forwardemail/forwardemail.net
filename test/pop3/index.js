@@ -22,7 +22,6 @@ const ms = require('ms');
 const pify = require('pify');
 const splitLines = require('split-lines');
 const test = require('ava');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
@@ -43,12 +42,9 @@ const IP_ADDRESS = ip.address();
 
 client.setMaxListeners(0);
 subscriber.setMaxListeners(0);
+subscriber.channels.setMaxListeners(0);
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
-test.before(utils.defineDomainFactory);
-test.before(utils.definePaymentFactory);
-test.before(utils.defineAliasFactory);
 test.before(async () => {
   const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
   await smtpLimitKeys.map((k) => client.del(k));
@@ -71,38 +67,46 @@ test.beforeEach(async (t) => {
   t.context.server = await pop3.listen(port);
   t.context.pop3 = pop3;
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   t.context.user = await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver: pop3.resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver: pop3.resolver,
+      has_smtp: true
+    })
+    .create();
 
   t.context.domain = domain;
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    has_imap: true
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
 
   const pass = await alias.createToken();
   t.context.pass = pass;
@@ -311,14 +315,14 @@ ZXhhbXBsZQo=
   {
     // eslint-disable-next-line new-cap
     const stat = await t.context.pop3Command.STAT();
-    t.is(stat, '1 645');
+    t.is(stat, `1 ${raw.length + 2}`);
   }
 
   // LIST
   {
     // eslint-disable-next-line new-cap
     const list = await t.context.pop3Command.LIST();
-    t.deepEqual(list, [['1', '645']]);
+    t.deepEqual(list, [['1', `${raw.length + 2}`]]);
   }
 
   // RETR 1

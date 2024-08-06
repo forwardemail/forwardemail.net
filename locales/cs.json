@@ -9897,5 +9897,7 @@
   "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "Čas do doručené pošty (\"TTI\") je doba, která uplyne od odeslání e-mailu do jeho doručení do poštovní schránky uživatele.  Veřejně měříme a porovnáváme naši doručitelnost a načasování pro přeposílání e-mailů i přímé odchozí SMTP u všech hlavních poskytovatelů e-mailu (včetně Gmailu, Outlooku/Hotmailu, Apple iCloud a Yahoo/AOL).",
   "(US; hosting provider),": "(USA; poskytovatel hostingu),",
   "(US; payment processor),": "(USA; zpracovatel plateb),",
-  "(US; payment processor)": "(USA; zpracovatel plateb)"
+  "(US; payment processor)": "(USA; zpracovatel plateb)",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Pokud je toto zaškrtnuto a níže není zadán žádný veřejný klíč, pokusíme se provést vyhledávání <a href=\"%s\" target=\"_blank\">pomocí Web Key Directory</a> (&quot;WKD&quot;).",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Bez ohledu na to, ke kterému serveru IMAP se váš e-mailový klient připojuje, chceme, aby připojení načítalo z vaší databáze v reálném čase se 100% přesností.  To se provádí prostřednictvím WebSockets."
 }

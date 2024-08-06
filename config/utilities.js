@@ -14,6 +14,7 @@ const arrayJoinConjunction = require('array-join-conjunction');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
+const highlightPug = require('@forwardemail/highlight-pug');
 const highlightWords = require('highlight-words').default;
 const hljs = require('highlight.js');
 const humanize = require('humanize-string');
@@ -35,6 +36,9 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
 const { randomstring } = require('@sidoshi/random-string');
+
+// <https://github.com/ztmd/highlight-pug/issues/1>
+hljs.registerLanguage('pug', highlightPug);
 
 const json = (string, replacer = null, space = 2) =>
   JSON.stringify(string, replacer, space);

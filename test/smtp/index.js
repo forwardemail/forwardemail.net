@@ -19,7 +19,6 @@ const nodemailer = require('nodemailer');
 const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
-const { factory } = require('factory-girl');
 const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
@@ -41,10 +40,6 @@ client.setMaxListeners(0);
 const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
-test.before(utils.defineDomainFactory);
-test.before(utils.definePaymentFactory);
-test.before(utils.defineAliasFactory);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupSMTPServer);
 
@@ -202,37 +197,45 @@ test('auth with catch-all pass', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   await alias.save();
 
@@ -362,37 +365,45 @@ test('auth with pass as alias', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   await alias.createToken();
   await alias.save();
@@ -509,12 +520,14 @@ Test`.trim()
     t.regex(err.message, /Invalid password/);
   }
 
-  const noReplyAlias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    name: 'no-reply'
-  });
+  const noReplyAlias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      name: 'no-reply'
+    })
+    .create();
   const pass = await noReplyAlias.createToken();
   await noReplyAlias.save();
 
@@ -564,38 +577,46 @@ test('auth with catch-all password when alias exists too', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    name: 'beep-baz-boop'
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      name: 'beep-baz-boop'
+    })
+    .create();
 
   await alias.createToken();
   await alias.save();
@@ -776,37 +797,45 @@ Test`.trim()
 });
 
 test('automatic openpgp support', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    has_smtp: true,
-    resolver
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const map = new Map();
 
@@ -950,35 +979,43 @@ test('smtp outbound auth', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const pass = await alias.createToken();
   t.true(typeof pass === 'string' && pass.length === 24);
@@ -1045,38 +1082,46 @@ test('smtp outbound auth', async (t) => {
 });
 
 test(`IDN domain`, async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    name: '日本語.idn.icann.org',
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    has_smtp: true,
-    resolver
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      name: '日本語.idn.icann.org',
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const map = new Map();
 
@@ -1215,37 +1260,45 @@ test(`IDN domain`, async (t) => {
 });
 
 test(`10MB message size`, async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    has_smtp: true,
-    resolver
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const map = new Map();
 
@@ -1390,37 +1443,45 @@ test(`10MB message size`, async (t) => {
 });
 
 test(`16MB message size`, async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    has_smtp: true,
-    resolver
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const map = new Map();
 
@@ -1565,37 +1626,45 @@ test(`16MB message size`, async (t) => {
 });
 
 test(`50MB message size`, async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    has_smtp: true,
-    resolver
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const err = await t.throwsAsync(
     Emails.queue({
@@ -1623,35 +1692,43 @@ test('smtp outbound queue', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const pass = await alias.createToken();
   await alias.save();
@@ -1953,35 +2030,43 @@ test('smtp rate limiting', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   const pass = await alias.createToken();
   await alias.save();

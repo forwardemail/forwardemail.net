@@ -9897,5 +9897,7 @@
   "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "Tid till inkorg (\"TTI\") är den tid det tar från det att ett e-postmeddelande skickas tills det levereras till användarens brevlåda.  Vi mäter och jämför offentligt vår leveransbarhet och tidpunkter för både vidarebefordran av e-post och direkt utgående SMTP mellan alla större e-postleverantörer (inklusive Gmail, Outlook/Hotmail, Apple iCloud och Yahoo/AOL).",
   "(US; hosting provider),": "(USA; värdleverantör),",
   "(US; payment processor),": "(USA; betalningsbehandlare),",
-  "(US; payment processor)": "(USA; betalningsbehandlare)"
+  "(US; payment processor)": "(USA; betalningsbehandlare)",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Om detta är markerat och ingen offentlig nyckel anges nedan, kommer vi att försöka utföra en uppslagning <a href=\"%s\" target=\"_blank\">med hjälp av Web Key Directory</a> (&quot;WKD&quot;).",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Oavsett vilken IMAP-server din e-postklient ansluter till vill vi att anslutningen ska läsas från din databas i realtid med 100 % noggrannhet.  Detta görs genom WebSockets."
 }

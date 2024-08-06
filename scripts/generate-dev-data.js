@@ -14,9 +14,9 @@ require('#config/env');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-
+const falso = require('@ngneat/falso');
 const mongoose = require('mongoose');
-const { faker } = require('@faker-js/faker');
+
 const { Inquiries, Users } = require('#models');
 const setupMongoose = require('#helpers/setup-mongoose');
 
@@ -29,9 +29,9 @@ const graceful = new Graceful({
 graceful.listen();
 
 const createFakeInquiry = async () => {
-  const randomEmail = faker.internet.email();
-  const randomPassword = faker.internet.password();
-  const randomUsername = faker.internet.userName();
+  const randomEmail = falso.randEmail();
+  const randomPassword = falso.randPassword();
+  const randomUsername = falso.randUserName();
 
   console.log(`Generating user with email: ${randomEmail}`);
 

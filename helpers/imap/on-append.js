@@ -17,6 +17,7 @@ const { Buffer } = require('node:buffer');
 
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
+const isHTML = require('is-html');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const splitLines = require('split-lines');
@@ -24,6 +25,7 @@ const {
   IMAPConnection
 } = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
+const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -31,6 +33,7 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
+const WKD = require('#helpers/wkd');
 const config = require('#config');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
@@ -140,125 +143,165 @@ async function onAppend(path, flags, date, raw, session, fn) {
         }
       );
 
-    // encrypt message if it is not a Draft and user has a public key
-    if (
-      !flags.includes('\\Draft') && //
-      session.user.alias_has_pgp &&
-      session.user.alias_public_key
-    ) {
-      try {
-        // NOTE: encryptMessage won't encrypt message if it already is
-        raw = await encryptMessage(session.user.alias_public_key, raw);
-        // unset pgp_error_sent_at if it was a date and more than 1h ago
-        Aliases.findOneAndUpdate(
-          {
-            _id: new mongoose.Types.ObjectId(session.user.alias_id),
-            domain: new mongoose.Types.ObjectId(session.user.domain_id),
-            pgp_error_sent_at: {
-              $exists: true,
-              $lte: dayjs().subtract(1, 'hour').toDate()
-            }
-          },
-          {
-            $unset: {
-              pgp_error_sent_at: 1
-            }
+    //
+    // encrypt message if it is not a Draft and user has a public key (either uploaded or via WKD)
+    //
+    if (!flags.includes('\\Draft')) {
+      let publicKey;
+      let isArmored = true;
+
+      if (session.user.alias_has_pgp && session.user.alias_public_key)
+        publicKey = session.user.alias_public_key;
+
+      // attempt to lookup public key using WKD lookup (similar to `helpers/process-email.js`)
+      if (!publicKey && session.user.alias_has_pgp) {
+        try {
+          const wkd = new WKD(this.resolver);
+          // TODO: pending PR in wkd-client package
+          // <https://github.com/openpgpjs/wkd-client/issues/3>
+          // <https://github.com/openpgpjs/wkd-client/pull/4>
+          const binaryKey = await wkd.lookup({
+            email: session.user.username
+          });
+
+          // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
+          // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
+          const str = new TextDecoder().decode(binaryKey);
+          if (str && isHTML(str))
+            throw new Error('Invalid WKD lookup HTML result');
+
+          publicKey = await readKey({
+            binaryKey
+          });
+
+          isArmored = false;
+        } catch (err) {
+          if (
+            err.message === 'fetch failed' ||
+            err.message.includes('Direct WKD lookup failed')
+          ) {
+            this.logger.debug(err);
+          } else {
+            this.logger.fatal(err);
           }
-        )
-          .then()
-          .catch((err) =>
-            this.logger.fatal(err, { path, flags, date, session })
-          );
-      } catch (err) {
-        this.logger.fatal(err, { path, flags, date, session });
-        if (!isCodeBug(err) && !isRetryableError(err)) {
-          // email alias user (only once a day as a reminder) if it was not a code bug
-          const now = new Date();
+        }
+      }
+
+      if (publicKey) {
+        try {
+          // NOTE: encryptMessage won't encrypt message if it already is
+          raw = await encryptMessage(publicKey, raw, isArmored);
+          // unset pgp_error_sent_at if it was a date and more than 1h ago
           Aliases.findOneAndUpdate(
             {
-              $and: [
-                {
-                  _id: new mongoose.Types.ObjectId(session.user.alias_id),
-                  domain: new mongoose.Types.ObjectId(session.user.domain_id)
-                },
-                {
-                  $or: [
-                    {
-                      pgp_error_sent_at: {
-                        $exists: false
-                      }
-                    },
-                    {
-                      pgp_error_sent_at: {
-                        $lte: dayjs().subtract(1, 'day').toDate()
-                      }
-                    }
-                  ]
-                }
-              ]
+              _id: new mongoose.Types.ObjectId(session.user.alias_id),
+              domain: new mongoose.Types.ObjectId(session.user.domain_id),
+              pgp_error_sent_at: {
+                $exists: true,
+                $lte: dayjs().subtract(1, 'hour').toDate()
+              }
             },
             {
-              $set: {
-                pgp_error_sent_at: now
+              $unset: {
+                pgp_error_sent_at: 1
               }
             }
           )
-            .then((alias) => {
-              if (!alias) return;
-              // send email here and if error occurred then unset
-              email({
-                template: 'alert',
-                message: {
-                  to: session.user.owner_full_email,
-                  cc: config.email.message.from,
-                  subject: i18n.translate(
-                    'PGP_ENCRYPTION_ERROR',
-                    session.user.locale
-                  )
-                },
-                locals: {
-                  message: `<pre><code>${JSON.stringify(
-                    parseErr(err),
-                    null,
-                    2
-                  )}</code></pre>`,
-                  locale: session.user.locale
-                }
-              })
-                .then(() => {
-                  Aliases.findOneAndUpdate(alias._id, {
-                    $set: {
-                      pgp_error_sent_at: new Date()
-                    }
-                  })
-                    .then()
-                    .catch((err) =>
-                      this.logger.fatal(err, { path, flags, date, session })
-                    );
-                })
-                .catch((err) => {
-                  this.logger.fatal(err, { path, flags, date, session });
-                  Aliases.findOneAndUpdate(
-                    {
-                      _id: new mongoose.Types.ObjectId(session.user.alias_id),
-                      domain: new mongoose.Types.ObjectId(
-                        session.user.domain_id
-                      ),
-                      pgp_error_sent_at: now
-                    },
-                    {
-                      $unset: {
-                        pgp_error_sent_at: 1
-                      }
-                    }
-                  ).catch((err) =>
-                    this.logger.fatal(err, { path, flags, date, session })
-                  );
-                });
-            })
+            .then()
             .catch((err) =>
               this.logger.fatal(err, { path, flags, date, session })
             );
+        } catch (err) {
+          this.logger.fatal(err, { path, flags, date, session });
+          if (!isCodeBug(err) && !isRetryableError(err)) {
+            // email alias user (only once a day as a reminder) if it was not a code bug
+            const now = new Date();
+            Aliases.findOneAndUpdate(
+              {
+                $and: [
+                  {
+                    _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                    domain: new mongoose.Types.ObjectId(session.user.domain_id)
+                  },
+                  {
+                    $or: [
+                      {
+                        pgp_error_sent_at: {
+                          $exists: false
+                        }
+                      },
+                      {
+                        pgp_error_sent_at: {
+                          $lte: dayjs().subtract(1, 'day').toDate()
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                $set: {
+                  pgp_error_sent_at: now
+                }
+              }
+            )
+              .then((alias) => {
+                if (!alias) return;
+                // send email here and if error occurred then unset
+                email({
+                  template: 'alert',
+                  message: {
+                    to: session.user.owner_full_email,
+                    cc: config.email.message.from,
+                    subject: i18n.translate(
+                      'PGP_ENCRYPTION_ERROR',
+                      session.user.locale
+                    )
+                  },
+                  locals: {
+                    message: `<pre><code>${JSON.stringify(
+                      parseErr(err),
+                      null,
+                      2
+                    )}</code></pre>`,
+                    locale: session.user.locale
+                  }
+                })
+                  .then(() => {
+                    Aliases.findOneAndUpdate(alias._id, {
+                      $set: {
+                        pgp_error_sent_at: new Date()
+                      }
+                    })
+                      .then()
+                      .catch((err) =>
+                        this.logger.fatal(err, { path, flags, date, session })
+                      );
+                  })
+                  .catch((err) => {
+                    this.logger.fatal(err, { path, flags, date, session });
+                    Aliases.findOneAndUpdate(
+                      {
+                        _id: new mongoose.Types.ObjectId(session.user.alias_id),
+                        domain: new mongoose.Types.ObjectId(
+                          session.user.domain_id
+                        ),
+                        pgp_error_sent_at: now
+                      },
+                      {
+                        $unset: {
+                          pgp_error_sent_at: 1
+                        }
+                      }
+                    ).catch((err) =>
+                      this.logger.fatal(err, { path, flags, date, session })
+                    );
+                  });
+              })
+              .catch((err) =>
+                this.logger.fatal(err, { path, flags, date, session })
+              );
+          }
         }
       }
     }

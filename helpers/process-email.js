@@ -8,7 +8,6 @@ const { Buffer } = require('node:buffer');
 const { createPublicKey } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
-const WKD = require('@openpgp/wkd-client');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
@@ -16,11 +15,9 @@ const intoStream = require('into-stream');
 const ip = require('ip');
 const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
-const ms = require('ms');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
-const undici = require('undici');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
@@ -28,7 +25,7 @@ const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
-const TimeoutError = require('./timeout-error');
+const WKD = require('./wkd');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -823,51 +820,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
             // TODO: cache the responses below
             if (!isEncrypted) {
               try {
-                //
-                // NOTE: this uses `fetch` which is OK because
-                //       as of Node v18 it uses Undici fetch under the hood
-                //
-                //       HOWEVER there's no default timeout in this implementation
-                //       <https://github.com/openpgpjs/wkd-client/issues/6>
-                //
-                // <https://github.com/nodejs/undici/issues/421#issuecomment-1491441971>
-                // <https://keys.openpgp.org/about/api#rate-limiting>
-                //
-                // Undici had a core bug with arrayBuffer() memory leak
-                // <https://github.com/nodejs/undici/issues/3435>
-                //
-                const wkd = new WKD();
-                wkd._fetch = async (url) => {
-                  const abortController = new AbortController();
-                  const t = setTimeout(() => {
-                    if (!abortController?.signal?.aborted)
-                      abortController.abort(
-                        new TimeoutError(`${url} took longer than 2s`)
-                      );
-                  }, ms('2s'));
-                  const response = await undici.fetch(url, {
-                    signal: abortController.signal,
-                    dispatcher: new undici.Agent({
-                      headersTimeout: ms('2s'),
-                      connectTimeout: ms('2s'),
-                      bodyTimeout: ms('2s'),
-                      connect: {
-                        lookup(hostname, options, fn) {
-                          resolver
-                            .lookup(hostname, options)
-                            .then((result) => {
-                              fn(null, result?.address, result?.family);
-                            })
-                            .catch((err) => fn(err));
-                        }
-                      }
-                    })
-                  });
-                  clearTimeout(t);
-                  return response;
-                };
-
                 logger.info('address', { address });
+
+                const wkd = new WKD(resolver);
 
                 // TODO: pending PR in wkd-client package
                 // <https://github.com/openpgpjs/wkd-client/issues/3>
@@ -876,7 +831,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   email: address
                 });
 
-                // TODO: this is a temporary fix until the PR above is merged
+                // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
                 // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
                 const str = new TextDecoder().decode(binaryKey);
                 if (str && isHTML(str))
@@ -963,21 +918,21 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   });
                 }
                 /*
-              // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
-              if (
-                !err.message.includes('NotFound') &&
-                !err.message.includes('Gone') &&
-                !isRetryableError(err)
-              )
-                err.isCodeBug = true;
-              if (err.isCodeBug)
-                logger.error(err, {
-                  user: email.user,
-                  email: email._id,
-                  domains: [email.domain],
-                  session: createSession(email)
-                });
-              */
+                // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
+                if (
+                  !err.message.includes('NotFound') &&
+                  !err.message.includes('Gone') &&
+                  !isRetryableError(err)
+                )
+                  err.isCodeBug = true;
+                if (err.isCodeBug)
+                  logger.error(err, {
+                    user: email.user,
+                    email: email._id,
+                    domains: [email.domain],
+                    session: createSession(email)
+                  });
+                */
               }
             }
 

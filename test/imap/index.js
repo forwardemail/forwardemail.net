@@ -30,7 +30,6 @@ const splitLines = require('split-lines');
 const test = require('ava');
 const _ = require('lodash');
 const { ImapFlow } = require('imapflow');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
@@ -53,12 +52,9 @@ const tls = { rejectUnauthorized: false };
 
 client.setMaxListeners(0);
 subscriber.setMaxListeners(0);
+subscriber.channels.setMaxListeners(0);
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
-test.before(utils.defineDomainFactory);
-test.before(utils.definePaymentFactory);
-test.before(utils.defineAliasFactory);
 // TODO: we can remove this and the other in pop3?
 test.before(async () => {
   const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
@@ -82,38 +78,46 @@ test.beforeEach(async (t) => {
   t.context.server = await imap.listen(port);
   t.context.imap = imap;
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   t.context.user = await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver: imap.resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver: imap.resolver,
+      has_smtp: true
+    })
+    .create();
 
   t.context.domain = domain;
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    has_imap: true
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
 
   const pass = await alias.createToken();
   t.context.pass = pass;
@@ -238,36 +242,44 @@ test('prevents domain-wide passwords', async (t) => {
 test('onAppend with private PGP', async (t) => {
   // creates unique user/domain/alias
   // (otherwise would interfere with other tests)
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver: t.context.imap.resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver: t.context.imap.resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    has_imap: true
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
 
   const pass = await alias.createToken();
 
@@ -403,43 +415,52 @@ ZXhhbXBsZQo=
   );
 });
 
-/*
 test('onAppend with public PGP', async (t) => {
   // creates unique user/domain/alias
   // (otherwise would interfere with other tests)
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    // NOTE: this is a known email with openpgp
-    name: 'forwardemail.net',
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver: t.context.imap.resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      // NOTE: this is a known email with openpgp
+      name: 'forwardemail.net',
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver: t.context.imap.resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    // NOTE: this is a known email with openpgp
-    name: 'support',
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      // NOTE: this is a known email with openpgp
+      name: 'support',
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true,
+      has_pgp: true
+    })
+    .create();
 
   const pass = await alias.createToken();
   await alias.save();
@@ -553,7 +574,6 @@ ZXhhbXBsZQo=
     'This is an OpenPGP/MIME encrypted message'
   );
 });
-*/
 
 test('onAppend', async (t) => {
   const { imapFlow, alias, domain } = t.context;
@@ -785,36 +805,44 @@ test('LIST', async (t) => {
 test('onGetQuotaRoot', async (t) => {
   // creates unique user/domain/alias for quota
   // (otherwise would interfere with other tests)
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver: t.context.imap.resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver: t.context.imap.resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    has_imap: true
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
 
   const pass = await alias.createToken();
 

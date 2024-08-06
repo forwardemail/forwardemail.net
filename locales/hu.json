@@ -9897,5 +9897,7 @@
   "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "A bejövő postafiókig eltelt idő (\"TTI\") az az időtartam, amely az e-mail elküldésétől a felhasználó postafiókjába való kézbesítéséig tart.  Nyilvánosan mérjük és összehasonlítjuk az e-mail-továbbítás és a közvetlen kimenő SMTP kézbesítését és időzítését az összes nagyobb e-mail szolgáltatónál (beleértve a Gmailt, az Outlook/Hotmailt, az Apple iCloudot és a Yahoo/AOL-t).",
   "(US; hosting provider),": "(USA; tárhelyszolgáltató),",
   "(US; payment processor),": "(USA; fizetésfeldolgozó),",
-  "(US; payment processor)": "(USA; fizetésfeldolgozó)"
+  "(US; payment processor)": "(USA; fizetésfeldolgozó)",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Ha ez be van jelölve, és alább nem ad meg nyilvános kulcsot, akkor <a href=\"%s\" target=\"_blank\">a Web Key Directory (&quot;WKD&quot;) segítségével</a> megpróbálunk keresést végrehajtani.",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Függetlenül attól, hogy az e-mail kliens melyik IMAP-kiszolgálóhoz csatlakozik, azt szeretnénk, hogy a kapcsolat valós időben, 100%-os pontossággal olvassa be az adatbázisát.  Ez a WebSockets segítségével történik."
 }

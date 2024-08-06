@@ -2,7 +2,7 @@ extends ../../layout
 
 mixin deleteDomain
   if domain.group === 'admin'
-    .card.border-themed.mb-3#delete-domain
+    #delete-domain.card.border-themed.mb-3
       h2.h6.card-header= t("Delete Domain")
       .card-body
         .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.")
@@ -274,7 +274,7 @@ block body
             .alert.alert-secondary.small.text-center
               strong= t("Need to remove this domain?")
               = " "
-              a(href='#delete-domain').alert-link.text-muted
+              a.alert-link.text-muted(href="#delete-domain")
                 = t("Click here to go Delete Domain")
       //- Catch-all Passwords
       if domain.group === 'admin' && !domain.is_global

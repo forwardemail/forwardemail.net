@@ -16,7 +16,6 @@ const ms = require('ms');
 const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 
@@ -35,10 +34,6 @@ client.setMaxListeners(0);
 const resolver = createTangerine(client);
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
-test.before(utils.defineDomainFactory);
-test.before(utils.definePaymentFactory);
-test.before(utils.defineAliasFactory);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
 
@@ -102,10 +97,12 @@ test('creates log', async (t) => {
 });
 
 test('creates domain', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
   const res = await t.context.api
     .post('/v1/domains')
     .auth(user[config.userFields.apiToken])
@@ -117,16 +114,20 @@ test('creates domain', async (t) => {
 });
 
 test('creates alias with global catch-all', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
   const res = await t.context.api
     .post(`/v1/domains/${domain.name}/aliases`)
     .auth(user[config.userFields.apiToken])
@@ -139,17 +140,21 @@ test('creates alias with global catch-all', async (t) => {
 });
 
 test('creates alias and generates password', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
   const res = await t.context.api
     .post(`/v1/domains/${domain.name}/aliases`)
@@ -175,16 +180,20 @@ test('creates alias and generates password', async (t) => {
 });
 
 test('creates alias with multiple recipients', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
   const recipients = ['foo@bar.com', 'beep@boop.com', 'baz@baz.com'];
   const res = await t.context.api
     .post(`/v1/domains/${domain.name}/aliases`)
@@ -199,35 +208,43 @@ test('creates alias with multiple recipients', async (t) => {
 });
 
 test('creates email', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   //
   // create email
@@ -483,35 +500,43 @@ Test`.trim()
 });
 
 test('5+ day email bounce', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   // TODO: write another test that leverages date in future
 
@@ -632,35 +657,43 @@ test('5+ day email bounce', async (t) => {
 });
 
 test('smtp outbound spam block detection', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   //
   // create email
@@ -898,20 +931,24 @@ test('smtp outbound spam block detection', async (t) => {
 });
 
 test('create domain without catchall', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
@@ -971,35 +1008,43 @@ test('create domain without catchall', async (t) => {
 });
 
 test('lists emails', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   let id;
   {
@@ -1034,35 +1079,43 @@ test('lists emails', async (t) => {
 });
 
 test('retrieves email', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   let id;
   {
@@ -1097,35 +1150,43 @@ test('retrieves email', async (t) => {
 });
 
 test('removes email', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   let id;
   {
@@ -1159,38 +1220,46 @@ test('removes email', async (t) => {
 });
 
 test('smtp email blocklist', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   await user.save();
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
 
   domain.smtp_emails_blocked.push('foo@foo.com', 'beep@beep.com');
   await domain.save();
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email]
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
 
   //
   // create email
@@ -1370,10 +1439,12 @@ test('smtp email blocklist', async (t) => {
 });
 
 test('error_code_if_disabled', async (t) => {
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
   let domain;
   {

@@ -202,7 +202,10 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       span.text-muted= t("(optional)")
       = " "
       span.badge.badge-success= t("New")
-    p.form-text.small.text-black.text-themed-50!= t('Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you\'d like double the level of encryption, then if you have <span class="notranslate">IMAP/POP3/CalDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.')
+    p.form-text.small.text-black.text-themed-50
+      != t('Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you\'d like double the level of encryption, then if you have <span class="notranslate">IMAP/POP3/CalDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.')
+      = " "
+      != t('If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href="%s" target="_blank">using Web Key Directory</a> ("WKD").', l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"))
   label(for="textarea-public-key")
     = t('End-to-end Encryption ("E2EE")')
     = " "

@@ -4,26 +4,25 @@
  */
 
 const API = require('@ladjs/api');
+const BaseFactory = require('@zainundin/mongoose-factory').default;
 const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
 const _ = require('lodash');
+const falso = require('@ngneat/falso');
 const getPort = require('get-port');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const sharedConfig = require('@ladjs/shared-config');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const { factory, MongooseAdapter } = require('factory-girl');
-
-factory.setAdapter(new MongooseAdapter());
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
 const apiConfig = require('#config/api');
-const config = require('#config');
 const logger = require('#helpers/logger');
 const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
+
 const { Users, Domains, Payments, Aliases } = require('#models');
 
 //
@@ -121,40 +120,57 @@ exports.teardownMongoose = async () => {
   );
 };
 
-//
-// factory definitions
-// <https://github.com/simonexmachina/factory-girl>
-//
-exports.defineUserFactory = async () => {
-  factory.define('user', Users, (buildOptions) => {
-    const user = {
-      email: factory.sequence('Users.email', (n) => `test${n}@example.com`),
-      password: buildOptions.password || '!@K#NLK!#N'
+class UserFactory extends BaseFactory {
+  constructor() {
+    super(Users);
+  }
+
+  async definition() {
+    return {
+      email: falso.randEmail({ provider: 'example', suffic: 'com' }),
+      password: '!@K#NLK!#N' // TODO: use `falso.randPassword()`
     };
+  }
+}
+exports.userFactory = new UserFactory();
 
-    if (buildOptions.resetToken) {
-      user[config.userFields.resetToken] = buildOptions.resetToken;
-      user[config.userFields.resetTokenExpiresAt] = new Date(
-        Date.now() + 10000
-      );
-    }
+class DomainFactory extends BaseFactory {
+  constructor() {
+    super(Domains);
+  }
 
-    return user;
-  });
-};
+  async definition() {
+    return {
+      name: falso.randDomainName()
+    };
+  }
+}
+exports.domainFactory = new DomainFactory();
 
-exports.defineDomainFactory = () => {
-  factory.define('domain', Domains, {
-    name: factory.sequence('Domains.name', (n) => `example-${n}.com`)
-  });
-};
+class PaymentFactory extends BaseFactory {
+  constructor() {
+    super(Payments);
+  }
 
-exports.definePaymentFactory = () => {
-  factory.define('payment', Payments, {});
-};
+  async definition() {
+    return {};
+  }
+}
+exports.paymentFactory = new PaymentFactory();
 
-exports.defineAliasFactory = () => {
-  factory.define('alias', Aliases, {
-    name: factory.sequence('Aliases.name', (n) => `foo-${n}`)
-  });
-};
+//
+// <https://github.com/simonexmachina/factory-girl/issues/157>
+// <https://github.com/thiagomini/factory-girl-ts/issues/34>
+//
+class AliasFactory extends BaseFactory {
+  constructor() {
+    super(Aliases);
+  }
+
+  async definition() {
+    return {
+      name: falso.randFirstName()
+    };
+  }
+}
+exports.aliasFactory = new AliasFactory();

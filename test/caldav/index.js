@@ -15,7 +15,6 @@ const tsdav = require('tsdav');
 const getPort = require('get-port');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');
@@ -59,10 +58,6 @@ function extractVEvent(str) {
 }
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
-test.before(utils.defineDomainFactory);
-test.before(utils.definePaymentFactory);
-test.before(utils.defineAliasFactory);
 test.after.always(utils.teardownMongoose);
 
 // TODO: `app.close()` for CalDAV server after each
@@ -80,6 +75,7 @@ test.beforeEach(async (t) => {
   );
   client.setMaxListeners(0);
   subscriber.setMaxListeners(0);
+  subscriber.channels.setMaxListeners(0);
 
   t.context.client = client;
 
@@ -108,39 +104,47 @@ test.beforeEach(async (t) => {
 
   t.context.serverUrl = `http://${IP_ADDRESS}:${port}/`;
 
-  const user = await factory.create('user', {
-    plan: 'enhanced_protection',
-    [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
-  });
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
 
-  await factory.create('payment', {
-    user: user._id,
-    amount: 300,
-    invoice_at: dayjs().startOf('day').toDate(),
-    method: 'free_beta_program',
-    duration: ms('30d'),
-    plan: user.plan,
-    kind: 'one-time'
-  });
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
 
   t.context.user = await user.save();
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await factory.create('domain', {
-    members: [{ user: user._id, group: 'admin' }],
-    plan: user.plan,
-    resolver,
-    has_smtp: true
-  });
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
   t.context.domain = domain;
 
-  const alias = await factory.create('alias', {
-    user: user._id,
-    domain: domain._id,
-    recipients: [user.email],
-    has_imap: true
-  });
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email],
+      has_imap: true
+    })
+    .create();
 
   const pass = await alias.createToken();
   t.context.pass = pass;

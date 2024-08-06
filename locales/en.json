@@ -9627,5 +9627,10 @@
   "is detected).": "is detected).",
   "(US; hosting provider),": "(US; hosting provider),",
   "(US; payment processor),": "(US; payment processor),",
-  "(US; payment processor)": "(US; payment processor)"
+  "(US; payment processor)": "(US; payment processor)",
+  "Enable <span class=\"notranslate\">IMAP/POP3/CalDAV</span> for <span class=\"notranslate\">%s</span>": "Enable <span class=\"notranslate\">IMAP/POP3/CalDAV</span> for <span class=\"notranslate\">%s</span>",
+  "We detected a login to our <span class=\"notranslate\">IMAP/POP3/CalDAV</span> servers by <strong class=\"notranslate text-monospace\">%s</strong>, however this feature is not yet enabled on the alias. Please <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">edit your alias</a> and enable IMAP to receive mail for <strong class=\"text-monospace notranslate\">%s</strong>.": "We detected a login to our <span class=\"notranslate\">IMAP/POP3/CalDAV</span> servers by <strong class=\"notranslate text-monospace\">%s</strong>, however this feature is not yet enabled on the alias. Please <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-weight-bold\" href=\"%s\">edit your alias</a> and enable IMAP to receive mail for <strong class=\"text-monospace notranslate\">%s</strong>.",
+  "An error occurred with OpenPGP encryption": "An error occurred with OpenPGP encryption",
+  "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").",
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets."
 }

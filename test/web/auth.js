@@ -8,20 +8,19 @@ const util = require('node:util');
 const cryptoRandomString = require('crypto-random-string');
 const test = require('ava');
 // const { request, errors } = require('undici');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 
+const config = require('#config');
 const phrases = require('#config/phrases');
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupWebServer);
 
 test('creates new user', async (t) => {
   const { web } = t.context;
-  const user = await factory.build('user');
+  const user = await utils.userFactory.make();
 
   const res = await web.post('/en/register').send({
     email: user.email,
@@ -82,7 +81,7 @@ test('fails registering with easy password', async (t) => {
 
 test('successfully registers with strong password', async (t) => {
   const { web } = t.context;
-  const user = await factory.build('user');
+  const user = await utils.userFactory.make();
 
   const res = await web.post('/en/register').send({
     email: user.email,
@@ -122,7 +121,7 @@ test('fails registering invalid email', async (t) => {
 
 test('if user exists then try to log them in if they were accidentally on the registration page', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user');
+  const user = await utils.userFactory.create();
 
   const res = await web.post('/en/register').send({
     email: user.email,
@@ -139,7 +138,7 @@ test('if user exists then try to log them in if they were accidentally on the re
 test('allows password reset for valid email (HTML)', async (t) => {
   const { web } = t.context;
 
-  const user = await factory.create('user');
+  const user = await utils.userFactory.make();
 
   const res = await web
     .post('/en/forgot-password')
@@ -153,7 +152,7 @@ test('allows password reset for valid email (HTML)', async (t) => {
 test('allows password reset for valid email (JSON)', async (t) => {
   const { web } = t.context;
 
-  const user = await factory.create('user');
+  const user = await utils.userFactory.make();
 
   const res = await web.post('/en/forgot-password').send({ email: user.email });
 
@@ -163,7 +162,12 @@ test('allows password reset for valid email (JSON)', async (t) => {
 
 test('resets password with valid email and token (HTML)', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user', {}, { resetToken: 'token' });
+  const user = await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const { email } = user;
   const password = '!@K#NLK!#N';
 
@@ -178,7 +182,12 @@ test('resets password with valid email and token (HTML)', async (t) => {
 
 test('resets password with valid email and token (JSON)', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user', {}, { resetToken: 'token' });
+  const user = await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const { email } = user;
   const password = '!@K#NLK!#N';
 
@@ -205,7 +214,12 @@ test('fails resetting password for non-existent user', async (t) => {
 
 test('fails resetting password with invalid reset token', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user', {}, { resetToken: 'token' });
+  const user = await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const { email } = user;
   const password = '!@K#NLK!#N';
 
@@ -219,7 +233,12 @@ test('fails resetting password with invalid reset token', async (t) => {
 
 test('fails resetting password with missing new password', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user', {}, { resetToken: 'token' });
+  const user = await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const { email } = user;
 
   const res = await web.post('/en/reset-password/token').send({ email });
@@ -230,7 +249,12 @@ test('fails resetting password with missing new password', async (t) => {
 
 test('fails resetting password with invalid email', async (t) => {
   const { web } = t.context;
-  await factory.create('user', {}, { resetToken: 'token' });
+  await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
 
   const res = await web
     .post('/en/reset-password/token')
@@ -242,7 +266,12 @@ test('fails resetting password with invalid email', async (t) => {
 
 test('fails resetting password with invalid email + reset token match', async (t) => {
   const { web } = t.context;
-  await factory.create('user', {}, { resetToken: 'token' });
+  await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const password = '!@K#NLK!#N';
 
   const res = await web
@@ -255,7 +284,12 @@ test('fails resetting password with invalid email + reset token match', async (t
 
 test('fails resetting password if new password is too weak', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user', {}, { resetToken: 'token' });
+  const user = await utils.userFactory
+    .withState({
+      [config.userFields.resetToken]: 'token',
+      [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
+    })
+    .create();
   const { email } = user;
 
   const res = await web
@@ -271,7 +305,7 @@ test('fails resetting password if new password is too weak', async (t) => {
 
 test('fails resetting password if reset was already tried in the last 30 mins', async (t) => {
   const { web } = t.context;
-  const user = await factory.create('user');
+  const user = await utils.userFactory.create();
   const { email } = user;
 
   await web.post('/en/forgot-password').send({ email });

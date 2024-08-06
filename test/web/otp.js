@@ -7,7 +7,6 @@ const crypto = require('node:crypto');
 
 const test = require('ava');
 const { authenticator } = require('otplib');
-const { factory } = require('factory-girl');
 
 const utils = require('../utils');
 const config = require('#config');
@@ -24,14 +23,13 @@ authenticator.options = {
 };
 
 test.before(utils.setupMongoose);
-test.before(utils.defineUserFactory);
 test.after.always(utils.teardownMongoose);
 
 test.beforeEach(async (t) => {
   // set password
   t.context.password = '!@K#NLK!#N';
   // create user
-  let user = await factory.build('user');
+  let user = await utils.userFactory.make();
   // must register in order for authentication to work
   user = await Users.register(user, t.context.password);
   // setup user for otp

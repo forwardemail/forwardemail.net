@@ -37,7 +37,6 @@ test('correctly parses TXT records', async (t) => {
 
   {
     const records = await resolver.resolveTxt('test.com');
-    t.log('records', records);
     t.deepEqual(records, [
       [`forward-email=alias:https://requestbin.com/r/en8pfhdgcculn`]
     ]);
@@ -51,7 +50,6 @@ test('correctly parses TXT records', async (t) => {
       resolver,
       false // purgeCache = false
     );
-    t.log('records', records);
     t.is(records.hasRegex, false);
   }
 });

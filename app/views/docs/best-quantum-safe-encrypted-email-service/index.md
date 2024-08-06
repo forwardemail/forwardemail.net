@@ -143,21 +143,13 @@ We have fine-tuned SQLite with the following [PRAGMA](https://www.sqlite.org/pra
 
 ### Concurrency
 
-> **tldr;** We use `rclone` and `WebSocket` for concurrent reads and writes to your encrypted SQLite mailboxes.
+> **tldr;** We use `WebSocket` for concurrent reads and writes to your encrypted SQLite mailboxes.
 
 #### Reads
 
 Your email client on your phone may resolve `imap.forwardemail.net` to one of our Digital Ocean IP addresses – and your desktop client may resolve a separate IP from a different [provider](#providers) altogether.
 
-Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy:
-
-* This is accomplished by using `rclone` with `--vfs-cache-mode off` (the default).
-
-* Instead of using local disk cache, the cache is read directly from the remote mount (your database) in real-time.
-
-* In the event that the local file cannot be found, this indicates that `rclone` failed to mount or has an issue.  In this case we use a `WebSocket` fallback for reads (which slightly decreases performance, but still maintains the integrity of the service).
-
-* Each of our servers is configured to mount with consistency and alerts us in real-time of any errors.
+Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.
 
 #### Writes
 

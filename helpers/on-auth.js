@@ -579,7 +579,7 @@ async function onAuth(auth, session, fn) {
       // NOTE: these fields will refresh in `refreshSession` helper
       //
       // pgp support
-      ...(alias && alias.has_pgp && alias.public_key
+      ...(alias && alias.has_pgp
         ? {
             alias_has_pgp: alias.has_pgp,
             alias_public_key: alias.public_key
