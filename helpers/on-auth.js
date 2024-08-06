@@ -461,6 +461,11 @@ async function onAuth(auth, session, fn) {
       return m.group === 'admin' && m?.user?.group === 'admin';
     });
 
+    //
+    // NOTE: this connection rate limiting is ONLY applied for IMAP and SMTP servers
+    //       (see `imap-notifier.js`'s releaseConnection function)
+    //       (and `onClose` handler of SMTP)
+    //
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
     //
@@ -470,8 +475,9 @@ async function onAuth(auth, session, fn) {
     //
     if (
       this?.constructor?.name !== 'CalDAV' &&
+      this?.constructor?.name !== 'POP3' &&
       this.server &&
-      !(this.server instanceof POP3Server)
+      !(this.server instanceof POP3Server) // not needed but keeping here anyways
     ) {
       const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
       const count = await this.client.incrby(key, 0);

@@ -9624,5 +9624,8 @@
   "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).": "status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).",
   "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving": "Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving",
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of",
-  "is detected).": "is detected)."
+  "is detected).": "is detected).",
+  "(US; hosting provider),": "(US; hosting provider),",
+  "(US; payment processor),": "(US; payment processor),",
+  "(US; payment processor)": "(US; payment processor)"
 }

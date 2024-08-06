@@ -17,7 +17,6 @@ const { EventEmitter } = require('node:events');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const _ = require('lodash');
-const ms = require('ms');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
 
@@ -348,39 +347,28 @@ class IMAPNotifier extends EventEmitter {
 
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/lib/imap-notifier.js#L368>
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/imap-core/lib/imap-connection.js#L364C46-L365>
-  releaseConnection(data, fn) {
+  async releaseConnection(data, fn) {
+    if (!data?.session) return fn(null, true);
+
+    // cleanup `WeakMap` instance
+    if (this.connectionSessions.has(data.session))
+      this.connectionSessions.delete(data.session);
+
     // ignore unauthenticated sessions
-    if (!data?.session?.user?.alias_id) return fn(null, true);
+    if (!data?.session?.user?.alias_id && !data?.session?.user?.domain_id)
+      return fn(null, true);
 
-    /*
-    // TODO: this should signal to sqlite to cleanup
-    //       via parse-payload function sent over websocket
-    // close the db connection
-    if (
-      data?.session?.db?.pragma === 'function' &&
-      data?.session?.db?.close === 'function'
-    ) {
-      try {
-        data.session.db.pragma('analysis_limit=400');
-        data.session.db.pragma('optimize');
-        data.session.db.close();
-      } catch (err) {
-        logger.fatal(err, { session: data.session });
-      }
-    }
-    */
-
-    // decrease # connections for this alias and domain
+    // decrease # connections for this alias (or domain if using catch-all)
     const key = `connections_${config.env}:${
       data.session.user.alias_id || data.session.user.domain_id
     }`;
-    this.publisher
-      .pipeline()
-      .decr(key)
-      .pexpire(key, ms('1h'))
-      .exec()
-      .then()
-      .catch((err) => logger.fatal(err));
+
+    try {
+      const count = await this.publisher.incrby(key, 0);
+      if (count > 0) await this.publisher.decr(key);
+    } catch (err) {
+      logger.fatal(err);
+    }
 
     fn(null, true);
   }

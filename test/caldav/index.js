@@ -80,8 +80,6 @@ test.beforeEach(async (t) => {
   );
   client.setMaxListeners(0);
   subscriber.setMaxListeners(0);
-  await client.flushall();
-  await subscriber.flushall();
 
   t.context.client = client;
 

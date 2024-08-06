@@ -7911,5 +7911,8 @@
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "תוך פחות מ-5 דקות), ואז השולח יוחנק למשך יום אחד.  שים לב ששרתי דואר סטנדרטיים ומוגדרים כהלכה צריכים לסגת ולנסות שוב (ולא ספאם בכוח גס אם קוד שגיאה רך של ניסיון חוזר",
   "is detected).": "זוהה).",
   "Time to Inbox Monitoring & Deliverability": "זמן לניטור ומסירה לתיבת הדואר הנכנס",
-  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "זמן לתיבת הדואר הנכנס (\"TTI\") הוא משך הזמן שלוקח מרגע שליחת האימייל ועד שהוא נשלח לתיבת הדואר של המשתמש.  אנו מודדים ומשווים באופן פומבי את יכולת המסירה והתזמונים שלנו הן עבור העברת אימייל והן עבור SMTP יוצא ישיר בכל ספקי הדוא\"ל הגדולים (כולל Gmail, Outlook/Hotmail, Apple iCloud ו-Yahoo/AOL)."
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "זמן לתיבת הדואר הנכנס (\"TTI\") הוא משך הזמן שלוקח מרגע שליחת האימייל ועד שהוא נשלח לתיבת הדואר של המשתמש.  אנו מודדים ומשווים באופן פומבי את יכולת המסירה והתזמונים שלנו הן עבור העברת אימייל והן עבור SMTP יוצא ישיר בכל ספקי הדוא\"ל הגדולים (כולל Gmail, Outlook/Hotmail, Apple iCloud ו-Yahoo/AOL).",
+  "(US; hosting provider),": "(ארה\"ב; ספק אירוח),",
+  "(US; payment processor),": "(ארה\"ב; מעבד תשלומים),",
+  "(US; payment processor)": "(ארה\"ב; מעבד תשלומים)"
 }

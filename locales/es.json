@@ -4659,7 +4659,7 @@
   "or a": "o un",
   "file:": "archivo:",
   "In this example, we use the": "En este ejemplo, usamos el",
-  "Nodemailer": "correo de nodo",
+  "Nodemailer": "Nodemailer",
   "library and its official sponsor": "biblioteca y su patrocinador oficial",
   "to send and preview outbound mail.": "para enviar y obtener una vista previa del correo saliente.",
   "You will need to": "Necesitaras",
@@ -9892,5 +9892,8 @@
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "en < 5 minutos), el remitente se limitará durante 1 día.  Tenga en cuenta que los servidores de correo estándar de la industria y configurados correctamente deben retroceder y reintentar (y no enviar spam por fuerza bruta si aparece un código de error de reintento suave de",
   "is detected).": "se detecta).",
   "Time to Inbox Monitoring & Deliverability": "Monitoreo y capacidad de entrega del tiempo de recepción de la bandeja de entrada",
-  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "El tiempo hasta la bandeja de entrada (\"TTI\") es el tiempo que transcurre desde que se envía un correo electrónico hasta que se entrega al buzón del usuario.  Medimos y comparamos públicamente nuestra capacidad de entrega y tiempos tanto para el reenvío de correo electrónico como para SMTP saliente directo en todos los principales proveedores de correo electrónico (incluidos Gmail, Outlook/Hotmail, Apple iCloud y Yahoo/AOL)."
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "El tiempo hasta la bandeja de entrada (\"TTI\") es el tiempo que transcurre desde que se envía un correo electrónico hasta que se entrega al buzón del usuario.  Medimos y comparamos públicamente nuestra capacidad de entrega y tiempos tanto para el reenvío de correo electrónico como para SMTP saliente directo en todos los principales proveedores de correo electrónico (incluidos Gmail, Outlook/Hotmail, Apple iCloud y Yahoo/AOL).",
+  "(US; hosting provider),": "(EE. UU.; proveedor de hosting),",
+  "(US; payment processor),": "(EE. UU.; procesador de pagos),",
+  "(US; payment processor)": "(EE. UU.; procesador de pagos)"
 }

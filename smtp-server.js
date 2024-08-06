@@ -20,20 +20,19 @@ const smtp = require('#helpers/smtp');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
-function onClose(session) {
+async function onClose(session) {
   // ignore unauthenticated sessions
-  if (!session?.user?.alias_id) return;
+  if (!session?.user?.alias_id && !session?.user?.domain_id) return;
   // decrease # connections for this alias (or domain if using catch-all)
-  const key = `connections_${config.env}:${
-    session.user.alias_id || session.user.domain_id
-  }`;
-  this.client
-    .pipeline()
-    .decr(key)
-    .pexpire(key, ms('1h'))
-    .exec()
-    .then()
-    .catch((err) => logger.fatal(err));
+  try {
+    const key = `connections_${config.env}:${
+      session.user.alias_id || session.user.domain_id
+    }`;
+    const count = await this.client.incrby(key, 0);
+    if (count > 0) await this.client.decr(key);
+  } catch (err) {
+    logger.fatal(err);
+  }
 }
 
 class SMTP {

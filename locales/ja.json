@@ -9894,5 +9894,8 @@
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "5分未満の場合、送信者は1日間制限されます。業界標準の適切に構成されたメールサーバーは、バックオフして再試行する必要があります（ソフト再試行エラーコードが",
   "is detected).": "が検出されました。",
   "Time to Inbox Monitoring & Deliverability": "受信トレイの監視と配信までの時間",
-  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "受信トレイまでの時間 (「TTI」) とは、電子メールが送信されてからユーザーのメールボックスに配信されるまでにかかる時間です。当社では、すべての主要な電子メール プロバイダー (Gmail、Outlook/Hotmail、Apple iCloud、Yahoo/AOL を含む) における電子メール転送と直接送信 SMTP の両方の配信性とタイミングを公に測定し、比較しています。"
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "受信トレイまでの時間 (「TTI」) とは、電子メールが送信されてからユーザーのメールボックスに配信されるまでにかかる時間です。当社では、すべての主要な電子メール プロバイダー (Gmail、Outlook/Hotmail、Apple iCloud、Yahoo/AOL を含む) における電子メール転送と直接送信 SMTP の両方の配信性とタイミングを公に測定し、比較しています。",
+  "(US; hosting provider),": "（米国、ホスティングプロバイダー）、",
+  "(US; payment processor),": "（米国、決済処理業者）、",
+  "(US; payment processor)": "（米国、決済処理業者）"
 }

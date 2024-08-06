@@ -101,6 +101,8 @@ Test`.trim()
 
   t.is(err.responseCode, 538);
   t.is(err.response, '538 Error: Must issue a STARTTLS command first');
+
+  await smtp.close();
 });
 
 test('starttls disabled for secure auth', async (t) => {
@@ -191,6 +193,8 @@ Test`.trim()
       '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
+
+  await smtp.close();
 });
 
 test('auth with catch-all pass', async (t) => {
@@ -349,6 +353,8 @@ Content-Transfer-Encoding: 7bit
 Test`.trim()
     })
   );
+
+  await smtp.close();
 });
 
 test('auth with pass as alias', async (t) => {
@@ -548,6 +554,8 @@ Test`.trim()
     t.is(err.responseCode, 550);
     t.regex(err.message, /From header must be equal to/);
   }
+
+  await smtp.close();
 });
 
 test('auth with catch-all password when alias exists too', async (t) => {
@@ -763,6 +771,8 @@ Test`.trim()
       client
     })
   );
+
+  await smtp.close();
 });
 
 test('automatic openpgp support', async (t) => {
@@ -1030,6 +1040,8 @@ test('smtp outbound auth', async (t) => {
     });
     connection.once('end', () => resolve());
   });
+
+  await smtp.close();
 });
 
 test(`IDN domain`, async (t) => {
@@ -1931,6 +1943,8 @@ Test`.trim()
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted.sort(), email.envelope.to);
   t.deepEqual(email.rejectedErrors, []);
+
+  await smtp.close();
 });
 
 test('smtp rate limiting', async (t) => {
@@ -2128,4 +2142,6 @@ Test`.trim()
       t.deepEqual(info.accepted, ['test@foo.com']);
     }
   }
+
+  await smtp.close();
 });

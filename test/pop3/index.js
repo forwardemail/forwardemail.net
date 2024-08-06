@@ -14,7 +14,7 @@
  */
 
 const Pop3Command = require('node-pop3');
-const Redis = require('@ladjs/redis');
+const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
 const ip = require('ip');
@@ -49,11 +49,6 @@ test.before(utils.defineUserFactory);
 test.before(utils.defineDomainFactory);
 test.before(utils.definePaymentFactory);
 test.before(utils.defineAliasFactory);
-//
-// NOTE: we don't want to `client.flushall()`
-//       because it will remove caching from mandarin
-//       (and translations will need run from scratch again)
-//
 test.before(async () => {
   const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
   await smtpLimitKeys.map((k) => client.del(k));

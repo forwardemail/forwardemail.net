@@ -16,11 +16,8 @@
 const { Buffer } = require('node:buffer');
 const { createHash, randomUUID } = require('node:crypto');
 
-// NOTE: wait command not supported by `ioredis-mock`
-// <https://github.com/stipsan/ioredis-mock/issues/1327>
-// const RedisMock = require('ioredis-mock');
 const Axe = require('axe');
-const Redis = require('@ladjs/redis');
+const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
 const getStream = require('get-stream');
@@ -62,11 +59,7 @@ test.before(utils.defineUserFactory);
 test.before(utils.defineDomainFactory);
 test.before(utils.definePaymentFactory);
 test.before(utils.defineAliasFactory);
-//
-// NOTE: we don't want to `client.flushall()`
-//       because it will remove caching from mandarin
-//       (and translations will need run from scratch again)
-//
+// TODO: we can remove this and the other in pop3?
 test.before(async () => {
   const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
   await smtpLimitKeys.map((k) => client.del(k));
@@ -179,6 +172,10 @@ test.beforeEach(async (t) => {
 
   await imapFlow.connect();
 
+  const key = `connections_${config.env}:${t.context.alias.id}`;
+  const count = await client.incrby(key, 0);
+  t.is(count, 1);
+
   t.context.imapFlow = imapFlow;
 
   // create inbox
@@ -192,8 +189,21 @@ test.beforeEach(async (t) => {
 });
 
 test.afterEach(async (t) => {
+  const key = `connections_${config.env}:${t.context.alias.id}`;
+  const pttlBefore = await client.pttl(key);
+  t.true(pttlBefore > 0);
   await t.context.imapFlow.logout();
   await t.context.imap.close();
+  await pWaitFor(
+    async () => {
+      const count = await client.incrby(key, 0);
+      return count === 0;
+    },
+    { timeout: ms('3s') }
+  );
+  const pttlAfter = await client.pttl(key);
+  t.true(pttlAfter > 0);
+  t.true(pttlAfter < pttlBefore);
 });
 
 test('prevents domain-wide passwords', async (t) => {

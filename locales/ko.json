@@ -9894,5 +9894,8 @@
   "in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of": "5분 이내), 발신자는 1일 동안 제한됩니다.  업계 표준 및 적절하게 구성된 메일 서버는 백오프하고 재시도해야 하며 소프트 재시도 오류 코드가 다음과 같은 경우 무차별 스팸을 보내서는 안 됩니다.",
   "is detected).": "감지됩니다).",
   "Time to Inbox Monitoring & Deliverability": "받은 편지함까지의 시간 모니터링 및 배달 가능성",
-  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "받은 편지함까지 소요되는 시간(\"TTI\")은 이메일이 전송된 시점부터 사용자의 편지함에 배달될 때까지 걸리는 시간입니다.  우리는 모든 주요 이메일 제공업체(Gmail, Outlook/Hotmail, Apple iCloud, Yahoo/AOL 포함)에 걸쳐 이메일 전달 및 직접 아웃바운드 SMTP에 대한 전달 가능성과 타이밍을 공개적으로 측정하고 비교합니다."
+  "Time to inbox (\"TTI\") is the duration it takes from when an email is sent until it is delivered to the user's mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).": "받은 편지함까지 소요되는 시간(\"TTI\")은 이메일이 전송된 시점부터 사용자의 편지함에 배달될 때까지 걸리는 시간입니다.  우리는 모든 주요 이메일 제공업체(Gmail, Outlook/Hotmail, Apple iCloud, Yahoo/AOL 포함)에 걸쳐 이메일 전달 및 직접 아웃바운드 SMTP에 대한 전달 가능성과 타이밍을 공개적으로 측정하고 비교합니다.",
+  "(US; hosting provider),": "(미국, 호스팅 제공업체),",
+  "(US; payment processor),": "(미국; 결제 처리자),",
+  "(US; payment processor)": "(미국; 결제 처리자)"
 }

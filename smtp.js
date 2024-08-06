@@ -12,8 +12,10 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
+const delay = require('delay');
 const ip = require('ip');
 const mongoose = require('mongoose');
+const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const SMTP = require('./smtp-server');
@@ -30,6 +32,13 @@ const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [smtp.server],
   redisClients: [client],
+  customHandlers: [
+    async () => {
+      // wait for connection rate limiter to finish
+      // (since `onClose` is run in the background)
+      await delay(ms('3s'));
+    }
+  ],
   logger
 });
 graceful.listen();
