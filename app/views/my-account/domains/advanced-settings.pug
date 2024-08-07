@@ -478,7 +478,7 @@ block body
                   input#webhook-key.form-control(
                     type="text",
                     readonly,
-                    value=decrypt(domain.webhook_key)
+                    value=domain.webhook_key ? decrypt(domain.webhook_key) : ''
                   )
                   .input-group-append
                     button.btn.btn-primary(
