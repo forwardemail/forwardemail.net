@@ -86,11 +86,12 @@ async function settings(ctx) {
           hasPhishingProtection = domain.has_phishing_protection;
           hasExecutableProtection = domain.has_executable_protection;
           hasVirusProtection = domain.has_virus_protection;
+          webhookKey = domain.webhook_key;
           //
           // if domain does not yet have a webhook key then create one for it
           // `crypto.randomBytes(16).toString('hex')` yields 32 bytes
           //
-          if (!domain.webhook_key) {
+          if (!webhookKey) {
             // SHA256 HMAC should not exceed 512 bytes for key length
             // <https://security.stackexchange.com/a/96176>
             webhookKey = encrypt(crypto.randomBytes(16).toString('hex'));
