@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(USA; zpracovatel plateb),",
   "(US; payment processor)": "(USA; zpracovatel plateb)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Pokud je toto zaškrtnuto a níže není zadán žádný veřejný klíč, pokusíme se provést vyhledávání <a href=\"%s\" target=\"_blank\">pomocí Web Key Directory</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Bez ohledu na to, ke kterému serveru IMAP se váš e-mailový klient připojuje, chceme, aby připojení načítalo z vaší databáze v reálném čase se 100% přesností.  To se provádí prostřednictvím WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Bez ohledu na to, ke kterému serveru IMAP se váš e-mailový klient připojuje, chceme, aby připojení načítalo z vaší databáze v reálném čase se 100% přesností.  To se provádí prostřednictvím WebSockets.",
+  "Webhook Signature Payload Verification Key": "Ověřovací klíč pro podpis podpisu webhooku",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Potřebujete ověřit, že <a href=\"%s\" target=\"_blank\">webhooky</a> odesíláme my?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Můžete zkontrolovat, že IP adresa vzdáleného serveru je jedna z našich uvedených na naší stránce veřejných <a href=\"%s\" target=\"_blank\">IP adres</a> .",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Navíc můžete tento klíč webhooku použít také k porovnání hlavičky <code>X-Webhook-Signature</code> s vypočteným tělem užitečného zatížení.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Příklad naleznete <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">v tomto příspěvku Stack Overflow</a> .",
+  "Keep your webhook key secure and never share it publicly": "Udržujte svůj webhook klíč v bezpečí a nikdy jej nesdílejte veřejně",
+  "Reset Key": "Resetovací klíč",
+  "You can also check the IP against against": "Můžete také zkontrolovat IP proti",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Pokud máte placený tarif, přejděte na Můj účet → Domény → Nastavení → Ověřovací klíč podpisu webhooku pro ověření obsahu webhooku.",
+  "You can rotate this key at anytime for security reasons.": "Z bezpečnostních důvodů můžete tento klíč kdykoli otočit.",
+  "Calculate and compare the": "Vypočítejte a porovnejte",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "hodnotu z našeho požadavku webhooku s vypočtenou hodnotou těla pomocí tohoto klíče.  Příklad, jak to udělat, je k dispozici na",
+  "this Stack Overflow post": "tento příspěvek Stack Overflow",
+  "See the discussion at": "Podívejte se na diskusi na"
 }

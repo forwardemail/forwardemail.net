@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(USA; fizetésfeldolgozó),",
   "(US; payment processor)": "(USA; fizetésfeldolgozó)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Ha ez be van jelölve, és alább nem ad meg nyilvános kulcsot, akkor <a href=\"%s\" target=\"_blank\">a Web Key Directory (&quot;WKD&quot;) segítségével</a> megpróbálunk keresést végrehajtani.",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Függetlenül attól, hogy az e-mail kliens melyik IMAP-kiszolgálóhoz csatlakozik, azt szeretnénk, hogy a kapcsolat valós időben, 100%-os pontossággal olvassa be az adatbázisát.  Ez a WebSockets segítségével történik."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Függetlenül attól, hogy az e-mail kliens melyik IMAP-kiszolgálóhoz csatlakozik, azt szeretnénk, hogy a kapcsolat valós időben, 100%-os pontossággal olvassa be az adatbázisát.  Ez a WebSockets segítségével történik.",
+  "Webhook Signature Payload Verification Key": "Webhook Signature Payload Verification Key",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Meg kell győződnie arról, hogy <a href=\"%s\" target=\"_blank\">a webhoookat</a> mi küldtük?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Ellenőrizheti, hogy a távoli szerver IP-címe a miénk a nyilvános <a href=\"%s\" target=\"_blank\">IP-címek</a> oldalon.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Ezenkívül ezzel a webhook-kulccsal összehasonlíthatja az <code>X-Webhook-Signature</code> fejlécet a számított hasznos terhelés törzsével.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Példaként tekintse meg <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">ezt a Stack Overflow bejegyzést</a> .",
+  "Keep your webhook key secure and never share it publicly": "Tartsa biztonságban webhook-kulcsát, és soha ne ossza meg nyilvánosan",
+  "Reset Key": "Reset Key",
+  "You can also check the IP against against": "Ellenőrizheti az IP-t is",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Ha fizetős csomagot használ, lépjen a Saját fiók → Domainek → Beállítások → Webhook Signature Payload Verification Key menüpontra a webhook-kulcs beszerzéséhez.",
+  "You can rotate this key at anytime for security reasons.": "Ezt a kulcsot biztonsági okokból bármikor elforgathatja.",
+  "Calculate and compare the": "Számítsa ki és hasonlítsa össze a",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "értéket a webhook kérésünkből az ezzel a kulccsal kiszámított törzsértékkel.  Ennek végrehajtására egy példa a címen található",
+  "this Stack Overflow post": "ezt a Stack Overflow bejegyzést",
+  "See the discussion at": "Lásd a vitát a címen"
 }

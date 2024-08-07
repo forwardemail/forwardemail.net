@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(ABD; ödeme işlemcisi),",
   "(US; payment processor)": "(ABD; ödeme işlemcisi)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Bu işaretlenirse ve aşağıya hiçbir ortak anahtar girilmezse, <a href=\"%s\" target=\"_blank\">Web Anahtar Dizini (&quot;WKD&quot;) kullanarak</a> bir arama gerçekleştirmeye çalışırız.",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "E-posta istemcinizin hangi IMAP sunucusuna bağlandığına bakılmaksızın, bağlantının veritabanınızdan gerçek zamanlı olarak %100 doğrulukla okunmasını istiyoruz.  Bu WebSockets aracılığıyla yapılır."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "E-posta istemcinizin hangi IMAP sunucusuna bağlandığına bakılmaksızın, bağlantının veritabanınızdan gerçek zamanlı olarak %100 doğrulukla okunmasını istiyoruz.  Bu WebSockets aracılığıyla yapılır.",
+  "Webhook Signature Payload Verification Key": "Webhook İmza Yükü Doğrulama Anahtarı",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "<a href=\"%s\" target=\"_blank\">Web kancalarının</a> tarafımızdan gönderildiğini doğrulamanız mı gerekiyor?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Uzak sunucunun IP adresinin genel <a href=\"%s\" target=\"_blank\">IP Adresleri</a> sayfamızda listelenenlerden biri olup olmadığını kontrol edebilirsiniz.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Ek olarak, <code>X-Webhook-Signature</code> üstbilgisini hesaplanan yük gövdesiyle karşılaştırmak için de bu webhook anahtarını kullanabilirsiniz.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Bir örnek için lütfen <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">bu Yığın Taşması gönderisine</a> bakın.",
+  "Keep your webhook key secure and never share it publicly": "Web kancası anahtarınızı güvende tutun ve asla herkese açık olarak paylaşmayın",
+  "Reset Key": "Resetleme tuşu",
+  "You can also check the IP against against": "Ayrıca IP'yi şunlara karşı da kontrol edebilirsiniz:",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Ücretli bir plan kullanıyorsanız webhook anahtarınızı almak için Hesabım → Etki Alanları → Ayarlar → Webhook İmza Yükü Doğrulama Anahtarı'na gidin.",
+  "You can rotate this key at anytime for security reasons.": "Güvenlik nedeniyle bu anahtarı istediğiniz zaman döndürebilirsiniz.",
+  "Calculate and compare the": "Hesaplayın ve karşılaştırın",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "Bu anahtarı kullanarak hesaplanan gövde değeriyle webhook isteğimizdeki değeri.  Bunun nasıl yapılacağına ilişkin bir örnek şu adreste mevcuttur:",
+  "this Stack Overflow post": "bu Yığın Taşması gönderisi",
+  "See the discussion at": "Şu adresteki tartışmaya bakın:"
 }

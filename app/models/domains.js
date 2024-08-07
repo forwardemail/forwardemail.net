@@ -213,6 +213,11 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // <https://github.com/forwardemail/free-email-forwarding/issues/235>
+  webhook_key: {
+    type: String
+  },
+
   ignore_mx_check: {
     type: Boolean,
     default: false
@@ -516,6 +521,17 @@ Domains.pre('remove', function (next) {
   }
 
   next();
+});
+
+// generate webhook_key if one does not exist
+Domains.pre('validate', function (next) {
+  if (isSANB(this.webhook_key)) return next();
+  try {
+    this.webhook_key = encrypt(crypto.randomBytes(16).toString('hex'));
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 Domains.pre('validate', function (next) {

@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(США; платіжний процесор),",
   "(US; payment processor)": "(США; платіжний процесор)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Якщо позначено цей прапорець і відкритий ключ не введено нижче, ми спробуємо виконати пошук <a href=\"%s\" target=\"_blank\">за допомогою веб-каталогу ключів</a> («WKD»).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Незалежно від того, до якого сервера IMAP підключається ваш клієнт електронної пошти, ми хочемо, щоб з’єднання читало вашу базу даних у режимі реального часу зі 100% точністю.  Це робиться через WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Незалежно від того, до якого сервера IMAP підключається ваш клієнт електронної пошти, ми хочемо, щоб з’єднання читало вашу базу даних у режимі реального часу зі 100% точністю.  Це робиться через WebSockets.",
+  "Webhook Signature Payload Verification Key": "Ключ перевірки корисного навантаження підпису Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Потрібно переконатися, що <a href=\"%s\" target=\"_blank\">вебхуки</a> надсилаються нами?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Ви можете перевірити, чи є IP-адреса віддаленого сервера однією з наших, указаних на нашій загальнодоступній сторінці <a href=\"%s\" target=\"_blank\">IP-адрес</a> .",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Крім того, ви також можете використовувати цей ключ вебхука, щоб порівняти заголовок <code>X-Webhook-Signature</code> з обчисленим тілом корисного навантаження.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Для прикладу зверніться до <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">цієї публікації Stack Overflow</a> .",
+  "Keep your webhook key secure and never share it publicly": "Зберігайте свій ключ вебхуку в безпеці та ніколи не розголошуйте його публічно",
+  "Reset Key": "Ключ скидання",
+  "You can also check the IP against against": "Ви також можете перевірити IP проти",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Якщо ви користуєтеся платним планом, перейдіть у розділ «Мій обліковий запис» → «Домени» → «Налаштування» → «Ключ перевірки корисного навантаження підпису вебхука», щоб отримати ключ вебхуку.",
+  "You can rotate this key at anytime for security reasons.": "З міркувань безпеки ви можете будь-коли змінити цей ключ.",
+  "Calculate and compare the": "Обчисліть і порівняйте",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "значення з нашого запиту webhook із обчисленим значенням тіла за допомогою цього ключа.  Приклад того, як це зробити, доступний за адресою",
+  "this Stack Overflow post": "ця публікація Stack Overflow",
+  "See the discussion at": "Дивіться обговорення на"
 }

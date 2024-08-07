@@ -7425,5 +7425,19 @@
   "(US; payment processor),": "(Mỹ; bộ xử lý thanh toán),",
   "(US; payment processor)": "(Mỹ; đơn vị xử lý thanh toán)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Nếu điều này được chọn và không có khóa chung nào được nhập bên dưới thì chúng tôi sẽ cố gắng thực hiện tra cứu <a href=\"%s\" target=\"_blank\">bằng Thư mục khóa Web</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Bất kể ứng dụng email khách của bạn kết nối với máy chủ IMAP nào, chúng tôi muốn kết nối đọc từ cơ sở dữ liệu của bạn theo thời gian thực với độ chính xác 100%.  Điều này được thực hiện thông qua WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Bất kể ứng dụng email khách của bạn kết nối với máy chủ IMAP nào, chúng tôi muốn kết nối đọc từ cơ sở dữ liệu của bạn theo thời gian thực với độ chính xác 100%.  Điều này được thực hiện thông qua WebSockets.",
+  "Webhook Signature Payload Verification Key": "Khóa xác minh tải trọng chữ ký Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Cần xác minh rằng <a href=\"%s\" target=\"_blank\">webhook</a> được chúng tôi gửi?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Bạn có thể kiểm tra xem địa chỉ IP của máy chủ từ xa có phải là địa chỉ của chúng tôi được liệt kê trong trang <a href=\"%s\" target=\"_blank\">Địa chỉ IP</a> công cộng của chúng tôi hay không.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Ngoài ra, bạn cũng có thể sử dụng khóa webhook này để so sánh tiêu đề <code>X-Webhook-Signature</code> với nội dung tải trọng được tính toán.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Vui lòng tham khảo <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">bài đăng Stack Overflow này</a> để biết ví dụ.",
+  "Keep your webhook key secure and never share it publicly": "Giữ khóa webhook của bạn an toàn và không bao giờ chia sẻ nó một cách công khai",
+  "Reset Key": "Thiết lập lại chìa khóa",
+  "You can also check the IP against against": "Bạn cũng có thể kiểm tra IP chống lại",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Nếu bạn đang sử dụng gói trả phí, hãy truy cập Tài khoản của tôi → Miền → Cài đặt → Khóa xác minh tải trọng chữ ký Webhook để lấy khóa webhook của bạn.",
+  "You can rotate this key at anytime for security reasons.": "Bạn có thể xoay khóa này bất cứ lúc nào vì lý do bảo mật.",
+  "Calculate and compare the": "Tính toán và so sánh các",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "giá trị từ yêu cầu webhook của chúng tôi với giá trị nội dung được tính toán bằng khóa này.  Một ví dụ về cách thực hiện việc này có sẵn tại",
+  "this Stack Overflow post": "bài viết về Stack Overflow này",
+  "See the discussion at": "Xem thảo luận tại"
 }

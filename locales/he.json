@@ -7916,5 +7916,19 @@
   "(US; payment processor),": "(ארה\"ב; מעבד תשלומים),",
   "(US; payment processor)": "(ארה\"ב; מעבד תשלומים)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "אם זה מסומן ולא הוזן מפתח ציבורי למטה, ננסה לבצע חיפוש <a href=\"%s\" target=\"_blank\">באמצעות ספריית מפתחות אינטרנט</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "לא משנה לאיזה שרת IMAP מתחבר לקוח הדוא\"ל שלך, אנו רוצים שהחיבור יקרא ממסד הנתונים שלך בזמן אמת עם 100% דיוק.  זה נעשה באמצעות WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "לא משנה לאיזה שרת IMAP מתחבר לקוח הדוא\"ל שלך, אנו רוצים שהחיבור יקרא ממסד הנתונים שלך בזמן אמת עם 100% דיוק.  זה נעשה באמצעות WebSockets.",
+  "Webhook Signature Payload Verification Key": "מפתח אימות מטען מטען Webhook Signature",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "צריך לוודא ש- <a href=\"%s\" target=\"_blank\">webhooks</a> נשלחים על ידינו?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "אתה יכול לבדוק שכתובת ה-IP של השרת המרוחק היא אחת מאיתנו הרשומה בדף <a href=\"%s\" target=\"_blank\">כתובות ה-IP</a> הציבוריות שלנו.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "בנוסף, אתה יכול גם להשתמש במפתח webhook זה כדי להשוות את הכותרת <code>X-Webhook-Signature</code> לגוף המטען המחושב.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "אנא עיין <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">בפוסט זה של Stack Overflow</a> לדוגמא.",
+  "Keep your webhook key secure and never share it publicly": "שמור על מפתח ה-webhook שלך מאובטח ולעולם אל תשתף אותו באופן ציבורי",
+  "Reset Key": "מקש איפוס",
+  "You can also check the IP against against": "אתה יכול גם לבדוק את ה-IP מול",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "אם אתה בתוכנית בתשלום, עבור אל החשבון שלי ← דומיינים ← הגדרות ← Webhook Signature Payload Verification Key כדי להשיג את מפתח ה-webhook שלך.",
+  "You can rotate this key at anytime for security reasons.": "אתה יכול לסובב מפתח זה בכל עת מסיבות אבטחה.",
+  "Calculate and compare the": "חשב והשווה את",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "ערך מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה.  דוגמה כיצד לעשות זאת זמינה ב",
+  "this Stack Overflow post": "הפוסט הזה של Stack Overflow",
+  "See the discussion at": "ראה את הדיון ב"
 }

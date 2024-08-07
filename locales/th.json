@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(สหรัฐอเมริกา; ผู้ประมวลผลการชำระเงิน)",
   "(US; payment processor)": "(สหรัฐอเมริกา; ผู้ประมวลผลการชำระเงิน)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "หากเลือกตัวเลือกนี้และไม่ได้ป้อนคีย์สาธารณะด้านล่าง เราจะพยายามค้นหา <a href=\"%s\" target=\"_blank\">โดยใช้ Web Key Directory</a> (&quot;WKD&quot;)",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "ไม่ว่าไคลเอนต์อีเมลของคุณจะเชื่อมต่อเซิร์ฟเวอร์ IMAP ใด เราต้องการให้การเชื่อมต่ออ่านจากฐานข้อมูลของคุณแบบเรียลไทม์ด้วยความแม่นยำ 100%  ทำได้ผ่าน WebSockets"
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "ไม่ว่าไคลเอนต์อีเมลของคุณจะเชื่อมต่อเซิร์ฟเวอร์ IMAP ใด เราต้องการให้การเชื่อมต่ออ่านจากฐานข้อมูลของคุณแบบเรียลไทม์ด้วยความแม่นยำ 100%  ทำได้ผ่าน WebSockets",
+  "Webhook Signature Payload Verification Key": "คีย์การยืนยันเพย์โหลดลายเซ็น Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "ต้องการยืนยันว่าเราส่ง <a href=\"%s\" target=\"_blank\">webhooks</a> หรือไม่?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "คุณสามารถตรวจสอบว่าที่อยู่ IP ของเซิร์ฟเวอร์ระยะไกลเป็นหนึ่งในรายการของเราภายใต้ <a href=\"%s\" target=\"_blank\">หน้าที่อยู่ IP</a> สาธารณะของเรา",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "นอกจากนี้ คุณยังสามารถใช้คีย์ webhook นี้เพื่อเปรียบเทียบส่วนหัว <code>X-Webhook-Signature</code> กับเนื้อหาเพย์โหลดที่คำนวณได้",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "โปรดอ้างอิง <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">โพสต์ Stack Overflow นี้</a> เป็นตัวอย่าง",
+  "Keep your webhook key secure and never share it publicly": "รักษาคีย์เว็บฮุคของคุณให้ปลอดภัยและอย่าแชร์กับสาธารณะ",
+  "Reset Key": "รีเซ็ตคีย์",
+  "You can also check the IP against against": "คุณยังสามารถตรวจสอบ IP เทียบกับได้",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "หากคุณใช้แผนแบบชำระเงิน ให้ไปที่บัญชีของฉัน → โดเมน → การตั้งค่า → คีย์การตรวจสอบเพย์โหลดลายเซ็น Webhook เพื่อรับคีย์ Webhook ของคุณ",
+  "You can rotate this key at anytime for security reasons.": "คุณสามารถหมุนเวียนคีย์นี้ได้ตลอดเวลาด้วยเหตุผลด้านความปลอดภัย",
+  "Calculate and compare the": "คำนวณและเปรียบเทียบ",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "ค่าจากคำขอ webhook ของเราพร้อมค่าเนื้อความที่คำนวณโดยใช้คีย์นี้  ดูตัวอย่างวิธีการได้ที่",
+  "this Stack Overflow post": "โพสต์ Stack Overflow นี้",
+  "See the discussion at": "ดูเสวนาได้ที่"
 }

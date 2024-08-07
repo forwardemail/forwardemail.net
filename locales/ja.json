@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "（米国、決済処理業者）、",
   "(US; payment processor)": "（米国、決済処理業者）",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "これがチェックされていて、下に公開キーが入力されていない場合は、 <a href=\"%s\" target=\"_blank\">Web キー ディレクトリ (「WKD」) を使用して</a>検索を実行しようとします。",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "メール クライアントがどの IMAP サーバーに接続するかに関係なく、接続によってデータベースから 100% の精度でリアルタイムに読み取ることができるようにする必要があります。これは WebSocket を通じて行われます。"
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "メール クライアントがどの IMAP サーバーに接続するかに関係なく、接続によってデータベースから 100% の精度でリアルタイムに読み取ることができるようにする必要があります。これは WebSocket を通じて行われます。",
+  "Webhook Signature Payload Verification Key": "Webhook 署名ペイロード検証キー",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "<a href=\"%s\" target=\"_blank\">Webhook</a>が弊社から送信されたことを確認する必要がありますか?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "リモート サーバーの IP アドレスが、パブリック<a href=\"%s\" target=\"_blank\">IP アドレス</a>ページにリストされている IP アドレスの 1 つであることを確認できます。",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "さらに、この Webhook キーを使用して、 <code>X-Webhook-Signature</code>ヘッダーと計算されたペイロード本体を比較することもできます。",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "例については<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">、この Stack Overflow の投稿</a>を参照してください。",
+  "Keep your webhook key secure and never share it publicly": "Webhookキーを安全に保管し、決して公開しないでください。",
+  "Reset Key": "リセットキー",
+  "You can also check the IP against against": "IPアドレスを次のアドレスと比較することもできます",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "有料プランをご利用の場合は、「マイアカウント」→「ドメイン」→「設定」→「Webhook 署名ペイロード検証キー」に移動して、Webhook キーを取得してください。",
+  "You can rotate this key at anytime for security reasons.": "セキュリティ上の理由から、このキーはいつでもローテーションできます。",
+  "Calculate and compare the": "計算して比較する",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "このキーを使用して計算されたボディ値とWebhookリクエストからの値を比較します。これを行う方法の例は、",
+  "this Stack Overflow post": "このStack Overflowの投稿",
+  "See the discussion at": "議論については以下を参照"
 }

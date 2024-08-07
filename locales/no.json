@@ -9904,5 +9904,19 @@
   "(US; payment processor),": "(USA; betalingsbehandler),",
   "(US; payment processor)": "(USA; betalingsbehandler)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Hvis dette er merket av og ingen offentlig nøkkel er angitt nedenfor, vil vi forsøke å utføre et oppslag <a href=\"%s\" target=\"_blank\">ved hjelp av Web Key Directory</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Uansett hvilken IMAP-server e-postklienten din kobler til, vil vi at tilkoblingen skal lese fra databasen din i sanntid med 100 % nøyaktighet.  Dette gjøres gjennom WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Uansett hvilken IMAP-server e-postklienten din kobler til, vil vi at tilkoblingen skal lese fra databasen din i sanntid med 100 % nøyaktighet.  Dette gjøres gjennom WebSockets.",
+  "Webhook Signature Payload Verification Key": "Webhook signatur nyttelastbekreftelsesnøkkel",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Trenger du å bekrefte at <a href=\"%s\" target=\"_blank\">webhooks</a> sendes av oss?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Du kan sjekke at den eksterne serverens IP-adresse er en av våre oppført under vår offentlige <a href=\"%s\" target=\"_blank\">IP-adresser-</a> side.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "I tillegg kan du også bruke denne webhook-nøkkelen til å sammenligne <code>X-Webhook-Signature</code> overskriften med den beregnede nyttelastkroppen.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Vennligst referer til <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">dette Stack Overflow-innlegget</a> for et eksempel.",
+  "Keep your webhook key secure and never share it publicly": "Hold webhook-nøkkelen din sikker og del den aldri offentlig",
+  "Reset Key": "Tilbakestill nøkkel",
+  "You can also check the IP against against": "Du kan også sjekke IP mot",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Hvis du har en betalt plan, går du til Min konto → Domener → Innstillinger → Webhook Signature Payload Verification Key for å få webhook-nøkkelen din.",
+  "You can rotate this key at anytime for security reasons.": "Du kan rotere denne nøkkelen når som helst av sikkerhetsgrunner.",
+  "Calculate and compare the": "Beregn og sammenlign",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "verdi fra webhook-forespørselen vår med den beregnede kroppsverdien ved hjelp av denne nøkkelen.  Et eksempel på hvordan du gjør dette er tilgjengelig på",
+  "this Stack Overflow post": "dette Stack Overflow-innlegget",
+  "See the discussion at": "Se diskusjonen på"
 }

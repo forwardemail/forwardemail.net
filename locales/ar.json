@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(الولايات المتحدة؛ معالج الدفع)،",
   "(US; payment processor)": "(الولايات المتحدة؛ معالج الدفع)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "إذا تم تحديد ذلك ولم يتم إدخال أي مفتاح عام أدناه، فسنحاول إجراء بحث <a href=\"%s\" target=\"_blank\">باستخدام دليل مفاتيح الويب</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "بغض النظر عن خادم IMAP الذي يتصل به عميل البريد الإلكتروني الخاص بك، فإننا نريد أن تتم قراءة الاتصال من قاعدة بياناتك في الوقت الفعلي وبدقة 100%.  ويتم ذلك من خلال WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "بغض النظر عن خادم IMAP الذي يتصل به عميل البريد الإلكتروني الخاص بك، فإننا نريد أن تتم قراءة الاتصال من قاعدة بياناتك في الوقت الفعلي وبدقة 100%.  ويتم ذلك من خلال WebSockets.",
+  "Webhook Signature Payload Verification Key": "مفتاح التحقق من الحمولة بتوقيع Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "هل تحتاج إلى التحقق من إرسال <a href=\"%s\" target=\"_blank\">خطافات الويب</a> من قبلنا؟",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "يمكنك التحقق من أن عنوان IP الخاص بالخادم البعيد هو أحد عناويننا المدرجة ضمن صفحة <a href=\"%s\" target=\"_blank\">عناوين IP</a> العامة لدينا.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "بالإضافة إلى ذلك، يمكنك أيضًا استخدام مفتاح webhook هذا لمقارنة رأس <code>X-Webhook-Signature</code> مع جسم الحمولة النافعة المحسوبة.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "يرجى الرجوع إلى <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">منشور Stack Overflow هذا</a> للحصول على مثال.",
+  "Keep your webhook key secure and never share it publicly": "حافظ على أمان مفتاح webhook الخاص بك ولا تشاركه علنًا أبدًا",
+  "Reset Key": "إعادة تعيين مفتاح",
+  "You can also check the IP against against": "يمكنك أيضًا التحقق من IP مقابل",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "إذا كنت تستخدم خطة مدفوعة، فانتقل إلى حسابي → النطاقات → الإعدادات → مفتاح التحقق من حمولة توقيع Webhook للحصول على مفتاح webhook الخاص بك.",
+  "You can rotate this key at anytime for security reasons.": "يمكنك تدوير هذا المفتاح في أي وقت لأسباب أمنية.",
+  "Calculate and compare the": "احسب وقارن بين",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "القيمة من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح.  مثال على كيفية القيام بذلك متاح على",
+  "this Stack Overflow post": "هذا المنشور Stack Overflow",
+  "See the discussion at": "انظر المناقشة في"
 }

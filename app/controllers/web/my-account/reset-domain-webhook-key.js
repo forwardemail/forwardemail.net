@@ -4,39 +4,18 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
-const splitLines = require('split-lines');
-const isSANB = require('is-string-and-not-blank');
 
 const { Domains } = require('#models');
 
-async function updateAllowlistAndDenylist(ctx, next) {
+async function resetDomainWebhookKey(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
     return ctx.throw(
       Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
-  const kind = ctx.pathWithoutLocale.endsWith('/allowlist')
-    ? 'allowlist'
-    : 'denylist';
-
-  if (isSANB(ctx.request.body[kind])) {
-    ctx.state.domain[kind] = _.compact(
-      _.uniq(
-        _.map(
-          splitLines(ctx.request.body[kind])
-            .join(' ')
-            .split(',')
-            .join(' ')
-            .split(' '),
-          (v) => v.toLowerCase()
-        )
-      )
-    );
-  } else {
-    ctx.state.domain[kind] = [];
-  }
+  // reset key (gets reset under pre validate domain hook in model)
+  ctx.state.domain.webhook_key = undefined;
 
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
@@ -65,4 +44,4 @@ async function updateAllowlistAndDenylist(ctx, next) {
   else ctx.body = { reloadPage: true };
 }
 
-module.exports = updateAllowlistAndDenylist;
+module.exports = resetDomainWebhookKey;

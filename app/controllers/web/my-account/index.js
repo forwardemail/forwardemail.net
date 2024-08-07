@@ -66,6 +66,7 @@ const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
 const uploadAliasMbox = require('./upload-alias-mbox');
+const resetDomainWebhookKey = require('./reset-domain-webhook-key');
 
 module.exports = {
   cancelEmailChange,
@@ -130,5 +131,6 @@ module.exports = {
   updateAllowlistAndDenylist,
   updateTimezone,
   uploadAliasMbox,
-  updateRestrictedAliasNames
+  updateRestrictedAliasNames,
+  resetDomainWebhookKey
 };

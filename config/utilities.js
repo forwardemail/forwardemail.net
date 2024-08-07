@@ -37,6 +37,8 @@ const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
 const { randomstring } = require('@sidoshi/random-string');
 
+const { decrypt } = require('#helpers/encrypt-decrypt');
+
 // <https://github.com/ztmd/highlight-pug/issues/1>
 hljs.registerLanguage('pug', highlightPug);
 
@@ -1237,5 +1239,6 @@ module.exports = {
   getServersOrClientsList,
   highlightWords,
   randomstring,
-  useCases
+  useCases,
+  decrypt
 };

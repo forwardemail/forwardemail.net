@@ -255,6 +255,14 @@ router
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.updateDomain
   )
+  .del(
+    '/domains/:domain_id/advanced-settings/reset-domain-webhook-key',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(20, 'reset domain webhook key'),
+    web.myAccount.resetDomainWebhookKey
+  )
   .get(
     '/domains/:domain_id/verify-smtp',
     web.myAccount.checkVerifiedEmail,

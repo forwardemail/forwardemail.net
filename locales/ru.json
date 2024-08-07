@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(США; платежный процессор),",
   "(US; payment processor)": "(США; платежный процессор)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Если этот флажок установлен и ниже не введен открытый ключ, мы попытаемся выполнить поиск <a href=\"%s\" target=\"_blank\">с использованием каталога веб-ключей</a> («WKD»).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Независимо от того, к какому IMAP-серверу подключается ваш почтовый клиент, мы хотим, чтобы соединение считывало данные из вашей базы данных в режиме реального времени со 100% точностью.  Это делается через WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Независимо от того, к какому IMAP-серверу подключается ваш почтовый клиент, мы хотим, чтобы соединение считывало данные из вашей базы данных в режиме реального времени со 100% точностью.  Это делается через WebSockets.",
+  "Webhook Signature Payload Verification Key": "Ключ проверки полезной нагрузки подписи Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Хотите убедиться, что <a href=\"%s\" target=\"_blank\">вебхуки</a> отправлены нами?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Вы можете проверить, что IP-адрес удаленного сервера является одним из наших, перечисленных на нашей странице общедоступных <a href=\"%s\" target=\"_blank\">IP-адресов</a> .",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Кроме того, вы также можете использовать этот ключ веб-перехватчика для сравнения заголовка <code>X-Webhook-Signature</code> с вычисленным телом полезных данных.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Пожалуйста, обратитесь к <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">этому сообщению о переполнении стека</a> для примера.",
+  "Keep your webhook key secure and never share it publicly": "Храните ключ вебхука в безопасности и никогда не делитесь им публично.",
+  "Reset Key": "Сбросить ключ",
+  "You can also check the IP against against": "Вы также можете проверить IP против",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Если у вас платный план, перейдите в «Моя учетная запись» → «Домены» → «Настройки» → «Ключ проверки полезной нагрузки подписи веб-перехватчика», чтобы получить ключ веб-перехватчика.",
+  "You can rotate this key at anytime for security reasons.": "Вы можете поменять этот ключ в любое время из соображений безопасности.",
+  "Calculate and compare the": "Рассчитайте и сравните",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "значение из нашего запроса веб-перехватчика с вычисленным значением тела с использованием этого ключа.  Пример того, как это сделать, доступен по адресу",
+  "this Stack Overflow post": "этот пост о переполнении стека",
+  "See the discussion at": "Смотрите обсуждение на"
 }

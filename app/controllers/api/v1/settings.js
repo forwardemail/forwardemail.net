@@ -14,7 +14,7 @@ const { isPort } = require('validator');
 const env = require('#config/env');
 const config = require('#config');
 const Domains = require('#models/domains');
-const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
 const HTTP_RETRY_ERROR_CODES = new Set([
   'ETIMEDOUT',
@@ -50,6 +50,7 @@ async function settings(ctx) {
       let hasVirusProtection = true;
       let allowlist = [];
       let denylist = [];
+      let webhookKey;
 
       for (const element of records) {
         const record = element.join('').trim(); // join chunks together
@@ -73,7 +74,7 @@ async function settings(ctx) {
           verification_record: verifications[0]
         })
           .select(
-            'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection'
+            'allowlist denylist smtp_port has_adult_content_protection has_phishing_protection has_executable_protection has_virus_protection webhook_key'
           )
           .lean()
           .exec();
@@ -84,6 +85,19 @@ async function settings(ctx) {
           hasPhishingProtection = domain.has_phishing_protection;
           hasExecutableProtection = domain.has_executable_protection;
           hasVirusProtection = domain.has_virus_protection;
+          //
+          // if domain does not yet have a webhook key then create one for it
+          // `crypto.randomBytes(16).toString('hex')` yields 32 bytes
+          //
+          if (!domain.webhook_key) {
+            // SHA256 HMAC should not exceed 512 bytes for key length
+            // <https://security.stackexchange.com/a/96176>
+            webhookKey = encrypt(crypto.randomBytes(16).toString('hex'));
+            await Domains.findByIdAndUpdate(domain._id, {
+              $set: { webhook_key: webhookKey }
+            });
+          }
+
           if (Array.isArray(domain.allowlist)) allowlist = domain.allowlist;
           if (Array.isArray(domain.denylist)) denylist = domain.denylist;
         } else {
@@ -126,7 +140,8 @@ async function settings(ctx) {
         has_executable_protection: hasExecutableProtection,
         has_virus_protection: hasVirusProtection,
         allowlist,
-        denylist
+        denylist,
+        webhook_key: webhookKey
       };
     } catch (err) {
       // superagent inside of the smtp-server will retry on 408 error code

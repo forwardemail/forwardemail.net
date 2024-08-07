@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(AS; pemroses pembayaran),",
   "(US; payment processor)": "(AS; pemroses pembayaran)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Jika ini dicentang dan tidak ada kunci publik yang dimasukkan di bawah, maka kami akan mencoba melakukan pencarian <a href=\"%s\" target=\"_blank\">menggunakan Web Key Directory</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Terlepas dari server IMAP mana yang terhubung dengan klien email Anda, kami ingin koneksi tersebut membaca dari database Anda secara real-time dengan akurasi 100%.  Ini dilakukan melalui WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Terlepas dari server IMAP mana yang terhubung dengan klien email Anda, kami ingin koneksi tersebut membaca dari database Anda secara real-time dengan akurasi 100%.  Ini dilakukan melalui WebSockets.",
+  "Webhook Signature Payload Verification Key": "Kunci Verifikasi Muatan Tanda Tangan Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Perlu memverifikasi bahwa <a href=\"%s\" target=\"_blank\">webhook</a> dikirimkan oleh kami?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Anda dapat memeriksa apakah alamat IP server jarak jauh adalah salah satu alamat IP kami yang tercantum di halaman <a href=\"%s\" target=\"_blank\">Alamat IP</a> publik.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Selain itu, Anda juga dapat menggunakan kunci webhook ini untuk membandingkan header <code>X-Webhook-Signature</code> dengan isi payload yang dihitung.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Silakan rujuk <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">postingan Stack Overflow ini</a> sebagai contoh.",
+  "Keep your webhook key secure and never share it publicly": "Jaga keamanan kunci webhook Anda dan jangan pernah membagikannya secara publik",
+  "Reset Key": "Atur Ulang Kunci",
+  "You can also check the IP against against": "Anda juga dapat memeriksa IP terhadapnya",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Jika Anda menggunakan paket berbayar, buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Muatan Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.",
+  "You can rotate this key at anytime for security reasons.": "Anda dapat memutar kunci ini kapan saja untuk alasan keamanan.",
+  "Calculate and compare the": "Hitung dan bandingkan",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "nilai dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini.  Contoh cara melakukan ini tersedia di",
+  "this Stack Overflow post": "postingan Stack Overflow ini",
+  "See the discussion at": "Lihat pembahasannya di"
 }

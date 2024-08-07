@@ -9746,5 +9746,19 @@
   "(US; payment processor),": "(USA; maksujen käsittelijä),",
   "(US; payment processor)": "(USA; maksujen käsittelijä)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Jos tämä on valittuna eikä julkista avainta kirjoiteta alle, yritämme suorittaa haun <a href=\"%s\" target=\"_blank\">käyttämällä Web Key Directory</a> (&quot;WKD&quot;) avulla.",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Riippumatta siitä, mihin IMAP-palvelimeen sähköpostiohjelmasi muodostaa yhteyden, haluamme yhteyden lukevan tietokannastasi reaaliajassa 100 %:n tarkkuudella.  Tämä tehdään WebSocketsin kautta."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Riippumatta siitä, mihin IMAP-palvelimeen sähköpostiohjelmasi muodostaa yhteyden, haluamme yhteyden lukevan tietokannastasi reaaliajassa 100 %:n tarkkuudella.  Tämä tehdään WebSocketsin kautta.",
+  "Webhook Signature Payload Verification Key": "Webhook Signature Payload -vahvistusavain",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Haluatko varmistaa, että <a href=\"%s\" target=\"_blank\">webhookit</a> ovat meidän lähettämiämme?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Voit tarkistaa, että etäpalvelimen IP-osoite on yksi julkisista <a href=\"%s\" target=\"_blank\">IP-osoitteistamme</a> löytyvistä osoitteistamme.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Lisäksi voit käyttää tätä webhook-avainta vertaamaan <code>X-Webhook-Signature</code> otsikkoa laskettuun hyötykuorman runkoon.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Katso esimerkki <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">tästä Stack Overflow -viestistä</a> .",
+  "Keep your webhook key secure and never share it publicly": "Pidä webhook-avaimesi turvassa äläkä koskaan jaa sitä julkisesti",
+  "Reset Key": "Reset Key",
+  "You can also check the IP against against": "Voit myös tarkistaa IP-osoitteen",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Jos sinulla on maksullinen suunnitelma, siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook Signature Payload Verification Key saadaksesi webhook-avaimesi.",
+  "You can rotate this key at anytime for security reasons.": "Voit kiertää tätä avainta milloin tahansa turvallisuussyistä.",
+  "Calculate and compare the": "Laske ja vertaa",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "arvo webhook-pyynnöstämme ja tämän avaimen avulla laskettu runko-arvo.  Esimerkki siitä, miten tämä tehdään, on saatavilla osoitteessa",
+  "this Stack Overflow post": "tämä Stack Overflow -viesti",
+  "See the discussion at": "Katso keskustelu osoitteessa"
 }

@@ -9899,5 +9899,19 @@
   "(US; payment processor),": "(EUA; processador de pagamentos),",
   "(US; payment processor)": "(EUA; processador de pagamentos)",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "Se esta opção estiver marcada e nenhuma chave pública for inserida abaixo, tentaremos realizar uma pesquisa <a href=\"%s\" target=\"_blank\">usando o Web Key Directory</a> (&quot;WKD&quot;).",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Independentemente do servidor IMAP ao qual seu cliente de e-mail se conecta, queremos que a conexão leia seu banco de dados em tempo real com 100% de precisão.  Isso é feito através de WebSockets."
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "Independentemente do servidor IMAP ao qual seu cliente de e-mail se conecta, queremos que a conexão leia seu banco de dados em tempo real com 100% de precisão.  Isso é feito através de WebSockets.",
+  "Webhook Signature Payload Verification Key": "Chave de verificação de carga útil de assinatura do Webhook",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "Precisa verificar se os <a href=\"%s\" target=\"_blank\">webhooks</a> foram enviados por nós?",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "Você pode verificar se o endereço IP do servidor remoto é um dos nossos listados em nossa página <a href=\"%s\" target=\"_blank\">de endereços IP</a> públicos.",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "Além disso, você também pode usar essa chave de webhook para comparar o cabeçalho <code>X-Webhook-Signature</code> com o corpo da carga útil computada.",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "Consulte <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">esta postagem do Stack Overflow</a> para obter um exemplo.",
+  "Keep your webhook key secure and never share it publicly": "Mantenha sua chave do webhook segura e nunca a compartilhe publicamente",
+  "Reset Key": "Botão de reset",
+  "You can also check the IP against against": "Você também pode verificar o IP em relação a",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "Se você estiver em um plano pago, vá para Minha conta → Domínios → Configurações → Chave de verificação de carga útil de assinatura do webhook para obter sua chave do webhook.",
+  "You can rotate this key at anytime for security reasons.": "Você pode alternar essa chave a qualquer momento por motivos de segurança.",
+  "Calculate and compare the": "Calcule e compare",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "valor de nossa solicitação de webhook com o valor do corpo calculado usando esta chave.  Um exemplo de como fazer isso está disponível em",
+  "this Stack Overflow post": "esta postagem do Stack Overflow",
+  "See the discussion at": "Veja a discussão em"
 }

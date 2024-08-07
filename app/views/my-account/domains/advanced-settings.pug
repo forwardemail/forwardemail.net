@@ -460,6 +460,45 @@ block body
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(type="submit")= t("Save")
 
+          //- Webhook Key
+          if domain.group === 'admin'
+            .card.border-themed.mb-3
+              h2.h6.card-header= t("Webhook Signature Payload Verification Key")
+              .card-body
+                +planRequired(false)
+                p.card-text
+                  strong!= t('Need to verify that <a href="%s" target="_blank">webhooks</a> are sent by us?', l('/faq#do-you-support-webhooks'))
+                  = " "
+                  != t('You can check that the remote server\'s IP address is one of ours listed under our public <a href="%s" target="_blank">IP Addresses</a> page.', l('/ips'))
+                  = " "
+                  != t("Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.")
+                  = " "
+                  != t('Please reference <a href="%s" target="_blank" rel="noopener noreferrer">this Stack Overflow post</a> for an example.', "https://stackoverflow.com/a/68885281")
+                .input-group
+                  input#webhook-key.form-control(
+                    type="text",
+                    readonly,
+                    value=decrypt(domain.webhook_key)
+                  )
+                  .input-group-append
+                    button.btn.btn-primary(
+                      type="button",
+                      data-toggle="clipboard",
+                      data-clipboard-target="#webhook-key"
+                    )
+                      i.fa.fa-clipboard
+                      = " "
+                      = t("Copy")
+                .small.form-text.text-muted= t("Keep your webhook key secure and never share it publicly")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    form.ajax-form.confirm-prompt(action=l(`/my-account/domains/${domain.name}/advanced-settings/reset-domain-webhook-key`), method="POST")
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.btn.btn-danger(type="submit")= t("Reset Key")
+                  li.list-inline-item
+                    a.btn.btn-dark(href=l('/faq#do-you-support-webhooks'))= t("Learn more")
+
           //- Restricted Alias Names
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(

@@ -9592,5 +9592,19 @@
   "(US; payment processor),": "（美国；支付处理器），",
   "(US; payment processor)": "（美国；支付处理器）",
   "If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href=\"%s\" target=\"_blank\">using Web Key Directory</a> (\"WKD\").": "如果选中此项并且下面没有输入公钥，那么我们将尝试<a href=\"%s\" target=\"_blank\">使用 Web 密钥目录</a>（“WKD”）执行查找。",
-  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "无论您的电子邮件客户端连接到哪个 IMAP 服务器，我们都希望该连接能够以 100% 的准确度实时读取您的数据库。这是通过 WebSockets 实现的。"
+  "Regardless of which IMAP server your email client connects to, we want the connection to read from your database in real-time with 100% accuracy.  This is done through WebSockets.": "无论您的电子邮件客户端连接到哪个 IMAP 服务器，我们都希望该连接能够以 100% 的准确度实时读取您的数据库。这是通过 WebSockets 实现的。",
+  "Webhook Signature Payload Verification Key": "Webhook 签名负载验证密钥",
+  "Need to verify that <a href=\"%s\" target=\"_blank\">webhooks</a> are sent by us?": "需要验证<a href=\"%s\" target=\"_blank\">webhook</a>是否由我们发送吗？",
+  "You can check that the remote server's IP address is one of ours listed under our public <a href=\"%s\" target=\"_blank\">IP Addresses</a> page.": "您可以检查远程服务器的 IP 地址是否是我们公共<a href=\"%s\" target=\"_blank\">IP 地址</a>页面下列出的 IP 地址之一。",
+  "Additionally, you can also use this webhook key to compare the <code>X-Webhook-Signature</code> header with the computed payload body.": "此外，您还可以使用此 webhook 密钥将<code>X-Webhook-Signature</code>标头与计算的有效负载主体进行比较。",
+  "Please reference <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">this Stack Overflow post</a> for an example.": "请参考<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">此 Stack Overflow 帖子</a>作为示例。",
+  "Keep your webhook key secure and never share it publicly": "确保你的 webhook 密钥安全，切勿公开分享",
+  "Reset Key": "重置键",
+  "You can also check the IP against against": "您还可以检查 IP",
+  "If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.": "如果您使用的是付费计划，请转到我的帐户 → 域 → 设置 → Webhook 签名有效负载验证密钥以获取您的 webhook 密钥。",
+  "You can rotate this key at anytime for security reasons.": "出于安全原因，您可以随时轮换此密钥。",
+  "Calculate and compare the": "计算并比较",
+  "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "使用此键将来自 webhook 请求的值与计算出的 body 值进行匹配。有关如何执行此操作的示例，请访问",
+  "this Stack Overflow post": "此 Stack Overflow 帖子",
+  "See the discussion at": "请参阅以下讨论"
 }
