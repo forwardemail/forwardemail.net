@@ -991,7 +991,7 @@ const obj = {
     // openpgp
     '<a target="_blank" rel="noopener noreferrer" href="https://kb.mailbox.org/en/business/security-privacy-article/an-introduction-to-mailbox-org-guard">Supported although they require you to upload your private keys, which is a security issue</a>; also see this blog post for <a href="https://kb.mailbox.org/en/private/e-mail-article/your-encrypted-mailbox/" target="_blank" rel="noopener noreferrer">uploading public keys</a>.',
     // wkd
-    false,
+    '<a target="_blank" rel="noopener noreferrer" href="https://wiki.gnupg.org/WKD#:~:text=claims%20to%20offer%20web%20key%20directory%20lookup">GnuPG.org states that it is claimed they offer WKD, but it is not advertised on their website currently</a>',
     // hardenize (on root domain)
     '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailbox.org/1704462519">Fail</a>',
     // internetnl_site (on root domain)
