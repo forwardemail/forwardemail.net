@@ -654,5 +654,5 @@ We allow you to encrypt records even on the free plan at no cost.  Privacy shoul
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \
-  -d "user@gmail.com"
+  -d "input=user@gmail.com"
 ```

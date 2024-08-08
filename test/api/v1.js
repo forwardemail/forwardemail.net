@@ -12,6 +12,7 @@ const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const getPort = require('get-port');
 const ip = require('ip');
+const isBase64 = require('is-base64');
 const ms = require('ms');
 const pify = require('pify');
 const test = require('ava');
@@ -27,6 +28,7 @@ const logger = require('#helpers/logger');
 const phrases = require('#config/phrases');
 const processEmail = require('#helpers/process-email');
 const { Logs, Domains, Emails } = require('#models');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -1536,4 +1538,27 @@ test('error_code_if_disabled', async (t) => {
     has_imap: false,
     mapping: [user.email, '!foo', '!!bar', '!!!baz']
   });
+});
+
+test('encrypts and decrypts TXT', async (t) => {
+  const input = 'forward-email=foo@bar.com';
+  const res = await t.context.api
+    .post('/v1/encrypt')
+    .auth(Array.isArray(env.API_SECRETS) ? env.API_SECRETS[0] : env.API_SECRETS)
+    .send({
+      input
+    });
+  t.is(res.status, 200);
+  t.log(res.text);
+  t.true(res.text.startsWith('forward-email='));
+  t.true(isBase64(res.text.split('forward-email=')[1]));
+  t.is(
+    decrypt(
+      Buffer.from(res.text.split('forward-email=')[1], 'base64').toString(
+        'utf8'
+      ),
+      env.TXT_ENCRYPTION_KEY
+    ),
+    'foo@bar.com'
+  );
 });

@@ -28,16 +28,22 @@ async function encryptTxt(ctx) {
   )
     throw Boom.badRequest(ctx.translateError('INPUT_HAD_FE_SV'));
 
-  const encryptedValue = await encrypt(
+  const encryptedValue = encrypt(
     ctx.request.body.input.trim(),
-    12,
-    env.TXT_ENCRYPTION_KEY,
-    'chacha20-poly1305'
+    16,
+    env.TXT_ENCRYPTION_KEY
   );
 
-  const b64encryptedValue = Buffer.from(encryptedValue, 'hex').toString(
+  const b64encryptedValue = Buffer.from(encryptedValue, 'utf8').toString(
     'base64'
   );
+
+  if (ctx.api) {
+    ctx.body = `${
+      isPort ? 'forward-email-port' : 'forward-email'
+    }=${b64encryptedValue}`;
+    return;
+  }
 
   const html = ctx.translate(
     'ENCRYPTED_VALUE',
@@ -57,11 +63,6 @@ async function encryptTxt(ctx) {
     allowOutsideClick: false,
     focusConfirm: false
   };
-
-  if (ctx.api) {
-    ctx.body = b64encryptedValue;
-    return;
-  }
 
   if (ctx.accepts('html')) {
     ctx.flash('custom', swal);
