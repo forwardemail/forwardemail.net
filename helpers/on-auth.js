@@ -535,7 +535,11 @@ async function onAuth(auth, session, fn) {
       }
 
       // increase counter for alias by 1 (with ttl safeguard)
-      await this.client.pipeline().incr(key).pexpire(key, ms('1h')).exec();
+      await this.client
+        .pipeline()
+        .incr(key)
+        .pexpire(key, config.socketTimeout)
+        .exec();
     }
 
     // prepare user object for `session.user`

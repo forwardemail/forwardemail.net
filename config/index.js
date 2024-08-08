@@ -183,6 +183,7 @@ const STRIPE_LOCALES = new Set([
 
 const config = {
   ...metaConfig,
+  socketTimeout: ms('3m'),
   ubuntuTeamMapping: {
     'ubuntu.com': '~ubuntumembers',
     'kubuntu.org': '~kubuntu-members',

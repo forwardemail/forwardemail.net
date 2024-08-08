@@ -76,7 +76,7 @@ class SMTP {
       //       since we have rate limiting enabled by IP
       // maxClients: Infinity, // default is Infinity
       // allow 3m to process bulk RCPT TO
-      socketTimeout: ms('180s'),
+      socketTimeout: config.socketTimeout,
       // default closeTimeout is 30s
       closeTimeout: ms('30s'),
       // <https://github.com/nodemailer/smtp-server/issues/177>

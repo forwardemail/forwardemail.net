@@ -105,6 +105,7 @@ class IMAP {
       disableSTARTTLS: secure,
       ignoreSTARTTLS: !secure,
       useProxy: false,
+      socketTimeout: config.socketTimeout,
       ignoredHosts: [],
       id: {
         name: os.hostname(),

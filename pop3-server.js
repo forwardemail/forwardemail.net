@@ -19,7 +19,6 @@ const os = require('node:os');
 const MessageHandler = require('@forwardemail/wildduck/lib/message-handler');
 const POP3Server = require('@forwardemail/wildduck/lib/pop3/server');
 const RateLimiter = require('async-ratelimiter');
-const ms = require('ms');
 const pify = require('pify');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -67,7 +66,7 @@ class POP3 {
       ignoreSTARTTLS: !secure,
       useProxy: false,
       ignoredHosts: [],
-      socketTimeout: ms('30m'),
+      socketTimeout: config.socketTimeout,
       // TODO: submit PR to add ability to customize version string
       disableVersionString: true,
       id: {
