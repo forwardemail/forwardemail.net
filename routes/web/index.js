@@ -654,6 +654,7 @@ localeRouter.get('/blog/best-transactional-email-service', (ctx) => {
   for (let i = 0; i < config.alternatives.length; i++) {
     const alt = { ...config.alternatives[i] };
     if (!alt.api) continue;
+    if (alt.smtp === 'Requires 3rd party') continue;
     alts.push(alt);
   }
 
@@ -667,6 +668,7 @@ localeRouter.get('/blog/best-email-api-developer-service', (ctx) => {
   for (let i = 0; i < config.alternatives.length; i++) {
     const alt = { ...config.alternatives[i] };
     if (!alt.api) continue;
+    if (alt.smtp === 'Requires 3rd party') continue;
     alts.push(alt);
   }
 
