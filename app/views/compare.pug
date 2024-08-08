@@ -204,6 +204,8 @@ block body
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best transactional email service.', l("/"))
             else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
               != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email API service for developers.', l("/"))
+            else if ctx.pathWithoutLocale === '/blog/best-email-spam-filtering-service'
+              != t('We recommend <a href="%s" class="alert-link text-decoration-underline">Forward Email</a> as the best email spam filtering service.', l("/"))
             else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
               != t('<a href="%s" class="alert-link text-decoration-underline">Forward Email</a> is the best and only 100% open-source email service.', l("/"))
             else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
@@ -218,6 +220,8 @@ block body
                 = t("Transactional Email Comparison")
               else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
                 = t("Email API Comparison")
+              else if ctx.pathWithoutLocale === '/blog/best-email-spam-filtering-service'
+                = t("Email Spam Filtering Service Comparison")
               else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
                 = t("Open-Source Email Service Comparison")
               else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
@@ -1220,6 +1224,8 @@ block body
               = t("Transactional Email Service Screenshots")
             else if ctx.pathWithoutLocale === '/blog/best-email-api-developer-service'
               = t("Email API Screenshots")
+            else if ctx.pathWithoutLocale === '/blog/best-email-spam-filtering-service'
+              = t("Email Spam Filtering Service Screenshots")
             else if ctx.pathWithoutLocale === '/blog/best-open-source-email-service'
               = t("Open-Source Email Service Screenshots")
             else if ctx.pathWithoutLocale === '/blog/best-private-email-service'
@@ -1238,7 +1244,7 @@ block body
       .row.mt-3
         .col.text-center
           ul.list-unstyled
-            each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+            each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
               if ctx.pathWithoutLocale !== `/blog/${str}`
                 li.mb-3
                   a.btn.btn-dark.btn-lg.btn-block(href=l(`/blog/${str}`))
@@ -1269,6 +1275,10 @@ block body
         if externalalternatives.length > 0
           .row.mt-3
             .col-12
+              .alert.alert-secondary.small
+                strong= t("Data inaccurate?")
+                = " "
+                = t("All of our data used to curate these pages is open-source and maintained in our GitHub repository.  Please submit a pull request if you see outdated or inaccurate data.  Note that the Hardenize test is only considered passing if all checkboxes are green (and not greyed out).")
               .alert.alert-secondary.small.mb-0
                 strong= t("Notice of Non-Affiliation and Disclaimer:")
                 = " "

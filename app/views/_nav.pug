@@ -567,7 +567,7 @@ nav.navbar(class=navbarClasses.join(" "))
           li.nav-item.dropdown.no-js
             form.mb-0
               - let isEmailComparison = false;
-                each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+                each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
                   if ctx.pathWithoutLocale === `/blog/${str}`
                     - isEmailComparison = true;
               a#navbar-dropdown-docs.btn.dropdown-toggle.d-block.text-left.no-js(
@@ -602,7 +602,7 @@ nav.navbar(class=navbarClasses.join(" "))
                   hr.dropdown-divider
                   h6.dropdown-header= t("Email Service Comparison")
                   .small
-                    each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service']
+                    each str in ['best-email-service', 'best-private-email-service', 'best-open-source-email-service', 'best-transactional-email-service', 'best-email-api-developer-service', 'best-email-spam-filtering-service']
                       a.dropdown-item(
                         href=l(`/blog/${str}`),
                         class=ctx.pathWithoutLocale === `/blog/${str}` ? "active" : ""

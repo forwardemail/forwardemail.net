@@ -674,6 +674,26 @@ localeRouter.get('/blog/best-email-api-developer-service', (ctx) => {
   return ctx.render('compare');
 });
 
+localeRouter.get('/blog/best-email-spam-filtering-service', (ctx) => {
+  // sort by spam filter only (api)
+  const alts = [];
+  for (let i = 0; i < config.alternatives.length; i++) {
+    const alt = { ...config.alternatives[i] };
+    if (alt.name === 'Forward Email') {
+      alts.push(alt);
+    } else if (
+      alt.smtp === 'Requires 3rd party' &&
+      alt.imap === 'Requires 3rd party' &&
+      alt.pop3 === 'Requires 3rd party'
+    ) {
+      alts.push(alt);
+    }
+  }
+
+  ctx.state.alternatives = alts;
+  return ctx.render('compare');
+});
+
 for (let x = 0; x < config.alternatives.length; x++) {
   const alternative = config.alternatives[x];
   localeRouter.get(`/blog/best-${alternative.slug}-alternative`, (ctx) => {

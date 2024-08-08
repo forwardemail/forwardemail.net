@@ -2547,6 +2547,978 @@ const obj = {
     '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/helpcrunch.com/1122896/">77/100</a>',
     // ssl_labs
     'B'
+  ],
+  Posteo: [
+    // description
+    'Green, secure, ad-free',
+    // website
+    'https://posteo.de/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '€1/mo',
+    // storage
+    '2 GB',
+    // attachment_limit
+    '50 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    true,
+    // imap
+    true,
+    // pop3
+    true,
+    // api
+    false,
+    // e2ee
+    '<a target="_blank", rel="noopener noreferrer" href="https://posteo.de/en/help/how-do-i-set-up-end-to-end-encryption-in-the-browser">Opt-in</a>',
+    // openpgp
+    true,
+    // wkd
+    true,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/posteo.de/1722691888">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/posteo.deo/2910817/">33/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/posteo.de/1308586/">83/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  Mimecast: [
+    // description
+    'Email & Collaboration Security',
+    // website
+    'https://www.mimecast.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.mimecast.com/products/mimecast-plans/">See Mimecast plans (requires you to talk to a sales team)</a> (<a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/mimecast/comments/1ay3vem/mimecast_planspricing/">according to a Reddit thread</a> it may cost upwards of +$1000-2000 per month)',
+    // storage
+    'Unknown',
+    // attachment_limit
+    '200 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mimecast.com/1723138070">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mimecast.com/2910819/">34/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mimecast.com/1308587/">52/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  Proofpoint: [
+    // description
+    'The leader in human-centric cybersecurity',
+    // website
+    'https://www.proofpoint.com/us',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.proofpoint.com/sites/default/files/data-sheets/pfpt-us-ds-essentials-pricelist-msrp-us.pdf">See Proofpoint plans (requires you to talk to a sales team)</a> (<a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/mimecast/comments/1ay3vem/mimecast_planspricing/">according to a Reddit thread</a> it may cost upwards of +$1000-2000 per month)',
+    // storage
+    'Unknown',
+    // attachment_limit
+    '150 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/proofpoint.com/1723138425">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/proofpoint.com/2910823/">73/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/proofpoint.com/1308590/">60/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  SpamTitan: [
+    // description
+    'Email Security Solutions',
+    // website
+    'https://www.spamtitan.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.spamtitan.com/spamtitan-quote/">Rrequires you to talk to a sales team</a>',
+    // storage
+    'Unknown',
+    // attachment_limit
+    '150 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamtitan.com/1723139616">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamtitan.com/2910843/">47/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamtitan.com/1308598/">40/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  Barracuda: [
+    // description
+    'Cybersecurity Solutions: Email, Apps, Network, Data',
+    // website
+    'https://www.barracuda.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.barracuda.com/products/email-protection/plans">Requires you to talk to a sales team</a>',
+    // storage
+    'Unknown',
+    // attachment_limit
+    '100 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/barracuda.com">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/barracuda.com/2910849/">49/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/barracuda.com/1308599/">55/100</a>',
+    // ssl_labs
+    'B'
+  ],
+  'Cisco Secure Email Defense': [
+    // description
+    'Advanced protection to safeguard your inboxes',
+    // website
+    'https://www.cisco.com/site/us/en/products/security/secure-email/index.html',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Unknown',
+    // attachment_limit
+    '100 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/cisco.com/1723142293">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/cisco.com/2910858/">68/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/cisco.com/1308607/">70/100</a>',
+    // ssl_labs
+    'A-'
+  ],
+  // Fortinet
+  Fortinet: [
+    // description
+    'Global Leader of Cybersecurity Solutions and Services',
+    // website
+    'https://www.fortinet.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Unknown',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/fortinet.com/1723142304">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/fortinet.com/2910861/">29/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/fortinet.com/1308608/">46/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  // Darktrace
+  Darktrace: [
+    // description
+    'Cyber security that learns you',
+    // website
+    'https://darktrace.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team (<a target="_blank" rel="noopener noreferrer" href="https://aws.amazon.com/marketplace/pp/prodview-7jaubfwm2vvhc">according to Amazon AWS Marketplace</a> it may cost upwards of $30,000/mo)',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/darktrace.com/1723140960">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/darktrace.com/2910859/">79/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/darktrace.com/1308606/">85/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  // Abnormal Security
+  'Abnormal Security': [
+    // description
+    'Cloud Email Security - Block Malicious Email Attacks',
+    // website
+    'https://abnormalsecurity.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/abnormalsecurity.com/1723140967">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/abnormalsecurity.com/2910860/">52/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/abnormalsecurity.com/1308610/">77/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  // Spam Hero
+  'Spam Hero': [
+    // description
+    'Cloud-Based Spam Filtering',
+    // website
+    'https://www.spamhero.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '$8/mo',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    '50 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamhero.com/1723140651">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamhero.com/2910862/">34/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamhero.com/1308609/">41/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  'Vade Secure': [
+    // description
+    'Simple, Sophisticated Email Security Powered by AI',
+    // website
+    'https://www.vadesecure.com',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    '50 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/vadesecure.com/1723141625">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/vadesecure.com/2910874/">47/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/vadesecure.com/1308613/">61/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  'N‑able Mail Assure': [
+    // description
+    'Email protection to help you secure and scale',
+    // website
+    'https://www.n-able.com/products/mail-assure',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    '<a target="_blank" rel="noopener noreferrer" href="https://documentation.n-able.com/mail-assure/troubleshooting/Content/kb/What-is-the-maximum-message-size-allowed-in-Mail-Assure.htm#:~:text=The%20vast%20majority%20of%20MTA%27s%20do%20not%20allow%20more%20than%2010MB%20total%20message%20size">Depends on inbound/outbound (e.g. 10 MB)</a>',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/n-able.com/1723141972">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/n-able.com/2910876/">47/100</a',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/n-able.com/1308615/">56/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  DuoCircle: [
+    // description
+    'Protect Email Against Phishing, Spam and Malware',
+    // website
+    'https://www.duocircle.com',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    '50 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/duocircle.com/1723143105">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/duocircle.com/2910878/">47/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/duocircle.com/1308620/">72/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  OOPSpam: [
+    // description
+    'Automate your Spam and Abuse Detection',
+    // website
+    'https://www.oopspam.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '$49/mo',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/oopspam.com/1723145721">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/oopspam.com/2910897/">49/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/oopspam.com/1308635/">61/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  Libraesva: [
+    // description
+    'Email Security, Email Archiving, Phishing Awareness, DMARC',
+    // website
+    'https://www.libraesva.com',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/libraesva.com/1723145854">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/libraesva.com/2910898/">68/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/libraesva.com/1308636/">62/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  Trustifi: [
+    // description
+    'Protect Your Business Emails with AI-Powered Security',
+    // website
+    'https://trustifi.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/trustifi.com/1723145991">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/trustifi.com/2910899/">66/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/trustifi.com/1308638/">65/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  'Check Point Avanan': [
+    // description
+    'Prevent Phishing before the Inbox with Email Security from Check Point',
+    // website
+    'https://www.avanan.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/avanan.com/1723146216">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/avanan.com/2910900/">76/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/avanan.com/1308639/">77/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  Heimdal: [
+    // description
+    'One Platform. Total Security.',
+    // website
+    'https://heimdalsecurity.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/heimdalsecurity.com/1723146419">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/heimdalsecurity.com/2910906/">79/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/heimdalsecurity.com/1308647/">65/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  Altospam: [
+    // description
+    'Antispam, Antivirus & Anti-Phishing Software',
+    // website
+    'https://www.altospam.com/en/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/altospam.com/1723146088">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/altospam.com/2910901/">97/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/altospam.com/1308643/">85/100</a>',
+    // ssl_labs
+    'A+'
+  ],
+  Mailinblack: [
+    // description
+    'Your cybersecurity is our job',
+    // website
+    'https://www.mailinblack.com/en/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/mailinblack.com/1723146261">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/mailinblack.com/2910902/">45/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/mailinblack.com/1308641/">48/100</a>',
+    // ssl_labs
+    'B'
+  ],
+  Egress: [
+    // description
+    'Stop more advanced phishing attacks',
+    // website
+    'https://www.egress.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Requires you to talk to a sales team',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/egress.com/1723146158">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/egress.com/2910903/">49/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/egress.com/1308642/">61/100</a>',
+    // ssl_labs
+    'A'
+  ],
+  'Spam Scanner': [
+    // description
+    'Spam Scanner is the best anti-spam, email filtering, and phishing prevention service',
+    // website
+    'https://spamscanner.net',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    'Free (built-in to <a href="https://forwardemail.net">Forward Email</a>)',
+    // storage
+    'Requires 3rd party',
+    // attachment_limit
+    'Unknown',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    'Requires 3rd party',
+    // imap
+    'Requires 3rd party',
+    // pop3
+    'Requires 3rd party',
+    // api
+    true,
+    // e2ee
+    false,
+    // openpgp
+    false,
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/spamscanner.net/1723146305">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/spamscanner.net/2910904/">52/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/spamscanner.net/1308645/">65/100</a>',
+    // ssl_labs
+    'A'
   ]
 };
 

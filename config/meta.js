@@ -396,6 +396,17 @@ module.exports = function (config) {
     } best email service API's for developers.`
   ];
 
+  meta['/blog/best-email-spam-filtering-service'] = [
+    `${
+      alternatives.filter((a) => a.api).length
+    } Best Email Spam Filtering Services in <span class="notranslate">${dayjs(
+      now
+    ).format('YYYY')}</span>`,
+    `Reviews, comparison, screenshots and more for the ${
+      alternatives.filter((a) => a.api).length
+    } best email spam filtering services.`
+  ];
+
   // developer docs
   for (const doc of developerDocs) {
     if (doc.notCodeExample) {

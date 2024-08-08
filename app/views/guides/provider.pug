@@ -298,20 +298,59 @@ block body
                       if isBot(ctx.get("User-Agent"))
                         = "None"
                     td.align-middle.text-left.py-3
-                      if !isBot(ctx.get("User-Agent"))
-                        if !user
-                          span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
-                      code#copy-user-txt.d-block.text-themed.text-nowrap
-                        = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
-                      if !isBot(ctx.get("User-Agent"))
-                        button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
-                          type="button",
-                          data-toggle="clipboard",
-                          data-clipboard-target="#copy-user-txt"
-                        )
-                          i.fa.fa-clipboard
-                          = " "
-                          = t("Copy")
+                      ul.list-inline
+                        li.list-inline-item
+                          if !isBot(ctx.get("User-Agent"))
+                            if !user
+                              span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
+                          code#copy-user-txt.d-block.text-themed.text-nowrap
+                            = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
+                          if !isBot(ctx.get("User-Agent"))
+                            button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
+                              type="button",
+                              data-toggle="clipboard",
+                              data-clipboard-target="#copy-user-txt"
+                            )
+                              i.fa.fa-clipboard
+                              = " "
+                              = t("Copy")
+                        li.list-inline-item
+                          form.ajax-form.confirm-prompt.d-block(
+                            action=l("/encrypt"),
+                            method="POST"
+                          )
+                            input(
+                              type="hidden",
+                              name="input",
+                              value=user ? user.email : "user@gmail.com"
+                            )
+                            button.btn.btn-dark.btn-sm.mt-1(
+                              type="submit"
+                            )
+                              i.fas.fa-user-secret
+                              = " "
+                              = t("Encrypt")
+                            = " "
+                            - let eHTML = t("We allow you to encrypt records even on the free plan at no cost.");
+                            - eHTML += " ";
+                            - eHTML += t("Privacy should not be a feature, it should be inherently built-in to all aspects of a product.");
+                            - eHTML += " ";
+                            - eHTML += t('As highly requested in a <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://discuss.privacyguides.net/t/forward-email-email-provider/13370">Privacy Guides discussion</a> and on <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://github.com/forwardemail/forwardemail.net/issues/254">our GitHub issues</a> we\'ve added this.');
+                            - eHTML += "<br /><br />";
+                            - eHTML += t("Need to encrypt a different value?");
+                            - eHTML += "<br />";
+                            - eHTML += t("<a href='%s' target='_blank' class='font-weight-bold'>Click here for our Encrypt TXT page.</a>", l("/encrypt"));
+                            a.btn.btn-link.confirm-prompt(
+                              href=l("/encrypt"),
+                              target="_blank",
+                              role="button",
+                              aria-label=t("Encrypt TXT"),
+                              data-confirm-type="info",
+                              data-confirm-show-cancel-button="false",
+                              data-confirm-prompt-title=t("Encrypt TXT"),
+                              data-confirm-prompt-html=eHTML
+                            )
+                              i.fa.fa-info-circle
             .alert.alert-warning.text-left.text-md-center.small!= t('<strong>Need a <span class="notranslate">TTL</span> value?</strong> Make it as close to <span class="notranslate text-monospace">3600</span> (60 minutes) as possible.')
             .alert.alert-primary.small
               = t("Need to configure more aliases on the free plan?")
