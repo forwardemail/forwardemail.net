@@ -298,13 +298,13 @@ block body
                       if isBot(ctx.get("User-Agent"))
                         = "None"
                     td.align-middle.text-left.py-3
+                      if !isBot(ctx.get("User-Agent"))
+                        if !user
+                          span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
+                      code#copy-user-txt.d-block.text-themed.text-nowrap
+                        = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
                       ul.list-inline
                         li.list-inline-item
-                          if !isBot(ctx.get("User-Agent"))
-                            if !user
-                              span.badge.badge-danger.user-select-none!= t('Edit <span class="notranslate">user@gmail.com</span> to your email:')
-                          code#copy-user-txt.d-block.text-themed.text-nowrap
-                            = `${config.recordPrefix}=${user ? user.email : "user@gmail.com"}`
                           if !isBot(ctx.get("User-Agent"))
                             button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                               type="button",
