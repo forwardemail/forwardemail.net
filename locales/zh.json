@@ -9607,5 +9607,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "使用此键将来自 webhook 请求的值与计算出的 body 值进行匹配。有关如何执行此操作的示例，请访问",
   "this Stack Overflow post": "此 Stack Overflow 帖子",
   "See the discussion at": "请参阅以下讨论",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">点击观看我们的产品巡览</a>。"
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">点击观看我们的产品巡览</a>。",
+  "You can also check the IP against": "您还可以检查 IP",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "发送方建立超过 10 个并发连接（计数器的缓存过期时间为 3 分钟，与我们 3 分钟的套接字超时时间相对应）。"
 }

@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "värde från vår webhook-förfrågan med det beräknade kroppsvärdet med denna nyckel.  Ett exempel på hur man gör detta finns på",
   "this Stack Overflow post": "detta Stack Overflow-inlägg",
   "See the discussion at": "Se diskussionen på",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klicka för att se vår produktrundtur</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klicka för att se vår produktrundtur</a> .",
+  "You can also check the IP against": "Du kan också kontrollera IP:n mot",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "avsändare från att upprätta fler än 10 samtidiga anslutningar (med 3 minuters cacheminne för räknaren, vilket speglar vår socket timeout på 3 minuter)."
 }

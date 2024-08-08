@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "このキーを使用して計算されたボディ値とWebhookリクエストからの値を比較します。これを行う方法の例は、",
   "this Stack Overflow post": "このStack Overflowの投稿",
   "See the discussion at": "議論については以下を参照",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">製品ツアーを見るにはクリックしてください</a>。"
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">製品ツアーを見るにはクリックしてください</a>。",
+  "You can also check the IP against": "IPアドレスを以下で確認することもできます",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "送信者が 10 を超える同時接続を確立できないようにします (カウンターのキャッシュ有効期限は 3 分で、これはソケットのタイムアウトである 3 分を反映しています)。"
 }

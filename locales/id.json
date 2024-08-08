@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "nilai dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini.  Contoh cara melakukan ini tersedia di",
   "this Stack Overflow post": "postingan Stack Overflow ini",
   "See the discussion at": "Lihat pembahasannya di",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klik untuk menonton tur produk kami</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klik untuk menonton tur produk kami</a> .",
+  "You can also check the IP against": "Anda juga dapat memeriksa IP-nya",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "pengirim membuat lebih dari 10 koneksi bersamaan (dengan masa berlaku cache 3 menit untuk penghitung, yang mencerminkan batas waktu soket kami selama 3 menit)."
 }

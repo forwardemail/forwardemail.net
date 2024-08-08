@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "Bu anahtarı kullanarak hesaplanan gövde değeriyle webhook isteğimizdeki değeri.  Bunun nasıl yapılacağına ilişkin bir örnek şu adreste mevcuttur:",
   "this Stack Overflow post": "bu Yığın Taşması gönderisi",
   "See the discussion at": "Şu adresteki tartışmaya bakın:",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Ürün turumuzu izlemek için tıklayın</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Ürün turumuzu izlemek için tıklayın</a> .",
+  "You can also check the IP against": "Ayrıca IP'yi de kontrol edebilirsiniz.",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "gönderenlerin 10'dan fazla eşzamanlı bağlantı kurmasını engeller (sayaç için 3 dakikalık önbellek süresi dolması ile, bu bizim 3 dakikalık soket zaman aşımımızı yansıtır)."
 }

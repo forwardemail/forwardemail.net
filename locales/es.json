@@ -9912,5 +9912,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "valor de nuestra solicitud de webhook con el valor del cuerpo calculado usando esta clave.  Un ejemplo de cómo hacer esto está disponible en",
   "this Stack Overflow post": "esta publicación de desbordamiento de pila",
   "See the discussion at": "Vea la discusión en",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Haga clic para ver nuestro recorrido por el producto</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Haga clic para ver nuestro recorrido por el producto</a> .",
+  "You can also check the IP against": "También puedes comparar la IP con",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "a los remitentes establezcan más de 10 conexiones simultáneas (con una caducidad de caché de 3 minutos para el contador, que refleja nuestro tiempo de espera de socket de 3 minutos)."
 }

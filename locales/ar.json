@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "القيمة من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح.  مثال على كيفية القيام بذلك متاح على",
   "this Stack Overflow post": "هذا المنشور Stack Overflow",
   "See the discussion at": "انظر المناقشة في",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">انقر لمشاهدة جولة منتجاتنا</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">انقر لمشاهدة جولة منتجاتنا</a> .",
+  "You can also check the IP against": "يمكنك أيضًا التحقق من عنوان IP",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "المرسلون من إنشاء أكثر من 10 اتصالات متزامنة (مع انتهاء صلاحية ذاكرة التخزين المؤقت لمدة 3 دقائق للعداد، وهو ما يعكس مهلة المقبس لدينا البالغة 3 دقائق)."
 }

@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "ค่าจากคำขอ webhook ของเราพร้อมค่าเนื้อความที่คำนวณโดยใช้คีย์นี้  ดูตัวอย่างวิธีการได้ที่",
   "this Stack Overflow post": "โพสต์ Stack Overflow นี้",
   "See the discussion at": "ดูเสวนาได้ที่",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">คลิกเพื่อดูทัวร์ชมผลิตภัณฑ์ของเรา</a>"
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">คลิกเพื่อดูทัวร์ชมผลิตภัณฑ์ของเรา</a>",
+  "You can also check the IP against": "คุณสามารถตรวจสอบ IP ได้ด้วย",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "ผู้ส่งจากการสร้างการเชื่อมต่อพร้อมกันมากกว่า 10 รายการ (โดยมีระยะเวลาหมดอายุแคช 3 นาทีสำหรับตัวนับ ซึ่งสะท้อนเวลาหมดเวลาของซ็อกเก็ตของเราที่ 3 นาที)"
 }

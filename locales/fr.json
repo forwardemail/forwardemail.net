@@ -7435,5 +7435,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "valeur de notre demande de webhook avec la valeur du corps calculée à l'aide de cette clé.  Un exemple de la façon de procéder est disponible sur",
   "this Stack Overflow post": "ce message de débordement de pile",
   "See the discussion at": "Voir la discussion sur",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Cliquez pour regarder notre visite guidée des produits</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Cliquez pour regarder notre visite guidée des produits</a> .",
+  "You can also check the IP against": "Vous pouvez également vérifier l'IP par rapport à",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "les expéditeurs d'établir plus de 10 connexions simultanées (avec une expiration du cache de 3 minutes pour le compteur, ce qui reflète notre délai d'expiration de socket de 3 minutes)."
 }

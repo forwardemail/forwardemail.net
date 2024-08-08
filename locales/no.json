@@ -9919,5 +9919,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "verdi fra webhook-forespørselen vår med den beregnede kroppsverdien ved hjelp av denne nøkkelen.  Et eksempel på hvordan du gjør dette er tilgjengelig på",
   "this Stack Overflow post": "dette Stack Overflow-innlegget",
   "See the discussion at": "Se diskusjonen på",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klikk for å se vår produktomvisning</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klikk for å se vår produktomvisning</a> .",
+  "You can also check the IP against": "Du kan også sjekke IP-en mot",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "avsendere fra å etablere mer enn 10 samtidige tilkoblinger (med 3 minutters cache-utløp for telleren, som gjenspeiler vår socket timeout på 3 minutter)."
 }

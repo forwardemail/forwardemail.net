@@ -9914,5 +9914,7 @@
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "значення з нашого запиту webhook із обчисленим значенням тіла за допомогою цього ключа.  Приклад того, як це зробити, доступний за адресою",
   "this Stack Overflow post": "ця публікація Stack Overflow",
   "See the discussion at": "Дивіться обговорення на",
-  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Натисніть, щоб переглянути огляд нашого продукту</a> ."
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Натисніть, щоб переглянути огляд нашого продукту</a> .",
+  "You can also check the IP against": "Ви також можете перевірити IP-адресу",
+  "senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).": "відправники від встановлення більше ніж 10 одночасних з’єднань (із закінченням 3-хвилинного кешу для лічильника, який відображає час очікування нашого сокета в 3 хвилини)."
 }

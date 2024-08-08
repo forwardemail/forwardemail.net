@@ -2546,9 +2546,7 @@ The MX servers also limit messages being forwarded to one or more recipients thr
 
 Our IMAP and SMTP servers limit your aliases from having more than `60` concurrent connections at once.
 
-Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 5 connections every 30 seconds, and will result in a 1 hour temporary `421` status code returned for the sender's resolved root client hostname or IP address (and all associated IP addresses with the sender's root client hostname, if it was resolved via reverse lookup).
-
-Additionally, if a massive brute force / socket spam attack is detected by a non-allowlisted user (e.g. more than 25 attempted connections while being throttled and receiving `421` in < 5 minutes), then the sender will be throttled for 1 day.  Note that industry standard and properly configured mail servers should backoff and retry (and not brute-force spam if a soft retry error code of `421` is detected).
+Our MX servers limit [non-allowlisted](#do-you-have-an-allowlist) senders from establishing more than 10 concurrent connections (with 3 minute cache expiry for the counter, which mirrors our socket timeout of 3 minutes).
 
 
 ## How do you protect against backscatter
@@ -2797,7 +2795,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
 **Here are additional notes regarding webhooks:**
 
 * If you need to verify webhook payloads (to ensure they're actually coming from our server), then you can [resolve the remote client IP address client hostname using a reverse lookup](https://nodejs.org/api/dns.html#dnspromisesreverseip) – it should be either `mx1.forwardemail.net` or `mx2.forwardemail.net`.
-  * You can also check the IP against against [our published IP addresses](#what-are-your-servers-ip-addresses).
+  * You can also check the IP against [our published IP addresses](#what-are-your-servers-ip-addresses).
   * If you're on a paid plan, then go to My Account → Domains → Settings → Webhook Signature Payload Verification Key to obtain your webhook key.
     * You can rotate this key at anytime for security reasons.
     * Calculate and compare the `X-Webhook-Signature` value from our webhook request with the computed body value using this key.  An example of how to do this is available at [this Stack Overflow post](https://stackoverflow.com/a/68885281).
