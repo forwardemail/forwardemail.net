@@ -1549,7 +1549,6 @@ test('encrypts and decrypts TXT', async (t) => {
       input
     });
   t.is(res.status, 200);
-  t.log(res.text);
   t.true(res.text.startsWith('forward-email='));
   t.true(isBase64(res.text.split('forward-email=')[1]));
   t.is(
