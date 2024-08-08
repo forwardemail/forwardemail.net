@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "Vypočítejte a porovnejte",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "hodnotu z našeho požadavku webhooku s vypočtenou hodnotou těla pomocí tohoto klíče.  Příklad, jak to udělat, je k dispozici na",
   "this Stack Overflow post": "tento příspěvek Stack Overflow",
-  "See the discussion at": "Podívejte se na diskusi na"
+  "See the discussion at": "Podívejte se na diskusi na",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klikněte a podívejte se na naši prohlídku produktu</a> ."
 }

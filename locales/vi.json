@@ -7439,5 +7439,6 @@
   "Calculate and compare the": "Tính toán và so sánh các",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "giá trị từ yêu cầu webhook của chúng tôi với giá trị nội dung được tính toán bằng khóa này.  Một ví dụ về cách thực hiện việc này có sẵn tại",
   "this Stack Overflow post": "bài viết về Stack Overflow này",
-  "See the discussion at": "Xem thảo luận tại"
+  "See the discussion at": "Xem thảo luận tại",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Nhấn vào đây để xem chuyến tham quan sản phẩm của chúng tôi</a> ."
 }

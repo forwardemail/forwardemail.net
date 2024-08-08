@@ -7434,5 +7434,6 @@
   "Calculate and compare the": "Calculer et comparer les",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "valeur de notre demande de webhook avec la valeur du corps calculée à l'aide de cette clé.  Un exemple de la façon de procéder est disponible sur",
   "this Stack Overflow post": "ce message de débordement de pile",
-  "See the discussion at": "Voir la discussion sur"
+  "See the discussion at": "Voir la discussion sur",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Cliquez pour regarder notre visite guidée des produits</a> ."
 }

@@ -7930,5 +7930,6 @@
   "Calculate and compare the": "חשב והשווה את",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "ערך מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה.  דוגמה כיצד לעשות זאת זמינה ב",
   "this Stack Overflow post": "הפוסט הזה של Stack Overflow",
-  "See the discussion at": "ראה את הדיון ב"
+  "See the discussion at": "ראה את הדיון ב",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">לחץ כדי לצפות בסיור המוצרים שלנו</a> ."
 }

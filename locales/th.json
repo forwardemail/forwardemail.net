@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "คำนวณและเปรียบเทียบ",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "ค่าจากคำขอ webhook ของเราพร้อมค่าเนื้อความที่คำนวณโดยใช้คีย์นี้  ดูตัวอย่างวิธีการได้ที่",
   "this Stack Overflow post": "โพสต์ Stack Overflow นี้",
-  "See the discussion at": "ดูเสวนาได้ที่"
+  "See the discussion at": "ดูเสวนาได้ที่",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">คลิกเพื่อดูทัวร์ชมผลิตภัณฑ์ของเรา</a>"
 }

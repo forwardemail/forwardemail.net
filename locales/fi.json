@@ -9760,5 +9760,6 @@
   "Calculate and compare the": "Laske ja vertaa",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "arvo webhook-pyynnöstämme ja tämän avaimen avulla laskettu runko-arvo.  Esimerkki siitä, miten tämä tehdään, on saatavilla osoitteessa",
   "this Stack Overflow post": "tämä Stack Overflow -viesti",
-  "See the discussion at": "Katso keskustelu osoitteessa"
+  "See the discussion at": "Katso keskustelu osoitteessa",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klikkaa nähdäksesi tuoteesittelymme</a> ."
 }

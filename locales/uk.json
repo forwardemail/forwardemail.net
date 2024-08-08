@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "Обчисліть і порівняйте",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "значення з нашого запиту webhook із обчисленим значенням тіла за допомогою цього ключа.  Приклад того, як це зробити, доступний за адресою",
   "this Stack Overflow post": "ця публікація Stack Overflow",
-  "See the discussion at": "Дивіться обговорення на"
+  "See the discussion at": "Дивіться обговорення на",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Натисніть, щоб переглянути огляд нашого продукту</a> ."
 }

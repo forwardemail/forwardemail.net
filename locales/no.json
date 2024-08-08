@@ -9918,5 +9918,6 @@
   "Calculate and compare the": "Beregn og sammenlign",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "verdi fra webhook-forespørselen vår med den beregnede kroppsverdien ved hjelp av denne nøkkelen.  Et eksempel på hvordan du gjør dette er tilgjengelig på",
   "this Stack Overflow post": "dette Stack Overflow-innlegget",
-  "See the discussion at": "Se diskusjonen på"
+  "See the discussion at": "Se diskusjonen på",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klikk for å se vår produktomvisning</a> ."
 }

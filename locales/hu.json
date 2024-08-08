@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "Számítsa ki és hasonlítsa össze a",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "értéket a webhook kérésünkből az ezzel a kulccsal kiszámított törzsértékkel.  Ennek végrehajtására egy példa a címen található",
   "this Stack Overflow post": "ezt a Stack Overflow bejegyzést",
-  "See the discussion at": "Lásd a vitát a címen"
+  "See the discussion at": "Lásd a vitát a címen",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Kattintson termékismertetőnk megtekintéséhez</a> ."
 }

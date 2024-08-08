@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "احسب وقارن بين",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "القيمة من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح.  مثال على كيفية القيام بذلك متاح على",
   "this Stack Overflow post": "هذا المنشور Stack Overflow",
-  "See the discussion at": "انظر المناقشة في"
+  "See the discussion at": "انظر المناقشة في",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">انقر لمشاهدة جولة منتجاتنا</a> ."
 }

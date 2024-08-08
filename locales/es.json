@@ -9911,5 +9911,6 @@
   "Calculate and compare the": "Calcula y compara la",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "valor de nuestra solicitud de webhook con el valor del cuerpo calculado usando esta clave.  Un ejemplo de cómo hacer esto está disponible en",
   "this Stack Overflow post": "esta publicación de desbordamiento de pila",
-  "See the discussion at": "Vea la discusión en"
+  "See the discussion at": "Vea la discusión en",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Haga clic para ver nuestro recorrido por el producto</a> ."
 }

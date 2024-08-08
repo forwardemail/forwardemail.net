@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "계산하고 비교해 보세요.",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "이 키를 사용하여 계산된 본문 값으로 웹훅 요청의 값을 가져옵니다.  이를 수행하는 방법의 예는 다음에서 확인할 수 있습니다.",
   "this Stack Overflow post": "이 스택 오버플로 게시물",
-  "See the discussion at": "다음 토론을 참조하세요."
+  "See the discussion at": "다음 토론을 참조하세요.",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">제품 둘러보기를 보려면 클릭하세요</a> ."
 }

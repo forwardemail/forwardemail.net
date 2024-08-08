@@ -6874,5 +6874,6 @@
   "Calculate and compare the": "Beregn og sammenlign",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "værdi fra vores webhook-anmodning med den beregnede kropsværdi ved hjælp af denne nøgle.  Et eksempel på hvordan man gør dette er tilgængeligt på",
   "this Stack Overflow post": "dette Stack Overflow-indlæg",
-  "See the discussion at": "Se diskussionen kl"
+  "See the discussion at": "Se diskussionen kl",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klik for at se vores produktrundvisning</a> ."
 }

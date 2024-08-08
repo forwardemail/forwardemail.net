@@ -9913,5 +9913,6 @@
   "Calculate and compare the": "Beräkna och jämför",
   "value from our webhook request with the computed body value using this key.  An example of how to do this is available at": "värde från vår webhook-förfrågan med det beräknade kroppsvärdet med denna nyckel.  Ett exempel på hur man gör detta finns på",
   "this Stack Overflow post": "detta Stack Overflow-inlägg",
-  "See the discussion at": "Se diskussionen på"
+  "See the discussion at": "Se diskussionen på",
+  "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Click to watch our product tour</a>.": "<a href=\"https://www.youtube.com/watch?v=N6zjv40zuIY\" rel=\"noopener noreferrer\" target=\"_blank\" class=\"text-decoration-underline text-danger font-weight-bold\">Klicka för att se vår produktrundtur</a> ."
 }
