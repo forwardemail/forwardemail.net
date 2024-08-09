@@ -1762,8 +1762,9 @@ async function parsePayload(data, ws) {
         if (
           !isSANB(payload.format) ||
           !['eml', 'mbox', 'sqlite'].includes(payload.format)
-        )
-          throw new TypeError('Format is invalid');
+        ) {
+          payload.format = 'sqlite'; // default
+        }
 
         const key = `backup_check:${payload.session.user.alias_id}`;
 
