@@ -16,6 +16,7 @@ const { parse } = require('node-html-parser');
 
 const env = require('./env');
 
+const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 // TODO: Duck/Firefox Relay?
@@ -3611,7 +3612,7 @@ for (const name of Object.keys(obj)) {
 //
 // only run puppeteer if we're on the web server
 //
-if (env.WEB_HOST === os.hostname()) {
+if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
   (async () => {
     let browser;
     try {
@@ -3637,7 +3638,11 @@ if (env.WEB_HOST === os.hostname()) {
           `${slug(a.name)}.webp`
         );
         if (!fs.existsSync(p)) {
-          console.error(`${a.name} missing valid "screenshot" at ${p}`);
+          const err = new TypeError(
+            `${a.name} missing valid "screenshot" at ${p}`
+          );
+          err.isCodeBug = true;
+          logger.fatal(err);
           // eslint-disable-next-line no-await-in-loop
           const page = await browser.newPage();
           // eslint-disable-next-line no-await-in-loop
@@ -3654,7 +3659,8 @@ if (env.WEB_HOST === os.hostname()) {
               path: p
             });
           } catch (err) {
-            console.error(err);
+            err.isCodeBug = true;
+            logger.fatal(err);
           }
         }
 
@@ -3681,14 +3687,15 @@ if (env.WEB_HOST === os.hostname()) {
         }
       }
     } catch (err) {
-      console.error(err);
+      err.isCodeBug = true;
+      logger.fatal(err);
     }
 
     if (browser)
       browser
         .close()
         .then()
-        .catch((err) => console.error(err));
+        .catch((err) => logger.fatal(err));
   })();
 }
 
