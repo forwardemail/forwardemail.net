@@ -2015,12 +2015,20 @@ async function getTxtAddresses(
     } else if (isBase64(element)) {
       try {
         decrypt(
-          Buffer.from(element, 'base64').toString('hex'),
+          Buffer.from(element, 'base64').toString('utf8'),
           env.TXT_ENCRYPTION_KEY
         );
         hasBase64 = true;
-      } catch (err) {
-        logger.debug(err);
+      } catch {
+        try {
+          decrypt(
+            Buffer.from(element, 'base64').toString('hex'),
+            env.TXT_ENCRYPTION_KEY
+          );
+          hasBase64 = true;
+        } catch (err) {
+          logger.debug(err);
+        }
       }
     }
   }
