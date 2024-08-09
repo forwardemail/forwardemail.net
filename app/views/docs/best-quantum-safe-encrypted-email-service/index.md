@@ -1,4 +1,4 @@
-# Quantum Safe Email: How we use encrypted SQLite mailboxes to keep your email safe
+# Quantum Resistant Email: How we use encrypted SQLite mailboxes to keep your email safe
 
 
 ## Table of Contents

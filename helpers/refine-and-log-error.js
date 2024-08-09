@@ -57,6 +57,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
       err.message =
         'An internal server error has occurred, please try again later.';
     }
+
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
   } else {

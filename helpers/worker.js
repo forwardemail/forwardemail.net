@@ -11,10 +11,14 @@ require('#config/mongoose');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const punycode = require('node:punycode');
 
+const { Builder } = require('json-sql');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const archiver = require('archiver');
+const archiverZipEncrypted = require('archiver-zip-encrypted');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const delay = require('delay');
@@ -26,13 +30,22 @@ const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 const {
   S3Client,
+  GetObjectCommand,
   CreateBucketCommand,
   HeadBucketCommand,
   HeadObjectCommand
 } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+// const Newlines = require('wildduck/lib/newlines');
+// const MboxStream = require('wildduck/lib/mbox-stream');
+// const HeaderSplitter = require('wildduck/lib/header-splitter');
 
 const Aliases = require('#models/aliases');
+const AttachmentStorage = require('#helpers/attachment-storage');
+const Messages = require('#models/messages');
+const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
@@ -46,6 +59,14 @@ const logger = require('#helpers/logger');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const setupMongoose = require('#helpers/setup-mongoose');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
+
+const builder = new Builder();
+
+const attachmentStorage = new AttachmentStorage();
+const indexer = new Indexer({
+  attachmentStorage
+});
 
 const S3 = new S3Client({
   region: env.AWS_REGION,
@@ -101,6 +122,9 @@ const instance = {
   client,
   logger
 };
+
+// <https://github.com/artem-karpenko/archiver-zip-encrypted/>
+archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
 
 // eslint-disable-next-line complexity
 async function rekey(payload) {
@@ -318,38 +342,48 @@ async function backup(payload) {
 
   logger.debug('backup worker', { payload });
 
-  let extension;
   let tmp;
   let backup;
   let err;
 
-  try {
-    // determine extension format
-    switch (payload.format) {
-      case 'sqlite': {
-        extension = 'sqlite';
+  // create bucket on s3 if it doesn't already exist
+  // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
+  const bucket = `${config.env}-${dashify(
+    _.camelCase(payload.session.user.storage_location)
+  )}`;
 
-        break;
-      }
+  // determine extension format
+  let extension;
+  switch (payload.format) {
+    case 'sqlite': {
+      extension = 'sqlite';
 
-      case 'mbox': {
-        extension = 'mbox';
-
-        break;
-      }
-
-      case 'eml': {
-        extension = 'zip';
-
-        break;
-      }
-
-      default: {
-        // safeguard
-        throw new TypeError('Unknown extension');
-      }
+      break;
     }
 
+    case 'mbox': {
+      extension = 'zip';
+
+      break;
+    }
+
+    case 'eml': {
+      extension = 'zip';
+
+      break;
+    }
+
+    default: {
+      // safeguard
+      throw new TypeError('Unknown extension');
+    }
+  }
+
+  // the key is either `.sqlite` for "sqlite" value of `payload.format`
+  // or it is `.mbox` for "mbox" value or `zip` for "eml" value
+  const key = `${payload.session.user.alias_id}.${extension}`;
+
+  try {
     // check how much space is remaining on storage location
     const storagePath = getPathToDatabase({
       id: payload.session.user.alias_id,
@@ -407,16 +441,6 @@ async function backup(payload) {
     }
 
     if (isCancelled) throw new ServerShutdownError();
-
-    // create bucket on s3 if it doesn't already exist
-    // <https://developers.cloudflare.com/r2/examples/aws/aws-sdk-js-v3/>
-    const bucket = `${config.env}-${dashify(
-      _.camelCase(payload.session.user.storage_location)
-    )}`;
-
-    // the key is either `.sqlite` for "sqlite" value of `payload.format`
-    // or it is `.mbox` for "mbox" value or `zip` for "eml" value
-    const key = `${payload.session.user.alias_id}.${extension}`;
 
     if (config.env !== 'test') {
       let res;
@@ -545,22 +569,174 @@ async function backup(payload) {
       }
 
       case 'mbox': {
-        // TODO: mbox
-        throw new TypeError('Coming soon');
+        throw new TypeError(
+          'MBOX export is not yet available - it is coming soon'
+        );
       }
+      /*
+      // create a password protected zip file in-memory using streams
+      case 'mbox': {
+        // create archive and specify method of encryption and password
+        const archive = archiver.create('zip-encrypted', {
+          zlib: { level: 8 },
+          encryptionMethod: 'aes256',
+          password: decrypt(payload.session.user.password)
+        });
+        const output = fs.createWriteStream(tmp);
+        archive.pipe(output);
+        archive.append(
+          `MBOX backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}`,
+          { name: 'README.txt' }
+        );
 
+        const sql = builder.build({
+          type: 'select',
+          table: 'Mailboxes',
+          fields: ['_id', 'path'],
+          sort: 'path'
+        });
+
+        //
+        // NOTE: the section below in the next `for` loop is inspired by wildduck and this indented section
+        //       has a license change (in the future this will be moved to its own file)
+        //       <https://github.com/nodemailer/wildduck/blob/master/lib/mbox-export.js>
+        //
+        //
+        //  Copyright (c) Forward Email LLC
+        //  SPDX-License-Identifier: MPL-2.0
+        //
+        //  This Source Code Form is subject to the terms of the Mozilla Public
+        //  License, v. 2.0. If a copy of the MPL was not distributed with this
+        //  file, You can obtain one at https://mozilla.org/MPL/2.0/.
+        //
+        //  This file incorporates work covered by the following copyright and
+        //  permission notice:
+        //
+        //    WildDuck Mail Agent is licensed under the European Union Public License 1.2 or later.
+        //    https://github.com/nodemailer/wildduck
+        //
+        for (const mailbox of db.prepare(sql.query).all(sql.values)) {
+          const sql = builder.build({
+            type: 'select',
+            table: 'Messages',
+            sort: 'uid',
+            condition: {
+              mailbox: mailbox._id
+            }
+          });
+          for (const result of db.prepare(sql.query).iterate(sql.values)) {
+            const message = syncConvertResult(Messages, result);
+            // TODO: From header here doesn't seem accurate
+            const from = message.headers.find((obj) => obj.key === 'from');
+            const mboxStream = new MboxStream({
+              from: from ? from.value : '',
+              date: message.hdate,
+              draft: message.draft === true,
+              mailboxPath: punycode.toASCII(mailbox.path)
+            });
+            const headerSplitter = new HeaderSplitter();
+            const newlines = new Newlines();
+            // similar to 'rfc822' case in `helpers/get-query-response.js`
+            // (value is a stream)
+            const { value } = indexer.getContents(
+              message.mimeTree,
+              false,
+              {},
+              instance,
+              payload.session
+            );
+            const outputStream = new PassThrough();
+            value
+              .pipe(headerSplitter)
+              .pipe(newlines)
+              .pipe(mboxStream)
+              .pipe(outputStream, { end: false });
+            archive.append(outputStream, {
+              name: punycode.toASCII(mailbox.path) + '.mbox'
+            });
+          }
+        }
+
+        archive.finalize();
+        archive.on('warning', (err) => {
+          logger.warn(err);
+        });
+        await new Promise((resolve, reject) => {
+          archive.once('error', reject);
+          archive.once('end', resolve);
+        });
+        break;
+      }
+      */
+
+      // create a password protected zip file in-memory using streams
       case 'eml': {
-        // TODO: create a password protected zip file in-memory using streams
-        // which should be located at `tmp` location of all the `eml` files
-        // `${message.id}.eml`
-        // .zip file
-        // |- README.md
-        // |- INBOX/
-        // |  |- xyz.eml
-        // |  |- abc.eml
-        // |  |- Sub Folder/
-        // | ...
-        throw new TypeError('Coming soon');
+        // create archive and specify method of encryption and password
+        const archive = archiver.create('zip-encrypted', {
+          zlib: { level: 8 },
+          encryptionMethod: 'aes256',
+          password: decrypt(payload.session.user.password)
+        });
+        const output = fs.createWriteStream(tmp);
+        archive.pipe(output);
+        archive.append(
+          `EML backup created via Forward Email\nhttps://forwardemail.net\n${new Date().toISOString()}`,
+          { name: 'README.txt' }
+        );
+
+        const map = new Map();
+
+        {
+          const sql = builder.build({
+            type: 'select',
+            table: 'Mailboxes',
+            fields: ['_id', 'path'],
+            sort: 'path'
+          });
+          for (const mailbox of db.prepare(sql.query).iterate(sql.values)) {
+            map.set(mailbox._id, mailbox.path);
+            archive.append(null, {
+              name: `${punycode.toASCII(mailbox.path)}/`
+            });
+          }
+        }
+
+        {
+          const sql = builder.build({
+            type: 'select',
+            table: 'Messages',
+            sort: 'uid'
+          });
+          for (const result of db.prepare(sql.query).iterate(sql.values)) {
+            const message = syncConvertResult(Messages, result);
+            const mailboxPath = map.get(message.mailbox.toString());
+            const name = punycode.toASCII(
+              mailboxPath
+                ? `${mailboxPath}/${message._id.toString()}.eml`
+                : `${message._id.toString()}.eml`
+            );
+            // similar to 'rfc822' case in `helpers/get-query-response.js`
+            // (value is a stream)
+            const { value } = indexer.getContents(
+              message.mimeTree,
+              false,
+              {},
+              instance,
+              payload.session
+            );
+            archive.append(value, { name });
+          }
+        }
+
+        archive.finalize();
+        archive.on('warning', (err) => {
+          logger.warn(err);
+        });
+        await new Promise((resolve, reject) => {
+          archive.on('error', reject);
+          archive.on('end', resolve);
+        });
+        break;
       }
       // No default
     }
@@ -628,14 +804,18 @@ async function backup(payload) {
     }
   }
 
+  //
+  // NOTE: out of scope asynchronous code will NOT get run
+  //       (so we cannot do `then()` here to run after throwing)
+  //
+  try {
+    await client.del(`backup_check:${payload.session.user.alias_id}`);
+  } catch (err) {
+    logger.fatal(err);
+  }
+
   // if an error occurred then allow cache to attempt again
   if (err) {
-    //
-    // NOTE: out of scope asynchronous code will NOT get run
-    //       (so we cannot do `then()` here to run after throwing)
-    //
-    await client.del(`backup_check:${payload.session.user.alias_id}`);
-
     //
     // email user a friendly error message
     //
@@ -670,7 +850,15 @@ async function backup(payload) {
     throw err;
   }
 
-  // TODO: include URL link in the email to download
+  // include URL link in the email to download
+  const link = await getSignedUrl(
+    S3,
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: key
+    }),
+    { expiresIn: 3600 * 4 } // # seconds till expiry (3600 = 60m * 4 = 4 hours)
+  );
 
   //
   // NOTE: out of scope asynchronous code will NOT get run
@@ -692,7 +880,9 @@ async function backup(payload) {
         message: i18n.translate(
           'ALIAS_BACKUP_READY',
           payload.session.user.locale,
-          payload.session.user.username
+          payload.format,
+          payload.session.user.username,
+          link
         ),
         locale: payload.session.user.locale
       }

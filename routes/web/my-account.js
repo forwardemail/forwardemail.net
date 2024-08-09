@@ -413,7 +413,6 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
-    rateLimit(20, 'download alias backup'),
     web.myAccount.downloadAliasBackup
   )
   .get(

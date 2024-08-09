@@ -21,9 +21,7 @@ const isHTML = require('is-html');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const splitLines = require('split-lines');
-const {
-  IMAPConnection
-} = require('@forwardemail/wildduck/imap-core/lib/imap-connection');
+const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 

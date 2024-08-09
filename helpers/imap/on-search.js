@@ -17,7 +17,7 @@ const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
 const ms = require('ms');
-const tools = require('@forwardemail/wildduck/lib/tools');
+const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 
 const IMAPError = require('#helpers/imap-error');

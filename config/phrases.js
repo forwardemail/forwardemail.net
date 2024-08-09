@@ -73,7 +73,7 @@ module.exports = {
   ALIAS_BACKUP_LINK:
     'Please <a href="%s" target="_blank">click here</a> to download the backup. This link will expire soon.',
   ALIAS_BACKUP_READY:
-    'Please refresh the page and download the latest alias backup for <span class="notranslate font-weight-bold text-monospace">%s</span>.',
+    'Click the button below within 4 hours to download the <span class="notranslate">"%s"</span> backup for <span class="notranslate font-weight-bold text-monospace">%s</span>.<br /><br /><a href="%s" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-lg">Download Now</a>',
   ALIAS_BACKUP_READY_SUBJECT:
     'Alias backup for <span class="notranslate">%s</span> is ready for download',
   ALIAS_BACKUP_STARTED:
@@ -96,7 +96,7 @@ module.exports = {
   ALIAS_PASSWORD_GENERATED_SUBJECT: `New password generated for <span class="notranslate">%s</span>`,
   NO_RESULTS_FOUND: 'No results were found.',
   EMAIL_SETUP_GUIDE: 'Email Setup Guide',
-  NO_CREDIT_CARD: '100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL',
+  NO_CREDIT_CARD: '100% OPEN-SOURCE + QUANTUM RESISTANT ENCRYPTION',
   PRIVATE_BUSINESS: 'Private Business Email Service',
   TUTORIAL: 'Tutorial',
   FREE_EMAIL: 'Learn more',

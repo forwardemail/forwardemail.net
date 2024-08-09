@@ -16,7 +16,7 @@
 const { Buffer } = require('node:buffer');
 const { PassThrough } = require('node:stream');
 
-const WildDuckIndexer = require('@forwardemail/wildduck/imap-core/lib/indexer/indexer');
+const WildDuckIndexer = require('wildduck/imap-core/lib/indexer/indexer');
 
 const storeNodeBodies = require('#helpers/store-node-bodies');
 
@@ -363,7 +363,7 @@ class Indexer extends WildDuckIndexer {
             // NOTE: WildDuck source code simply passes attachmentId
             // since it uses MongoDB for lookups, but we use SQLite
             // so we have to pass the instance and session as well
-            //
+            // (this calls `attachmentStorage.get`)
             attachmentData = await this.getAttachment(
               mimeTree,
               attachmentId,
