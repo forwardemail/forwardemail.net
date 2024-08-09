@@ -115,6 +115,12 @@ async function downloadAliasBackup(ctx) {
         .then()
         .catch((err) => ctx.logger.fatal(err));
 
+    if (!isSANB(ctx.request.body.format)) {
+      ctx.request.body.format = 'sqlite';
+    } else if (!['eml', 'mbox', 'sqlite'].includes(ctx.request.body.format)) {
+      throw Boom.badRequest(ctx.translateError('INVALID_ALIAS_BACKUP_FORMAT'));
+    }
+
     // send backup request
     if (isSANB(ctx.request.body.password)) {
       const wsp = createWebSocketAsPromised();
@@ -122,6 +128,7 @@ async function downloadAliasBackup(ctx) {
         {
           action: 'backup',
           backup_at: new Date().toISOString(),
+          format: ctx.request.body.format,
           email: ctx.state.user[config.userFields.fullEmail],
           session: {
             user: {

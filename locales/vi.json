@@ -7480,5 +7480,12 @@
   "Reviews, comparison, screenshots and more for the 44 best email spam filtering services.": "Đánh giá, so sánh, ảnh chụp màn hình và nhiều thông tin khác về 44 dịch vụ lọc thư rác email tốt nhất.",
   "We recommend <a href=\"%s\" class=\"alert-link text-decoration-underline\">Forward Email</a> as the best email spam filtering service.": "Chúng tôi khuyên dùng <a href=\"%s\" class=\"alert-link text-decoration-underline\">Forward Email</a> vì đây là dịch vụ lọc thư rác email tốt nhất.",
   "Email Spam Filtering Service Comparison": "So sánh dịch vụ lọc thư rác email",
-  "Email Spam Filtering Service Screenshots": "Ảnh chụp màn hình dịch vụ lọc thư rác email"
+  "Email Spam Filtering Service Screenshots": "Ảnh chụp màn hình dịch vụ lọc thư rác email",
+  "Select backup format:": "Select backup format:",
+  "EML": "EML",
+  "MBOX": "MBOX",
+  "Advanced Users": "Advanced Users",
+  "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:": "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:",
+  "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.": "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.",
+  "Leave blank to download <strong>SQLite</strong> backup on": "Leave blank to download <strong>SQLite</strong> backup on"
 }

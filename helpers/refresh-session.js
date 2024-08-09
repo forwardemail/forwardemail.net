@@ -164,7 +164,6 @@ async function refreshSession(session, command) {
 
   // TODO: notifications via web/sms/desktop/mobile electron + react native app
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
-  // TODO: script to export as mbox
 
   // connect to the database (sets `session.db` for us automatically)
   await getDatabase(

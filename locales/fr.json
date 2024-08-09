@@ -7475,5 +7475,12 @@
   "Reviews, comparison, screenshots and more for the 44 best email spam filtering services.": "Avis, comparaison, captures d'écran et plus encore pour les 44 meilleurs services de filtrage de spam de courrier électronique.",
   "We recommend <a href=\"%s\" class=\"alert-link text-decoration-underline\">Forward Email</a> as the best email spam filtering service.": "Nous recommandons <a href=\"%s\" class=\"alert-link text-decoration-underline\">Forward Email</a> comme le meilleur service de filtrage du spam par courrier électronique.",
   "Email Spam Filtering Service Comparison": "Comparaison des services de filtrage des courriers indésirables",
-  "Email Spam Filtering Service Screenshots": "Captures d'écran du service de filtrage du courrier indésirable"
+  "Email Spam Filtering Service Screenshots": "Captures d'écran du service de filtrage du courrier indésirable",
+  "Select backup format:": "Select backup format:",
+  "EML": "EML",
+  "MBOX": "MBOX",
+  "Advanced Users": "Advanced Users",
+  "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:": "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:",
+  "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.": "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.",
+  "Leave blank to download <strong>SQLite</strong> backup on": "Leave blank to download <strong>SQLite</strong> backup on"
 }

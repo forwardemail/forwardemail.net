@@ -413,19 +413,8 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
-    rateLimit(10, 'download alias backup'),
+    rateLimit(20, 'download alias backup'),
     web.myAccount.downloadAliasBackup
-  )
-  .post(
-    '/domains/:domain_id/aliases/:alias_id/upload-mbox',
-    web.myAccount.retrieveDomain,
-    web.myAccount.ensureUpgradedPlan,
-    web.myAccount.ensureSMTPAccess,
-    web.myAccount.retrieveAlias,
-    web.myAccount.ensureAliasAdmin,
-    policies.ensureTurnstile,
-    rateLimit(5, 'upload alias mbox'),
-    web.myAccount.uploadAliasMbox
   )
   .get(
     '/domains/:domain_id/billing',

@@ -239,7 +239,11 @@ module.exports = {
   INVALID_SESSION_SECRET: 'Invalid session secret.',
   INVALID_ALIAS_BACKUP:
     'You cannot download a backup for a catch-all or regex.',
+  INVALID_ALIAS_BACKUP_FORMAT:
+    'Backup format must be either EML, MBOX, or SQLite.',
   INVALID_SLUG: 'Please slightly change values to ensure slug uniqueness.',
+  BACKUP_IN_PROGRESS:
+    'We could not complete your request at this time to create a backup.  Either a backup is already in progress or the queue is currently full.  Please try again later, and if this problem persists please contact us for help.',
   INVALID_STRING: '<span class="notranslate">%s</span> was missing or blank.',
   INVALID_INQUIRY: 'Inquiry does not exist.',
   INVALID_INQUIRY_WEBHOOK_EMAIL:

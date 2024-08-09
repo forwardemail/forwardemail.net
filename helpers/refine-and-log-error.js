@@ -50,11 +50,13 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   // rewrite message to keep the underlying code issue private to end users
   // (this also prevents double logger invocation for code bugs)
   if (err.isCodeBug && !err._message) {
-    // store original message (for debugging by team)
-    err._message = err.message;
-    // set new message for rendering to users
-    err.message =
-      'An internal server error has occurred, please try again later.';
+    if (!err.isBoom) {
+      // store original message (for debugging by team)
+      err._message = err.message;
+      // set new message for rendering to users
+      err.message =
+        'An internal server error has occurred, please try again later.';
+    }
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
   } else {

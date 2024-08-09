@@ -1759,63 +1759,77 @@ async function parsePayload(data, ws) {
         if (!_.isDate(new Date(payload.backup_at)))
           throw new TypeError('Backup at invalid date');
 
+        if (
+          !isSANB(payload.format) ||
+          !['eml', 'mbox', 'sqlite'].includes(payload.format)
+        )
+          throw new TypeError('Format is invalid');
+
+        const key = `backup_check:${payload.session.user.alias_id}`;
+
         // only allow one backup every 30m (even if err/restart/shutdown)
-        const cache = await this.client.get(
-          `backup_check:${payload.session.user.alias_id}`
-        );
+        const cache = await this.client.get(key);
 
         if (cache)
           throw Boom.clientTimeout(
-            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
+            i18n.translateError(
+              'BACKUP_IN_PROGRESS',
+              payload.session.user.locale
+            )
           );
 
-        // set cache so we don't run two backups at once
-        await this.client.set(
-          `backup_check:${payload.session.user.alias_id}`,
-          true,
-          'PX',
-          ms('30m')
-        );
+        try {
+          // set cache so we don't run two backups at once
+          await this.client.set(key, true, 'PX', ms('30m'));
 
-        // check when we actually did the last user backup
-        const alias = await Aliases.findById(payload.session.user.alias_id)
-          .lean()
-          .exec();
-        if (!alias) throw new TypeError('Alias does not exist');
+          // check when we actually did the last user backup
+          const alias = await Aliases.findById(payload.session.user.alias_id)
+            .lean()
+            .exec();
+          if (!alias) throw new TypeError('Alias does not exist');
 
-        let runBackup = true;
+          let runBackup = true;
 
-        if (
-          // if it was not requested by a user for download
-          !payload.email &&
-          // and if it's less than 24h ago then we should not do another backup
-          _.isDate(alias.imap_backup_at) &&
-          new Date(alias.imap_backup_at).getTime() >
-            dayjs().subtract(1, 'day').toDate().getTime()
-        )
-          runBackup = false;
+          if (
+            // if it was not requested by a user for download
+            !payload.email &&
+            // and if it's less than 24h ago then we should not do another backup
+            _.isDate(alias.imap_backup_at) &&
+            new Date(alias.imap_backup_at).getTime() >
+              dayjs().subtract(1, 'day').toDate().getTime()
+          )
+            runBackup = false;
 
-        //
-        // NOTE: if maxQueue exceeded then this will error and reject
-        //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-        //       (note all of these error messages are in TimeoutError checking)
-        //
-        // run in worker pool to offset from main thread (because of VACUUM)
-        if (!runBackup)
-          throw Boom.clientTimeout(
-            i18n.translateError('RATE_LIMITED', payload.session.user.locale)
-          );
+          //
+          // NOTE: if maxQueue exceeded then this will error and reject
+          //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
+          //       (note all of these error messages are in TimeoutError checking)
+          //
+          // run in worker pool to offset from main thread (because of VACUUM)
+          if (!runBackup)
+            throw Boom.clientTimeout(
+              i18n.translateError(
+                'BACKUP_IN_PROGRESS',
+                payload.session.user.locale
+              )
+            );
 
-        // run this in the background
-        this.piscina
-          .run(payload, { name: 'backup' })
-          .then()
-          .catch((err) => logger.fatal(err, { payload }));
+          // run this in the background
+          this.piscina
+            .run(payload, { name: 'backup' })
+            .then()
+            .catch((err) => logger.fatal(err, { payload }));
 
-        response = {
-          id: payload.id,
-          data: true
-        };
+          response = {
+            id: payload.id,
+            data: true
+          };
+        } catch (err) {
+          // purge cache in case of an error
+          await this.client.del(key);
+          throw err;
+        }
+
         break;
       }
 

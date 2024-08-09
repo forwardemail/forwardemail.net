@@ -7971,5 +7971,12 @@
   "Reviews, comparison, screenshots and more for the 44 best email spam filtering services.": "ביקורות, השוואה, צילומי מסך ועוד עבור 44 שירותי סינון דואר הזבל הטובים ביותר.",
   "We recommend <a href=\"%s\" class=\"alert-link text-decoration-underline\">Forward Email</a> as the best email spam filtering service.": "אנו ממליצים על <a href=\"%s\" class=\"alert-link text-decoration-underline\">העבר דוא&quot;ל</a> כשירות סינון דואר הזבל הטוב ביותר.",
   "Email Spam Filtering Service Comparison": "השוואת שירותי סינון דואר זבל בדוא\"ל",
-  "Email Spam Filtering Service Screenshots": "צילומי מסך של שירות סינון דואר דואר דואר אלקטרוני"
+  "Email Spam Filtering Service Screenshots": "צילומי מסך של שירות סינון דואר דואר דואר אלקטרוני",
+  "Select backup format:": "Select backup format:",
+  "EML": "EML",
+  "MBOX": "MBOX",
+  "Advanced Users": "Advanced Users",
+  "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:": "Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:",
+  "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.": "After opening SQLiteStudio, you must select <span class=\"notranslate\">\"WxSQLite3\"</span> as the database type and use <span class=\"notranslate\">\"sqleet\"</span> cipher to decrypt it using your password.",
+  "Leave blank to download <strong>SQLite</strong> backup on": "Leave blank to download <strong>SQLite</strong> backup on"
 }

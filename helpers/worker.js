@@ -318,18 +318,48 @@ async function backup(payload) {
 
   logger.debug('backup worker', { payload });
 
+  let extension;
   let tmp;
   let backup;
   let err;
 
   try {
+    // determine extension format
+    switch (payload.format) {
+      case 'sqlite': {
+        extension = 'sqlite';
+
+        break;
+      }
+
+      case 'mbox': {
+        extension = 'mbox';
+
+        break;
+      }
+
+      case 'eml': {
+        extension = 'zip';
+
+        break;
+      }
+
+      default: {
+        // safeguard
+        throw new TypeError('Unknown extension');
+      }
+    }
+
     // check how much space is remaining on storage location
     const storagePath = getPathToDatabase({
       id: payload.session.user.alias_id,
       storage_location: payload.session.user.storage_location
     });
     const diskSpace = await checkDiskSpace(storagePath);
-    tmp = path.join(path.dirname(storagePath), `${payload.id}-backup.sqlite`);
+    tmp = path.join(
+      path.dirname(storagePath),
+      `${payload.id}-backup.${extension}`
+    );
 
     // <https://github.com/nodejs/node/issues/38006>
     const stats = await fs.promises.stat(storagePath);
@@ -384,7 +414,9 @@ async function backup(payload) {
       _.camelCase(payload.session.user.storage_location)
     )}`;
 
-    const key = `${payload.session.user.alias_id}.sqlite`;
+    // the key is either `.sqlite` for "sqlite" value of `payload.format`
+    // or it is `.mbox` for "mbox" value or `zip` for "eml" value
+    const key = `${payload.session.user.alias_id}.${extension}`;
 
     if (config.env !== 'test') {
       let res;
@@ -480,33 +512,58 @@ async function backup(payload) {
       await logger.warn(err, { payload });
     }
 
-    // create backup
-    // takes approx 5-10s per GB
-    db.exec(`VACUUM INTO '${tmp}'`);
+    switch (payload.format) {
+      case 'sqlite': {
+        // create backup
+        // takes approx 5-10s per GB
+        db.exec(`VACUUM INTO '${tmp}'`);
 
-    await closeDatabase(db);
+        await closeDatabase(db);
 
-    if (isCancelled) throw new ServerShutdownError();
+        if (isCancelled) throw new ServerShutdownError();
 
-    backup = true;
+        backup = true;
 
-    // open the backup to ensure that encryption still valid
-    const backupDb = await getDatabase(
-      instance,
-      // alias
-      {
-        id: payload.session.user.alias_id,
-        storage_location: payload.session.user.storage_location
-      },
-      payload.session,
-      null,
-      false,
-      tmp
-    );
+        // open the backup to ensure that encryption still valid
+        const backupDb = await getDatabase(
+          instance,
+          // alias
+          {
+            id: payload.session.user.alias_id,
+            storage_location: payload.session.user.storage_location
+          },
+          payload.session,
+          null,
+          false,
+          tmp
+        );
 
-    backupDb.pragma('wal_checkpoint(PASSIVE)');
+        backupDb.pragma('wal_checkpoint(PASSIVE)');
+        await closeDatabase(backupDb);
 
-    await closeDatabase(backupDb);
+        break;
+      }
+
+      case 'mbox': {
+        // TODO: mbox
+        throw new TypeError('Coming soon');
+      }
+
+      case 'eml': {
+        // TODO: create a password protected zip file in-memory using streams
+        // which should be located at `tmp` location of all the `eml` files
+        // `${message.id}.eml`
+        // .zip file
+        // |- README.md
+        // |- INBOX/
+        // |  |- xyz.eml
+        // |  |- abc.eml
+        // |  |- Sub Folder/
+        // | ...
+        throw new TypeError('Coming soon');
+      }
+      // No default
+    }
 
     // calculate hash of file
     const hash = await hasha.fromFile(tmp, { algorithm: 'sha256' });
@@ -540,17 +597,19 @@ async function backup(payload) {
     await upload.done();
 
     // update alias imap backup date using provided time
-    await Aliases.findOneAndUpdate(
-      {
-        _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
-        domain: new mongoose.Types.ObjectId(payload.session.user.domain_id)
-      },
-      {
-        $set: {
-          imap_backup_at: new Date(payload.backup_at)
+    if (payload.format === 'sqlite') {
+      await Aliases.findOneAndUpdate(
+        {
+          _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+          domain: new mongoose.Types.ObjectId(payload.session.user.domain_id)
+        },
+        {
+          $set: {
+            imap_backup_at: new Date(payload.backup_at)
+          }
         }
-      }
-    );
+      );
+    }
   } catch (_err) {
     err = _err;
     err.isCodeBug = true;
@@ -610,6 +669,8 @@ async function backup(payload) {
 
     throw err;
   }
+
+  // TODO: include URL link in the email to download
 
   //
   // NOTE: out of scope asynchronous code will NOT get run

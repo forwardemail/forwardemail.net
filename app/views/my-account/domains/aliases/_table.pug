@@ -209,14 +209,59 @@ p.text-center.d-lg-none
                       )
                         span(aria-hidden="true") &times;
                     .modal-body.text-center
-                      p.alert.alert-warning.small
-                        i.fa.fa-exclamation-circle.font-weight-bold
-                        = " "
-                        != t('<strong>Warning:</strong> This feature is experimental.  It allows you to download a SQLite file that you can open with <a href="https://github.com/pawelsalawa/sqlitestudio" target="_blank" class="alert-link">SQLiteStudio</a>. You must select <span class="notranslate">"WxSQLite3"</span> as the database type and use <span class="notranslate">"sqleet"</span> cipher to decrypt it using your password.  In the near future we will allow you to download or convert this into an MBOX file for migration.')
                       form.ajax-form.d-block.confirm-prompt(
                         action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/download-backup`),
                         method="POST"
                       )
+                        p.font-weight-bold.lead= t("Select backup format:")
+                        .form-group
+                          .form-check
+                            input#input-radio-eml.form-check-input(
+                              type="radio",
+                              required,
+                              disabled
+                              name="format",
+                              value="eml"
+                            )
+                            label.form-check-label(
+                              for="input-radio-eml"
+                            )= t("EML")
+                          .form-check
+                            input#input-radio-mbox.form-check-input(
+                              type="radio",
+                              required,
+                              disabled,
+                              name="format",
+                              value="mbox"
+                            )
+                            label.form-check-label(
+                              for="input-radio-eml"
+                            )= t("MBOX")
+                          .form-check
+                            input#input-radio-sqlite.form-check-input(
+                              type="radio",
+                              required,
+                              checked,
+                              name="format",
+                              value="sqlite"
+                            )
+                            label.form-check-label(
+                              for="input-radio-sqlite"
+                            )
+                              = t("SQLite")
+                              = " "
+                              = "("
+                              = t("Advanced Users")
+                              = ")"
+                            .small.help-text.text-muted
+                              = t("Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:")
+                              = " "
+                              a(
+                                href="https://github.com/pawelsalawa/sqlitestudio",
+                                target="_blank"
+                              ).alert-link= "SQLiteStudio"
+                              = " "
+                              != t('After opening SQLiteStudio, you must select <span class="notranslate">"WxSQLite3"</span> as the database type and use <span class="notranslate">"sqleet"</span> cipher to decrypt it using your password.')
                         p.font-weight-bold.lead= t("Enter current password to get a new backup:")
                         .form-group.floating-label
                           input.form-control.form-control-lg(
@@ -232,7 +277,7 @@ p.text-center.d-lg-none
                           p.alert.alert-primary.small
                             = emoji("point_up")
                             = " "
-                            != t("Leave blank to download backup from:")
+                            != t("Leave blank to download <strong>SQLite</strong> backup on")
                             = " "
                             span.dayjs.font-weight-bold(
                               data-time=new Date(alias.imap_backup_at).getTime()
