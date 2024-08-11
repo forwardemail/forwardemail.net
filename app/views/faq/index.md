@@ -28,6 +28,7 @@
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
 * [How do I configure my email client to work with Forward Email](#how-do-i-configure-my-email-client-to-work-with-forward-email)
+* [How do I export and backup my mailbox](#how-do-i-export-and-backup-my-mailbox)
 * [How do I import and migrate my existing mailbox](#how-do-i-import-and-migrate-my-existing-mailbox)
 * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
 * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
@@ -1482,6 +1483,29 @@ If you continue to have issues, then it is most likely to be an issue with DNS p
 | :--: | :---------------------: | :-------------------------------------: | :----------------------------------------------------------------------------------: |
 | IMAP | `imap.forwardemail.net` |          SSL/TLS **Preferred**          |                                   `993` and `2993`                                   |
 | SMTP | `smtp.forwardemail.net` | SSL/TLS **Preferred** or TLS (STARTTLS) | `465` and `2465` for SSL/TLS (or) `587`, `2587`, `2525`, and `25` for TLS (STARTTLS) |
+
+
+## How do I export and backup my mailbox
+
+At anytime you can export your mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), or encrypted [SQLite](https://en.wikipedia.org/wiki/SQLite) formats.
+
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases <i class="fa fa-angle-right"></i> Download Backup and select your preferred export format type.
+
+You will be emailed a link to download the export once it has finished.
+
+Note that this export download link expires after 4 hours for security concerns.
+
+If you need to inspect your exported EML or Mbox formats, then these open-soruce tools may be useful:
+
+| Name            | Format | Platform      | GitHub URL                                          |
+| --------------- | :----: | ------------- | --------------------------------------------------- |
+| MBox Viewer     |  Mbox  | Windows       | <https://github.com/eneam/mboxviewer>               |
+| mbox-web-viewer |  Mbox  | All platforms | <https://github.com/PHMRanger/mbox-web-viewer>      |
+| EmlReader       |   EML  | Windows       | <https://github.com/ayamadori/EmlReader>            |
+| Email viewer    |   EML  | VSCode        | <https://github.com/joelharkes/vscode_email_viewer> |
+| eml-reader      |   EML  | All platforms | <https://github.com/s0ph1e/eml-reader>              |
+
+Additionally if you need to convert a Mbox file to EML file, then you can use <https://github.com/noelmartinon/mboxzilla>.
 
 
 ## How do I import and migrate my existing mailbox

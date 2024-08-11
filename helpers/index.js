@@ -98,6 +98,7 @@ const getUbuntuMembersMap = require('./get-ubuntu-members-map');
 const sendApn = require('./send-apn');
 const getApnCerts = require('./get-apn-certs');
 const WKD = require('./wkd');
+const asctime = require('./asctime');
 
 module.exports = {
   decrypt,
@@ -196,5 +197,6 @@ module.exports = {
   getUbuntuMembersMap,
   sendApn,
   getApnCerts,
-  WKD
+  WKD,
+  asctime
 };

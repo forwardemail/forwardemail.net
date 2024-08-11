@@ -12,8 +12,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const punycode = require('node:punycode');
+const { PassThrough } = require('node:stream');
 
-const { Builder } = require('json-sql');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
@@ -22,12 +22,14 @@ const archiverZipEncrypted = require('archiver-zip-encrypted');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const delay = require('delay');
+const getStream = require('get-stream');
 const hasha = require('hasha');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
+const splitLines = require('split-lines');
 const {
   S3Client,
   GetObjectCommand,
@@ -35,18 +37,17 @@ const {
   HeadBucketCommand,
   HeadObjectCommand
 } = require('@aws-sdk/client-s3');
+const { Builder } = require('json-sql');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-
-// const Newlines = require('wildduck/lib/newlines');
-// const MboxStream = require('wildduck/lib/mbox-stream');
-// const HeaderSplitter = require('wildduck/lib/header-splitter');
+const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
+const asctime = require('#helpers/asctime');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -568,12 +569,6 @@ async function backup(payload) {
         break;
       }
 
-      case 'mbox': {
-        throw new TypeError(
-          'MBOX export is not yet available - it is coming soon'
-        );
-      }
-      /*
       // create a password protected zip file in-memory using streams
       case 'mbox': {
         // create archive and specify method of encryption and password
@@ -596,25 +591,6 @@ async function backup(payload) {
           sort: 'path'
         });
 
-        //
-        // NOTE: the section below in the next `for` loop is inspired by wildduck and this indented section
-        //       has a license change (in the future this will be moved to its own file)
-        //       <https://github.com/nodemailer/wildduck/blob/master/lib/mbox-export.js>
-        //
-        //
-        //  Copyright (c) Forward Email LLC
-        //  SPDX-License-Identifier: MPL-2.0
-        //
-        //  This Source Code Form is subject to the terms of the Mozilla Public
-        //  License, v. 2.0. If a copy of the MPL was not distributed with this
-        //  file, You can obtain one at https://mozilla.org/MPL/2.0/.
-        //
-        //  This file incorporates work covered by the following copyright and
-        //  permission notice:
-        //
-        //    WildDuck Mail Agent is licensed under the European Union Public License 1.2 or later.
-        //    https://github.com/nodemailer/wildduck
-        //
         for (const mailbox of db.prepare(sql.query).all(sql.values)) {
           const sql = builder.build({
             type: 'select',
@@ -624,18 +600,14 @@ async function backup(payload) {
               mailbox: mailbox._id
             }
           });
+
+          const stream = new PassThrough();
+          archive.append(stream, {
+            name: punycode.toASCII(mailbox.path) + '.mbox'
+          });
           for (const result of db.prepare(sql.query).iterate(sql.values)) {
             const message = syncConvertResult(Messages, result);
-            // TODO: From header here doesn't seem accurate
-            const from = message.headers.find((obj) => obj.key === 'from');
-            const mboxStream = new MboxStream({
-              from: from ? from.value : '',
-              date: message.hdate,
-              draft: message.draft === true,
-              mailboxPath: punycode.toASCII(mailbox.path)
-            });
-            const headerSplitter = new HeaderSplitter();
-            const newlines = new Newlines();
+            // <https://github.com/nodemailer/wildduck/blob/49bd5015c188079e3a265c0873178e805f84ca2e/lib/mbox-stream.js#L31C38-L31C78>
             // similar to 'rfc822' case in `helpers/get-query-response.js`
             // (value is a stream)
             const { value } = indexer.getContents(
@@ -645,16 +617,36 @@ async function backup(payload) {
               instance,
               payload.session
             );
-            const outputStream = new PassThrough();
-            value
-              .pipe(headerSplitter)
-              .pipe(newlines)
-              .pipe(mboxStream)
-              .pipe(outputStream, { end: false });
-            archive.append(outputStream, {
-              name: punycode.toASCII(mailbox.path) + '.mbox'
-            });
+            //
+            // TODO: add support for `X-UID`, `Status`, and `X-Status` support similar to Dovecot
+            //       <https://doc.dovecot.org/admin_manual/mailbox_formats/mbox/#dovecot-s-metadata>
+            //
+            // TODO: add support for X-Mozilla-Status support
+            //       `X-Mozilla-Status: 0001` if read, otherwise `X-Mozilla-Status: 0000` if unread
+            //       <https://vincent.bernat.ch/en/x-mozilla-status>
+            //       <https://hg.mozilla.org/comm-central/file/68ac92f5fc3cdaf8febc623abbdaea7165b44004/mailnews/base/public/nsMsgMessageFlags.idl>
+            //
+            // TODO: add X-Export-* headers like WildDuck (?)
+            //       <https://github.com/nodemailer/wildduck/blob/49bd5015c188079e3a265c0873178e805f84ca2e/lib/mbox-export.js#L85>
+            //
+            // TODO: if we do any of the above todo's then we should mirror it for EML export too
+            //
+            // eslint-disable-next-line no-await-in-loop
+            const content = await getStream(value);
+            stream.write(
+              `From ${
+                message.mimeTree?.parsedHeader?.from?.find(
+                  (obj) =>
+                    typeof obj.address === 'string' &&
+                    isEmail(obj.address, { ignore_max_length: true })
+                )?.address || 'MAILER-DAEMON'
+              } ${asctime(new Date(message.hdate))}\n${splitLines(
+                content.trim()
+              ).join('\n')}\n\n`
+            );
           }
+
+          stream.end();
         }
 
         archive.finalize();
@@ -667,7 +659,6 @@ async function backup(payload) {
         });
         break;
       }
-      */
 
       // create a password protected zip file in-memory using streams
       case 'eml': {

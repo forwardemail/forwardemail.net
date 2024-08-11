@@ -226,17 +226,16 @@ p.text-center.d-lg-none
                             label.form-check-label(
                               for="input-radio-eml"
                             )= t("EML")
-                          //-.
-                            .form-check
-                              input#input-radio-mbox.form-check-input(
-                                type="radio",
-                                required,
-                                name="format",
-                                value="mbox"
-                              )
-                              label.form-check-label(
-                                for="input-radio-eml"
-                              )= t("MBOX")
+                          .form-check
+                            input#input-radio-mbox.form-check-input(
+                              type="radio",
+                              required,
+                              name="format",
+                              value="mbox"
+                            )
+                            label.form-check-label(
+                              for="input-radio-eml"
+                            )= t("MBOX")
                           .form-check
                             input#input-radio-sqlite.form-check-input(
                               type="radio",
