@@ -28,5 +28,5 @@ block body
                   )
                   label(for="input-domain")= t("Domain name")
                 button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
-              .alert.alert-secondary.small!= t('Submitting this form will take you to <a target="_blank" rel="noopener noreferrer" href="https://www.namecheap.com/domains/registration/results.aspx">Namecheap.com</a> for registration.')
+              .alert.alert-secondary.small.mb-0.mt-3!= t('Submitting this form will take you to <a target="_blank" class="alert-link" rel="noopener noreferrer" href="https://www.namecheap.com/domains/registration/results.aspx">Namecheap.com</a> for registration.')
     +onboard(t('Did you finish registering?'), t('Simply enter your domain below to setup its email.'), l('/faq?redirect_to_domain=true'), false, 'border-top').d-flex.flex-column.flex-grow-1.justify-content-end
