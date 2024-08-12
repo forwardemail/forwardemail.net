@@ -80,9 +80,17 @@ We require that requests be served for law enforcement based from outside of the
 
 ### Law enforcement emergency requests
 
-As law permits in the United States, we may disclose and share Account information to law enforcement without a subpoena, ECPA court order, and/or search warrant when we believe that doing so without delay is needed in order to prevent death, serious harm, financial loss, or other damage to a victim.
+As law permits in the United States (e.g. in accordance with [18 U.S.C. §2702 (b)(8)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(8\)to%20a%20governmental%20entity%2C%20if%20the%20provider%2C%20in%20good%20faith%2C%20believes%20that%20an%20emergency%20involving%20danger%20of%20death%20or%20serious%20physical%20injury%20to%20any%20person%20requires%20disclosure%20without%20delay%20of%20communications%20relating%20to%20the%20emergency%3B%20or) and [§2702 (c)](https://www.law.cornell.edu/uscode/text/18/2702#:\~:text=\(c\)Exceptions%20for%20Disclosure%20of%20Customer%20Records.%E2%80%94A%20provider%20described%20in%20subsection%20\(a\)%20may%20divulge%20a%20record%20or%20other%20information%20pertaining%20to%20a%20subscriber%20to%20or%20customer%20of%20such%20service%20\(not%20including%20the%20contents%20of%20communications%20covered%20by%20subsection%20\(a\)\(1\)%20or%20\(a\)\(2\)\)%E2%80%94)), when in good faith and with independent verification of the requester – we may disclose and share Account information to law enforcement without a subpoena, ECPA court order, and/or search warrant when we believe that doing so without delay is needed in order to prevent death or serious physical injury.
 
-We require that emergency requests be sent via email and include all relevant information in order to provide a timely and expedited process.
+We require that emergency data requests ("EDR") be sent via email and include all relevant information in order to provide a timely and expedited process.
+
+Note that we are aware of sophisticated spoofing, phishing, and impersonation attacks with email (e.g. see [this article from The Guardian](https://www.theguardian.com/technology/2022/apr/04/us-law-enforcement-agencies-access-your-data-apple-meta#:\~:text=A%20hack%20using%20a%20forged%20legal%20request%20that%20exposed%20consumer%20data%20collected%20by%20Apple%20and%20Meta%20shed%20light%20on%20the%20reach%20of%20the%20law)).
+
+Our policy for processing EDR's is as follows:
+
+1. Independently research the email header metadata (e.g. DKIM/SPF/DMARC) (or lack thereof) for verification.
+
+2. Make our best effort attempt in good faith (with repeated attempts if necessary) to independently contact by phone the requester – in order to confirm the authenticity of the request.  For example, we may research the `.gov` website related to the jurisdiction the request is from, and then call the office from their publicly listed official phone number to verify the request.
 
 ### Law enforcement requests may trigger account notices
 

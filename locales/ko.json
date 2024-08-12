@@ -10001,5 +10001,17 @@
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "또한 Mbox 파일을 EML 파일로 변환해야 하는 경우 다음을 사용할 수 있습니다.",
   "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
-  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다."
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다.",
+  "As law permits in the United States (e.g. in accordance with": "미국 법률이 허용하는 경우(예: 다음에 따라)",
+  "18 U.S.C. §2702 (b)(8)": "18 U.S.C. §2702(b)(8)",
+  "§2702 (c)": "§2702(다)",
+  "), when in good faith and with independent verification of the requester – we may disclose and share Account information to law enforcement without a subpoena, ECPA court order, and/or search warrant when we believe that doing so without delay is needed in order to prevent death or serious physical injury.": "), 선의로 요청자에 대한 독립적인 검증을 거친 경우 – 사망이나 심각한 신체 상해를 방지하기 위해 지체 없이 그렇게 하는 것이 필요하다고 믿을 때 소환장, ECPA 법원 명령 및/또는 수색 영장 없이 법 집행 기관에 계정 정보를 공개하고 공유할 수 있습니다.",
+  "We require that emergency data requests (\"EDR\") be sent via email and include all relevant information in order to provide a timely and expedited process.": "긴급 데이터 요청(\"EDR\")은 이메일을 통해 보내야 하며 시기적절하고 신속한 처리를 위해 모든 관련 정보가 포함되어야 합니다.",
+  "Note that we are aware of sophisticated spoofing, phishing, and impersonation attacks with email (e.g. see": "이메일을 이용한 정교한 스푸핑, 피싱 및 사칭 공격에 대해 알고 있습니다(예:",
+  "this article from The Guardian": "The Guardian의 이 기사",
+  "Our policy for processing EDR's is as follows:": "EDR 처리에 대한 당사의 정책은 다음과 같습니다.",
+  "Independently research the email header metadata (e.g. DKIM/SPF/DMARC) (or lack thereof) for verification.": "이메일 헤더 메타데이터(예: DKIM/SPF/DMARC)(또는 그 부족)를 독립적으로 조사하여 확인하세요.",
+  "Make our best effort attempt in good faith (with repeated attempts if necessary) to independently contact by phone the requester – in order to confirm the authenticity of the request.  For example, we may research the": "요청자의 진위 여부를 확인하기 위해 요청자에게 독립적으로 전화로 연락하기 위해 최선을 다해 노력합니다(필요한 경우 반복 시도). 예를 들어, 다음을 조사할 수 있습니다.",
+  "website related to the jurisdiction the request is from, and then call the office from their publicly listed official phone number to verify the request.": "요청이 접수된 관할권과 관련된 웹사이트를 방문한 다음, 공개된 공식 전화번호로 해당 사무실에 전화하여 요청을 확인하세요.",
+  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다."
 }

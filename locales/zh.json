@@ -9694,5 +9694,17 @@
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "此外，如果您需要将 Mbox 文件转换为 EML 文件，那么您可以使用",
   "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
-  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "提交此表格将带您到<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a>进行注册。"
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "提交此表格将带您到<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a>进行注册。",
+  "As law permits in the United States (e.g. in accordance with": "根据美国法律允许的（例如根据",
+  "18 U.S.C. §2702 (b)(8)": "18 美国法典第 2702 条（b）（8）",
+  "§2702 (c)": "第2702（c）条",
+  "), when in good faith and with independent verification of the requester – we may disclose and share Account information to law enforcement without a subpoena, ECPA court order, and/or search warrant when we believe that doing so without delay is needed in order to prevent death or serious physical injury.": ")，在真诚的基础上，并在对请求者进行独立核实的情况下——当我们认为为了防止死亡或严重的人身伤害需要立即这样做时，我们可能会在没有传票、ECPA 法院命令和/或搜查令的情况下向执法部门披露和分享帐户信息。",
+  "We require that emergency data requests (\"EDR\") be sent via email and include all relevant information in order to provide a timely and expedited process.": "我们要求通过电子邮件发送紧急数据请求（“EDR”）并包含所有相关信息，以便提供及时、快速的流程。",
+  "Note that we are aware of sophisticated spoofing, phishing, and impersonation attacks with email (e.g. see": "请注意，我们意识到存在利用电子邮件进行的复杂欺骗、网络钓鱼和冒充攻击（例如，请参阅",
+  "this article from The Guardian": "这篇文章来自《卫报》",
+  "Our policy for processing EDR's is as follows:": "我们处理 EDR 的政策如下：",
+  "Independently research the email header metadata (e.g. DKIM/SPF/DMARC) (or lack thereof) for verification.": "独立研究电子邮件标头元数据（例如 DKIM/SPF/DMARC）（或缺少元数据）进行验证。",
+  "Make our best effort attempt in good faith (with repeated attempts if necessary) to independently contact by phone the requester – in order to confirm the authenticity of the request.  For example, we may research the": "尽最大努力真诚地尝试（必要时可多次尝试）通过电话独立联系请求者，以确认请求的真实性。例如，我们可能会研究",
+  "website related to the jurisdiction the request is from, and then call the office from their publicly listed official phone number to verify the request.": "与请求所属司法管辖区相关的网站，然后通过其公开列出的官方电话号码致电该办公室以验证该请求。",
+  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "提交此表格将带您到<a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a>进行注册。"
 }
