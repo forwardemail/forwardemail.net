@@ -10000,5 +10000,6 @@
   "eml-reader": "emlリーダー",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "さらに、MboxファイルをEMLファイルに変換する必要がある場合は、",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "このフォームを送信すると、 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a>に移動して登録することになります。"
 }

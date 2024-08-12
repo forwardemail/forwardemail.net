@@ -10000,5 +10000,6 @@
   "eml-reader": "eml 리더",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "또한 Mbox 파일을 EML 파일로 변환해야 하는 경우 다음을 사용할 수 있습니다.",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다."
 }

@@ -7527,5 +7527,6 @@
   "eml-reader": "trình đọc eml",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "Ngoài ra, nếu bạn cần chuyển đổi tệp Mbox sang tệp EML, thì bạn có thể sử dụng",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "Gửi biểu mẫu này sẽ đưa bạn đến <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> để đăng ký."
 }

@@ -10005,5 +10005,6 @@
   "eml-reader": "eml-leser",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "I tillegg hvis du trenger å konvertere en Mbox-fil til EML-fil, kan du bruke",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "Ved å sende inn dette skjemaet vil du ta deg til <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registrering."
 }

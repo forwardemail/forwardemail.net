@@ -9732,5 +9732,6 @@
   "eml-reader": "eml-reader",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "Additionally if you need to convert a Mbox file to EML file, then you can use",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration."
 }

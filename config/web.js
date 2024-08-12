@@ -257,7 +257,7 @@ module.exports = (redis) => ({
             'base-uri': ["'self'"],
             'form-action': [
               "'self'",
-              'https://www.anrdoezrs.net',
+              'https://www.namecheap.com',
               'https://login.ubuntu.com'
             ]
           }

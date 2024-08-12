@@ -10000,5 +10000,6 @@
   "eml-reader": "czytnik-eml",
   "https://github.com/s0ph1e/eml-reader": "https://github.com/s0ph1e/eml-reader",
   "Additionally if you need to convert a Mbox file to EML file, then you can use": "Dodatkowo, jeśli musisz przekonwertować plik Mbox na plik EML, możesz użyć",
-  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla"
+  "https://github.com/noelmartinon/mboxzilla": "https://github.com/noelmartinon/mboxzilla",
+  "Submitting this form will take you to <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "Po wysłaniu tego formularza zostaniesz przeniesiony na <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">stronę Namecheap.com</a> , gdzie możesz się zarejestrować."
 }

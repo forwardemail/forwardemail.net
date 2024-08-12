@@ -3,9 +3,9 @@
     {
       "name": "smtp-tls-587",
       "script": "smtp.js",
-      "exec_mode": "cluster",
+      "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "2",
+      "instances": "1",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
@@ -52,9 +52,9 @@
       "name": "smtp-ssl-465",
       "script": "smtp.js",
       "max_restarts": 999,
-      "exec_mode": "cluster",
+      "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "2",
+      "instances": "1",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
