@@ -73,7 +73,66 @@
         name: "cleanup-tmp"
         hour: "*"
         minute: "0"
-        job: "/home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1"
+        job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1"
+    #
+    # TODO: alert of any users with admin permission on website
+    #
+    # NOTE: we check shell capabilities and recent access for the following users
+    #       on a recurring minute basis in order to alert admins of suspicious behavior
+    #       - checks ~/.zsh_history and ~/.bash_history and alerts admins
+    #       - checks and alerts admins for recent SSH access
+    #           - /var/run/utmp (who's logged in now)
+    #           - /var/log/wtmp (historical login data)
+    #           - /var/log/btmp (failed login attempts)
+    #           (if any of these files do not exist then alert admins)
+    #       - `who` command yields output of who is logged in as well
+    #       - checks that `netstat`, `tcpdump`, `get`, `wget`, `curl`, `nc`, and `gcc` are not installed
+    #       - clears shell history for the given users once emailed to admins in encrypted ZIP
+    #
+    #       (this isn't a 100% solution but would keep us apprised as a minimal safety guard)
+    #
+    #       <https://orca.security/resources/blog/understand-shell-commands-detect-malicious-behavior/>
+    #
+    #       - it also checks for suspicious processes (2 = non-kernel)
+    #
+    #       <https://github.com/dennyzhang/devops_public/blob/tag_v2/python/detect_suspicious_process/detect_suspicious_process.py>
+    #       <https://medium.com/@dennyzhang001/detect-suspicious-linux-processes-c4f764ebff95>
+    #
+    #       sudo ps -efww --ppid 2 -p 2 -p 1 --deselect -o user,uid,pid,rss,%cpu,command --sort rss,cpu
+    #
+    #       https://github.com/sindresorhus/ps-list
+    #       https://github.com/simonepri/pidtree
+    #       https://wiki.ubuntu.com/BasicSecurity/DidIJustGetOwned
+    #
+    #       If suspicious activity/user detected, then copy these to include in encrypted ZIP file:
+    #       - /var/log/auth.log
+    #       - /var/log/syslog
+    #       - /var/log/ufw.log
+    #       - /var/log/apt
+    #       - /var/log/wtmp
+    #       - /var/run/utmp
+    #       - /var/log/btmp
+    #       - /var/log/faillog
+    #
+    #       Also detect when `users` and `groups` have changed from the normal (e.g. root/devops/deploy only)
+    #       (can also detect `useradd`, `to group`, `to shadow group` strings in /var/log/auth.log)
+    #
+    #       `apt install chkrootkit` and `chkrootkit` and output to log
+    #       (and if output contains any of these strings then include output in ZIP file and consider compromised)
+    #       "INFECTED" or "Vulnerable but disabled"
+    #
+    #       We may want to add RKHunter in the future
+    #
+    #       TODO: Also detect when we need to rotate SSH keys and alert admins if SSH keys need rotated
+    #
+    #- name: Check recent access
+    #  become: true
+    #  become_user: root
+    #  cron:
+    #    name: "check-recent-access"
+    #    hour: "*"
+    #    minute: "*"
+    #    job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-recent-access.js > /dev/null 2>&1"
     - name: Check PM2
       become: true
       become_user: deploy
@@ -81,15 +140,15 @@
         name: "check-pm2"
         hour: "*"
         minute: "*/20"
-        job: "/home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1"
-    # - name: Reload pm2 every 4 hours
-    #   become: true
-    #   become_user: deploy
-    #   cron:
-    #     name: "reload"
-    #     hour: "*/4"
-    #     minute: "0"
-    #     job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
+        job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1"
+    - name: Reload pm2 every 6 hours
+      become: true
+      become_user: deploy
+      cron:
+        name: "reload"
+        hour: "*/6"
+        minute: "0"
+        job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
     - name: Check if pnpm exists
       stat:
         path: /home/deploy/n/bin/pnpm

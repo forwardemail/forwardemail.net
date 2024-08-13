@@ -72,10 +72,7 @@ async function check() {
   // <https://updown.io/blog/the-funny-rules-of-spamassassin-in-2023>
   // <https://alephsecurity.com/2020/07/23/revised-homograph-attacks2/>
 
-  // ensure that `netstat`, `tcpdump`, `get`, `curl`, `nc`, `gcc` is not installed
   // TODO: apparmor
-  // TODO: routinely clear shell history
-  // TODO: check shell history and send to admins
   // TODO: ensure hard drive is luks-encrypted
   // TODO: <https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit>
   // TODO: email alert if users logged in via ssh
