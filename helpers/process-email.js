@@ -626,7 +626,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
       // dmarc?.policy !== 'reject' ||
       dmarc?.status?.result !== 'pass' ||
-      dmarc?.pct !== 100
+      (typeof dmarc?.pct === "number" && dmarc.pct !== 100)
     ) {
       const err = Boom.badRequest(i18n.translateError('INVALID_DMARC_RESULT'));
       if (dmarc) err.dmarc = dmarc;

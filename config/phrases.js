@@ -163,7 +163,7 @@ module.exports = {
   NO_REPLY_USERNAME_DISALLOWED:
     'You cannot use a "no-reply" username for an alias.',
   INVALID_DMARC_RESULT:
-    'Invalid DMARC result (policy must be <span class="notranslate">"p=none"</span>, <span class="notranslate">"p=reject"</span>, or <span class="notranslate">"p=quarantine"</span>, and <span class="notranslate">"pct=100"</span> must be set).',
+    'Invalid DMARC result (policy must be <span class="notranslate">"p=none"</span>, <span class="notranslate">"p=reject"</span>, or <span class="notranslate">"p=quarantine"</span>, and <span class="notranslate">"pct"</span> must be omitted or set to 100).',
   INVALID_SPF_RESULT: 'Invalid SPF result.',
   INVALID_DKIM_SIGNATURE: 'Invalid DKIM signature.',
   INVALID_FROM_HEADER:

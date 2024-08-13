@@ -1799,7 +1799,7 @@ test('smtp outbound queue', async (t) => {
         'TXT',
         [
           // TODO: consume dmarc reports and parse dmarc-$domain
-          `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+          `v=DMARC1; p=reject; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
         ],
         true
       )

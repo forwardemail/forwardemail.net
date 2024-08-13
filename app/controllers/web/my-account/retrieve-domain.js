@@ -174,7 +174,7 @@ async function retrieveDomain(ctx, next) {
         (dmarcRecord?.v !== 'DMARC1' ||
           // !isSANB(dmarcRecord?.p) ||
           // !['none', 'reject', 'quarantine'].includes(dmarcRecord.p) ||
-          dmarcRecord?.pct !== 100)
+          (typeof dmarcRecord?.pct === "number" && dmarcRecord.pct !== 100))
       ) {
         ctx.state.isDMARCInvalid = true;
       }
