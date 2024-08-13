@@ -72,7 +72,8 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 4. Install [pnpm][]:
 
    ```sh
-   npm i -g pnpm
+   corepack enable
+   corepack prepare pnpm@latest --activate
    ```
 
 5. [Fork the repository from GitHub](https://github.com/forwardemail/forwardemail.net/fork)
@@ -110,7 +111,8 @@ See [Requirements](#requirements) and [Local Development Guide](#local-developme
 3. Install [pnpm][]:
 
    ```sh
-   npm i -g pnpm
+   corepack enable
+   corepack prepare pnpm@latest --activate
    ```
 
 4. [Fork the repository from GitHub](https://github.com/forwardemail/forwardemail.net/fork)
