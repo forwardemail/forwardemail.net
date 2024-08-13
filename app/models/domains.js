@@ -1365,7 +1365,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         if (
           dmarcRecord &&
           dmarcRecord.v === 'DMARC1' &&
-          (typeof dmarcRecord.pct !== "number" || dmarcRecord.pct === 100)
+          (typeof dmarcRecord.pct !== 'number' || dmarcRecord.pct === 100)
         ) {
           dmarc = true;
         }

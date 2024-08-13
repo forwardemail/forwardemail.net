@@ -10013,5 +10013,10 @@
   "Independently research the email header metadata (e.g. DKIM/SPF/DMARC) (or lack thereof) for verification.": "이메일 헤더 메타데이터(예: DKIM/SPF/DMARC)(또는 그 부족)를 독립적으로 조사하여 확인하세요.",
   "Make our best effort attempt in good faith (with repeated attempts if necessary) to independently contact by phone the requester – in order to confirm the authenticity of the request.  For example, we may research the": "요청자의 진위 여부를 확인하기 위해 요청자에게 독립적으로 전화로 연락하기 위해 최선을 다해 노력합니다(필요한 경우 반복 시도). 예를 들어, 다음을 조사할 수 있습니다.",
   "website related to the jurisdiction the request is from, and then call the office from their publicly listed official phone number to verify the request.": "요청이 접수된 관할권과 관련된 웹사이트를 방문한 다음, 공개된 공식 전화번호로 해당 사무실에 전화하여 요청을 확인하세요.",
-  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다."
+  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "이 양식을 제출하면 <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> 에 등록하게 됩니다.",
+  "Since 2017, we provide email hosting and email forwarding service for 500,000+ domains and these notable users:": "Since 2017, we provide email hosting and email forwarding service for 500,000+ domains and these notable users:",
+  "Get QR Code for Device Provisioning": "Get QR Code for Device Provisioning",
+  "Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.": "Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.",
+  "Enter current password": "Enter current password",
+  "Get QR Code": "Get QR Code"
 }

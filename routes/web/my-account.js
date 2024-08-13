@@ -406,6 +406,17 @@ router
     web.myAccount.generateAliasPassword
   )
   .post(
+    '/domains/:domain_id/aliases/:alias_id/qrcode',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.ensureSMTPAccess,
+    web.myAccount.retrieveAlias,
+    web.myAccount.ensureAliasAdmin,
+    policies.ensureTurnstile,
+    rateLimit(50, 'qrcode'),
+    web.myAccount.retrieveQRCode
+  )
+  .post(
     '/domains/:domain_id/aliases/:alias_id/download-backup',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,

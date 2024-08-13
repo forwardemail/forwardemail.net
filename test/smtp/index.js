@@ -2230,3 +2230,6 @@ Test`.trim()
 
   await smtp.close();
 });
+
+// TODO: does not allow domain-wide catch-all to send with a different domain in From header nor MAIL FROM
+// TODO: does not allow specific password to send with a different domain in From header nor MAIL FROM

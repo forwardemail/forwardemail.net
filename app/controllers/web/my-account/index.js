@@ -66,6 +66,7 @@ const updateAllowlistAndDenylist = require('./update-allowlist-and-denylist');
 const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
 const resetDomainWebhookKey = require('./reset-domain-webhook-key');
+const retrieveQRCode = require('./retrieve-qrcode');
 
 module.exports = {
   cancelEmailChange,
@@ -130,5 +131,6 @@ module.exports = {
   updateAllowlistAndDenylist,
   updateTimezone,
   updateRestrictedAliasNames,
-  resetDomainWebhookKey
+  resetDomainWebhookKey,
+  retrieveQRCode
 };

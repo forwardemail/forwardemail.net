@@ -286,6 +286,52 @@ p.text-center.d-lg-none
                           .cf-explicit-turnstile
                         button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
 
+              //- Download QR Code
+              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+                .modal.fade(
+                  id=`modal-qrcode-${alias.id}`,
+                  tabindex="-1",
+                  role="dialog",
+                  aria-labelledby=`modal-qrcode-${alias.id}-title`,
+                  aria-hidden="true"
+                )
+                  .modal-dialog.modal-lg(role="document")
+                    .modal-content
+                      .modal-header.text-center.d-block
+                        h4.d-inline-block.ml-4(
+                          id=`modal-qrcode-${alias.id}-title`
+                        )= t("Get QR Code for Device Provisioning")
+                        button.close(
+                          type="button",
+                          data-dismiss="modal",
+                          aria-label="Close"
+                        )
+                          span(aria-hidden="true") &times;
+                      .modal-body.text-center
+                        form.ajax-form.d-block.confirm-prompt(
+                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/qrcode`),
+                          method="POST"
+                        )
+                          p.alert.alert-primary.small
+                            = t("Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.")
+                          p.font-weight-bold.lead= t("Enter current password")
+                          .form-group.floating-label
+                            input.form-control.form-control-lg(
+                              id=`input-password-${alias.id}`,
+                              name="password",
+                              type="password",
+                              placeholder=" ",
+                              autocomplete=config.env === "test" ? "off" : randomstring()
+                            )
+                            label(for=`input-password-${alias.id}`)= t("Password")
+                          if config.turnstileEnabled
+                            noscript
+                              .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+                            .cf-explicit-turnstile
+                          button.btn.btn-success.btn-block.btn-lg(
+                            type="submit"
+                          )= t("Continue")
+
               //- Generate Password
               if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
                 .modal.fade(
@@ -548,6 +594,15 @@ p.text-center.d-lg-none
                       button.btn.btn-sm.btn-link.text-themed.btn-block(
                         type="button",
                         data-toggle="modal",
+                        data-target=`#modal-qrcode-${alias.id}`
+                      )
+                        i.fas.fa-qrcode
+                        = " "
+                        = t("Get QR Code")
+                    li.list-inline-item
+                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                        type="button",
+                        data-toggle="modal",
                         data-target="#modal-setup-instructions"
                       )
                         i.fa.fa-list-ol
@@ -722,6 +777,15 @@ p.text-center.d-lg-none
                       i.fa.fa-key
                       = " "
                       = t("Generate Password")
+                  li.list-inline-item
+                    button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      type="button",
+                      data-toggle="modal",
+                      data-target=`#modal-qrcode-${alias.id}`
+                    )
+                      i.fas.fa-qrcode
+                      = " "
+                      = t("Get QR Code")
                   li.list-inline-item
                     button.btn.btn-sm.btn-link.text-themed.btn-block(
                       type="button",

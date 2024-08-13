@@ -8031,5 +8031,10 @@
   "Independently research the email header metadata (e.g. DKIM/SPF/DMARC) (or lack thereof) for verification.": "חקור באופן עצמאי את המטא נתונים של כותרות הדוא\"ל (למשל DKIM/SPF/DMARC) (או היעדרם) לצורך אימות.",
   "Make our best effort attempt in good faith (with repeated attempts if necessary) to independently contact by phone the requester – in order to confirm the authenticity of the request.  For example, we may research the": "עשה כמיטב יכולתנו ניסיון בתום לב (עם ניסיונות חוזרים ונשנים במידת הצורך) ליצור קשר טלפוני עם המבקש באופן עצמאי - על מנת לאשר את אמיתות הבקשה.  לדוגמה, אנו עשויים לחקור את",
   "website related to the jurisdiction the request is from, and then call the office from their publicly listed official phone number to verify the request.": "אתר אינטרנט הקשור לתחום השיפוט ממנו מגיעה הבקשה, ולאחר מכן התקשר למשרד ממספר הטלפון הרשמי הרשום שלהם כדי לאמת את הבקשה.",
-  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "שליחת טופס זה תעביר אותך ל- <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> להרשמה."
+  "Submitting this form will take you to <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> for registration.": "שליחת טופס זה תעביר אותך ל- <a target=\"_blank\" class=\"alert-link\" rel=\"noopener noreferrer\" href=\"https://www.namecheap.com/domains/registration/results.aspx\">Namecheap.com</a> להרשמה.",
+  "Since 2017, we provide email hosting and email forwarding service for 500,000+ domains and these notable users:": "Since 2017, we provide email hosting and email forwarding service for 500,000+ domains and these notable users:",
+  "Get QR Code for Device Provisioning": "Get QR Code for Device Provisioning",
+  "Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.": "Enter the alias' password to get a scannable QR code for provisioning your Apple and Android devices.",
+  "Enter current password": "Enter current password",
+  "Get QR Code": "Get QR Code"
 }
