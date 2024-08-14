@@ -226,6 +226,12 @@ module.exports = {
   INVALID_PASSWORD: 'Password was invalid.',
   DOMAIN_EXCEEDS_CATCHALL_PASSWORD_LIMIT:
     'You cannot have more than <span class="notranslate">%d</span> catch-all passwords generated at once',
+  NEWSLETTER_USAGE_NOT_APPROVED:
+    'Newsletter usage is not yet approved for your account, please wait for approval or contact us for support.',
+  NEWSLETTER_APPROVAL_REQUIRED_SUBJECT:
+    'Newsletter approval required for <span class="notranslate">%s</span>',
+  NEWSLETTER_APPROVAL_REQUIRED_MESSAGE:
+    'We detected that you attempted to send an outbound SMTP newsletter for <strong class="notranslate">%s</strong>.  Your domain does not yet have newsletter support approved, and an admin has been notified to begin review.  This process usually is resolved within 2-4 hours, but sometimes it may longer.',
   INVALID_PASSWORD_CONFIRM: 'Password confirmation did not match new password.',
   INVALID_PASSWORD_STRENGTH: 'Password strength was not strong enough.',
   INVALID_PASSWORD_CHARACTERS:

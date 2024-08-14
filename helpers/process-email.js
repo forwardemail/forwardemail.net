@@ -365,7 +365,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const splitter = new Splitter();
     const joiner = new Joiner();
 
+    let hasNewsletter = false;
+
     // <https://github.com/andris9/mailsplit#events>
+    // eslint-disable-next-line complexity
     splitter.on('data', (data) => {
       if (data.type !== 'node' || data.root !== true) return;
       // - data.headers.get
@@ -376,6 +379,59 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // - data.headers.remove(key)
       // - data.disposition = 'attachment' or 'inline'
       // - data.value
+
+      //
+      // NOTE: if user did not have newsletter add-on approval for the domain
+      //       then throw an error and email admins if not sent already for approval
+      //       (e.g. user's can use our service with ListMonk, etc)
+      //       <https://github.com/knadh/listmonk>
+      //
+      //       * `Auto-Submitted` (with a value not equal to `no`)
+      //       * `X-Auto-Response-Suppress` (with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`)
+      //       * `List-Id`
+      //       * `List-Unsubscribe`
+      //       * `Feedback-ID`
+      //       * `X-Auto-Reply`
+      //       * `X-Autoreply`
+      //       * `X-Auto-Respond`
+      //       * `X-Autorespond`
+      //       * `Precedence` (with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`)
+      //
+      //
+      //       if the message had any of these headers then don't allow
+      //       <https://www.jitbit.com/maxblog/18-detecting-outlook-autoreplyout-of-office-emails-and-x-auto-response-suppress-header/>
+      //       <https://github.com/nodemailer/smtp-server/issues/129>
+      //       <https://www.arp242.net/autoreply.html>
+      //
+      // NOTE: hasHeader from mailsplit library is case-insensitive and trimmed
+      //
+      if (
+        (data.headers.hasHeader('auto-submitted') &&
+          data.headers.getFirst('auto-submitted').toLowerCase().trim() !==
+            'no') ||
+        (data.headers.hasHeader('x-auto-response-suppress') &&
+          ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
+            data.headers
+              .getFirst('x-auto-response-suppress')
+              .toLowerCase()
+              .trim()
+          )) ||
+        data.headers.hasHeader('list-id') ||
+        data.headers.hasHeader('list-unsubscribe') ||
+        data.headers.hasHeader('feedback-id') ||
+        data.headers.hasHeader('x-autoreply') ||
+        data.headers.hasHeader('x-auto-reply') ||
+        data.headers.hasHeader('x-autorespond') ||
+        data.headers.hasHeader('x-auto-respond') ||
+        (data.headers.hasHeader('precedence') &&
+          ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
+            data.headers.getFirst('precedence').toLowerCase().trim()
+          ))
+      ) {
+        hasNewsletter = true;
+        // return early since we're going to throw an error anyways
+        return;
+      }
 
       // remove Bcc header
       data.headers.remove('bcc');
@@ -446,6 +502,49 @@ async function processEmail({ email, port = 25, resolver, client }) {
         data.headers.lines.length
       );
     });
+
+    if (hasNewsletter && !domain.has_newsletter) {
+      // only send email if it's not sent yet or been more than three days without approval
+      if (
+        !_.isDate(domain.newsletter_sent_at) ||
+        new Date(domain.newsletter_sent_at).getTime() <
+          dayjs().subtract(3, 'days').toDate().getTime()
+      ) {
+        // send an email to all admins of the domain
+        const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+        const subject = i18n.translate(
+          'NEWSLETTER_APPROVAL_REQUIRED_SUBJECT',
+          obj.locale,
+          domain.name
+        );
+        const message = i18n.translate(
+          'NEWSLETTER_APPROVAL_REQUIRED_MESSAGE',
+          obj.locale,
+          domain.name
+        );
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: obj.to,
+            bcc: config.email.message.from,
+            subject
+          },
+          locals: {
+            message,
+            locale: obj.locale
+          }
+        });
+        await Domains.findByIdAndUpdate(domain._id, {
+          $set: {
+            newsletter_sent_at: new Date()
+          }
+        });
+      }
+
+      throw Boom.badRequest(
+        i18n.translateError('NEWSLETTER_USAGE_NOT_APPROVED')
+      );
+    }
 
     // if domain does not have DKIM key/selector then create one
     if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {

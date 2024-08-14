@@ -213,6 +213,13 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  has_newsletter: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
+  newsletter_sent_at: Date,
+
   // <https://github.com/forwardemail/free-email-forwarding/issues/235>
   webhook_key: {
     type: String

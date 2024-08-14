@@ -223,9 +223,7 @@ p.text-center.d-lg-none
                               name="format",
                               value="eml"
                             )
-                            label.form-check-label(
-                              for="input-radio-eml"
-                            )= t("EML")
+                            label.form-check-label(for="input-radio-eml")= t("EML")
                           .form-check
                             input#input-radio-mbox.form-check-input(
                               type="radio",
@@ -233,9 +231,7 @@ p.text-center.d-lg-none
                               name="format",
                               value="mbox"
                             )
-                            label.form-check-label(
-                              for="input-radio-eml"
-                            )= t("MBOX")
+                            label.form-check-label(for="input-radio-eml")= t("MBOX")
                           .form-check
                             input#input-radio-sqlite.form-check-input(
                               type="radio",
@@ -243,9 +239,7 @@ p.text-center.d-lg-none
                               name="format",
                               value="sqlite"
                             )
-                            label.form-check-label(
-                              for="input-radio-sqlite"
-                            )
+                            label.form-check-label(for="input-radio-sqlite")
                               = t("SQLite")
                               = " "
                               = "("
@@ -254,10 +248,10 @@ p.text-center.d-lg-none
                             .small.help-text.text-muted
                               = t("Note that after downloading this SQLite file, you will need to download and install this open-source software to decrypt and open it:")
                               = " "
-                              a(
+                              a.alert-link(
                                 href="https://github.com/pawelsalawa/sqlitestudio",
                                 target="_blank"
-                              ).alert-link= "SQLiteStudio"
+                              )= "SQLiteStudio"
                               = " "
                               != t('After opening SQLiteStudio, you must select <span class="notranslate">"WxSQLite3"</span> as the database type and use <span class="notranslate">"sqleet"</span> cipher to decrypt it using your password.')
                         p.font-weight-bold.lead= t("Enter current password to get a new backup:")
@@ -298,9 +292,7 @@ p.text-center.d-lg-none
                   .modal-dialog.modal-lg(role="document")
                     .modal-content
                       .modal-header.text-center.d-block
-                        h4.d-inline-block.ml-4(
-                          id=`modal-qrcode-${alias.id}-title`
-                        )= t("Get QR Code for Device Provisioning")
+                        h4.d-inline-block.ml-4(id=`modal-qrcode-${alias.id}-title`)= t("Get QR Code for Device Provisioning")
                         button.close(
                           type="button",
                           data-dismiss="modal",

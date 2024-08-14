@@ -19,7 +19,8 @@ async function encryptTxt(ctx) {
 
   ctx.request.body.input = ctx.request.body.input
     .replace(/forward-email=/i, '')
-    .replace(/forward-email-port=/i, '');
+    .replace(/forward-email-port=/i, '')
+    .trim();
 
   if (
     ctx.request.body.input
@@ -27,6 +28,9 @@ async function encryptTxt(ctx) {
       .includes('forward-email-site-verification=')
   )
     throw Boom.badRequest(ctx.translateError('INPUT_HAD_FE_SV'));
+
+  if (!isSANB(ctx.request.body.input))
+    throw Boom.badRequest(ctx.translateError('UNKNOWN_ERROR'));
 
   const encryptedValue = encrypt(
     ctx.request.body.input.trim(),
