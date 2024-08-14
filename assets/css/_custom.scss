@@ -360,8 +360,10 @@ a, .markdown-body a {
 	60% {transform: translateY(-10px);}
 }
 
-// fix for iOS devices due to navbar-fixed
-// <https://stackoverflow.com/a/18580770>
+// fix for mobile/iOS devices due to navbar-fixed
 .modal-backdrop {
-  z-index: -1 !important;
+  display: none;
+  @include media-breakpoint-up(md) {
+    display: block;
+  }
 }
