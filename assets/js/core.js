@@ -180,7 +180,14 @@ window.onloadTurnstileCallback = function () {
 
 // <https://stackoverflow.com/questions/10636667/bootstrap-modal-appearing-under-background/15780841#comment62524384_15780841>
 $body.on('show.bs.modal', function (ev) {
-  $(ev.relatedTarget.attributes['data-target'].value).appendTo('body');
+  let { target } = ev;
+  if (!target && ev.relatedTarget) target = $(ev.relatedTarget).data('target');
+  if (!target) return;
+  // if the target is not in `<main>` or `<body>` then move it
+  const $el = $(target);
+  if ($el.length === 0) return;
+  if ($el.parent().is('body') || $el.parent().is('main')) return;
+  $el.appendTo('body');
 });
 
 // Re-render dates with user's local time
