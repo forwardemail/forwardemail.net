@@ -178,6 +178,11 @@ window.onloadTurnstileCallback = function () {
   });
 };
 
+// <https://stackoverflow.com/questions/10636667/bootstrap-modal-appearing-under-background/15780841#comment62524384_15780841>
+$body.on('show.bs.modal', function (ev) {
+  $(ev.relatedTarget.attributes['data-target'].value).appendTo('body');
+});
+
 // Re-render dates with user's local time
 // TODO: use <time> https://github.com/github/relative-time-element
 function renderDayjs() {

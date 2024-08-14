@@ -359,11 +359,3 @@ a, .markdown-body a {
 	40% {transform: translateY(-20px);}
 	60% {transform: translateY(-10px);}
 }
-
-// fix for mobile/iOS devices due to navbar-fixed
-.modal-backdrop {
-  display: none;
-  @include media-breakpoint-up(md) {
-    display: block;
-  }
-}
