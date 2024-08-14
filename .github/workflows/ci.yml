@@ -15,9 +15,13 @@ jobs:
     env:
       # ... TODO: AWS
       AXE_SILENT: ${{ secrets.AXE_SILENT }}
+      AXE_SHOW_META: ${{ secrets.AXE_SILENT }}
+      AXE_SHOW_STACK: ${{ secrets.AXE_SHOW_STACK }}
+      TXT_ENCRYPTION_KEY: ${{ secrets.TXT_ENCRYPTION_KEY }}
       AUTH_GITHUB_ENABLED: "false"
       AUTH_GOOGLE_ENABLED: "false"
       HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
+      HELPER_ENCRYPTION_KEY_LEGACY: ${{ secrets.HELPER_ENCRYPTION_KEY_LEGACY }}
       I18N_SYNC_FILES: "true"
       I18N_UPDATE_FILES: "true"
       PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
@@ -44,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
       - name: start redis
