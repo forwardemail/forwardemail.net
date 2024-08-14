@@ -492,6 +492,25 @@ footer.mt-auto(aria-label=t("Footer"))
                     li: a.d-block.text-white.py-2.py-md-0(href=language.url)= `${titleize(t(language.name))} ${ctx.locale !== "en" ? `(${titleize(language.name)})` : ""}`
       .mt-5.text-white.small
         ul.list-inline.mb-3
+          if !isBot(ctx.get('User-Agent'))
+            li.list-inline-item.mb-3.mr-3
+              a(
+                aria-label=t("GitHub Repo stars"),
+                href="https://github.com/forwardemail/forwardemail.net",
+                target="_blank",
+                rel="noopener noreferrer"
+              )
+                noscript
+                  img(
+                    alt=t("GitHub Repo stars"),
+                    src="https://img.shields.io/github/stars/forwardemail/forwardemail.net",
+                    height=20
+                  )
+                img.lazyload(
+                  alt=t("GitHub Repo stars"),
+                  height=20,
+                  data-src="https://img.shields.io/github/stars/forwardemail/forwardemail.net"
+                )
           li.list-inline-item.mb-3.mr-3
             a(
               aria-label=t("Qualys SSL Labs SSL Server Test"),

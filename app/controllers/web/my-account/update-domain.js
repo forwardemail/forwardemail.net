@@ -39,8 +39,18 @@ async function updateDomain(ctx, next) {
     );
   }
 
-  // Boolean settings for spam and requiring recipient verification
+  // Boolean settings for bounce webhooks, spam, and requiring recipient verification
   if (ctx.api) {
+    // bounce webhook
+    if (typeof ctx.request.body.bounce_webhook === 'string') {
+      ctx.state.domain.bounce_webhook =
+        ctx.request.body.bounce_webhook === ''
+          ? undefined
+          : ctx.request.body.bounce_webhook;
+    } else if (ctx.request.body.bounce_webhook === false) {
+      ctx.state.domain.bounce_webhook = undefined;
+    }
+
     // require paid plan (note that the API middleware already does this)
     for (const bool of [
       'has_adult_content_protection',
@@ -55,6 +65,14 @@ async function updateDomain(ctx, next) {
     }
   } else
     switch (ctx.request.body._section) {
+      case 'bounce_webhook': {
+        ctx.state.domain.bounce_webhook =
+          ctx.request.body.bounce_webhook === ''
+            ? undefined
+            : ctx.request.body.bounce_webhook;
+        break;
+      }
+
       case 'spam_scanner_settings': {
         // require paid plan
         if (ctx.state.domain.plan === 'free')

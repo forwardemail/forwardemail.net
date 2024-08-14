@@ -19,11 +19,14 @@ const delay = require('delay');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
+const isLocalhost = require('is-localhost-ip');
 const isSANB = require('is-string-and-not-blank');
+const localhostUrl = require('localhost-url-regex');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const pMap = require('p-map');
+const pWaitFor = require('p-wait-for');
 const revHash = require('rev-hash');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
@@ -40,6 +43,12 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
+
+// dynamically import private-ip
+let isPrivateIP;
+import('private-ip').then((obj) => {
+  isPrivateIP = obj.default;
+});
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -213,6 +222,16 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // URL to POST to when a bounce is detected from outbound SMTP servers
+  // (NOTE: see additional validation below where we prevent localhost and private IP's from being webhooks)
+  bounce_webhook: {
+    type: String,
+    trim: true,
+    validate: (value) =>
+      typeof value === 'string' ? isURL(value, config.isURLOptions) : true
+  },
+  // once a week we email courtesy email in case bounce webhook error
+  bounce_webhook_sent_at: Date,
   has_newsletter: {
     type: Boolean,
     default: false,
@@ -915,6 +934,33 @@ Domains.pre('validate', function (next) {
   }
 
   next();
+});
+
+//
+// Prevent `bounce_webhook` from being localhost or private IP
+//
+// NOTE: this similar logic is also in MX server to prevent local-like webhooks in MX
+//
+Domains.pre('save', async function (next) {
+  if (!isSANB(this.bounce_webhook)) return next();
+  try {
+    if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
+    const value = this.bounce_webhook
+      .toLowerCase()
+      .replace('http://', '')
+      .replace('https://', '');
+    if (
+      localhostUrl().test(punycode.toASCII(this.bounce_webhook)) ||
+      isPrivateIP(value) ||
+      (await isLocalhost(punycode.toASCII(value)))
+    )
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
+      );
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Validate and convert to lowercase restricted alias names

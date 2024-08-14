@@ -39,7 +39,15 @@ Further, Forward Email does not warrant or make any representations concerning t
 <u>**You specifically agree that by using the Service that Forward Email shall not be responsible for, shall not be liable for, and you will not create, read, modify, or transmit any of the following with the Service:**</u>
 
 * **You will not use our service to operate a service which allow third parties (other than your own employees and contractors) to access, use, or benefit from our service.  If you need us to make an exception for you regarding this, then please contact us to discuss an enterprise agreement.  See our [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) for more information.**
-* **If you are using our [Outbound SMTP](/faq#do-you-support-sending-email-with-smtp) service, then you will only use it for [transactional email](https://wikipedia.org/wiki/Email_marketing#Transactional_emails). You are prohibited from sending marketing email (e.g. promotional, bulk, or commercial email to a list of contacts with the same content).  This includes examples such as a newsletter or a bulk announcement email.**
+* If you are using our [Outbound SMTP](/faq#do-you-support-sending-email-with-smtp) service, then you agree to the following:
+  * You are permitted to use it for [transactional email](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) and [email marketing](https://en.wikipedia.org/wiki/Email_marketing).
+  * If you are sending email marketing material, then you must include a `List-Unsubscribe` header and your subscribers must be opt-in.
+    * We recommend that you use an open-source newsletter manager such as [ListMonk](https://github.com/knadh/listmonk) at <https://github.com/knadh/listmonk>.
+      * Note that we plan to release our own newsletter manager in the future.
+    * Email marketing material includes promotional, bulk, or commercial email to a list of contacts with similar content, subject line, and body message (e.g. newsletters and announcements).
+    * You must comply with the [CAN-SPAM Act of 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of_2003).
+    * You must remove users that have opted-out, unsubscribed, or marked your email as spam either instantly or within 24 hours.
+    * The first-time your domain name attempts to send a newsletter, an admin will review and approve your domain for sending newsletters (usually within 2-4 hours, but sometimes it may take longer).
 * Anything that causes interference with the disruption of the Service, its operations, and/or its customers.
 * Materials that are abusive, defamatory, false, harassing, indecent, libelous, misleading, objectionable, obscene, offensive, profane, threatening, unlawful, and/or vulgar.
 * Unauthorized copyrighted or confidential materials and/or materials that infringe upon intellectual property rights, trade secrets, and/or privacy of others.

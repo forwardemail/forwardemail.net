@@ -460,6 +460,56 @@ block body
                   li.list-inline-item
                     button.btn.btn-lg.btn-primary(type="submit")= t("Save")
 
+          //- Bounce Webhook
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(type="hidden", name="_section", value="bounce_webhook")
+              .card.border-themed
+                h2.h6.card-header= t("Bounce Webhook URL")
+                .card-body
+                  +planRequired(false)
+                  p.card-text!= t("We can automatically send a POST request to the bounce webhook URL of your choice with detailed information (e.g. to manage your subscribers for newsletters &ndash; or so you can monitor your outbound email programmatically).")
+                  p.card-text
+                    strong!= t('Need to verify that <a href="%s" target="_blank">webhooks</a> are sent by us?', l("/faq#do-you-support-webhooks"))
+                    = " "
+                    != t('You can check that the remote server\'s IP address is one of ours listed under our public <a href="%s" target="_blank">IP Addresses</a> page.', l("/ips"))
+                    = " "
+                    != t('Use the webhook key below listed under "Webhook Signature Payload Verification Key" to compare the <code>X-Webhook-Signature</code> header with the computed payload body.')
+                    = " "
+                    != t('Please reference <a href="%s" target="_blank" rel="noopener noreferrer">this Stack Overflow post</a> for an example.', "https://stackoverflow.com/a/68885281")
+                  form.ajax-form.confirm-prompt.d-inline-block
+                  .form-group.floating-label
+                    input#bounce-webhook-url.form-control.form-control-lg(
+                      type="url",
+                      name="bounce_webhook",
+                      disabled=isDisabled,
+                      autocomplete=config.env === "test" ? "off" : randomstring(),
+                      placeholder=t("Bounce webhook URL"),
+                      autocorrect="off",
+                      spellcheck="false",
+                      autocapitalize="off",
+                      value=domain.bounce_webhook || ""
+                    )
+                    label(for="#bounce-webhook-url")= t("Bounce Webhook URL")
+                  .small.form-text.text-muted!= t("Must be a valid URL starting with <code>http://</code> or <code>https://</code>")
+                .card-footer.text-right
+                  ul.list-inline.mb-0
+                    li.list-inline-item
+                      button.confirm-prompt.btn.btn-lg.btn-secondary(
+                        type="reset",
+                        disabled=isDisabled
+                      )= t("Reset")
+                    li.list-inline-item
+                      button.btn.btn-lg.btn-primary(
+                        type="submit",
+                        disabled=isDisabled
+                      )= t("Save")
+
           //- Webhook Key
           if domain.group === 'admin'
             .card.border-themed.mb-3

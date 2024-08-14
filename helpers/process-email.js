@@ -5,7 +5,7 @@
 
 const os = require('node:os');
 const { Buffer } = require('node:buffer');
-const { createPublicKey } = require('node:crypto');
+const { createPublicKey, randomBytes, createHmac } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
@@ -15,7 +15,9 @@ const intoStream = require('into-stream');
 const ip = require('ip');
 const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
 const { SRS } = require('sender-rewriting-scheme');
@@ -23,7 +25,10 @@ const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
+const { isURL } = require('validator');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
+
+const pkg = require('../package.json');
 
 const WKD = require('./wkd');
 const combineErrors = require('./combine-errors');
@@ -32,16 +37,15 @@ const createMtaStsCache = require('./create-mta-sts-cache');
 const createSession = require('./create-session');
 const emailHelper = require('./email');
 const getBlockedHashes = require('./get-blocked-hashes');
+const getBounceInfo = require('./get-bounce-info');
 const getErrorCode = require('./get-error-code');
-const i18n = require('./i18n');
+const retryRequest = require('./retry-request');
 const isCodeBug = require('./is-code-bug');
-const isRetryableError = require('./is-retryable-error');
-const isSSLError = require('./is-ssl-error');
-const isTLSError = require('./is-tls-error');
+const i18n = require('./i18n');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const sendEmail = require('./send-email');
-const { decrypt } = require('./encrypt-decrypt');
+const { encrypt, decrypt } = require('./encrypt-decrypt');
 const isMessageEncrypted = require('#helpers/is-message-encrypted');
 const encryptMessage = require('#helpers/encrypt-message');
 
@@ -49,6 +53,7 @@ const config = require('#config');
 const env = require('#config/env');
 const { Emails, Users, Domains, Aliases } = require('#models');
 
+const USER_AGENT = `${pkg.name}/${pkg.version}`;
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
@@ -367,6 +372,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     let hasNewsletter = false;
 
+    // these are used for bounce webhooks
+    let listId;
+    let listUnsubscribe;
+    let feedbackId;
+
     // <https://github.com/andris9/mailsplit#events>
     // eslint-disable-next-line complexity
     splitter.on('data', (data) => {
@@ -427,11 +437,18 @@ async function processEmail({ email, port = 25, resolver, client }) {
           ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
             data.headers.getFirst('precedence').toLowerCase().trim()
           ))
-      ) {
+      )
         hasNewsletter = true;
-        // return early since we're going to throw an error anyways
-        return;
-      }
+
+      //
+      // NOTE: these are used for bounce webhooks
+      //
+      if (data.headers.hasHeader('list-id'))
+        listId = data.headers.getFirst('list-id');
+      if (data.headers.hasHeader('list-unsubscribe'))
+        listUnsubscribe = data.headers.getFirst('list-unsubscribe');
+      if (data.headers.hasHeader('feedback-id'))
+        feedbackId = data.headers.getFirst('feedback-id');
 
       // remove Bcc header
       data.headers.remove('bcc');
@@ -1245,12 +1262,132 @@ async function processEmail({ email, port = 25, resolver, client }) {
         isEmail(error.recipient, { ignore_max_length: true }) &&
         !error.is_recently_blocked &&
         !email.soft_bounces.includes(error.recipient) &&
-        !email.hard_bounces.includes(error.recipient) &&
-        !isRetryableError(error) &&
-        !isSSLError(error) &&
-        !isTLSError(error) &&
-        !isCodeBug(error)
+        !email.hard_bounces.includes(error.recipient)
+      // !isRetryableError(error) &&
+      // !isSSLError(error) &&
+      // !isTLSError(error) &&
+      // !isCodeBug(error)
     );
+
+    //
+    // NOTE: here's where we send bounce webhook in the background for each of our sending attempts
+    //
+    const bounceErrors = email.rejectedErrors.filter(
+      (error) =>
+        isSANB(error.recipient) &&
+        isEmail(error.recipient, { ignore_max_length: true }) &&
+        !error.is_recently_blocked
+      // this is similar to filteredErrors except we send it for every bounce attempt so we don't need these:
+      // !email.soft_bounces.includes(error.recipient) &&
+      // !email.hard_bounces.includes(error.recipient) &&
+      // !isRetryableError(error) &&
+      // !isSSLError(error) &&
+      // !isTLSError(error) &&
+      // !isCodeBug(error)
+    );
+
+    if (
+      !email.is_bounce &&
+      bounceErrors.length > 0 &&
+      typeof domain.bounce_webhook === 'string' &&
+      isURL(domain.bounce_webhook, config.isURLOptions)
+    ) {
+      let webhookKey = domain.webhook_key;
+      if (!webhookKey) {
+        // SHA256 HMAC should not exceed 512 bytes for key length
+        // <https://security.stackexchange.com/a/96176>
+        webhookKey = encrypt(randomBytes(16).toString('hex'));
+        domain.webhook_key = webhookKey;
+        await Domains.findByIdAndUpdate(domain._id, {
+          $set: { webhook_key: webhookKey }
+        });
+      }
+
+      // send bounces in the background here
+      pMapSeries(bounceErrors, async (error) => {
+        const body = JSON.stringify({
+          email_id: email.id,
+          list_id: listId,
+          list_unsubscribe: listUnsubscribe,
+          feedback_id: feedbackId,
+          recipient: error.recipient,
+          message:
+            isCodeBug(error) && !error.isBoom
+              ? 'An internal server error has occurred, please try again later.'
+              : error.message,
+          response: error.response,
+          response_code: error.responseCode,
+          truth_source: error.truthSource,
+          bounce: getBounceInfo(error)
+        });
+        // dummyproofing
+        const url = domain.bounce_webhook
+          .replace('HTTP://', 'http://')
+          .replace('HTTPS://', 'https://')
+          .trim();
+        const response = await retryRequest(url, {
+          method: 'POST',
+          headers: {
+            'User-Agent': USER_AGENT,
+            'Content-Type': 'application/json',
+            'X-Webhook-Signature': createHmac('sha256', decrypt(webhookKey))
+              .update(body)
+              .digest('hex')
+          },
+          body,
+          timeout: ms('5s'),
+          retries: 1
+        });
+        // consume body
+        if (!response?.signal?.aborted) await response.body.dump();
+      })
+        .then()
+        .catch(async (err) => {
+          logger.fatal(err);
+          try {
+            // only send email if it's not sent yet or been more than 1 week since last time
+            if (
+              !_.isDate(domain.bounce_webhook_sent_at) ||
+              new Date(domain.bounce_webhook_sent_at).getTime() <
+                dayjs().subtract(1, 'week').toDate().getTime()
+            ) {
+              // send an email to all admins of the domain
+              const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+              const subject = i18n.translate(
+                'BOUNCE_WEBHOOK_ERROR_SUBJECT',
+                obj.locale,
+                domain.name
+              );
+              const message =
+                i18n.translate(
+                  'BOUNCE_WEBHOOK_ERROR_MESSAGE',
+                  obj.locale,
+                  domain.name,
+                  domain.bounce_webhook
+                ) + `<pre><code>${parseErr(err)}</code></pre>`;
+              await emailHelper({
+                template: 'alert',
+                message: {
+                  to: obj.to,
+                  bcc: config.email.message.from,
+                  subject
+                },
+                locals: {
+                  message,
+                  locale: obj.locale
+                }
+              });
+              await Domains.findByIdAndUpdate(domain._id, {
+                $set: {
+                  bounce_webhook_sent_at: new Date()
+                }
+              });
+            }
+          } catch (err) {
+            logger.fatal(err);
+          }
+        });
+    }
 
     if (!email.is_bounce && filteredErrors.length > 0) {
       const softBounces = [];
@@ -1264,6 +1401,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             // (we don't want to send bounces until we try 5-6x within first hour of queue)
             //
             const code = getErrorCode(error);
+
             if (
               code < 500 &&
               Date.now() < dayjs(email.date).add(1, 'hour').toDate().getTime()
