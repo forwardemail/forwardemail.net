@@ -363,5 +363,5 @@ a, .markdown-body a {
 // fix for iOS devices due to navbar-fixed
 // <https://stackoverflow.com/a/18580770>
 .modal-backdrop {
-  z-index: 1020 !important;
+  z-index: -1 !important;
 }
