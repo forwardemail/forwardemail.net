@@ -534,8 +534,18 @@ class CalDAV extends API {
       // safeguard in case more than one event
       // TODO: we may need to find by eventId -> uid match
       const vevents = comp.getAllSubcomponents('vevent');
-      if (vevents.length !== 1)
-        throw new TypeError('0 or more than one vevent for sending invite');
+      if (vevents.length !== 1) {
+        // TODO: remove this debug once we fix
+        // debug until we determine how to fix properly
+        const err = new TypeError(
+          '0 or more than one vevent for sending invite'
+        );
+        err.isCodeBug = true;
+        err.calendar = calendar;
+        err.oldCalStr = oldCalStr;
+        err.calendarEvent = calendarEvent;
+        throw err;
+      }
 
       const vevent = vevents[0];
 
@@ -573,10 +583,18 @@ class CalDAV extends API {
         // TODO: we may need to find by eventId -> uid match
         // safeguard in case more than one event
         const oldEvents = oldComp.getAllSubcomponents('vevent');
-        if (oldEvents.length !== 1)
-          throw new TypeError(
-            '0 or more than one old vevent for sending invite'
+        if (oldEvents.length !== 1) {
+          // TODO: remove this debug once we fix
+          // debug until we determine how to fix properly
+          const err = new TypeError(
+            '0 or more than one vevent for sending invite'
           );
+          err.isCodeBug = true;
+          err.calendar = calendar;
+          err.oldCalStr = oldCalStr;
+          err.calendarEvent = calendarEvent;
+          throw err;
+        }
 
         const oldEvent = new ICAL.Event(oldEvents[0]);
 
