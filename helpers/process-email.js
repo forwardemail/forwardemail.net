@@ -378,7 +378,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     let feedbackId;
 
     // <https://github.com/andris9/mailsplit#events>
-    // eslint-disable-next-line complexity
+
     splitter.on('data', (data) => {
       if (data.type !== 'node' || data.root !== true) return;
       // - data.headers.get
@@ -396,17 +396,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //       (e.g. user's can use our service with ListMonk, etc)
       //       <https://github.com/knadh/listmonk>
       //
-      //       * `Auto-Submitted` (with a value not equal to `no`)
-      //       * `X-Auto-Response-Suppress` (with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`)
       //       * `List-Id`
       //       * `List-Unsubscribe`
-      //       * `Feedback-ID`
-      //       * `X-Auto-Reply`
-      //       * `X-Autoreply`
-      //       * `X-Auto-Respond`
-      //       * `X-Autorespond`
-      //       * `Precedence` (with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`)
-      //
       //
       //       if the message had any of these headers then don't allow
       //       <https://www.jitbit.com/maxblog/18-detecting-outlook-autoreplyout-of-office-emails-and-x-auto-response-suppress-header/>
@@ -416,27 +407,8 @@ async function processEmail({ email, port = 25, resolver, client }) {
       // NOTE: hasHeader from mailsplit library is case-insensitive and trimmed
       //
       if (
-        (data.headers.hasHeader('auto-submitted') &&
-          data.headers.getFirst('auto-submitted').toLowerCase().trim() !==
-            'no') ||
-        (data.headers.hasHeader('x-auto-response-suppress') &&
-          ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-            data.headers
-              .getFirst('x-auto-response-suppress')
-              .toLowerCase()
-              .trim()
-          )) ||
         data.headers.hasHeader('list-id') ||
-        data.headers.hasHeader('list-unsubscribe') ||
-        data.headers.hasHeader('feedback-id') ||
-        data.headers.hasHeader('x-autoreply') ||
-        data.headers.hasHeader('x-auto-reply') ||
-        data.headers.hasHeader('x-autorespond') ||
-        data.headers.hasHeader('x-auto-respond') ||
-        (data.headers.hasHeader('precedence') &&
-          ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
-            data.headers.getFirst('precedence').toLowerCase().trim()
-          ))
+        data.headers.hasHeader('list-unsubscribe')
       )
         hasNewsletter = true;
 
