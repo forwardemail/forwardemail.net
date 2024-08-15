@@ -2231,7 +2231,392 @@ Test`.trim()
   await smtp.close();
 });
 
-// TODO: does not allow domain-wide catch-all to send with a different domain in From header nor MAIL FROM
+// does not allow domain-wide catch-all to send with a different domain in From header nor MAIL FROM
+test('does not allow differing domain with domain-wide catch-all', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  const { resolver } = smtp;
+  const port = await getPort();
+  await smtp.listen(port);
 
-// TODO: does not allow specific password to send with a different domain in From header nor MAIL FROM
-// TODO: does not allow user to send newsletter without admin approval
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const { password, salt, hash } = await createPassword();
+  domain.tokens.push({
+    description: 'test',
+    salt,
+    hash,
+    user: user._id
+  });
+  domain.skip_verification = true;
+  await domain.save();
+
+  const alias = await utils.aliasFactory
+    .withState({
+      name: '*',
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  await alias.save();
+
+  {
+    // spoof dns records
+    const map = new Map();
+
+    map.set(
+      `txt:${domain.name}`,
+      resolver.spoofPacket(
+        domain.name,
+        'TXT',
+        [`${config.paidPrefix}${domain.verification_record}`],
+        true
+      )
+    );
+
+    // dkim
+    map.set(
+      `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+        'TXT',
+        [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+        true
+      )
+    );
+
+    // spf
+    map.set(
+      `txt:${env.WEB_HOST}`,
+      resolver.spoofPacket(
+        `${env.WEB_HOST}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true
+      )
+    );
+
+    // cname
+    map.set(
+      `cname:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'CNAME',
+        [env.WEB_HOST],
+        true
+      )
+    );
+
+    // cname -> txt
+    map.set(
+      `txt:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true
+      )
+    );
+
+    // dmarc
+    map.set(
+      `txt:_dmarc.${domain.name}`,
+      resolver.spoofPacket(
+        `_dmarc.${domain.name}`,
+        'TXT',
+        [
+          // TODO: consume dmarc reports and parse dmarc-$domain
+          `v=DMARC1; p=reject; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+        ],
+        true
+      )
+    );
+
+    // store spoofed dns cache
+    await resolver.options.cache.mset(map);
+  }
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass: password
+    }
+  });
+
+  const messageId = `<${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}>`;
+
+  const err = await t.throwsAsync(
+    transporter.sendMail({
+      envelope: {
+        from: `${alias.name}@someotherdomain.com`,
+        to: 'test@foo.com'
+      },
+      raw: `
+Message-ID: ${messageId}
+To: test@foo.com
+From: Test <${alias.name}@someotherdomain.com>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+    })
+  );
+
+  t.is(
+    err.message,
+    `Message failed: 550 From header must end with @${domain.name}`
+  );
+});
+
+test('requires newsletter approval', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  const { resolver } = smtp;
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  await alias.save();
+
+  {
+    // spoof dns records
+    const map = new Map();
+
+    map.set(
+      `txt:${domain.name}`,
+      resolver.spoofPacket(
+        domain.name,
+        'TXT',
+        [`${config.paidPrefix}${domain.verification_record}`],
+        true
+      )
+    );
+
+    // dkim
+    map.set(
+      `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+        'TXT',
+        [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+        true
+      )
+    );
+
+    // spf
+    map.set(
+      `txt:${env.WEB_HOST}`,
+      resolver.spoofPacket(
+        `${env.WEB_HOST}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true
+      )
+    );
+
+    // cname
+    map.set(
+      `cname:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'CNAME',
+        [env.WEB_HOST],
+        true
+      )
+    );
+
+    // cname -> txt
+    map.set(
+      `txt:${domain.return_path}.${domain.name}`,
+      resolver.spoofPacket(
+        `${domain.return_path}.${domain.name}`,
+        'TXT',
+        [`v=spf1 ip4:${IP_ADDRESS} -all`],
+        true
+      )
+    );
+
+    // dmarc
+    map.set(
+      `txt:_dmarc.${domain.name}`,
+      resolver.spoofPacket(
+        `_dmarc.${domain.name}`,
+        'TXT',
+        [
+          // TODO: consume dmarc reports and parse dmarc-$domain
+          `v=DMARC1; p=reject; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+        ],
+        true
+      )
+    );
+
+    // store spoofed dns cache
+    await resolver.options.cache.mset(map);
+  }
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  const messageId = `<${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}>`;
+
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'test@foo.com'
+    },
+    raw: `
+Message-ID: ${messageId}
+To: test@foo.com
+List-Unsubscribe: foo@foo.com
+From: Test <${alias.name}@${domain.name}>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  let email = await Emails.findOne({
+    messageId
+  })
+    .lean()
+    .exec();
+  t.true(typeof email === 'object');
+
+  //
+  // process the email
+  //
+  await processEmail({
+    email,
+    resolver,
+    client
+  });
+
+  email = await Emails.findOne({
+    messageId
+  })
+    .lean()
+    .exec();
+
+  t.is(
+    email.rejectedErrors[0].message,
+    'Newsletter usage is not yet approved for your account, please wait for approval or contact us for support.'
+  );
+});

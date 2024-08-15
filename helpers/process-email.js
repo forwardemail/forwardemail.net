@@ -520,6 +520,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
       );
     });
 
+    // if domain does not have DKIM key/selector then create one
+    if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
+      domain.skip_payment_check = true;
+      domain.skip_verification = true;
+      domain = await domain.save();
+    }
+
+    const unsigned = await getStream.buffer(
+      intoStream(message).pipe(splitter).pipe(joiner)
+    );
+
     if (hasNewsletter && !domain.has_newsletter) {
       // only send email if it's not sent yet or been more than three days without approval
       if (
@@ -562,17 +573,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
         i18n.translateError('NEWSLETTER_USAGE_NOT_APPROVED')
       );
     }
-
-    // if domain does not have DKIM key/selector then create one
-    if (!isSANB(domain.dkim_private_key) || !isSANB(domain.return_path)) {
-      domain.skip_payment_check = true;
-      domain.skip_verification = true;
-      domain = await domain.save();
-    }
-
-    const unsigned = await getStream.buffer(
-      intoStream(message).pipe(splitter).pipe(joiner)
-    );
 
     //
     // NOTE: we switched to use mailauth vs nodemailer for DKIM signing since body hash calculations were different

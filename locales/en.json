@@ -9825,5 +9825,10 @@
   "If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.": "If we detect that your bounce webhook URL has an error while we try to send a request to it, then we will send you a courtesy email once a week.",
   "header.  We also": "header.  We also",
   "added support for bounce webhooks": "added support for bounce webhooks",
-  "and now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.": "and now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service."
+  "and now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.": "and now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.",
+  "Cannot create token for catch-all alias.": "Cannot create token for catch-all alias.",
+  "From header must end with <span class=\"notranslate\">%s</span>": "From header must end with <span class=\"notranslate\">%s</span>",
+  "Newsletter approval required for <span class=\"notranslate\">%s</span>": "Newsletter approval required for <span class=\"notranslate\">%s</span>",
+  "We detected that you attempted to send an outbound SMTP newsletter for <strong class=\"notranslate\">%s</strong>.  Your domain does not yet have newsletter support approved, and an admin has been notified to begin review.  This process usually is resolved within 2-4 hours, but sometimes it may longer.": "We detected that you attempted to send an outbound SMTP newsletter for <strong class=\"notranslate\">%s</strong>.  Your domain does not yet have newsletter support approved, and an admin has been notified to begin review.  This process usually is resolved within 2-4 hours, but sometimes it may longer.",
+  "Newsletter usage is not yet approved for your account, please wait for approval or contact us for support.": "Newsletter usage is not yet approved for your account, please wait for approval or contact us for support."
 }
