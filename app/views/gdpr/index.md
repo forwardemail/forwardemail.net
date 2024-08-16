@@ -44,8 +44,8 @@ In accordance with [Article 27 of the GDPR](https://gdpr-info.eu/art-27-gdpr/), 
 
 ### EU Representative
 
-> Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0
+<blockquote class="notranslate">Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0</blockquote>
 
 ### UK Representative
 
-> Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />Belfast<br />Antrim<br />BT1 - 5EF
+<blockquote class="notranslate">Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />Belfast<br />Antrim<br />BT1 - 5EF</blockquote>
