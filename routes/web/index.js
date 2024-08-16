@@ -346,6 +346,7 @@ localeRouter
     web.help
   )
   .get('/about', render('about'))
+  .get('/press', render('press'))
   .get(
     '/domain-registration',
     web.myAccount.retrieveDomains,

@@ -58,6 +58,10 @@ module.exports = function (config) {
       'Free Email Forwarder for Custom Domains',
       `Learn more about ${config.appName} and the history of our service.`
     ],
+    '/press': [
+      'Press & Media Kit',
+      'Learn more about Forward Email for journalists and the press, and download Forward Email graphics, branding, and media kit.'
+    ],
     ...useCases,
     '/private-business-email': [
       'Private Business Email for Custom Domains',
