@@ -7,6 +7,9 @@ Forward Email is a privacy-focused company committed to protecting your data.
 
 * [Foreword](#foreword)
 * [International Data Transfer](#international-data-transfer)
+* [GDPR Representative](#gdpr-representative)
+  * [EU Representative](#eu-representative)
+  * [UK Representative](#uk-representative)
 
 
 ## Foreword
@@ -26,8 +29,23 @@ Since we process, store, and transfer data internationally (e.g. an email sent f
 
 Listed below are our providers which we use to transfer data internationally and links to their dedicated pages regarding their GDPR compliance.
 
-| Provider                                  | [Data Privacy Framework Program](https://www.dataprivacyframework.gov/) ("DPF") Certified | GDPR Compliance Page                            |
-| ----------------------------------------- | :---------------------------------------------------------------------------------------: | ----------------------------------------------- |
-| [Cloudflare](https://cloudflare.com)      |                                   :white_check_mark: Yes                                  | <https://www.cloudflare.com/trust-hub/gdpr/>    |
-| [Digital Ocean](https://digitalocean.com) |                                           :x: No                                          | <https://www.digitalocean.com/legal/gdpr>       |
-| [Vultr](https://www.vultr.com)            |                                           :x: No                                          | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| Provider                                  | [Data Privacy Framework Program](https://www.dataprivacyframework.gov/) ("DPF") Certified | GDPR Compliance Page                              |
+| ----------------------------------------- | :---------------------------------------------------------------------------------------: | ------------------------------------------------- |
+| [Cloudflare](https://cloudflare.com)      |                                   :white_check_mark: Yes                                  | <https://www.cloudflare.com/trust-hub/gdpr/>      |
+| [Digital Ocean](https://digitalocean.com) |                                           :x: No                                          | <https://www.digitalocean.com/legal/gdpr>         |
+| [Vultr](https://www.vultr.com)            |                                           :x: No                                          | <https://www.vultr.com/legal/eea-gdpr-privacy/>   |
+| [Stripe](https://stripe.com/)             |                                   :white_check_mark: Yes                                  | <https://stripe.com/legal/privacy-center>         |
+| [PayPal](https://www.paypal.com/us/home)  |                                           :x: No                                          | <https://www.paypal.com/uk/legalhub/privacy-full> |
+
+
+## GDPR Representative
+
+In accordance with [Article 27 of the GDPR](https://gdpr-info.eu/art-27-gdpr/), we have Member State representatives as listed below:
+
+### EU Representative
+
+> Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0
+
+### UK Representative
+
+> Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />Belfast<br />Antrim<br />BT1 - 5EF
