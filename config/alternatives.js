@@ -974,7 +974,7 @@ const obj = {
     // storage
     '30 GB',
     // attachment_limit
-    '100 MB',
+    'Unknown',
     // unlimited_domains
     false,
     // unlimited_aliases
@@ -988,9 +988,9 @@ const obj = {
     // api
     false,
     // e2ee
-    false,
-    // openpgp
     '<a target="_blank" rel="noopener noreferrer" href="https://www.migadu.com/procon/#not-encrypted">Not encrypted</a>',
+    // openpgp
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.migadu.com/procon/#not-encrypted">Does not allow you to upload OpenPGP key</a>',
     // wkd
     false,
     // hardenize (on root domain)
