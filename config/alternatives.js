@@ -958,6 +958,50 @@ const obj = {
     // ssl_labs
     'A+'
   ],
+  Migadu: [
+    // description
+    'The Missing Email',
+    // website
+    'https://www.migadu.com/',
+    // oss
+    false,
+    // sandboxed
+    false,
+    // tti
+    false,
+    // pricing
+    '$9/mo',
+    // storage
+    '30 GB',
+    // attachment_limit
+    '100 MB',
+    // unlimited_domains
+    false,
+    // unlimited_aliases
+    false,
+    // smtp
+    true,
+    // imap
+    true,
+    // pop3
+    true,
+    // api
+    false,
+    // e2ee
+    false,
+    // openpgp
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.migadu.com/procon/#not-encrypted">Not encrypted</a>',
+    // wkd
+    false,
+    // hardenize (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://www.hardenize.com/report/migadu.com/1723989512">Fail</a>',
+    // internetnl_site (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/site/migadu.com/2920307/">92/100</a>',
+    // internetnl_mail (on root domain)
+    '<a target="_blank" rel="noopener noreferrer" href="https://internet.nl/mail/migadu.com/1313797/">97/100</a>',
+    // ssl_labs
+    'A'
+  ],
   'mailbox.org': [
     // description
     'Privacy made in Germany',
