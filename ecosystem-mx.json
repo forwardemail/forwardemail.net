@@ -1,0 +1,27 @@
+{
+  "apps": [
+    {
+      "name": "mx",
+      "script": "mx.js",
+      "max_restarts": 999,
+      "exec_mode": "cluster",
+      "wait_ready": true,
+      "instances": "max",
+      "pmx": false,
+      "env_production": {
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "deploy",
+      "host": ["138.197.213.185","104.248.224.170"],
+      "ref": "origin/master",
+      "repo": "git@github.com:forwardemail/forwardemail.net.git",
+      "path": "/var/www/production",
+      "pre-deploy": "git reset --hard",
+      "post-deploy": "pnpm install && NODE_ENV=production npm start build && pm2 startOrGracefulReload ecosystem-mx.json --env production --update-env"
+    }
+  }
+}

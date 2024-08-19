@@ -5,17 +5,16 @@
 
 const fs = require('node:fs');
 
-const RateLimiter = require('async-ratelimiter');
 const bytes = require('bytes');
 const ms = require('ms');
 const pify = require('pify');
 const { SMTPServer } = require('smtp-server');
 
+const RetryClient = require('#helpers/retry-client');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
-const onAuth = require('#helpers/on-auth');
 const onClose = require('#helpers/on-close');
 const onConnect = require('#helpers/on-connect');
 const onData = require('#helpers/on-data');
@@ -24,33 +23,35 @@ const onRcptTo = require('#helpers/on-rcpt-to');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
-class SMTP {
-  constructor(
-    options = {},
-    secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465
-  ) {
+// TODO: remove try/catch for isDenylisted/isSilent/isBackscatter
+//       and replace with catch (err) for onData to detect and store counter
+//       based off err.name detected or if it was combined then err.errors
+
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+// TODO: we probably should disable spam scanner
+class MX {
+  constructor(options = {}) {
     this.client = options.client;
     this.resolver = createTangerine(this.client, logger);
 
-    //
-    // NOTE: hard-coded values for now (switch to env later)
-    //       (current limit is 10 failed login attempts per hour)
-    //
-    this.rateLimiter = new RateLimiter({
-      db: this.client,
-      max: config.smtpLimitMessages,
-      duration: config.smtpLimitDuration,
-      namespace: config.smtpLimitNamespace
-    });
+    // NOTE: this is useful for tests since we can pass `apiEndpoint` in test options
+    // TODO: remove API and replace with MongoDB calls (and then we can remove API from MX tests)
+    this.apiClient = new RetryClient(options.apiEndpoint || config.urls.api);
+
+    // TODO: rate limiting (?)
 
     this.logger = logger;
 
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
     this.server = new SMTPServer({
-      // <https://github.com/nodemailer/smtp-server/pull/192>
-      authRequiredMessage: config.authRequiredMessage,
-
       //
       // most of these options mirror the FE forwarding server options
       //
@@ -58,7 +59,6 @@ class SMTP {
       onData: onData.bind(this),
       onConnect: onConnect.bind(this),
       onClose: onClose.bind(this),
-      onAuth: onAuth.bind(this),
       onMailFrom: onMailFrom.bind(this),
       onRcptTo: onRcptTo.bind(this),
       // NOTE: we don't need to set a value for maxClients
@@ -72,15 +72,9 @@ class SMTP {
       disableReverseLookup: true,
       logger: this.logger,
 
-      disabledCommands: secure ? ['STARTTLS'] : [],
-      secure,
-      needsUpgrade: secure,
-      authMethods: ['PLAIN', 'LOGIN'], // XOAUTH2, CRAM-MD5
-
-      // just in case smtp-server changes default and patch semver bump (unlikely but safeguard)
-      allowInsecureAuth:
-        config.env === 'production' ? false : env.SMTP_ALLOW_INSECURE_AUTH,
-      authOptional: false,
+      disabledCommands: ['AUTH'],
+      secure: false,
+      needsUpgrade: false,
 
       // <https://github.com/nodemailer/wildduck/issues/563>
       // hide8BITMIME: true,
@@ -110,7 +104,7 @@ class SMTP {
     this.close = this.close.bind(this);
   }
 
-  async listen(port = env.SMTP_PORT, host = '::', ...args) {
+  async listen(port = env.MX_PORT, host = '::', ...args) {
     await pify(this.server.listen).bind(this.server)(port, host, ...args);
   }
 
@@ -119,4 +113,4 @@ class SMTP {
   }
 }
 
-module.exports = SMTP;
+module.exports = MX;

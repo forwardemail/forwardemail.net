@@ -8,10 +8,14 @@ const { isEmail } = require('validator');
 
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
+const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
+const env = require('#config/env');
+const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
+const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-function onRcptTo(address, session, fn) {
+async function onRcptTo(address, session, fn) {
   this.logger.debug('RCPT TO', { address, session });
 
   if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
@@ -32,7 +36,6 @@ function onRcptTo(address, session, fn) {
           false,
           this
         )
-        // session
       )
     );
 
@@ -53,9 +56,38 @@ function onRcptTo(address, session, fn) {
           false,
           this
         )
-        // session
       )
     );
+
+  try {
+    //
+    // check if attempted spoofed or invalid SRS (e.g. fake bounces)
+    //
+    if (
+      parseRootDomain(parseHostFromDomainOrAddress(address.address)) ===
+      env.WEB_HOST
+    )
+      checkSRS(address.address, true, true);
+
+    //
+    // if we're on the MX server then we perform a very rudimentary check
+    // on the RCPT domain name to see that it actually is set up to receive mail
+    // (they do not necessarily need to be ours, but this helps thwart spammers)
+    //
+    if (this?.constructor?.name === 'MX') {
+      const domain = parseHostFromDomainOrAddress(checkSRS(address.address));
+      const records = await this.resolver.resolveMx(domain);
+      if (!records || records.length === 0)
+        throw new SMTPError(
+          `${checkSRS(
+            address.address
+          )} does not have any MX records configured on its domain ${domain}`,
+          { ignoreHook: true }
+        );
+    }
+  } catch (err) {
+    return setImmediate(() => fn(refineAndLogError(err, session, false, this)));
+  }
 
   setImmediate(fn);
 }

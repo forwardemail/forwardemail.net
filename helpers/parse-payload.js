@@ -29,7 +29,6 @@ const pify = require('pify');
 const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
-const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
 const Boom = require('@hapi/boom');
@@ -47,6 +46,7 @@ const getFingerprint = require('#helpers/get-fingerprint');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const getTemporaryDatabase = require('#helpers/get-temporary-database');
 const i18n = require('#helpers/i18n');
+const isAllowlisted = require('#helpers/is-allowlisted');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
@@ -808,10 +808,12 @@ async function parsePayload(data, ws) {
                       throw err;
                     }
                   } else {
-                    const isAllowlisted = await this.client.get(
-                      `allowlist:${sender}`
+                    const allowlisted = await isAllowlisted(
+                      sender,
+                      this.client,
+                      this.resolver
                     );
-                    if (boolean(isAllowlisted)) {
+                    if (allowlisted) {
                       // 2) Senders that are allowlisted are limited to sending 10 GB per day.
                       if (size >= bytes('10GB')) {
                         const err = new SMTPError(

@@ -42,6 +42,7 @@ const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getBlockedHashes = require('#helpers/get-blocked-hashes');
 const getErrorCode = require('#helpers/get-error-code');
+const getHeaders = require('#helpers/get-headers');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
@@ -266,7 +267,10 @@ Emails.pre('validate', function (next) {
   try {
     if (!_.isObject(this.envelope)) throw Boom.badRequest('Envelope missing');
 
-    if (!isSANB(this.envelope.from) || !isEmail(this.envelope.from))
+    if (
+      !isSANB(this.envelope.from) ||
+      !isEmail(this.envelope.from, { ignore_max_length: true })
+    )
       throw Boom.badRequest('Envelope from missing');
 
     if (
@@ -927,7 +931,7 @@ Emails.statics.queue = async function (
   if (
     info.envelope.from === false ||
     typeof info.envelope.from !== 'string' ||
-    !isEmail(info.envelope.from)
+    !isEmail(info.envelope.from, { ignore_max_length: true })
   )
     throw Boom.forbidden(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
 
@@ -1075,7 +1079,9 @@ Emails.statics.queue = async function (
   if (_.isObject(fromHeader) && Array.isArray(fromHeader.value)) {
     fromHeader.value = fromHeader.value.filter(
       (addr) =>
-        _.isObject(addr) && isSANB(addr.address) && isEmail(addr.address)
+        _.isObject(addr) &&
+        isSANB(addr.address) &&
+        isEmail(addr.address, { ignore_max_length: true })
     );
     if (fromHeader.value.length === 1)
       from = fromHeader.value[0].address.toLowerCase();
@@ -1133,7 +1139,7 @@ Emails.statics.queue = async function (
   //
   if (
     isSANB(info?.envelope?.from) &&
-    isEmail(info.envelope.from) &&
+    isEmail(info.envelope.from, { ignore_max_length: true }) &&
     config.supportEmail !== info.envelope.from.toLowerCase() &&
     //
     // we don't want to scan messages sent with our own SMTP service
@@ -1230,42 +1236,7 @@ Emails.statics.queue = async function (
     }
   }
 
-  const headers = {};
-  for (const headerLine of parsed.headerLines) {
-    const index = headerLine.line.indexOf(': ');
-    const header = parsed.headers.get(headerLine.key);
-    const key = headerLine.line.slice(0, index);
-    let value = headerLine.line.slice(index + 2);
-    if (header) {
-      switch (headerLine.key) {
-        case 'content-type':
-        case 'content-disposition':
-        case 'dkim-signature':
-        case 'subject':
-        case 'references':
-        case 'message-id':
-        case 'in-reply-to':
-        case 'priority':
-        case 'x-priority':
-        case 'x-msmail-priority':
-        case 'importance': {
-          if (isSANB(header?.value)) {
-            value = header.value;
-          } else if (isSANB(header)) {
-            value = header;
-          }
-
-          break;
-        }
-
-        default: {
-          break;
-        }
-      }
-    }
-
-    headers[key] = value;
-  }
+  const headers = await getHeaders(parsed);
 
   const status =
     _.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true

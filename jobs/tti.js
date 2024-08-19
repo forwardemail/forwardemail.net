@@ -7,7 +7,6 @@
 require('#config/env');
 
 const os = require('node:os');
-const fs = require('node:fs');
 const { Buffer } = require('node:buffer');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -18,7 +17,6 @@ const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const falso = require('@ngneat/falso');
 const ip = require('ip');
-const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const prettyMilliseconds = require('pretty-ms');
@@ -34,24 +32,11 @@ const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
-const env = require('#config/env');
 const getMessage = require('#helpers/get-message');
 const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
-
-const signatureData = [
-  {
-    signingDomain: env.DKIM_DOMAIN_NAME,
-    selector: env.DKIM_KEY_SELECTOR,
-    privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
-      ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
-      : undefined,
-    algorithm: 'rsa-sha256',
-    canonicalization: 'relaxed/relaxed'
-  }
-];
 
 monitorServer();
 
@@ -242,7 +227,7 @@ Forward Email
               canonicalization: 'relaxed/relaxed',
               algorithm: 'rsa-sha256',
               signTime: new Date(),
-              signatureData
+              signatureData: [config.signatureData]
             });
 
             if (signResult.errors.length > 0) {
@@ -298,7 +283,7 @@ Forward Email
                 canonicalization: 'relaxed/relaxed',
                 algorithm: 'rsa-sha256',
                 signTime: new Date(),
-                signatureData
+                signatureData: [config.signatureData]
               });
 
               if (signResult.errors.length > 0) {

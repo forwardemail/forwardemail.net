@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const path = require('node:path');
+const fs = require('node:fs');
 const os = require('node:os');
+const path = require('node:path');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
@@ -16,6 +17,7 @@ const isSANB = require('is-string-and-not-blank');
 const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
+const tlds = require('tlds');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 
@@ -181,9 +183,57 @@ const STRIPE_LOCALES = new Set([
   'zh-TW'
 ]);
 
+const POSTMASTER_USERNAMES = new Set([
+  'automailer',
+  'autoresponder',
+  'bounce',
+  'bounce-notification',
+  'bounce-notifications',
+  'bounces',
+  'e-bounce',
+  'ebounce',
+  'host-master',
+  'host.master',
+  'hostmaster',
+  'localhost',
+  'mail-daemon',
+  'mail.daemon',
+  'maildaemon',
+  'mailer',
+  'mailer-daemon',
+  'mailer.daemon',
+  'mailerdaemon',
+  'post-master',
+  'post.master',
+  'postmaster'
+  // NOTE: excluding these because we try to go by SAFE MODE
+  // <https://www.backscatterer.org/?target=usage>
+  // 'www',
+  // 'www-data'
+  // 'root',
+  // 'abuse',
+  // 'admin',
+  // 'admini',
+  // ...noReplyList
+]);
+
 const config = {
   ...metaConfig,
+
+  signatureData: {
+    signingDomain: env.DKIM_DOMAIN_NAME,
+    selector: env.DKIM_KEY_SELECTOR,
+    privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
+      ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
+      : isSANB(env.DKIM_PRIVATE_KEY_VALUE)
+      ? env.DKIM_PRIVATE_KEY_VALUE
+      : undefined,
+    algorithm: 'rsa-sha256',
+    canonicalization: 'relaxed/relaxed'
+  },
+
   socketTimeout: ms('3m'),
+  POSTMASTER_USERNAMES,
   ubuntuTeamMapping: {
     'ubuntu.com': '~ubuntumembers',
     'kubuntu.org': '~kubuntu-members',
@@ -252,7 +302,24 @@ const config = {
       ? 1
       : os.cpus().length,
 
-  // truth sources (mirrors smtp)
+  allowlist: new Set(
+    _.isArray(env.ALLOWLIST)
+      ? env.ALLOWLIST.map((key) => key.toLowerCase().trim())
+      : isSANB(env.ALLOWLIST)
+      ? env.ALLOWLIST.split(',').map((key) => key.toLowerCase().trim())
+      : []
+  ),
+
+  fingerprintPrefix: 'f',
+
+  denylist: new Set(
+    _.isArray(env.DENYLIST)
+      ? env.DENYLIST.map((key) => key.toLowerCase().trim())
+      : isSANB(env.DENYLIST)
+      ? env.DENYLIST.split(',').map((key) => key.toLowerCase().trim())
+      : []
+  ),
+
   truthSources: new Set(
     _.isArray(env.TRUTH_SOURCES)
       ? env.TRUTH_SOURCES.map((key) => key.toLowerCase().trim())
@@ -260,6 +327,9 @@ const config = {
       ? env.TRUTH_SOURCES.split(',').map((key) => key.toLowerCase().trim())
       : []
   ),
+
+  greylistTimeout: ms('5m'),
+  greylistTtlMs: ms('5d'),
 
   emailRetention: env.EMAIL_RETENTION,
   logRetention: env.LOG_RETENTION,
@@ -347,6 +417,7 @@ const config = {
   dkimKeySelector: 'forwardemail', // forwardemail._domainkey.example.com
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   abuseEmail: env.EMAIL_ABUSE,
+  friendlyFromEmail: env.EMAIL_FRIENDLY_FROM,
   email: {
     preview: {
       open: env.PREVIEW_EMAIL,
@@ -1400,6 +1471,13 @@ const config = {
     [ms('3y').toString()]: ['3', 'years']
   }
 };
+
+// arbitrarily add domains to the denylist
+for (const tld of tlds) {
+  if (config.restrictedDomains.includes(tld)) continue;
+  // postline.* (e.g. "postline.ml")
+  config.denylist.add(`postline.${tld}`);
+}
 
 // sanity test against validDurations and durationMapping length
 if (config.validDurations.length !== Object.keys(config.durationMapping).length)

@@ -8,6 +8,9 @@ const { isEmail } = require('validator');
 
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
+const checkSRS = require('#helpers/check-srs');
+const env = require('#config/env');
+const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 function onMailFrom(address, session, fn) {
@@ -34,6 +37,16 @@ function onMailFrom(address, session, fn) {
         )
       )
     );
+
+  //
+  // check if it was invalid SRS (pass `shouldThrow` as `true`)
+  //
+  try {
+    if (parseHostFromDomainOrAddress(address.address) === env.WEB_HOST)
+      checkSRS(address.address, true, true);
+  } catch (err) {
+    return setImmediate(() => fn(refineAndLogError(err, session, false, this)));
+  }
 
   setImmediate(fn);
 }

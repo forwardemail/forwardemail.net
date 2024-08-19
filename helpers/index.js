@@ -51,7 +51,6 @@ const RetryClient = require('./retry-client');
 const retryRequest = require('./retry-request');
 const getBounceInfo = require('./get-bounce-info');
 const getLogsCsv = require('./get-logs-csv');
-const smtp = require('./smtp');
 const imap = require('./imap');
 const pop3 = require('./pop3');
 const ServerShutdownError = require('./server-shutdown-error');
@@ -99,6 +98,32 @@ const sendApn = require('./send-apn');
 const getApnCerts = require('./get-apn-certs');
 const WKD = require('./wkd');
 const asctime = require('./asctime');
+const onConnect = require('./on-connect');
+const onClose = require('./on-close');
+const onMailFrom = require('./on-mail-from');
+const onData = require('./on-data');
+const onRcptTo = require('./on-rcpt-to');
+const onDataSMTP = require('./on-data-smtp');
+const onDataMX = require('./on-data-mx');
+const parseHostFromDomainOrAddress = require('./parse-host-from-domain-or-address');
+const isAllowlisted = require('./is-allowlisted');
+const isGreylisted = require('./is-greylisted');
+const getGreylistKey = require('./get-greylist-key');
+const getHeaders = require('./get-headers');
+const getFromAddress = require('./get-from-address');
+const updateSession = require('./update-session');
+const getAttributes = require('./get-attributes');
+const isSilentBanned = require('./is-silent-banned');
+const isBackscatterer = require('./is-backscatterer');
+const DenylistError = require('./denylist-error');
+const isDenylisted = require('./is-denylisted');
+const hasFingerprintExpired = require('./has-fingerprint-expired');
+const isArbitrary = require('./is-arbitrary');
+const updateHeaders = require('./update-headers');
+const getRecipients = require('./get-recipients');
+const isAuthenticatedMessage = require('./is-authenticated-message');
+const getForwardingAddresses = require('./get-forwarding-addresses');
+const MessageSplitter = require('./message-splitter');
 
 module.exports = {
   decrypt,
@@ -151,7 +176,6 @@ module.exports = {
   retryRequest,
   getBounceInfo,
   getLogsCsv,
-  smtp,
   imap,
   pop3,
   ServerShutdownError,
@@ -198,5 +222,31 @@ module.exports = {
   sendApn,
   getApnCerts,
   WKD,
-  asctime
+  asctime,
+  onConnect,
+  onClose,
+  onMailFrom,
+  onData,
+  onRcptTo,
+  parseHostFromDomainOrAddress,
+  isAllowlisted,
+  isGreylisted,
+  getGreylistKey,
+  onDataSMTP,
+  onDataMX,
+  getHeaders,
+  getFromAddress,
+  updateSession,
+  getAttributes,
+  isSilentBanned,
+  isBackscatterer,
+  DenylistError,
+  isDenylisted,
+  hasFingerprintExpired,
+  isArbitrary,
+  updateHeaders,
+  getRecipients,
+  isAuthenticatedMessage,
+  getForwardingAddresses,
+  MessageSplitter
 };

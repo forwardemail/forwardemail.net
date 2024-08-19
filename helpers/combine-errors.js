@@ -36,6 +36,13 @@ function combineErrors(errors) {
       '\n\n'
     );
 
+    // if all errors had `name` and they were all the same then preserve it
+    if (
+      typeof errors[0].name !== 'undefined' &&
+      errors.every((e) => e.name === errors[0].name)
+    )
+      err.name = errors[0].name;
+
     // if all errors had `code` and they were all the same then preserve it
     if (
       typeof errors[0].code !== 'undefined' &&

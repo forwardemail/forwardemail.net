@@ -18,7 +18,7 @@ const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const pm2 = require('pm2');
-const prettyMs = require('pretty-ms');
+const prettyMilliseconds = require('pretty-ms');
 const ms = require('ms');
 
 const config = require('#config');
@@ -116,7 +116,7 @@ graceful.listen();
                 (p) =>
                   `${p.name} with status "${
                     p.pm2_env.status
-                  }" and uptime of ${prettyMs(
+                  }" and uptime of ${prettyMilliseconds(
                     Date.now() - p.pm2_env.pm_uptime
                   )}`
               )

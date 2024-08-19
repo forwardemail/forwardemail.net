@@ -202,6 +202,14 @@ async function remove(ctx) {
     }
   }
 
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+  // TODO: redo this to check permanent hard-coded denylist and email admins of this
+
   // if user is on free plan then send an email
   // with link for admins to /denylist?q=ctx.state.q
   if (ctx.state.user.group !== 'admin') {

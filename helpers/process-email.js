@@ -48,6 +48,7 @@ const sendEmail = require('./send-email');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const isMessageEncrypted = require('#helpers/is-message-encrypted');
 const encryptMessage = require('#helpers/encrypt-message');
+const updateHeaders = require('#helpers/update-headers');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -449,42 +450,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
       }
 
       // add X-* headers (e.g. version + report-to)
-      for (const key of [
-        'x-report-abuse-to',
-        'x-report-abuse',
-        'x-complaints-to',
-        'x-forwardemail-version',
-        'x-forwardemail-sender',
-        'x-forwardemail-id'
-      ]) {
-        data.headers.remove(key);
-      }
+      updateHeaders(data.headers);
 
-      data.headers.add(
-        'X-Report-Abuse-To',
-        config.abuseEmail,
-        data.headers.lines.length
-      );
-      data.headers.add(
-        'X-Report-Abuse',
-        config.abuseEmail,
-        data.headers.lines.length
-      );
-      data.headers.add(
-        'X-Complaints-To',
-        config.abuseEmail,
-        data.headers.lines.length
-      );
-      data.headers.add(
-        'X-ForwardEmail-Version',
-        config.pkg.version,
-        data.headers.lines.length
-      );
+      // additional headers to add specifically for outbound smtp
+      data.headers.remove('x-forwardemail-sender');
       data.headers.add(
         'X-ForwardEmail-Sender',
         `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`,
         data.headers.lines.length
       );
+      data.headers.remove('x-forwardemail-id');
       data.headers.add(
         'X-ForwardEmail-ID',
         email.id,

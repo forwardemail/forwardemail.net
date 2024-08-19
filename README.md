@@ -164,6 +164,7 @@ You can start any of the services using our pre-built commands to make it easy. 
 | API          | `npm start api`    |          `4000`          | <http://localhost:4000> |
 | Bree         | `npm start bree`   |           None           | None                    |
 | SMTP         | `npm start smtp`   |          `2432`          | `telnet localhost 2432` |
+| MX           | `npm start mx`     |          `2525`          | `telnet localhost 2525` |
 | IMAP         | `npm start imap`   |          `2113`          | `telnet localhost 2113` |
 | POP3         | `npm start pop3`   |          `2115`          | `telnet localhost 2115` |
 | SQLite       | `npm start sqlite` |          `3456`          | `telnet localhost 3456` |

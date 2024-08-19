@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
-const SMTP = require('./smtp-server');
+const MX = require('./mx-server');
 const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -26,15 +26,15 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 
-const smtp = new SMTP({ client });
+const mx = new MX({ client });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
-  servers: [smtp.server],
+  servers: [mx.server],
   redisClients: [client],
   customHandlers: [
     () => {
-      smtp.isClosing = true;
+      mx.isClosing = true;
     },
     async () => {
       // wait for connection rate limiter to finish
@@ -49,12 +49,12 @@ monitorServer();
 
 (async () => {
   try {
-    await smtp.listen();
+    await mx.listen();
     if (process.send) process.send('ready');
     logger.info(
-      `SMTP server listening on ${
-        smtp.server.address().port
-      } (LAN: ${ip.address()}:${smtp.server.address().port})`,
+      `MX server listening on ${
+        mx.server.address().port
+      } (LAN: ${ip.address()}:${mx.server.address().port})`,
       { hide_meta: true }
     );
     await setupMongoose(logger);
@@ -64,4 +64,4 @@ monitorServer();
   }
 })();
 
-logger.info('SMTP server started', { hide_meta: true });
+logger.info('MX server started', { hide_meta: true });

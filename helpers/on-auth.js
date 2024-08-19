@@ -31,7 +31,7 @@ const env = require('#config/env');
 const getQueryResponse = require('#helpers/get-query-response');
 const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
-const onConnect = require('#helpers/smtp/on-connect');
+const onConnect = require('#helpers/on-connect');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
 const onConnectPromise = pify(onConnect);

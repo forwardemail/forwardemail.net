@@ -1588,7 +1588,7 @@ Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Tr
 
 * `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  Recipients provided that contain a "no-reply" address will receive a 553 error.  See the [complete list of "no-reply" addresses below](#what-are-no-reply-addresses).  We also check the recipient against our [denylist](#do-you-have-a-denylist).
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  We also check the recipient against our [denylist](#do-you-have-a-denylist).
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -1618,10 +1618,10 @@ This section describes our process related to the SMTP protocol command `DATA` i
    * `X-Original-To` - the original `RCPT TO` email address for the message.
      * This header's value has `Bcc` header parsed addresses removed from it.
      * This is useful for determining where an email was originally delivered to.
-     * Existing value if any is preserved as `X-Original-Preserved-To`.
    * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
    * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
    * `X-ForwardEmail-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-ForwardEmail-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
    * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
    * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
@@ -1690,8 +1690,6 @@ Our IP addresses are publicly available, [see this section below for more insigh
 
 
 ## What are no-reply addresses
-
-We do not forward emails to "no-reply" addresses, and any sender attempting to will receive a 553 error.
 
 Email usernames equal to any of the following (case-insensitive) are considered to be no-reply addresses:
 
