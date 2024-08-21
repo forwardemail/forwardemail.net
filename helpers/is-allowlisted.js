@@ -15,6 +15,7 @@ const { isEmail } = require('validator');
 
 const config = require('#config');
 const env = require('#config/env');
+const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -75,18 +76,26 @@ async function isAllowlisted(val, client, resolver) {
     const root = parseRootDomain(val);
     if (root === env.WEB_HOST) return true;
   } else if (isIP(val)) {
-    // reverse lookup IP and if it was allowlisted then return early
-    const [clientHostname] = await resolver.reverse(val);
-    if (isFQDN(clientHostname)) {
-      // check domain
-      if (await isAllowlisted(clientHostname, client, resolver)) return true;
-      // check root domain (if differed)
-      const root = parseRootDomain(clientHostname);
-      if (
-        clientHostname !== root &&
-        (await isAllowlisted(root, client, resolver))
-      )
-        return true;
+    try {
+      // reverse lookup IP and if it was allowlisted then return early
+      const [clientHostname] = await resolver.reverse(val);
+      if (isFQDN(clientHostname)) {
+        // check domain
+        if (await isAllowlisted(clientHostname, client, resolver)) return true;
+        // check root domain (if differed)
+        const root = parseRootDomain(clientHostname);
+        if (
+          clientHostname !== root &&
+          (await isAllowlisted(root, client, resolver))
+        )
+          return true;
+      }
+    } catch (err) {
+      //
+      // NOTE: the native Node.js DNS module would throw an error previously
+      //       <https://github.com/nodejs/node/issues/3112#issuecomment-1452548779>
+      //
+      if (env.NODE_ENV !== 'production') logger.debug(err);
     }
   }
 
