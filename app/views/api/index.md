@@ -161,7 +161,7 @@ In order to determine whether or not more results are available, we provide thes
 > Example Request:
 
 ```sh
-curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2 \
+curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
@@ -790,7 +790,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 > Example Request:
 
 ```sh
-curl BASE_URI/v1/domains/DOMAIN_NAME/aliases \
+curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
   -u API_TOKEN:
 ```
 

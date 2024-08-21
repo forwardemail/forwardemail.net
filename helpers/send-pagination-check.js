@@ -16,11 +16,16 @@ async function sendPaginationCheck(ctx) {
     // return early if cache found
     if (cache) return;
     await ctx.client.set(key, true, 'PX', ms('90d'));
-    const link = `${config.urls.web}/${ctx.locale}/api#pagination`;
-    const subject = i18n.translate('PAGINATION_CHECK_SUBJECT', ctx.locale);
+    const link = `${config.urls.web}/${
+      ctx.state.user[config.lastLocaleField]
+    }/api#pagination`;
+    const subject = i18n.translate(
+      'PAGINATION_CHECK_SUBJECT',
+      ctx.state.user[config.lastLocaleField]
+    );
     const message = i18n.translate(
       'PAGINATION_CHECK_MESSAGE',
-      ctx.locale,
+      ctx.state.user[config.lastLocaleField],
       link,
       link
     );
@@ -32,6 +37,7 @@ async function sendPaginationCheck(ctx) {
         subject
       },
       locals: {
+        locale: ctx.state.user[config.lastLocaleField],
         user: ctx.state.user.toObject(),
         message
       }
