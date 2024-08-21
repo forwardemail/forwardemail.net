@@ -8,6 +8,7 @@ const { Writable } = require('node:stream');
 
 const ObjectID = require('bson-objectid');
 const Redis = require('ioredis-mock');
+const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const delay = require('delay');
 const getPort = require('get-port');
@@ -29,6 +30,8 @@ const phrases = require('#config/phrases');
 const processEmail = require('#helpers/process-email');
 const { Logs, Domains, Emails } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+
+const { emoji } = config.views.locals;
 
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -95,7 +98,7 @@ test('creates log', async (t) => {
   await delay(100);
 
   const match = await Logs.findOne({ message: log.message });
-  t.true(typeof match === 'object');
+  t.true(match !== null);
 });
 
 test('creates domain', async (t) => {
@@ -105,6 +108,20 @@ test('creates domain', async (t) => {
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
   const res = await t.context.api
     .post('/v1/domains')
     .auth(user[config.userFields.apiToken])
@@ -122,6 +139,21 @@ test('creates alias with global catch-all', async (t) => {
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
   const domain = await utils.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
@@ -138,7 +170,162 @@ test('creates alias with global catch-all', async (t) => {
     });
   t.is(res.status, 200);
   t.is(res.body.name, 'test');
+
+  t.deepEqual(
+    _.sortBy(Object.keys(res.body)),
+    _.sortBy([
+      'created_at',
+      'error_code_if_disabled',
+      'has_imap',
+      'has_pgp',
+      'has_recipient_verification',
+      'id',
+      'is_enabled',
+      'locale',
+      'name',
+      'object',
+      'recipients',
+      'retention',
+      'storage_location',
+      'storage_used',
+      'updated_at',
+      'labels',
+      'pending_recipients',
+      'verified_recipients',
+
+      'user',
+      'domain'
+    ])
+  );
+
+  t.deepEqual(
+    _.sortBy(Object.keys(res.body.user)),
+    _.sortBy([
+      'address_country',
+      'address_html',
+      'created_at',
+      'display_name',
+      'email',
+      'full_email',
+      'id',
+      'last_locale',
+      'locale',
+      'max_quota_per_alias',
+      'object',
+      'otp_enabled',
+      'plan',
+      'updated_at'
+    ])
+  );
+
+  t.deepEqual(
+    _.sortBy(Object.keys(res.body.domain)),
+    _.sortBy([
+      'allowlist',
+      'denylist',
+      'invites',
+      'restricted_alias_names',
+      'created_at',
+      'has_adult_content_protection',
+      'has_catchall',
+      'has_custom_verification',
+      'has_executable_protection',
+      'has_mx_record',
+      'has_newsletter',
+      'has_phishing_protection',
+      'has_recipient_verification',
+      'has_regex',
+      'has_smtp',
+      'has_txt_record',
+      'has_virus_protection',
+      'id',
+      'ignore_mx_check',
+      'is_catchall_regex_disabled',
+      'locale',
+      'max_recipients_per_alias',
+      'members',
+      'name',
+      'object',
+      'plan',
+      'retention_days',
+      'smtp_port',
+      'updated_at',
+      'verification_record'
+    ])
+  );
+
+  t.is(res.body.domain.members.length, 1);
+
+  t.deepEqual(
+    _.sortBy(Object.keys(res.body.domain.members[0])),
+    _.sortBy(['user', 'group'])
+  );
+
+  t.deepEqual(
+    _.sortBy(Object.keys(res.body.domain.members[0].user)),
+    _.sortBy(['plan', 'email', 'display_name', 'id'])
+  );
+
   t.deepEqual(res.body.recipients, [user.email]);
+
+  // ensures pagination working
+  {
+    const res = await t.context.api
+      .get(`/v1/domains/${domain.name}/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+
+    t.is(res.status, 200);
+
+    t.is(res.body.length, 1);
+
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0])),
+      _.sortBy([
+        'labels',
+        'verified_recipients',
+        'has_pgp',
+        'has_imap',
+        'storage_used',
+        'storage_location',
+        'retention',
+        'name',
+        'is_enabled',
+        'error_code_if_disabled',
+        'has_recipient_verification',
+        'recipients',
+        'pending_recipients',
+        'id',
+        'object',
+        'created_at',
+        'updated_at',
+
+        'user',
+        'domain'
+      ])
+    );
+
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0].domain)),
+      _.sortBy(['name', 'id'])
+    );
+
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0].user)),
+      _.sortBy(['email', 'display_name', 'id'])
+    );
+
+    t.is(res.headers['x-page-count'], '1');
+    t.is(res.headers['x-page-current'], '1');
+    t.is(res.headers['x-page-size'], '1');
+    t.is(res.headers['x-item-count'], '1');
+    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
+    t.is(
+      res.headers.link,
+      `<${url}/v1/domains/${domain.name}/aliases?page=1)>; rel="last", <${url}/v1/domains/${domain.name}/aliases?page=1)>; rel="first"`
+    );
+  }
 });
 
 test('creates alias and generates password', async (t) => {
@@ -148,6 +335,20 @@ test('creates alias and generates password', async (t) => {
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
 
   const domain = await utils.domainFactory
     .withState({
@@ -188,6 +389,21 @@ test('creates alias with multiple recipients', async (t) => {
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
   const domain = await utils.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
@@ -267,8 +483,8 @@ Reply-To: boop@beep.com
 Message-ID: beep-boop
 Date: ${date.toISOString()}
 To: test@foo.com
-From: 😊 Test <${alias.name}@${domain.name}>
-Subject: testing this
+From: ${emoji('blush')} Test <${alias.name}@${domain.name}>
+Subject: ${emoji('blush')} testing this
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
@@ -277,15 +493,27 @@ Test`.trim()
 
   t.is(res.status, 200);
 
-  const header = `=?UTF-8?Q?=C3=B0=C2=9F=C2=98=C2=8A_Test?= <${alias.name}@${domain.name}>`;
-
   // validate header From was converted properly
-  t.is(res.body.headers.From, header);
+  t.true(
+    res.body.message.includes(
+      `From: ${emoji('blush')} Test <${alias.name}@${domain.name}>`
+    )
+  );
+  t.is(
+    res.body.headers.From,
+    `${emoji('blush')} Test <${alias.name}@${domain.name}>`
+  );
+
+  t.is(res.body.headers.Subject, `${emoji('blush')} testing this`);
 
   // validate message body was converted as well
   const email = await Emails.findOne({ id: res.body.id });
-  const message = await Emails.getMessage(email.message);
-  t.true(message.toString().includes('From: ' + header));
+  const message = await Emails.getMessage(email.message, true);
+  t.true(
+    message.includes(
+      `From: ${emoji('blush')} Test <${alias.name}@${domain.name}>`
+    )
+  );
 
   // validate envelope
   t.is(res.body.envelope.from, `${alias.name}@${domain.name}`);
@@ -300,8 +528,19 @@ Test`.trim()
     ].sort()
   );
 
+  //
   // validate message-id
-  t.is(res.body.messageId, '<beep-boop>');
+  //
+  // NOTE: we do not ensureMessageId format for the following headers
+  //       - references
+  //       - message-id
+  //       - in-reply-to
+  //
+  //       <https://github.com/nodemailer/mailparser/blob/af0c1e6044643ee9c9590e3bac5ceaac2c5120a4/lib/mail-parser.js#L336-L352>
+  //
+  // t.is(res.body.messageId, '<beep-boop>');
+  //
+  t.is(res.body.messageId, 'beep-boop');
 
   // validate date
   t.is(new Date(res.body.date).getTime(), date.getTime());
@@ -968,6 +1207,95 @@ test('create domain without catchall', async (t) => {
     t.is(res.status, 200);
   }
 
+  // list aliases for the domain should paginate response
+  {
+    const res = await t.context.api
+      .get(`/v1/domains/testdomain1.com/aliases`)
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+
+    t.is(res.status, 200);
+    t.deepEqual(res.body, []);
+    t.is(res.headers['x-page-count'], '1');
+    t.is(res.headers['x-page-current'], '1');
+    t.is(res.headers['x-page-size'], '1');
+    t.is(res.headers['x-item-count'], '0');
+    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
+    t.is(
+      res.headers.link,
+      `<${url}/v1/domains/testdomain1.com/aliases?page=1)>; rel="last", <${url}/v1/domains/testdomain1.com/aliases?page=1)>; rel="first"`
+    );
+  }
+
+  // list domains should paginate response
+  {
+    const res = await t.context.api
+      .get('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+
+    t.is(res.status, 200);
+    t.is(res.body.length, 1);
+    t.true(res.body[0].name === 'testdomain1.com');
+    t.true(res.body[0].plan === 'enhanced_protection');
+    // filter for properties for exposed values
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0])),
+      _.sortBy([
+        'allowlist',
+        'denylist',
+        'created_at',
+        'restricted_alias_names',
+        'has_adult_content_protection',
+        'has_catchall',
+        'has_custom_verification',
+        'has_executable_protection',
+        'has_mx_record',
+        'has_newsletter',
+        'has_phishing_protection',
+        'has_recipient_verification',
+        'has_regex',
+        'has_smtp',
+        'has_txt_record',
+        'has_virus_protection',
+        'id',
+        'ignore_mx_check',
+        'is_catchall_regex_disabled',
+        'max_recipients_per_alias',
+        'name',
+        'object',
+        'plan',
+        'retention_days',
+        'smtp_port',
+        'updated_at',
+        'verification_record',
+        //
+        // NOTE: paid plans additionally expose these three properties:
+        //       (see `app/controllers/web/my-account/list-domains.js`)
+        //       - storage_used
+        //       - storage_used_by_aliases
+        //       - storage_quota
+        //
+        'storage_used',
+        'storage_used_by_aliases',
+        'storage_quota',
+        // added by API v1 domains controller as a helper
+        'link'
+      ])
+    );
+    t.is(res.headers['x-page-count'], '1');
+    t.is(res.headers['x-page-current'], '1');
+    t.is(res.headers['x-page-size'], '1');
+    t.is(res.headers['x-item-count'], '1');
+    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
+    t.is(
+      res.headers.link,
+      `<${url}/v1/domains?page=1)>; rel="last", <${url}/v1/domains?page=1)>; rel="first"`
+    );
+  }
+
   {
     const res = await t.context.api
       .post('/v1/domains')
@@ -1058,14 +1386,83 @@ test('lists emails', async (t) => {
       .send({
         from: `${alias.name}@${domain.name}`,
         to: 'foo@bar.com',
-        subject: 'beep',
+        subject: `${emoji('tada')} beep`,
         text: 'yo'
       });
 
     t.is(res.status, 200);
     t.true(typeof res.body.id === 'string');
-    t.is(res.body.subject, 'beep');
+    t.is(res.body.subject, `${emoji('tada')} beep`);
+    t.is(res.body.headers.Subject, `${emoji('tada')} beep`);
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body)),
+      _.sortBy([
+        'rejectedErrors',
+        'accepted',
+        'alias',
+        'created_at',
+        'date',
+        'domain',
+        'envelope',
+        'hard_bounces',
+        'headers',
+        'id',
+        'is_bounce',
+        'is_locked',
+        'is_redacted',
+        'link',
+        'message',
+        'messageId',
+        'object',
+        'soft_bounces',
+        'status',
+        'subject',
+        'updated_at',
+        'user'
+      ])
+    );
+    t.true(typeof res.body.message === 'string');
     id = res.body.id;
+  }
+
+  {
+    const res = await t.context.api
+      .get(`/v1/emails/${id}`)
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+    t.is(res.status, 200);
+    t.true(typeof res.body.id === 'string');
+    t.is(res.body.subject, `${emoji('tada')} beep`);
+    t.is(res.body.headers.Subject, `${emoji('tada')} beep`);
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body)),
+      _.sortBy([
+        'rejectedErrors',
+        'accepted',
+        'alias',
+        'created_at',
+        'date',
+        'domain',
+        'envelope',
+        'hard_bounces',
+        'headers',
+        'id',
+        'is_bounce',
+        'is_locked',
+        'is_redacted',
+        'link',
+        'message',
+        'messageId',
+        'object',
+        'soft_bounces',
+        'status',
+        'subject',
+        'updated_at',
+        'user'
+      ])
+    );
+    t.true(typeof res.body.message === 'string');
   }
 
   {
@@ -1075,8 +1472,43 @@ test('lists emails', async (t) => {
       .set('Accept', 'application/json');
 
     t.is(res.status, 200);
+    t.is(res.headers['x-page-count'], '1');
+    t.is(res.headers['x-page-current'], '1');
+    t.is(res.headers['x-page-size'], '1');
+    t.is(res.headers['x-item-count'], '1');
+    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
+    t.is(
+      res.headers.link,
+      `<${url}/v1/emails?page=1)>; rel="last", <${url}/v1/emails?page=1)>; rel="first"`
+    );
+
     t.is(res.body[0].id, id);
-    t.is(res.body[0].subject, 'beep');
+    t.is(res.body[0].subject, `${emoji('tada')} beep`);
+
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0])),
+      _.sortBy([
+        'accepted',
+        'alias',
+        'created_at',
+        'date',
+        'domain',
+        'envelope',
+        'hard_bounces',
+        'id',
+        'is_bounce',
+        'is_locked',
+        'is_redacted',
+        'link',
+        'messageId',
+        'object',
+        'soft_bounces',
+        'status',
+        'subject',
+        'updated_at',
+        'user'
+      ])
+    );
   }
 });
 
@@ -1447,6 +1879,20 @@ test('error_code_if_disabled', async (t) => {
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
 
   let domain;
   {

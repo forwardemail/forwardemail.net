@@ -4,12 +4,16 @@
  */
 
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const paginate = require('koa-ctx-paginate');
+const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
 const Aliases = require('#models/aliases');
+const sendPaginationCheck = require('#helpers/send-pagination-check');
+const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 const config = require('#config');
 
@@ -132,24 +136,68 @@ async function retrieveAliases(ctx, next) {
           `/my-account/domains/${ctx.state.domain.name}/members/`
         )))
   ) {
-    // TODO: major optimization issue here
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    ctx.state.domain.aliases = await Aliases.find(query)
-      .populate(
-        'user',
-        `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
-      )
-      .populate('domain', 'id name')
-      .lean()
-      .exec();
+    //
+    // starting November 1st we enforce API pagination on this endpoint
+    // (unless user opts in beforehand using ?pagination=true)
+    //
+    const hasPagination = dayjs().isBefore('11/1/2024', 'M/D/YYYY')
+      ? boolean(ctx.query.pagination)
+      : true;
+
+    //
+    // NOTE: we send a one-time email admins that we now offer pagination
+    //       and with notice that starting November 1st list domains/aliases
+    //       endpoints will be paginated to 1000 results max per page by default
+    //
+    if (!hasPagination) await sendPaginationCheck(ctx);
+
+    const [aliases, itemCount] = await Promise.all([
+      hasPagination
+        ? // eslint-disable-next-line unicorn/no-array-callback-reference
+          Aliases.find(query)
+            .limit(ctx.query.limit)
+            .skip(ctx.paginate.skip)
+            .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'created_at')
+            .populate(
+              'user',
+              `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+            )
+            .populate('domain', 'id name')
+            .lean()
+            .exec()
+        : // eslint-disable-next-line unicorn/no-array-callback-reference
+          Aliases.find(query)
+            .populate(
+              'user',
+              `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+            )
+            .populate('domain', 'id name')
+            .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'created_at')
+            .lean()
+            .exec(),
+      Aliases.countDocuments(query)
+    ]);
+
+    ctx.state.domain.aliases = aliases;
+
+    //
+    // set HTTP headers for pagination
+    // <https://forwardemail.net/api#pagination>
+    //
+    setPaginationHeaders(
+      ctx,
+      hasPagination ? Math.ceil(itemCount / ctx.query.limit) : 1,
+      hasPagination ? 1 : ctx.query.page,
+      aliases.length,
+      itemCount
+    );
   } else {
     const [aliases, itemCount] = await Promise.all([
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Aliases.find(query)
         .limit(ctx.query.limit)
-        // TODO: ctx.paginate.skip -> paginate is undefined (need to check where ctx.paginate is used)
         .skip(ctx.paginate.skip)
-        .sort(ctx.query.sort || 'name')
+        .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'name')
         .populate(
           'user',
           `id email ${config.passport.fields.displayName} ${config.userFields.isBanned}`
@@ -166,6 +214,18 @@ async function retrieveAliases(ctx, next) {
       6,
       ctx.state.pageCount,
       ctx.query.page
+    );
+
+    //
+    // set HTTP headers for pagination
+    // <https://forwardemail.net/api#pagination>
+    //
+    setPaginationHeaders(
+      ctx,
+      ctx.state.pageCount,
+      ctx.query.page,
+      aliases.length,
+      itemCount
     );
   }
 

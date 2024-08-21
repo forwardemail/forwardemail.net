@@ -62,7 +62,7 @@ async function sendRateLimitEmail(user) {
 }
 
 // eslint-disable-next-line complexity
-async function onDataSMTP(raw, session) {
+async function onDataSMTP(raw, session, date) {
   //
   // NOTE: we don't share the full alias and domain object
   //       in between onAuth and onData because there could
@@ -395,7 +395,7 @@ async function onDataSMTP(raw, session) {
     alias,
     domain,
     user,
-    date: new Date(session.arrivalDate),
+    date,
     catchall: typeof session?.user?.alias_id !== 'string',
     isPending: true
   });

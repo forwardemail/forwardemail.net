@@ -5,8 +5,10 @@
 
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
+const dayjs = require('dayjs-with-plugins');
 const multer = require('@koa/multer');
 const paginate = require('koa-ctx-paginate');
+const { boolean } = require('boolean');
 
 const api = require('#controllers/api');
 const policies = require('#helpers/policies');
@@ -167,9 +169,21 @@ router
     web.myAccount.ensureNotBanned,
     api.v1.enforcePaidPlan,
     web.myAccount.ensurePaidToDate,
+    (ctx, next) => {
+      //
+      // starting November 1st we enforce API pagination on this endpoint
+      // (unless user opts in beforehand using ?pagination=true)
+      //
+      const hasPagination = dayjs().isBefore('11/1/2024', 'M/D/YYYY')
+        ? boolean(ctx.query.pagination)
+        : true;
+      if (!hasPagination) return next();
+      if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
+      return paginate.middleware(50, 1000);
+    },
     web.myAccount.retrieveDomains
   )
-  .get('/domains', api.v1.domains.list)
+  .get('/domains', web.myAccount.listDomains, api.v1.domains.list)
   .post(
     '/domains',
     web.myAccount.validateDomain,
@@ -266,6 +280,18 @@ router
   )
   .get(
     '/domains/:domain_id/aliases',
+    (ctx, next) => {
+      //
+      // starting November 1st we enforce API pagination on this endpoint
+      // (unless user opts in beforehand using ?pagination=true)
+      //
+      const hasPagination = dayjs().isBefore('11/1/2024', 'M/D/YYYY')
+        ? boolean(ctx.query.pagination)
+        : true;
+      if (!hasPagination) return next();
+      if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
+      return paginate.middleware(50, 1000);
+    },
     web.myAccount.retrieveAliases,
     api.v1.aliases.list
   )

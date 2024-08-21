@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
@@ -25,7 +27,10 @@ async function validateDomain(ctx, next) {
   ctx.request.body.domain = ctx.request.body.domain.trim().toLowerCase();
 
   const match = ctx.state.domains.find(
-    (domain) => domain.name === ctx.request.body.domain
+    (domain) =>
+      domain.name === ctx.request.body.domain ||
+      punycode.toASCII(domain.name) ===
+        punycode.toASCII(ctx.request.body.domain)
   );
 
   if (match) {

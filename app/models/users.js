@@ -80,7 +80,10 @@ const omitExtraFields = [
   config.userFields.hasDenylistRequests,
   config.userFields.approvedDomains,
   config.userFields.isRemoved,
-  config.userFields.smtpLimit
+  config.userFields.smtpLimit,
+
+  config.userFields.apiPastDueSentAt,
+  config.userFields.apiRestrictedSentAt
 ];
 
 const Passkey = new mongoose.Schema({

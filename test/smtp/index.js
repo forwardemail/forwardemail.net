@@ -1103,7 +1103,8 @@ test(`IDN domain`, async (t) => {
 
   await user.save();
 
-  const resolver = createTangerine(t.context.client, logger);
+  const smtp = new SMTP({ client: t.context.client }, false);
+  const { resolver } = smtp;
 
   const domain = await utils.domainFactory
     .withState({
@@ -1122,6 +1123,9 @@ test(`IDN domain`, async (t) => {
       recipients: [user.email]
     })
     .create();
+
+  const pass = await alias.createToken();
+  await alias.save();
 
   const map = new Map();
 
@@ -1257,6 +1261,80 @@ test(`IDN domain`, async (t) => {
       client
     })
   );
+
+  // run do a similar test using SMTP connection
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'test@foo.com'
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: test@test.com
+List-Unsubscribe: foo@foo.com
+From: Test <${alias.name}@${domain.name}>
+Subject: testing this
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({
+      messageId
+    })
+      .lean()
+      .exec();
+    t.true(email !== null);
+
+    //
+    // process the email
+    //
+    await t.notThrowsAsync(
+      processEmail({
+        email,
+        port: testPort,
+        resolver,
+        client
+      })
+    );
+  }
 });
 
 test(`10MB message size`, async (t) => {
@@ -1836,10 +1914,10 @@ test('smtp outbound queue', async (t) => {
     }
   });
 
-  const messageId = `<${randomstring({
+  const messageId = `${randomstring({
     characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
     length: 10
-  })}@${domain.name}>`;
+  })}@${domain.name}`;
 
   const RCPT_TO = [
     'a@xyz.com',
@@ -1859,7 +1937,7 @@ Sender: baz@beep.com
 Cc: beep@boop.com,beep@boop.com
 Bcc: foo@bar.com,a@xyz.com,b@xyz.com
 Reply-To: Beep boop@beep.com
-Message-ID: ${messageId}
+Message-ID: <${messageId}>
 To: test@foo.com
 From: Test <${alias.name}@${domain.name}>
 Subject: testing this
@@ -1888,10 +1966,9 @@ Test`.trim()
   })
     .lean()
     .exec();
-  t.true(typeof email === 'object');
-  // TODO: validate by message-id too to ensure it's the right email
+  t.true(email !== null);
   t.is(email.headers.From, `Test <${alias.name}@${domain.name}>`);
-  t.is(email.headers['Reply-To'], 'Beep <boop@beep.com>');
+  t.is(email.headers['Reply-To'], 'Beep boop@beep.com');
   t.is(email.status, 'queued');
 
   // validate envelope
@@ -2392,10 +2469,10 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
     }
   });
 
-  const messageId = `<${randomstring({
+  const messageId = `${randomstring({
     characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
     length: 10
-  })}@${domain.name}>`;
+  })}@${domain.name}`;
 
   const err = await t.throwsAsync(
     transporter.sendMail({
@@ -2404,7 +2481,7 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
         to: 'test@foo.com'
       },
       raw: `
-Message-ID: ${messageId}
+Message-ID: <${messageId}>
 To: test@foo.com
 From: Test <${alias.name}@someotherdomain.com>
 Subject: testing this
@@ -2571,10 +2648,10 @@ test('requires newsletter approval', async (t) => {
     }
   });
 
-  const messageId = `<${randomstring({
+  const messageId = `${randomstring({
     characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
     length: 10
-  })}@${domain.name}>`;
+  })}@${domain.name}`;
 
   await transporter.sendMail({
     envelope: {
@@ -2582,7 +2659,7 @@ test('requires newsletter approval', async (t) => {
       to: 'test@foo.com'
     },
     raw: `
-Message-ID: ${messageId}
+Message-ID: <${messageId}>
 To: test@foo.com
 List-Unsubscribe: foo@foo.com
 From: Test <${alias.name}@${domain.name}>
@@ -2598,7 +2675,7 @@ Test`.trim()
   })
     .lean()
     .exec();
-  t.true(typeof email === 'object');
+  t.true(email !== null);
 
   //
   // process the email

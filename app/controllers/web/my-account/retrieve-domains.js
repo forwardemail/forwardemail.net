@@ -65,6 +65,14 @@ async function retrieveDomains(ctx, next) {
     });
   }
 
+  //
+  // TODO: we need to optimize this and enforce limit/skip for pagination
+  //       (however a ton of routes right now rely on this being populated)
+  //       (therefore it should be conditionally implemented only for when we list domains)
+  //       (e.g. GET /v1/domains or /my-account/domains URL's)
+  //       (e.g. someone with 5000+ domains would experience quite some slowness here)
+  //
+
   // eslint-disable-next-line unicorn/no-array-callback-reference
   ctx.state.domains = await Domains.find(query)
     .populate(

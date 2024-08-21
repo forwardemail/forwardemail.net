@@ -7,8 +7,15 @@ const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
 const config = require('#config');
+const populateDomainStorage = require('#helpers/populate-domain-storage');
 const toObject = require('#helpers/to-object');
 const { Users, Aliases, Domains } = require('#models');
+
+const VIRTUAL_KEYS = [
+  'storage_used',
+  'storage_used_by_aliases',
+  'storage_quota'
+];
 
 function json(domain, isList = false) {
   const object = toObject(Domains, domain);
@@ -47,37 +54,33 @@ function json(domain, isList = false) {
       });
   }
 
+  // preserve virtuals added in `app/controllers/web/my-account/list-domains.js`
+  // - storage_used
+  // - storage_used_by_aliases
+  // - storage_quota
+  const virtuals = {};
+  for (const key of VIRTUAL_KEYS) {
+    if (typeof domain[key] !== 'undefined') virtuals[key] = domain[key];
+  }
+
   return {
     ...pickOriginal(
       object,
       _.isFunction(domain.toObject) ? domain.toObject() : domain
     ),
+    ...virtuals,
     // add a helper url
     link: `${config.urls.web}/my-account/domains/${domain.name}`
   };
 }
 
 async function list(ctx) {
-  // hide global domain names if not admin of
-  // the global domain and had zero aliases
-  const data = ctx.state.domains
-    .filter((domain) => {
-      if (!domain.is_global) return true;
-      const member = domain.members.find(
-        (m) => m.user.id === ctx.state.user.id
-      );
-      if (!member) return false;
-      if (member.group === 'admin') return true;
-      if (domain.has_global_aliases) return true;
-      return false;
-    })
-    .map((d) => json(d, true));
-
-  ctx.body = data;
+  ctx.body = ctx.state.domains.map((d) => json(d, true));
 }
 
 async function retrieve(ctx) {
-  const data = json(ctx.state.domain);
+  // populate storage quota stuff
+  const data = json(await populateDomainStorage(ctx.state.domain, ctx.locale));
   ctx.body = data;
 }
 

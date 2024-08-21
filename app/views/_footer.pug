@@ -109,6 +109,9 @@ footer.mt-auto(aria-label=t("Footer"))
             li.list-inline-item= t("SEPA Direct Debit")
             li.list-inline-item= t("Canadian pre-authorized debits")
             li.list-inline-item= t("ACH Direct Debit")
+            li.list-inline-item= t("Bank Transfer")
+            li.list-inline-item= t("Domestic Wire Transfer (Enterprise)")
+            li.list-inline-item= t("International Wire Transfer (Enterprise)")
       .d-flex.flex-column.flex-lg-row
         if !isBot(ctx.get('User-Agent'))
           .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3

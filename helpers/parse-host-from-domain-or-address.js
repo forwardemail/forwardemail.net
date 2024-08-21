@@ -7,14 +7,14 @@ const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
 const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 
 const SMTPError = require('#helpers/smtp-error');
+const parseAddresses = require('#helpers/parse-addresses');
 
 function parseHostFromDomainOrAddress(address) {
-  const parsedAddresses = addressParser(address);
+  const parsedAddresses = parseAddresses(address);
   let domain = address;
 
   if (

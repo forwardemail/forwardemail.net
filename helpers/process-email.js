@@ -1311,7 +1311,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   obj.locale,
                   domain.name,
                   domain.bounce_webhook
-                ) + `<pre><code>${parseErr(err)}</code></pre>`;
+                ) +
+                `<pre><code>${JSON.stringify(
+                  parseErr(err),
+                  null,
+                  2
+                )}</code></pre>`;
               await emailHelper({
                 template: 'alert',
                 message: {

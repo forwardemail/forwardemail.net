@@ -4,33 +4,15 @@
  */
 
 const _ = require('lodash');
-const addrs = require('email-addresses');
-const addressParser = require('nodemailer/lib/addressparser');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
 
 const checkSRS = require('#helpers/check-srs');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const parseAddresses = require('#helpers/parse-addresses');
 
 function getAttributes(headers, session) {
-  const replyTo = headers.getFirst('reply-to');
-
-  let replyToAddresses =
-    addrs.parseAddressList({ input: replyTo, partial: true }) || [];
-
-  if (replyToAddresses.length === 0)
-    replyToAddresses = addrs.parseAddressList({ input: replyTo }) || [];
-
-  // safeguard
-  if (replyToAddresses.length === 0) replyToAddresses = addressParser(replyTo);
-
-  replyToAddresses = replyToAddresses.filter(
-    (addr) =>
-      _.isObject(addr) &&
-      isSANB(addr.address) &&
-      isEmail(addr.address, { ignore_max_length: true })
-  );
+  const replyToAddresses = parseAddresses(headers.getFirst('reply-to'));
 
   //
   // check if the From, Reply-To, MAIL FROM, sender IP/host, or RCPT TO were silent banned

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
@@ -33,7 +35,11 @@ async function retrieveInvite(ctx) {
     );
 
   // if the user already is an admin or member of domain with same name
-  const match = ctx.state.domains.find((d) => d.name === domain.name);
+  const match = ctx.state.domains.find(
+    (d) =>
+      d.name === domain.name ||
+      punycode.toASCII(d.name) === punycode.toASCII(domain.name)
+  );
   if (match)
     return ctx.throw(
       Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))

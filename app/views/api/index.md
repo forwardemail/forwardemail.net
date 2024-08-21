@@ -15,12 +15,37 @@
   * [Create account](#create-account)
   * [Retrieve account](#retrieve-account)
   * [Update account](#update-account)
-* [Emails](#emails)
-  * [Get email limit](#get-email-limit)
-  * [List emails](#list-emails)
-  * [Create email](#create-email)
-  * [Retrieve email](#retrieve-email)
-  * [Delete email](#delete-email)
+* [Alias Contacts (CardDAV)](#alias-contacts-carddav)
+  * [List contacts](#list-contacts)
+  * [Create contact](#create-contact)
+  * [Retrieve contact](#retrieve-contact)
+  * [Update contact](#update-contact)
+  * [Delete contact](#delete-contact)
+* [Alias Calendars (CalDAV)](#alias-calendars-caldav)
+  * [List calendars](#list-calendars)
+  * [Create calendar](#create-calendar)
+  * [Retrieve calendar](#retrieve-calendar)
+  * [Update calendar](#update-calendar)
+  * [Delete calendar](#delete-calendar)
+* [Alias Messages (IMAP/POP3)](#alias-messages-imappop3)
+  * [List and search for messages](#list-and-search-for-messages)
+  * [Create message](#create-message)
+  * [Retrieve message](#retrieve-message)
+  * [Update message](#update-message)
+  * [Delete message](#delete-message)
+* [Alias Folders (IMAP/POP3)](#alias-folders-imappop3)
+  * [List folders](#list-folders)
+  * [Create folder](#create-folder)
+  * [Retrieve folder](#retrieve-folder)
+  * [Update folder](#update-folder)
+  * [Delete folder](#delete-folder)
+  * [Copy folder](#copy-folder)
+* [Outbound Emails](#outbound-emails)
+  * [Get outbound SMTP email limit](#get-outbound-smtp-email-limit)
+  * [List outbound SMTP emails](#list-outbound-smtp-emails)
+  * [Create outbound SMTP email](#create-outbound-smtp-email)
+  * [Retrieve outbound SMTP email](#retrieve-outbound-smtp-email)
+  * [Delete outbound SMTP email](#delete-outbound-smtp-email)
 * [Domains](#domains)
   * [List domains](#list-domains)
   * [Create domain](#create-domain)
@@ -69,7 +94,9 @@ The current HTTP base URI path is: `BASE_URI`.
 
 ## Authentication
 
-All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header. Don't worry – examples are provided below for you if you're not sure what this is.
+All endpoints require your [API key](https://forwardemail.net/my-account/security) to be set as the "username" value of the request's [Basic Authorization](https://en.wikipedia.org/wiki/Basic_access_authentication) header (with the exception of [Alias Contacts](#alias-contacts), [Alias Calendars](#alias-calendars), and [Alias Mailboxes](#alias-mailboxes) which use a [generated alias username and password](/faq#do-you-support-receiving-email-with-imap))..
+
+Don't worry – examples are provided below for you if you're not sure what this is.
 
 
 ## Errors
@@ -108,7 +135,35 @@ Our service is translated to over 25 different languages. All API response messa
 
 ## Pagination
 
-If you would like to be notified when pagination is available, then please email <api@forwardemail.net>.
+> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+
+Pagination is supported by all API endpoints that list results.
+
+Simply provide the querystring properties `page` (and optionally `limit`).
+
+The property `page` should be a number greater than or equal to `1`.  If you provide `limit` (also a number), then the minimum value is `10` and maximum is `50` (unless otherwise noted).
+
+| Querystring Parameter | Required | Type   | Description                                                                                                                                               |
+| --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `page`                | No       | Number | Page of results to return.  If not specified, the `page` value will be `1`.  Must be a number greater than or equal to `1`.                               |
+| `limit`               | No       | Number | Number of results to return per page.  Defaults to `10` if not specified.  Must be a number greater than or equal to `1`, and less than or equal to `50`. |
+
+In order to determine whether or not more results are available, we provide these HTTP response headers (which you can parse in order to paginate programmatically):
+
+| HTTP Response Header | Example                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `X-Page-Count`       | `X-Page-Count: 3`                                                                                                                                                                                                                                        | The total page count available.                                                                                                                                                                                                                                                                                                                                    |
+| `X-Page-Current`     | `X-Page-Current: 1`                                                                                                                                                                                                                                      | The current page of results returned (e.g. based off `page` querystring parameter).                                                                                                                                                                                                                                                                                |
+| `X-Page-Size`        | `X-Page-Size: 10`                                                                                                                                                                                                                                        | The total number of results in the page returned (e.g. based off `limit` querystring parameter and actual results returned).                                                                                                                                                                                                                                       |
+| `X-Item-Count`       | `X-Item-Count: 30`                                                                                                                                                                                                                                       | The total number of items available across all pages.                                                                                                                                                                                                                                                                                                              |
+| `Link`               | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | We provide a `Link` HTTP response header you can parse as shown in the example. This is [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (e.g. not all values will be provided if they are not relevant or available, e.g. `"next"` will not be provided if there is not another page). |
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2 \
+  -u API_TOKEN:
+```
 
 
 ## Logs
@@ -208,11 +263,183 @@ curl -X PUT BASE_URI/v1/account \
 ```
 
 
-## Emails
+## Alias Contacts (CardDAV)
 
-Please ensure that you have followed setup instructions for your domain.  These instructions can be found at [My Account → Domains → Settings → Outbound SMTP Configuration](/my-account/domains).  You need to ensure setup of DKIM, Return-Path, and DMARC for sending outbound SMTP with your domain.
+> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
 
-### Get email limit
+> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+
+> **NOTE:** [CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274).
+
+### List contacts
+
+> `GET /v1/contacts`
+
+**Coming soon**
+
+### Create contact
+
+> `POST /v1/contacts`
+
+**Coming soon**
+
+### Retrieve contact
+
+> `GET /v1/contacts/:id`
+
+**Coming soon**
+
+### Update contact
+
+> `PUT /v1/contacts/:id`
+
+**Coming soon**
+
+### Delete contact
+
+> `DELETE /v1/contacts/:id`
+
+**Coming soon**
+
+
+## Alias Calendars (CalDAV)
+
+> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+
+> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+
+### List calendars
+
+> `GET /v1/calendars`
+
+**Coming soon**
+
+### Create calendar
+
+> `POST /v1/calendars`
+
+**Coming soon**
+
+### Retrieve calendar
+
+> `GET /v1/calendars/:id`
+
+**Coming soon**
+
+### Update calendar
+
+> `PUT /v1/calendars/:id`
+
+**Coming soon**
+
+### Delete calendar
+
+> `DELETE /v1/calendars/:id`
+
+**Coming soon**
+
+
+## Alias Messages (IMAP/POP3)
+
+> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+
+> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+
+Please ensure that you have followed setup instructions for your domain.
+
+These instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap).
+
+### List and search for messages
+
+> `GET /v1/messages`
+
+**Coming soon**
+
+### Create message
+
+> **NOTE:** This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+
+> `POST /v1/messages`
+
+**Coming soon**
+
+### Retrieve message
+
+> `GET /v1/messages/:id`
+
+**Coming soon**
+
+### Update message
+
+> `PUT /v1/messages/:id`
+
+**Coming soon**
+
+### Delete message
+
+> `DELETE /v1/messages:id`
+
+**Coming soon**
+
+
+## Alias Folders (IMAP/POP3)
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+  <span>
+    Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+  </span>
+</div>
+
+> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+
+### List folders
+
+> `GET /v1/folders`
+
+**Coming soon**
+
+### Create folder
+
+> `POST /v1/folders`
+
+**Coming soon**
+
+### Retrieve folder
+
+> `GET /v1/folders/:id`
+
+**Coming soon**
+
+### Update folder
+
+> `PUT /v1/folders/:id`
+
+**Coming soon**
+
+### Delete folder
+
+> `DELETE /v1/folders/:id`
+
+**Coming soon**
+
+### Copy folder
+
+> `POST /v1/folders/:id/copy`
+
+**Coming soon**
+
+
+## Outbound Emails
+
+Please ensure that you have followed setup instructions for your domain.
+
+These instructions can be found at [My Account → Domains → Settings → Outbound SMTP Configuration](/my-account/domains).  You need to ensure setup of DKIM, Return-Path, and DMARC for sending outbound SMTP with your domain.
+
+### Get outbound SMTP email limit
 
 This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.
 
@@ -225,22 +452,21 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### List emails
+### List outbound SMTP emails
 
-Note that this endpoint does not return an already created email's `message`, `headers`, `accepted`, nor `rejectedErrors` properties.
+Note that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.
 
 To return those properties and their values, please use the [Retrieve email](#retrieve-email) endpoint with an email ID.
 
-This endpoint will return at most `50` results at a time.  If you want to query for multiple pages, then append `?page=NUMBER` where `NUMBER` is an integer, e.g. `?page=1`.
-
 > `GET /v1/emails`
 
-| Querystring Parameter | Required | Type                      | Description                                                                                  |
-| --------------------- | -------- | ------------------------- | -------------------------------------------------------------------------------------------- |
-| `q`                   | No       | String (RegExp supported) | Search for emails by metadata                                                                |
-| `domain`              | No       | String (RegExp supported) | Search for emails by domain name                                                             |
-| `page`                | No       | Number                    | Page to return of results (default is `1`)                                                   |
-| `limit                | No       | Number                    | Number of results per page to return (default is `50` – the max is `50` and minimum is `10`) |
+| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
+| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String (RegExp supported) | Search for emails by metadata                                                                                                                    |
+| `domain`              | No       | String (RegExp supported) | Search for emails by domain name                                                                                                                 |
+| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 
@@ -249,7 +475,7 @@ curl BASE_URI/v1/emails \
   -u API_TOKEN:
 ```
 
-### Create email
+### Create outbound SMTP email
 
 Our API for creating an email is inspired by and leverages Nodemailer's message option configuration.  Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.
 
@@ -306,7 +532,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### Retrieve email
+### Retrieve outbound SMTP email
 
 > `GET /v1/emails/:id`
 
@@ -317,7 +543,7 @@ curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Delete email
+### Delete outbound SMTP email
 
 Email deletion will set the status to `"rejected"` (and subsequently not process it in the queue) if and only if the current status is one of `"pending"`, `"queued"`, or `"deferred"`.  We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application.  You can reference our email ID value in your database if desired – this value is returned from both [Create email](#create-email) and [Retrieve email](#retrieve-email) endpoints.
 
@@ -339,18 +565,23 @@ curl -X DELETE BASE_URI/v1/emails/:id \
     Tip:
   </strong>
   <span>
-    Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their path are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+    Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
   </span>
 </div>
 
 ### List domains
 
+> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+
 > `GET /v1/domains`
 
-| Querystring Parameter | Required | Type                      | Description                |
-| --------------------- | -------- | ------------------------- | -------------------------- |
-| `q`                   | No       | String (RegExp supported) | Search for domains by name |
-| `name`                | No       | String (RegExp supported) | Search for domains by name |
+| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
+| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String (RegExp supported) | Search for domains by name                                                                                                                       |
+| `name`                | No       | String (RegExp supported) | Search for domains by name                                                                                                                       |
+| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 
@@ -543,13 +774,18 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 ### List domain aliases
 
+> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
-| Querystring Parameter | Required | Type                      | Description                                                 |
-| --------------------- | -------- | ------------------------- | ----------------------------------------------------------- |
-| `q`                   | No       | String (RegExp supported) | Search for aliases in a domain by name, label, or recipient |
-| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name                      |
-| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient                 |
+| Querystring Parameter | Required | Type                      | Description                                                                                                                                      |
+| --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `q`                   | No       | String (RegExp supported) | Search for aliases in a domain by name, label, or recipient                                                                                      |
+| `name`                | No       | String (RegExp supported) | Search for aliases in a domain by name                                                                                                           |
+| `recipient`           | No       | String (RegExp supported) | Search for aliases in a domain by recipient                                                                                                      |
+| `sort`                | No       | String                    | Sort by a specific field (prefix with a single hyphen `-` to sort in the reverse direction of that field).  Defaults to `created_at` if not set. |
+| `page`                | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
+| `limit`               | No       | Number                    | See [Pagination](#pagination) for more insight                                                                                                   |
 
 > Example Request:
 

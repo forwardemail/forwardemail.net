@@ -5,10 +5,10 @@
 
 const punycode = require('node:punycode');
 
-const addressParser = require('nodemailer/lib/addressparser');
+const parseAddresses = require('#helpers/parse-addresses');
 
 function parseUsername(address) {
-  ({ address } = addressParser(address)[0]);
+  ({ address } = parseAddresses(address)[0]);
   let username = address.includes('+')
     ? address.split('+')[0]
     : address.split('@')[0];

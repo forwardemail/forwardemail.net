@@ -20,6 +20,10 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  PAGINATION_CHECK_SUBJECT:
+    'Notice: API pagination required starting November 1st',
+  PAGINATION_CHECK_MESSAGE:
+    'Starting November 1st of this year we will be enforcing API pagination on our API endpoints for list domains and list domain aliases.  Learn more about our approach to API pagination and how you can opt-in beforehand at <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>.',
   RESTRICTED_ALIAS_DETECTED_SUBJECT:
     '<span class="notranslate">%s</span> has restricted alias name(s) detected',
   RESTRICTED_ALIAS_DETECTED_MESSAGE:

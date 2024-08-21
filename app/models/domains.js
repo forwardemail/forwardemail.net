@@ -1124,7 +1124,6 @@ Domains.plugin(mongooseCommonPlugin, {
     'verified_email_sent_at',
     'smtp_last_checked_at',
     'smtp_verified_at',
-    'has_smtp',
     'smtp_suspended_sent_at',
     'is_smtp_suspended',
     'last_checked_at',
@@ -1142,7 +1141,8 @@ Domains.plugin(mongooseCommonPlugin, {
     'has_return_path_record',
     'has_dmarc_record',
     'smtp_emails_blocked',
-    'tokens'
+    'tokens',
+    'webhook_key'
   ],
   mongooseHidden: {
     virtuals: {
@@ -2272,11 +2272,8 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
 
 Domains.statics.getMaxQuota = getMaxQuota;
 
+// eslint-disable-next-line complexity
 async function getStorageUsed(_id, _locale, aliasesOnly = false) {
-  let storageUsed = 0;
-
-  const locale = _locale || domain.locale || i18n.config.defaultLocale;
-
   //
   // calculate storage used across entire domain and its admin users domains
   // (this is rudimentary storage system and has edge cases)
@@ -2289,9 +2286,14 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
 
   if (!domain) {
     throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
+      i18n.translateError(
+        'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
+        _locale || i18n.config.defaultLocale
+      )
     );
   }
+
+  const locale = _locale || domain.locale || i18n.config.defaultLocale;
 
   // Safeguard to not check storage used for global domains
   if (domain.is_global) {
@@ -2358,6 +2360,8 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
+
+  let storageUsed = 0;
 
   if (domainIds.length > 0) {
     if (typeof conn?.models?.Aliases?.aggregate !== 'function') {

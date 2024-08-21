@@ -396,7 +396,13 @@ async function listLogs(ctx) {
     Logs.find(query)
       .limit(ctx.query.limit)
       .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
+      .sort(
+        isSANB(ctx.query.sort)
+          ? ctx.query.sort
+          : ctx.api
+          ? 'created_at'
+          : '-created_at'
+      )
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
       .exec(),

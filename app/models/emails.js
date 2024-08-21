@@ -11,7 +11,6 @@ const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
@@ -26,16 +25,19 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
 const pEvent = require('p-event');
 const parseErr = require('parse-err');
+const splitLines = require('split-lines');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isEmail } = require('validator');
-const { simpleParser } = require('mailparser');
 
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Users = require('./users');
+
+const MessageSplitter = require('#helpers/message-splitter');
+const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -46,6 +48,9 @@ const getHeaders = require('#helpers/get-headers');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const logger = require('#helpers/logger');
+const parseAddresses = require('#helpers/parse-addresses');
+const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
+const parseUsername = require('#helpers/parse-username');
 
 const IP_ADDRESS = ip.address();
 const NO_REPLY_USERNAMES = new Set(noReplyList);
@@ -55,6 +60,18 @@ const MAX_DAYS_IN_ADVANCE_TO_MS = ms(HUMAN_MAX_DAYS_IN_ADVANCE);
 const HUMAN_MAX_BYTES = '50MB';
 const MAX_BYTES = bytes(HUMAN_MAX_BYTES);
 const BYTES_15MB = bytes('15MB');
+const ADDRESS_KEYS = new Set([
+  'from',
+  'to',
+  'cc',
+  'bcc',
+  'sender',
+  'reply-to',
+  'delivered-to',
+  'return-path'
+]);
+const SENDER_KEYS = new Set(['from', 'sender', 'reply-to']);
+const RCPT_TO_KEYS = new Set(['to', 'cc', 'bcc']);
 
 const transporter = nodemailer.createTransport({
   streamTransport: true,
@@ -250,7 +267,10 @@ Emails.plugin(mongooseCommonPlugin, {
     'message',
     'locked_by',
     'locked_at',
-    'priority'
+    'priority',
+    'blocked_hashes',
+    'has_blocked_hashes',
+    'rejectedErrors'
   ]
 });
 
@@ -259,6 +279,18 @@ Emails.index(
   { locked_at: 1 },
   { partialFilterExpression: { locked_at: { $exists: true } } }
 );
+
+//
+// remove "<" and ">" from `messageId` if present
+// (makes it easier and cleaner for search)
+//
+Emails.pre('validate', function (next) {
+  if (!isSANB(this.messageId)) return next();
+  if (this.messageId.startsWith('<')) this.messageId = this.messageId.slice(1);
+  if (this.messageId.endsWith('>'))
+    this.messageId = this.messageId.slice(0, -1);
+  return next();
+});
 
 //
 // validate envelope
@@ -752,9 +784,16 @@ Emails.post('save', async function (email) {
   }
 });
 
-Emails.statics.getMessage = async function (obj) {
-  if (Buffer.isBuffer(obj)) return obj;
-  if (obj instanceof mongoose.mongo.Binary) return obj.buffer;
+Emails.statics.getMessage = async function (obj, returnString = false) {
+  if (Buffer.isBuffer(obj)) {
+    if (returnString) return obj.toString();
+    return obj;
+  }
+
+  if (obj instanceof mongoose.mongo.Binary) {
+    if (returnString) return obj.buffer.toString();
+    return obj.buffer;
+  }
 
   // obj = {
   //   _id: new ObjectId("..."),
@@ -791,6 +830,14 @@ Emails.statics.getMessage = async function (obj) {
   // TODO: move bucket to root
   const bucket = new mongoose.mongo.GridFSBucket(this.db);
 
+  if (returnString) {
+    const raw = await getStream(bucket.openDownloadStream(obj._id), {
+      maxBuffer: MAX_BYTES
+    });
+
+    return raw;
+  }
+
   const raw = await getStream.buffer(bucket.openDownloadStream(obj._id), {
     maxBuffer: MAX_BYTES
   });
@@ -814,6 +861,7 @@ Emails.statics.queue = async function (
   //       when using readable streams as content if sending fails then
   //       nodemailer does not abort opened and not finished stream
   //
+
   const info = await transporter.sendMail(options.message);
 
   // ensure the message is not more than 50 MB
@@ -821,106 +869,88 @@ Emails.statics.queue = async function (
   if (messageBytes > MAX_BYTES)
     throw Boom.badRequest(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
 
-  const splitter = new Splitter();
-  const joiner = new Joiner();
+  const messageSplitter = new MessageSplitter({
+    maxBytes: MAX_BYTES
+  });
 
-  splitter.on('data', (data) => {
-    if (data.type !== 'node' || data.root !== true) return;
+  // TODO: this is doing double the work (2x processing of stream unnecessarily)
+  //       we should check (and provide body/etc if already parsed from on-data-smtp
+  //
+  const body = await getStream.buffer(
+    intoStream(info.message).pipe(messageSplitter)
+  );
+
+  if (messageSplitter.sizeExceeded)
+    throw new SMTPError('Size exceeded', { responseCode: 552 });
+
+  if (!messageSplitter.headersParsed)
+    throw new SMTPError('Headers unable to be parsed');
+
+  const { headers } = messageSplitter;
+
+  const isEnvelopeToEmpty = info.envelope.to.length === 0;
+
+  //
+  // ensure from header is equal to the alias sending from
+  // (avoids confusing "Invalid DKIM signature" error message)
+  //
+  let from;
+
+  const lines = splitLines(headers.headers.toString('binary').trim());
+
+  for (const line of lines) {
+    const value = Buffer.from(line, 'binary').toString();
+    const index = value.indexOf(': ');
+    const key = value.slice(0, index);
+    const lowercaseKey = key.toLowerCase();
+    if (!ADDRESS_KEYS.has(lowercaseKey)) continue;
+
+    const addresses = parseAddresses(value.slice(index + 2));
+    if (!_.isArray(addresses) || _.isEmpty(addresses)) continue;
+
+    // there should only be one value in From header
+    if (lowercaseKey === 'from' && addresses.length === 1) {
+      //
+      // rewrite from header to be without "+" symbol
+      // so that users can send with "+" address filtering
+      //
+      const name = parseUsername(addresses[0].address); // converts to ASCII
+      const domain = parseHostFromDomainOrAddress(addresses[0].address); // converts to ASCII
+      from = `${name}@${domain}`; // ASCII formatted From address header
+    }
 
     //
-    // NOTE: there is no current way in mailsplit to not parse headers with libmime
-    //       so this was a quick workaround we implemented (note `headers.parsed` is false)
+    // in case the email was `raw`, the envelope won't be parsed right away
+    // so we rely on the parsed headers from `mailparser` to re-create envelope
+    // <https://github.com/nodemailer/nodemailer/blob/e3cc93a9c20939b209c804857c75aea0d3305913/lib/mime-node/index.js#LL882C1-L898C57>
     //
-    const headerLines = Buffer.concat(data._headersLines, data._headerlen);
-    const headers = new Headers(headerLines, { Iconv });
-    const lines = headers.getList();
-
-    const isEnvelopeToEmpty = info.envelope.to.length === 0;
-
-    // convert address name values to ascii or mime encoded
-    // <https://github.com/zone-eu/zone-mta/blob/0c2451dcf516707babf1aef46de128238b41ea85/lib/address-tools.js#L37>
-    // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L360C1-L376>
-    for (const lineKey of [
-      'from',
-      'to',
-      'cc',
-      'bcc',
-      'sender',
-      'reply-to',
-      'delivered-to',
-      'return-path'
-    ]) {
-      const header = lines.find((line) => line.key === lineKey);
-      if (!header) continue;
-      const { key, value } = libmime.decodeHeader(header.line);
-
-      if (!isSANB(value)) {
-        data.headers.remove(key);
-        continue;
-      }
-
-      const addresses = addressParser(value);
-
-      if (!_.isArray(addresses) || _.isEmpty(addresses)) {
-        data.headers.remove(key);
-        continue;
-      }
-
-      const values = [];
-      for (const obj of addresses) {
-        if (_.isObject(obj) && isSANB(obj.address)) {
-          if (isSANB(obj.name) && !/^[\w ']*$/.test(obj.name)) {
-            // ascii or mime encoding
-            obj.name = /^[\u0020-\u007E]*$/.test(obj.name)
-              ? '"' + obj.name.replace(/([\\"])/g, '\\$1') + '"'
-              : libmime.encodeWord(obj.name, 'Q', 52);
-          }
-
-          values.push({
-            name: obj.name,
-            address: obj.address
-          });
-        }
-      }
-
-      if (values.length === 0) {
-        data.headers.remove(key);
-      } else {
-        data.headers.update(
-          header.line.split(': ')[0],
-          values
-            .map((v) => (v.name ? `${v.name} <${v.address}>` : v.address))
-            .join(', ')
-        );
-
-        //
-        // in case the email was `raw`, the envelope won't be parsed right away
-        // so we rely on the parsed headers from `mailparser` to re-create envelope
-        // <https://github.com/nodemailer/nodemailer/blob/e3cc93a9c20939b209c804857c75aea0d3305913/lib/mime-node/index.js#LL882C1-L898C57>
-        //
-        if (options?.message?.raw) {
-          // envelope from
-          if (
-            info.envelope.from === false &&
-            ['from', 'sender', 'reply-to'].includes(key)
-          )
-            info.envelope.from = values[0].address;
-          // envelope to
-          else if (isEnvelopeToEmpty && ['to', 'cc', 'bcc'].includes(key))
-            info.envelope.to.push(...values.map((v) => v.address));
+    if (options?.message?.raw) {
+      // envelope from
+      if (
+        (info.envelope.from === false || lowercaseKey === 'from') &&
+        SENDER_KEYS.has(lowercaseKey)
+      )
+        info.envelope.from = addresses[0].address;
+      // envelope to
+      else if (isEnvelopeToEmpty && RCPT_TO_KEYS.has(lowercaseKey)) {
+        for (const address of addresses) {
+          if (info.envelope.to.includes(address.address)) continue;
+          info.envelope.to.push(address.address);
         }
       }
     }
-  });
+  }
 
-  const message = await getStream.buffer(
-    intoStream(info.message).pipe(splitter).pipe(joiner)
-  );
+  // convert address name values to ascii or mime encoded
+  // <https://github.com/zone-eu/zone-mta/blob/0c2451dcf516707babf1aef46de128238b41ea85/lib/address-tools.js#L37>
+  // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L360C1-L376>
+  for (const key of []) {
+    const value = headers.getFirst(key);
 
-  // TODO: if it contains any list/auto headers then block
-  //       (maybe best to put this in pre-save hook?)
-  // - header starts with "list-"
+    if (!isSANB(value)) continue;
+  }
 
+  // NOTE: not sure what the below comment is referencing (?)
   // TODO: if smtp side has non encoded then throw error
 
   //
@@ -1051,91 +1081,76 @@ Emails.statics.queue = async function (
       throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
   }
 
-  // TODO: switch to use `spamscanner.scan` instead
-  const parsed = await simpleParser(message, {
-    Iconv,
-    skipImageLinks: true,
-    skipHtmlToText: false,
-    skipTextToHtml: false,
-    skipTextLinks: true
-  });
-
-  const date =
-    parsed.headers.get('date') && _.isDate(parsed.headers.get('date'))
-      ? parsed.headers.get('date')
-      : _.isDate(options.date)
-      ? options.date
-      : new Date();
-  const messageId = parsed.headers.get('message-id') || info.messageId;
-  const subject = parsed.headers.get('subject');
-
-  //
-  // ensure from header is equal to the alias sending from
-  // (avoids confusing "Invalid DKIM signature" error message)
-  //
-  let from;
-
-  const fromHeader = parsed.headers.get('from');
-  if (_.isObject(fromHeader) && Array.isArray(fromHeader.value)) {
-    fromHeader.value = fromHeader.value.filter(
-      (addr) =>
-        _.isObject(addr) &&
-        isSANB(addr.address) &&
-        isEmail(addr.address, { ignore_max_length: true })
-    );
-    if (fromHeader.value.length === 1)
-      from = fromHeader.value[0].address.toLowerCase();
+  // parse the date for SMTP queuing
+  let date = new Date(headers.getFirst('date'));
+  if (
+    !date ||
+    date.toString() === 'Invalid Date' ||
+    date < ONE_SECOND_AFTER_UNIX_EPOCH ||
+    !_.isDate(date)
+  ) {
+    date =
+      _.isDate(options.date) && options.date >= ONE_SECOND_AFTER_UNIX_EPOCH
+        ? options.date
+        : new Date();
   }
 
-  //
-  // rewrite from header to be without "+" symbol
-  // so that users can send with "+" address filtering
-  //
-  if (from && from.includes('+')) {
-    const [name, domain] = from.split('@');
-    from = `${name.split('+')[0]}@${domain}`;
+  // decode headers (e.g. for search)
+  const decodedHeaders = await getHeaders(headers);
+  let subject;
+  let messageId;
+  for (const key of Object.keys(decodedHeaders)) {
+    if (key.toLowerCase() === 'subject') subject = decodedHeaders[key];
+    if (key.toLowerCase() === 'message-id') messageId = decodedHeaders[key];
   }
+
+  if (!messageId && info.messageId) messageId = info.messageId;
 
   if (!from)
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_FROM_HEADER',
         locale,
-        `${!options.catchall && alias ? alias.name : '*'}@${domain.name}`,
+        `${
+          !options.catchall && alias ? punycode.toASCII(alias.name) : '*'
+        }@${punycode.toASCII(domain.name)}`,
         `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
         `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
       )
     );
 
   // if we're a catch-all then validate from ends with @domain
-  if ((options.catchall || !alias) && !from.endsWith(`@${domain.name}`))
+  if (
+    (options.catchall || !alias) &&
+    !from.endsWith(`@${punycode.toASCII(domain.name)}`)
+  )
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_CATCHALL_FROM_HEADER',
         locale,
-        `@${domain.name}`
+        `@${punycode.toASCII(domain.name)}`
       )
     );
   // otherwise it must be a specific match to the alias
   else if (
     !options.catchall &&
     alias &&
-    from !== `${alias.name}@${domain.name}`
+    from !== `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}`
   )
     throw Boom.forbidden(
       i18n.translateError(
         'INVALID_FROM_HEADER',
         locale,
-        `${alias.name}@${domain.name}`,
+        `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}`,
         `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
         `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
       )
     );
 
+  const message = Buffer.concat([headers.build(), body]);
+
   //
   // sanitize message and attachments
-  //
-  // `parsed.attachments`
   //
   if (
     isSANB(info?.envelope?.from) &&
@@ -1156,19 +1171,14 @@ Emails.statics.queue = async function (
         ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
     )
   ) {
-    const [phishing, executables, arbitrary, viruses] = await Promise.all([
-      scanner.getPhishingResults(parsed),
-      scanner.getExecutableResults(parsed),
-      scanner.getArbitraryResults(parsed),
-      scanner.getVirusResults(parsed)
-    ]);
+    const scan = await scanner.scan(message);
 
     const messages = [
       ...new Set([
-        ...phishing.messages,
-        ...executables,
-        ...arbitrary,
-        ...viruses
+        ...scan.results.phishing,
+        ...scan.results.executables,
+        ...scan.results.arbitrary,
+        ...scan.results.viruses
       ])
     ];
 
@@ -1227,16 +1237,10 @@ Emails.statics.queue = async function (
 
       // needs to be forbidden so it gets mapped to 5xx error
       const error = Boom.forbidden(messages.join(' '));
-      error.messages = messages;
-      error.phishing = phishing;
-      error.executables = executables;
-      error.arbitrary = arbitrary;
-      error.viruses = viruses;
+      error.scan = scan;
       throw error;
     }
   }
-
-  const headers = await getHeaders(parsed);
 
   const status =
     _.isDate(domain.smtp_suspended_sent_at) || options?.isPending === true
@@ -1250,7 +1254,7 @@ Emails.statics.queue = async function (
     envelope: info.envelope,
     message,
     messageId,
-    headers,
+    headers: decodedHeaders,
     date,
     subject,
     status,

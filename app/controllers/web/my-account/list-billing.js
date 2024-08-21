@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
 const config = require('#config');
+const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 const REGEX_AMOUNT_FORMATTED = new RE2('amount_formatted', 'i');
 
@@ -21,10 +22,11 @@ async function listBilling(ctx) {
 
   // sort payments
   let sortFn;
-  if (REGEX_AMOUNT_FORMATTED.test(ctx.query.sort))
-    sortFn = (p) => p.amount_formatted.replace(/[^\d.]/, '');
-  else if (isSANB(ctx.query.sort))
-    sortFn = (p) => p[ctx.query.sort.replace(/^-/, '')];
+  if (isSANB(ctx.query.sort)) {
+    sortFn = REGEX_AMOUNT_FORMATTED.test(ctx.query.sort)
+      ? (p) => p.amount_formatted.replace(/[^\d.]/, '')
+      : (p) => p[ctx.query.sort.replace(/^-/, '')];
+  }
 
   payments = _.sortBy(payments, sortFn ? [sortFn] : ['invoice_at']);
 
@@ -46,6 +48,18 @@ async function listBilling(ctx) {
         d.plan === 'team' &&
         Object.keys(config.ubuntuTeamMapping).includes(d.name)
     )
+  );
+
+  //
+  // set HTTP headers for pagination
+  // <https://forwardemail.net/api#pagination>
+  //
+  setPaginationHeaders(
+    ctx,
+    pageCount,
+    ctx.query.page,
+    payments.length,
+    itemCount
   );
 
   if (ctx.accepts('html'))

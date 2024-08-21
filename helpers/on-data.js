@@ -6,14 +6,10 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
-const addrs = require('email-addresses');
 const bytes = require('bytes');
 const getStream = require('get-stream');
-const isSANB = require('is-string-and-not-blank');
 const pFilter = require('p-filter');
 const safeStringify = require('fast-safe-stringify');
-const { isEmail } = require('validator');
 
 const MessageSplitter = require('#helpers/message-splitter');
 const SMTPError = require('#helpers/smtp-error');
@@ -24,16 +20,17 @@ const env = require('#config/env');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
+const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateSession = require('#helpers/update-session');
 
+const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
 // TODO: check for `this.isClosing` before heavy/slow operations in onDataMX
 
-// eslint-disable-next-line complexity
 async function onData(stream, _session, fn) {
   if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
@@ -56,6 +53,7 @@ async function onData(stream, _session, fn) {
       throw new SMTPError('Headers unable to be parsed');
 
     const { headers } = messageSplitter;
+
     const raw = Buffer.concat([headers.build(), body]);
 
     // update session object with useful debug info for error logs
@@ -152,38 +150,34 @@ async function onData(stream, _session, fn) {
     // in addition to RCPT TO being incorrect due to improperly configured server sending to SRS forwarded address
     // we also need to rewrite the "To" header an rewrite any SRS forwarded addresses with their actual ones
     //
-    let to = headers.getFirst('to');
-    if (isSANB(to)) {
-      let originalToAddresses =
-        addrs.parseAddressList({ input: to, partial: true }) || [];
-      if (originalToAddresses.length === 0)
-        originalToAddresses = addrs.parseAddressList({ input: to }) || [];
-      // safeguard
-      if (originalToAddresses.length === 0)
-        originalToAddresses = addressParser(to);
-      originalToAddresses = originalToAddresses.filter(
-        (addr) =>
-          _.isObject(addr) &&
-          isSANB(addr.address) &&
-          isEmail(addr.address, { ignore_max_length: true })
-      );
-      for (const obj of originalToAddresses) {
-        const shouldThrow =
-          parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===
-          env.WEB_HOST;
-        // rewrite the to line
-        let isModified = false;
-        if (checkSRS(obj.address, shouldThrow) !== obj.address) {
-          isModified = true;
-          to = to.replaceAll(obj.address, checkSRS(obj.address, shouldThrow));
-        }
-
-        if (isModified) headers.update('to', to);
-      }
+    const originalToAddresses = parseAddresses(headers.getFirst('to'));
+    for (const obj of originalToAddresses) {
+      const shouldThrow =
+        parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===
+        env.WEB_HOST;
+      // rewrite the to line
+      if (checkSRS(obj.address, shouldThrow) !== obj.address)
+        headers.update(
+          'to',
+          headers
+            .getFirst('to')
+            .replaceAll(obj.address, checkSRS(obj.address, shouldThrow))
+        );
     }
 
     if (this.constructor.name === 'SMTP') {
-      await onDataSMTP.call(this, raw, session);
+      // parse the date for SMTP queuing
+      let date = new Date(headers.getFirst('date'));
+      if (
+        !date ||
+        date.toString() === 'Invalid Date' ||
+        date < ONE_SECOND_AFTER_UNIX_EPOCH ||
+        !_.isDate(date)
+      ) {
+        date = new Date(session.arrivalDate);
+      }
+
+      await onDataSMTP.call(this, raw, session, date);
       return setImmediate(fn);
     }
 

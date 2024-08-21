@@ -12,19 +12,58 @@ const config = require('#config');
 const createSession = require('#helpers/create-session');
 const toObject = require('#helpers/to-object');
 
+const REJECTED_ERROR_KEYS = [
+  'recipient',
+  'responseCode',
+  'response',
+  'message'
+];
+
 function json(email, isList = false) {
   const object = toObject(Emails, email);
+
+  //
+  // NOTE: we always rewrite rejectedErrors
+  //       since we don't want to show code bugs
+  //       to user via API response
+  //
+  delete object.rejectedErrors;
+
   if (isList) {
+    delete object.message;
     delete object.headers;
-    delete object.accepted;
-    delete object.rejectedErrors;
+  } else {
+    //
+    // instead we render it similarly as we do in My Account > Emails
+    // (and we only render these fields to the user)
+    //
+    // - recipient
+    // - responseCode
+    // - response
+    // - message
+    //
+    // (not the full error object which contains stack trace etc.)
+    //
+    object.rejectedErrors = email.rejectedErrors.map((err) => {
+      const error = {};
+      for (const key of REJECTED_ERROR_KEYS) {
+        if (typeof err[key] !== 'undefined') error[key] = err[key];
+      }
+
+      return error;
+    });
   }
 
+  //
+  // safeguard to always add `rejectedErrors` since
+  // we have it listed in omitExtraFields in emails model
+  // (we never want to accidentally render it to a user)
+  //
+  const keys = _.isFunction(email.toObject) ? email.toObject() : email;
+  if (!isList) keys.rejectedErrors = object.rejectedErrors;
+
   return {
-    ...pickOriginal(
-      object,
-      _.isFunction(email.toObject) ? email.toObject() : email
-    ),
+    ...pickOriginal(object, keys),
     // add a helper url
     link: `${config.urls.web}/my-account/emails/${email.id}`
   };
@@ -37,7 +76,7 @@ async function list(ctx) {
 async function retrieve(ctx) {
   const body = json(ctx.state.email);
   // we want to return the `message` property
-  body.message = await Emails.getMessage(ctx.state.email.message);
+  body.message = await Emails.getMessage(ctx.state.email.message, true);
   ctx.body = body;
 }
 
@@ -156,7 +195,10 @@ async function create(ctx) {
       ignore_hook: false
     });
 
-    ctx.body = email;
+    // we want to return the `message` property
+    const body = json(email);
+    body.message = await Emails.getMessage(email.message, true);
+    ctx.body = body;
   } catch (err) {
     ctx.logger.error(err);
     ctx.throw(err);

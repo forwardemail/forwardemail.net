@@ -4,6 +4,7 @@
  */
 
 const path = require('node:path');
+const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
@@ -38,7 +39,7 @@ async function retrieveDomain(ctx, next) {
     : ctx.request.body.domain;
 
   ctx.state.domain = ctx.state.domains.find((domain) =>
-    [domain.id, domain.name].includes(id)
+    [domain.id, domain.name, punycode.toASCII(domain.name)].includes(id)
   );
 
   // check if domain exists, and if it doesn't then check

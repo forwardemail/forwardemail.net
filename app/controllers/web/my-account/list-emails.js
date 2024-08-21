@@ -10,10 +10,11 @@ const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 
 const config = require('#config');
+const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { Domains, Emails, Aliases } = require('#models');
 
 // eslint-disable-next-line complexity
-async function listEmails(ctx) {
+async function listEmails(ctx, next) {
   // user must be domain admin or alias owner of the email
   const [domains, aliases, goodDomains, count] = await Promise.all([
     Domains.distinct('_id', {
@@ -212,8 +213,8 @@ async function listEmails(ctx) {
       }
     ];
 
-    let $sort = { created_at: -1 };
-    if (ctx.query.sort) {
+    let $sort = { created_at: ctx.api ? 1 : -1 };
+    if (isSANB(ctx.query.sort)) {
       const order = ctx.query.sort.startsWith('-') ? -1 : 1;
       $sort = {
         [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
@@ -235,11 +236,20 @@ async function listEmails(ctx) {
             status: 1,
             envelope: 1,
             messageId: 1,
-            headers: 1,
             date: 1,
             subject: 1,
-            accepted: 1,
-            rejectedErrors: 1
+            // omit the following fields if API
+            // - message
+            // - headers
+            // - accepted
+            // - rejectedErrors
+            ...(ctx.api
+              ? {}
+              : {
+                  headers: 1,
+                  accepted: 1,
+                  rejectedErrors: 1
+                })
           }
         },
         {
@@ -258,27 +268,12 @@ async function listEmails(ctx) {
     ctx.state.emails = emails;
     ctx.state.itemCount = results[0]?.count;
   } else {
-    if (ctx.api) {
-      // omit the following fields
-      // - message
-      // - headers
-      // - accepted
-      // - rejectedErrors
-      // eslint-disable-next-line unicorn/no-array-callback-reference
-      ctx.body = await Emails.find(query)
-        .select('-message -headers -accepted -rejectedErrors')
-        .sort('-created_at')
-        .lean()
-        .exec();
-      return;
-    }
-
     const [emails, itemCount] = await Promise.all([
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Emails.find(query)
         .limit(ctx.query.limit)
         .skip(ctx.paginate.skip)
-        .sort(ctx.query.sort || '-created_at')
+        .sort(isSANB(ctx.query.sort) ? ctx.query.sort : '-created_at')
         .lean()
         .exec(),
       Emails.countDocuments(query)
@@ -294,6 +289,20 @@ async function listEmails(ctx) {
     ctx.state.pageCount,
     ctx.query.page
   );
+
+  //
+  // set HTTP headers for pagination
+  // <https://forwardemail.net/api#pagination>
+  //
+  setPaginationHeaders(
+    ctx,
+    ctx.state.pageCount,
+    ctx.query.page,
+    ctx.state.emails.length,
+    ctx.state.itemCount
+  );
+
+  if (ctx.api) return next();
 
   if (ctx.accepts('html')) return ctx.render('my-account/emails');
 

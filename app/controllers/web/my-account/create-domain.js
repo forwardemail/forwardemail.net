@@ -6,8 +6,7 @@
 const Boom = require('@hapi/boom');
 const { boolean } = require('boolean');
 
-const toObject = require('#helpers/to-object');
-const { Users, Domains, Aliases } = require('#models');
+const { Domains, Aliases } = require('#models');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -94,11 +93,7 @@ async function createDomain(ctx, next) {
       });
     }
 
-    if (ctx.api) {
-      ctx.state.domain = toObject(Domains, ctx.state.domain);
-      ctx.state.domain.members[0].user = toObject(Users, ctx.state.user);
-      return next();
-    }
+    if (ctx.api) return next();
 
     // TODO: flash messages logic in @ladjs/assets doesn't support both
     // custom and regular flash message yet

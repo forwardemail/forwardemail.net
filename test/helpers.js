@@ -38,7 +38,7 @@ test('creates instance', async (t) => {
   const tangerine = createTangerine(client);
   await tangerine.resolve('forwardemail.net');
   const result = await client.get('tangerine:a:forwardemail.net');
-  t.true(typeof result === 'object');
+  t.true(result !== null);
   t.true(result.answers.length > 0);
   t.true(result.answers[0].name === 'forwardemail.net');
 });

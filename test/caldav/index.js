@@ -8,13 +8,14 @@ const path = require('node:path');
 
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
+const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
-const test = require('ava');
-const tsdav = require('tsdav');
-const getPort = require('get-port');
+const pWaitFor = require('p-wait-for');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
+const test = require('ava');
+const tsdav = require('tsdav');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');
@@ -443,14 +444,26 @@ test('it should send calendar invite', async (t) => {
 
   t.true(response.ok);
 
-  const email = await Emails.findOne({
-    alias: t.context.alias._id,
-    status: 'queued',
-    subject: '15 Min Meeting between Forward Email and You'
-  })
-    .lean()
-    .exec();
-  t.true(typeof email === 'object');
+  //
+  // invites are sent in background
+  // (promise returns early for creating event)
+  //
+  let email;
+  await pWaitFor(
+    async () => {
+      email = await Emails.findOne({
+        alias: t.context.alias._id,
+        status: 'queued',
+        subject: 'Invitation: 15 Min Meeting between Forward Email and You'
+      })
+        .lean()
+        .exec();
+      return email !== null;
+    },
+    { timeout: ms('5s') }
+  );
+
+  t.true(email !== null);
 });
 
 test('fetchCalendarObjects should be able to fetch calendar objects', async (t) => {

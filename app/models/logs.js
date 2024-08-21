@@ -11,7 +11,6 @@ const { isIP } = require('node:net');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('bytes');
 const captainHook = require('captain-hook');
@@ -48,6 +47,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 // const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
+const parseAddresses = require('#helpers/parse-addresses');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 // headers that we store values for
@@ -398,7 +398,7 @@ Logs.pre('save', function (next) {
       else keywords.add(meta.session.headers[key]);
 
       // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L511>
-      const addresses = addressParser(meta.session.headers[key]);
+      const addresses = parseAddresses(meta.session.headers[key]);
       if (Array.isArray(addresses) && addresses.length > 0) {
         for (const obj of addresses) {
           // if (isSANB(obj.name)) {

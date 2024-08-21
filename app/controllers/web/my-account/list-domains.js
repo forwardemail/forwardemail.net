@@ -4,16 +4,37 @@
  */
 
 const _ = require('lodash');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const pMap = require('p-map');
+const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
+const populateDomainStorage = require('#helpers/populate-domain-storage');
+const sendPaginationCheck = require('#helpers/send-pagination-check');
+const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 // eslint-disable-next-line complexity
-async function listDomains(ctx) {
+async function listDomains(ctx, next) {
   let { domains } = ctx.state;
+
+  //
+  // starting November 1st we enforce API pagination on this endpoint
+  // (unless user opts in beforehand using ?pagination=true)
+  //
+  const hasPagination = dayjs().isBefore('11/1/2024', 'M/D/YYYY')
+    ? boolean(ctx.query.pagination)
+    : true;
+
+  //
+  // NOTE: we send a one-time email admins that we now offer pagination
+  //       and with notice that starting November 1st list domains/aliases
+  //       endpoints will be paginated to 1000 results max per page by default
+  //
+  if (ctx.api && !hasPagination) await sendPaginationCheck(ctx);
 
   // if user has ubuntu ID then check if recipient matches email address
   // and if so then alert the user with a flash notification
@@ -72,7 +93,7 @@ async function listDomains(ctx) {
   }
 
   // if some of the domains were not global and need setup then toast notification
-  if (!ctx.query.page || ctx.query.page === 1) {
+  if (!ctx.api && (!ctx.query.page || ctx.query.page === 1)) {
     // let hasSomeSetup = false;
     let setupRequired = false;
     let setupRequiredMultiple = false;
@@ -161,7 +182,8 @@ async function listDomains(ctx) {
   });
 
   const itemCount = domains.length;
-  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+  const pageCount =
+    !ctx.api || hasPagination ? Math.ceil(itemCount / ctx.query.limit) : 1;
 
   // sort domains
   let sortFn;
@@ -169,8 +191,11 @@ async function listDomains(ctx) {
     sortFn = (d) => d[ctx.query.sort.replace(/^-/, '')];
   else {
     // use the default A-Z sort fn but put not verified at top, followed by mismatch
+    // (but the API will return default sort by `created_at` for pagination purposes)
     sortFn = (d) =>
-      !d.has_mx_record || !d.has_txt_record
+      ctx.api
+        ? d.created_at
+        : !d.has_mx_record || !d.has_txt_record
         ? 0
         : d.is_global && d.group !== 'admin'
         ? 3
@@ -180,19 +205,23 @@ async function listDomains(ctx) {
   }
 
   // store allDomains used for alias modal dropdown
-  const allDomains = [...domains].filter((domain) => {
-    const member = domain.members.find((m) => m.user.id === ctx.state.user.id);
-    // hide ubuntu-related domains
-    if (
-      member &&
-      domain.plan === 'team' &&
-      domain.has_txt_record &&
-      Object.keys(config.ubuntuTeamMapping).includes(domain.name) &&
-      member.group !== 'admin'
-    )
-      return false;
-    return true;
-  });
+  if (!ctx.api) {
+    ctx.state.allDomains = [...domains].filter((domain) => {
+      const member = domain.members.find(
+        (m) => m.user.id === ctx.state.user.id
+      );
+      // hide ubuntu-related domains
+      if (
+        member &&
+        domain.plan === 'team' &&
+        domain.has_txt_record &&
+        Object.keys(config.ubuntuTeamMapping).includes(domain.name) &&
+        member.group !== 'admin'
+      )
+        return false;
+      return true;
+    });
+  }
 
   // domains are already pre-sorted A-Z by 'name' so only use sortFn if passed
   if (sortFn) domains = _.sortBy(domains, [sortFn]);
@@ -201,32 +230,38 @@ async function listDomains(ctx) {
     domains = _.reverse(domains);
 
   // slice for page
-  domains = domains.slice(
-    ctx.paginate.skip,
-    ctx.query.limit + ctx.paginate.skip
-  );
+  if (!ctx.api || hasPagination)
+    domains = domains.slice(
+      ctx.paginate.skip,
+      ctx.query.limit + ctx.paginate.skip
+    );
 
   // get storage quota for each domain
-  domains = await Promise.all(
-    domains.map(async (d) => {
-      if (d.is_global || d.plan === 'free') return d;
-      try {
-        const [storageUsed, storageUsedByAliases, maxQuotaPerAlias] =
-          await Promise.all([
-            Domains.getStorageUsed(d._id, ctx.locale),
-            Domains.getStorageUsed(d._id, ctx.locale, true),
-            Domains.getMaxQuota(d._id)
-          ]);
-        d.storage_used = storageUsed;
-        d.storage_used_by_aliases = storageUsedByAliases;
-        d.storage_quota = maxQuotaPerAlias;
-      } catch (err) {
-        ctx.logger.fatal(err);
-      }
-
-      return d;
-    })
+  domains = await pMap(
+    domains,
+    async (d) => populateDomainStorage(d, ctx.locale),
+    {
+      concurrency: config.concurrency
+    }
   );
+
+  //
+  // set HTTP headers for pagination
+  // <https://forwardemail.net/api#pagination>
+  //
+  setPaginationHeaders(
+    ctx,
+    pageCount,
+    !ctx.api || hasPagination ? ctx.query.page : 1,
+    domains.length,
+    itemCount
+  );
+
+  // if API then return so it can hit v1 domains controller
+  if (ctx.api) {
+    ctx.state.domains = domains;
+    return next();
+  }
 
   //
   // set breadcrumbs
@@ -241,7 +276,7 @@ async function listDomains(ctx) {
 
   if (ctx.accepts('html'))
     return ctx.render('my-account/domains', {
-      allDomains,
+      allDomains: ctx.state.allDomains,
       domains,
       pageCount,
       itemCount,
@@ -249,7 +284,7 @@ async function listDomains(ctx) {
     });
 
   const table = await ctx.render('my-account/domains/_table', {
-    allDomains,
+    allDomains: ctx.state.allDomains,
     domains,
     pageCount,
     itemCount,

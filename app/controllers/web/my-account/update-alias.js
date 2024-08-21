@@ -6,8 +6,7 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
-const toObject = require('#helpers/to-object');
-const { Users, Domains, Aliases } = require('#models');
+const Aliases = require('#models/aliases');
 
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
@@ -29,14 +28,7 @@ async function updateAlias(ctx, next) {
     )
       ctx.client.publish('pgp_reload', ctx.state.alias.id);
 
-    if (ctx.api) {
-      ctx.state.alias = toObject(Aliases, ctx.state.alias);
-      ctx.state.alias.user = toObject(Users, ctx.state.user);
-      ctx.state.alias.domain = toObject(Domains, ctx.state.domain);
-      ctx.state.alias.domain.members = ctx.state.domain.members;
-      ctx.state.alias.domain.invites = ctx.state.domain.invites;
-      return next();
-    }
+    if (ctx.api) return next();
 
     ctx.flash('custom', {
       title: ctx.request.t('Success'),

@@ -6,6 +6,7 @@
 // TODO: remove user.email for all users from denylist
 
 const { isIP } = require('node:net');
+const punycode = require('node:punycode');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
@@ -98,11 +99,15 @@ graceful.listen();
       }
 
       const set = new Set();
-      set.add(`${domain.name}`);
+      set.add(punycode.toASCII(domain.name));
+      set.add(domain.name);
       {
         // parse root domain
         const rootDomain = parseRootDomain(domain.name);
-        if (domain.name !== rootDomain) set.add(rootDomain);
+        if (domain.name !== rootDomain) {
+          set.add(rootDomain);
+          set.add(punycode.toASCII(rootDomain));
+        }
       }
 
       for await (const alias of Aliases.find({
@@ -131,21 +136,29 @@ graceful.listen();
           if (isFQDN(recipient)) {
             const domain = recipient.toLowerCase();
             set.add(domain);
+            set.add(punycode.toASCII(domain));
             // parse root domain
             const rootDomain = parseRootDomain(domain);
-            if (domain !== rootDomain) set.add(domain);
+            if (domain !== rootDomain) {
+              set.add(domain);
+              set.add(punycode.toASCII(domain));
+            }
           } else if (isEmail(recipient)) {
             // parse domain
             // const [userPortion, domain] = recipient.split('@');
             const [, domain] = recipient.split('@');
             // parse root domain
             set.add(domain);
+            set.add(punycode.toASCII(domain));
             // if (alias.name.startsWith('/') && !/\$\d/.test(userPortion))
             //   set.add(recipient); // already lowercased (see alias model)
             // else set.add(recipient); // already lowercased (see alias model)
             // parse root domain
             const rootDomain = parseRootDomain(domain);
-            if (domain !== rootDomain) set.add(domain);
+            if (domain !== rootDomain) {
+              set.add(domain);
+              set.add(punycode.toASCII(domain));
+            }
           } else if (isIP(recipient)) {
             set.add(recipient);
           }

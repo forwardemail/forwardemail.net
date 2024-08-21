@@ -84,7 +84,9 @@ exports.setupApiServer = async (t) => {
   );
   const port = await getPort();
   t.context.client = client;
-  t.context.api = request.agent(api.app.listen(port));
+  const instance = await api.app.listen(port);
+  t.context.api = request.agent(instance);
+  t.context.apiAddress = instance.address();
 };
 
 exports.setupSMTPServer = async (t) => {

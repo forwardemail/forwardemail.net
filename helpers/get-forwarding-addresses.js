@@ -8,7 +8,6 @@ const { Buffer } = require('node:buffer');
 
 const RE2 = require('re2');
 const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -22,6 +21,7 @@ const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
 const logger = require('#helpers/logger');
+const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
@@ -30,7 +30,7 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 
 function parseFilter(address) {
-  ({ address } = addressParser(address)[0]);
+  ({ address } = parseAddresses(address)[0]);
   return address.includes('+') ? address.split('+')[1].split('@')[0] : '';
 }
 

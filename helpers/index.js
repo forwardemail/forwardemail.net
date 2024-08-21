@@ -124,6 +124,10 @@ const getRecipients = require('./get-recipients');
 const isAuthenticatedMessage = require('./is-authenticated-message');
 const getForwardingAddresses = require('./get-forwarding-addresses');
 const MessageSplitter = require('./message-splitter');
+const setPaginationHeaders = require('./set-pagination-headers');
+const sendPaginationCheck = require('./send-pagination-check');
+const populateDomainStorage = require('./populate-domain-storage');
+const parseAddresses = require('./parse-addresses');
 
 module.exports = {
   decrypt,
@@ -248,5 +252,9 @@ module.exports = {
   getRecipients,
   isAuthenticatedMessage,
   getForwardingAddresses,
-  MessageSplitter
+  MessageSplitter,
+  setPaginationHeaders,
+  sendPaginationCheck,
+  populateDomainStorage,
+  parseAddresses
 };

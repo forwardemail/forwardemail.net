@@ -3,14 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
-const addressParser = require('nodemailer/lib/addressparser');
-const addrs = require('email-addresses');
-const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const punycode = require('node:punycode');
 
 const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
+const parseAddresses = require('#helpers/parse-addresses');
 
 function getFromAddress(originalFrom) {
   if (!originalFrom)
@@ -26,36 +23,17 @@ function getFromAddress(originalFrom) {
   //
   // TODO: we probably should rewrite this with something else (!!!!)
   //
-  let originalFromAddresses =
-    addrs.parseAddressList({ input: originalFrom, partial: true }) || [];
+  const originalFromAddresses = parseAddresses(originalFrom);
 
-  if (originalFromAddresses.length === 0)
-    originalFromAddresses =
-      addrs.parseAddressList({ input: originalFrom }) || [];
-
-  // safeguard
-  if (originalFromAddresses.length === 0)
-    originalFromAddresses = addressParser(originalFrom);
-
-  const originalLength = originalFromAddresses.length;
-
-  originalFromAddresses = originalFromAddresses.filter(
-    (addr) =>
-      _.isObject(addr) &&
-      isSANB(addr.address) &&
-      isEmail(addr.address, { ignore_max_length: true })
-  );
-
-  if (
-    originalFromAddresses.length !== 1 ||
-    originalLength !== originalFromAddresses.length
-  )
+  if (originalFromAddresses.length !== 1)
     throw new SMTPError(
       'Your message must contain one valid email address in the "From" header'
     );
 
   // set original from address that was parsed
-  return checkSRS(originalFromAddresses[0].address).toLowerCase();
+  return checkSRS(
+    punycode.toASCII(originalFromAddresses[0].address)
+  ).toLowerCase();
 }
 
 module.exports = getFromAddress;

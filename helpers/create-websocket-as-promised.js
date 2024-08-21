@@ -206,6 +206,45 @@ function createWebSocketClass(options) {
   };
 }
 
+async function sendRequest(wsp, requestId, data) {
+  data.sent_at = Date.now();
+
+  if (!wsp.isOpened) {
+    await pWaitFor(
+      async () => {
+        try {
+          await wsp.open();
+          return true;
+        } catch (err) {
+          err.wsData = data;
+          logger.fatal(err);
+          return false;
+        }
+      },
+      {
+        timeout: config.env === 'test' ? ms('3s') : ms('15s')
+      }
+    );
+  }
+
+  return wsp.sendRequest(data, {
+    timeout:
+      typeof data.timeout === 'number' &&
+      Number.isFinite(data.timeout) &&
+      data.timeout > 0
+        ? data.timeout
+        : config.env === 'production'
+        ? //
+          // TODO: we should revise this later in future
+          //       (no wsp.request methds should take longer than 1m)
+          //       (any long-running jobs should have emails sent once completed)
+          //
+          ms('10m') // <--- TODO: we should not have 10m in future (should be 30-60s max)
+        : ms('10s'),
+    requestId
+  });
+}
+
 function createWebSocketAsPromised(options = {}) {
   //
   // <https://github.com/websockets/ws/issues/2050>
@@ -293,9 +332,9 @@ function createWebSocketAsPromised(options = {}) {
     // 'onClose',
     'onError'
   ]) {
-    wsp[event].addListener((...args) =>
-      logger[event === 'onError' ? 'error' : 'debug'](event, { args })
-    );
+    wsp[event].addListener((...args) => {
+      logger[event === 'onError' ? 'error' : 'debug'](event, { args });
+    });
   }
 
   // <https://github.com/vitalets/websocket-as-promised/issues/46>
@@ -327,56 +366,26 @@ function createWebSocketAsPromised(options = {}) {
 
       // attempt to send the request 3x
       // (e.g. in case connection disconnected and no response was made)
-      const response = await pRetry(
-        async () => {
-          data.sent_at = Date.now();
+      const response =
+        retries === 0
+          ? await sendRequest(wsp, requestId, data)
+          : await pRetry(() => sendRequest(wsp, requestId, data), {
+              retries,
+              minTimeout: config.busyTimeout / 2,
+              maxTimeout: config.busyTimeout,
+              factor: 1,
+              onFailedAttempt(error) {
+                error.isCodeBug = true;
+                error.wsData = data;
+                logger.error(error);
 
-          if (!wsp.isOpened) {
-            await pWaitFor(
-              async () => {
-                try {
-                  await wsp.open();
-                  return true;
-                } catch (err) {
-                  err.wsData = data;
-                  logger.fatal(err);
-                  return false;
+                if (isRetryableError(error)) {
+                  return;
                 }
-              },
-              {
-                timeout: ms('15s')
+
+                throw error;
               }
-            );
-          }
-
-          return wsp.sendRequest(data, {
-            timeout:
-              typeof data.timeout === 'number' &&
-              Number.isFinite(data.timeout) &&
-              data.timeout > 0
-                ? data.timeout
-                : ms('10m'),
-            requestId
-          });
-        },
-        {
-          retries,
-          minTimeout: config.busyTimeout / 2,
-          maxTimeout: config.busyTimeout,
-          factor: 1,
-          onFailedAttempt(error) {
-            error.isCodeBug = true;
-            error.wsData = data;
-            logger.error(error);
-
-            if (isRetryableError(error)) {
-              return;
-            }
-
-            throw error;
-          }
-        }
-      );
+            });
 
       if (
         !response.id ||
