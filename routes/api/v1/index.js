@@ -179,7 +179,7 @@ router
         : true;
       if (!hasPagination) return next();
       if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
-      return paginate.middleware(50, 1000);
+      return paginate.middleware(50, 1000)(ctx, next);
     },
     web.myAccount.retrieveDomains
   )
@@ -290,7 +290,7 @@ router
         : true;
       if (!hasPagination) return next();
       if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
-      return paginate.middleware(50, 1000);
+      return paginate.middleware(50, 1000)(ctx, next);
     },
     web.myAccount.retrieveAliases,
     api.v1.aliases.list
