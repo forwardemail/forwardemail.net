@@ -266,10 +266,7 @@ Emails.plugin(mongooseCommonPlugin, {
     'message',
     'locked_by',
     'locked_at',
-    'priority',
-    'blocked_hashes',
-    'has_blocked_hashes',
-    'rejectedErrors'
+    'priority'
   ]
 });
 

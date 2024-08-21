@@ -29,6 +29,10 @@ function json(email, isList = false) {
   //
   delete object.rejectedErrors;
 
+  // only admins need this info
+  delete object.blocked_hashes;
+  delete object.has_blocked_hashes;
+
   if (isList) {
     delete object.message;
     delete object.headers;
