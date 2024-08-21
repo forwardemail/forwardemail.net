@@ -471,7 +471,7 @@ To return those properties and their values, please use the [Retrieve email](#re
 > Example Request:
 
 ```sh
-curl BASE_URI/v1/emails \
+curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 

@@ -20,77 +20,83 @@ async function onConnect(session, fn) {
 
   if (this.isClosing) return fn(new ServerShutdownError());
 
-  // this is used for setting Date header if missing on SMTP submission
-  session.arrivalDate = new Date();
-
-  // this is used for sending bounces for MX server
-  session.arrivalDateFormatted = session.arrivalDate
-    .toISOString()
-    .split('T')[0];
-
-  // this is used for greylisting and in other places
-  session.arrivalTime = session.arrivalDate.getTime();
-
-  // lookup the client hostname
   try {
-    const [clientHostname] = await this.resolver.reverse(session.remoteAddress);
-    if (isFQDN(clientHostname)) {
-      // do we need this still (?)
-      let domain = clientHostname.toLowerCase().trim();
-      try {
-        domain = punycode.toASCII(domain);
-      } catch {
-        // ignore punycode conversion errors
-      }
+    // this is used for setting Date header if missing on SMTP submission
+    session.arrivalDate = new Date();
 
-      session.resolvedClientHostname = domain;
-      session.resolvedRootClientHostname = parseRootDomain(
-        session.resolvedClientHostname
+    // this is used for sending bounces for MX server
+    session.arrivalDateFormatted = session.arrivalDate
+      .toISOString()
+      .split('T')[0];
+
+    // this is used for greylisting and in other places
+    session.arrivalTime = session.arrivalDate.getTime();
+
+    // lookup the client hostname
+    try {
+      const [clientHostname] = await this.resolver.reverse(
+        session.remoteAddress
       );
-    }
-  } catch (err) {
-    //
-    // NOTE: the native Node.js DNS module would throw an error previously
-    //       <https://github.com/nodejs/node/issues/3112#issuecomment-1452548779>
-    //
-    if (env.NODE_ENV !== 'production') this.logger.debug(err, { session });
-  }
+      if (isFQDN(clientHostname)) {
+        // do we need this still (?)
+        let domain = clientHostname.toLowerCase().trim();
+        try {
+          domain = punycode.toASCII(domain);
+        } catch {
+          // ignore punycode conversion errors
+        }
 
-  //
-  // check if the connecting remote IP address is allowlisted
-  //
-  session.isAllowlisted = false;
-  if (session.resolvedClientHostname && session.resolvedRootClientHostname) {
-    // check the root domain
-    session.isAllowlisted = await isAllowlisted(
-      session.resolvedRootClientHostname,
-      this.client,
-      this.resolver
-    );
-    if (session.isAllowlisted) {
-      session.allowlistValue = session.resolvedRootClientHostname;
-    } else if (
-      session.resolvedRootClientHostname !== session.resolvedClientHostname
-    ) {
-      // if differed, check the sub-domain
+        session.resolvedClientHostname = domain;
+        session.resolvedRootClientHostname = parseRootDomain(
+          session.resolvedClientHostname
+        );
+      }
+    } catch (err) {
+      //
+      // NOTE: the native Node.js DNS module would throw an error previously
+      //       <https://github.com/nodejs/node/issues/3112#issuecomment-1452548779>
+      //
+      if (env.NODE_ENV !== 'production') this.logger.debug(err, { session });
+    }
+
+    //
+    // check if the connecting remote IP address is allowlisted
+    //
+    session.isAllowlisted = false;
+    if (session.resolvedClientHostname && session.resolvedRootClientHostname) {
+      // check the root domain
       session.isAllowlisted = await isAllowlisted(
-        session.resolvedClientHostname,
+        session.resolvedRootClientHostname,
         this.client,
         this.resolver
       );
+      if (session.isAllowlisted) {
+        session.allowlistValue = session.resolvedRootClientHostname;
+      } else if (
+        session.resolvedRootClientHostname !== session.resolvedClientHostname
+      ) {
+        // if differed, check the sub-domain
+        session.isAllowlisted = await isAllowlisted(
+          session.resolvedClientHostname,
+          this.client,
+          this.resolver
+        );
 
-      if (session.isAllowlisted)
-        session.allowlistValue = session.resolvedClientHostname;
+        if (session.isAllowlisted)
+          session.allowlistValue = session.resolvedClientHostname;
+      }
     }
-  }
 
-  if (!session.isAllowlisted) {
-    session.isAllowlisted = await isAllowlisted(
-      session.remoteAddress,
-      this.client,
-      this.resolver
-    );
-    if (session.isAllowlisted) session.allowlistValue = session.remoteAddress;
+    if (!session.isAllowlisted) {
+      session.isAllowlisted = await isAllowlisted(
+        session.remoteAddress,
+        this.client,
+        this.resolver
+      );
+      if (session.isAllowlisted) session.allowlistValue = session.remoteAddress;
+    }
+  } catch (err) {
+    return fn(refineAndLogError(err, session, false, this));
   }
 
   //

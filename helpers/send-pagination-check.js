@@ -29,7 +29,7 @@ async function sendPaginationCheck(ctx) {
       link,
       link
     );
-    await emailHelper({
+    emailHelper({
       template: 'alert',
       message: {
         to: ctx.state.user[config.userFields.fullEmail],
@@ -41,14 +41,18 @@ async function sendPaginationCheck(ctx) {
         user: ctx.state.user.toObject(),
         message
       }
-    });
+    })
+      .then()
+      .catch((err) => {
+        ctx.logger.fatal(err);
+        // if an error occurred while sending email then delete cache so it'll retry later
+        ctx.client
+          .del(key)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      });
   } catch (err) {
     ctx.logger.fatal(err);
-    // if an error occurred while sending email then delete cache so it'll retry later
-    ctx.client
-      .del(key)
-      .then()
-      .catch((err) => ctx.logger.fatal(err));
   }
 }
 
