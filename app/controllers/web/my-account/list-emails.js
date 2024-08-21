@@ -16,10 +16,8 @@ const { Domains, Emails, Aliases } = require('#models');
 // eslint-disable-next-line complexity
 async function listEmails(ctx, next) {
   // user must be domain admin or alias owner of the email
-  const [domains, aliases, goodDomains, count] = await Promise.all([
+  const [domains, aliases, count] = await Promise.all([
     Domains.distinct('_id', {
-      has_smtp: true,
-      is_smtp_suspended: false,
       members: {
         $elemMatch: {
           user: ctx.state.user._id,
@@ -29,10 +27,6 @@ async function listEmails(ctx, next) {
     }),
     Aliases.distinct('_id', {
       user: ctx.state.user._id
-    }),
-    Domains.distinct('_id', {
-      has_smtp: true,
-      is_smtp_suspended: false
     }),
     ctx.client.zcard(`${config.smtpLimitNamespace}:${ctx.state.user.id}`)
   ]);
@@ -46,8 +40,7 @@ async function listEmails(ctx, next) {
   let query = {
     $or: [
       {
-        alias: { $in: aliases },
-        domain: { $in: goodDomains }
+        alias: { $in: aliases }
       },
       {
         domain: { $in: domains }
@@ -77,10 +70,6 @@ async function listEmails(ctx, next) {
           )
         )
       );
-
-    // domain cannot be in suspended domains list
-    if (_.isDate(domain.smtp_suspended_sent_at))
-      throw Boom.badRequest(ctx.translateError('DOMAIN_SUSPENDED'));
 
     // if domain has not yet been setup yet then alert user
     if (

@@ -141,7 +141,9 @@ async function retrieveAliases(ctx, next) {
     // (unless user opts in beforehand using ?pagination=true)
     //
     const hasPagination = dayjs().isBefore('11/1/2024', 'M/D/YYYY')
-      ? boolean(ctx.query.pagination)
+      ? boolean(ctx.query.pagination) ||
+        !_.isUndefined(ctx.query.limit) ||
+        !_.isUndefined(ctx.query.page)
       : true;
 
     //
