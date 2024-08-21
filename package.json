@@ -44,7 +44,7 @@
     "@ladjs/mongoose": "7.0.0",
     "@ladjs/mongoose-error-messages": "1.0.0",
     "@ladjs/passport": "5.1.4",
-    "@ladjs/pick-original": "1.0.0",
+    "@ladjs/pick-original": "2.0.0",
     "@ladjs/policies": "12.1.0",
     "@ladjs/proxy": "4.0.2",
     "@ladjs/redis": "1.1.1",
