@@ -5,11 +5,12 @@
 
 const { Buffer } = require('node:buffer');
 
-const splitLines = require('split-lines');
-
 function getHeaders(headers) {
   const _headers = {};
-  const lines = splitLines(headers.headers.toString('binary').trim());
+  const lines = headers.headers
+    .toString('binary')
+    .replace(/[\r\n]+$/, '')
+    .split(/\r?\n/);
 
   //
   // NOTE: we decode header values because

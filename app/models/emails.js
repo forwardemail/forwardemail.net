@@ -25,7 +25,6 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
 const pEvent = require('p-event');
 const parseErr = require('parse-err');
-const splitLines = require('split-lines');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
@@ -896,7 +895,10 @@ Emails.statics.queue = async function (
   //
   let from;
 
-  const lines = splitLines(headers.headers.toString('binary').trim());
+  const lines = headers.headers
+    .toString('binary')
+    .replace(/[\r\n]+$/, '')
+    .split(/\r?\n/);
 
   for (const line of lines) {
     const value = Buffer.from(line, 'binary').toString();
