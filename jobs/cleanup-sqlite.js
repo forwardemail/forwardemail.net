@@ -245,7 +245,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // and the notification was sent within the past 7 days
           // then we can return early
           if (
-            typeof alias.storage_thresholds_sent_at === 'object' &&
+            _.isObject(alias.storage_thresholds_sent_at) &&
+            !_.isArray(alias.storage_thresholds_sent_at) &&
             alias.storage_thresholds_sent_at[threshold.toString()] &&
             _.isDate(alias.storage_thresholds_sent_at[threshold.toString()]) &&
             new Date(
