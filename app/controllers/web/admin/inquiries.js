@@ -5,7 +5,6 @@
 
 const { Buffer } = require('node:buffer');
 const path = require('node:path');
-const process = require('node:process');
 const getStream = require('get-stream');
 const _ = require('lodash');
 const Boom = require('@hapi/boom');
@@ -123,7 +122,9 @@ async function list(ctx) {
           updated_at: 1,
           reference: 1,
           email: 1,
-          plan: 1
+          plan: 1,
+          is_resolved: 1,
+          is_denylist: 1
         }
       },
       { $match: query },
@@ -162,17 +163,21 @@ async function list(ctx) {
 
 async function retrieve(ctx) {
   const emailTemplatePath = path.join(
-    process.cwd(),
-    'app/views/admin/inquiries/custom-email-previews.pug'
+    config.views.root,
+    'admin/inquiries/custom-email-previews.pug'
   );
 
   ctx.state.result = await Inquiries.findById(ctx.params.id);
+
   ctx.state.messages = await Promise.all(
     ctx.state.result.messages.map(async (message) => {
-      message.html = await previewEmail(message.raw, {
-        template: emailTemplatePath,
-        ...config.previewEmailOptions
-      });
+      if (message.raw) {
+        message.html = await previewEmail(message.raw, {
+          template: emailTemplatePath,
+          ...config.previewEmailOptions
+        });
+      }
+
       return message;
     })
   );
@@ -318,6 +323,7 @@ async function bulkReply(ctx) {
 
         // eslint-disable-next-line no-await-in-loop
         const raw = await transporter.sendMail(info?.originalMessage);
+
         inquiry.messages.push({ raw: raw.message });
         // eslint-disable-next-line no-await-in-loop
         await inquiry.save();

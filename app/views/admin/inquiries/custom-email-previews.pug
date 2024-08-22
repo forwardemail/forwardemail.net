@@ -14,14 +14,6 @@ html
         min-height: 200px;
         display: block;
       }
-      .iframe-container {
-        width: 100%;
-        overflow-x: auto;
-      }
-      .iframe-content {
-        width: 1200px;
-      }
-
       .preview-email-tabs {
         display: flex;
         flex-wrap: wrap;
@@ -125,8 +117,7 @@ html
                     else
                       code= "Unnamed file"
     .preview-email-tabs
-    .iframe-container
-      iframe#html.iframe-content(
+      iframe#html(
         sandbox="",
         referrerpolicy="no-referrer",
         seamless="seamless",

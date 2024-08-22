@@ -55,7 +55,7 @@ graceful.listen();
     for (const inquiry of inquiriesWithoutMessages) {
       console.log(`Attempting to migrate inquiry with id: ${inquiry._id}`);
 
-      if (!inquiry.subject || !inquiry.message) {
+      if (!inquiry.subject || !inquiry.message || !inquiry.text) {
         console.log('No subject or message found, skipping.');
         continue;
       }
@@ -85,7 +85,10 @@ graceful.listen();
         locals: {
           user: user.toObject(),
           domains,
-          inquiry: { subject: inquiry.subject, message: inquiry?.message },
+          inquiry: {
+            subject: inquiry.subject,
+            message: inquiry?.message || inquiry?.text
+          },
           subject: inquiry.subject
         }
       });
@@ -95,7 +98,7 @@ graceful.listen();
       const messages = [
         {
           raw: info.raw,
-          text: inquiry.message
+          text: inquiry.message || inquiry?.text
         }
       ];
 

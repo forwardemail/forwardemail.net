@@ -5,18 +5,17 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
-        .threaded-messages
-          each message in messages
-            - const isSenderEmail = message?.sender_email?.includes("support@");
-            iframe.bg-white.border-dark(
-              sandbox="allow-downloads allow-scripts",
-              referrerpolicy="no-referrer",
-              seamless="seamless",
-              srcdoc=`<base target='_top'>${message.html}`,
-              height="400px",
-              width="100%"
-            )
-            hr
+        each message in messages
+          - const isSenderEmail = message?.sender_email?.includes("support@");
+          iframe.bg-white.border-dark(
+            sandbox="allow-downloads allow-scripts",
+            referrerpolicy="no-referrer",
+            seamless="seamless",
+            srcdoc=`<base target='_top'>${message.html}`,
+            height="400px",
+            width="100%"
+          )
+          hr
         form.confirm-prompt(
           action=ctx.path,
           method="POST",
@@ -25,7 +24,7 @@ block body
           .card.border-themed.card-custom
             .card-body
               .form-group.floating-label
-                label.read-only-message.text-muted= result.message
+                label.read-only-message.text-muted= result.message || result.text
               .form-group.floating-label
                 textarea#input-message.form-control(
                   rows="8",
