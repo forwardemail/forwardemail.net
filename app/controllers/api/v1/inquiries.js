@@ -3,14 +3,19 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { createHmac } = require('node:crypto');
+const process = require('node:process');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
-const { simpleParser } = require('mailparser');
+const { Headers } = require('mailsplit');
 
+const { decrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
+
+const webhookSignatureKey = process.env.WEBHOOK_SIGNATURE_KEY;
 
 function findHeaderByName(name, headers) {
   for (const header of headers) {
@@ -25,12 +30,28 @@ function findHeaderByName(name, headers) {
 
 // eslint-disable-next-line complexity
 async function create(ctx) {
-  const { body } = ctx.request;
+  const { body, headers: requestHeaders } = ctx.request;
 
   ctx.logger.info('creating inquiry from webhook');
 
-  // TODO: Add support for webhook payload signature:
-  // https://stackoverflow.com/questions/68885086/how-to-create-signed-webhook-requests-in-nodejs/68885281#68885281
+  if (!requestHeaders['X-Webhook-Signature']) {
+    return ctx.throw(
+      Boom.badRequest(
+        ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
+      )
+    );
+  }
+
+  const webhookSignature = createHmac('sha256', decrypt(webhookSignatureKey))
+    .update(body)
+    .digest('hex');
+
+  if (requestHeaders['X-Webhook-Signature'] !== webhookSignature) {
+    return ctx.throw(
+      Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE'))
+    );
+  }
+
   if (
     !ctx.allowlistValue ||
     ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
@@ -39,15 +60,10 @@ async function create(ctx) {
       Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'))
     );
 
-  let parsed;
-  try {
-    parsed = await simpleParser(body.raw);
-  } catch (err) {
-    ctx.logger.error(err);
-    return ctx.throw(err);
-  }
-
   const { headerLines, session, text } = body;
+
+  const headers = new Headers(headerLines);
+
   if (!session)
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
@@ -59,29 +75,29 @@ async function create(ctx) {
     );
 
   if (
-    (parsed.headers.has('Auto-submitted') &&
-      parsed.headers.get('Auto-submitted') !== 'no') ||
-    (parsed.headers.has('Auto-Submitted') &&
-      parsed.headers.get('Auto-Submitted') !== 'no') ||
-    (parsed.headers.has('X-Auto-Response-Suppress') &&
+    (headers.hasHeader('Auto-submitted') &&
+      headers.getFirst('Auto-submitted') !== 'no') ||
+    (headers.hasHeader('Auto-Submitted') &&
+      headers.getFirst('Auto-Submitted') !== 'no') ||
+    (headers.hasHeader('X-Auto-Response-Suppress') &&
       ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-        parsed.headers.get('X-Auto-Response-Suppress').toLowerCase().trim()
+        headers.getFirst('X-Auto-Response-Suppress').toLowerCase().trim()
       )) ||
-    parsed.headers.has('List-Id') ||
-    parsed.headers.has('List-id') ||
-    parsed.headers.has('List-Unsubscribe') ||
-    parsed.headers.has('List-unsubscribe') ||
-    parsed.headers.has('Feedback-ID') ||
-    parsed.headers.has('Feedback-Id') ||
-    parsed.headers.has('X-Autoreply') ||
-    parsed.headers.has('X-Auto-Reply') ||
-    parsed.headers.has('X-AutoReply') ||
-    parsed.headers.has('X-Autorespond') ||
-    parsed.headers.has('X-Auto-Respond') ||
-    parsed.headers.has('X-AutoRespond') ||
-    (parsed.headers.has('Precedence') &&
+    headers.hasHeader('List-Id') ||
+    headers.hasHeader('List-id') ||
+    headers.hasHeader('List-Unsubscribe') ||
+    headers.hasHeader('List-unsubscribe') ||
+    headers.hasHeader('Feedback-ID') ||
+    headers.hasHeader('Feedback-Id') ||
+    headers.hasHeader('X-Autoreply') ||
+    headers.hasHeader('X-Auto-Reply') ||
+    headers.hasHeader('X-AutoReply') ||
+    headers.hasHeader('X-Autorespond') ||
+    headers.hasHeader('X-Auto-Respond') ||
+    headers.hasHeader('X-AutoRespond') ||
+    (headers.hasHeader('Precedence') &&
       ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
-        parsed.headers.get('Precedence').toLowerCase().trim()
+        headers.getFirst('Precedence').toLowerCase().trim()
       ))
   )
     return;
