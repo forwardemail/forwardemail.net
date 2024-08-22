@@ -26,10 +26,11 @@ include ../../_pagination
           tr
             td.align-middle.text-center
               .form-group.form-check.form-check-inline.mb-0
-                input#is-inquiry-selected.form-check-input(
+                input.form-check-input(
                   type="checkbox",
                   name="is_inquiry_selected",
-                  value=inquiry.id
+                  value=inquiry.id,
+                  data-email=inquiry.email
                 )
             td.align-middle
               a(
@@ -81,9 +82,12 @@ include ../../_pagination
           button.close(type="button", data-dismiss="modal", aria-label="Close")
             span(aria-hidden="true") &times;
         .modal-body
+          .form-group
+            h5= t("Replying to")
+            #modal-reply-to-email-list
           .text-center
             form.form-group
-              label(for="bulk-reply-message")
+              label(for="textarea-bulk-reply-message")
                 h5= t("Message")
                   = " "
               textarea#textarea-bulk-reply-message.form-control(

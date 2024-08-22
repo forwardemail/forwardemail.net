@@ -1,5 +1,13 @@
 extends ../../layout
 
+block append scripts
+  script(
+    defer,
+    src=manifest("js/inquiries.js"),
+    integrity=manifest("js/inquiries.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
 block body
   .container-fluid.py-3
     .row.mt-1
