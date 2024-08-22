@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- isso só se aplica ao SMTP de saída e se correlaciona com o ID de e-mail armazenado em Minha conta → E-mails",
   "Bank Transfer": "Transferência bancária",
   "Domestic Wire Transfer (Enterprise)": "Transferência bancária nacional (empresarial)",
-  "International Wire Transfer (Enterprise)": "Transferência bancária internacional (empresarial)"
+  "International Wire Transfer (Enterprise)": "Transferência bancária internacional (empresarial)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

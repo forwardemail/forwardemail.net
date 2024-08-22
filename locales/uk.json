@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- це стосується лише вихідного SMTP і співвідноситься з ідентифікатором електронної пошти, який зберігається в розділі «Мій обліковий запис» → «Електронні листи».",
   "Bank Transfer": "Банківський переказ",
   "Domestic Wire Transfer (Enterprise)": "Внутрішній банківський переказ (підприємство)",
-  "International Wire Transfer (Enterprise)": "Міжнародний банківський переказ (підприємство)"
+  "International Wire Transfer (Enterprise)": "Міжнародний банківський переказ (підприємство)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

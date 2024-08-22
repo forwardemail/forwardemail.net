@@ -19,6 +19,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('has_smtp', 'SMTP Enabled', '#table-domains')
         th(scope="col")
+          +sortHeader('has_newsletter', 'Newsletter Enabled', '#table-domains')
+        th(scope="col")
           +sortHeader('smtp_suspended_sent_at', 'SMTP Suspended', '#table-domains')
         th(scope="col")
           +sortHeader('max_recipients_per_alias', 'Max Recipients', '#table-domains')
@@ -82,6 +84,26 @@ include ../../_pagination
                       = "Disable SMTP"
                     else
                       = "Enable SMTP"
+              td.align-middle.text-center
+                form.ajax-form.confirm-prompt.d-inline-block(
+                  action=l(`/admin/domains/${domain.id}`),
+                  method="POST",
+                  autocomplete=config.env === "test" ? "off" : randomstring()
+                )
+                  input(type="hidden", name="_method", value="PUT")
+                  input(
+                    type="hidden",
+                    name="has_newsletter",
+                    value=(!domain.has_newsletter).toString()
+                  )
+                  button.btn.btn-sm(
+                    type="submit",
+                    class=domain.has_newsletter ? "btn-danger" : "btn-success"
+                  )
+                    if domain.has_newsletter
+                      = "Disable Newsletter"
+                    else
+                      = "Enable Newsletter"
               td.align-middle.text-center
                 form.ajax-form.confirm-prompt.d-inline-block(
                   action=l(`/admin/domains/${domain.id}`),

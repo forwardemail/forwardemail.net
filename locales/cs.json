@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- to platí pouze pro odchozí SMTP a souvisí s e-mailovým ID uloženým v Můj účet → E-maily",
   "Bank Transfer": "Bankovní převod",
   "Domestic Wire Transfer (Enterprise)": "Domácí bankovní převod (podnikové)",
-  "International Wire Transfer (Enterprise)": "Mezinárodní bankovní převod (podnik)"
+  "International Wire Transfer (Enterprise)": "Mezinárodní bankovní převod (podnik)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- 이것은 아웃바운드 SMTP에만 적용되며 내 계정 → 이메일에 저장된 이메일 ID와 상관 관계가 있습니다.",
   "Bank Transfer": "은행 송금",
   "Domestic Wire Transfer (Enterprise)": "국내 송금(기업)",
-  "International Wire Transfer (Enterprise)": "국제 송금(기업)"
+  "International Wire Transfer (Enterprise)": "국제 송금(기업)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

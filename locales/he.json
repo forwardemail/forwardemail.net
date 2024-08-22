@@ -8272,5 +8272,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- זה ישים רק עבור SMTP יוצא ומתאם למזהה הדוא\"ל המאוחסן ב'חשבון שלי ← הודעות דוא\"ל",
   "Bank Transfer": "העברה בנקאית",
   "Domestic Wire Transfer (Enterprise)": "העברה בנקאית מקומית (ארגוני)",
-  "International Wire Transfer (Enterprise)": "העברה בנקאית בינלאומית (ארגוני)"
+  "International Wire Transfer (Enterprise)": "העברה בנקאית בינלאומית (ארגוני)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

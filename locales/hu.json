@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- ez csak a kimenő SMTP-re vonatkozik, és a Saját fiók → E-mailek menüpontban tárolt e-mail azonosítóhoz kapcsolódik",
   "Bank Transfer": "Banki átutalás",
   "Domestic Wire Transfer (Enterprise)": "Belföldi banki átutalás (vállalati)",
-  "International Wire Transfer (Enterprise)": "Nemzetközi banki átutalás (vállalati)"
+  "International Wire Transfer (Enterprise)": "Nemzetközi banki átutalás (vállalati)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

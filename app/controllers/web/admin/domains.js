@@ -104,6 +104,16 @@ async function update(ctx) {
   const hadSMTPAccess = Boolean(domain.has_smtp);
   if (isSANB(body.has_smtp)) domain.has_smtp = boolean(body.has_smtp);
 
+  // has_newsletter
+  const hadNewsletterAccess = Boolean(domain.has_newsletter);
+  if (isSANB(body.has_newsletter)) {
+    if (!hadSMTPAccess) {
+      throw Boom.forbidden(ctx.translateError('DOMAIN_REQUIRES_SMTP_ACCESS'));
+    }
+
+    domain.has_smtp = boolean(body.has_newsletter);
+  }
+
   // smtp_suspended_sent_at
   const hadSMTPSuspension = _.isDate(domain.smtp_suspended_sent_at);
   if (isSANB(body.smtp_suspended_sent_at)) {
@@ -202,6 +212,50 @@ async function update(ctx) {
   } else if (hadSMTPAccess && !domain.has_smtp) {
     const subject = i18n.translate(
       'EMAIL_SMTP_ACCESS_DISABLED',
+      obj.locale,
+      domain.name
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message: subject,
+        locale: obj.locale
+      }
+    });
+  }
+
+  if (!hadNewsletterAccess && domain.has_newsletter) {
+    const subject = i18n.translate(
+      'EMAIL_NEWSLETTER_ACCESS_ENABLED_SUBJECT',
+      obj.locale,
+      domain.name
+    );
+    const message = i18n.translate(
+      'EMAIL_NEWSLETTER_ACCESS_ENABLED_MESSAGE',
+      obj.locale,
+      domain.name,
+      `${config.urls.web}/${obj.locale}/my-account/domains/${domain.name}/verify-smtp`
+    );
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: obj.to,
+        bcc: config.email.message.from,
+        subject
+      },
+      locals: {
+        message,
+        locale: obj.locale
+      }
+    });
+  } else if (hadNewsletterAccess && !domain.has_newsletter) {
+    const subject = i18n.translate(
+      'EMAIL_NEWSLETTER_ACCESS_DISABLED',
       obj.locale,
       domain.name
     );

@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- これは送信SMTPにのみ適用され、マイアカウント→メールに保存されているメールIDと相関します。",
   "Bank Transfer": "銀行振込",
   "Domestic Wire Transfer (Enterprise)": "国内電信送金（企業）",
-  "International Wire Transfer (Enterprise)": "国際電信送金（エンタープライズ）"
+  "International Wire Transfer (Enterprise)": "国際電信送金（エンタープライズ）",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

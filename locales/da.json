@@ -7224,5 +7224,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- dette gælder kun for udgående SMTP og korrelerer med det e-mail-id, der er gemt i Min konto → E-mails",
   "Bank Transfer": "Bankoverførsel",
   "Domestic Wire Transfer (Enterprise)": "Indenlandsk bankoverførsel (virksomhed)",
-  "International Wire Transfer (Enterprise)": "International bankoverførsel (Enterprise)"
+  "International Wire Transfer (Enterprise)": "International bankoverførsel (Enterprise)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }
