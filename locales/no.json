@@ -10258,5 +10258,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- dette gjelder kun for utgående SMTP og samsvarer med e-post-IDen som er lagret i Min konto → E-poster",
   "Bank Transfer": "Bankoverføring",
   "Domestic Wire Transfer (Enterprise)": "Innenlandsk bankoverføring (bedrift)",
-  "International Wire Transfer (Enterprise)": "Internasjonal bankoverføring (enterprise)"
+  "International Wire Transfer (Enterprise)": "Internasjonal bankoverføring (enterprise)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- dit is alleen van toepassing op uitgaande SMTP en komt overeen met de e-mail-ID die is opgeslagen in Mijn account → E-mails",
   "Bank Transfer": "Bankoverschrijving",
   "Domestic Wire Transfer (Enterprise)": "Binnenlandse overschrijving (zakelijk)",
-  "International Wire Transfer (Enterprise)": "Internationale overschrijving (onderneming)"
+  "International Wire Transfer (Enterprise)": "Internationale overschrijving (onderneming)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

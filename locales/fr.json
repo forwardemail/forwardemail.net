@@ -7776,5 +7776,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- ceci ne s'applique qu'au SMTP sortant et correspond à l'identifiant de messagerie stocké dans Mon compte → E-mails",
   "Bank Transfer": "Virement bancaire",
   "Domestic Wire Transfer (Enterprise)": "Virement bancaire national (entreprise)",
-  "International Wire Transfer (Enterprise)": "Virement bancaire international (entreprise)"
+  "International Wire Transfer (Enterprise)": "Virement bancaire international (entreprise)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

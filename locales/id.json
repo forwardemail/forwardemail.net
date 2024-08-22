@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- ini hanya berlaku untuk SMTP keluar dan berkorelasi dengan ID email yang disimpan di Akun Saya → Email",
   "Bank Transfer": "Transfer Bank",
   "Domestic Wire Transfer (Enterprise)": "Transfer Kawat Domestik (Perusahaan)",
-  "International Wire Transfer (Enterprise)": "Transfer Bank Internasional (Perusahaan)"
+  "International Wire Transfer (Enterprise)": "Transfer Bank Internasional (Perusahaan)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

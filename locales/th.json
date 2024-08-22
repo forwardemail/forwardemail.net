@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- ใช้ได้เฉพาะกับ SMTP ขาออกเท่านั้น และสัมพันธ์กับ ID อีเมลที่เก็บไว้ในบัญชีของฉัน → อีเมล",
   "Bank Transfer": "โอนเงินผ่านธนาคาร",
   "Domestic Wire Transfer (Enterprise)": "การโอนเงินภายในประเทศ (องค์กร)",
-  "International Wire Transfer (Enterprise)": "การโอนเงินระหว่างประเทศ (องค์กร)"
+  "International Wire Transfer (Enterprise)": "การโอนเงินระหว่างประเทศ (องค์กร)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

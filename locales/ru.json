@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- это применимо только для исходящего SMTP и соответствует идентификатору электронной почты, сохраненному в разделе «Моя учетная запись» → «Электронная почта».",
   "Bank Transfer": "Банковский перевод",
   "Domestic Wire Transfer (Enterprise)": "Внутренний банковский перевод (корпоративный)",
-  "International Wire Transfer (Enterprise)": "Международный банковский перевод (корпоративный)"
+  "International Wire Transfer (Enterprise)": "Международный банковский перевод (корпоративный)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

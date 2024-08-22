@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- ينطبق هذا فقط على SMTP الصادر ويرتبط بمعرف البريد الإلكتروني المخزن في حسابي → رسائل البريد الإلكتروني",
   "Bank Transfer": "التحويل البنكي",
   "Domestic Wire Transfer (Enterprise)": "التحويل البنكي المحلي (المؤسسي)",
-  "International Wire Transfer (Enterprise)": "التحويل البنكي الدولي (المؤسسات)"
+  "International Wire Transfer (Enterprise)": "التحويل البنكي الدولي (المؤسسات)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

@@ -10253,5 +10253,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- questo è applicabile solo per SMTP in uscita e si correla all'ID e-mail memorizzato in Il mio account → E-mail",
   "Bank Transfer": "Bonifico bancario",
   "Domestic Wire Transfer (Enterprise)": "Bonifico bancario nazionale (impresa)",
-  "International Wire Transfer (Enterprise)": "Bonifico bancario internazionale (aziendale)"
+  "International Wire Transfer (Enterprise)": "Bonifico bancario internazionale (aziendale)",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }

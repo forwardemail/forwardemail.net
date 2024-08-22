@@ -9946,5 +9946,12 @@
   "- this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails": "- 这仅适用于出站 SMTP，并与存储在“我的账户”→“电子邮件”中的电子邮件 ID 相关",
   "Bank Transfer": "银行转帐",
   "Domestic Wire Transfer (Enterprise)": "国内电汇（企业）",
-  "International Wire Transfer (Enterprise)": "国际电汇（企业）"
+  "International Wire Transfer (Enterprise)": "国际电汇（企业）",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Reply": "Reply",
+  "Search for domains": "Search for domains",
+  "Search by domain name (RegExp supported) or email": "Search by domain name (RegExp supported) or email",
+  "Newsletter Enabled": "Newsletter Enabled",
+  "Domain requires SMTP access.": "Domain requires SMTP access."
 }
