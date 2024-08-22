@@ -3247,7 +3247,7 @@ If you are on the free plan, then simply add a new DNS <strong class="notranslat
       <td><em>"@", ".", or blank</em></td>
       <td class="text-center">3600</td>
       <td class="notranslate">TXT</td>
-      <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td>
+      <td><code>forward-email=/^(linus|torvalds)$/:!</code></td>
     </tr>
   </tbody>
 </table>
@@ -3394,7 +3394,7 @@ For example, if I want all emails that go to `alias@example.com` to stop flowing
     Tip:
   </strong>
   <span>
-    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!alias" as in the example below.
+    If you want increased security, then you can also remove the ":user@gmail.com" (or ":nobody@forwardemail.net") part, leaving just "!!!alias" as in the example below.
   </span>
 </div>
 
