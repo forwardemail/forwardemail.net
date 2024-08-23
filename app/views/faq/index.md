@@ -86,7 +86,6 @@
 * [Do you support email best practices](#do-you-support-email-best-practices)
 * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Will you ever increase prices](#will-you-ever-increase-prices)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 
 
@@ -3779,11 +3778,6 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 ## Which payment methods do you accept
 
 We accept cards, wallets, and bank transfers using [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
-
-
-## Will you ever increase prices
-
-No. Prices will never increase. Unlike other companies, we will never shutdown our service either.
 
 
 ## How do you perform DNS lookups on domain names
