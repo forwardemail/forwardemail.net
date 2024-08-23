@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const isSANB = require('is-string-and-not-blank');
 
 const SMTPError = require('#helpers/smtp-error');
@@ -13,7 +15,9 @@ const config = require('#config');
 function validateDomain(domain, domainName) {
   if (!domain)
     throw new SMTPError(
-      `Domain does not exist with current TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+      `Domain does not exist with current TXT verification record, go to ${
+        config.urls.web
+      }/my-account/domains/${punycode.toASCII(domainName)} and click "Verify"`,
       { responseCode: 535, ignoreHook: true }
     );
 

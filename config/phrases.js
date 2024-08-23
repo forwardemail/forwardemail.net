@@ -114,6 +114,8 @@ module.exports = {
   CANNOT_CREATE_REGEX_ON_DOMAIN:
     'Cannot create regex on domain due to large alias volume size.',
   ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
+  DENYLIST_HARD_CODED:
+    'The value <span class="notranslate">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.',
   RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
   SMTP_ERROR_SUBJECT:
     'Outbound SMTP Configuration Issue Detected for <span class="notranslate">%s</span>',

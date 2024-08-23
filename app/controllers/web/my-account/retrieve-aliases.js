@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -133,7 +135,9 @@ async function retrieveAliases(ctx, next) {
         `/my-account/domains/${ctx.state.domain.id}/members/`
       ) ||
         ctx.pathWithoutLocale.startsWith(
-          `/my-account/domains/${ctx.state.domain.name}/members/`
+          `/my-account/domains/${punycode.toASCII(
+            ctx.state.domain.name
+          )}/members/`
         )))
   ) {
     //
@@ -266,7 +270,7 @@ async function retrieveAliases(ctx, next) {
       `/my-account/domains/${ctx.state.domain.id}/members/`
     ) ||
     ctx.pathWithoutLocale.startsWith(
-      `/my-account/domains/${ctx.state.domain.name}/members/`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/members/`
     )
   )
     return next();
@@ -302,7 +306,9 @@ async function retrieveAliases(ctx, next) {
     timer: 5000,
     position: 'top'
   });
-  ctx.redirect(`/my-account/domains/${ctx.state.domain.name}/aliases/new`);
+  ctx.redirect(
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases/new`
+  );
 }
 
 module.exports = retrieveAliases;

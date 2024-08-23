@@ -483,6 +483,8 @@ Note that with the exception of `envelope` and `dkim` (since we set those automa
 
 You should either pass the single option of `raw` with your raw full email including headers **or** pass individual body parameter options below.
 
+This API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically).  Our goal was to make an extremely developer-friendly and dummy-proof email API.
+
 > `POST /v1/emails`
 
 | Body Parameter   | Required | Type             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                      |

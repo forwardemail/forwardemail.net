@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const isSANB = require('is-string-and-not-blank');
 const slug = require('speakingurl');
 const { boolean } = require('boolean');
@@ -13,7 +15,9 @@ function faq(ctx) {
   let redirectTo = ctx.state.l('/faq');
 
   if (isRedirectToDomain && ctx.state.domain)
-    redirectTo = ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`);
+    redirectTo = ctx.state.l(
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
+    );
   else if (ctx.session && ctx.session.returnTo)
     redirectTo = ctx.session.returnTo;
 

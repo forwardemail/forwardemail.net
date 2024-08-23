@@ -55,63 +55,62 @@ footer.mt-auto(aria-label=t("Footer"))
             li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
               i.fa.fa-shield.mr-2
               = t("Secure Checkout")
+          .small.text-center.mb-2: strong= t("Payment Methods Accepted:")
           ul.list-inline.mb-3.text-center.mb-5
-            li.list-inline-item
-              strong= t("Payment Methods Accepted:")
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-paypal
               = " PayPal"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-visa
               = " Visa"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-mastercard
               = " Mastercard"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-amex
               = " American Express"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-discover
               = " Discover"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-diners-club
               = " Diners Club"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-jcb
               = " JCB"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               = " China UnionPay"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-alipay
               = " Alipay"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-cc-apple-pay
               = " Apple Pay"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-google-pay
               = " Google Pay"
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-amazon-pay
               = " Amazon Pay"
-            li.list-inline-item Cash App
-            li.list-inline-item Link
-            li.list-inline-item Bancontact
-            li.list-inline-item EPS
-            li.list-inline-item giropay
-            li.list-inline-item
+            li.list-inline-item.badge.bg-white.text-dark.small Cash App
+            li.list-inline-item.badge.bg-white.text-dark.small Link
+            li.list-inline-item.badge.bg-white.text-dark.small Bancontact
+            li.list-inline-item.badge.bg-white.text-dark.small EPS
+            li.list-inline-item.badge.bg-white.text-dark.small giropay
+            li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-ideal
               = " iDEAL"
-            li.list-inline-item Przelewy24
-            li.list-inline-item Sofort
-            li.list-inline-item Affirm
-            li.list-inline-item Afterpay / Clearpay
-            li.list-inline-item Klarna
-            li.list-inline-item= t("SEPA Direct Debit")
-            li.list-inline-item= t("Canadian pre-authorized debits")
-            li.list-inline-item= t("ACH Direct Debit")
-            li.list-inline-item= t("Bank Transfer")
-            li.list-inline-item= t("Domestic Wire Transfer (Enterprise)")
-            li.list-inline-item= t("International Wire Transfer (Enterprise)")
+            li.list-inline-item.badge.bg-white.text-dark.small Przelewy24
+            li.list-inline-item.badge.bg-white.text-dark.small Sofort
+            li.list-inline-item.badge.bg-white.text-dark.small Affirm
+            li.list-inline-item.badge.bg-white.text-dark.small Afterpay / Clearpay
+            li.list-inline-item.badge.bg-white.text-dark.small Klarna
+            li.list-inline-item.badge.bg-white.text-dark.small= t("SEPA Direct Debit")
+            li.list-inline-item.badge.bg-white.text-dark.small= t("Canadian pre-authorized debits")
+            li.list-inline-item.badge.bg-white.text-dark.small= t("ACH Direct Debit")
+            li.list-inline-item.badge.bg-white.text-dark.small= t("Bank Transfer")
+            li.list-inline-item.badge.bg-white.text-dark.small= t("Domestic Wire Transfer (Enterprise)")
+            li.list-inline-item.badge.bg-white.text-dark.small= t("International Wire Transfer (Enterprise)")
       .d-flex.flex-column.flex-lg-row
         if !isBot(ctx.get('User-Agent'))
           .flex-nowrap.order-3.order-lg-0.d-flex.flex-column.flex-grow-1.mr-lg-3

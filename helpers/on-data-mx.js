@@ -18,6 +18,7 @@ const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
+const getHeaders = require('#helpers/get-headers');
 const getRecipients = require('#helpers/get-recipients');
 const hasFingerprintExpired = require('#helpers/has-fingerprint-expired');
 const isArbitrary = require('#helpers/is-arbitrary');
@@ -100,7 +101,8 @@ async function updateMXHeaders(session, headers, body) {
     // if there was an original reply-to on the email
     // then we don't want to modify it of course
     //
-    if (!headers.getFirst('reply-to'))
+    // <https://github.com/andris9/mailsplit/issues/21>
+    if (!getHeaders(headers, true, 'reply-to'))
       headers.update('Reply-To', session.originalFromAddress);
 
     // rewrite ARC sealed headers with updated headers object value

@@ -7,6 +7,7 @@
 require('#config/env');
 
 const process = require('node:process');
+const punycode = require('node:punycode');
 const { parentPort } = require('node:worker_threads');
 
 // eslint-disable-next-line import/no-unassigned-import
@@ -166,7 +167,9 @@ async function mapper(id) {
           'SMTP_ERROR_MESSAGE',
           locale,
           domain.name,
-          `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`
+          `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/verify-smtp`
         );
         await emailHelper({
           template: 'alert',

@@ -268,6 +268,7 @@ const config = {
     from: env.TWILIO_FROM_NUMBER,
     to: env.TWILIO_TO_NUMBER
   },
+  smtpMessageMaxSize: env.SMTP_MESSAGE_MAX_SIZE,
   defaultModulusLength: 1024,
   defaultStoragePath: env.SQLITE_STORAGE_PATH,
   // 100 items (50 MB * 100 = 5000 MB = 5 GB)
@@ -292,7 +293,7 @@ const config = {
       skipHtmlToText: true,
       skipTextLinks: true,
       skipTextToHtml: true,
-      maxHtmlLengthToParse: bytes('50MB')
+      maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
     },
     returnHTML: true
   },
@@ -424,7 +425,7 @@ const config = {
       openSimulator: false,
       simpleParser: {
         Iconv,
-        maxHtmlLengthToParse: bytes('50MB')
+        maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
       }
     },
     subjectPrefix: `${env.APP_NAME} – `,
@@ -1507,6 +1508,7 @@ config.alternatives = alternatives;
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'smtpMessageMaxSize',
   'alternatives',
   'smtpLimitMessages',
   'smtpLimitDuration',

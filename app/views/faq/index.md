@@ -94,7 +94,9 @@
 
 Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
-Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-safe encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
+We're an all-in-one alternative to Gmail + Mailchimp + Sendgrid.
+
+Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-resistant encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
 
 **Unlike other services, we don't charge you per user.**  You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.
 

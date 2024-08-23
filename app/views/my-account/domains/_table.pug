@@ -152,7 +152,7 @@ p.text-center.d-lg-none
                 if !domain.is_global && domain.group === 'admin' && !domain.has_mx_record || !domain.has_txt_record
                   li.list-inline-item
                     a.badge.badge-danger.text-uppercase.stretched-link(
-                      href=l(`/my-account/domains/${domain.name}`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
                     )
                       i.fa.fa-fw.fa-times
                       = " "
@@ -160,13 +160,13 @@ p.text-center.d-lg-none
                 if domain.is_global
                   li.list-inline-item
                     a.badge.badge-secondary.text-uppercase.stretched-link(
-                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                     )= t("Vanity Domain")
                 else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
                   li.list-inline-item
                     if domain.has_mx_record && domain.has_txt_record
                       a.badge.badge-success.text-uppercase.stretched-link(
-                        href=l(`/my-account/domains/${domain.name}/aliases`)
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                       )= titleize(humanize(domain.plan))
                     else
                       span.badge.badge-success.text-uppercase
@@ -176,7 +176,7 @@ p.text-center.d-lg-none
                     if domain.has_mx_record && domain.has_txt_record
                       a.badge.text-uppercase.stretched-link(
                         class=domain.plan === "free" && user.plan === "free" ? "badge-danger" : "badge-warning",
-                        href=domain.plan === "free" ? l(`/my-account/domains/${domain.name}`) : l(`/my-account/domains/${domain.name}/aliases`)
+                        href=domain.plan === "free" ? l(`/my-account/domains/${punycode.toASCII(domain.name)}`) : l(`/my-account/domains/${domain.name}/aliases`)
                       )= titleize(humanize(domain.plan))
                     else
                       span.badge.text-uppercase(
@@ -204,7 +204,7 @@ p.text-center.d-lg-none
                         = t("Aliases")
                     else
                       form.confirm-prompt(
-                        action=l(`/my-account/domains/${domain.name}/billing`),
+                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
                         data-confirm-prompt-title=t("Switch domain plan?"),
                         data-confirm-prompt-html=t("To unlock the alias manager for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
                         method="GET"
@@ -216,7 +216,7 @@ p.text-center.d-lg-none
                           = t("Aliases")
                   else
                     a.btn.btn-sm.btn-link.text-themed.btn-block(
-                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                     )
                       i.fa.fa-fw.fa-users
                       = " "
@@ -236,7 +236,7 @@ p.text-center.d-lg-none
                           = t("Emails")
                       else
                         form.confirm-prompt(
-                          action=l(`/my-account/domains/${domain.name}/billing`),
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
                           data-confirm-prompt-title=t("Switch domain plan?"),
                           data-confirm-prompt-html=t("To unlock outbound SMTP email for this domain, you need to switch its plan."),
                           method="GET"
@@ -267,7 +267,7 @@ p.text-center.d-lg-none
                         = t("Logs")
                     else
                       form.confirm-prompt(
-                        action=l(`/my-account/domains/${domain.name}/billing`),
+                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
                         data-confirm-prompt-title=t("Switch domain plan?"),
                         data-confirm-prompt-html=t("To unlock logs for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
                         method="GET"
@@ -288,14 +288,14 @@ p.text-center.d-lg-none
                   li.list-inline-item.d-block.d-sm-inline-block
                     a.btn.btn-sm.btn-block.btn-link(
                       class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
-                      href=l(`/my-account/domains/${domain.name}`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup")
                   li.list-inline-item.d-block.d-sm-inline-block
                     a.btn.btn-sm.btn-link.text-themed.btn-block(
-                      href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`)
                     )
                       i.fa.fa-fw.fa-tools
                       = " "
@@ -317,7 +317,7 @@ p.text-center.d-lg-none
                           h6.dropdown-header= t("Change plan to:")
                           each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
                             a.dropdown-item(
-                              href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
+                              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`)
                             )
                               case plan
                                 when 'enhanced_protection'

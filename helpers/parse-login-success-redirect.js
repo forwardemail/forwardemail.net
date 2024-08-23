@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const config = require('#config');
 const { Users, Domains } = require('#models');
 
@@ -23,7 +25,9 @@ async function parseLoginSuccessRedirect(ctx) {
       .exec();
 
     if (domain) {
-      redirectTo = ctx.state.l(`/my-account/domains/${domain.name}`);
+      redirectTo = ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(domain.name)}`
+      );
       if (domain.has_mx_record && domain.has_txt_record) {
         redirectTo += '/aliases';
       }

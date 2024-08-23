@@ -7,12 +7,15 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 
 const checkSRS = require('#helpers/check-srs');
+const getHeaders = require('#helpers/get-headers');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseAddresses = require('#helpers/parse-addresses');
 
 function getAttributes(headers, session) {
-  const replyToAddresses = parseAddresses(headers.getFirst('reply-to'));
+  const replyToAddresses = parseAddresses(
+    getHeaders(headers, true, 'reply-to')
+  );
 
   //
   // check if the From, Reply-To, MAIL FROM, sender IP/host, or RCPT TO were silent banned

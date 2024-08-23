@@ -164,7 +164,7 @@ block body
                 ul.small
                   each domain in domainsWithOtherAdmins
                     li: a(
-                      href=l(`/my-account/domains/${domain.name}`),
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
                       target="_blank"
                     )= domain.name
             else

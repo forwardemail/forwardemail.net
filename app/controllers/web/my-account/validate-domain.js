@@ -42,7 +42,9 @@ async function validateDomain(ctx, next) {
     const message = ctx.translate('DOMAIN_ALREADY_EXISTS');
     ctx.flash('warning', message);
 
-    const redirectTo = ctx.state.l(`/my-account/domains/${match.name}/aliases`);
+    const redirectTo = ctx.state.l(
+      `/my-account/domains/${punycode.toASCII(match.name)}/aliases`
+    );
 
     if (ctx.accepts('html')) {
       ctx.redirect(redirectTo);
@@ -149,7 +151,7 @@ async function validateDomain(ctx, next) {
   }
 
   ctx.state.redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.request.body.domain}`
+    `/my-account/domains/${punycode.toASCII(ctx.request.body.domain)}`
   );
 
   // if the user was not on a valid plan then redirect them to billing post creation
@@ -159,7 +161,9 @@ async function validateDomain(ctx, next) {
         if (!['enhanced_protection', 'team'].includes(ctx.state.user.plan)) {
           ctx.request.body.plan = 'free';
           ctx.state.redirectTo = ctx.state.l(
-            `/my-account/domains/${ctx.request.body.domain}/billing?plan=enhanced_protection`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.request.body.domain
+            )}/billing?plan=enhanced_protection`
           );
         }
 
@@ -173,7 +177,9 @@ async function validateDomain(ctx, next) {
               ? 'enhanced_protection'
               : 'free';
           ctx.state.redirectTo = ctx.state.l(
-            `/my-account/domains/${ctx.request.body.domain}/billing?plan=team`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.request.body.domain
+            )}/billing?plan=team`
           );
         }
 

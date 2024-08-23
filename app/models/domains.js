@@ -795,7 +795,9 @@ Domains.pre('validate', async function (next) {
             'RESTRICTED_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -808,7 +810,9 @@ Domains.pre('validate', async function (next) {
             'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -823,7 +827,9 @@ Domains.pre('validate', async function (next) {
             'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -836,7 +842,9 @@ Domains.pre('validate', async function (next) {
           domain.locale,
           domain.name,
           i18n.translate(domain.plan.toUpperCase(), domain.locale),
-          `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
+          `/${domain.locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/billing?plan=${domain.plan}`
         )
       );
     }
@@ -1566,9 +1574,11 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                 i18n.translateError(
                   'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
                   domain.locale,
-                  `/my-account/domains/${domain.name}/aliases`,
+                  `/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/aliases`,
                   config.recordPrefix,
-                  `/my-account/domains/${domain.name}`
+                  `/my-account/domains/${punycode.toASCII(domain.name)}`
                 )
               )
             );
@@ -1639,7 +1649,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'RESTRICTED_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -1651,7 +1663,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -1663,7 +1677,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -2159,7 +2175,9 @@ async function ensureUserHasValidPlan(user, locale) {
           locale,
           domain.name,
           i18n.translate(domain.plan.toUpperCase(), locale),
-          `/${locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
+          `/${locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/billing?plan=${domain.plan}`
         )
       );
     }
@@ -2221,7 +2239,9 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
         locale,
         domain.name,
         i18n.translate('ENHANCED_PROTECTION', locale),
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/billing?plan=enhanced_protection`
       )
     );
   }
@@ -2308,7 +2328,9 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         locale,
         domain.name,
         i18n.translate('ENHANCED_PROTECTION', locale),
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/billing?plan=enhanced_protection`
       )
     );
   }

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -470,7 +472,9 @@ async function createDomainBilling(ctx) {
       ctx.flash('error', err.message);
       return ctx.redirect(
         ctx.state.domain
-          ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
+          ? ctx.state.l(
+              `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
+            )
           : ctx.state.l('/my-account/billing')
       );
     }

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const Email = require('email-templates');
 const Meta = require('koa-meta');
@@ -328,7 +330,9 @@ async function onboard(ctx, next) {
     ctx.state.user.plan === 'free'
   ) {
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/billing?plan=enhanced_protection`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };
@@ -341,7 +345,7 @@ async function onboard(ctx, next) {
   //
   if (ctx.isAuthenticated() && ctx.state.domain) {
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

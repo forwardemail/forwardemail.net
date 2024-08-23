@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
@@ -66,7 +68,9 @@ async function listEmails(ctx, next) {
         ctx.translateError(
           'PLAN_UPGRADE_REQUIRED',
           ctx.state.l(
-            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.state.domain.name
+            )}/billing?plan=enhanced_protection`
           )
         )
       );
@@ -83,12 +87,14 @@ async function listEmails(ctx, next) {
         ctx.translate(
           'EMAIL_SMTP_CONFIGURATION_REQUIRED',
           domain.name,
-          ctx.state.l(`/my-account/domains/${domain.name}/verify-smtp`)
+          ctx.state.l(
+            `/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+          )
         )
       );
 
       const redirectTo = ctx.state.l(
-        `/my-account/domains/${domain.name}/advanced-settings`
+        `/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`
       );
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };

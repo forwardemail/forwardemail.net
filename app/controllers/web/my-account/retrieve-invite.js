@@ -92,8 +92,10 @@ async function retrieveInvite(ctx) {
   // redirect user to either alias page (if user) or admin page (if admin)
   const redirectTo =
     group === 'admin'
-      ? ctx.state.l(`/my-account/domains/${domain.name}`)
-      : ctx.state.l(`/my-account/domains/${domain.name}/aliases`);
+      ? ctx.state.l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
+      : ctx.state.l(
+          `/my-account/domains/${punycode.toASCII(domain.name)}/aliases`
+        );
 
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };

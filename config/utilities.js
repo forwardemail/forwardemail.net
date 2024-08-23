@@ -5,6 +5,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const punycode = require('node:punycode');
 
 const RE2 = require('re2');
 const _ = require('lodash');
@@ -1240,5 +1241,6 @@ module.exports = {
   highlightWords,
   randomstring,
   useCases,
-  decrypt
+  decrypt,
+  punycode
 };

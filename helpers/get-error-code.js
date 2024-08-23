@@ -73,7 +73,7 @@ function getErrorCode(err) {
   if (err.isBoom === true && typeof err?.output?.statusCode === 'number') {
     if ([403, 404].includes(err.output.statusCode)) return 550;
 
-    if (err.output.statusCode >= 400 && err.output.statusCode < 500) return 421;
+    if (err.output.statusCode > 400 && err.output.statusCode < 500) return 421;
   }
 
   return 550;

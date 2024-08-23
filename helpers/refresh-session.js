@@ -154,7 +154,7 @@ async function refreshSession(session, command) {
     );
   if (!isValid)
     throw new IMAPError(
-      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${punycode.toASCII(session.user.domain_name)}/aliases and click "Generate Password"`,
       {
         responseCode: 535
         // ignoreHook: true

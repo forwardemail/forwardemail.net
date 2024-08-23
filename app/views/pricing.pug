@@ -53,6 +53,7 @@ block body
 
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
     .min-vh-100.d-flex.flex-column.pb-5(
+      data-ignore-hash-change,
       id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email" || Object.keys(useCases).includes(ctx.pathWithoutLocale)) && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
       class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
     )
@@ -194,6 +195,10 @@ block body
                   i.fa.fa-angle-double-right.align-middle
             ul.list-group.list-group-flush.mb-1
               li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fa-infinity.text-themed.mr-3
+                = " "
+                != t("Unlimited inbound email")
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-shield-alt.text-themed.mr-3
                 = " "
                 = t("Spam protection")
@@ -211,7 +216,7 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-paperclip.text-themed.mr-3
                 = " "
-                != t("50MB attachment limit")
+                != t('<span class="notranslate">%s</span> attachment limit', config.smtpMessageMaxSize)
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-themed.text-decoration-underline(
@@ -347,7 +352,7 @@ block body
                   .dropdown-menu.w-100
                     each domain in sortedDomains
                       a.dropdown-item(
-                        href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`),
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`),
                         class=domain.plan === "enhanced_protection" ? "disabled" : "",
                         aria-disabled=domain.plan === "enhanced_protection" ? "true" : "false"
                       )
@@ -574,7 +579,7 @@ block body
             .card-body
               .h3.text-center.font-weight-bold
                 = t("Team")
-              p.text-center.mb-3= t("For groups and organizations")
+              p.text-center.mb-3= t("For families, groups, and organizations")
               .lead.text-center.mb-3.text-nowrap
                 if user && user.plan === 'team'
                   span.h5.font-weight-bold.d-block= t("Already upgraded")
@@ -600,7 +605,7 @@ block body
                   .dropdown-menu.w-100
                     each domain in sortedDomains
                       a.dropdown-item(
-                        href=l(`/my-account/domains/${domain.name}/billing?plan=team`),
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=team`),
                         class=domain.plan === "team" ? "disabled" : "",
                         aria-disabled=domain.plan === "team" ? "true" : "false"
                       )
@@ -658,7 +663,7 @@ block body
               .h3.text-center.font-weight-bold
                 = t("Enterprise")
               p.text-center.mb-3
-                != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">alumni email forwarding</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
+                != t('For <a href="%s" class="text-themed font-weight-bold">education</a>, <a href="%s" class="text-themed font-weight-bold">universities</a>, <a href="%s" class="text-themed font-weight-bold">alumni email forwarding</a>, <a href="%s" class="text-themed font-weight-bold">healthcare</a>, <a href="%s" class="text-themed font-weight-bold">government</a>, and custom implementations', l("/education-email-hosting-forwarding"), l("/universities-email-service"), l("/alumni-email-forwarding"), l("/healthcare-email-hosting-forwarding-hipaa"), l("/government-email-hosting-forwarding"))
               a.btn.btn-block.btn-success.font-weight-bold(href=l("/help"))
                 = t("Contact us to schedule a call")
                 = " "

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const Aliases = require('#models/aliases');
@@ -70,14 +72,18 @@ async function retrieveAlias(ctx, next) {
 
   if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/aliases/${ctx.state.alias.id}`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases/${
+      ctx.state.alias.id
+    }`
   ) {
     ctx.state.breadcrumbHeaderCentered = true;
     ctx.state.breadcrumbs.push(
       {
         name: ctx.state.t('Aliases'),
         href: ctx.state.l(
-          `/my-account/domains/${ctx.state.domain.name}/aliases`
+          `/my-account/domains/${punycode.toASCII(
+            ctx.state.domain.name
+          )}/aliases`
         )
       },
       {

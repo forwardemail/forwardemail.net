@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -81,7 +83,9 @@ async function updateDomain(ctx, next) {
               ctx.translateError(
                 'PLAN_UPGRADE_REQUIRED',
                 ctx.state.l(
-                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                  `/my-account/domains/${punycode.toASCII(
+                    ctx.state.domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             )
@@ -106,7 +110,9 @@ async function updateDomain(ctx, next) {
               ctx.translateError(
                 'PLAN_UPGRADE_REQUIRED',
                 ctx.state.l(
-                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                  `/my-account/domains/${punycode.toASCII(
+                    ctx.state.domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             )
@@ -126,7 +132,9 @@ async function updateDomain(ctx, next) {
               ctx.translateError(
                 'PLAN_UPGRADE_REQUIRED',
                 ctx.state.l(
-                  `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+                  `/my-account/domains/${punycode.toASCII(
+                    ctx.state.domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             )
@@ -155,7 +163,9 @@ async function updateDomain(ctx, next) {
           ctx.translateError(
             'PLAN_UPGRADE_REQUIRED',
             ctx.state.l(
-              `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+              `/my-account/domains/${punycode.toASCII(
+                ctx.state.domain.name
+              )}/billing?plan=enhanced_protection`
             )
           )
         )

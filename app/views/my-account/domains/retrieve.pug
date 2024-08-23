@@ -39,7 +39,7 @@ block body
           li.list-inline-item.d-none.d-md-inline-block: i.fa.fa-angle-right.align-middle.text-white
           li.list-inline-item
             form.ajax-form(
-              action=l(`/my-account/domains/${domain.name}/verify-records`),
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
               method="POST"
             )
               button.btn.btn-success.btn-sm(type="submit")
@@ -80,7 +80,7 @@ block body
               != t("Congratulations &ndash; you completed setup!")
           if domain.has_mx_record && domain.has_txt_record && domain.plan !== 'free'
             a.btn.btn-success.btn-lg.btn-block.mb-3(
-              href=l(`/my-account/domains/${domain.name}/aliases`)
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
             )
               = t("Continue to Aliases")
               = " "
@@ -102,7 +102,7 @@ block body
                 br.d-block.d-md-none
                 = " "
                 a.alert-link(
-                  href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+                  href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`)
                 )= t("Upgrade for $3")
                 = " "
                 = t("or")
@@ -116,7 +116,7 @@ block body
                 br.d-block.d-md-none
                 = " "
                 a.alert-link(
-                  href=l(`/my-account/domains/${domain.name}/billing?plan=${user.plan}`)
+                  href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${user.plan}`)
                 )!= t("Click here to switch &ndash; it's free!")
     if domain.has_mx_record && domain.has_txt_record
       .container.mb-3
@@ -258,7 +258,7 @@ block body
                 else
                   span.d-none.d-md-inline= t(" and click ")
                   form.ajax-form.d-none.d-md-inline(
-                    action=l(`/my-account/domains/${domain.name}/verify-records`),
+                    action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
                     method="POST"
                   )
                     button.btn.btn-success.btn-sm.d-inline(type="submit")
@@ -266,7 +266,7 @@ block body
                       = " "
                       = t("Verify")
               if domain.ignore_mx_check
-                .alert.alert-primary.my-3.small!= t('Your domain currently has "Ignore MX Record" checked under <a href="%s" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${domain.name}/advanced-settings`))
+                .alert.alert-primary.my-3.small!= t('Your domain currently has "Ignore MX Record" checked under <a href="%s" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`))
               if provider && provider.slug && provider.slug === 'cloudflare'
                 .alert.alert-warning.my-3.small
                   strong= t("Important Note:")
@@ -461,7 +461,7 @@ block body
                   a.alert-link(href=l("/faq#dns-configuration-options"))= t("See Options A to G in our FAQ")
 
               form.ajax-form(
-                action=l(`/my-account/domains/${domain.name}/verify-records`),
+                action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
                 method="POST"
               )
                 button.btn.btn-success.btn-lg.btn-block(type="submit")

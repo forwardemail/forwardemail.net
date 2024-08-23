@@ -21,7 +21,7 @@ block body
         .modal-body.text-center
           p!= t('You can easily use catch-all passwords to send email with <i class="font-weight-bold">any</i> alias at your domain.')
           a.btn.btn-lg.btn-primary(
-            href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#catch-all-passwords`),
             target="_blank"
           )
             = t("Go to Advanced Settings")
@@ -31,7 +31,7 @@ block body
             = t("Catch-all Passwords")
           hr
           h2.h4= t("What should I use for outbound SMTP settings?")
-          .alert.alert-primary.small!= t('Your username is any email address with your domain and password is from <a href="%s" target="_blank" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`))
+          .alert.alert-primary.small!= t('Your username is any email address with your domain and password is from <a href="%s" target="_blank" class="alert-link">Advanced Settings</a>.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#catch-all-passwords`))
           table.table.table-hover.table-bordered.table-sm.mb-0
             thead.thead-dark
               tr
@@ -209,7 +209,7 @@ block body
             span(aria-hidden="true") &times;
         .modal-body
           form.ajax-form(
-            action=l(`/my-account/domains/${domain.name}/aliases/new`),
+            action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/new`),
             method="POST"
           )
             include _form
@@ -231,7 +231,7 @@ block body
                   != t('You successfully created a new alias: <code class="alert-link text-decoration-underline">%s</code>', ctx.query.new)
                 li.list-inline-item.align-middle
                   a.btn.btn-sm.btn-dark(
-                    href=l(`/my-account/domains/${domain.name}/aliases?q=${ctx.query.new}`)
+                    href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases?q=${ctx.query.new}`)
                   )= t("Review Alias")
           form.ajax-form.table-ajax-form(
             action=ctx.path,
@@ -256,14 +256,14 @@ block body
         ul.list-inline.mb-0
           li.list-inline-item
             a.btn.btn-outline-secondary(
-              href=l(domain.group === "admin" ? `/my-account/domains/${domain.name}` : "/my-account/domains")
+              href=l(domain.group === "admin" ? `/my-account/domains/${punycode.toASCII(domain.name)}` : "/my-account/domains")
             )
               i.fa.fa-angle-double-left
               = " "
               = domain.group === "admin" ? t("Back to Domain") : t("Back to Domains")
           li.list-inline-item
             a.btn.btn-outline-secondary(
-              href=l(`/my-account/domains/${domain.name}/aliases`)
+              href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
             )
               i.fa.fa-angle-double-left
               = " "

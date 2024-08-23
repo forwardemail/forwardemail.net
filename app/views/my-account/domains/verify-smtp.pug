@@ -78,7 +78,7 @@ block body
               != t("Congratulations &ndash; you completed setup!")
             ul.list-inline
               li.list-inline-item.d-block.d-md-inline-block.mr-0.mr-md-2.mb-3.mb-md-0: a.btn.btn-lg.btn-success.btn-block(
-                href=l(`/my-account/domains/${domain.name}/aliases`)
+                href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
               )= t("Generate alias passwords")
               li.list-inline-item.d-block.d-md-inline-block.mr-0.mr-md-2.mb-3.mb-md-0: a.btn.btn-lg.btn-dark.btn-block(
                 href=l("/faq#do-you-support-sending-email-with-smtp"),
@@ -254,7 +254,7 @@ block body
                         - const modulusLength = domain.dkim_modulus_length || 2048; //- legacy support (2048 was the original setting we had before changing to 1024)
                         //- Button to allow users to switch between 1024 and 2048 bit keys
                         form.ajax-form.confirm-prompt.text-center.mb-3(
-                          action=l(`/my-account/domains/${domain.name}/change-modulus-length`),
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/change-modulus-length`),
                           method="POST",
                           data-confirm-prompt-title=striptags(t('Switch to <span class="notranslate">%d</span>-bit DKIM key?', modulusLength === 2048 ? 1024 : 2048)),
                           data-confirm-prompt-html=t("Please confirm if you wish to change the DKIM key modulus length from <strong>%d</strong> to <strong>%d</strong>.", modulusLength, modulusLength === 2048 ? 1024 : 2048)
@@ -438,7 +438,7 @@ block body
       .row.text-center.my-5
         .col
           a.btn.btn-outline-secondary(
-            href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`)
           )
             = " "
             = t("Go to Advanced Settings")

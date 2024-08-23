@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
@@ -146,7 +148,11 @@ async function onDataSMTP(raw, session, date) {
 
   if (!isValid)
     throw new SMTPError(
-      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+      `Invalid password, please try again or go to ${
+        config.urls.web
+      }/my-account/domains/${punycode.toASCII(
+        session.user.domain_name
+      )}/aliases and click "Generate Password"`,
       {
         responseCode: 535
         // ignoreHook: true
@@ -164,7 +170,11 @@ async function onDataSMTP(raw, session, date) {
   if (!domain.has_smtp) {
     if (!_.isDate(domain.smtp_verified_at))
       throw new SMTPError(
-        `Domain is not configured for outbound SMTP, go to ${config.urls.web}/my-account/domains/${domain.name}/verify-smtp and click "Verify"`,
+        `Domain is not configured for outbound SMTP, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/verify-smtp and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -253,7 +263,11 @@ async function onDataSMTP(raw, session, date) {
 
     if (!isValid)
       throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535
           // ignoreHook: true

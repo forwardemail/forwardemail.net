@@ -4,6 +4,7 @@
  */
 
 const path = require('node:path');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
 const pWaitFor = require('p-wait-for');
@@ -50,7 +51,11 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     // invalid password
     if (err.code === 'SQLITE_NOTADB') {
       const _err = new IMAPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          session.user.domain_name
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true

@@ -172,7 +172,7 @@ p.text-center.d-lg-none
                 li.list-inline-item!= t('No results were found for "<span class="notranslate">%s</span>".', str)
                 li.list-inline-item
                   form.ajax-form.mb-0(
-                    action=l(`/my-account/domains/${domain.name}/aliases/new`),
+                    action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/new`),
                     method="POST"
                   )
                     input(type="hidden", name="name", value=str)
@@ -210,7 +210,7 @@ p.text-center.d-lg-none
                         span(aria-hidden="true") &times;
                     .modal-body.text-center
                       form.ajax-form.d-block.confirm-prompt(
-                        action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/download-backup`),
+                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/download-backup`),
                         method="POST"
                       )
                         p.font-weight-bold.lead= t("Select backup format:")
@@ -301,7 +301,7 @@ p.text-center.d-lg-none
                           span(aria-hidden="true") &times;
                       .modal-body.text-center
                         form.ajax-form.d-block.confirm-prompt(
-                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/qrcode`),
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/qrcode`),
                           method="POST"
                         )
                           p.alert.alert-primary.small
@@ -347,7 +347,7 @@ p.text-center.d-lg-none
                           span(aria-hidden="true") &times;
                       .modal-body.text-center
                         form.ajax-form.d-block.confirm-prompt(
-                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/generate-password`),
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/generate-password`),
                           method="POST"
                         )
                           if Array.isArray(alias.tokens) && alias.tokens.length > 0
@@ -520,7 +520,7 @@ p.text-center.d-lg-none
                         if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
                           //- Button to resend verification email
                           form.ajax-form.confirm-prompt.d-inline-block(
-                            action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/resend-verification`),
+                            action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/resend-verification`),
                             method="POST",
                             data-confirm-prompt-title=t("Resend verification email?"),
                             data-confirm-prompt-html=t("Please confirm if you wish to resend the verification email to <strong>%s</strong>.", recipient)
@@ -540,7 +540,7 @@ p.text-center.d-lg-none
                 ul.list-inline.mb-0
                   li.list-inline-item
                     a.btn.btn-sm.btn-link.text-themed.btn-block(
-                      href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                      href=`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`
                     )
                       i.fa.fa-pencil
                       = " "
@@ -548,7 +548,7 @@ p.text-center.d-lg-none
                   if !isUbuntuRelatedAlias || domain.group === 'admin'
                     li.list-inline-item
                       form.ajax-form.confirm-prompt.d-block(
-                        action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`),
                         method="POST"
                       )
                         input(type="hidden", name="_method", value="DELETE")
@@ -563,7 +563,7 @@ p.text-center.d-lg-none
                   if domain.group === 'admin' && !domain.is_global && alias.name === '*' && domain.plan !== 'free'
                     li.list-inline-item
                       a.btn.btn-sm.btn-link.text-success.btn-block(
-                        href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#catch-all-passwords`),
                         role="button",
                         data-toggle="modal",
                         data-target="#modal-domain-tokens"
@@ -707,7 +707,7 @@ p.text-center.d-lg-none
                       if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
                         //- Button to resend verification email
                         form.ajax-form.confirm-prompt.d-inline-block(
-                          action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}/resend-verification`),
+                          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}/resend-verification`),
                           method="POST",
                           data-confirm-prompt-title=t("Resend verification email?"),
                           data-confirm-prompt-html=t("Please confirm if you wish to resend the verification email to <strong>%s</strong>.", recipient)
@@ -727,7 +727,7 @@ p.text-center.d-lg-none
               ul.list-inline.mb-0
                 li.list-inline-item
                   a.btn.btn-sm.btn-link.text-themed.btn-block(
-                    href=`/my-account/domains/${domain.name}/aliases/${alias.id}`
+                    href=`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`
                   )
                     i.fa.fa-pencil
                     = " "
@@ -735,7 +735,7 @@ p.text-center.d-lg-none
                 if !isUbuntuRelatedAlias || domain.group === 'admin'
                   li.list-inline-item
                     form.ajax-form.confirm-prompt.d-block(
-                      action=l(`/my-account/domains/${domain.name}/aliases/${alias.id}`),
+                      action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/${alias.id}`),
                       method="POST"
                     )
                       input(type="hidden", name="_method", value="DELETE")
@@ -750,7 +750,7 @@ p.text-center.d-lg-none
                 if domain.group === 'admin' && !domain.is_global && alias.name === '*' && domain.plan !== 'free'
                   li.list-inline-item
                     a.btn.btn-sm.btn-link.text-success.btn-block(
-                      href=l(`/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`),
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings#catch-all-passwords`),
                       role="button",
                       data-toggle="modal",
                       data-target="#modal-domain-tokens"

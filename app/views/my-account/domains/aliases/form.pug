@@ -23,7 +23,7 @@ block body
       .row.text-center.my-5
         .col
           a.btn.btn-outline-secondary(
-            href=l(`/my-account/domains/${domain.name}/aliases`)
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
           )
             i.fa.fa-angle-double-left
             = " "

@@ -10,6 +10,7 @@ const config = require('#config');
 const env = require('#config/env');
 const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
+const getHeaders = require('#helpers/get-headers');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
@@ -51,10 +52,11 @@ const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
 // eslint-disable-next-line complexity
 function isArbitrary(session, headers, bodyStr) {
-  let subject = headers.getFirst('subject');
+  let subject = getHeaders(headers, true, 'subject');
   if (!isSANB(subject)) subject = null;
 
-  const from = headers.getFirst('from');
+  // <https://github.com/andris9/mailsplit/issues/21>
+  const from = getHeaders(headers, true, 'from');
 
   // rudimentary blocking
   if (subject && BLOCKED_PHRASES.test(subject))

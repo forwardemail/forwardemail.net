@@ -133,9 +133,7 @@ class MessageSplitter extends Transform {
     this.dataBytes += chunk.length;
     this.sizeExceeded = this.dataBytes > this._maxBytes;
     if (this.sizeExceeded) {
-      const err = new Error(
-        `Maximum allowed message size ${bytes(this._maxBytes)} exceeded`
-      );
+      const err = new Error(`Email size of ${bytes(this._maxBytes)} exceeded.`);
       err.responseCode = 552;
       return callback(err);
     }

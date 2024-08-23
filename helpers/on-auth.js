@@ -107,7 +107,11 @@ async function onAuth(auth, session, fn) {
       auth.password === 'REPLACE-WITH-YOUR-GENERATED-PASSWORD'
     )
       throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -131,7 +135,11 @@ async function onAuth(auth, session, fn) {
 
     if (verifications.length === 0)
       throw new SMTPError(
-        `Domain is missing TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        `Domain is missing TXT verification record, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )} and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -140,7 +148,11 @@ async function onAuth(auth, session, fn) {
 
     if (verifications.length > 1)
       throw new SMTPError(
-        `Domain has more than one TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        `Domain has more than one TXT verification record, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )} and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -196,7 +208,11 @@ async function onAuth(auth, session, fn) {
     ) {
       if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
         throw new SMTPError(
-          `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+          `Alias does not have a generated password yet, go to ${
+            config.urls.web
+          }/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/aliases and click "Generate Password"`,
           {
             responseCode: 535,
             ignoreHook: true,
@@ -210,7 +226,11 @@ async function onAuth(auth, session, fn) {
     )
       // SMTP servers can validate against both alias and domain-wide tokens
       throw new SMTPError(
-        `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+        `Alias does not have a generated password yet, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true,
@@ -292,7 +312,11 @@ async function onAuth(auth, session, fn) {
       }
 
       throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           imapResponse: 'AUTHENTICATIONFAILED'
@@ -355,7 +379,11 @@ async function onAuth(auth, session, fn) {
                 message: i18n.translate(
                   'CALDAV_SMTP_NOT_ENABLED_MESSAGE',
                   locale,
-                  `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`,
+                  `${
+                    config.urls.web
+                  }/${locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/verify-smtp`,
                   domain.name
                 ),
                 locale
@@ -448,7 +476,11 @@ async function onAuth(auth, session, fn) {
 
       // throw an error
       throw new SMTPError(
-        `Alias does not have IMAP enabled, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Edit" to enable IMAP storage`,
+        `Alias does not have IMAP enabled, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/aliases and click "Edit" to enable IMAP storage`,
         {
           responseCode: 535,
           ignoreHook: true

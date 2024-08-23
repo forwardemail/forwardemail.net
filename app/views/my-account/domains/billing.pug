@@ -48,7 +48,7 @@ block body
               br.d-block.d-md-none
               = " "
               a.alert-link.text-decoration-underline(
-                href=l(`/my-account/domains/${domain.name}`)
+                href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
               )= t("Switch to the Free plan")
               = " "
               = t("or")

@@ -3,12 +3,30 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
+// <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L329>
+const ENCODED_HEADERS = new Set([
+  'from',
+  'to',
+  'cc',
+  'bcc',
+  'sender',
+  'reply-to',
+  'delivered-to',
+  'return-path',
 
-function getHeaders(headers) {
+  'subject',
+  'references',
+  'message-id',
+  'in-reply-to'
+]);
+
+function getHeaders(headers, decode = true, specificKey = null) {
   const _headers = {};
+
+  // NOTE: unicode characters get rewritten due to a (bug) in mailsplit
+  // <https://github.com/andris9/mailsplit/issues/21>
   const lines = headers.headers
-    .toString('binary')
+    .toString()
     .replace(/[\r\n]+$/, '')
     .split(/\r?\n/);
 
@@ -22,25 +40,27 @@ function getHeaders(headers) {
   //       (e.g. so a user could search for 🎉)
   //
   for (const line of lines) {
-    const value = Buffer.from(line, 'binary').toString();
-    const index = value.indexOf(': ');
-    const key = value.slice(0, index);
+    const index = line.indexOf(':');
+    const key = line.slice(0, index);
 
-    _headers[key] = value.slice(index + 2);
+    _headers[key] = line.slice(index + 1).trim();
 
-    // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L329>
-    if (
-      ['subject', 'references', 'message-id', 'in-reply-to'].includes(
-        key.toLowerCase()
-      )
-    ) {
+    if (decode && ENCODED_HEADERS.has(key.toLowerCase())) {
       try {
         _headers[key] = headers.libmime.decodeWords(_headers[key]);
       } catch {
         // ignore, keep as is
       }
     }
+
+    if (
+      typeof specificKey === 'string' &&
+      key.toLowerCase() === specificKey.toLowerCase()
+    )
+      return _headers[key];
   }
+
+  if (typeof specificKey === 'string') return;
 
   return _headers;
 }

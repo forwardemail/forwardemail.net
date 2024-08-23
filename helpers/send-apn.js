@@ -149,7 +149,8 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
           .exec();
 
         await pMap(
-          aliases.map(async (alias) => {
+          aliases,
+          async (alias) => {
             await Aliases.findByIdAndUpdate(alias._id, {
               $set: {
                 aps: alias.aps.filter(
@@ -160,7 +161,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
                 )
               }
             });
-          }),
+          },
           { concurrency: config.concurrency }
         );
       } else {

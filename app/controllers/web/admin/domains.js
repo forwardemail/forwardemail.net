@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -195,7 +197,9 @@ async function update(ctx) {
       'EMAIL_SMTP_ACCESS_ENABLED_MESSAGE',
       obj.locale,
       domain.name,
-      `${config.urls.web}/${obj.locale}/my-account/domains/${domain.name}/verify-smtp`
+      `${config.urls.web}/${obj.locale}/my-account/domains/${punycode.toASCII(
+        domain.name
+      )}/verify-smtp`
     );
     await emailHelper({
       template: 'alert',

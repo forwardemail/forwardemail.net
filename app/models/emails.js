@@ -36,7 +36,6 @@ const Domains = require('./domains');
 const Users = require('./users');
 
 const MessageSplitter = require('#helpers/message-splitter');
-const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -56,8 +55,7 @@ const NO_REPLY_USERNAMES = new Set(noReplyList);
 const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
 const HUMAN_MAX_DAYS_IN_ADVANCE = '30d';
 const MAX_DAYS_IN_ADVANCE_TO_MS = ms(HUMAN_MAX_DAYS_IN_ADVANCE);
-const HUMAN_MAX_BYTES = '50MB';
-const MAX_BYTES = bytes(HUMAN_MAX_BYTES);
+const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 const BYTES_15MB = bytes('15MB');
 const ADDRESS_KEYS = new Set([
   'from',
@@ -74,7 +72,7 @@ const RCPT_TO_KEYS = new Set(['to', 'cc', 'bcc']);
 
 const transporter = nodemailer.createTransport({
   streamTransport: true,
-  buffer: true,
+  buffer: false,
   logger: new Axe({
     silent: true
   })
@@ -645,7 +643,9 @@ Emails.pre('save', async function (next) {
     // ensure the message is not more than 50 MB
     const messageBytes = Buffer.byteLength(this.message);
     if (messageBytes > MAX_BYTES)
-      throw Boom.badRequest(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
+      throw Boom.badRequest(
+        `Email size of ${env.SMTP_MESSAGE_MAX_SIZE} exceeded.`
+      );
 
     // if the doc was was <= 15 MB then return early
     if (messageBytes <= BYTES_15MB) return next();
@@ -860,31 +860,30 @@ Emails.statics.queue = async function (
 
   const info = await transporter.sendMail(options.message);
 
-  // ensure the message is not more than 50 MB
-  const messageBytes = Buffer.byteLength(info.message);
-  if (messageBytes > MAX_BYTES)
-    throw Boom.badRequest(`Email size of ${HUMAN_MAX_BYTES} exceeded.`);
-
   const messageSplitter = new MessageSplitter({
     maxBytes: MAX_BYTES
   });
 
-  // TODO: this is doing double the work (2x processing of stream unnecessarily)
-  //       we should check (and provide body/etc if already parsed from on-data-smtp
-  //
-  const body = await getStream.buffer(
-    intoStream(info.message).pipe(messageSplitter)
-  );
+  const body = await getStream.buffer(info.message.pipe(messageSplitter), {
+    maxBuffer: MAX_BYTES
+  });
 
-  if (messageSplitter.sizeExceeded)
-    throw new SMTPError('Size exceeded', { responseCode: 552 });
+  // ensure the message is not more than 50 MB
+  if (messageSplitter.sizeExceeded) {
+    const err = Boom.badRequest(
+      `Email size of ${env.SMTP_MESSAGE_MAX_SIZE} exceeded.`
+    );
+    err.responseCode = 552; // otherwise it would get mapped to `550` (see `#helpers/get-error-code.js`)
+    throw err;
+  }
 
   if (!messageSplitter.headersParsed)
-    throw new SMTPError('Headers unable to be parsed');
+    throw Boom.badRequest('Headers were unable to be parsed');
 
   const { headers } = messageSplitter;
 
   const isEnvelopeToEmpty = info.envelope.to.length === 0;
+  const isEnvelopeFromEmpty = !info.envelope.from;
 
   //
   // ensure from header is equal to the alias sending from
@@ -892,19 +891,21 @@ Emails.statics.queue = async function (
   //
   let from;
 
+  // <https://github.com/andris9/mailsplit/issues/21>
   const lines = headers.headers
-    .toString('binary')
+    .toString()
     .replace(/[\r\n]+$/, '')
     .split(/\r?\n/);
 
   for (const line of lines) {
-    const value = Buffer.from(line, 'binary').toString();
-    const index = value.indexOf(': ');
-    const key = value.slice(0, index);
+    const index = line.indexOf(':');
+    const key = line.slice(0, index);
+    const value = line.slice(index + 1).trim();
+
     const lowercaseKey = key.toLowerCase();
     if (!ADDRESS_KEYS.has(lowercaseKey)) continue;
 
-    const addresses = parseAddresses(value.slice(index + 2));
+    const addresses = parseAddresses(value);
     if (!_.isArray(addresses) || _.isEmpty(addresses)) continue;
 
     // there should only be one value in From header
@@ -926,7 +927,8 @@ Emails.statics.queue = async function (
     if (options?.message?.raw) {
       // envelope from
       if (
-        (info.envelope.from === false || lowercaseKey === 'from') &&
+        (!info.envelope.from ||
+          (isEnvelopeFromEmpty && lowercaseKey === 'from')) &&
         SENDER_KEYS.has(lowercaseKey)
       )
         info.envelope.from = addresses[0].address;
@@ -940,26 +942,13 @@ Emails.statics.queue = async function (
     }
   }
 
-  // convert address name values to ascii or mime encoded
-  // <https://github.com/zone-eu/zone-mta/blob/0c2451dcf516707babf1aef46de128238b41ea85/lib/address-tools.js#L37>
-  // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L360C1-L376>
-  for (const key of []) {
-    const value = headers.getFirst(key);
-
-    if (!isSANB(value)) continue;
-  }
-
-  // NOTE: not sure what the below comment is referencing (?)
-  // TODO: if smtp side has non encoded then throw error
-
   //
   // based off the logged in user we need to lookup the associated domain
   // and ensure that either the user is an admin or the alias is owned by them
   // (and the domain must be on a paid plan)
   //
   if (
-    info.envelope.from === false ||
-    typeof info.envelope.from !== 'string' ||
+    !info.envelope.from ||
     !isEmail(info.envelope.from, { ignore_max_length: true })
   )
     throw Boom.forbidden(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
@@ -1113,8 +1102,12 @@ Emails.statics.queue = async function (
         `${
           !options.catchall && alias ? punycode.toASCII(alias.name) : '*'
         }@${punycode.toASCII(domain.name)}`,
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/advanced-settings#catch-all-passwords`,
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/advanced-settings#catch-all-passwords`
       )
     );
 
@@ -1141,8 +1134,12 @@ Emails.statics.queue = async function (
         'INVALID_FROM_HEADER',
         locale,
         `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}`,
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`,
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/advanced-settings#catch-all-passwords`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/advanced-settings#catch-all-passwords`,
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/advanced-settings#catch-all-passwords`
       )
     );
 

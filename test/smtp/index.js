@@ -1081,7 +1081,7 @@ test('smtp outbound auth', async (t) => {
   await smtp.close();
 });
 
-test(`IDN domain`, async (t) => {
+test(`unicode domain`, async (t) => {
   const user = await utils.userFactory
     .withState({
       plan: 'enhanced_protection',
@@ -1108,7 +1108,7 @@ test(`IDN domain`, async (t) => {
 
   const domain = await utils.domainFactory
     .withState({
-      name: '日本語.idn.icann.org',
+      name: '日本語.org',
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
       has_smtp: true,
@@ -1322,6 +1322,10 @@ Test`.trim()
       .lean()
       .exec();
     t.true(email !== null);
+
+    const message = await Emails.getMessage(email.message, true);
+    t.true(message.includes(`Message-ID: <${messageId}>`));
+    t.true(message.includes(`From: Test <${alias.name}@${domain.name}>`));
 
     //
     // process the email
@@ -1703,7 +1707,7 @@ test(`16MB message size`, async (t) => {
   );
 });
 
-test(`50MB message size`, async (t) => {
+test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
   const user = await utils.userFactory
     .withState({
       plan: 'enhanced_protection',
@@ -1754,14 +1758,14 @@ test(`50MB message size`, async (t) => {
         attachments: [
           {
             filename: 'test.txt',
-            content: Buffer.alloc(bytes('50MB'))
+            content: Buffer.alloc(bytes(env.SMTP_MESSAGE_MAX_SIZE))
           }
         ]
       },
       user: user._id
     })
   );
-  t.is(err.message, 'Email size of 50MB exceeded.');
+  t.is(err.message, `Email size of ${env.SMTP_MESSAGE_MAX_SIZE} exceeded.`);
 });
 
 test('smtp outbound queue', async (t) => {

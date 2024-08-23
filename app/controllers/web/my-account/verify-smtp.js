@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
@@ -47,7 +49,9 @@ const DNS_RETRY_CODES = new Set([
 async function verifySMTP(ctx) {
   try {
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/verify-smtp`
     );
     const domain = await Domains.findById(ctx.state.domain._id);
     if (!domain)
@@ -112,7 +116,9 @@ async function verifySMTP(ctx) {
           'SMTP_ERROR_MESSAGE',
           locale,
           domain.name,
-          `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`
+          `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/verify-smtp`
         );
         await emailHelper({
           template: 'alert',

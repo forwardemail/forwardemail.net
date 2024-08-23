@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -122,7 +124,9 @@ async function createCatchAllPassword(ctx) {
     // TODO: blog about how we use `?hash=hash` to avoid the issue where
     //       window.location = someUrlWith#hash doesn't actually redirect user
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${domain.name}/advanced-settings?hash=catch-all-passwords`
+      `/my-account/domains/${punycode.toASCII(
+        domain.name
+      )}/advanced-settings?hash=catch-all-passwords`
     );
     ctx.flash('custom', swal);
     if (ctx.accepts('html')) {
@@ -136,7 +140,9 @@ async function createCatchAllPassword(ctx) {
     ctx.logger.error(err);
     ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/advanced-settings?hash=catch-all-passwords`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/advanced-settings?hash=catch-all-passwords`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

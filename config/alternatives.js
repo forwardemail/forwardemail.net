@@ -471,7 +471,7 @@ const obj = {
   ],
   'Forward Email': [
     // description
-    'Email service for everyone',
+    'Email for everyone',
     // website
     'https://forwardemail.net',
     // oss
@@ -3689,6 +3689,13 @@ if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
           logger.fatal(err);
           // eslint-disable-next-line no-await-in-loop
           const page = await browser.newPage();
+
+          // <https://www.useragents.me/>
+          const customUserAgent =
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.1';
+          // eslint-disable-next-line no-await-in-loop
+          await page.setUserAgent(customUserAgent);
+
           // eslint-disable-next-line no-await-in-loop
           await page.setViewport({
             width: 1366,

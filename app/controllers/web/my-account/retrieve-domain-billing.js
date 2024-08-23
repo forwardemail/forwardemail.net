@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
@@ -40,7 +42,7 @@ async function retrieveDomainBilling(ctx) {
   let redirectTo = ctx.state.l(
     isAccountUpgrade || isMakePayment || isEnableAutoRenew
       ? '/my-account/billing'
-      : `/my-account/domains/${ctx.state.domain.name}`
+      : `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
   );
   const originalPlanSetAt = new Date(
     ctx.state.user[config.userFields.planSetAt]
@@ -294,9 +296,15 @@ async function retrieveDomainBilling(ctx) {
               ctx.translate(domain.plan.toUpperCase()),
               ctx.query.plan === 'free'
                 ? ctx.state.l(
-                    `/my-account/domains/${domain.name}/billing?plan=free`
+                    `/my-account/domains/${punycode.toASCII(
+                      domain.name
+                    )}/billing?plan=free`
                   )
-                : ctx.state.l(`/my-account/domains/${domain.name}/billing`)
+                : ctx.state.l(
+                    `/my-account/domains/${punycode.toASCII(
+                      domain.name
+                    )}/billing`
+                  )
             )
           );
       }
@@ -1739,7 +1747,9 @@ async function retrieveDomainBilling(ctx) {
               .replace(/example.com/g, domain.name.replace('www.', ''))
           );
         // redirect user to the domain to setup forwarding
-        redirectTo = ctx.state.l(`/my-account/domains/${domain.name}`);
+        redirectTo = ctx.state.l(
+          `/my-account/domains/${punycode.toASCII(domain.name)}`
+        );
       } catch (err) {
         ctx.logger.fatal(err);
         ctx.flash('error', err.message);

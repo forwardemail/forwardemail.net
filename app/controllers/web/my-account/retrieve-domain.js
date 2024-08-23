@@ -76,7 +76,9 @@ async function retrieveDomain(ctx, next) {
     ctx.state.domain.group === 'admin' &&
     ctx.method === 'GET' &&
     ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/advanced-settings`
   ) {
     const domain = await Domains.findOne(ctx.state.domain._id)
       .populate(
@@ -145,7 +147,9 @@ async function retrieveDomain(ctx, next) {
     ctx.state.domain.group === 'admin' &&
     ctx.method === 'GET' &&
     ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp` &&
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/verify-smtp` &&
     // ctx.state.domain.has_smtp &&
     !_.isDate(ctx.state.domain.smtp_suspended_sent_at)
   ) {
@@ -197,7 +201,8 @@ async function retrieveDomain(ctx, next) {
   //
   if (
     ctx.method === 'GET' &&
-    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}`
+    ctx.pathWithoutLocale ===
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
   ) {
     await Promise.all([
       (async () => {
@@ -273,7 +278,9 @@ async function retrieveDomain(ctx, next) {
   const message = ctx.translate(
     'SETUP_REQUIRED',
     ctx.state.domain.name,
-    ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
+    ctx.state.l(
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
+    )
   );
 
   // load seo metadata
@@ -301,7 +308,9 @@ async function retrieveDomain(ctx, next) {
       name: ctx.state.domain.name,
       href:
         ctx.state.domain.group === 'admin'
-          ? ctx.state.l(`/my-account/domains/${ctx.state.domain.name}`)
+          ? ctx.state.l(
+              `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
+            )
           : null
     }
   ];
@@ -319,10 +328,12 @@ async function retrieveDomain(ctx, next) {
       !ctx.state.domain.has_return_path_record ||
       !ctx.state.domain.has_dmarc_record) &&
     ctx.pathWithoutLocale.startsWith(
-      `/my-account/domains/${ctx.state.domain.name}`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
     ) &&
     ctx.pathWithoutLocale !==
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp` &&
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/verify-smtp` &&
     ctx.accepts('html')
   ) {
     ctx.flash('custom', {
@@ -330,7 +341,11 @@ async function retrieveDomain(ctx, next) {
       html: ctx.translate(
         'EMAIL_SMTP_CONFIGURATION_REQUIRED',
         ctx.state.domain.name,
-        ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/verify-smtp`)
+        ctx.state.l(
+          `/my-account/domains/${punycode.toASCII(
+            ctx.state.domain.name
+          )}/verify-smtp`
+        )
       ),
       type: 'info',
       toast: true,
@@ -340,7 +355,8 @@ async function retrieveDomain(ctx, next) {
 
   if (
     ctx.method === 'GET' &&
-    ctx.pathWithoutLocale === `/my-account/domains/${ctx.state.domain.name}` &&
+    ctx.pathWithoutLocale ===
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}` &&
     ctx.accepts('html')
   ) {
     // if we're on the setup page and the user is not on paid plan and it's not allowed anymore
@@ -354,7 +370,9 @@ async function retrieveDomain(ctx, next) {
           'RESTRICTED_PLAN_UPGRADE_REQUIRED',
           ctx.state.domain.name,
           ctx.state.l(
-            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.state.domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
         ctx.flash('error', message);
@@ -363,7 +381,9 @@ async function retrieveDomain(ctx, next) {
           'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
           ctx.state.domain.name,
           ctx.state.l(
-            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.state.domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
         ctx.flash('error', message);
@@ -372,7 +392,9 @@ async function retrieveDomain(ctx, next) {
           'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
           ctx.state.domain.name,
           ctx.state.l(
-            `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+            `/my-account/domains/${punycode.toASCII(
+              ctx.state.domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
         ctx.flash('error', message);
@@ -454,7 +476,7 @@ async function retrieveDomain(ctx, next) {
   // eslint-disable-next-line unicorn/prefer-switch
   if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   ) {
     // user must be on a paid plan to use a global domain
     if (
@@ -482,7 +504,9 @@ async function retrieveDomain(ctx, next) {
     ctx.state.meta.title = ctx.state.t(`Aliases ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push({
       name: ctx.state.t('Aliases'),
-      href: ctx.state.l(`/my-account/domains/${ctx.state.domain.name}/aliases`)
+      href: ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
+      )
     });
 
     if (
@@ -507,13 +531,15 @@ async function retrieveDomain(ctx, next) {
     }
   } else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+    `/my-account/domains/${punycode.toASCII(
+      ctx.state.domain.name
+    )}/advanced-settings`
   ) {
     ctx.state.meta.title = ctx.state.t(`Settings ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('advanced-settings');
   } else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/verify-smtp`
   ) {
     ctx.state.meta.title = `${
       ctx.state.domain.has_dkim_record &&
@@ -527,7 +553,7 @@ async function retrieveDomain(ctx, next) {
     });
   } else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/aliases/new`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases/new`
   ) {
     if (
       ctx.accepts('html') &&
@@ -542,7 +568,9 @@ async function retrieveDomain(ctx, next) {
       {
         name: ctx.state.t('Aliases'),
         href: ctx.state.l(
-          `/my-account/domains/${ctx.state.domain.name}/aliases`
+          `/my-account/domains/${punycode.toASCII(
+            ctx.state.domain.name
+          )}/aliases`
         )
       },
       {
@@ -551,13 +579,13 @@ async function retrieveDomain(ctx, next) {
     );
   } else if (
     ctx.pathWithoutLocale ===
-    `/my-account/domains/${ctx.state.domain.name}/billing`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/billing`
   ) {
     ctx.state.meta.title = ctx.state.t(`Billing ${META_TITLE_AFFIX}`);
     ctx.state.breadcrumbs.push('billing');
   } else if (
     ctx.pathWithoutLocale ===
-      `/my-account/domains/${ctx.state.domain.name}/logs` &&
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/logs` &&
     (!ctx.state.domain.has_mx_record || !ctx.state.domain.has_txt_record) &&
     ctx.accepts('html')
   ) {

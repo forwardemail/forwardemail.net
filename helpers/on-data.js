@@ -17,6 +17,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
+const getHeaders = require('#helpers/get-headers');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
@@ -150,7 +151,7 @@ async function onData(stream, _session, fn) {
     // in addition to RCPT TO being incorrect due to improperly configured server sending to SRS forwarded address
     // we also need to rewrite the "To" header an rewrite any SRS forwarded addresses with their actual ones
     //
-    const originalToAddresses = parseAddresses(headers.getFirst('to'));
+    const originalToAddresses = parseAddresses(getHeaders(headers, true, 'to'));
     for (const obj of originalToAddresses) {
       const shouldThrow =
         parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===

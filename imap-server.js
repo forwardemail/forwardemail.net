@@ -113,7 +113,7 @@ class IMAP {
         vendor: config.pkg.author
       },
       logger: this.logger,
-      maxMessage: bytes('50MB'),
+      maxMessage: bytes(env.SMTP_MESSAGE_MAX_SIZE),
 
       // NOTE: we don't need this since we have custom logic
       // settingsHandler: imap.settingsHandler.bind(this)

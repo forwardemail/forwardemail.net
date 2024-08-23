@@ -496,7 +496,7 @@ Test`.trim()
   // validate header From was converted properly
   t.true(
     res.body.message.includes(
-      `From: ${emoji('blush')} Test <${alias.name}@${domain.name}>`
+      `From: =?UTF-8?Q?=F0=9F=98=8A?= Test <${alias.name}@${domain.name}>`
     )
   );
   t.is(
@@ -511,7 +511,7 @@ Test`.trim()
   const message = await Emails.getMessage(email.message, true);
   t.true(
     message.includes(
-      `From: ${emoji('blush')} Test <${alias.name}@${domain.name}>`
+      `From: =?UTF-8?Q?=F0=9F=98=8A?= Test <${alias.name}@${domain.name}>`
     )
   );
 
@@ -544,6 +544,38 @@ Test`.trim()
 
   // validate date
   t.is(new Date(res.body.date).getTime(), date.getTime());
+
+  //
+  // create an email using `from` and `subject` nodemailer options
+  // to ensure subject emojis get encoded automatically for users
+  //
+  {
+    const res = await t.context.api
+      .post('/v1/emails')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        from: `${emoji('blush')} Test <${alias.name}@${domain.name}>`,
+        to: 'test@foo.com',
+        subject: `${emoji('blush')} testing this`,
+        text: 'test'
+      });
+
+    t.is(res.status, 200);
+
+    // validate header From was converted properly
+    t.is(
+      res.body.headers.From,
+      `${emoji('blush')} Test <${alias.name}@${domain.name}>`
+    );
+    t.is(res.body.headers.Subject, `${emoji('blush')} testing this`);
+    t.true(
+      res.body.message.includes(
+        `From: =?UTF-8?Q?=F0=9F=98=8A_Test?= <${alias.name}@${domain.name}>`
+      )
+    );
+  }
 
   // spoof dns records
   const map = new Map();

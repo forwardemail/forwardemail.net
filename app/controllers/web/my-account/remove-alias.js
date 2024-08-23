@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 
 const config = require('#config');
@@ -43,7 +45,7 @@ async function removeAlias(ctx, next) {
     });
   if (ctx.api) return next();
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   );
   if (ctx.accepts('html')) ctx.redirect(redirectTo);
   else ctx.body = { redirectTo };
