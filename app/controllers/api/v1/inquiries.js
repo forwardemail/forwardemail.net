@@ -4,9 +4,9 @@
  */
 
 const { createHmac } = require('node:crypto');
-const process = require('node:process');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('lodash');
 const { isEmail } = require('validator');
 const { Headers } = require('mailsplit');
 
@@ -15,7 +15,8 @@ const config = require('#config');
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
 
-const webhookSignatureKey = process.env.WEBHOOK_SIGNATURE_KEY;
+const webhookSignatureKey = env.WEBHOOK_SIGNATURE_KEY;
+const WEBHOOK_SIGNATURE_HEADER = 'X-Webhook-Signature';
 
 function findHeaderByName(name, headers) {
   for (const header of headers) {
@@ -34,24 +35,6 @@ async function create(ctx) {
 
   ctx.logger.info('creating inquiry from webhook');
 
-  if (!requestHeaders['X-Webhook-Signature']) {
-    return ctx.throw(
-      Boom.badRequest(
-        ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
-      )
-    );
-  }
-
-  const webhookSignature = createHmac('sha256', decrypt(webhookSignatureKey))
-    .update(body)
-    .digest('hex');
-
-  if (requestHeaders['X-Webhook-Signature'] !== webhookSignature) {
-    return ctx.throw(
-      Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE'))
-    );
-  }
-
   if (
     !ctx.allowlistValue ||
     ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
@@ -60,8 +43,35 @@ async function create(ctx) {
       Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'))
     );
 
-  const { headerLines, session, text } = body;
+  if (
+    !_.isObject(requestHeaders) ||
+    !isSANB(requestHeaders[WEBHOOK_SIGNATURE_HEADER])
+  )
+    return ctx.throw(
+      Boom.badRequest(
+        ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
+      )
+    );
 
+  if (isSANB(webhookSignatureKey)) {
+    const webhookSignature = createHmac('sha256', decrypt(webhookSignatureKey))
+      .update(body)
+      .digest('hex');
+
+    if (requestHeaders[WEBHOOK_SIGNATURE_HEADER] !== webhookSignature) {
+      return ctx.throw(
+        Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE'))
+      );
+    }
+  } else {
+    const err = new TypeError(
+      'Webhook signature key missing, did you forget to add it to .env?'
+    );
+    err.isCodeBug = true;
+    ctx.logger.fatal(err);
+  }
+
+  const { headerLines, session, text } = body;
   const headers = new Headers(headerLines);
 
   if (!session)
@@ -75,29 +85,21 @@ async function create(ctx) {
     );
 
   if (
-    (headers.hasHeader('Auto-submitted') &&
-      headers.getFirst('Auto-submitted') !== 'no') ||
-    (headers.hasHeader('Auto-Submitted') &&
-      headers.getFirst('Auto-Submitted') !== 'no') ||
-    (headers.hasHeader('X-Auto-Response-Suppress') &&
+    (headers.hasHeader('auto-submitted') &&
+      headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no') ||
+    (headers.hasHeader('x-auto-response-suppress') &&
       ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-        headers.getFirst('X-Auto-Response-Suppress').toLowerCase().trim()
+        headers.getFirst('x-auto-response-suppress').toLowerCase().trim()
       )) ||
-    headers.hasHeader('List-Id') ||
-    headers.hasHeader('List-id') ||
-    headers.hasHeader('List-Unsubscribe') ||
-    headers.hasHeader('List-unsubscribe') ||
-    headers.hasHeader('Feedback-ID') ||
-    headers.hasHeader('Feedback-Id') ||
-    headers.hasHeader('X-Autoreply') ||
-    headers.hasHeader('X-Auto-Reply') ||
-    headers.hasHeader('X-AutoReply') ||
-    headers.hasHeader('X-Autorespond') ||
-    headers.hasHeader('X-Auto-Respond') ||
-    headers.hasHeader('X-AutoRespond') ||
-    (headers.hasHeader('Precedence') &&
+    headers.hasHeader('list-id') ||
+    headers.hasHeader('list-unsubscribe') ||
+    headers.hasHeader('feedback-id') ||
+    headers.hasHeader('x-autoreply') ||
+    headers.hasHeader('x-autorespond') ||
+    headers.hasHeader('x-auto-respond') ||
+    (headers.hasHeader('precedence') &&
       ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
-        headers.getFirst('Precedence').toLowerCase().trim()
+        headers.getFirst('precedence').toLowerCase().trim()
       ))
   )
     return;
