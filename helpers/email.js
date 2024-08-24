@@ -92,6 +92,7 @@ module.exports = async (data) => {
 
     if (domain)
       email = await emailConn.models.Emails.queue({
+        user: adminIds[0],
         info,
         domain,
         catchall: true

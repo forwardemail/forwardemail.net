@@ -45,7 +45,9 @@ async function onData(stream, _session, fn) {
       maxBytes: MAX_BYTES
     });
 
-    const body = await getStream.buffer(stream.pipe(messageSplitter));
+    stream.pipe(messageSplitter);
+
+    const body = await getStream.buffer(messageSplitter);
 
     if (messageSplitter.sizeExceeded)
       throw new SMTPError('Size exceeded', { responseCode: 552 });

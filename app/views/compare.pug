@@ -30,7 +30,7 @@ mixin renderCard(alternative)
         != str
         = " "
         if isBot(ctx.get("User-Agent"))
-          = t(_.sample(["Its descriptoin from its website is:", "Their official description reads:", "Their website says:", "According to their website:"]))
+          = t(_.sample(["Its description from its website is:", "Their official description reads:", "Their website says:", "According to their website:"]))
           = " "
           = t(alternative.description)
         else
