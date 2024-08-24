@@ -86,8 +86,8 @@ module.exports = async (data) => {
 
     // info.message is a stream
     const info = domain
-      ? emailTemplates.send(data)
-      : emailTemplatesFallback.send(data);
+      ? await emailTemplates.send(data)
+      : await emailTemplatesFallback.send(data);
     let email = null;
 
     if (domain)
