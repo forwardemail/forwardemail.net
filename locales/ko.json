@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "값 <span class=\"notranslate\">%s</span> 영구적이고 하드코딩된 거부 목록에 등록되었습니다. 저희 팀은 귀하의 제거 요청에 대해 통보를 받았으며 곧 후속 조치를 취할 것입니다.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> NEWSLETTER 접근을 승인했습니다.",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">귀하의 도메인 <span class=\"notranslate\">%s</span> 이 뉴스레터 접근이 승인되었습니다.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">완전한 설정</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">귀하의 도메인 <span class=\"notranslate\">%s</span> 의 뉴스레터 접근 권한이 제거되었습니다.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">귀하의 도메인 <span class=\"notranslate\">%s</span> 의 뉴스레터 접근 권한이 제거되었습니다.</p>",
+  "Looking for documentation on email webhooks?  See": "이메일 웹훅에 대한 문서를 찾고 계신가요?",
+  "Do you support webhooks?": "웹훅을 지원하시나요?",
+  "(Object) - key value pair of headers for the outbound email": "(개체) - 아웃바운드 이메일 헤더의 키 값 쌍",
+  "(String) -": "(끈) -",
+  "formatted Date for when the bounce error occurred": "반송 오류가 발생한 날짜에 대한 형식화된 날짜",
+  "Looking for documentation on bounce webhooks?  See": "바운스 웹훅에 대한 문서를 찾고 계신가요?",
+  "Do you support bounce webhooks?": "바운스 웹훅을 지원하시나요?",
+  "API Reference": "API 참조",
+  "Email Webhooks": "이메일 웹훅",
+  "Bounce Webhooks": "바운스 웹훅"
 }

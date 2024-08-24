@@ -7813,5 +7813,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "Giá trị <span class=\"notranslate\">%s</span> đã được liệt kê trong danh sách từ chối cố định và được mã hóa cứng của chúng tôi. Nhóm của chúng tôi đã được thông báo về yêu cầu xóa của bạn và chúng tôi sẽ sớm theo dõi.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> đã được chấp thuận để truy cập BẢN TIN",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Tên miền <span class=\"notranslate\">%s</span> của bạn đã được chấp thuận để truy cập BẢN TIN.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Thiết lập hoàn chỉnh</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Tên miền <span class=\"notranslate\">%s</span> của bạn đã bị xóa quyền truy cập BẢN TIN.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Tên miền <span class=\"notranslate\">%s</span> của bạn đã bị xóa quyền truy cập BẢN TIN.</p>",
+  "Looking for documentation on email webhooks?  See": "Bạn đang tìm kiếm tài liệu về webhooks email? Xem",
+  "Do you support webhooks?": "Bạn có hỗ trợ webhooks không?",
+  "(Object) - key value pair of headers for the outbound email": "(Đối tượng) - cặp giá trị khóa của tiêu đề cho email gửi đi",
+  "(String) -": "(Sợi dây) -",
+  "formatted Date for when the bounce error occurred": "Ngày được định dạng khi lỗi trả lại xảy ra",
+  "Looking for documentation on bounce webhooks?  See": "Bạn đang tìm kiếm tài liệu về webhooks trả lại? Xem",
+  "Do you support bounce webhooks?": "Bạn có hỗ trợ webhooks trả lại không?",
+  "API Reference": "Tài liệu tham khảo API",
+  "Email Webhooks": "Webhooks Email",
+  "Bounce Webhooks": "Webhooks trả lại"
 }

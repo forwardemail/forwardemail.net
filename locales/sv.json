@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "Värdet <span class=\"notranslate\">%s</span> listades i vår permanenta och hårdkodade avvisningslista. Vårt team har underrättats om din begäran om borttagning och vi kommer snart att följa upp.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> godkänd för åtkomst till NEWSLETTER",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> godkändes för åtkomst till NEWSLETTER.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Slutför installationen</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Din domän <span class=\"notranslate\">%s</span> fick sin NEWSLETTER-åtkomst borttagen.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Din domän <span class=\"notranslate\">%s</span> fick sin NEWSLETTER-åtkomst borttagen.</p>",
+  "Looking for documentation on email webhooks?  See": "Letar du efter dokumentation om e-postwebhooks?  Se",
+  "Do you support webhooks?": "Stöder du webhooks?",
+  "(Object) - key value pair of headers for the outbound email": "(Objekt) - nyckelvärdepar med rubriker för utgående e-post",
+  "(String) -": "(Sträng) -",
+  "formatted Date for when the bounce error occurred": "formaterat Datum för när avvisningsfelet inträffade",
+  "Looking for documentation on bounce webhooks?  See": "Letar du efter dokumentation om bounce webhooks?  Se",
+  "Do you support bounce webhooks?": "Stöder du bounce webhooks?",
+  "API Reference": "API-referens",
+  "Email Webhooks": "E-post Webhooks",
+  "Bounce Webhooks": "Bounce Webhooks"
 }

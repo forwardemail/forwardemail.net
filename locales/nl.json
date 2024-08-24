@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "De waarde <span class=\"notranslate\">%s</span> stond in onze permanente en hard-coded weigeringslijst. Ons team is op de hoogte gesteld van uw verzoek tot verwijdering en we zullen er binnenkort op terugkomen.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> goedgekeurd voor NIEUWSBRIEF-toegang",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Uw domein <span class=\"notranslate\">%s</span> is goedgekeurd voor toegang tot de NIEUWSBRIEF.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Volledige installatie</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">De NIEUWSBRIEF-toegang tot uw domein <span class=\"notranslate\">%s</span> is verwijderd.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">De NIEUWSBRIEF-toegang tot uw domein <span class=\"notranslate\">%s</span> is verwijderd.</p>",
+  "Looking for documentation on email webhooks?  See": "Op zoek naar documentatie over e-mailwebhooks? Zie",
+  "Do you support webhooks?": "Ondersteunen jullie webhooks?",
+  "(Object) - key value pair of headers for the outbound email": "(Object) - sleutelwaardepaar van headers voor de uitgaande e-mail",
+  "(String) -": "(Snaar) -",
+  "formatted Date for when the bounce error occurred": "geformatteerde datum waarop de bounce-fout optrad",
+  "Looking for documentation on bounce webhooks?  See": "Op zoek naar documentatie over bounce webhooks? Zie",
+  "Do you support bounce webhooks?": "Ondersteunen jullie bounce webhooks?",
+  "API Reference": "API-referentie",
+  "Email Webhooks": "E-mail webhooks",
+  "Bounce Webhooks": "Bounce-webhooks"
 }

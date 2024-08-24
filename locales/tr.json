@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "<span class=\"notranslate\">%s</span> değeri kalıcı ve sabit kodlu red listemizde listelenmiştir. Ekibimiz kaldırma talebiniz hakkında bilgilendirildi ve yakında takip edeceğiz.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> NEWSLETTER erişimi için onaylandı",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Alan adınız <span class=\"notranslate\">%s</span> HABER BÜLTENİ erişimi için onaylandı.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Kurulumu Tamamla</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\"><span class=\"notranslate\">%s</span> alan adınızın HABER BÜLTENİ erişimi kaldırıldı.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\"><span class=\"notranslate\">%s</span> alan adınızın HABER BÜLTENİ erişimi kaldırıldı.</p>",
+  "Looking for documentation on email webhooks?  See": "E-posta web kancaları hakkında dokümanlar mı arıyorsunuz? Bakınız",
+  "Do you support webhooks?": "Webhook'ları destekliyor musunuz?",
+  "(Object) - key value pair of headers for the outbound email": "(Nesne) - giden e-posta için başlıkların anahtar değer çifti",
+  "(String) -": "(Sicim) -",
+  "formatted Date for when the bounce error occurred": "Geri dönme hatasının meydana geldiği tarih için biçimlendirilmiş tarih",
+  "Looking for documentation on bounce webhooks?  See": "Bounce webhooks hakkında dokümanlar mı arıyorsunuz? Bakınız",
+  "Do you support bounce webhooks?": "Bounce webhook'u destekliyor musunuz?",
+  "API Reference": "API Referansı",
+  "Email Webhooks": "E-posta Webhooks",
+  "Bounce Webhooks": "Geri Dönüş Web Kancaları"
 }

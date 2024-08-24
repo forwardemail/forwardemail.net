@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "تم إدراج القيمة <span class=\"notranslate\">%s</span> في قائمة الرفض الدائمة والمبرمجة لدينا. لقد تم إخطار فريقنا بطلب الإزالة وسنتابع الأمر قريبًا.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "تمت الموافقة على <span class=\"notranslate\">%s</span> للوصول إلى النشرة الإخبارية",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">تمت الموافقة على نطاقك <span class=\"notranslate\">%s</span> للوصول إلى النشرة الإخبارية.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">الإعداد الكامل</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">لقد تم إزالة إمكانية الوصول إلى النشرة الإخبارية لنطاقك <span class=\"notranslate\">%s</span> .</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">لقد تم إزالة إمكانية الوصول إلى النشرة الإخبارية لنطاقك <span class=\"notranslate\">%s</span> .</p>",
+  "Looking for documentation on email webhooks?  See": "هل تبحث عن وثائق حول خطافات البريد الإلكتروني؟ راجع",
+  "Do you support webhooks?": "هل تدعمون webhooks؟",
+  "(Object) - key value pair of headers for the outbound email": "(الكائن) - زوج من القيم الرئيسية لرؤوس البريد الإلكتروني الصادر",
+  "(String) -": "(خيط) -",
+  "formatted Date for when the bounce error occurred": "تم تنسيق التاريخ الذي حدث فيه خطأ الارتداد",
+  "Looking for documentation on bounce webhooks?  See": "هل تبحث عن وثائق حول خطافات الويب المرتدة؟ راجع",
+  "Do you support bounce webhooks?": "هل تدعم خطافات الويب المرتدة؟",
+  "API Reference": "مرجع واجهة برمجة التطبيقات",
+  "Email Webhooks": "خطافات البريد الإلكتروني",
+  "Bounce Webhooks": "خطافات الويب المرتدة"
 }

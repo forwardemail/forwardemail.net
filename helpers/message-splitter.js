@@ -167,7 +167,7 @@ class MessageSplitter extends Transform {
       // join all chunks into a header block
       this.rawHeaders = Buffer.concat(this.headerChunks, this.headerBytes);
 
-      this.headers = new Headers(this.rawHeaders);
+      this.headers = new Headers(this.rawHeaders, { Iconv });
 
       // this.emit('headers', this.headers);
       this.headerChunks = null;

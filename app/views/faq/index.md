@@ -2758,6 +2758,16 @@ Note that if you upgrade or downgrade between paid plans within a 30-day window 
 
 ## Do you support bounce webhooks
 
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
+</div>
+
 Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
 This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
@@ -2780,6 +2790,8 @@ Bounce webhook payloads are sent as a JSON with these properties:
   * `code` (Number) - bounce status code (e.g. `554`)
   * `status` (String) - bounce code from response message (e.g. `5.7.1`)
   * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted Date for when the bounce error occurred
 
 For example:
 
@@ -2798,7 +2810,9 @@ For example:
     "code": 552,
     "status": "5.2.2",
     "line": 300
-  }
+  },
+  "headers": {},
+  "bounced_at": "2024-08-24T01:50:02.828Z"
 }
 ```
 
@@ -2817,6 +2831,16 @@ Here are a few additional notes regarding bounce webhooks:
 
 
 ## Do you support webhooks
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
+</div>
 
 Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 

@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "Hodnota <span class=\"notranslate\">%s</span> byla uvedena v našem trvalém a pevně zakódovaném seznamu odmítnutých. Náš tým byl informován o vaší žádosti o odstranění a brzy se vám ozveme.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> schválen pro přístup k NEWSLETTERU",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Přístup k vaší doméně <span class=\"notranslate\">%s</span> byl schválen pro NEWSLETTER.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Dokončete nastavení</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Vaší doméně <span class=\"notranslate\">%s</span> byl odebrán přístup k NEWSLETTERU.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Vaší doméně <span class=\"notranslate\">%s</span> byl odebrán přístup k NEWSLETTERU.</p>",
+  "Looking for documentation on email webhooks?  See": "Hledáte dokumentaci k e-mailovým webhookům?  Vidět",
+  "Do you support webhooks?": "Podporujete webhooky?",
+  "(Object) - key value pair of headers for the outbound email": "(Object) – dvojice klíčů a hodnot hlaviček pro odchozí e-maily",
+  "(String) -": "(řetězec) -",
+  "formatted Date for when the bounce error occurred": "formátováno Datum, kdy došlo k chybě bounce",
+  "Looking for documentation on bounce webhooks?  See": "Hledáte dokumentaci o bounce webhoocích?  Vidět",
+  "Do you support bounce webhooks?": "Podporujete bounce webhooky?",
+  "API Reference": "Reference API",
+  "Email Webhooks": "E-mailové webhooky",
+  "Bounce Webhooks": "Bounce webhooky"
 }

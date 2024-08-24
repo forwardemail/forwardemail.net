@@ -10132,5 +10132,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "Arvo <span class=\"notranslate\">%s</span> on lueteltu pysyvässä ja koodatussa kieltoluettelossamme. Tiimillemme on ilmoitettu poistopyynnöstäsi, ja otamme yhteyttä pian.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> hyväksytty NEWSLETTER-käyttöön",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Verkkotunnuksesi <span class=\"notranslate\">%s</span> hyväksyttiin NEWSLETTER-käyttöön.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Täydellinen asennus</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Verkkotunnuksesi <span class=\"notranslate\">%s</span> UUTISKIRJE-käyttöoikeus poistettiin.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">Verkkotunnuksesi <span class=\"notranslate\">%s</span> UUTISKIRJE-käyttöoikeus poistettiin.</p>",
+  "Looking for documentation on email webhooks?  See": "Etsitkö dokumentaatiota sähköpostin webhookeista?  Katso",
+  "Do you support webhooks?": "Tuetko webhookeja?",
+  "(Object) - key value pair of headers for the outbound email": "(Objekti) - lähtevän sähköpostin otsikoiden avainarvopari",
+  "(String) -": "(merkkijono) -",
+  "formatted Date for when the bounce error occurred": "muotoiltu Päivämäärä, jolloin palautusvirhe tapahtui",
+  "Looking for documentation on bounce webhooks?  See": "Etsitkö dokumentaatiota palautuksesta webhookeista?  Katso",
+  "Do you support bounce webhooks?": "Tuetko bounce webhookeja?",
+  "API Reference": "API-viite",
+  "Email Webhooks": "Sähköposti Webhooks",
+  "Bounce Webhooks": "Bounce Webhooks"
 }

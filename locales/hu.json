@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "A <span class=\"notranslate\">%s</span> érték szerepel az állandó és kódolt tiltólistánkon. Csapatunk értesítést kapott az eltávolítási kérelméről, és hamarosan jelentkezünk.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> jóváhagyva a HÍRLEVÉL-hozzáféréshez",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">A(z <span class=\"notranslate\">%s</span> domainhez jóváhagyták a HÍRLEVÉL-hozzáférést.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Teljes beállítás</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domainnek eltávolították a HÍRLEVÉL-hozzáférését.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domainnek eltávolították a HÍRLEVÉL-hozzáférését.</p>",
+  "Looking for documentation on email webhooks?  See": "Dokumentációt keres az e-mail webhookról?  Lásd",
+  "Do you support webhooks?": "Támogatod a webhoookat?",
+  "(Object) - key value pair of headers for the outbound email": "(Object) – a kimenő e-mail fejléceinek kulcsérték-párja",
+  "(String) -": "(karakterlánc) -",
+  "formatted Date for when the bounce error occurred": "formázott A visszafordulási hiba bekövetkezésének dátuma",
+  "Looking for documentation on bounce webhooks?  See": "Dokumentációt keres a visszapattanó webhookkal kapcsolatban?  Lásd",
+  "Do you support bounce webhooks?": "Támogatod a visszapattanó webhookat?",
+  "API Reference": "API-referencia",
+  "Email Webhooks": "E-mail Webhooks",
+  "Bounce Webhooks": "Bounce Webhooks"
 }

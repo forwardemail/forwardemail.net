@@ -1265,7 +1265,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
           response: error.response,
           response_code: error.responseCode,
           truth_source: error.truthSource,
-          bounce: getBounceInfo(error)
+          bounce: getBounceInfo(error),
+          headers: email.headers,
+          bounced_at:
+            typeof error.date !== 'undefined' && _.isDate(new Date(error.date))
+              ? new Date(error.date).toISOString()
+              : new Date().toISOString()
         });
         // dummyproofing
         const url = domain.bounce_webhook

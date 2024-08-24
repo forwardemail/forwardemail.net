@@ -9978,5 +9978,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "值<span class=\"notranslate\">%s</span>已列入我们的永久和硬编码拒绝名单。我们的团队已收到您的移除请求通知，我们将尽快跟进。",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span>已获准访问 NEWSLETTER",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">您的域<span class=\"notranslate\">%s</span>已被批准访问 NEWSLETTER。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">完成设置</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">您的域<span class=\"notranslate\">%s</span>的 NEWSLETTER 访问权限已被删除。</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">您的域<span class=\"notranslate\">%s</span>的 NEWSLETTER 访问权限已被删除。</p>",
+  "Looking for documentation on email webhooks?  See": "正在寻找有关电子邮件 webhook 的文档？请参阅",
+  "Do you support webhooks?": "你们支持 webhook 吗？",
+  "(Object) - key value pair of headers for the outbound email": "（对象）- 出站电子邮件标头的键值对",
+  "(String) -": "（细绳） -",
+  "formatted Date for when the bounce error occurred": "发生退回错误的格式化日期",
+  "Looking for documentation on bounce webhooks?  See": "正在寻找有关反弹 webhook 的文档？请参阅",
+  "Do you support bounce webhooks?": "您是否支持反弹 webhook？",
+  "API Reference": "API 参考",
+  "Email Webhooks": "电子邮件 Webhook",
+  "Bounce Webhooks": "反弹 Webhook"
 }

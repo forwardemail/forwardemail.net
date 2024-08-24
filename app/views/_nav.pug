@@ -589,11 +589,21 @@ nav.navbar(class=navbarClasses.join(" "))
                 a.dropdown-item(
                   href=l("/email-api"),
                   class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
-                )= t("Email API Reference")
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    = t("Email API Reference")
+                  else
+                    = t("API Reference")
                 a.dropdown-item(
-                  href=l("/free-email-webhooks"),
+                  href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
                   class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active" : ""
-                )= t("Free Email Webhooks")
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    = t("Free Email Webhooks")
+                  else
+                    = t("Email Webhooks")
+                a.dropdown-item(href=l("/faq#do-you-support-bounce-webhooks"))
+                  = t("Bounce Webhooks")
                 a.dropdown-item(
                   href=l("/email-forwarding-regex-pattern-filter"),
                   class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""

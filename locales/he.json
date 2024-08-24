@@ -8304,5 +8304,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "הערך <span class=\"notranslate\">%s</span> היה רשום ברשימת ההכחשה הקבועה והמקודדת שלנו. הצוות שלנו קיבל הודעה על בקשתך להסרה ואנו נעקוב בקרוב.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> אושרה לגישה ל-NEWSLETTER",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">הדומיין שלך <span class=\"notranslate\">%s</span> אושר לגישה ל-NEWSLETTER.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">השלם את ההגדרה</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">הגישה שלו ל-NEWSLETTER הוסרה לדומיין <span class=\"notranslate\">%s</span> שלך.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">הגישה שלו ל-NEWSLETTER הוסרה לדומיין <span class=\"notranslate\">%s</span> שלך.</p>",
+  "Looking for documentation on email webhooks?  See": "מחפש תיעוד על דוא\"ל webhooks?  לִרְאוֹת",
+  "Do you support webhooks?": "האם אתה תומך ב-webhooks?",
+  "(Object) - key value pair of headers for the outbound email": "(אובייקט) - צמד ערכי מפתח של כותרות למייל היוצא",
+  "(String) -": "(מחרוזת) -",
+  "formatted Date for when the bounce error occurred": "תאריך מעוצב שבו התרחשה שגיאת היציאה",
+  "Looking for documentation on bounce webhooks?  See": "מחפש תיעוד על Bounce webhooks?  לִרְאוֹת",
+  "Do you support bounce webhooks?": "האם אתה תומך ב-Bounce webhooks?",
+  "API Reference": "הפניה ל-API",
+  "Email Webhooks": "דוא\"ל Webhooks",
+  "Bounce Webhooks": "Bounce Webhooks"
 }

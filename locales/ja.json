@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "値<span class=\"notranslate\">%s</span> 、当社の永久的かつハードコードされた拒否リストに記載されています。当社チームは削除リクエストを通知されており、すぐに対応します。",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span>ニュースレターへのアクセスが承認されました",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">ドメイン<span class=\"notranslate\">%s</span> NEWSLETTER アクセスが承認されました。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">セットアップを完了する</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">ドメイン<span class=\"notranslate\">%s</span>の NEWSLETTER アクセスが削除されました。</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">ドメイン<span class=\"notranslate\">%s</span>の NEWSLETTER アクセスが削除されました。</p>",
+  "Looking for documentation on email webhooks?  See": "メールウェブフックに関するドキュメントをお探しですか？",
+  "Do you support webhooks?": "Webhook をサポートしていますか?",
+  "(Object) - key value pair of headers for the outbound email": "(オブジェクト) - 送信メールのヘッダーのキーと値のペア",
+  "(String) -": "（弦） -",
+  "formatted Date for when the bounce error occurred": "バウンスエラーが発生した日付のフォーマット",
+  "Looking for documentation on bounce webhooks?  See": "バウンスWebフックに関するドキュメントをお探しですか？",
+  "Do you support bounce webhooks?": "バウンス Webhook をサポートしていますか?",
+  "API Reference": "APIリファレンス",
+  "Email Webhooks": "メールウェブフック",
+  "Bounce Webhooks": "バウンスウェブフック"
 }

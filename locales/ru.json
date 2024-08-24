@@ -10285,5 +10285,15 @@
   "The value <span class=\"notranslate\">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.": "Значение <span class=\"notranslate\">%s</span> было указано в нашем постоянном и жестко закодированном списке запрещенных. Наша команда была уведомлена о вашем запросе на удаление, и мы скоро свяжемся с вами.",
   "<span class=\"notranslate\">%s</span> approved for NEWSLETTER access": "<span class=\"notranslate\">%s</span> одобрен для доступа к ИНФОРМАЦИОННОМУ БЮЛЛЕТЕНЮ",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for NEWSLETTER access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Ваш домен <span class=\"notranslate\">%s</span> был одобрен для доступа к НОВОСТНОЙ РАССЫЛКЕ.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Полная настройка</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">У вашего домена <span class=\"notranslate\">%s</span> отозван доступ к NEWSLETTER.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its NEWSLETTER access removed.</p>": "<p class=\"text-center text-danger\">У вашего домена <span class=\"notranslate\">%s</span> отозван доступ к NEWSLETTER.</p>",
+  "Looking for documentation on email webhooks?  See": "Ищете документацию по веб-перехватчикам электронной почты? Смотрите",
+  "Do you support webhooks?": "Поддерживаете ли вы вебхуки?",
+  "(Object) - key value pair of headers for the outbound email": "(Объект) — пара «ключ-значение» заголовков для исходящего электронного письма.",
+  "(String) -": "(Нить) -",
+  "formatted Date for when the bounce error occurred": "отформатированная дата, когда произошла ошибка возврата",
+  "Looking for documentation on bounce webhooks?  See": "Ищете документацию по bounce webhooks? Смотрите",
+  "Do you support bounce webhooks?": "Поддерживаете ли вы отказы вебхуков?",
+  "API Reference": "Ссылка на API",
+  "Email Webhooks": "Вебхуки электронной почты",
+  "Bounce Webhooks": "Отказы веб-хуков"
 }

@@ -10012,5 +10012,15 @@
   "Unlimited inbound email": "Unlimited inbound email",
   "<span class=\"notranslate\">%s</span> attachment limit": "<span class=\"notranslate\">%s</span> attachment limit",
   "For families, groups, and organizations": "For families, groups, and organizations",
-  "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni email forwarding</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations": "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni email forwarding</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations"
+  "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni email forwarding</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations": "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni email forwarding</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations",
+  "Looking for documentation on email webhooks?  See": "Looking for documentation on email webhooks?  See",
+  "Do you support webhooks?": "Do you support webhooks?",
+  "(Object) - key value pair of headers for the outbound email": "(Object) - key value pair of headers for the outbound email",
+  "(String) -": "(String) -",
+  "formatted Date for when the bounce error occurred": "formatted Date for when the bounce error occurred",
+  "Looking for documentation on bounce webhooks?  See": "Looking for documentation on bounce webhooks?  See",
+  "Do you support bounce webhooks?": "Do you support bounce webhooks?",
+  "API Reference": "API Reference",
+  "Email Webhooks": "Email Webhooks",
+  "Bounce Webhooks": "Bounce Webhooks"
 }

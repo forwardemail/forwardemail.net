@@ -324,7 +324,16 @@ footer.mt-auto(aria-label=t("Footer"))
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-white.py-2.py-md-0(href=l("/ips"))= t("IP Addresses")
             li: a.d-block.text-white.py-2.py-md-0(href=l("/email-api"))= t("Email API Reference")
-            li: a.d-block.text-white.py-2.py-md-0(href=l("/free-email-webhooks"))= t("Free Email Webhooks")
+            li: a.d-block.text-white.py-2.py-md-0(
+              href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks")
+            )
+              if isBot(ctx.get("User-Agent"))
+                = t("Free Email Webhooks")
+              else
+                = t("Email Webhooks")
+            li: a.d-block.text-white.py-2.py-md-0(
+              href=l("/faq#do-you-support-bounce-webhooks")
+            )= t("Bounce Webhooks")
             li: a.d-block.text-white.py-2.py-md-0(
               href=l("/email-forwarding-regex-pattern-filter")
             )= t("Regex Email Forwarding")
