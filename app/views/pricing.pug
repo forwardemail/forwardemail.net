@@ -132,15 +132,15 @@ block body
                       i.fa.fa-code
                       = " "
                       = t("Developers")
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
-        href="#learn-more"
-      )
-        i.fa.fa-angle-double-down
-        = " "
-        = t("Learn more")
-        = " "
-        i.fa.fa-angle-double-down
-
+      if !isBot(ctx.get('User-Agent'))
+        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
+          href="#learn-more"
+        )
+          i.fa.fa-angle-double-down
+          = " "
+          = t("Learn more")
+          = " "
+          i.fa.fa-angle-double-down
     #learn-more.bg-dark.text-white.py-3.d-block.overflow-hidden.min-vh-100.no-search(
       data-ignore-hash-change
     )

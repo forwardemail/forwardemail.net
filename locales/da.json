@@ -7266,5 +7266,22 @@
   "Do you support bounce webhooks?": "Understøtter du bounce webhooks?",
   "API Reference": "API-reference",
   "Email Webhooks": "E-mail Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Vi overvåger, hvor lang tid det tager for e-mails sendt af vores tjeneste at blive leveret til testindbakker hos større e-mail-tjenesteudbydere.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Denne overvågning hjælper os med at sikre IP-omdømme af høj kvalitet og levering af e-mails.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Vores team af ingeniører bliver automatisk advaret, hvis nogen af disse timere overstiger 10 sekunder.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Kildekoden er <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">tilgængelig på GitHub</a> .",
+  "Confirm old password": "Bekræft gammel adgangskode",
+  "Need to change your password?": "Skal du ændre din adgangskode?",
+  "Enter the verification code emailed to: <strong><span class=\"notranslate\">%s</span></strong>": "Indtast bekræftelseskoden sendt til: <strong><span class=\"notranslate\">%s</span></strong>",
+  "Please enter a <span class=\"notranslate\">%d</span> digit verification code.": "Indtast venligst en <span class=\"notranslate\">%d</span> ciffer verifikationskode.",
+  "Didn't receive it?": "Har du ikke modtaget den?",
+  "Resend now": "Send igen nu",
+  "Their official description reads:": "Deres officielle beskrivelse lyder:",
+  "Photograph by Forward Email": "Fotografi via Videresend e-mail",
+  "Photo by Forward Email": "Foto via Videresend e-mail",
+  "Go to site": "Gå til webstedet",
+  "Their website says:": "Deres hjemmeside siger:",
+  "According to their website:": "Ifølge deres hjemmeside:",
+  "Its descriptoin from its website is:": "Dens beskrivelse fra dens hjemmeside er:"
 }

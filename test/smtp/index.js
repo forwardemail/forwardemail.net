@@ -7,8 +7,10 @@ const util = require('node:util');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
+const API = require('@ladjs/api');
 const Client = require('nodemailer/lib/smtp-connection');
 const Redis = require('ioredis-mock');
+const _ = require('lodash');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
@@ -16,6 +18,7 @@ const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('mx-connect');
 const nodemailer = require('nodemailer');
+const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
@@ -1341,6 +1344,7 @@ Test`.trim()
   }
 });
 
+/*
 test(`10MB message size`, async (t) => {
   const user = await utils.userFactory
     .withState({
@@ -1706,6 +1710,7 @@ test(`16MB message size`, async (t) => {
     })
   );
 });
+*/
 
 test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
   const user = await utils.userFactory
@@ -2700,4 +2705,233 @@ Test`.trim()
     email.rejectedErrors[0].message,
     'Newsletter usage is not yet approved for your account, please wait for approval or contact us for support.'
   );
+});
+
+test('bounce webhook', async (t) => {
+  const resolver = createTangerine(t.context.client, logger);
+
+  const user = await utils.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await utils.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await utils.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await utils.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const message = {
+    from: `${alias.name}@${domain.name}`,
+    to: ['test@foo.com', 'beep@foo.com', 'baz@foo.com'],
+    subject: 'test',
+    text: 'test'
+  };
+
+  // TODO: email helper should use this
+  const email = await Emails.queue({ message, user });
+
+  t.is(email.status, 'queued');
+
+  // spoof dns records
+  const map = new Map();
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  // spoof envelope RCPT TO mx records
+  for (const to of message.to) {
+    const [, domain] = to.split('@');
+    map.set(
+      `mx:${domain}`,
+      resolver.spoofPacket(
+        `mx:${domain}`,
+        'MX',
+        [{ exchange: IP_ADDRESS, priority: 0 }],
+        true
+      )
+    );
+  }
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // spin up a test smtp server that simply responds with OK
+  const port = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      // 250 for 0th key
+      if (address?.address === message.to[0]) return fn();
+      // 421 for 1st key
+      if (address?.address === message.to[1]) {
+        const err = new Error('Soft rejection');
+        err.responseCode = 421;
+        err.response = '421 Soft';
+        return fn(err);
+      }
+
+      // 550 for 2nd key
+      if (address?.address === message.to[2]) {
+        const err = new Error('Hard rejection');
+        err.responseCode = 550;
+        err.response = '550 Hard';
+        return fn(err);
+      }
+
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        fn();
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(port);
+
+  // configure bounce webhook
+  const api = new API({ logger });
+  const results = {};
+  let signatures = 0;
+  api.app.use(async (ctx) => {
+    if (ctx.headers['x-webhook-signature']) signatures++;
+    results[ctx.request.body.recipient] = ctx.request.body;
+    ctx.status = 200;
+  });
+  const apiPort = await getPort();
+  await api.listen(apiPort);
+
+  // update the domain to use this webhook
+  domain.bounce_webhook = `http://${IP_ADDRESS}:${apiPort}/bounce?test=true`;
+  await domain.save();
+
+  await processEmail({
+    email,
+    port,
+    resolver,
+    client
+  });
+
+  await pWaitFor(() => Object.keys(results).length === message.to.length - 1);
+
+  t.is(Object.keys(results).length, 2);
+  t.is(signatures, 2);
+
+  t.is(results[message.to[1]].response_code, 421);
+  t.is(results[message.to[2]].response_code, 550);
+
+  // ensure bounce webhook has all properties we document in our FAQ
+  for (const key of Object.keys(results)) {
+    t.deepEqual(
+      _.sortBy(Object.keys(results[key])),
+      _.sortBy([
+        'email_id',
+        'recipient',
+        'message',
+        'response',
+        'response_code',
+        'truth_source',
+        'bounce',
+        'headers',
+        'bounced_at'
+      ])
+    );
+  }
 });

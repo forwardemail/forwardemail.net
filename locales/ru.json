@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "Поддерживаете ли вы отказы вебхуков?",
   "API Reference": "Ссылка на API",
   "Email Webhooks": "Вебхуки электронной почты",
-  "Bounce Webhooks": "Отказы веб-хуков"
+  "Bounce Webhooks": "Отказы веб-хуков",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Мы отслеживаем, сколько времени требуется электронным письмам, отправленным нашей службой, для доставки в тестовые почтовые ящики основных поставщиков услуг электронной почты.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Этот мониторинг помогает нам гарантировать качественную репутацию IP-адресов и доставляемость электронной почты.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Наша команда инженеров автоматически получает уведомление, если любой из этих таймеров превышает 10 секунд.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Исходный код <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">доступен на GitHub</a> .",
+  "Their official description reads:": "Их официальное описание гласит:",
+  "Photograph by Forward Email": "Фотография по электронной почте Forward",
+  "Photo by Forward Email": "Фото: Переслать по электронной почте",
+  "Go to site": "Перейти на сайт",
+  "Their website says:": "На их сайте говорится:",
+  "According to their website:": "Согласно их веб-сайту:",
+  "Its descriptoin from its website is:": "Его описание на веб-сайте:"
 }

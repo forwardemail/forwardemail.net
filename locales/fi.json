@@ -10142,5 +10142,16 @@
   "Do you support bounce webhooks?": "Tuetko bounce webhookeja?",
   "API Reference": "API-viite",
   "Email Webhooks": "Sähköposti Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Seuraamme, kuinka kauan palvelumme lähettämien sähköpostien toimittaminen suurten sähköpostipalveluntarjoajien testipostilaatikkoon kestää.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Tämä valvonta auttaa meitä varmistamaan korkealaatuisen IP-maineen ja sähköpostin toimittavuuden.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Insinööritiimimme saa automaattisesti hälytyksen, jos jokin näistä ajastimista ylittää 10 sekuntia.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Lähdekoodi on <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">saatavilla GitHubissa</a> .",
+  "Their official description reads:": "Heidän virallisessa kuvauksessaan lukee:",
+  "Photograph by Forward Email": "Valokuva Forward Email",
+  "Photo by Forward Email": "Kuva: Eteenpäin sähköposti",
+  "Go to site": "Siirry sivustolle",
+  "Their website says:": "Heidän verkkosivuillaan sanotaan:",
+  "According to their website:": "Sivustonsa mukaan:",
+  "Its descriptoin from its website is:": "Sen kuvaus sen verkkosivuilta on:"
 }

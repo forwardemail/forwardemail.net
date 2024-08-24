@@ -1546,13 +1546,8 @@ config.views.locals.config = _.pick(config, [
 // <https://nodemailer.com/transports/>
 // <https://github.com/nodemailer/nodemailer/pull/1539>
 config.email.transport = nodemailer.createTransport({
-  host: env.SMTP_TRANSPORT_HOST,
-  port: env.SMTP_TRANSPORT_PORT,
-  secure: env.SMTP_TRANSPORT_SECURE,
-  auth: {
-    user: env.SMTP_TRANSPORT_USER,
-    pass: env.SMTP_TRANSPORT_PASS
-  },
+  streamTransport: true,
+  buffer: false,
   logger,
   debug: boolean(env.TRANSPORT_DEBUG)
 });

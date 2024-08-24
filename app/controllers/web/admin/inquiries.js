@@ -15,7 +15,7 @@ const previewEmail = require('preview-email');
 const nodemailer = require('nodemailer');
 const Axe = require('axe');
 
-const { Inquiries, Users } = require('#models');
+const { Emails, Inquiries, Users } = require('#models');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 
@@ -222,7 +222,7 @@ async function reply(ctx) {
 
   // rely on historical user.email or fall back to newer sender_email
   // for those sending direct emails instead of creating an inquiry
-  const email = user?.email ?? inquiry.sender_email;
+  const address = user?.email ?? inquiry.sender_email;
 
   const { body, files } = ctx.request;
 
@@ -242,10 +242,10 @@ async function reply(ctx) {
   const lastMessage = inquiry.messages[lastMessageIndex];
 
   // https://github.com/nodemailer/nodemailer/issues/1312#issuecomment-891237590
-  const info = await emailHelper({
+  const { email, info } = await emailHelper({
     template: 'inquiry-response',
     message: {
-      to: email,
+      to: address,
       cc: config.email.message.from,
       inReplyTo: lastMessage.reference,
       references: lastMessage.reference,
@@ -253,14 +253,21 @@ async function reply(ctx) {
       attachments: resolvedAttachments
     },
     locals: {
-      user: { email },
+      user: { email: address },
       inquiry,
       response: { message: body?.message }
     }
   });
 
-  const raw = await transporter.sendMail(info.originalMessage);
-  inquiry.messages.push({ raw: raw.message });
+  let raw;
+  if (email) {
+    raw = await Emails.getMessage(email.message);
+  } else {
+    const obj = await transporter.sendMail(info.originalMessage);
+    raw = obj.message;
+  }
+
+  inquiry.messages.push({ raw });
 
   await inquiry.save();
 
@@ -299,36 +306,44 @@ async function bulkReply(ctx) {
 
       // rely on historical user.email or fall back to newer sender_email
       // for those sending direct emails instead of creating an inquiry
-      const email = user?.email ?? inquiry.sender_email;
+      const address = user?.email ?? inquiry.sender_email;
 
       // if the user has multiple inquiries and we've just responded
       // in bulk to a previous message then let's skip the email
-      if (!repliedTo.has(email)) {
+      if (!repliedTo.has(address)) {
         // eslint-disable-next-line no-await-in-loop
-        const info = await emailHelper({
+        const { email, info } = await emailHelper({
           template: 'inquiry-response',
           message: {
-            to: email,
+            to: address,
             cc: config.email.message.from,
             inReplyTo: inquiry?.messages[inquiry.messages.length - 1] || '',
             references: inquiry.references,
             subject: inquiry.subject
           },
           locals: {
-            user: { email },
+            user: { email: address },
             inquiry,
             response: { message }
           }
         });
 
-        // eslint-disable-next-line no-await-in-loop
-        const raw = await transporter.sendMail(info?.originalMessage);
+        let raw;
+        if (email) {
+          // eslint-disable-next-line no-await-in-loop
+          raw = await Emails.getMessage(email.message);
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          const obj = await transporter.sendMail(info.originalMessage);
+          raw = obj.message;
+        }
 
-        inquiry.messages.push({ raw: raw.message });
+        inquiry.messages.push({ raw });
+
         // eslint-disable-next-line no-await-in-loop
         await inquiry.save();
 
-        repliedTo.add(email);
+        repliedTo.add(address);
       }
     }
   } catch (err) {

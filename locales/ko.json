@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "바운스 웹훅을 지원하시나요?",
   "API Reference": "API 참조",
   "Email Webhooks": "이메일 웹훅",
-  "Bounce Webhooks": "바운스 웹훅"
+  "Bounce Webhooks": "바운스 웹훅",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "저희는 저희 서비스를 통해 보낸 이메일이 주요 이메일 서비스 제공업체의 테스트 받은 편지함에 도착하는 데 걸리는 시간을 모니터링합니다.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "이러한 모니터링은 고품질 IP 평판과 이메일 전달성을 보장하는 데 도움이 됩니다.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "이러한 타이머 중 하나라도 10초를 초과하면 당사 엔지니어 팀에 자동으로 알림이 전송됩니다.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "소스 코드는 <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">GitHub에서 확인할 수</a> 있습니다.",
+  "Their official description reads:": "공식 설명은 다음과 같습니다.",
+  "Photograph by Forward Email": "Forward Email의 사진",
+  "Photo by Forward Email": "사진 제공: Forward Email",
+  "Go to site": "사이트로 이동",
+  "Their website says:": "그들의 웹사이트에는 다음과 같이 적혀 있습니다:",
+  "According to their website:": "그들의 웹사이트에 따르면:",
+  "Its descriptoin from its website is:": "해당 웹사이트의 설명은 다음과 같습니다."
 }

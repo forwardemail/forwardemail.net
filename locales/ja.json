@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "バウンス Webhook をサポートしていますか?",
   "API Reference": "APIリファレンス",
   "Email Webhooks": "メールウェブフック",
-  "Bounce Webhooks": "バウンスウェブフック"
+  "Bounce Webhooks": "バウンスウェブフック",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "当社では、当社サービスから送信された電子メールが主要な電子メール サービス プロバイダーのテスト受信トレイに配信されるまでにかかる時間を監視しています。",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "この監視により、高品質の IP の評判と電子メールの配信可能性を確保できます。",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "これらのタイマーのいずれかが 10 秒を超えると、当社のエンジニア チームに自動的に警告が送信されます。",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "ソースコードは<a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">GitHub で入手できます</a>。",
+  "Their official description reads:": "公式の説明は次のとおりです。",
+  "Photograph by Forward Email": "写真提供：Forward Email",
+  "Photo by Forward Email": "写真提供：Forward Email",
+  "Go to site": "サイトへ移動",
+  "Their website says:": "彼らのウェブサイトにはこう書かれています:",
+  "According to their website:": "彼らのウェブサイトによると:",
+  "Its descriptoin from its website is:": "ウェブサイトからの説明は次のとおりです。"
 }

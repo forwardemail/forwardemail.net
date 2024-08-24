@@ -841,7 +841,8 @@ Emails.statics.getMessage = async function (obj, returnString = false) {
   return raw;
 };
 
-// options.message (Buffer or nodemailer Object)
+// options.info (Nodemailer transport response *optional*)
+// options.message (Buffer or nodemailer Object) (required if `options.info` not provided)
 // options.alias
 // options.domain
 // options.user (from `ctx.state.user` or `alias.user`)
@@ -858,7 +859,8 @@ Emails.statics.queue = async function (
   //       nodemailer does not abort opened and not finished stream
   //
 
-  const info = await transporter.sendMail(options.message);
+  // this allow us to pass an already created nodemailer transport stream for parsing
+  const info = options?.info || (await transporter.sendMail(options.message));
 
   const messageSplitter = new MessageSplitter({
     maxBytes: MAX_BYTES

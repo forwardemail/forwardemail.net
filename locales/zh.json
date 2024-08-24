@@ -9988,5 +9988,16 @@
   "Do you support bounce webhooks?": "您是否支持反弹 webhook？",
   "API Reference": "API 参考",
   "Email Webhooks": "电子邮件 Webhook",
-  "Bounce Webhooks": "反弹 Webhook"
+  "Bounce Webhooks": "反弹 Webhook",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "我们监控我们的服务发送的电子邮件需要多长时间才能送达主要电子邮件服务提供商的测试收件箱。",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "这种监控有助于我们确保高质量的 IP 信誉和电子邮件传递率。",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "如果任何一个计时器超过 10 秒，我们的工程师团队就会自动收到警报。",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "源代码可<a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">在 GitHub 上获取</a>。",
+  "Their official description reads:": "他们的官方描述如下：",
+  "Photograph by Forward Email": "照片由 Forward Email 提供",
+  "Photo by Forward Email": "照片由 Forward Email 提供",
+  "Go to site": "前往网站",
+  "Their website says:": "他们的网站上写道：",
+  "According to their website:": "根据他们的网站：",
+  "Its descriptoin from its website is:": "其网站上的描述是："
 }

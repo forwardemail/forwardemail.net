@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "Támogatod a visszapattanó webhookat?",
   "API Reference": "API-referencia",
   "Email Webhooks": "E-mail Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Figyeljük, hogy mennyi ideig tart a szolgáltatásunk által küldött e-mailek kézbesítése a nagyobb e-mail szolgáltatók tesztpostafiókjába.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Ez a megfigyelés segít a magas színvonalú IP-hírnév és e-mailek kézbesíthetőségének biztosításában.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Mérnökeink csapata automatikusan figyelmeztetést kap, ha az időzítők bármelyike meghaladja a 10 másodpercet.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "A forráskód <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">elérhető a GitHubon</a> .",
+  "Their official description reads:": "Hivatalos leírásuk a következő:",
+  "Photograph by Forward Email": "Fénykép: Forward Email",
+  "Photo by Forward Email": "Fotó: Forward Email",
+  "Go to site": "Ugrás a webhelyre",
+  "Their website says:": "A honlapjukon ez áll:",
+  "According to their website:": "Honlapjuk szerint:",
+  "Its descriptoin from its website is:": "Leírása a honlapjáról a következő:"
 }

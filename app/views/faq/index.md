@@ -2763,7 +2763,7 @@ Note that if you upgrade or downgrade between paid plans within a 30-day window 
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks">Do you support webhooks?</a> for more insight.
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
   <span>
   </span>
 </div>
@@ -2837,7 +2837,7 @@ Here are a few additional notes regarding bounce webhooks:
   <strong class="font-weight-bold">
     Tip:
   </strong>
-    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks">Do you support bounce webhooks?</a> for more insight.
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
   <span>
   </span>
 </div>

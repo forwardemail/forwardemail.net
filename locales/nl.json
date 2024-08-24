@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "Ondersteunen jullie bounce webhooks?",
   "API Reference": "API-referentie",
   "Email Webhooks": "E-mail webhooks",
-  "Bounce Webhooks": "Bounce-webhooks"
+  "Bounce Webhooks": "Bounce-webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Wij houden bij hoe lang het duurt voordat e-mails die via onze service worden verzonden, worden afgeleverd in testpostvakken bij grote e-mailproviders.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Dankzij deze monitoring kunnen wij een hoogwaardige IP-reputatie en e-mailbezorging garanderen.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Ons team van technici wordt automatisch gewaarschuwd als een van deze timers langer dan 10 seconden duurt.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "De broncode is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">beschikbaar op GitHub</a> .",
+  "Their official description reads:": "Hun officiële beschrijving luidt:",
+  "Photograph by Forward Email": "Foto door Forward Email",
+  "Photo by Forward Email": "Foto door Forward Email",
+  "Go to site": "Ga naar de site",
+  "Their website says:": "Op hun website staat:",
+  "According to their website:": "Volgens hun website:",
+  "Its descriptoin from its website is:": "De beschrijving op de website is:"
 }

@@ -10022,5 +10022,19 @@
   "Do you support bounce webhooks?": "Do you support bounce webhooks?",
   "API Reference": "API Reference",
   "Email Webhooks": "Email Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "Localhost and private IP addresses are not permitted.": "Localhost and private IP addresses are not permitted.",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "This monitoring helps us to ensure high-quality IP reputation and email deliverability.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.",
+  "Unfortunately an error occurred while sending the email.  Please try again or <a class=\"font-weight-bold\" href=\"/help\">contact us</a> for help.": "Unfortunately an error occurred while sending the email.  Please try again or <a class=\"font-weight-bold\" href=\"/help\">contact us</a> for help.",
+  "100% OPEN-SOURCE + QUANTUM RESISTANT ENCRYPTION": "100% OPEN-SOURCE + QUANTUM RESISTANT ENCRYPTION",
+  "Their official description reads:": "Their official description reads:",
+  "Photograph by Forward Email": "Photograph by Forward Email",
+  "Photo by Forward Email": "Photo by Forward Email",
+  "Go to site": "Go to site",
+  "Their website says:": "Their website says:",
+  "According to their website:": "According to their website:",
+  "Its descriptoin from its website is:": "Its descriptoin from its website is:"
 }

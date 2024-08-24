@@ -7818,5 +7818,16 @@
   "Do you support bounce webhooks?": "Supportez-vous les webhooks bounce ?",
   "API Reference": "Référence API",
   "Email Webhooks": "Webhooks de courrier électronique",
-  "Bounce Webhooks": "Webhooks de rebond"
+  "Bounce Webhooks": "Webhooks de rebond",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Nous surveillons le temps nécessaire pour que les e-mails envoyés par notre service soient livrés aux boîtes de réception de test des principaux fournisseurs de services de messagerie.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Cette surveillance nous aide à garantir une réputation IP et une délivrabilité des e-mails de haute qualité.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Notre équipe d'ingénieurs est automatiquement alertée si l'un de ces timers dépasse 10 secondes.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Le code source est <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">disponible sur GitHub</a> .",
+  "Their official description reads:": "Leur description officielle se lit comme suit :",
+  "Photograph by Forward Email": "Photographie par Forward Email",
+  "Photo by Forward Email": "Photo par Forward Email",
+  "Go to site": "Accéder au site",
+  "Their website says:": "Leur site Web dit :",
+  "According to their website:": "D'après leur site internet :",
+  "Its descriptoin from its website is:": "Sa description sur son site Web est :"
 }

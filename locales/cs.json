@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "Podporujete bounce webhooky?",
   "API Reference": "Reference API",
   "Email Webhooks": "E-mailové webhooky",
-  "Bounce Webhooks": "Bounce webhooky"
+  "Bounce Webhooks": "Bounce webhooky",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Sledujeme, jak dlouho trvá doručení e-mailů odeslaných naší službou do testovacích schránek u hlavních poskytovatelů e-mailových služeb.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Toto monitorování nám pomáhá zajistit vysoce kvalitní reputaci IP a doručitelnost e-mailů.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Náš tým inženýrů je automaticky upozorněn, pokud některý z těchto časovačů překročí 10 sekund.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Zdrojový kód je <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">dostupný na GitHubu</a> .",
+  "Their official description reads:": "Jejich oficiální popis zní:",
+  "Photograph by Forward Email": "Foto přes Předat Email",
+  "Photo by Forward Email": "Foto přeposlat emailem",
+  "Go to site": "Přejít na web",
+  "Their website says:": "Jejich web říká:",
+  "According to their website:": "Podle jejich webu:",
+  "Its descriptoin from its website is:": "Jeho popis z jeho webových stránek je:"
 }

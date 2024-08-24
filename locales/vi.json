@@ -7823,5 +7823,16 @@
   "Do you support bounce webhooks?": "Bạn có hỗ trợ webhooks trả lại không?",
   "API Reference": "Tài liệu tham khảo API",
   "Email Webhooks": "Webhooks Email",
-  "Bounce Webhooks": "Webhooks trả lại"
+  "Bounce Webhooks": "Webhooks trả lại",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Chúng tôi theo dõi thời gian cần thiết để email do dịch vụ của chúng tôi gửi đến hộp thư đến thử nghiệm tại các nhà cung cấp dịch vụ email lớn.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Việc giám sát này giúp chúng tôi đảm bảo uy tín IP chất lượng cao và khả năng gửi email.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Đội ngũ kỹ sư của chúng tôi sẽ tự động được cảnh báo nếu bất kỳ bộ hẹn giờ nào vượt quá 10 giây.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Mã nguồn có <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">sẵn trên GitHub</a> .",
+  "Their official description reads:": "Mô tả chính thức của họ như sau:",
+  "Photograph by Forward Email": "Ảnh chụp bởi Forward Email",
+  "Photo by Forward Email": "Ảnh của Forward Email",
+  "Go to site": "Đi đến trang web",
+  "Their website says:": "Trang web của họ nêu rõ:",
+  "According to their website:": "Theo trang web của họ:",
+  "Its descriptoin from its website is:": "Mô tả từ trang web của nó như sau:"
 }

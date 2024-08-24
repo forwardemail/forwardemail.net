@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "Bounce webhook'u destekliyor musunuz?",
   "API Reference": "API Referansı",
   "Email Webhooks": "E-posta Webhooks",
-  "Bounce Webhooks": "Geri Dönüş Web Kancaları"
+  "Bounce Webhooks": "Geri Dönüş Web Kancaları",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Hizmetimiz aracılığıyla gönderilen e-postaların büyük e-posta servis sağlayıcılarının test gelen kutularına ulaşmasının ne kadar sürdüğünü izliyoruz.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Bu izleme, yüksek kaliteli IP itibarı ve e-posta teslim edilebilirliğini sağlamamıza yardımcı olur.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Bu zamanlayıcılardan herhangi biri 10 saniyeyi aşarsa mühendis ekibimiz otomatik olarak uyarılır.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Kaynak kodu <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">GitHub&#39;da mevcuttur</a> .",
+  "Their official description reads:": "Resmi açıklamaları şöyle:",
+  "Photograph by Forward Email": "Forward Email'in fotoğrafı",
+  "Photo by Forward Email": "Fotoğraf: Forward Email",
+  "Go to site": "Siteye git",
+  "Their website says:": "Web sitelerinde şöyle yazıyor:",
+  "According to their website:": "Web sitelerine göre:",
+  "Its descriptoin from its website is:": "Web sitesindeki açıklaması şöyle:"
 }

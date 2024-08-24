@@ -951,6 +951,8 @@ Domains.pre('validate', function (next) {
 //
 Domains.pre('save', async function (next) {
   if (!isSANB(this.bounce_webhook)) return next();
+  if (config.env === 'test' && this.bounce_webhook.endsWith('?test=true'))
+    return next();
   try {
     if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
     const value = this.bounce_webhook

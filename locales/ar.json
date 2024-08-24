@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "هل تدعم خطافات الويب المرتدة؟",
   "API Reference": "مرجع واجهة برمجة التطبيقات",
   "Email Webhooks": "خطافات البريد الإلكتروني",
-  "Bounce Webhooks": "خطافات الويب المرتدة"
+  "Bounce Webhooks": "خطافات الويب المرتدة",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "نحن نراقب المدة التي يستغرقها تسليم رسائل البريد الإلكتروني المرسلة من خلال خدمتنا إلى صناديق البريد الوارد الاختبارية لدى موفري خدمات البريد الإلكتروني الرئيسيين.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "تساعدنا هذه المراقبة على ضمان سمعة IP عالية الجودة وإمكانية تسليم البريد الإلكتروني.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "يتم تنبيه فريق المهندسين لدينا تلقائيًا إذا تجاوز أي من هذه المؤقتات 10 ثوانٍ.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "<a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">يتوفر الكود المصدر على GitHub</a> .",
+  "Their official description reads:": "الوصف الرسمي لهم هو:",
+  "Photograph by Forward Email": "الصورة من تصوير فوروارد إيميل",
+  "Photo by Forward Email": "الصورة من إرسال البريد الإلكتروني",
+  "Go to site": "انتقل إلى الموقع",
+  "Their website says:": "يقول موقعهم على الإنترنت:",
+  "According to their website:": "وفقا لموقعهم على الإنترنت:",
+  "Its descriptoin from its website is:": "الوصف الوارد في موقعها على الإنترنت هو:"
 }

@@ -11,7 +11,7 @@ const nodemailer = require('nodemailer');
 const Axe = require('axe');
 
 const emailHelper = require('#helpers/email');
-const { Domains, Inquiries } = require('#models');
+const { Domains, Emails, Inquiries } = require('#models');
 const config = require('#config');
 
 const transporter = nodemailer.createTransport({
@@ -61,7 +61,7 @@ async function help(ctx) {
       user.plan === 'free' ? '' : 'Premium Support: '
     }${ctx.translate('YOUR_HELP_REQUEST')} #${inquiry.reference}`;
 
-    const email = await emailHelper({
+    const { email, info } = await emailHelper({
       template: 'inquiry',
       message: {
         to: ctx.state.user[config.userFields.fullEmail],
@@ -75,12 +75,18 @@ async function help(ctx) {
       }
     });
 
-    const info = await transporter.sendMail(email.originalMessage);
+    let raw;
+    if (email) {
+      raw = await Emails.getMessage(email.message);
+    } else {
+      const obj = await transporter.sendMail(info.originalMessage);
+      raw = obj.message;
+    }
 
     inquiry.original_message = body.message;
     inquiry.subject = subject;
     inquiry.messages.push({
-      raw: info.message,
+      raw,
       text: body.message
     });
     await inquiry.save();

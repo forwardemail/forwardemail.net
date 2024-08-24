@@ -7,7 +7,7 @@ block body
     .container
       .row
         .col-12
-          .text-center.text-white
+          .text-center(class=isBot(ctx.get("User-Agent")) ? "" : "text-white")
             h1= t("Free Email Developer Tools and Resources")
             p!= t("Developer-focused email API, tools, and resources to send email, trigger webhooks, forward messages, and more.")
             include ../_author

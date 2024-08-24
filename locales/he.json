@@ -8314,5 +8314,16 @@
   "Do you support bounce webhooks?": "האם אתה תומך ב-Bounce webhooks?",
   "API Reference": "הפניה ל-API",
   "Email Webhooks": "דוא\"ל Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "אנו עוקבים אחר כמה זמן לוקח עד שהודעות דוא\"ל שנשלחות על ידי השירות שלנו יימסרו לבדיקת תיבות דואר נכנס אצל ספקי שירותי דוא\"ל גדולים.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "ניטור זה עוזר לנו להבטיח מוניטין IP באיכות גבוהה ומשלוח דוא\"ל.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "צוות המהנדסים שלנו מקבל התראה אוטומטית אם אחד מהטיימרים הללו עולה על 10 שניות.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "קוד המקור <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">זמין ב-GitHub</a> .",
+  "Their official description reads:": "התיאור הרשמי שלהם אומר:",
+  "Photograph by Forward Email": "צילום ב-Forward Email",
+  "Photo by Forward Email": "צילום באמצעות אימייל העבר",
+  "Go to site": "עבור לאתר",
+  "Their website says:": "באתר שלהם כתוב:",
+  "According to their website:": "לפי האתר שלהם:",
+  "Its descriptoin from its website is:": "התיאור שלו מהאתר שלו הוא:"
 }

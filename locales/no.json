@@ -10300,5 +10300,16 @@
   "Do you support bounce webhooks?": "Støtter du bounce webhooks?",
   "API Reference": "API-referanse",
   "Email Webhooks": "E-post Webhooks",
-  "Bounce Webhooks": "Bounce Webhooks"
+  "Bounce Webhooks": "Bounce Webhooks",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Vi overvåker hvor lang tid det tar før e-poster sendt av tjenesten vår leveres til testinnbokser hos store e-postleverandører.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Denne overvåkingen hjelper oss med å sikre IP-omdømme av høy kvalitet og e-postlevering.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Vårt team av ingeniører blir automatisk varslet hvis noen av disse tidtakerne overskrider 10 sekunder.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Kildekoden er <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">tilgjengelig på GitHub</a> .",
+  "Their official description reads:": "Deres offisielle beskrivelse lyder:",
+  "Photograph by Forward Email": "Fotografi med videresend e-post",
+  "Photo by Forward Email": "Bilde via Videresend e-post",
+  "Go to site": "Gå til nettstedet",
+  "Their website says:": "Nettstedet deres sier:",
+  "According to their website:": "I følge deres hjemmeside:",
+  "Its descriptoin from its website is:": "Beskrivelsen fra nettstedet er:"
 }

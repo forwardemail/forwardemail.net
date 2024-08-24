@@ -10295,5 +10295,16 @@
   "Do you support bounce webhooks?": "คุณสนับสนุน Bounce webhooks หรือไม่?",
   "API Reference": "เอกสารอ้างอิง API",
   "Email Webhooks": "เว็บฮุกอีเมล์",
-  "Bounce Webhooks": "เว็บฮุกเด้ง"
+  "Bounce Webhooks": "เว็บฮุกเด้ง",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "เราติดตามเวลาที่ใช้ในการส่งอีเมลจากบริการของเราถึงกล่องจดหมายทดสอบของผู้ให้บริการอีเมลหลัก",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "การตรวจสอบนี้ช่วยให้เราแน่ใจถึงชื่อเสียง IP ที่มีคุณภาพสูงและการส่งอีเมลได้",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "ทีมวิศวกรของเราจะได้รับการแจ้งเตือนโดยอัตโนมัติหากตัวจับเวลาใด ๆ เกิน 10 วินาที",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "โค้ดต้นฉบับ <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">มีอยู่บน GitHub</a>",
+  "Their official description reads:": "คำอธิบายอย่างเป็นทางการของพวกเขาอ่านว่า:",
+  "Photograph by Forward Email": "ถ่ายภาพโดย Forward Email",
+  "Photo by Forward Email": "ภาพโดย Forward Email",
+  "Go to site": "ไปที่เว็บไซต์",
+  "Their website says:": "เว็บไซต์ของพวกเขาบอกว่า:",
+  "According to their website:": "ตามเว็บไซต์ของพวกเขา:",
+  "Its descriptoin from its website is:": "คำอธิบายจากเว็บไซต์คือ:"
 }
