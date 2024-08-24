@@ -53,7 +53,7 @@ test.beforeEach(async (t) => {
 test('connects', async (t) => {
   const smtp = new MX({
     client: t.context.client,
-    apiEndpoint: `http://${IP_ADDRESS}:${t.context.apiPort}`
+    apiEndpoint: `http://localhost:${t.context.apiPort}`
   });
   const { resolver } = smtp;
   const port = await getPort();
