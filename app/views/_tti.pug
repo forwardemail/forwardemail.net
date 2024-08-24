@@ -9,7 +9,7 @@
         .col-xs-12.col-sm-12.col-md-8.offset-md-2
           .small.text-muted.mb-3
             != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
-          p.lead
+          p.small
             = t("We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.")
             = " "
             = t("This monitoring helps us to ensure high-quality IP reputation and email deliverability.")
