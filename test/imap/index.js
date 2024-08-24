@@ -18,6 +18,7 @@ const { createHash, randomUUID } = require('node:crypto');
 
 const Axe = require('axe');
 const Redis = require('ioredis-mock');
+const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const getPort = require('get-port');
 const getStream = require('get-stream');
@@ -39,6 +40,7 @@ const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
+const env = require('#config/env');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
@@ -1629,7 +1631,9 @@ test('large mailbox', async (t) => {
     path: 'INBOX'
   });
 
-  const randomString = Array.from({ length: 50000000 }).join('a');
+  const randomString = Array.from({
+    length: bytes(env.SMTP_MESSAGE_MAX_SIZE)
+  }).join('a');
 
   //
   // TODO: if we have the below then attachment gets created
@@ -1664,7 +1668,7 @@ ${randomString}`.trim()
   await imapFlow.append('INBOX', raw, [], new Date());
 
   const storageUsed = await Aliases.getStorageUsed(alias);
-  t.is(storageUsed, 101081088); // 101208064);
+  t.is(storageUsed, bytes(env.SMTP_MESSAGE_MAX_SIZE) * 2);
 
   mailbox = await Mailboxes.findById(
     t.context.imap,
