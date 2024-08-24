@@ -85,18 +85,27 @@ module.exports = async (data) => {
     }
 
     // info.message is a stream
-    const info = domain
+    let info = domain
       ? await emailTemplates.send(data)
       : await emailTemplatesFallback.send(data);
     let email = null;
 
-    if (domain)
-      email = await emailConn.models.Emails.queue({
-        user: adminIds[0],
-        info,
-        domain,
-        catchall: true
-      });
+    if (domain) {
+      try {
+        email = await emailConn.models.Emails.queue({
+          user: adminIds[0],
+          info,
+          domain,
+          catchall: true
+        });
+      } catch (err) {
+        err.isCodeBug = true;
+        logger.fatal(err);
+        // fallback
+        info = await emailTemplatesFallback.send(data);
+      }
+    }
+
     return { info, email };
   } catch (err) {
     logger.error(err, { data });
