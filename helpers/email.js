@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const EmailTemplates = require('email-templates');
+const Email = require('email-templates');
 const _ = require('lodash');
-const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
@@ -17,6 +16,7 @@ const logger = require('./logger');
 const config = require('#config');
 const env = require('#config/env');
 
+/*
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
 );
@@ -28,7 +28,6 @@ const emailConn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'EMAILS_MONGO_URI'
 );
 if (!emailConn) throw new Error('Mongoose connection does not exist');
-
 const emailTemplates = new EmailTemplates(config.email);
 const emailTemplatesFallback = new EmailTemplates({
   ...config.email,
@@ -44,7 +43,41 @@ const emailTemplatesFallback = new EmailTemplates({
     debug: boolean(env.TRANSPORT_DEBUG)
   })
 });
+*/
 
+const email = new Email({
+  ...config.email,
+  transport: nodemailer.createTransport({
+    host: env.SMTP_TRANSPORT_HOST,
+    port: env.SMTP_TRANSPORT_PORT,
+    secure: env.SMTP_TRANSPORT_SECURE,
+    auth: {
+      user: env.SMTP_TRANSPORT_USER,
+      pass: env.SMTP_TRANSPORT_PASS
+    },
+    logger,
+    debug: boolean(env.TRANSPORT_DEBUG)
+  })
+});
+
+module.exports = async (data) => {
+  try {
+    logger.info('sending email', { data });
+    if (!_.isObject(data.locals)) data.locals = {};
+    const emailLocals = await getEmailLocals();
+    Object.assign(data.locals, emailLocals);
+    if (data?.message?.subject)
+      data.message.subject = decode(striptags(data.message.subject));
+    const info = await email.send(data);
+    return { info };
+  } catch (err) {
+    logger.error(err, { data });
+    throw err;
+  }
+};
+
+// TODO: temp reverted until we figure out issue
+/*
 // TODO: email-templates should strip tags from HTML in subject
 module.exports = async (data) => {
   try {
@@ -112,3 +145,4 @@ module.exports = async (data) => {
     throw err;
   }
 };
+*/
