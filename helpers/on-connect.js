@@ -32,6 +32,9 @@ async function onConnect(session, fn) {
     // this is used for greylisting and in other places
     session.arrivalTime = session.arrivalDate.getTime();
 
+    // return early if we're on SMTP server
+    if (this.constructor.name === 'SMTP') return fn();
+
     // lookup the client hostname
     try {
       const [clientHostname] = await this.resolver.reverse(

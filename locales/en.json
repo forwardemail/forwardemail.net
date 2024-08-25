@@ -2825,5 +2825,11 @@
   "Create your email template with a": "Create your email template with a",
   "or a": "or a",
   "file:": "file:",
-  "In this example, we use the": "In this example, we use the"
+  "In this example, we use the": "In this example, we use the",
+  "Domain has an incorrect DNS <span class=\"notranslate\">TXT</span> record for verification.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.": "Domain has an incorrect DNS <span class=\"notranslate\">TXT</span> record for verification.  Please ensure <span class=\"notranslate\">%s</span> is the only verification record that exists.",
+  "We could not complete your request at this time to create a backup.  Either a backup is already in progress or the queue is currently full.  Please try again later, and if this problem persists please contact us for help.": "We could not complete your request at this time to create a backup.  Either a backup is already in progress or the queue is currently full.  Please try again later, and if this problem persists please contact us for help.",
+  "Mailbox does not exist": "Mailbox does not exist",
+  "System Alert": "System Alert",
+  "This is an automated system alert.": "This is an automated system alert.",
+  "Home": "Home"
 }

@@ -178,7 +178,7 @@ test.beforeEach(async (t) => {
 
   await imapFlow.connect();
 
-  const key = `connections_${config.env}:${t.context.alias.id}`;
+  const key = `concurrent_imap_${config.env}:${t.context.alias.id}`;
   const count = await client.incrby(key, 0);
   t.is(count, 1);
 
@@ -195,7 +195,7 @@ test.beforeEach(async (t) => {
 });
 
 test.afterEach(async (t) => {
-  const key = `connections_${config.env}:${t.context.alias.id}`;
+  const key = `concurrent_imap_${config.env}:${t.context.alias.id}`;
   const pttlBefore = await client.pttl(key);
   t.true(pttlBefore > 0);
   await t.context.imapFlow.logout();

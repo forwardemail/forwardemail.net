@@ -1318,7 +1318,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   domain.bounce_webhook
                 ) +
                 `<pre><code>${JSON.stringify(
-                  parseErr(err),
+                  _.omit(parseErr(err), 'stack'),
                   null,
                   2
                 )}</code></pre>`;

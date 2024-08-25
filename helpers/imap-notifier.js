@@ -359,7 +359,7 @@ class IMAPNotifier extends EventEmitter {
       return fn(null, true);
 
     // decrease # connections for this alias (or domain if using catch-all)
-    const key = `connections_${config.env}:${
+    const key = `concurrent_imap_${config.env}:${
       data.session.user.alias_id || data.session.user.domain_id
     }`;
 

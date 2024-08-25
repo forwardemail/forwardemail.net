@@ -511,7 +511,9 @@ async function onAuth(auth, session, fn) {
       this.server &&
       !(this.server instanceof POP3Server) // not needed but keeping here anyways
     ) {
-      const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
+      const key = `concurrent_${this.constructor.name.toLowerCase()}_${
+        config.env
+      }:${alias ? alias.id : domain.id}`;
       const count = await this.client.incrby(key, 0);
       if (count < 0) await this.client.del(key); // safeguard
       else if (!adminExists && count > 60) {
