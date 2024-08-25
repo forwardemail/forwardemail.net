@@ -114,7 +114,7 @@ async function update(ctx) {
       throw Boom.forbidden(ctx.translateError('DOMAIN_REQUIRES_SMTP_ACCESS'));
     }
 
-    domain.has_smtp = boolean(body.has_newsletter);
+    domain.has_newsletter = boolean(body.has_newsletter);
   }
 
   // smtp_suspended_sent_at
