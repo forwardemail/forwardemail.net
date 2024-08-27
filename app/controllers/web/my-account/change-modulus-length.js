@@ -13,7 +13,7 @@ async function changeModulusLength(ctx) {
   const domain = await Domains.findById(ctx.state.domain._id);
   if (!domain)
     return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   const redirectTo = ctx.state.l(

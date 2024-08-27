@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Ви повинні видалити себе як адміністратора з цих доменів, перш ніж ви зможете видалити свій обліковий запис:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Не хвилюйтеся &ndash; ми автоматично повернемо попередні платежі.",
   "Conversion Credit:": "Кредит конверсії:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Лист підтвердження в черзі",
   "card, wallet, or bank": "картку, гаманець або банк",
   "Subscriptions": "Підписки",
   "One-time payment revenue since launch": "Дохід від одноразових платежів з моменту запуску",
@@ -10306,4 +10306,9 @@
   "Go to site": "Перейти на сайт",
   "Their website says:": "На їх веб-сайті сказано:",
   "According to their website:": "Згідно з їхнім веб-сайтом:",
+  "Custom Domain Email Hosting": "Хостинг електронної пошти власного домену",
+  "Open-source Email Hosting Service": "Служба хостингу електронної пошти з відкритим кодом",
+  "Custom Domain Email Forwarding": "Переадресація електронної пошти власного домену",
+  "Suggested": "Запропоновано",
+  "Its description from its website is:": "Його опис на веб-сайті:"
 }

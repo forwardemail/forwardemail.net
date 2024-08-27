@@ -17,10 +17,8 @@ const { Buffer } = require('node:buffer');
 const { createHash, randomUUID } = require('node:crypto');
 
 const Axe = require('axe');
-const Redis = require('ioredis-mock');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
-const getPort = require('get-port');
 const getStream = require('get-stream');
 const ip = require('ip');
 // const isCI = require('is-ci');
@@ -31,6 +29,7 @@ const splitLines = require('split-lines');
 const test = require('ava');
 const _ = require('lodash');
 const { ImapFlow } = require('imapflow');
+const { Semaphore } = require('@shopify/semaphore');
 
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
@@ -46,48 +45,55 @@ const getDatabase = require('#helpers/get-database');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 const createPassword = require('#helpers/create-password');
 
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
+const semaphore = new Semaphore(2);
+
 const logger = new Axe({ silent: true });
 const IP_ADDRESS = ip.address();
-const client = new Redis({}, logger);
-const subscriber = new Redis({}, logger);
 const tls = { rejectUnauthorized: false };
 
-client.setMaxListeners(0);
-subscriber.setMaxListeners(0);
-subscriber.channels.setMaxListeners(0);
-
 test.before(utils.setupMongoose);
-// TODO: we can remove this and the other in pop3?
-test.before(async () => {
-  const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
-  await smtpLimitKeys.map((k) => client.del(k));
-});
 test.after.always(utils.teardownMongoose);
 test.beforeEach(async (t) => {
+  t.context.permit = await semaphore.acquire();
+  await utils.setupFactories(t);
+  await utils.setupRedisClient(t);
   const secure = false;
   t.context.secure = secure;
   const port = await getPort();
   const sqlitePort = await getPort();
-  const sqlite = new SQLite({ client, subscriber });
+  const sqlite = new SQLite({
+    client: t.context.client,
+    subscriber: t.context.subscriber
+  });
   t.context.sqlite = sqlite;
   await sqlite.listen(sqlitePort);
   const wsp = createWebSocketAsPromised({
     port: sqlitePort
   });
+  await wsp.open();
   t.context.wsp = wsp;
-  const imap = new IMAP({ client, subscriber, wsp }, secure);
+  const imap = new IMAP(
+    { client: t.context.client, subscriber: t.context.subscriber, wsp },
+    secure
+  );
   t.context.port = port;
   t.context.server = await imap.listen(port);
   t.context.imap = imap;
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -101,7 +107,7 @@ test.beforeEach(async (t) => {
 
   t.context.user = await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -112,7 +118,7 @@ test.beforeEach(async (t) => {
 
   t.context.domain = domain;
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -142,10 +148,13 @@ test.beforeEach(async (t) => {
     }
   };
 
-  await wsp.request({
-    action: 'reset',
-    session: t.context.session
-  });
+  await wsp.request(
+    {
+      action: 'setup',
+      session: t.context.session
+    },
+    0
+  );
 
   t.context.alias = await alias.save();
 
@@ -179,7 +188,7 @@ test.beforeEach(async (t) => {
   await imapFlow.connect();
 
   const key = `concurrent_imap_${config.env}:${t.context.alias.id}`;
-  const count = await client.incrby(key, 0);
+  const count = await t.context.client.incrby(key, 0);
   t.is(count, 1);
 
   t.context.imapFlow = imapFlow;
@@ -196,20 +205,24 @@ test.beforeEach(async (t) => {
 
 test.afterEach(async (t) => {
   const key = `concurrent_imap_${config.env}:${t.context.alias.id}`;
-  const pttlBefore = await client.pttl(key);
+  const pttlBefore = await t.context.client.pttl(key);
   t.true(pttlBefore > 0);
   await t.context.imapFlow.logout();
   await t.context.imap.close();
   await pWaitFor(
     async () => {
-      const count = await client.incrby(key, 0);
+      const count = await t.context.client.incrby(key, 0);
       return count === 0;
     },
     { timeout: ms('3s') }
   );
-  const pttlAfter = await client.pttl(key);
+  const pttlAfter = await t.context.client.pttl(key);
   t.true(pttlAfter > 0);
   t.true(pttlAfter < pttlBefore);
+});
+
+test.afterEach.always(async (t) => {
+  await t.context.permit.release();
 });
 
 test('prevents domain-wide passwords', async (t) => {
@@ -244,14 +257,14 @@ test('prevents domain-wide passwords', async (t) => {
 test('onAppend with private PGP', async (t) => {
   // creates unique user/domain/alias
   // (otherwise would interfere with other tests)
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -265,7 +278,7 @@ test('onAppend with private PGP', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -274,7 +287,7 @@ test('onAppend with private PGP', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -302,10 +315,13 @@ test('onAppend with private PGP', async (t) => {
     }
   };
 
-  await t.context.wsp.request({
-    action: 'reset',
-    session
-  });
+  await t.context.wsp.request(
+    {
+      action: 'setup',
+      session
+    },
+    0
+  );
 
   await alias.save();
 
@@ -420,14 +436,14 @@ ZXhhbXBsZQo=
 test('onAppend with public PGP', async (t) => {
   // creates unique user/domain/alias
   // (otherwise would interfere with other tests)
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -441,7 +457,7 @@ test('onAppend with public PGP', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       // NOTE: this is a known email with openpgp
       name: 'forwardemail.net',
@@ -452,7 +468,7 @@ test('onAppend with public PGP', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       // NOTE: this is a known email with openpgp
       name: 'support',
@@ -807,14 +823,14 @@ test('LIST', async (t) => {
 test('onGetQuotaRoot', async (t) => {
   // creates unique user/domain/alias for quota
   // (otherwise would interfere with other tests)
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -828,7 +844,7 @@ test('onGetQuotaRoot', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -837,7 +853,7 @@ test('onGetQuotaRoot', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -865,10 +881,13 @@ test('onGetQuotaRoot', async (t) => {
     }
   };
 
-  await t.context.wsp.request({
-    action: 'reset',
-    session
-  });
+  await t.context.wsp.request(
+    {
+      action: 'setup',
+      session
+    },
+    0
+  );
 
   await alias.save();
 
@@ -902,11 +921,14 @@ test('onGetQuotaRoot', async (t) => {
   await imapFlow.connect();
 
   {
-    await t.context.wsp.request({
-      action: 'size',
-      timeout: ms('15s'),
-      alias_id: alias.id
-    });
+    await t.context.wsp.request(
+      {
+        action: 'size',
+        timeout: ms('15s'),
+        alias_id: alias.id
+      },
+      0
+    );
 
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.is(storageUsed, config.INITIAL_DB_SIZE);
@@ -929,11 +951,14 @@ test('onGetQuotaRoot', async (t) => {
   await imapFlow.mailboxCreate('boopboop');
 
   {
-    await t.context.wsp.request({
-      action: 'size',
-      timeout: ms('15s'),
-      alias_id: alias.id
-    });
+    await t.context.wsp.request(
+      {
+        action: 'size',
+        timeout: ms('15s'),
+        alias_id: alias.id
+      },
+      0
+    );
     const storageUsed = await Aliases.getStorageUsed(alias);
     t.is(storageUsed, config.INITIAL_DB_SIZE);
     const quota = await imapFlow.getQuota('boopboop');
@@ -989,11 +1014,14 @@ ZXhhbXBsZQo=
   t.is(mailbox.path, append.destination);
 
   {
-    await t.context.wsp.request({
-      action: 'size',
-      timeout: ms('15s'),
-      alias_id: alias.id
-    });
+    await t.context.wsp.request(
+      {
+        action: 'size',
+        timeout: ms('15s'),
+        alias_id: alias.id
+      },
+      0
+    );
     // const message = await Messages.findOne(t.context.imap, session, {
     //   mailbox: mailbox._id,
     //   uid: append.uid
@@ -1014,11 +1042,14 @@ ZXhhbXBsZQo=
 });
 
 test('onGetQuota', async (t) => {
-  await t.context.wsp.request({
-    action: 'size',
-    timeout: ms('15s'),
-    alias_id: t.context.alias.id
-  });
+  await t.context.wsp.request(
+    {
+      action: 'size',
+      timeout: ms('15s'),
+      alias_id: t.context.alias.id
+    },
+    0
+  );
   const quota = await t.context.imapFlow.getQuota();
   t.deepEqual(quota, {
     path: 'INBOX',
@@ -1556,11 +1587,14 @@ ZXhhbXBsZQo=
 });
 
 test('sync', async (t) => {
-  await t.context.wsp.request({
-    action: 'sync',
-    timeout: ms('10s'),
-    session: t.context.session
-  });
+  await t.context.wsp.request(
+    {
+      action: 'sync',
+      timeout: ms('10s'),
+      session: t.context.session
+    },
+    0
+  );
   t.pass();
 });
 
@@ -1583,26 +1617,32 @@ test
 `.trim()
   );
 
-  const result = await t.context.wsp.request({
-    action: 'tmp',
-    aliases: [
-      {
-        address: `${t.context.alias.name}@${t.context.domain.name}`,
-        id: t.context.alias.id
-      }
-    ],
-    remoteAddress: IP_ADDRESS,
-    date: now.toISOString(),
-    raw
-  });
+  const result = await t.context.wsp.request(
+    {
+      action: 'tmp',
+      aliases: [
+        {
+          address: `${t.context.alias.name}@${t.context.domain.name}`,
+          id: t.context.alias.id
+        }
+      ],
+      remoteAddress: IP_ADDRESS,
+      date: now.toISOString(),
+      raw
+    },
+    0
+  );
 
   // errors should be empty object
   t.deepEqual(result, {});
 
-  await t.context.wsp.request({
-    action: 'sync',
-    session: t.context.session
-  });
+  await t.context.wsp.request(
+    {
+      action: 'sync',
+      session: t.context.session
+    },
+    0
+  );
 
   // t.is(result.date, now.toISOString());
   // t.is(result.raw.type, 'Buffer');

@@ -35,7 +35,7 @@ const DEFAULT = {
   maxRetries: Number.POSITIVE_INFINITY,
   maxEnqueuedMessages: Number.POSITIVE_INFINITY,
   startClosed: false,
-  debug: config.env === 'development'
+  debug: !env.AXE_SILENT
 };
 
 // <https://github.com/vitalets/websocket-as-promised/pull/49>
@@ -222,7 +222,7 @@ async function sendRequest(wsp, requestId, data) {
         }
       },
       {
-        timeout: config.env === 'test' ? ms('3s') : ms('15s')
+        timeout: ms('15s')
       }
     );
   }
@@ -240,6 +240,8 @@ async function sendRequest(wsp, requestId, data) {
           //       (any long-running jobs should have emails sent once completed)
           //
           ms('10m') // <--- TODO: we should not have 10m in future (should be 30-60s max)
+        : config.env === 'test'
+        ? ms('1m')
         : ms('10s'),
     requestId
   });

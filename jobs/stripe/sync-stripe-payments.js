@@ -5,8 +5,8 @@
 
 const os = require('node:os');
 
+const { setTimeout } = require('node:timers/promises');
 const Stripe = require('stripe');
-const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -44,7 +44,7 @@ async function syncStripePayments() {
 
   async function mapper(user) {
     // wait a second to prevent rate limitation error
-    await delay(ms('1s'));
+    await setTimeout(ms('1s'));
 
     logger.info(
       `Syncing payments for customer ${user.email} ${

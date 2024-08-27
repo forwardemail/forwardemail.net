@@ -5,12 +5,12 @@
 
 const punycode = require('node:punycode');
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -1234,7 +1234,7 @@ async function retrieveDomainBilling(ctx) {
           // - and 15s was tested and worked (seemingly) reliably
           // (if we have anything more than 15-20s it seems we may get Timeout error)
           //
-          await delay(ms('15s'));
+          await setTimeout(ms('15s'));
 
           // attempt to lookup the transactions
           let transactionId;

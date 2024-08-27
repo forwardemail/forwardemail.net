@@ -3112,7 +3112,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Você deve se remover como administrador ou excluir esses domínios antes de poder excluir sua conta:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Não se preocupe &ndash; reembolsaremos automaticamente os pagamentos anteriores.",
   "Conversion Credit:": "Crédito de conversão:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "E-mail de verificação em fila",
   "card, wallet, or bank": "cartão, carteira ou banco",
   "Subscriptions": "Assinaturas",
   "One-time payment revenue since launch": "Receita de pagamento único desde o lançamento",
@@ -10306,4 +10306,9 @@
   "Go to site": "Ir para o site",
   "Their website says:": "O site deles diz:",
   "According to their website:": "De acordo com o site deles:",
+  "Custom Domain Email Hosting": "Hospedagem de e-mail de domínio personalizado",
+  "Open-source Email Hosting Service": "Serviço de hospedagem de e-mail de código aberto",
+  "Custom Domain Email Forwarding": "Encaminhamento de e-mail de domínio personalizado",
+  "Suggested": "Sugerido",
+  "Its description from its website is:": "A descrição no seu site é:"
 }

@@ -14,6 +14,7 @@ const path = require('node:path');
 const punycode = require('node:punycode');
 const { PassThrough } = require('node:stream');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
@@ -21,7 +22,6 @@ const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
-const delay = require('delay');
 const getStream = require('get-stream');
 const hasha = require('hasha');
 const mongoose = require('mongoose');
@@ -100,7 +100,7 @@ const graceful = new Graceful({
   customHandlers: [
     async () => {
       isCancelled = true;
-      if (config.env === 'production') await delay(ms('30s'));
+      if (config.env === 'production') await setTimeout(ms('30s'));
     }
   ]
 });

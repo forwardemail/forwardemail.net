@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Hesabınızı silebilmek için önce kendinizi bu alanlardan yönetici olarak kaldırmalı veya silmelisiniz:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Endişelenme &ndash; önceki ödemeleri otomatik olarak iade edeceğiz.",
   "Conversion Credit:": "Dönüşüm Kredisi:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Sıraya Alınan Doğrulama E-postası",
   "card, wallet, or bank": "kart, cüzdan veya banka",
   "Subscriptions": "Abonelikler",
   "One-time payment revenue since launch": "Lansmandan bu yana tek seferlik ödeme geliri",
@@ -10306,4 +10306,9 @@
   "Go to site": "Siteye git",
   "Their website says:": "Web sitelerinde şöyle yazıyor:",
   "According to their website:": "Web sitelerine göre:",
+  "Custom Domain Email Hosting": "Özel Alan Adı E-posta Barındırma",
+  "Open-source Email Hosting Service": "Açık Kaynaklı E-posta Barındırma Hizmeti",
+  "Custom Domain Email Forwarding": "Özel Alan Adı E-posta Yönlendirme",
+  "Suggested": "Önerilen",
+  "Its description from its website is:": "Web sitesindeki açıklaması şöyle:"
 }

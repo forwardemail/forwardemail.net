@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "アカウントを削除する前に、これらのドメインから自分自身を管理者として削除するか、削除する必要があります。",
   "Don't worry &ndash; we'll automatically refund previous payments.": "心配しないでください &ndash;以前の支払いは自動的に返金されます。",
   "Conversion Credit:": "コンバージョン クレジット:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "キューされた確認メール",
   "card, wallet, or bank": "カード、財布、または銀行",
   "Subscriptions": "サブスクリプション",
   "One-time payment revenue since launch": "ローンチ以来の一時払い収益",
@@ -10306,4 +10306,9 @@
   "Go to site": "サイトへ移動",
   "Their website says:": "彼らのウェブサイトにはこう書かれています:",
   "According to their website:": "彼らのウェブサイトによると:",
+  "Custom Domain Email Hosting": "カスタムドメインメールホスティング",
+  "Open-source Email Hosting Service": "オープンソースのメールホスティングサービス",
+  "Custom Domain Email Forwarding": "カスタムドメインメール転送",
+  "Suggested": "提案",
+  "Its description from its website is:": "ウェブサイトからの説明は次のとおりです。"
 }

@@ -12,10 +12,10 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
@@ -78,7 +78,7 @@ async function sendEmails() {
 
   if (queue.size >= config.smtpMaxQueue) {
     logger.info(`queue has more than ${config.smtpMaxQueue} tasks`);
-    await delay(5000);
+    await setTimeout(5000);
     return;
   }
 
@@ -219,7 +219,7 @@ async function sendEmails() {
     );
   }
 
-  await delay(5000);
+  await setTimeout(5000);
 }
 
 (async () => {
@@ -254,7 +254,7 @@ async function sendEmails() {
         .then()
         .catch((err) => logger.fatal(err));
 
-      await delay(5000);
+      await setTimeout(5000);
     }
 
     startRecursion();

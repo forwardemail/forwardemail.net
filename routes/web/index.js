@@ -5,12 +5,12 @@
 
 const path = require('node:path');
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const _ = require('lodash');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pTimeout = require('p-timeout');
@@ -100,7 +100,10 @@ router
   // mermaid charts
   // TODO: once svg fixed we can use that instead
   // <https://github.com/mermaid-js/mermaid-cli/issues/632>
-  .get('/mermaid.png', async (ctx) => {
+  .get('/mermaid.png', async (ctx, next) => {
+    // in test environments we don't want to spawn the browser process
+    if (config.env === 'test') return next();
+
     let browser;
     try {
       if (!isSANB(ctx.query.code)) throw new Error('Code missing');
@@ -245,7 +248,10 @@ localeRouter
     // get TTI stats for footer (v1 rudimentary approach)
     ctx.state.tti = false;
     try {
-      const tti = await Promise.race([ctx.client.get('tti'), delay(ms('3s'))]);
+      const tti = await Promise.race([
+        ctx.client.get('tti'),
+        setTimeout(ms('3s'))
+      ]);
       if (tti) {
         ctx.state.tti = JSON.parse(tti);
         ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);
@@ -310,7 +316,20 @@ localeRouter
     web.myAccount.sortedDomains,
     render('pricing')
   )
-  .get('/faq', web.myAccount.retrieveDomains, web.onboard, web.faq)
+  .get(
+    '/faq',
+    async (ctx, next) => {
+      // FAQ takes 30s+ to render in dev/test
+      // (we need to rewrite and optimize it)
+      if (_.isEmpty(ctx.query) && !ctx.isAuthenticated())
+        return ctx.render('faq');
+
+      return next();
+    },
+    web.myAccount.retrieveDomains,
+    web.onboard,
+    web.faq
+  )
   .post(
     '/faq',
     web.myAccount.retrieveDomains,

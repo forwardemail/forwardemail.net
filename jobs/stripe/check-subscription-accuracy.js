@@ -5,10 +5,10 @@
 
 const os = require('node:os');
 
+const { setTimeout } = require('node:timers/promises');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
@@ -36,7 +36,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 // eslint-disable-next-line complexity
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
-  await delay(ms('1s'));
+  await setTimeout(ms('1s'));
 
   // check for user on our side
   let user = await Users.findOne({

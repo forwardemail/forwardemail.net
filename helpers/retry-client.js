@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const timers = require('node:timers/promises');
 const undici = require('undici');
-const delay = require('delay');
 const ms = require('ms');
 
 const TimeoutError = require('./timeout-error');
@@ -65,7 +65,7 @@ class RetryClient extends undici.Client {
       } catch (err) {
         if (count >= retries || !isRetryableError(err)) throw err;
         const ms = calculateDelay(count);
-        if (ms) await delay(ms);
+        if (ms) await timers.setTimeout(ms);
         return this.request(options, count + 1);
       }
     };

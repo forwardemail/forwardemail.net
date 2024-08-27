@@ -9,13 +9,13 @@ const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { promisify } = require('node:util');
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const bytes = require('bytes');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
@@ -1310,7 +1310,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         records
       });
       // Wait one second for DNS changes to propagate
-      await delay(ms('1s'));
+      await setTimeout(ms('1s'));
     } catch (err) {
       err.domain = domain;
       err.records = records;
@@ -1524,7 +1524,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
         types: CACHE_TYPES
       });
       // Wait one second for DNS changes to propagate
-      await delay(ms('1s'));
+      await setTimeout(ms('1s'));
     } catch (err) {
       err.domain = domain;
       logger.error(err);
@@ -2218,13 +2218,13 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     .exec();
 
   if (!domain) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
 
   if (!domain)
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
@@ -2265,7 +2265,7 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
   );
 
   if (adminMembers.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2307,7 +2307,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
     .exec();
 
   if (!domain) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError(
         'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
         _locale || i18n.config.defaultLocale
@@ -2354,7 +2354,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   );
 
   if (adminMembers.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2380,7 +2380,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
 
   // Safeguard
   if (domainIds.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2423,7 +2423,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         (typeof results[0] !== 'object' ||
           typeof results[0].storage_used !== 'number'))
     ) {
-      throw Boom.notFound(
+      throw Boom.badRequest(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
     }

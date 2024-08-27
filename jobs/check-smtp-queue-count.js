@@ -12,9 +12,9 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const mongoose = require('mongoose');
 const ms = require('ms');
 
@@ -96,7 +96,7 @@ graceful.listen();
     await logger.error(err);
     // only send one of these emails every 15m
     // (this prevents the job from exiting)
-    await delay(ms('15m'));
+    await setTimeout(ms('15m'));
   }
 
   if (parentPort) parentPort.postMessage('done');

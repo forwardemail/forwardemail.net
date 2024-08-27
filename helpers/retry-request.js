@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const timers = require('node:timers/promises');
 const undici = require('undici');
-const delay = require('delay');
 const ms = require('ms');
 
 const TimeoutError = require('./timeout-error');
@@ -57,7 +57,7 @@ async function retryRequest(url, opts = {}, count = 1) {
   } catch (err) {
     if (count >= opts.retries || !isRetryableError(err)) throw err;
     const ms = opts.calculateDelay(count);
-    if (ms) await delay(ms);
+    if (ms) await timers.setTimeout(ms);
     return retryRequest(url, opts, count + 1);
   }
 }

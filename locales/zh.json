@@ -3190,7 +3190,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "按照以下说明完成设置并验证您的域。",
   "Verify your Forward Email email address.": "验证您的转发电子邮件电子邮件地址。",
   "By": "经过",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "排队验证电子邮件",
   "Refund": "退款",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
@@ -9999,4 +9999,9 @@
   "Go to site": "前往网站",
   "Their website says:": "他们的网站上写道：",
   "According to their website:": "根据他们的网站：",
+  "Custom Domain Email Hosting": "自定义域名电子邮件托管",
+  "Open-source Email Hosting Service": "开源电子邮件托管服务",
+  "Custom Domain Email Forwarding": "自定义域名电子邮件转发",
+  "Suggested": "建议",
+  "Its description from its website is:": "其网站上的描述是："
 }

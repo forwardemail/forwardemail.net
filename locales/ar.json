@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "يجب عليك إزالة نفسك كمسؤول من هذه المجالات أو حذفها قبل أن تتمكن من حذف حسابك:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "لا تقلق - سنقوم تلقائيًا برد الدفعات السابقة.",
   "Conversion Credit:": "ائتمان التحويل:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "بريد إلكتروني للتحقق من قائمة الانتظار",
   "card, wallet, or bank": "بطاقة أو محفظة أو بنك",
   "Subscriptions": "الاشتراكات",
   "One-time payment revenue since launch": "إيرادات الدفع لمرة واحدة منذ الإطلاق",
@@ -10306,4 +10306,9 @@
   "Go to site": "انتقل إلى الموقع",
   "Their website says:": "يقول موقعهم على الإنترنت:",
   "According to their website:": "وفقا لموقعهم على الإنترنت:",
+  "Custom Domain Email Hosting": "استضافة البريد الإلكتروني للنطاق المخصص",
+  "Open-source Email Hosting Service": "خدمة استضافة البريد الإلكتروني مفتوحة المصدر",
+  "Custom Domain Email Forwarding": "إعادة توجيه البريد الإلكتروني إلى نطاق مخصص",
+  "Suggested": "مقترح",
+  "Its description from its website is:": "وصفه من موقعه على الإنترنت هو:"
 }

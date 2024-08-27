@@ -461,12 +461,12 @@ Aliases.pre('save', async function (next) {
     ]);
 
     if (!domain)
-      throw Boom.notFound(
+      throw Boom.badRequest(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
       );
 
     if (!user && !alias.is_new_user)
-      throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
+      throw Boom.badRequest(i18n.translateError('INVALID_USER', alias.locale));
 
     // filter out a domain's members without actual users
     domain.members = domain.members.filter(
@@ -550,7 +550,9 @@ Aliases.pre('save', async function (next) {
     //       but populate above is trying to populate it, we can assume it's new
     //
     if (!member)
-      throw Boom.notFound(i18n.translateError('INVALID_MEMBER', alias.locale));
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_MEMBER', alias.locale)
+      );
 
     const string = alias.name.replace(/[^\da-z]/g, '');
 
@@ -564,7 +566,7 @@ Aliases.pre('save', async function (next) {
       ) {
         const existingAlias = await alias.constructor.findById(alias._id);
         if (!existingAlias)
-          throw Boom.notFound(
+          throw Boom.badRequest(
             i18n.translateError('ALIAS_DOES_NOT_EXIST', alias.locale)
           );
         if (existingAlias.name !== alias.name)

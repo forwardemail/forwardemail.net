@@ -24,6 +24,7 @@ const wkhtmltopdf = require('wkhtmltopdf');
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const config = require('#config');
+const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 
 const inline = pify(webResourceInliner.html);
@@ -532,7 +533,7 @@ async function getPDFReceipt(
   });
 
   const options = {
-    debug: config.env !== 'production',
+    debug: !env.AXE_SILENT,
     pageSize: 'letter',
     background: false,
     imageDpi: 600,

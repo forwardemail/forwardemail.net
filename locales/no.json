@@ -3119,7 +3119,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Du må fjerne deg selv som administrator fra eller slette disse domenene før du kan slette kontoen din:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Ikke bekymre deg &ndash; vi refunderer automatisk tidligere betalinger.",
   "Conversion Credit:": "Konverteringskreditt:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Bekreftelses-e-post i kø",
   "card, wallet, or bank": "kort, lommebok eller bank",
   "Subscriptions": "Abonnementer",
   "One-time payment revenue since launch": "Engangsbetalingsinntekter siden lansering",
@@ -10311,4 +10311,9 @@
   "Go to site": "Gå til nettstedet",
   "Their website says:": "Nettstedet deres sier:",
   "According to their website:": "I følge deres hjemmeside:",
+  "Custom Domain Email Hosting": "Egendefinert e-posthosting for domene",
+  "Open-source Email Hosting Service": "Åpen kildekode e-postvertstjeneste",
+  "Custom Domain Email Forwarding": "Egendefinert domene-e-postvideresending",
+  "Suggested": "Foreslått",
+  "Its description from its website is:": "Beskrivelsen fra nettstedet er:"
 }

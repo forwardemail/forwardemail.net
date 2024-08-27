@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Fiókja törlése előtt el kell távolítania magát adminisztrátorként ezekből a domainekből, vagy törölnie kell magát:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Ne aggódj &ndash; automatikusan visszatérítjük a korábbi befizetéseket.",
   "Conversion Credit:": "Konverziós jóváírás:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Sorban lévő ellenőrző e-mail",
   "card, wallet, or bank": "kártya, pénztárca vagy bank",
   "Subscriptions": "Előfizetések",
   "One-time payment revenue since launch": "Egyszeri fizetési bevétel az indulás óta",
@@ -10306,4 +10306,9 @@
   "Go to site": "Ugrás a webhelyre",
   "Their website says:": "A honlapjukon ez áll:",
   "According to their website:": "Honlapjuk szerint:",
+  "Custom Domain Email Hosting": "Egyedi domain e-mail hosting",
+  "Open-source Email Hosting Service": "Nyílt forráskódú e-mail hosting szolgáltatás",
+  "Custom Domain Email Forwarding": "Egyéni domain e-mail továbbítása",
+  "Suggested": "Javasolt",
+  "Its description from its website is:": "Leírása a honlapjáról a következő:"
 }

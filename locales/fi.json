@@ -3344,7 +3344,7 @@
   "Follow the instructions below to complete setup and verify your domain.": "Viimeistele asennus ja vahvista verkkotunnuksesi noudattamalla alla olevia ohjeita.",
   "Verify your Forward Email email address.": "Vahvista edelleenlähetyssähköpostiosoitteesi.",
   "By": "Tekijä:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Jonossa oleva vahvistussähköposti",
   "Refund": "Maksun palautus",
   "Make payment or update card immediately to avoid account termination.": "Make payment or update card immediately to avoid account termination.",
   "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.": "Something is wrong with your current <span class=\"notranslate\">%s</span> subscription.",
@@ -10153,4 +10153,9 @@
   "Go to site": "Siirry sivustolle",
   "Their website says:": "Heidän verkkosivuillaan sanotaan:",
   "According to their website:": "Sivustonsa mukaan:",
+  "Custom Domain Email Hosting": "Mukautetun verkkotunnuksen sähköpostin isännöinti",
+  "Open-source Email Hosting Service": "Avoimen lähdekoodin sähköpostipalvelu",
+  "Custom Domain Email Forwarding": "Mukautetun verkkotunnuksen sähköpostin edelleenlähetys",
+  "Suggested": "Ehdotettu",
+  "Its description from its website is:": "Sen kuvaus sen verkkosivuilta on:"
 }

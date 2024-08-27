@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Anda harus menghapus diri Anda sendiri sebagai admin dari atau menghapus domain ini sebelum dapat menghapus akun Anda:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Jangan khawatir &ndash; kami akan secara otomatis mengembalikan pembayaran sebelumnya.",
   "Conversion Credit:": "Kredit Konversi:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Email Verifikasi yang Antrean",
   "card, wallet, or bank": "kartu, dompet, atau bank",
   "Subscriptions": "Langganan",
   "One-time payment revenue since launch": "Pendapatan pembayaran satu kali sejak diluncurkan",
@@ -10306,4 +10306,9 @@
   "Go to site": "Kunjungi situs",
   "Their website says:": "Situs web mereka mengatakan:",
   "According to their website:": "Menurut situs web mereka:",
+  "Custom Domain Email Hosting": "Hosting Email Domain Kustom",
+  "Open-source Email Hosting Service": "Layanan Hosting Email Sumber Terbuka",
+  "Custom Domain Email Forwarding": "Penerusan Email Domain Kustom",
+  "Suggested": "Disarankan",
+  "Its description from its website is:": "Uraian dari situs webnya adalah:"
 }

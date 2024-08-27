@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "คุณต้องลบตัวเองออกจากการเป็นผู้ดูแลระบบหรือลบโดเมนเหล่านี้ก่อนจึงจะสามารถลบบัญชีของคุณได้:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "ไม่ต้องกังวล &ndash; เราจะคืนเงินการชำระเงินก่อนหน้านี้โดยอัตโนมัติ",
   "Conversion Credit:": "เครดิตการแปลง:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "อีเมลยืนยันที่ค้างอยู่",
   "card, wallet, or bank": "การ์ด กระเป๋าเงิน หรือธนาคาร",
   "Subscriptions": "การสมัครรับข้อมูล",
   "One-time payment revenue since launch": "รายได้จากการชำระเงินครั้งเดียวตั้งแต่เปิดตัว",
@@ -10306,4 +10306,9 @@
   "Go to site": "ไปที่เว็บไซต์",
   "Their website says:": "เว็บไซต์ของพวกเขาบอกว่า:",
   "According to their website:": "ตามเว็บไซต์ของพวกเขา:",
+  "Custom Domain Email Hosting": "โฮสติ้งอีเมล์โดเมนที่กำหนดเอง",
+  "Open-source Email Hosting Service": "บริการโฮสติ้งอีเมล์โอเพ่นซอร์ส",
+  "Custom Domain Email Forwarding": "การส่งต่ออีเมลโดเมนที่กำหนดเอง",
+  "Suggested": "ข้อเสนอแนะ",
+  "Its description from its website is:": "คำอธิบายจากเว็บไซต์มีดังนี้:"
 }

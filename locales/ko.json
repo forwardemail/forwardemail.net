@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "계정을 삭제하려면 다음 도메인에서 자신을 관리자로 제거하거나 다음 도메인을 삭제해야 합니다.",
   "Don't worry &ndash; we'll automatically refund previous payments.": "걱정하지 마세요. 이전 결제 금액은 자동으로 환불됩니다.",
   "Conversion Credit:": "전환 크레딧:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "대기 중인 확인 이메일",
   "card, wallet, or bank": "카드, 지갑 또는 은행",
   "Subscriptions": "구독",
   "One-time payment revenue since launch": "출시 이후 일회성 결제 수익",
@@ -10306,4 +10306,9 @@
   "Go to site": "사이트로 이동",
   "Their website says:": "그들의 웹사이트에는 다음과 같이 적혀 있습니다:",
   "According to their website:": "그들의 웹사이트에 따르면:",
+  "Custom Domain Email Hosting": "사용자 정의 도메인 이메일 호스팅",
+  "Open-source Email Hosting Service": "오픈소스 이메일 호스팅 서비스",
+  "Custom Domain Email Forwarding": "사용자 정의 도메인 이메일 전달",
+  "Suggested": "제안된",
+  "Its description from its website is:": "해당 웹사이트의 설명은 다음과 같습니다."
 }

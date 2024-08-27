@@ -698,7 +698,7 @@ Emails.post('save', async function (email) {
 
   const domain = await Domains.findById(email.domain);
   if (!domain)
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST', i18n.config.defaultLocale)
     );
 
@@ -982,10 +982,10 @@ Emails.statics.queue = async function (
       : null);
 
   if (!domain)
-    throw Boom.notFound(i18n.translateError('DOMAIN_DOES_NOT_EXIST', locale));
+    throw Boom.badRequest(i18n.translateError('DOMAIN_DOES_NOT_EXIST', locale));
 
   if (domain.is_global)
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('EMAIL_SMTP_GLOBAL_NOT_PERMITTED', locale)
     );
 
@@ -1035,7 +1035,7 @@ Emails.statics.queue = async function (
     );
 
   if (!member)
-    throw Boom.notFound(i18n.translateError('INVALID_MEMBER', locale));
+    throw Boom.badRequest(i18n.translateError('INVALID_MEMBER', locale));
 
   //
   // ensure the alias exists (if it was not a catch-all)
@@ -1068,7 +1068,9 @@ Emails.statics.queue = async function (
 
     // alias must be enabled
     if (!alias.is_enabled)
-      throw Boom.notFound(i18n.translateError('ALIAS_IS_NOT_ENABLED', locale));
+      throw Boom.badRequest(
+        i18n.translateError('ALIAS_IS_NOT_ENABLED', locale)
+      );
   }
 
   // parse the date for SMTP queuing

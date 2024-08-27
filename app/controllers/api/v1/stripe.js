@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -325,7 +325,7 @@ async function processEvent(ctx, event) {
       });
       if (!user) throw new Error('User did not exist for customer');
       // artificially wait 5s for refund to process
-      await delay(ms('15s'));
+      await setTimeout(ms('15s'));
       //
       // NOTE: this re-uses the payment intent mapper that is also used
       //       in the job for `sync-stripe-payments` which syncs payments

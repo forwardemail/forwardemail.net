@@ -12,9 +12,9 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const mongoose = require('mongoose');
 const ms = require('ms');
 
@@ -94,7 +94,7 @@ graceful.listen();
     }
 
     // wait 1 minute
-    await delay(ms('1m'));
+    await setTimeout(ms('1m'));
 
     // check if ids is the same
     const newIds = await Emails.distinct('id', {
@@ -120,7 +120,7 @@ graceful.listen();
     await logger.error(err);
     // only send one of these emails every 1 hour
     // (this prevents the job from exiting)
-    await delay(ms('1h'));
+    await setTimeout(ms('1h'));
   }
 
   if (parentPort) parentPort.postMessage('done');

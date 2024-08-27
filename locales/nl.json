@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "U moet uzelf als beheerder verwijderen uit of deze domeinen verwijderen voordat u uw account kunt verwijderen:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Maak je geen zorgen - we zullen eerdere betalingen automatisch terugbetalen.",
   "Conversion Credit:": "Conversietegoed:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Verificatie-e-mail in wachtrij",
   "card, wallet, or bank": "kaart, portemonnee of bank",
   "Subscriptions": "Abonnementen",
   "One-time payment revenue since launch": "Eenmalige betalingsinkomsten sinds lancering",
@@ -10306,4 +10306,9 @@
   "Go to site": "Ga naar de site",
   "Their website says:": "Op hun website staat:",
   "According to their website:": "Volgens hun website:",
+  "Custom Domain Email Hosting": "Aangepaste domein-e-mailhosting",
+  "Open-source Email Hosting Service": "Open-source e-mailhostingservice",
+  "Custom Domain Email Forwarding": "E-mail doorsturen naar aangepast domein",
+  "Suggested": "Voorgesteld",
+  "Its description from its website is:": "De beschrijving op de website is:"
 }

@@ -3113,7 +3113,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Du måste ta bort dig själv som administratör från eller ta bort dessa domäner innan du kan ta bort ditt konto:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "Oroa dig inte &ndash; vi återbetalar automatiskt tidigare betalningar.",
   "Conversion Credit:": "Konverteringskredit:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Verifieringse-post i kö",
   "card, wallet, or bank": "kort, plånbok eller bank",
   "Subscriptions": "Prenumerationer",
   "One-time payment revenue since launch": "Engångsbetalningsintäkter sedan lanseringen",
@@ -10306,4 +10306,9 @@
   "Go to site": "Gå till webbplatsen",
   "Their website says:": "Deras hemsida säger:",
   "According to their website:": "Enligt deras hemsida:",
+  "Custom Domain Email Hosting": "Anpassad e-postvärd för domän",
+  "Open-source Email Hosting Service": "E-postvärdtjänst med öppen källkod",
+  "Custom Domain Email Forwarding": "Anpassad vidarebefordran av e-post på domän",
+  "Suggested": "Föreslog",
+  "Its description from its website is:": "Dess beskrivning från dess hemsida är:"
 }

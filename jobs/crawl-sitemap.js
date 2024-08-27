@@ -12,9 +12,9 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const _ = require('lodash');
-const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -325,7 +325,7 @@ graceful.listen();
     }
 
     // after successful run wait 24 hours then exit
-    await delay(ms('1d'));
+    await setTimeout(ms('1d'));
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error

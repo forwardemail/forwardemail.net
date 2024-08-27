@@ -11,7 +11,7 @@ const ms = require('ms');
 const { SchemaInspector } = require('knex-schema-inspector');
 
 const combineErrors = require('#helpers/combine-errors');
-const config = require('#config');
+const env = require('#config/env');
 const logger = require('#helpers/logger');
 const setupPragma = require('#helpers/setup-pragma');
 
@@ -125,7 +125,7 @@ async function migrateSchema(db, session, tables) {
         nativeBinding
       }
     },
-    debug: config.env === 'development',
+    debug: !env.AXE_SILENT,
     acquireConnectionTimeout: ms('15s'),
     log,
     useNullAsDefault: true,

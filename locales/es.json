@@ -3111,7 +3111,7 @@
   "You must remove yourself as an admin from or delete these domains before you can delete your account:": "Debe eliminarse como administrador o eliminar estos dominios antes de poder eliminar su cuenta:",
   "Don't worry &ndash; we'll automatically refund previous payments.": "No te preocupes &ndash; le reembolsaremos automáticamente los pagos anteriores.",
   "Conversion Credit:": "Crédito de conversión:",
-  "Queued Verification Email": "Queued Verification Email",
+  "Queued Verification Email": "Correo electrónico de verificación en cola",
   "card, wallet, or bank": "tarjeta, billetera o banco",
   "Subscriptions": "Suscripciones",
   "One-time payment revenue since launch": "Ingresos por pago único desde el lanzamiento",
@@ -10304,4 +10304,9 @@
   "Go to site": "Ir al sitio",
   "Their website says:": "Su sitio web dice:",
   "According to their website:": "Según su sitio web:",
+  "Custom Domain Email Hosting": "Alojamiento de correo electrónico con dominio personalizado",
+  "Open-source Email Hosting Service": "Servicio de alojamiento de correo electrónico de código abierto",
+  "Custom Domain Email Forwarding": "Reenvío de correo electrónico de dominio personalizado",
+  "Suggested": "Sugerido",
+  "Its description from its website is:": "Su descripción desde su sitio web es:"
 }

@@ -5,6 +5,7 @@
 
 const crypto = require('node:crypto');
 
+const falso = require('@ngneat/falso');
 const test = require('ava');
 const { authenticator } = require('otplib');
 
@@ -24,12 +25,13 @@ authenticator.options = {
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
+test.beforeEach(utils.setupFactories);
 
 test.beforeEach(async (t) => {
   // set password
-  t.context.password = '!@K#NLK!#N';
+  t.context.password = falso.randPassword();
   // create user
-  let user = await utils.userFactory.make();
+  let user = await t.context.userFactory.make();
   // must register in order for authentication to work
   user = await Users.register(user, t.context.password);
   // setup user for otp
@@ -173,7 +175,7 @@ test('POST otp/setup > incorrect password', async (t) => {
   // POST setup page
   const res = await web.post(`/en${config.otpRoutePrefix}/setup`).send({
     token: null,
-    password: 'test'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 400);
@@ -215,7 +217,7 @@ test('POST otp/disable > incorrect password', async (t) => {
 
   // POST disable page
   const res = await web.post(`/en${config.otpRoutePrefix}/disable`).send({
-    password: 'test'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 400);

@@ -207,7 +207,7 @@ async function onboard(ctx, next) {
         locale: ctx.locale
       });
     }
-  } else if (!ctx.isAuthenticated()) {
+  } else {
     const query = {
       email: ctx.request.body.email,
       locale: ctx.locale

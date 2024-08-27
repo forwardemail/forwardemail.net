@@ -13,7 +13,6 @@ const Redis = require('ioredis-mock');
 const _ = require('lodash');
 const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
-const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('mx-connect');
@@ -36,6 +35,12 @@ const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 const { Emails } = require('#models');
 
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -43,8 +48,9 @@ client.setMaxListeners(0);
 const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);
+test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
-test.beforeEach(utils.setupSMTPServer);
+test.beforeEach(utils.setupFactories);
 
 test('starttls required for non-secure auth', async (t) => {
   const secure = false;
@@ -200,14 +206,14 @@ test('auth with catch-all pass', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -223,7 +229,7 @@ test('auth with catch-all pass', async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -232,7 +238,7 @@ test('auth with catch-all pass', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -368,14 +374,14 @@ test('auth with pass as alias', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -391,7 +397,7 @@ test('auth with pass as alias', async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -400,7 +406,7 @@ test('auth with pass as alias', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -523,7 +529,7 @@ Test`.trim()
     t.regex(err.message, /Invalid password/);
   }
 
-  const noReplyAlias = await utils.aliasFactory
+  const noReplyAlias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -580,14 +586,14 @@ test('auth with catch-all password when alias exists too', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -603,7 +609,7 @@ test('auth with catch-all password when alias exists too', async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -612,7 +618,7 @@ test('auth with catch-all password when alias exists too', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -800,14 +806,14 @@ Test`.trim()
 });
 
 test('automatic openpgp support', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -823,7 +829,7 @@ test('automatic openpgp support', async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -832,7 +838,7 @@ test('automatic openpgp support', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -982,14 +988,14 @@ test('smtp outbound auth', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1003,7 +1009,7 @@ test('smtp outbound auth', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1012,7 +1018,7 @@ test('smtp outbound auth', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1036,20 +1042,21 @@ test('smtp outbound auth', async (t) => {
   ];
 
   // invalid combos
-  for (const combo of combos) {
-    // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => {
-      const connection = new Client({ port, tls });
-      connection.connect(() => {
-        connection.login(combo, (err) => {
-          t.is(err.responseCode, 535);
-          // TODO: test err.response
-          connection.close();
+  await Promise.all(
+    combos.map(async (combo) => {
+      await new Promise((resolve) => {
+        const connection = new Client({ port, tls });
+        connection.connect(() => {
+          connection.login(combo, (err) => {
+            t.is(err.responseCode, 535);
+            // TODO: test err.response
+            connection.close();
+          });
         });
+        connection.once('end', () => resolve());
       });
-      connection.once('end', () => resolve());
-    });
-  }
+    })
+  );
 
   // spoof dns records
   const map = new Map();
@@ -1085,14 +1092,14 @@ test('smtp outbound auth', async (t) => {
 });
 
 test(`unicode domain`, async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1109,7 +1116,7 @@ test(`unicode domain`, async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       name: '日本語.org',
       members: [{ user: user._id, group: 'admin' }],
@@ -1119,7 +1126,7 @@ test(`unicode domain`, async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1346,14 +1353,14 @@ Test`.trim()
 
 /*
 test(`10MB message size`, async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1369,7 +1376,7 @@ test(`10MB message size`, async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1378,7 +1385,7 @@ test(`10MB message size`, async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1529,14 +1536,14 @@ test(`10MB message size`, async (t) => {
 });
 
 test(`16MB message size`, async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1552,7 +1559,7 @@ test(`16MB message size`, async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1561,7 +1568,7 @@ test(`16MB message size`, async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1713,14 +1720,14 @@ test(`16MB message size`, async (t) => {
 */
 
 test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1736,7 +1743,7 @@ test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1745,7 +1752,7 @@ test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1779,14 +1786,14 @@ test('smtp outbound queue', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1800,7 +1807,7 @@ test('smtp outbound queue', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1809,7 +1816,7 @@ test('smtp outbound queue', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -2069,7 +2076,7 @@ Test`.trim()
   // ensure email delivered except 1 address which will be retried next send
   //
   email = await Emails.findById(email._id).lean().exec();
-  delete email.message; // suppress buffer output from console log
+  delete email.message;
   t.is(email.status, 'deferred');
   t.deepEqual(email.accepted.sort(), email.envelope.to.slice(0, -1).sort());
   t.true(email.rejectedErrors.length === 1);
@@ -2102,7 +2109,7 @@ Test`.trim()
 
   // ensure sent
   email = await Emails.findById(email._id).lean().exec();
-  delete email.message; // suppress buffer output from console log
+  delete email.message;
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted.sort(), email.envelope.to);
   t.deepEqual(email.rejectedErrors, []);
@@ -2116,14 +2123,14 @@ test('smtp rate limiting', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -2137,7 +2144,7 @@ test('smtp rate limiting', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -2146,7 +2153,7 @@ test('smtp rate limiting', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -2324,14 +2331,14 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -2345,7 +2352,7 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -2364,7 +2371,7 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
   domain.skip_verification = true;
   await domain.save();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       name: '*',
       user: user._id,
@@ -2513,14 +2520,14 @@ test('requires newsletter approval', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -2534,7 +2541,7 @@ test('requires newsletter approval', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -2543,7 +2550,7 @@ test('requires newsletter approval', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -2710,14 +2717,14 @@ Test`.trim()
 test('bounce webhook', async (t) => {
   const resolver = createTangerine(t.context.client, logger);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -2731,7 +2738,7 @@ test('bounce webhook', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -2740,7 +2747,7 @@ test('bounce webhook', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,

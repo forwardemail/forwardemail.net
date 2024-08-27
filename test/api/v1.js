@@ -5,13 +5,13 @@
 
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
+const { setTimeout } = require('node:timers/promises');
 
 const ObjectID = require('bson-objectid');
 const Redis = require('ioredis-mock');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
-const getPort = require('get-port');
+const falso = require('@ngneat/falso');
 const ip = require('ip');
 const isBase64 = require('is-base64');
 const ms = require('ms');
@@ -31,6 +31,12 @@ const processEmail = require('#helpers/process-email');
 const { Logs, Domains, Emails } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
 const { emoji } = config.views.locals;
 
 const IP_ADDRESS = ip.address();
@@ -41,6 +47,7 @@ const resolver = createTangerine(client);
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupApiServer);
+test.beforeEach(utils.setupFactories);
 
 test('fails when no creds are presented', async (t) => {
   const { api } = t.context;
@@ -51,8 +58,8 @@ test('fails when no creds are presented', async (t) => {
 test("returns current user's account", async (t) => {
   const { api } = t.context;
   const body = {
-    email: 'testglobal@api.example.com',
-    password: 'FKOZa3kP0TxSCA'
+    email: falso.randEmail(),
+    password: falso.randPassword()
   };
 
   let res = await api.post('/v1/account').send(body);
@@ -95,20 +102,20 @@ test('creates log', async (t) => {
   t.is(res.status, 200);
 
   // since Logs.create in the API controller uses .then()
-  await delay(100);
+  await setTimeout(100);
 
   const match = await Logs.findOne({ message: log.message });
   t.true(match !== null);
 });
 
 test('creates domain', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -133,14 +140,14 @@ test('creates domain', async (t) => {
 });
 
 test('creates alias with global catch-all', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -154,7 +161,7 @@ test('creates alias with global catch-all', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -320,23 +327,22 @@ test('creates alias with global catch-all', async (t) => {
     t.is(res.headers['x-page-current'], '1');
     t.is(res.headers['x-page-size'], '1');
     t.is(res.headers['x-item-count'], '1');
-    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
     t.is(
       res.headers.link,
-      `<${url}/v1/domains/${domain.name}/aliases?page=1)>; rel="last", <${url}/v1/domains/${domain.name}/aliases?page=1)>; rel="first"`
+      `<${t.context.apiURL}v1/domains/${domain.name}/aliases?page=1)>; rel="last", <${t.context.apiURL}v1/domains/${domain.name}/aliases?page=1)>; rel="first"`
     );
   }
 });
 
 test('creates alias and generates password', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -350,7 +356,7 @@ test('creates alias and generates password', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -373,24 +379,24 @@ test('creates alias and generates password', async (t) => {
     .post(`/v1/domains/${domain.name}/aliases/${res.body.id}/generate-password`)
     .auth(user[config.userFields.apiToken])
     .send({
-      new_password: 'Lb7nKMMttr6FMEuF7eU'
+      new_password: falso.randPassword()
     });
   t.is(res2.status, 500);
 
   // t.is(res2.status, 408);
   // t.is(res2.body.username, `test@${domain.name}`);
-  // t.is(res2.body.password, 'Lb7nKMMttr6FMEuF7eU');
+  // t.is(res2.body.password, '...');
 });
 
 test('creates alias with multiple recipients', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -404,7 +410,7 @@ test('creates alias with multiple recipients', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -426,14 +432,14 @@ test('creates alias with multiple recipients', async (t) => {
 });
 
 test('creates email', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -447,7 +453,7 @@ test('creates email', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -456,7 +462,7 @@ test('creates email', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -728,7 +734,7 @@ Test`.trim()
   //
   {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console log
+    delete email.message;
     t.is(email.id, res.body.id);
     t.is(email.status, 'deferred');
     t.deepEqual(
@@ -764,7 +770,7 @@ Test`.trim()
   // ensure sent
   {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console log
+    delete email.message;
     t.is(email.id, res.body.id);
     t.is(email.status, 'sent');
     t.deepEqual(email.accepted.sort(), res.body.envelope.to.sort());
@@ -773,14 +779,14 @@ Test`.trim()
 });
 
 test('5+ day email bounce', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -794,7 +800,7 @@ test('5+ day email bounce', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -803,7 +809,7 @@ test('5+ day email bounce', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -926,18 +932,18 @@ test('5+ day email bounce', async (t) => {
   //
   // NOTE: we should fix this so we can remove this artificial delay
   //
-  await delay(1000);
+  await setTimeout(1000);
 });
 
 test('smtp outbound spam block detection', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -951,7 +957,7 @@ test('smtp outbound spam block detection', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -960,7 +966,7 @@ test('smtp outbound spam block detection', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1160,7 +1166,7 @@ test('smtp outbound spam block detection', async (t) => {
   // ensure future attempts to deliver emails throw suspension error
   {
     let email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console log
+    delete email.message;
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     await Emails.findByIdAndUpdate(email._id, {
@@ -1185,7 +1191,7 @@ test('smtp outbound spam block detection', async (t) => {
   // latest error should not have been attempted (should have returned early)
   {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console log
+    delete email.message;
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);
@@ -1200,18 +1206,18 @@ test('smtp outbound spam block detection', async (t) => {
   //
   // NOTE: we should fix this so we can remove this artificial delay
   //
-  await delay(1000);
+  await setTimeout(1000);
 });
 
 test('create domain without catchall', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1253,10 +1259,9 @@ test('create domain without catchall', async (t) => {
     t.is(res.headers['x-page-current'], '1');
     t.is(res.headers['x-page-size'], '1');
     t.is(res.headers['x-item-count'], '0');
-    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
     t.is(
       res.headers.link,
-      `<${url}/v1/domains/testdomain1.com/aliases?page=1)>; rel="last", <${url}/v1/domains/testdomain1.com/aliases?page=1)>; rel="first"`
+      `<${t.context.apiURL}v1/domains/testdomain1.com/aliases?page=1)>; rel="last", <${t.context.apiURL}v1/domains/testdomain1.com/aliases?page=1)>; rel="first"`
     );
   }
 
@@ -1321,10 +1326,9 @@ test('create domain without catchall', async (t) => {
     t.is(res.headers['x-page-current'], '1');
     t.is(res.headers['x-page-size'], '1');
     t.is(res.headers['x-item-count'], '1');
-    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
     t.is(
       res.headers.link,
-      `<${url}/v1/domains?page=1)>; rel="last", <${url}/v1/domains?page=1)>; rel="first"`
+      `<${t.context.apiURL}v1/domains?page=1)>; rel="last", <${t.context.apiURL}v1/domains?page=1)>; rel="first"`
     );
   }
 
@@ -1370,14 +1374,14 @@ test('create domain without catchall', async (t) => {
 });
 
 test('lists emails', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1391,7 +1395,7 @@ test('lists emails', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1400,7 +1404,7 @@ test('lists emails', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1508,10 +1512,9 @@ test('lists emails', async (t) => {
     t.is(res.headers['x-page-current'], '1');
     t.is(res.headers['x-page-size'], '1');
     t.is(res.headers['x-item-count'], '1');
-    const url = `http://127.0.0.1:${t.context.apiAddress.port}`;
     t.is(
       res.headers.link,
-      `<${url}/v1/emails?page=1)>; rel="last", <${url}/v1/emails?page=1)>; rel="first"`
+      `<${t.context.apiURL}v1/emails?page=1)>; rel="last", <${t.context.apiURL}v1/emails?page=1)>; rel="first"`
     );
 
     t.is(res.body[0].id, id);
@@ -1545,14 +1548,14 @@ test('lists emails', async (t) => {
 });
 
 test('retrieves email', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1566,7 +1569,7 @@ test('retrieves email', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1575,7 +1578,7 @@ test('retrieves email', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1616,14 +1619,14 @@ test('retrieves email', async (t) => {
 });
 
 test('removes email', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1637,7 +1640,7 @@ test('removes email', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1646,7 +1649,7 @@ test('removes email', async (t) => {
     })
     .create();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1686,14 +1689,14 @@ test('removes email', async (t) => {
 });
 
 test('smtp email blocklist', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -1707,7 +1710,7 @@ test('smtp email blocklist', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -1716,10 +1719,12 @@ test('smtp email blocklist', async (t) => {
     })
     .create();
 
+  t.true(domain !== null);
+
   domain.smtp_emails_blocked.push('foo@foo.com', 'beep@beep.com');
   await domain.save();
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -1905,14 +1910,14 @@ test('smtp email blocklist', async (t) => {
 });
 
 test('error_code_if_disabled', async (t) => {
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,

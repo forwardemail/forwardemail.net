@@ -8,7 +8,6 @@ const util = require('node:util');
 const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
-const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('mx-connect');
@@ -25,6 +24,12 @@ const env = require('#config/env');
 const config = require('#config');
 const logger = require('#helpers/logger');
 
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -32,8 +37,9 @@ client.setMaxListeners(0);
 const tls = { rejectUnauthorized: false };
 
 test.before(utils.setupMongoose);
+test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
-test.beforeEach(utils.setupSMTPServer);
+test.beforeEach(utils.setupFactories);
 
 // setup API server so we can configure MX with it
 // (similar to `utils.setupApiServer`)
@@ -59,14 +65,14 @@ test('connects', async (t) => {
   const port = await getPort();
   await smtp.listen(port);
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -80,7 +86,7 @@ test('connects', async (t) => {
 
   await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -89,7 +95,7 @@ test('connects', async (t) => {
     })
     .create();
 
-  await utils.aliasFactory
+  await t.context.aliasFactory
     .withState({
       name: '*', // catch-all
       user: user._id,

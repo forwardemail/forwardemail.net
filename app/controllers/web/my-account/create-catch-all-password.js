@@ -24,7 +24,7 @@ async function createCatchAllPassword(ctx) {
       '+tokens +tokens.description +tokens.hash +tokens.salt'
     );
     if (!domain)
-      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
+      throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
     // domain cannot have more than 10 at once
     if (Array.isArray(domain.tokens) && domain.tokens.length >= 10)
