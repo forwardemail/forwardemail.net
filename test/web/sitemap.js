@@ -13,6 +13,7 @@ const { Semaphore } = require('@shopify/semaphore');
 const utils = require('../utils');
 
 const config = require('#config');
+const { useCases } = require('#config/utilities');
 
 const IP_ADDRESS = ip.address();
 
@@ -70,12 +71,16 @@ if (!isCI) {
   }
 }
 
+const USE_CASES = new Set(Object.keys(useCases));
+
 for (const key of keys) {
-  const route = `en${key === '/' ? '' : key}`;
+  // skip use cases for CI
+  if (isCI && USE_CASES.has(key)) continue;
+  const route = `/en${key === '/' ? '' : key}`;
   const status = key === '/tti' ? 408 : 200;
-  test(`GET /${route} should return 200`, async (t) => {
+  test(`GET ${route} should return 200`, async (t) => {
     t.timeout(ms('5m')); // FAQ takes 30s+ to render (the pug view is ~4000 LOC right now)
-    const res = await undici.fetch(`${t.context.webURL}/${route}`, {
+    const res = await undici.fetch(`${t.context.webURL}${route}`, {
       method: 'HEAD'
     });
     t.is(res.status, status);
