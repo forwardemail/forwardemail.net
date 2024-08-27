@@ -329,7 +329,7 @@ test('creates alias with global catch-all', async (t) => {
     t.is(res.headers['x-item-count'], '1');
     t.is(
       res.headers.link,
-      `<${t.context.apiURL}v1/domains/${domain.name}/aliases?page=1)>; rel="last", <${t.context.apiURL}v1/domains/${domain.name}/aliases?page=1)>; rel="first"`
+      `<${t.context.apiURL}/v1/domains/${domain.name}/aliases?page=1)>; rel="last", <${t.context.apiURL}/v1/domains/${domain.name}/aliases?page=1)>; rel="first"`
     );
   }
 });
@@ -1261,7 +1261,7 @@ test('create domain without catchall', async (t) => {
     t.is(res.headers['x-item-count'], '0');
     t.is(
       res.headers.link,
-      `<${t.context.apiURL}v1/domains/testdomain1.com/aliases?page=1)>; rel="last", <${t.context.apiURL}v1/domains/testdomain1.com/aliases?page=1)>; rel="first"`
+      `<${t.context.apiURL}/v1/domains/testdomain1.com/aliases?page=1)>; rel="last", <${t.context.apiURL}/v1/domains/testdomain1.com/aliases?page=1)>; rel="first"`
     );
   }
 
@@ -1328,7 +1328,7 @@ test('create domain without catchall', async (t) => {
     t.is(res.headers['x-item-count'], '1');
     t.is(
       res.headers.link,
-      `<${t.context.apiURL}v1/domains?page=1)>; rel="last", <${t.context.apiURL}v1/domains?page=1)>; rel="first"`
+      `<${t.context.apiURL}/v1/domains?page=1)>; rel="last", <${t.context.apiURL}/v1/domains?page=1)>; rel="first"`
     );
   }
 
@@ -1514,7 +1514,7 @@ test('lists emails', async (t) => {
     t.is(res.headers['x-item-count'], '1');
     t.is(
       res.headers.link,
-      `<${t.context.apiURL}v1/emails?page=1)>; rel="last", <${t.context.apiURL}v1/emails?page=1)>; rel="first"`
+      `<${t.context.apiURL}/v1/emails?page=1)>; rel="last", <${t.context.apiURL}/v1/emails?page=1)>; rel="first"`
     );
 
     t.is(res.body[0].id, id);

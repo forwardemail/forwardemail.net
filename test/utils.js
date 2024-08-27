@@ -68,7 +68,9 @@ exports.setupWebServer = async (t) => {
   t.context._web = web;
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
+  // remove trailing slash from web URL
   t.context.webURL = await listen(web.server, { host: '127.0.0.1', port });
+  t.context.webURL = t.context.webURL.toString().slice(0, -1);
   t.context.web = request.agent(web.server);
 };
 
@@ -85,7 +87,9 @@ exports.setupApiServer = async (t) => {
   );
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
+  // remove trailing slash from API URL
   t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
+  t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
   t.context.api = request.agent(api.server);
 };
 

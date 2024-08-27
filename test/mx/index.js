@@ -14,6 +14,7 @@ const mxConnect = require('mx-connect');
 const nodemailer = require('nodemailer');
 const pify = require('pify');
 const test = require('ava');
+const { listen } = require('async-listen');
 
 const utils = require('../utils');
 const MX = require('../../mx-server');
@@ -52,14 +53,15 @@ test.beforeEach(async (t) => {
     Users
   );
   const port = await getPort();
-  t.context.apiPort = port;
-  await api.listen(port);
+  // remove trailing slash from API URL
+  t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
+  t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
 });
 
 test('connects', async (t) => {
   const smtp = new MX({
     client: t.context.client,
-    apiEndpoint: `http://localhost:${t.context.apiPort}`
+    apiEndpoint: t.context.apiURL
   });
   const { resolver } = smtp;
   const port = await getPort();

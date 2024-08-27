@@ -18,6 +18,7 @@ const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
 const tlds = require('tlds');
+const splitLines = require('split-lines');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 
@@ -226,7 +227,8 @@ const config = {
     privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
       ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
       : isSANB(env.DKIM_PRIVATE_KEY_VALUE)
-      ? env.DKIM_PRIVATE_KEY_VALUE
+      ? // GitHub CI may convert \n to \\n in env var rendering
+        splitLines(env.DKIM_PRIVATE_KEY_VALUE.replace(/\\n/g, '\n')).join('\n')
       : undefined,
     algorithm: 'rsa-sha256',
     canonicalization: 'relaxed/relaxed'

@@ -72,7 +72,7 @@ for (const key of keys) {
   const status = key === '/tti' ? 408 : 200;
   test(`GET /${route} should return 200`, async (t) => {
     t.timeout(ms('5m')); // FAQ takes 30s+ to render (the pug view is ~4000 LOC right now)
-    const res = await undici.fetch(`${t.context.webURL}${route}`, {
+    const res = await undici.fetch(`${t.context.webURL}/${route}`, {
       method: 'HEAD'
     });
     t.is(res.status, status);

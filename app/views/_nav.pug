@@ -222,13 +222,14 @@ nav.navbar(class=navbarClasses.join(" "))
                   = t("Signup")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
-      button.navbar-toggler.d-lg-none.no-js.text-dark.text-themed(
+      button.navbar-toggler.d-lg-none.no-js(
         type="button",
         data-toggle="collapse",
         data-target="#navbar-header",
         aria-controls="navbar-header",
         aria-expanded="false",
-        aria-label=t("Toggle navigation")
+        aria-label=t("Toggle navigation"),
+        class=isAuthenticated() ? "text-white" : "text-dark text-themed"
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap
