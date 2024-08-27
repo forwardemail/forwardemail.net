@@ -52,11 +52,11 @@ const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
 // eslint-disable-next-line complexity
 function isArbitrary(session, headers, bodyStr) {
-  let subject = getHeaders(headers, true, 'subject');
+  let subject = getHeaders(headers, 'subject');
   if (!isSANB(subject)) subject = null;
 
   // <https://github.com/andris9/mailsplit/issues/21>
-  const from = getHeaders(headers, true, 'from');
+  const from = getHeaders(headers, 'from');
 
   // rudimentary blocking
   if (subject && BLOCKED_PHRASES.test(subject))

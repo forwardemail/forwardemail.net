@@ -13,9 +13,7 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const parseAddresses = require('#helpers/parse-addresses');
 
 function getAttributes(headers, session) {
-  const replyToAddresses = parseAddresses(
-    getHeaders(headers, true, 'reply-to')
-  );
+  const replyToAddresses = parseAddresses(getHeaders(headers, 'reply-to'));
 
   //
   // check if the From, Reply-To, MAIL FROM, sender IP/host, or RCPT TO were silent banned

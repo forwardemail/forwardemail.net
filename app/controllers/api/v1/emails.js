@@ -160,10 +160,12 @@ async function create(ctx) {
     //
     for (const header of EMOJI_HEADERS) {
       if (isSANB(message[header])) {
-        for (const match of message[header].matchAll(EMOJI_REGEX)) {
+        const matches = message[header].match(EMOJI_REGEX);
+        if (!matches || !Array.isArray(matches)) continue;
+        for (const match of matches) {
           message[header] = message[header].replaceAll(
-            match[0],
-            libmime.encodeWord(match[0])
+            match,
+            libmime.encodeWord(match)
           );
         }
       }

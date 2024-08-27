@@ -18,6 +18,7 @@ const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const pify = require('pify');
+const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
 
@@ -48,6 +49,7 @@ test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   const secure = false;
   t.context.secure = secure;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   const sqlitePort = await getPort();
   const sqlite = new SQLite({

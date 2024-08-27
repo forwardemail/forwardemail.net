@@ -52,9 +52,9 @@ function createBounce(email, error, message) {
     'Subject',
     `Delivery Status Notification (${isDelayed ? 'Delayed' : 'Failure'})`
   );
-  rootNode.setHeader('In-Reply-To', email.messageId);
-  rootNode.setHeader('References', email.messageId);
-  rootNode.setHeader('X-Original-Message-ID', email.messageId);
+  rootNode.setHeader('In-Reply-To', `<${email.messageId}>`);
+  rootNode.setHeader('References', `<${email.messageId}>`);
+  rootNode.setHeader('X-Original-Message-ID', `<${email.messageId}>`);
 
   const response = convert(error.response || error.message, {
     wordwrap: false,

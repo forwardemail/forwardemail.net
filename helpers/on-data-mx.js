@@ -102,7 +102,7 @@ async function updateMXHeaders(session, headers, body) {
     // then we don't want to modify it of course
     //
     // <https://github.com/andris9/mailsplit/issues/21>
-    if (!getHeaders(headers, true, 'reply-to'))
+    if (!getHeaders(headers, 'reply-to'))
       headers.update('Reply-To', session.originalFromAddress);
 
     // rewrite ARC sealed headers with updated headers object value

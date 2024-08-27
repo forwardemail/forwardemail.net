@@ -22,7 +22,7 @@ async function updateSession(raw, headers, session) {
   session.headers = getHeaders(headers);
 
   // <https://github.com/andris9/mailsplit/issues/21>
-  const from = getHeaders(headers, true, 'from');
+  const from = getHeaders(headers, 'from');
 
   // getFromAddress will thrown an error if it's not RFC 5322 compliant
   session.originalFromAddress = getFromAddress(from);

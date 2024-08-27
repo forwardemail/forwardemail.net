@@ -16,6 +16,7 @@ const ip = require('ip');
 const isBase64 = require('is-base64');
 const ms = require('ms');
 const pify = require('pify');
+const pWaitFor = require('p-wait-for');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 
@@ -573,12 +574,12 @@ Test`.trim()
     // validate header From was converted properly
     t.is(
       res.body.headers.From,
-      `${emoji('blush')} Test <${alias.name}@${domain.name}>`
+      `"${emoji('blush')} Test" <${alias.name}@${domain.name}>`
     );
     t.is(res.body.headers.Subject, `${emoji('blush')} testing this`);
     t.true(
       res.body.message.includes(
-        `From: =?UTF-8?Q?=F0=9F=98=8A_Test?= <${alias.name}@${domain.name}>`
+        `From: "=?UTF-8?Q?=F0=9F=98=8A?= Test" <${alias.name}@${domain.name}>`
       )
     );
   }
@@ -670,6 +671,7 @@ Test`.trim()
   await resolver.options.cache.mset(map);
 
   // spin up a test smtp server that simply responds with OK
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   let attempted = false;
   const server = new SMTPServer({
@@ -1082,6 +1084,7 @@ test('smtp outbound spam block detection', async (t) => {
   await resolver.options.cache.mset(map);
 
   // spin up a test smtp server that simply responds with OK
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -2042,5 +2045,87 @@ test('encrypts and decrypts TXT', async (t) => {
       env.TXT_ENCRYPTION_KEY
     ),
     'foo@bar.com'
+  );
+});
+
+// TODO: this same test is on SMTP side too for consistency
+test('parses UTF-8 encoded headers', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const raw = `From: Test <${alias.name}@${domain.name}>
+To: Forward Email <support@forwardemail.net>
+Subject: =?UTF-8?Q?Forward_Email_=E2=80=93_Code_Bug=3A_Erro?=
+ =?UTF-8?Q?r_-_Mail_command_failed=3A_550_5=2E7=2E1?=
+ =?UTF-8?Q?_Unfortunately=2C_messages_from_=5B164?=
+ =?UTF-8?Q?=2E92=2E70=2E200=5D_weren=27t_sent=2E_Pl?=
+ =?UTF-8?Q?ease_contact_your_Internet_service_provi?=
+ =?UTF-8?Q?der_since_part_of_their_network_is_on_ou?=
+ =?UTF-8?Q?r_block_list_=28S3150=29=2E_You_can_also?=
+ =?UTF-8?Q?_refer_your_provider_to_http=3A//mail=2E?=
+ =?UTF-8?Q?live=2Ecom/mail/troubleshooting=2Easpx?=
+ =?UTF-8?Q?=23errors=2E_=5BName=3DProtocol_Filter_A?=
+ =?UTF-8?Q?gent=5D=5BAGT=3DPFA=5D=5BMxId=3D11B98999?=
+ =?UTF-8?Q?1C72A5F2=5D_=5BBL6PEPF00022571=2Enamprd0?=
+ =?UTF-8?Q?2=2Eprod=2Eoutlook=2Ecom_2024-08-25T23?=
+ =?UTF-8?Q?=3A54=3A32=2E568Z_08DCC4CC8ECEBA56=5D_?=
+ =?UTF-8?Q?=2866cbc438d0090cee7c346279=29?=
+Message-ID: <2774d75d-b6a2-7146-7eca-6b226d0ce5fc@forwardemail.net>
+Date: Sun, 25 Aug 2024 23:54:33 +0000
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+SYSTEM ALERT
+`.trim();
+
+  const res = await t.context.api
+    .post('/v1/emails')
+    .auth(user[config.userFields.apiToken])
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .send({
+      raw
+    });
+
+  t.is(res.status, 200);
+
+  t.is(
+    res.body.headers.Subject,
+    "Forward Email – Code Bug: Error - Mail command failed: 550 5.7.1 Unfortunately, messages from [164.92.70.200] weren't sent. Please contact your Internet service provider since part of their network is on our block list (S3150). You can also refer your provider to http://mail.live.com/mail/troubleshooting.aspx#errors. [Name=Protocol Filter Agent][AGT=PFA][MxId=11B989991C72A5F2] [BL6PEPF00022571.namprd02.prod.outlook.com 2024-08-25T23:54:32.568Z 08DCC4CC8ECEBA56] (66cbc438d0090cee7c346279)"
   );
 });

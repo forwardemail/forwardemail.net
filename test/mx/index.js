@@ -13,6 +13,7 @@ const ms = require('ms');
 const mxConnect = require('mx-connect');
 const nodemailer = require('nodemailer');
 const pify = require('pify');
+const pWaitFor = require('p-wait-for');
 const test = require('ava');
 const { listen } = require('async-listen');
 
@@ -52,6 +53,7 @@ test.beforeEach(async (t) => {
     },
     Users
   );
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   // remove trailing slash from API URL
   t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
@@ -64,6 +66,7 @@ test('connects', async (t) => {
     apiEndpoint: t.context.apiURL
   });
   const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   await smtp.listen(port);
 

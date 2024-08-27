@@ -65,6 +65,7 @@ test.beforeEach(async (t) => {
   await utils.setupRedisClient(t);
   const secure = false;
   t.context.secure = secure;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   const sqlitePort = await getPort();
   const sqlite = new SQLite({

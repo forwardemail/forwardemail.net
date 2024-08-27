@@ -428,9 +428,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
       // set Message-ID header
       const messageId = data.headers.getFirst('message-id');
-      if (!messageId || messageId !== email.messageId) {
+      if (!messageId || messageId !== `<${email.messageId}>`) {
         data.headers.remove('message-id');
-        data.headers.add('Message-ID', email.messageId);
+        data.headers.add('Message-ID', `<${email.messageId}>`);
       }
 
       // set Date header

@@ -153,7 +153,7 @@ async function onData(stream, _session, fn) {
     // in addition to RCPT TO being incorrect due to improperly configured server sending to SRS forwarded address
     // we also need to rewrite the "To" header an rewrite any SRS forwarded addresses with their actual ones
     //
-    const originalToAddresses = parseAddresses(getHeaders(headers, true, 'to'));
+    const originalToAddresses = parseAddresses(getHeaders(headers, 'to'));
     for (const obj of originalToAddresses) {
       const shouldThrow =
         parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===

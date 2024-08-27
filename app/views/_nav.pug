@@ -229,7 +229,7 @@ nav.navbar(class=navbarClasses.join(" "))
         aria-controls="navbar-header",
         aria-expanded="false",
         aria-label=t("Toggle navigation"),
-        class=isAuthenticated() ? "text-white" : "text-dark text-themed"
+        class=user ? "text-white" : "text-dark text-themed"
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap
