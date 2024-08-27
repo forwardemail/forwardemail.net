@@ -214,7 +214,7 @@ test('connects', async (t) => {
     host: mx.host,
     port: mx.port,
     connection: mx.socket,
-    // TODO: ignoreTLS: true,
+    ignoreTLS: true,
     secure: false,
     tls
   });
