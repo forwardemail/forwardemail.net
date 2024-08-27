@@ -4,6 +4,7 @@
  */
 
 const ip = require('ip');
+const isCI = require('is-ci');
 const ms = require('ms');
 const test = require('ava');
 const undici = require('undici');
@@ -56,14 +57,16 @@ const keys = Object.keys(config.meta).filter((key) => {
   return key;
 });
 
-// add all the alternatives (since it would be massive translation file addition otherwise)
-for (const alternative of config.alternatives) {
-  keys.push(`/blog/best-${alternative.slug}-alternative`);
-  for (const a of config.alternatives) {
-    if (a.name === alternative.name) continue;
-    keys.push(
-      `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
-    );
+if (!isCI) {
+  // add all the alternatives (since it would be massive translation file addition otherwise)
+  for (const alternative of config.alternatives) {
+    keys.push(`/blog/best-${alternative.slug}-alternative`);
+    for (const a of config.alternatives) {
+      if (a.name === alternative.name) continue;
+      keys.push(
+        `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
+      );
+    }
   }
 }
 
