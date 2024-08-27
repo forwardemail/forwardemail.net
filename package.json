@@ -151,7 +151,6 @@
     "is-ci": "3.0.1",
     "is-fqdn": "2.0.1",
     "is-html": "2.0.0",
-    "is-localhost-ip": "2.0.0",
     "is-stream": "2.0.1",
     "is-string-and-not-blank": "0.0.2",
     "isbot": "3.7.1",

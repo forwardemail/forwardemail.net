@@ -19,7 +19,6 @@ const dayjs = require('dayjs-with-plugins');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
-const isLocalhost = require('is-localhost-ip');
 const isSANB = require('is-string-and-not-blank');
 const localhostUrl = require('localhost-url-regex');
 const mongoose = require('mongoose');
@@ -44,6 +43,7 @@ const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
 
+// <https://github.com/frenchbread/private-ip/pull/27>
 // dynamically import private-ip
 let isPrivateIP;
 import('private-ip').then((obj) => {
@@ -961,8 +961,7 @@ Domains.pre('save', async function (next) {
       .replace('https://', '');
     if (
       localhostUrl().test(punycode.toASCII(this.bounce_webhook)) ||
-      isPrivateIP(value) ||
-      (await isLocalhost(punycode.toASCII(value)))
+      isPrivateIP(value)
     )
       throw Boom.badRequest(
         i18n.translateError('INVALID_LOCALHOST_URL', this.locale)

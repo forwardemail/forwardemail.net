@@ -6,7 +6,6 @@
 const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
-const isLocalhost = require('is-localhost-ip');
 const localhostUrl = require('localhost-url-regex');
 const pWaitFor = require('p-wait-for');
 const { boolean } = require('boolean');
@@ -19,6 +18,7 @@ const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
+// <https://github.com/frenchbread/private-ip/pull/27>
 // dynamically import private-ip
 let isPrivateIP;
 import('private-ip').then((obj) => {
@@ -38,8 +38,7 @@ async function isAllowlisted(val, client, resolver) {
   if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
 
   // if it's localhost or local IP address then return early
-  if (localhostUrl().test(val) || isPrivateIP(val) || (await isLocalhost(val)))
-    return true;
+  if (localhostUrl().test(val) || isPrivateIP(val)) return true;
 
   // if it is a FQDN and ends with restricted domain
   if (
