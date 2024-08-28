@@ -130,7 +130,7 @@ async function onAuth(auth, session, fn) {
           verifications.push(record.replace(config.paidPrefix, '').trim());
       }
     } catch (err) {
-      this.logger.error(err, { session });
+      this.logger.debug(err, { session });
     }
 
     if (verifications.length === 0)
@@ -319,8 +319,8 @@ async function onAuth(auth, session, fn) {
         )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
-          imapResponse: 'AUTHENTICATIONFAILED'
-          // ignoreHook: true
+          imapResponse: 'AUTHENTICATIONFAILED',
+          ignoreHook: true
         }
       );
     }
