@@ -62,12 +62,14 @@ setInterval(async () => {
           await imapClient.mailboxOpen('INBOX');
           imapClients.set(provider.name, imapClient);
         } catch (err) {
-          logger.fatal(err);
+          err.isCodeBug = true;
+          await logger.fatal(err);
         }
       })
     );
   } catch (err) {
-    logger.fatal(err);
+    err.isCodeBug = true;
+    await logger.fatal(err);
   }
 }, ms('30s'));
 
@@ -93,7 +95,8 @@ const graceful = new Graceful({
           try {
             await client.logout();
           } catch (err) {
-            logger.fatal(err);
+            err.isCodeBug = true;
+            await logger.fatal(err);
           }
         })
       );
@@ -266,6 +269,11 @@ Forward Email
                 resolver,
                 client
               });
+              if (
+                Array.isArray(info.rejectedErrors) &&
+                info.rejectedErrors.length > 0
+              )
+                throw combineErrors(info.rejectedErrors);
             } catch (err) {
               err.isCodeBug = true;
               logger.error(err);
@@ -306,6 +314,11 @@ Forward Email
                   signatures.length + newRaw.length
                 )
               });
+              if (
+                Array.isArray(info.rejectedErrors) &&
+                info.rejectedErrors.length > 0
+              )
+                throw combineErrors(info.rejectedErrors);
             }
 
             /*
@@ -314,6 +327,8 @@ Forward Email
               envelope,
               raw: dkim.sign(`Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`)
             });
+            if (Array.isArray(info.rejectedErrors) && info.rejectedErrors.length > 0)
+              throw combineErrors(info.rejectedErrors);
             */
 
             // rewrite messageId since `raw` overrides this
