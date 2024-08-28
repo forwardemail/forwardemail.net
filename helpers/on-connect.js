@@ -125,16 +125,12 @@ async function onConnect(session, fn) {
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
       config.env
     }`;
-    const key = `${prefix}:${
-      session.resolvedRootClientHostname || session.remoteAddress
-    }`;
+    const key = `${prefix}:${session.remoteAddress}`;
     const count = await this.client.incr(key);
     await this.client.pexpire(key, config.socketTimeout);
     if (count >= 10)
       throw new SMTPError(
-        `Too many concurrent connections from ${
-          session.resolvedRootClientHostname || session.remoteAddress
-        }`,
+        `Too many concurrent connections from ${session.remoteAddress}`,
         { responseCode: 421, ignoreHook: true }
       );
     fn();

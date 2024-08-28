@@ -13,19 +13,12 @@ async function onClose(session) {
   }`;
   await Promise.all([
     //
-    // decrease # concurrent connections for
-    // client hostname or remote address (not applicable to SMTP)
+    // decrease # concurrent connections for remote address
     //
     (async () => {
-      if (
-        (!session?.resolvedRootClientHostname && !session?.remoteAddress) ||
-        this.constructor.name === 'SMTP'
-      )
-        return;
+      if (!session?.remoteAddress) return;
       try {
-        const key = `${prefix}:${
-          session.resolvedRootClientHostname || session.remoteAddress
-        }`;
+        const key = `${prefix}:${session.remoteAddress}`;
         const count = await this.client.incrby(key, 0);
         if (count > 0) await this.client.decr(key);
       } catch (err) {
