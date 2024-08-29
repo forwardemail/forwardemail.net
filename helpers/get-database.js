@@ -598,17 +598,20 @@ async function getDatabase(
     let migrateCheck = !instance.server;
     let folderCheck = !instance.server;
     let trashCheck = !instance.server;
+    let threadCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
         const results = await instance.client.mget([
           `migrate_check:${session.user.alias_id}`,
           `folder_check:${session.user.alias_id}`,
-          `trash_check:${session.user.alias_id}`
+          `trash_check:${session.user.alias_id}`,
+          `thread_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
         trashCheck = boolean(results[2]);
+        threadCheck = boolean(results[3]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -674,8 +677,8 @@ async function getDatabase(
     // create initial folders for the user if they do not yet exist
     // (only do this once every day)
     //
-    try {
-      if (!folderCheck) {
+    if (!folderCheck) {
+      try {
         const paths = await Mailboxes.distinct(instance, session, 'path', {});
         const required = [];
         for (const path of REQUIRED_PATHS) {
@@ -739,16 +742,16 @@ async function getDatabase(
           'PX',
           ms('1d')
         );
+      } catch (err) {
+        logger.fatal(err, { session });
       }
-    } catch (err) {
-      logger.fatal(err, { session });
     }
 
     //
     // NOTE: we remove messages in Junk/Trash folder that are >= 30 days old
     //       (but we only do this once every day)
-    try {
-      if (!trashCheck) {
+    if (!trashCheck) {
+      try {
         const mailboxes = await Mailboxes.find(instance, session, {
           path: {
             $in: ['Trash', 'Spam', 'Junk']
@@ -811,12 +814,48 @@ async function getDatabase(
           'PX',
           ms('1d')
         );
+      } catch (err) {
+        logger.fatal(err, { session });
       }
-    } catch (err) {
-      logger.fatal(err, { session });
     }
 
-    if (!migrateCheck || !folderCheck || !trashCheck) {
+    //
+    // NOTE: we delete thread ids that don't correspond to messages anymore
+    //
+    if (!threadCheck) {
+      try {
+        const sql = builder.build({
+          type: 'select',
+          table: 'Messages',
+          distinct: true,
+          fields: ['thread']
+        });
+        const threadIds = db.prepare(sql.query).pluck().all(sql.values);
+        if (threadIds.length > 0) {
+          const removeSql = builder.build({
+            type: 'remove',
+            table: 'Threads',
+            condition: {
+              _id: {
+                $nin: threadIds
+              }
+            }
+          });
+          db.prepare(removeSql.query).run(removeSql.values);
+        }
+
+        await instance.client.set(
+          `thread_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
+        );
+      } catch (err) {
+        logger.fatal(err, { session });
+      }
+    }
+
+    if (!migrateCheck || !folderCheck || !trashCheck || !threadCheck) {
       try {
         //
         // All applications should run "PRAGMA optimize;" after a schema change,

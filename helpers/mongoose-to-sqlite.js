@@ -825,6 +825,8 @@ async function distinct(instance, session, field, conditions = {}) {
   if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
     throw new TypeError('WebSocketAsPromised instance required');
 
+  // TODO: use DISTINCT via `distinct: true` if only one field
+  // <https://github.com/2do2go/json-sql/blob/4be018c0662dacba06ddf033d18e71ebf93ee7c3/tests/1_select.js#L28-L38>
   const sql = builder.build({
     type: 'select',
     table,

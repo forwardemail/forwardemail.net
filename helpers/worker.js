@@ -783,6 +783,67 @@ async function backup(payload) {
     await logger.fatal(err, { payload });
   }
 
+  //
+  // NOTE: if the SQLite file is 2x larger than the backup, then we
+  //       should run a VACUUM since auto vacuum isn't optimal
+  //
+  if (payload.format === 'sqlite' && tmp) {
+    try {
+      // check how much space is remaining on storage location
+      const storagePath = getPathToDatabase({
+        id: payload.session.user.alias_id,
+        storage_location: payload.session.user.storage_location
+      });
+      const diskSpace = await checkDiskSpace(storagePath);
+
+      // <https://github.com/nodejs/node/issues/38006>
+      const stats = await fs.promises.stat(storagePath);
+      if (!stats.isFile() || stats.size === 0) {
+        const err = new TypeError('Database empty');
+        err.stats = stats;
+        throw err;
+      }
+
+      // we calculate size of db x 2 (backup + tarball)
+      const spaceRequired = stats.size * 2;
+
+      if (diskSpace.free < spaceRequired)
+        throw new TypeError(
+          `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            diskSpace.free
+          )} was available`
+        );
+
+      //
+      // check if main sqlite file is >= 25% larger than tmp file
+      //
+      // <https://github.com/nodejs/node/issues/38006>
+      const tmpStats = await fs.promises.stat(tmp);
+      if (!tmpStats.isFile() || tmpStats.size === 0) {
+        const err = new TypeError('Database empty');
+        err.stats = stats;
+        throw err;
+      }
+
+      if (stats.size >= Math.round(tmpStats.size * 1.25)) {
+        const db = await getDatabase(
+          instance,
+          // alias
+          {
+            id: payload.session.user.alias_id,
+            storage_location: payload.session.user.storage_location
+          },
+          payload.session
+        );
+        db.prepare('VACUUM').run();
+        await closeDatabase(db);
+      }
+    } catch (_err) {
+      _err.isCodeBug = true;
+      await logger.fatal(_err, { payload });
+    }
+  }
+
   // always do cleanup in case of errors
   if (tmp && backup) {
     try {
