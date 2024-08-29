@@ -6693,5 +6693,17 @@
   "If your ISP blocks outbound port 25, then you will have to find an alternate solution or contact them.": "If your ISP blocks outbound port 25, then you will have to find an alternate solution or contact them.",
   "You can run": "You can run",
   "from command line or terminal to see if your outbound port 25 connection is blocked.": "from command line or terminal to see if your outbound port 25 connection is blocked.",
-  "Español": "Español"
+  "Español": "Español",
+  "You do not belong to the administrative user group.": "You do not belong to the administrative user group.",
+  "Admin - Users": "Admin - Users",
+  "Search for users": "Search for users",
+  "Search by first name, last name, or email": "Search by first name, last name, or email",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "email": "email",
+  "domains": "domains",
+  "plan": "plan",
+  "group": "group",
+  "Last Login": "Last Login",
+  "Log in as user": "Log in as user"
 }

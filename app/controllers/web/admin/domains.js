@@ -16,7 +16,7 @@ const { isEmail } = require('validator');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
-const { Users, Domains } = require('#models');
+const { Aliases, Users, Domains } = require('#models');
 
 async function list(ctx) {
   let query = {};
@@ -69,6 +69,15 @@ async function list(ctx) {
       .exec(),
     Domains.countDocuments(query)
   ]);
+
+  // add total alias count to each domain
+  await Promise.all(
+    domains.map(async (domain) => {
+      domain.totalAliases = await Aliases.countDocuments({
+        domain: domain._id
+      });
+    })
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

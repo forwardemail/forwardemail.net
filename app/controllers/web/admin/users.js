@@ -10,7 +10,7 @@ const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 
-const { Users } = require('#models');
+const { Domains, Users } = require('#models');
 const config = require('#config');
 
 const USER_SEARCH_PATHS = [
@@ -58,6 +58,15 @@ async function list(ctx) {
       .exec(),
     Users.countDocuments(query)
   ]);
+
+  // add total domain count to each user
+  await Promise.all(
+    users.map(async (user) => {
+      user.totalDomains = await Domains.countDocuments({
+        'members.user': user._id
+      });
+    })
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

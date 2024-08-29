@@ -10315,5 +10315,6 @@
   "Open-source Email Hosting Service": "Åpen kildekode e-postvertstjeneste",
   "Custom Domain Email Forwarding": "Egendefinert domene-e-postvideresending",
   "Suggested": "Foreslått",
-  "Its description from its website is:": "Beskrivelsen fra nettstedet er:"
+  "Its description from its website is:": "Beskrivelsen fra nettstedet er:",
+  "domains": "domains"
 }

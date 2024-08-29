@@ -10157,5 +10157,6 @@
   "Open-source Email Hosting Service": "Avoimen lähdekoodin sähköpostipalvelu",
   "Custom Domain Email Forwarding": "Mukautetun verkkotunnuksen sähköpostin edelleenlähetys",
   "Suggested": "Ehdotettu",
-  "Its description from its website is:": "Sen kuvaus sen verkkosivuilta on:"
+  "Its description from its website is:": "Sen kuvaus sen verkkosivuilta on:",
+  "domains": "domains"
 }
