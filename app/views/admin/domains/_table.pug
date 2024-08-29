@@ -11,8 +11,6 @@ include ../../_pagination
           +sortHeader('is_global', 'Global', '#table-domains')
         th.align-middle(scope="col")= t("Members")
         th(scope="col")
-          +sortHeader('aliases', 'Aliases', '#table-domains')
-        th(scope="col")
           +sortHeader('plan', 'Plan', '#table-domains')
         th(scope="col")
           +sortHeader('has_mx_record', 'MX', '#table-domains')
@@ -54,7 +52,6 @@ include ../../_pagination
                       = "("
                       code.text-muted= member.user.id
                       = ")"
-              td.align-middle.text-center= domain.totalAliases
               td.align-middle.text-center
                 = t(titleize(humanize(domain.plan)))
               td.align-middle.text-center

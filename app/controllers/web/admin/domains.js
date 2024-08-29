@@ -58,37 +58,15 @@ async function list(ctx) {
     }
   }
 
-  const sortField = ctx.query.sort
-    ? ctx.query.sort.replace('-', '')
-    : 'created_at';
-  const sortOrder = ctx.query.sort && ctx.query.sort.startsWith('-') ? -1 : 1;
-
-  const aggregationPipeline = [
-    { $match: query },
-    {
-      $lookup: {
-        from: 'aliases',
-        let: { domainId: '$_id' },
-        pipeline: [
-          { $match: { $expr: { $eq: ['$domain', '$$domainId'] } } },
-          { $count: 'totalAliases' }
-        ],
-        as: 'totalAliasesInfo'
-      }
-    },
-    {
-      $addFields: {
-        totalAliases: { $arrayElemAt: ['$totalAliasesInfo.totalAliases', 0] }
-      }
-    },
-    { $unset: 'totalAliasesInfo' },
-    { $sort: { [sortField]: sortOrder } },
-    { $skip: ctx.paginate.skip },
-    { $limit: ctx.query.limit }
-  ];
-
   const [domains, itemCount] = await Promise.all([
-    Domains.aggregate(aggregationPipeline).exec(),
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    Domains.find(query)
+      .limit(ctx.query.limit)
+      .skip(ctx.paginate.skip)
+      .sort(ctx.query.sort || '-created_at')
+      .populate('members.user', 'id email')
+      .lean()
+      .exec(),
     Domains.countDocuments(query)
   ]);
 
