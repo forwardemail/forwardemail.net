@@ -6705,5 +6705,14 @@
   "plan": "plan",
   "group": "group",
   "Last Login": "Last Login",
-  "Log in as user": "Log in as user"
+  "Log in as user": "Log in as user",
+  "Admin - Inquiries": "Admin - Inquiries",
+  "Search for inquiries": "Search for inquiries",
+  "Search by email": "Search by email",
+  "Selected": "Selected",
+  "Reply": "Reply",
+  "Resolve": "Resolve",
+  "Bulk Reply": "Bulk Reply",
+  "Replying to": "Replying to",
+  "Submit Bulk Reply": "Submit Bulk Reply"
 }

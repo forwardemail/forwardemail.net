@@ -7298,5 +7298,6 @@
   "Suggested": "Foreslået",
   "Its description from its website is:": "Beskrivelsen fra dens hjemmeside er:",
   "Compare <span class=\"notranslate\">%s</span> with <span class=\"notranslate\">%d</span> email services": "Sammenlign <span class=\"notranslate\">%s</span> med <span class=\"notranslate\">%d</span> e-mail-tjenester",
-  "domains": "domains"
+  "domains": "domains",
+  "Replying to": "Replying to"
 }

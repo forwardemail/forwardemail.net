@@ -16,7 +16,7 @@ const { isEmail } = require('validator');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');
-const { Aliases, Users, Domains } = require('#models');
+const { Users, Domains } = require('#models');
 
 async function list(ctx) {
   let query = {};
@@ -58,26 +58,39 @@ async function list(ctx) {
     }
   }
 
+  const sortField = ctx.query.sort
+    ? ctx.query.sort.replace('-', '')
+    : 'created_at';
+  const sortOrder = ctx.query.sort && ctx.query.sort.startsWith('-') ? -1 : 1;
+
+  const aggregationPipeline = [
+    { $match: query },
+    {
+      $lookup: {
+        from: 'aliases',
+        let: { domainId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$domain', '$$domainId'] } } },
+          { $count: 'totalAliases' }
+        ],
+        as: 'totalAliasesInfo'
+      }
+    },
+    {
+      $addFields: {
+        totalAliases: { $arrayElemAt: ['$totalAliasesInfo.totalAliases', 0] }
+      }
+    },
+    { $unset: 'totalAliasesInfo' },
+    { $sort: { [sortField]: sortOrder } },
+    { $skip: ctx.paginate.skip },
+    { $limit: ctx.query.limit }
+  ];
+
   const [domains, itemCount] = await Promise.all([
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    Domains.find(query)
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .sort(ctx.query.sort || '-created_at')
-      .populate('members.user', 'id email')
-      .lean()
-      .exec(),
+    Domains.aggregate(aggregationPipeline).exec(),
     Domains.countDocuments(query)
   ]);
-
-  // add total alias count to each domain
-  await Promise.all(
-    domains.map(async (domain) => {
-      domain.totalAliases = await Aliases.countDocuments({
-        domain: domain._id
-      });
-    })
-  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
