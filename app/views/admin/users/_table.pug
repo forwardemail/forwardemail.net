@@ -12,6 +12,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('email', null, '#table-users')
         th(scope="col")
+          +sortHeader('domains', null, '#table-users')
+        th(scope="col")
           +sortHeader('plan', null, '#table-users')
         th(scope="col")
           +sortHeader('group', null, '#table-users')
@@ -43,6 +45,7 @@ include ../../_pagination
               = "("
               code.text-muted= user.id
               = ")"
+            td.align-middle= user.totalDomains
             td.align-middle= titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))
             td.align-middle.dayjs(

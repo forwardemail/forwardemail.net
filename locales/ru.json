@@ -10310,5 +10310,7 @@
   "Open-source Email Hosting Service": "Служба хостинга электронной почты с открытым исходным кодом",
   "Custom Domain Email Forwarding": "Пересылка электронной почты на пользовательский домен",
   "Suggested": "Предложенный",
-  "Its description from its website is:": "Описание на сайте:"
+  "Its description from its website is:": "Описание на сайте:",
+  "domains": "domains",
+  "Replying to": "Replying to"
 }

@@ -48,14 +48,37 @@ async function list(ctx) {
     }
   }
 
+  const sortField = ctx.query.sort
+    ? ctx.query.sort.replace('-', '')
+    : 'created_at';
+  const sortOrder = ctx.query.sort && ctx.query.sort.startsWith('-') ? -1 : 1;
+
+  const aggregationPipeline = [
+    { $match: query },
+    {
+      $lookup: {
+        from: 'domains',
+        let: { userId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $in: ['$$userId', '$members.user'] } } },
+          { $count: 'totalDomains' }
+        ],
+        as: 'domainInfo'
+      }
+    },
+    {
+      $addFields: {
+        totalDomains: { $arrayElemAt: ['$domainInfo.totalDomains', 0] }
+      }
+    },
+    { $unset: 'domainInfo' },
+    { $sort: { [sortField]: sortOrder } },
+    { $skip: ctx.paginate.skip },
+    { $limit: ctx.query.limit }
+  ];
+
   const [users, itemCount] = await Promise.all([
-    // eslint-disable-next-line unicorn/no-array-callback-reference
-    Users.find(query)
-      .limit(ctx.query.limit)
-      .skip(ctx.paginate.skip)
-      .lean()
-      .sort(ctx.query.sort || '-created_at')
-      .exec(),
+    Users.aggregate(aggregationPipeline).exec(),
     Users.countDocuments(query)
   ]);
 
