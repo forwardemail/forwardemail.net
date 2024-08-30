@@ -17,7 +17,7 @@ const { Buffer } = require('node:buffer');
 const { createHash, randomUUID } = require('node:crypto');
 
 const Axe = require('axe');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const ip = require('ip');

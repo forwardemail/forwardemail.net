@@ -5,7 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const captainHook = require('captain-hook');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');

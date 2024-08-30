@@ -20,7 +20,7 @@ const {
 //   heapdumpOnOOM: false
 // });
 
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 // const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');

@@ -16,7 +16,7 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');

@@ -18,7 +18,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');

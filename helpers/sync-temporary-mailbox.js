@@ -6,7 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const ms = require('ms');
 const pify = require('pify');

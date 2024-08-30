@@ -6,7 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
 const pFilter = require('p-filter');
 const safeStringify = require('fast-safe-stringify');

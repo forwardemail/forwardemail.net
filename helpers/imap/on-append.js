@@ -15,7 +15,7 @@
 
 const { Buffer } = require('node:buffer');
 
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const isHTML = require('is-html');
 const mongoose = require('mongoose');

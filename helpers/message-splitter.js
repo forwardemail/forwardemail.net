@@ -10,7 +10,7 @@ const { Transform } = require('node:stream');
 // Many thanks to Andris Reissman
 // <https://gist.github.com/andris9/94e73deef71640322c422b27cded5add>
 //
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const { Headers } = require('mailsplit');
 const { Iconv } = require('iconv');
 

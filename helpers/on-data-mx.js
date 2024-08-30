@@ -7,7 +7,7 @@ const { Buffer } = require('node:buffer');
 
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const { SRS } = require('sender-rewriting-scheme');
 const { isEmail } = require('validator');

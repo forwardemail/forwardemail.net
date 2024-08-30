@@ -18,7 +18,7 @@ const os = require('node:os');
 
 const MessageHandler = require('wildduck/lib/message-handler');
 const RateLimiter = require('async-ratelimiter');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const pWaitFor = require('p-wait-for');
