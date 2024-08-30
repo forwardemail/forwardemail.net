@@ -2282,9 +2282,7 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
           .lean()
           .exec()
       : Promise.resolve(
-          typeof aliasId === 'object' && typeof aliasId.max_quota === 'number'
-            ? aliasId
-            : null
+          typeof aliasId === 'object' && aliasId !== null ? aliasId : null
         )
   ]);
 
@@ -2329,7 +2327,7 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     err.aliasId = aliasId;
     err.alias = alias;
     logger.fatal(err);
-    // throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+    throw err;
   }
 
   // Filter out a domain's members without actual users
