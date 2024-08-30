@@ -2320,8 +2320,17 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
     );
   }
 
-  if (aliasId && !alias)
-    throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+  if (aliasId && !alias) {
+    const err = Boom.badRequest(
+      i18n.translateError('ALIAS_DOES_NOT_EXIST', locale)
+    );
+    err.isCodeBug = true;
+    err._id = _id;
+    err.aliasId = aliasId;
+    err.alias = alias;
+    logger.fatal(err);
+    // throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+  }
 
   // Filter out a domain's members without actual users
   const adminMembers = domain.members.filter(
