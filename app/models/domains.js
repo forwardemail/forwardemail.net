@@ -2277,7 +2277,7 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
       .lean()
       .exec(),
     typeof aliasId === 'string'
-      ? conn.models.Aliases.findOne({ id: aliasId, domain: _id })
+      ? conn.models.Aliases.findOne({ id: aliasId })
           .select('max_quota')
           .lean()
           .exec()
