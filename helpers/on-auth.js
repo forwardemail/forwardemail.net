@@ -49,6 +49,8 @@ async function onAuth(auth, session, fn) {
     // NOTE: until onConnect is available for IMAP and POP3 servers
     //       we leverage the existing SMTP helper in the interim
     //       <https://github.com/nodemailer/wildduck/issues/540>
+    //       <https://github.com/nodemailer/wildduck/issues/721>
+    //       (see this same comment in `helpers/on-connect.js`)
     //
     if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
       await onConnectPromise.call(this, session);
