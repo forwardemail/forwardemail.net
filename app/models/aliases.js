@@ -95,7 +95,6 @@ const Aliases = new mongoose.Schema({
   // alias specific max quota (set by admins only)
   max_quota: {
     type: Number,
-    default: config.maxQuotaPerAlias,
     min: 0,
     //
     // NOTE: hard-coded max of 100 GB (safeguard)

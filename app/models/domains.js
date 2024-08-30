@@ -225,7 +225,6 @@ const Domains = new mongoose.Schema({
   // domain specific max quota per alias
   max_quota_per_alias: {
     type: Number,
-    default: config.maxQuotaPerAlias,
     min: 0,
     //
     // NOTE: hard-coded max of 100 GB (safeguard)
