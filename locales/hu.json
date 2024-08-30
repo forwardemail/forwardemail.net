@@ -10318,5 +10318,6 @@
   "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.": "A <span class='notranslate'>%s</span> <span class='notranslate'>%s</span> kvótája meghaladja a domain maximális <span class='notranslate'>%s</span> kvótáját.",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "A <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> kvótája meghaladja a maximális kvótát<span class=\"%s\"></span> a domain rendszergazdáitól.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "A bájtok érvénytelenek voltak, olyan karakterláncnak kell lennie, mint például „1 GB” vagy „100 MB”.",
-  "alias quota": "alias kvóta"
+  "alias quota": "alias kvóta",
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "A <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> kvótája meghaladja a domain rendszergazdáitól származó maximális <span class=\"notranslate\">%s</span> kvótát."
 }

@@ -10318,5 +10318,6 @@
   "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.": "% <span class='notranslate'>%s</span> <span class='notranslate'>%s</span>のクォータがドメインの最大クォータ<span class='notranslate'>%s</span>を超えています。",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "% <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>のクォータが最大クォータを超えています<span class=\"%s\"></span>ドメインの管理者から。",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "バイトが無効です。「1 GB」や「100 MB」などの文字列である必要があります。",
-  "alias quota": "エイリアスクォータ"
+  "alias quota": "エイリアスクォータ",
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span>のクォータが、ドメインの管理者による<span class=\"notranslate\">%s</span>の最大クォータを超えています。"
 }

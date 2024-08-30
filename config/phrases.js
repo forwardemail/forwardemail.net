@@ -25,7 +25,7 @@ module.exports = {
   ALIAS_QUOTA_EXCEEDS_DOMAIN:
     "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.",
   DOMAIN_MAX_QUOTA_EXCEEDS_USER:
-    'The quota for <span class="notranslate">%s</span> of <span class="notranslate">%s</span> exceeds the maximum quota of <span class="%s"></span> from admins of the domain.',
+    'The quota for <span class="notranslate">%s</span> of <span class="notranslate">%s</span> exceeds the maximum quota of <span class="notranslate">%s</span> from admins of the domain.',
   PAGINATION_CHECK_SUBJECT:
     'Notice: API pagination required starting November 1st',
   PAGINATION_CHECK_MESSAGE:

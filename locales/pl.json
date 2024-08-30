@@ -10318,5 +10318,6 @@
   "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.": "Kwota <span class='notranslate'>%s</span> dla <span class='notranslate'>%s</span> przekracza maksymalną kwotę domeny wynoszącą <span class='notranslate'>%s</span> .",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "Kwota dla <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> przekracza maksymalną kwotę<span class=\"%s\"></span> od administratorów domeny.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Bajty są nieprawidłowe, musi to być ciąg znaków, np. „1 GB” lub „100 MB”.",
-  "alias quota": "kwota aliasu"
+  "alias quota": "kwota aliasu",
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Limit <span class=\"notranslate\">%s</span> dla <span class=\"notranslate\">%s</span> przekracza maksymalny limit <span class=\"notranslate\">%s</span> dla administratorów domeny."
 }

@@ -10318,5 +10318,6 @@
   "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.": "حصة <span class='notranslate'>%s</span> من <span class='notranslate'>%s</span> تتجاوز الحد الأقصى لحصة النطاق وهي <span class='notranslate'>%s</span> .",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "الحصة المخصصة لـ <span class=\"notranslate\">%s</span> من <span class=\"notranslate\">%s</span> تتجاوز الحصة القصوى المخصصة لـ<span class=\"%s\"></span> من مسؤولي المجال.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "كانت البايتات غير صالحة، يجب أن تكون سلسلة مثل \"1 جيجابايت\" أو \"100 ميجابايت\".",
-  "alias quota": "حصة الاسم المستعار"
+  "alias quota": "حصة الاسم المستعار",
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "تتجاوز الحصة المخصصة لـ <span class=\"notranslate\">%s</span> من <span class=\"notranslate\">%s</span> الحد الأقصى للحصة المخصصة لـ <span class=\"notranslate\">%s</span> من مسؤولي المجال."
 }
