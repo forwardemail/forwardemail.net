@@ -10003,5 +10003,12 @@
   "Open-source Email Hosting Service": "开源电子邮件托管服务",
   "Custom Domain Email Forwarding": "自定义域名电子邮件转发",
   "Suggested": "建议",
-  "Its description from its website is:": "其网站上的描述是："
+  "Its description from its website is:": "其网站上的描述是：",
+  "Storage Max Quota Per Alias": "每个别名的最大存储配额",
+  "Domain admins can update the maximum storage quota across all aliases. Enter a human-friendly string such as \"1GB\" &ndash; note that we use <a href=\"https://github.com/visionmedia/bytes.js\" class=\"notranslate alert-link\" target=\"_blank\" rel=\"noopener noreferrer\">bytes</a> to parse the value to a Number.  Domain admins can set maximum storage quota limits on a per alias basis by editing the alias directly.": "域管理员可以更新所有别名的最大存储配额。输入一个人性化的字符串，例如“1GB”——请注意，我们使用<a href=\"https://github.com/visionmedia/bytes.js\" class=\"notranslate alert-link\" target=\"_blank\" rel=\"noopener noreferrer\">bytes</a>将值解析为数字。域管理员可以通过直接编辑别名来为每个别名设置最大存储配额限制。",
+  "Storage Max Quota": "存储最大配额",
+  "Domain admins can update the storage quota for this alias.  Leave blank and hit save to reset it to the current domain's maximum storage quota of <span class=\"notranslate\">%s</span>.  Enter a human-friendly string such as \"1GB\" &ndash; note that we use <a href=\"https://github.com/visionmedia/bytes.js\" class=\"notranslate alert-link\" target=\"_blank\" rel=\"noopener noreferrer\">bytes</a> to parse the value to a Number.  If you would like to update the max storage quota across all aliases for this domain, then go to the domain's Settings page.": "域管理员可以更新此别名的存储配额。保留空白并点击保存以将其重置为当前域的最大存储配额<span class=\"notranslate\">%s</span> 。输入一个人性化的字符串，例如“1GB”——请注意，我们使用<a href=\"https://github.com/visionmedia/bytes.js\" class=\"notranslate alert-link\" target=\"_blank\" rel=\"noopener noreferrer\">bytes</a>将值解析为数字。如果您想更新此域的所有别名的最大存储配额，请转到域的“设置”页面。",
+  "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.": "<span class='notranslate'>%s</span> （共<span class='notranslate'>%s</span>的配额超出了域的最大配额<span class='notranslate'>%s</span> 。",
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "<span class=\"notranslate\">%s</span>的<span class=\"notranslate\">%s</span>配额超出了<span class=\"%s\"></span>来自域管理员。",
+  "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "字节无效，必须是诸如“1 GB”或“100 MB”之类的字符串。"
 }

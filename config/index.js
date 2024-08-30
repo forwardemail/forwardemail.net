@@ -1542,7 +1542,8 @@ config.views.locals.config = _.pick(config, [
   'metaTitleAffix',
   'modulusLength',
   'openPGPKey',
-  'ubuntuTeamMapping'
+  'ubuntuTeamMapping',
+  'maxQuotaPerAlias'
 ]);
 
 // <https://nodemailer.com/transports/>

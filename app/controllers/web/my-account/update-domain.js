@@ -5,13 +5,21 @@
 
 const punycode = require('node:punycode');
 
+const RE2 = require('re2');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const bytes = require('bytes');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 const { isPort } = require('validator');
 
 const { Domains } = require('#models');
+
+//
+// NOTE: this regex is not safe according to `safe-regex2` so we use `re2` to wrap it
+//       https://github.com/visionmedia/bytes.js/blob/9ddc13b6c66e0cb293616fba246e05db4b6cef4d/index.js#L37C5-L37C16
+//
+const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
 // eslint-disable-next-line complexity
 async function updateDomain(ctx, next) {
@@ -53,6 +61,25 @@ async function updateDomain(ctx, next) {
       ctx.state.domain.bounce_webhook = undefined;
     }
 
+    //
+    // max_quota_per_alias
+    // (string -> bytes)
+    // (number -> already bytes)
+    //
+    if (
+      typeof ctx.request.body.max_quota_per_alias !== 'undefined' &&
+      typeof ctx.request.body.max_quota_per_alias !== 'string'
+    )
+      throw Boom.badRequest(ctx.translateError('INVALID_BYTES'));
+    else if (isSANB(ctx.request.body.max_quota_per_alias)) {
+      // NOTE: this validation should be moved to `validate-domain.js`
+      if (!REGEX_BYTES.test(ctx.request.body.max_quota_per_alias))
+        throw Boom.badRequest(ctx.translateError('INVALID_BYTES'));
+      ctx.state.domain.max_quota_per_alias = bytes(
+        ctx.request.body.max_quota_per_alias
+      );
+    }
+
     // require paid plan (note that the API middleware already does this)
     for (const bool of [
       'has_adult_content_protection',
@@ -72,6 +99,19 @@ async function updateDomain(ctx, next) {
           ctx.request.body.bounce_webhook === ''
             ? undefined
             : ctx.request.body.bounce_webhook;
+        break;
+      }
+
+      case 'max_quota_per_alias': {
+        // NOTE: this validation should be moved to `validate-domain.js`
+        if (
+          !isSANB(ctx.request.body.max_quota_per_alias) ||
+          !REGEX_BYTES.test(ctx.request.body.max_quota_per_alias)
+        )
+          throw Boom.badRequest(ctx.translateError('INVALID_BYTES'));
+        ctx.state.domain.max_quota_per_alias = bytes(
+          ctx.request.body.max_quota_per_alias
+        );
         break;
       }
 

@@ -13,7 +13,6 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
-const prettyBytes = require('pretty-bytes');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
@@ -538,6 +537,24 @@ Aliases.pre('save', async function (next) {
     )
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
+    //
+    // NOTE: we ensure that `alias.max_quota` cannot exceed `domain.max_quota_per_alias`
+    //
+    if (
+      Number.isFinite(domain.max_quota_per_alias) &&
+      Number.isFinite(alias.max_quota) &&
+      alias.max_quota > domain.max_quota_per_alias
+    )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'ALIAS_QUOTA_EXCEEDS_DOMAIN',
+          alias.locale,
+          `${alias.name}@${domain.name}`,
+          bytes(alias.max_quota),
+          bytes(domain.max_quota_per_alias)
+        )
+      );
+
     // determine the domain membership for the user
     let member = domain.members.find((member) =>
       user
@@ -851,9 +868,9 @@ Aliases.statics.isOverQuota = async function (
   if (isOverQuota)
     logger.fatal(
       new TypeError(
-        `Alias ${alias.id} is over quota (${prettyBytes(
-          storageUsed + size
-        )}/${prettyBytes(maxQuotaPerAlias)})`
+        `Alias ${alias.id} is over quota (${bytes(storageUsed + size)}/${bytes(
+          maxQuotaPerAlias
+        )})`
       )
     );
 

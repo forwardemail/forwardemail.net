@@ -757,8 +757,52 @@ Domains.pre('validate', async function (next) {
       _id: { $in: domain.members.map((m) => m.user) }
     })
       .lean()
-      .select('plan email')
+      .select(`id plan email ${config.userFields.maxQuotaPerAlias}`)
       .exec();
+
+    //
+    // NOTE: we ensure that max quota per alias cannot exceed global
+    //       max or value higher than any current admin's max quota
+    //
+    const adminUserIds = new Set(
+      domain.members
+        .filter((m) => m.group === 'admin' && m.user)
+        .map((m) =>
+          m?.user?._id
+            ? m.user._id.toString()
+            : m?.user?.id || m.user.toString()
+        )
+    );
+    const adminUsers = users.filter((user) => adminUserIds.has(user.id));
+
+    const adminMaxQuota =
+      adminUsers.length === 0
+        ? config.maxQuotaPerAlias
+        : _.max(
+            adminUsers.map((user) =>
+              typeof user[config.userFields.maxQuotaPerAlias] === 'number'
+                ? user[config.userFields.maxQuotaPerAlias]
+                : config.maxQuotaPerAlias
+            )
+          );
+
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    const maxQuota = _.clamp(adminMaxQuota, 0, bytes('100GB'));
+    if (
+      Number.isFinite(domain.max_quota_per_alias) &&
+      domain.max_quota_per_alias > maxQuota
+    )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'DOMAIN_MAX_QUOTA_EXCEEDS_USER',
+          domain.locale,
+          domain.name,
+          bytes(domain.max_quota_per_alias),
+          bytes(maxQuota)
+        )
+      );
 
     const hasValidPlan = users.some((user) => {
       if (domain.plan === 'team' && user.plan === 'team') {
@@ -2217,14 +2261,33 @@ async function ensureUserHasValidPlan(user, locale) {
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 
-async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
-  const domain = await this.findById(_id)
-    .populate(
-      'members.user',
-      `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
-    )
-    .lean()
-    .exec();
+//
+// NOTE: in order to save db lookups, you can pass an alias object with `max_quota` property
+//       instead of a string for `aliasId` value, so it will re-use an existing alias object
+//
+async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
+  if (typeof conn?.models?.Aliases?.findOne !== 'function')
+    throw new TypeError('Aliases model is not ready');
+
+  const [domain, alias] = await Promise.all([
+    this.findById(_id)
+      .populate(
+        'members.user',
+        `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
+      )
+      .lean()
+      .exec(),
+    typeof aliasId === 'string'
+      ? conn.models.Aliases.findOne({ id: aliasId, domain: _id })
+          .select('max_quota')
+          .lean()
+          .exec()
+      : Promise.resolve(
+          typeof aliasId === 'object' && typeof aliasId.max_quota === 'number'
+            ? aliasId
+            : null
+        )
+  ]);
 
   if (!domain)
     throw Boom.badRequest(
@@ -2258,6 +2321,9 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     );
   }
 
+  if (aliasId && !alias)
+    throw Boom.badRequest(i18n.translateError('ALIAS_DOES_NOT_EXIST', locale));
+
   // Filter out a domain's members without actual users
   const adminMembers = domain.members.filter(
     (member) =>
@@ -2280,18 +2346,29 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     );
   }
 
-  // TODO: add in form and API endpoint and API docs
-  // TODO: if the alias had a limit set on `alias.max_quota` by an admin
-  // TODO: if the domain had an alias-wide limit set on `domain.max_quota_per_alias`
-
   // go through all admins and get the max value
-  const max = _.max(
+  let max = _.max(
     adminMembers.map((member) =>
       typeof member.user[config.userFields.maxQuotaPerAlias] === 'number'
         ? member.user[config.userFields.maxQuotaPerAlias]
         : config.maxQuotaPerAlias
     )
   );
+
+  // if domain had a max value set, and it was less than `max`, then set new max
+  if (
+    Number.isFinite(domain.max_quota_per_alias) &&
+    domain.max_quota_per_alias < max
+  )
+    max = domain.max_quota_per_alias;
+
+  // if alias passed, and had a max value set, and it was less than `max`, then set new max
+  if (
+    alias &&
+    Number.isFinite(alias.max_quota) &&
+    alias.max_quota_per_alias < max
+  )
+    max = alias.max_quota_per_alias;
 
   //
   // NOTE: hard-coded max of 100 GB (safeguard)

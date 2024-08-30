@@ -88,17 +88,17 @@ mixin renderProgressBar(domain, isMobile = false)
     ul.list-unstyled.small.mt-1.mb-0
       if storageUsedByAliases > 0
         li.text-primary
-          = prettyBytes(domain.storage_used_by_aliases)
+          = bytes(domain.storage_used_by_aliases)
           = " "
           = t("domain")
       if pooledStorageUsed > 0
         li(class=textClass)
-          = prettyBytes(domain.storage_used)
+          = bytes(domain.storage_used)
           = " "
           = t("pooled")
       if availableStorage > 0
         li.text-success
-          = prettyBytes(domain.storage_quota - domain.storage_used)
+          = bytes(domain.storage_quota - domain.storage_used)
           = " "
           = t("available")
   else

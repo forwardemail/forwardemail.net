@@ -238,7 +238,6 @@
     "postcss-strip-font-face": "1.0.0",
     "postcss-viewport-height-correction": "1.1.1",
     "prepare-stack-trace": "0.0.4",
-    "pretty-bytes": "5",
     "pretty-ms": "7",
     "preview-email": "3.1.0",
     "private-ip": "3.0.2",

@@ -371,7 +371,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
-    const maxQuotaPerAlias = await Domains.getMaxQuota(session.user.domain_id);
+    const maxQuotaPerAlias = await Domains.getMaxQuota(
+      session.user.domain_id,
+      session.user.alias_id
+    );
 
     const exceedsQuota = storageUsed + size > maxQuotaPerAlias;
     if (exceedsQuota)

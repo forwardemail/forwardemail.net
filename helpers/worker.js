@@ -20,6 +20,7 @@ const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
+const bytes = require('bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const getStream = require('get-stream');
@@ -27,7 +28,6 @@ const hasha = require('hasha');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
-const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const {
@@ -159,7 +159,7 @@ async function rekey(payload) {
   const diskSpace = await checkDiskSpace(storagePath);
   if (diskSpace.free < spaceRequired)
     throw new TypeError(
-      `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+      `Needed ${bytes(spaceRequired)} but only ${bytes(
         diskSpace.free
       )} was available`
     );
@@ -411,7 +411,7 @@ async function backup(payload) {
 
     if (diskSpace.free < spaceRequired)
       throw new TypeError(
-        `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+        `Needed ${bytes(spaceRequired)} but only ${bytes(
           diskSpace.free
         )} was available`
       );
@@ -809,7 +809,7 @@ async function backup(payload) {
 
       if (diskSpace.free < spaceRequired)
         throw new TypeError(
-          `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+          `Needed ${bytes(spaceRequired)} but only ${bytes(
             diskSpace.free
           )} was available`
         );

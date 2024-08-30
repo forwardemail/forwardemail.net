@@ -398,6 +398,44 @@ block body
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
 
+          //- Max Quota Per Alias
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(
+                type="hidden",
+                name="_section",
+                value="max_quota_per_alias"
+              )
+              h2.h6.card-header= t("Storage Max Quota Per Alias")
+              .card-body
+                +planRequired(false)
+                .form-group.mb-0
+                  input#input-max-quota-per-alias.form-control(
+                    type="text",
+                    disabled=isDisabled,
+                    name="max_quota_per_alias",
+                    value=bytes(Number.isFinite(domain.max_quota_per_alias) ? domain.max_quota_per_alias : config.maxQuotaPerAlias)
+                  )
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t('Domain admins can update the maximum storage quota across all aliases. Enter a human-friendly string such as "1GB" &ndash; note that we use <a href="https://github.com/visionmedia/bytes.js" class="notranslate alert-link" target="_blank" rel="noopener noreferrer">bytes</a> to parse the value to a Number.  Domain admins can set maximum storage quota limits on a per alias basis by editing the alias directly.')
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
           //- Ignore MX Check
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(

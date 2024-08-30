@@ -20,6 +20,12 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  INVALID_BYTES:
+    'Bytes were invalid, must be a string such as "1 GB" or "100 MB".',
+  ALIAS_QUOTA_EXCEEDS_DOMAIN:
+    "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.",
+  DOMAIN_MAX_QUOTA_EXCEEDS_USER:
+    'The quota for <span class="notranslate">%s</span> of <span class="notranslate">%s</span> exceeds the maximum quota of <span class="%s"></span> from admins of the domain.',
   PAGINATION_CHECK_SUBJECT:
     'Notice: API pagination required starting November 1st',
   PAGINATION_CHECK_MESSAGE:

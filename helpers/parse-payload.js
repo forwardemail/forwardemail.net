@@ -26,7 +26,6 @@ const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
-const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const { isEmail } = require('validator');
@@ -654,7 +653,7 @@ async function parsePayload(data, ws) {
                   `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
-                  'id has_imap has_pgp public_key storage_location user is_enabled name domain'
+                  'id has_imap has_pgp public_key storage_location user is_enabled name domain max_quota'
                 )
                 .lean()
                 .exec();
@@ -718,9 +717,7 @@ async function parsePayload(data, ws) {
 
               if (isOverQuota) {
                 const err = new TypeError(
-                  `${
-                    session.user.username
-                  } has exceeded quota with ${prettyBytes(
+                  `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
                 );
@@ -739,15 +736,14 @@ async function parsePayload(data, ws) {
               }
 
               const maxQuotaPerAlias = await Domains.getMaxQuota(
-                alias.domain.id
+                alias.domain.id,
+                alias
               );
               const exceedsQuota = storageUsed + byteLength > maxQuotaPerAlias;
 
               if (exceedsQuota) {
                 const err = new TypeError(
-                  `${
-                    session.user.username
-                  } has exceeded quota with ${prettyBytes(
+                  `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
                 );
@@ -798,7 +794,7 @@ async function parsePayload(data, ws) {
                     // 1) Senders that we consider to be "trusted" as a source of truth
                     if (size >= bytes('100GB')) {
                       const err = new SMTPError(
-                        `${sender} limited to 100 GB with current of ${prettyBytes(
+                        `${sender} limited to 100 GB with current of ${bytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
@@ -817,7 +813,7 @@ async function parsePayload(data, ws) {
                       // 2) Senders that are allowlisted are limited to sending 10 GB per day.
                       if (size >= bytes('10GB')) {
                         const err = new SMTPError(
-                          `${sender} limited to 10 GB with current of ${prettyBytes(
+                          `${sender} limited to 10 GB with current of ${bytes(
                             size
                           )} from ${count} messages`,
                           { responseCode: 421 }
@@ -829,7 +825,7 @@ async function parsePayload(data, ws) {
                       // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                     } else if (size >= bytes('1GB') || count >= 1000) {
                       const err = new SMTPError(
-                        `#3 ${sender} limited with current of ${prettyBytes(
+                        `#3 ${sender} limited with current of ${bytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
@@ -842,7 +838,7 @@ async function parsePayload(data, ws) {
                 } else if (size >= bytes('1GB') || count >= 1000) {
                   // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                   const err = new SMTPError(
-                    `#3 ${sender} limited with current of ${prettyBytes(
+                    `#3 ${sender} limited with current of ${bytes(
                       size
                     )} from ${count} messages`,
                     { responseCode: 421 }
@@ -866,7 +862,7 @@ async function parsePayload(data, ws) {
 
                 if (specific.size >= bytes('1GB') || specific.count >= 1000) {
                   const err = new SMTPError(
-                    `${sender} limited with current of ${prettyBytes(
+                    `${sender} limited with current of ${bytes(
                       specific.size
                     )} from ${specific.count} messages to ${root}`,
                     {
@@ -888,7 +884,7 @@ async function parsePayload(data, ws) {
               const diskSpace = await checkDiskSpace(storagePath);
               if (diskSpace.free < spaceRequired)
                 throw new TypeError(
-                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                  `Needed ${bytes(spaceRequired)} but only ${bytes(
                     diskSpace.free
                   )} was available`
                 );
@@ -1224,7 +1220,8 @@ async function parsePayload(data, ws) {
         const diskSpace = await checkDiskSpace(storagePath);
 
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
 
         // slight 2x overhead for backups
@@ -1232,7 +1229,7 @@ async function parsePayload(data, ws) {
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );
@@ -1473,7 +1470,8 @@ async function parsePayload(data, ws) {
         });
         const diskSpace = await checkDiskSpace(storagePath);
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
 
         let stats;
@@ -1497,7 +1495,7 @@ async function parsePayload(data, ws) {
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );
@@ -1659,13 +1657,14 @@ async function parsePayload(data, ws) {
 
         // slight 2x overhead for backups
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
         const spaceRequired = maxQuotaPerAlias * 2;
 
         if (config.env !== 'development' && diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );

@@ -18,12 +18,12 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const bytes = require('bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
-const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 
 const Aliases = require('#models/aliases');
@@ -225,7 +225,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
           const [storageUsed, maxQuotaPerAlias] = await Promise.all([
             Aliases.getStorageUsed(alias),
-            Domains.getMaxQuota(alias.domain)
+            Domains.getMaxQuota(alias.domain, alias)
           ]);
 
           const percentageUsed = Math.round(
@@ -277,8 +277,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             'STORAGE_THRESHOLD_MESSAGE',
             locale,
             percentageUsed,
-            prettyBytes(storageUsed),
-            prettyBytes(maxQuotaPerAlias),
+            bytes(storageUsed),
+            bytes(maxQuotaPerAlias),
             `${config.urls.web}/${locale}/my-account/billing`
           );
 
