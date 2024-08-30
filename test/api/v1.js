@@ -182,6 +182,7 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body)),
     _.sortBy([
+      'max_quota',
       'created_at',
       'error_code_if_disabled',
       'has_imap',
@@ -229,6 +230,7 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body.domain)),
     _.sortBy([
+      'max_quota_per_alias',
       'allowlist',
       'denylist',
       'invites',
@@ -300,6 +302,7 @@ test('creates alias with global catch-all', async (t) => {
         'retention',
         'name',
         'is_enabled',
+        'max_quota',
         'error_code_if_disabled',
         'has_recipient_verification',
         'recipients',
@@ -1280,10 +1283,12 @@ test('create domain without catchall', async (t) => {
     t.is(res.body.length, 1);
     t.true(res.body[0].name === 'testdomain1.com');
     t.true(res.body[0].plan === 'enhanced_protection');
+
     // filter for properties for exposed values
     t.deepEqual(
       _.sortBy(Object.keys(res.body[0])),
       _.sortBy([
+        'max_quota_per_alias',
         'allowlist',
         'denylist',
         'created_at',

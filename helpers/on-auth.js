@@ -679,6 +679,7 @@ async function onAuth(auth, session, fn) {
   } catch (err) {
     //
     // NOTE: if err.response === 'NO' then WildDuck POP3 will return error message too
+    //       similarly if `error.response` is set then IMAP will return that instead of TEMPFAIL
     //
     // NOTE: we should actually share error message if it was not a code bug
     //       (otherwise it won't be intuitive to users if they're late on payment)
@@ -686,9 +687,14 @@ async function onAuth(auth, session, fn) {
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
     // <https://github.com/nodemailer/wildduck/issues/726>
-    fn(
-      refineAndLogError(err, session, this.server instanceof IMAPServer, this)
+    const error = refineAndLogError(
+      err,
+      session,
+      this.server instanceof IMAPServer,
+      this
     );
+    error.response = 'NO';
+    fn(error);
   }
 }
 
