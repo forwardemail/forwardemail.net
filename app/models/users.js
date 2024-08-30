@@ -5,6 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const bytes = require('bytes');
 const captainHook = require('captain-hook');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
@@ -152,7 +153,12 @@ const object = {};
 
 object[config.userFields.maxQuotaPerAlias] = {
   type: Number,
-  default: config.maxQuotaPerAlias
+  default: config.maxQuotaPerAlias,
+  min: 0,
+  //
+  // NOTE: hard-coded max of 100 GB (safeguard)
+  //
+  max: bytes('100GB')
 };
 
 object[config.userFields.smtpLimit] = {

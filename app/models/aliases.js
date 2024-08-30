@@ -6,6 +6,7 @@
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
+const bytes = require('bytes');
 const captainHook = require('captain-hook');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -92,6 +93,17 @@ APS.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // alias specific max quota (set by admins only)
+  max_quota: {
+    type: Number,
+    default: config.maxQuotaPerAlias,
+    min: 0,
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    max: bytes('100GB')
+  },
+
   // apple push notification support
   // <https://github.com/nodemailer/wildduck/issues/711>
   aps: [APS],

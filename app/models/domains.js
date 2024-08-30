@@ -222,6 +222,16 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // domain specific max quota per alias
+  max_quota_per_alias: {
+    type: Number,
+    default: config.maxQuotaPerAlias,
+    min: 0,
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    max: bytes('100GB')
+  },
   // URL to POST to when a bounce is detected from outbound SMTP servers
   // (NOTE: see additional validation below where we prevent localhost and private IP's from being webhooks)
   bounce_webhook: {
@@ -2216,12 +2226,6 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     .lean()
     .exec();
 
-  if (!domain) {
-    throw Boom.badRequest(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
-    );
-  }
-
   if (!domain)
     throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
@@ -2276,6 +2280,10 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     );
   }
 
+  // TODO: add in form and API endpoint and API docs
+  // TODO: if the alias had a limit set on `alias.max_quota` by an admin
+  // TODO: if the domain had an alias-wide limit set on `domain.max_quota_per_alias`
+
   // go through all admins and get the max value
   const max = _.max(
     adminMembers.map((member) =>
@@ -2288,7 +2296,7 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
   //
   // NOTE: hard-coded max of 100 GB (safeguard)
   //
-  return _.clamp(max, config.maxQuotaPerAlias, bytes('100GB'));
+  return _.clamp(max, 0, bytes('100GB'));
 }
 
 Domains.statics.getMaxQuota = getMaxQuota;

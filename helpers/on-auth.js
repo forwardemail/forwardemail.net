@@ -675,26 +675,18 @@ async function onAuth(auth, session, fn) {
         .catch((err) => this.logger.warn(err, { session }));
     }
   } catch (err) {
+    //
     // NOTE: if err.response === 'NO' then WildDuck POP3 will return error message too
-    // NOTE: if err.response is a message then WildDuck IMAP will return the error message
     //
     // NOTE: we should actually share error message if it was not a code bug
     //       (otherwise it won't be intuitive to users if they're late on payment)
     //       (and we now do this via "ALERT" `imapResponse` code set in refineAndLogError
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
-    const error = refineAndLogError(
-      err,
-      session,
-      this.server instanceof IMAPServer,
-      this
+    // <https://github.com/nodemailer/wildduck/issues/726>
+    fn(
+      refineAndLogError(err, session, this.server instanceof IMAPServer, this)
     );
-    if (this.server instanceof IMAPServer) {
-      error.response = error.message;
-      fn(error);
-    } else {
-      fn(error);
-    }
   }
 }
 

@@ -787,7 +787,7 @@ async function backup(payload) {
   // NOTE: if the SQLite file is 2x larger than the backup, then we
   //       should run a VACUUM since auto vacuum isn't optimal
   //
-  if (payload.format === 'sqlite' && tmp) {
+  if (payload.format === 'sqlite' && tmp && backup) {
     try {
       // check how much space is remaining on storage location
       const storagePath = getPathToDatabase({
