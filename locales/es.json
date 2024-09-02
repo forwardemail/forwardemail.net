@@ -10317,5 +10317,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "La cuota para <span class=\"notranslate\">%s</span> de <span class=\"notranslate\">%s</span> excede la cuota máxima de<span class=\"%s\"></span> de los administradores del dominio.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Los bytes no son válidos, debe ser una cadena como \"1 GB\" o \"100 MB\".",
   "alias quota": "alias cuota",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "La cuota de <span class=\"notranslate\">%s</span> de <span class=\"notranslate\">%s</span> excede la cuota máxima de <span class=\"notranslate\">%s</span> de administradores del dominio."
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "La cuota de <span class=\"notranslate\">%s</span> de <span class=\"notranslate\">%s</span> excede la cuota máxima de <span class=\"notranslate\">%s</span> de administradores del dominio.",
+  "Calendar already exists.": "El calendario ya existe."
 }

@@ -10319,5 +10319,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "Het quotum voor <span class=\"notranslate\">%s</span> van <span class=\"notranslate\">%s</span> overschrijdt het maximumquotum van<span class=\"%s\"></span> van beheerders van het domein.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Bytes zijn ongeldig, moet een tekenreeks zijn, bijvoorbeeld \"1 GB\" of \"100 MB\".",
   "alias quota": "alias quotum",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Het quotum voor <span class=\"notranslate\">%s</span> van <span class=\"notranslate\">%s</span> overschrijdt het maximale quotum van <span class=\"notranslate\">%s</span> van beheerders van het domein."
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Het quotum voor <span class=\"notranslate\">%s</span> van <span class=\"notranslate\">%s</span> overschrijdt het maximale quotum van <span class=\"notranslate\">%s</span> van beheerders van het domein.",
+  "Calendar already exists.": "Kalender bestaat al."
 }

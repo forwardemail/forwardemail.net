@@ -10319,5 +10319,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "Kuota untuk <span class=\"notranslate\">%s</span> dari <span class=\"notranslate\">%s</span> melebihi kuota maksimum<span class=\"%s\"></span> dari admin domain.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Byte tidak valid, harus berupa string seperti \"1 GB\" atau \"100 MB\".",
   "alias quota": "alias kuota",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kuota untuk <span class=\"notranslate\">%s</span> dari <span class=\"notranslate\">%s</span> melebihi kuota maksimum <span class=\"notranslate\">%s</span> dari admin domain."
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kuota untuk <span class=\"notranslate\">%s</span> dari <span class=\"notranslate\">%s</span> melebihi kuota maksimum <span class=\"notranslate\">%s</span> dari admin domain.",
+  "Calendar already exists.": "Kalender sudah ada."
 }

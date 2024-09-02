@@ -9358,5 +9358,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "Das Kontingent für <span class=\"notranslate\">%s</span> von <span class=\"notranslate\">%s</span> überschreitet das maximale Kontingent von<span class=\"%s\"></span> von Admins der Domäne.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Die Bytes waren ungültig. Es muss sich um eine Zeichenfolge wie „1 GB“ oder „100 MB“ handeln.",
   "alias quota": "Alias-Kontingent",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Das Kontingent für <span class=\"notranslate\">%s</span> von <span class=\"notranslate\">%s</span> überschreitet das maximale Kontingent von <span class=\"notranslate\">%s</span> von Administratoren der Domäne."
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Das Kontingent für <span class=\"notranslate\">%s</span> von <span class=\"notranslate\">%s</span> überschreitet das maximale Kontingent von <span class=\"notranslate\">%s</span> von Administratoren der Domäne.",
+  "Calendar already exists.": "Kalender existiert bereits."
 }

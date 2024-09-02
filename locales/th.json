@@ -10319,5 +10319,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "โควตาสำหรับ <span class=\"notranslate\">%s</span> ของ <span class=\"notranslate\">%s</span> เกินโควตาสูงสุดของ<span class=\"%s\"></span> จากผู้ดูแลระบบโดเมน",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "ไบต์ไม่ถูกต้อง ต้องเป็นสตริงเช่น \"1 GB\" หรือ \"100 MB\"",
   "alias quota": "โควตาชื่อเล่น",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "โควตาสำหรับ <span class=\"notranslate\">%s</span> ของ <span class=\"notranslate\">%s</span> เกินโควตาสูงสุดของ <span class=\"notranslate\">%s</span> จากผู้ดูแลระบบของโดเมน"
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "โควตาสำหรับ <span class=\"notranslate\">%s</span> ของ <span class=\"notranslate\">%s</span> เกินโควตาสูงสุดของ <span class=\"notranslate\">%s</span> จากผู้ดูแลระบบของโดเมน",
+  "Calendar already exists.": "ปฏิทินมีอยู่แล้ว"
 }

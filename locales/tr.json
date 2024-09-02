@@ -10319,5 +10319,6 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"%s\"></span> from admins of the domain.": "<span class=\"notranslate\">%s</span> s&#39;nin <span class=\"notranslate\">%s</span> kotası, maksimum kotayı aşıyor<span class=\"%s\"></span> Alan adının yöneticilerinden.",
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Baytlar geçersiz, \"1 GB\" veya \"100 MB\" gibi bir dize olmalı.",
   "alias quota": "takma ad kotası",
-  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> için <span class=\"notranslate\">%s</span> kotası, etki alanının yöneticilerinin <span class=\"notranslate\">%s</span> maksimum kotasını aşıyor."
+  "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> için <span class=\"notranslate\">%s</span> kotası, etki alanının yöneticilerinin <span class=\"notranslate\">%s</span> maksimum kotasını aşıyor.",
+  "Calendar already exists.": "Takvim zaten mevcut."
 }
