@@ -278,20 +278,19 @@ async function onDataMX(raw, session, headers, body) {
   )
     return;
 
-  console.log('WIP');
-
-  // TODO: add opt-in logging in Domain > Settings and log for each if enabled
-  // logger.info('email processed', {
-  //   // TODO: session.headers etc need set (see createSession)
+  // TODO: log here
+  // logger.info('email delivery attempt', {
   //   session,
-  //   // TODO: figure this out
-  //   // user: email.user,
-  //   // email: email._id,
-  //   // domains: [email.domain],
   //   ignore_hook: false
   // });
-  // TODO: send email here and log "email delivered" (or) "email forwarded"
 
+  // Buffer.concat([
+  //   Buffer.from(session.arcSealedHeaders),
+  //   headers.build(),
+  //   body
+  // ]);
+
+  // TODO: send email here and log "email delivered" (or) "email forwarded"
   // TODO: fill this in
 }
 

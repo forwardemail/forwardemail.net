@@ -182,7 +182,6 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body)),
     _.sortBy([
-      'max_quota',
       'created_at',
       'error_code_if_disabled',
       'has_imap',
@@ -210,6 +209,7 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body.user)),
     _.sortBy([
+      'max_quota_per_alias',
       'address_country',
       'address_html',
       'created_at',
@@ -219,7 +219,6 @@ test('creates alias with global catch-all', async (t) => {
       'id',
       'last_locale',
       'locale',
-      'max_quota_per_alias',
       'object',
       'otp_enabled',
       'plan',
@@ -230,7 +229,7 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body.domain)),
     _.sortBy([
-      'max_quota_per_alias',
+      'max_recipients_per_alias',
       'allowlist',
       'denylist',
       'invites',
@@ -252,7 +251,6 @@ test('creates alias with global catch-all', async (t) => {
       'ignore_mx_check',
       'is_catchall_regex_disabled',
       'locale',
-      'max_recipients_per_alias',
       'members',
       'name',
       'object',
@@ -302,7 +300,6 @@ test('creates alias with global catch-all', async (t) => {
         'retention',
         'name',
         'is_enabled',
-        'max_quota',
         'error_code_if_disabled',
         'has_recipient_verification',
         'recipients',
@@ -1288,7 +1285,6 @@ test('create domain without catchall', async (t) => {
     t.deepEqual(
       _.sortBy(Object.keys(res.body[0])),
       _.sortBy([
-        'max_quota_per_alias',
         'allowlist',
         'denylist',
         'created_at',

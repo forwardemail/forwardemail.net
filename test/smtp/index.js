@@ -1788,7 +1788,7 @@ test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
       user: user._id
     })
   );
-  t.is(err.message, `Email size of ${env.SMTP_MESSAGE_MAX_SIZE} exceeded.`);
+  t.is(err.message, `Email size of ${bytes(bytes(env.SMTP_MESSAGE_MAX_SIZE))} exceeded.`);
 });
 
 test('smtp outbound queue', async (t) => {
