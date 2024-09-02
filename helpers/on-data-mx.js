@@ -278,6 +278,8 @@ async function onDataMX(raw, session, headers, body) {
   )
     return;
 
+  console.log('WIP');
+
   // TODO: log here
   // logger.info('email delivery attempt', {
   //   session,
