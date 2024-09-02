@@ -10013,5 +10013,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "字节无效，必须是诸如“1 GB”或“100 MB”之类的字符串。",
   "alias quota": "别名配额",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> （共<span class=\"notranslate\">%s</span>的配额超出了域管理员<span class=\"notranslate\">%s</span>的最大配额。",
-  "Calendar already exists.": "日历已存在。"
+  "Calendar already exists.": "日历已存在。",
+  "Canonical": "典范",
+  "Kubuntu": "库本图",
+  "Lubuntu": "卢本图"
 }

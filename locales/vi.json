@@ -7850,5 +7850,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Byte không hợp lệ, phải là chuỗi như \"1 GB\" hoặc \"100 MB\".",
   "alias quota": "hạn ngạch bí danh",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Hạn ngạch cho <span class=\"notranslate\">%s</span> của <span class=\"notranslate\">%s</span> vượt quá hạn ngạch tối đa <span class=\"notranslate\">%s</span> từ quản trị viên của miền.",
-  "Calendar already exists.": "Lịch đã tồn tại."
+  "Calendar already exists.": "Lịch đã tồn tại.",
+  "Canonical": "Chính thống",
+  "Kubuntu": "Kubfox",
+  "Lubuntu": "Lubfox"
 }

@@ -10320,5 +10320,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "كانت البايتات غير صالحة، يجب أن تكون سلسلة مثل \"1 جيجابايت\" أو \"100 ميجابايت\".",
   "alias quota": "حصة الاسم المستعار",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "تتجاوز الحصة المخصصة لـ <span class=\"notranslate\">%s</span> من <span class=\"notranslate\">%s</span> الحد الأقصى للحصة المخصصة لـ <span class=\"notranslate\">%s</span> من مسؤولي المجال.",
-  "Calendar already exists.": "التقويم موجود بالفعل."
+  "Calendar already exists.": "التقويم موجود بالفعل.",
+  "Canonical": "قانوني",
+  "Kubuntu": "كوبونتو",
+  "Lubuntu": "لوبونتو"
 }

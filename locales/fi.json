@@ -10167,5 +10167,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Tavut olivat virheellisiä, täytyy olla merkkijono, kuten \"1 Gt\" tai \"100 MB\".",
   "alias quota": "aliaskiintiö",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> ylittää verkkotunnuksen järjestelmänvalvojien enimmäiskiintiön <span class=\"notranslate\">%s</span> .",
-  "Calendar already exists.": "Kalenteri on jo olemassa."
+  "Calendar already exists.": "Kalenteri on jo olemassa.",
+  "Canonical": "Kanoninen",
+  "Kubuntu": "Kubuntu",
+  "Lubuntu": "Lubuntu"
 }

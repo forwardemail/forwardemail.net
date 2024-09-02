@@ -103,6 +103,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
+* Canonical
 * Netflix
 * The Linux Foundation
 * The PHP Foundation
@@ -110,6 +111,9 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Disney Ad Sales
 * jQuery
 * LineageOS
+* Ubuntu
+* Kubuntu
+* Lubuntu
 * The University of Maryland
 * The University of Washington
 * Tufts University

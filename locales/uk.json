@@ -10320,5 +10320,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Байти недійсні, це має бути рядок, наприклад \"1 ГБ\" або \"100 МБ\".",
   "alias quota": "квота псевдоніма",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Квота для <span class=\"notranslate\">%s</span> з <span class=\"notranslate\">%s</span> перевищує максимальну квоту <span class=\"notranslate\">%s</span> від адміністраторів домену.",
-  "Calendar already exists.": "Календар уже існує."
+  "Calendar already exists.": "Календар уже існує.",
+  "Canonical": "Канонічний",
+  "Kubuntu": "Kubuntu",
+  "Lubuntu": "Lubuntu"
 }

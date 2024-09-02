@@ -10320,5 +10320,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Bajty byly neplatné, musí to být řetězec, například „1 GB“ nebo „100 MB“.",
   "alias quota": "alias kvóta",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kvóta pro <span class=\"notranslate\">%s</span> z <span class=\"notranslate\">%s</span> překračuje maximální kvótu <span class=\"notranslate\">%s</span> od administrátorů domény.",
-  "Calendar already exists.": "Kalendář již existuje."
+  "Calendar already exists.": "Kalendář již existuje.",
+  "Canonical": "Kanonický",
+  "Kubuntu": "Kubuntu",
+  "Lubuntu": "Lubuntu"
 }

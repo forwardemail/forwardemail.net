@@ -7308,5 +7308,8 @@
   "Bytes were invalid, must be a string such as \"1 GB\" or \"100 MB\".": "Bytes var ugyldige, skal være en streng såsom \"1 GB\" eller \"100 MB\".",
   "alias quota": "alias kvote",
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kvoten for <span class=\"notranslate\">%s</span> af <span class=\"notranslate\">%s</span> overstiger den maksimale kvote på <span class=\"notranslate\">%s</span> fra domænets administratorer.",
-  "Calendar already exists.": "Kalenderen findes allerede."
+  "Calendar already exists.": "Kalenderen findes allerede.",
+  "Canonical": "Kanonisk",
+  "Kubuntu": "Kubuntu",
+  "Lubuntu": "Lubuntu"
 }
