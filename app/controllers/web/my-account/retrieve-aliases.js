@@ -193,7 +193,7 @@ async function retrieveAliases(ctx, next) {
     setPaginationHeaders(
       ctx,
       hasPagination ? Math.ceil(itemCount / ctx.query.limit) : 1,
-      hasPagination ? 1 : ctx.query.page,
+      hasPagination ? ctx.query.page : 1,
       aliases.length,
       itemCount
     );

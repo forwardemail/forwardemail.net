@@ -10,6 +10,7 @@ const { setTimeout } = require('node:timers/promises');
 const ObjectID = require('bson-objectid');
 const Redis = require('ioredis-mock');
 const _ = require('lodash');
+const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
 const ip = require('ip');
@@ -2129,4 +2130,76 @@ SYSTEM ALERT
     res.body.headers.Subject,
     "Forward Email – Code Bug: Error - Mail command failed: 550 5.7.1 Unfortunately, messages from [164.92.70.200] weren't sent. Please contact your Internet service provider since part of their network is on our block list (S3150). You can also refer your provider to http://mail.live.com/mail/troubleshooting.aspx#errors. [Name=Protocol Filter Agent][AGT=PFA][MxId=11B989991C72A5F2] [BL6PEPF00022571.namprd02.prod.outlook.com 2024-08-25T23:54:32.568Z 08DCC4CC8ECEBA56] (66cbc438d0090cee7c346279)"
   );
+});
+
+// <https://github.com/forwardemail/forwardemail.net/issues/285>
+test('alias pagination', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  for (let i = 0; i < 15; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    await t.context.aliasFactory
+      .withState({
+        name: dashify(falso.randFirstName().toLowerCase() + i.toString()),
+        user: user._id,
+        domain: domain._id,
+        recipients: [falso.randEmail()]
+      })
+      .create();
+  }
+
+  {
+    const res = await t.context.api
+      .get(`/v1/domains/${domain.name}/aliases?page=1&limit=10`)
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+    t.is(res.status, 200);
+    t.is(res.body.length, 10);
+    t.is(res.headers['x-page-count'], '2');
+    t.is(res.headers['x-page-current'], '1');
+    t.is(res.headers['x-page-size'], '10');
+    t.is(res.headers['x-item-count'], '15');
+  }
+
+  {
+    const res = await t.context.api
+      .get(`/v1/domains/${domain.name}/aliases?page=2&limit=10`)
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+    t.is(res.status, 200);
+    t.is(res.body.length, 5);
+    t.is(res.headers['x-page-count'], '2');
+    t.is(res.headers['x-page-current'], '2');
+    t.is(res.headers['x-page-size'], '5');
+    t.is(res.headers['x-item-count'], '15');
+  }
 });
