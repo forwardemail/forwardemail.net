@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { randomUUID } = require('node:crypto');
+
 const API = require('@ladjs/api');
 const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
@@ -956,7 +958,7 @@ class CalDAV extends API {
       session: ctx.state.session,
 
       // calendarId
-      calendarId: ctx.state.params.calendarId || name,
+      calendarId: ctx.state.params.calendarId || name || randomUUID(),
 
       // calendar obj
       name,

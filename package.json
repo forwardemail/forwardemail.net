@@ -101,7 +101,7 @@
     "bson-objectid": "2.0.4",
     "bufferutil": "4.0.8",
     "cabin": "13.2.8",
-    "caldav-adapter": "7.1.0",
+    "caldav-adapter": "7.2.0",
     "capitalize": "2.0.4",
     "captain-hook": "0.0.3",
     "check-disk-space": "3.4.0",
