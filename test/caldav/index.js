@@ -439,7 +439,7 @@ test('it should send calendar invite', async (t) => {
     headers: t.context.authHeaders
   });
   const response = await createObject({
-    url: new URL('invite.ics', calendars[0].url).href,
+    url: new URL('12345.ics', calendars[0].url).href,
     data: str,
     headers: {
       'content-type': 'text/calendar; charset=utf-8',

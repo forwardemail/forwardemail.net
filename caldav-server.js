@@ -540,6 +540,7 @@ class CalDAV extends API {
         (vevent) =>
           vevent.getFirstPropertyValue('uid') === calendarEvent.eventId
       );
+
       //
       // TODO: there shouldn't be more than one VEVENT with
       //       same uid but if there is we may want to cleanup in future
