@@ -11,6 +11,8 @@ const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
 const mongoose = require('mongoose');
+const ms = require('ms');
+const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { rrulestr } = require('rrule');
@@ -858,6 +860,41 @@ class CalDAV extends API {
       });
 
       logger.debug('defaultCalendar', { defaultCalendar });
+
+      // TODO: figure out why UUID calendars getting created constantly
+      // TODO: delete calendar endpoint not working (?)
+
+      // delete any UUID-generated calendar names
+      // (once a day)
+      const cache = await this.client.get(`calendar_check:${user.username}`);
+      if (!cache) {
+        const calendars = await Calendars.find(this, ctx.state.session, {});
+        for (const calendar of calendars) {
+          // if it was UUID and no events then delete it
+          if (uuid.validate(calendar.name)) {
+            // eslint-disable-next-line no-await-in-loop
+            const count = await CalendarEvents.countDocuments(
+              this,
+              ctx.state.session,
+              {
+                calendar: calendar._id
+              }
+            );
+            if (count === 0)
+              // eslint-disable-next-line no-await-in-loop
+              await Calendars.deleteOne(this, ctx.state.session, {
+                _id: calendar._id
+              });
+          }
+        }
+
+        await this.client.set(
+          `calendar_check:${user.username}`,
+          true,
+          'PX',
+          ms('1d')
+        );
+      }
 
       return user;
     } catch (err) {
