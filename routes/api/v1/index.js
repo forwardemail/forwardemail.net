@@ -182,7 +182,16 @@ router
         : true;
       if (!hasPagination) return next();
       if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
-      return paginate.middleware(50, 1000)(ctx, next);
+      let defaultLimit = 50;
+      if (typeof ctx.query.limit === 'number' && ctx.query.limit < 50)
+        defaultLimit = 10;
+      else if (
+        typeof ctx.query.limit === 'string' &&
+        Number.isFinite(Number.parseInt(ctx.query.limit, 10)) &&
+        Number.parseInt(ctx.query.limit, 10) < 50
+      )
+        defaultLimit = 10;
+      return paginate.middleware(defaultLimit, 1000)(ctx, next);
     },
     web.myAccount.retrieveDomains
   )
@@ -295,7 +304,16 @@ router
         : true;
       if (!hasPagination) return next();
       if (typeof ctx.query.limit === 'undefined') ctx.query.limit = 1000;
-      return paginate.middleware(50, 1000)(ctx, next);
+      let defaultLimit = 50;
+      if (typeof ctx.query.limit === 'number' && ctx.query.limit < 50)
+        defaultLimit = 10;
+      else if (
+        typeof ctx.query.limit === 'string' &&
+        Number.isFinite(Number.parseInt(ctx.query.limit, 10)) &&
+        Number.parseInt(ctx.query.limit, 10) < 50
+      )
+        defaultLimit = 10;
+      return paginate.middleware(defaultLimit, 1000)(ctx, next);
     },
     web.myAccount.retrieveAliases,
     api.v1.aliases.list
