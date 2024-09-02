@@ -245,8 +245,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // and the notification was sent within the past 7 days
           // then we can return early
           if (
-            _.isObject(alias.storage_thresholds_sent_at) &&
-            !_.isArray(alias.storage_thresholds_sent_at) &&
+            _.isPlainObject(alias.storage_thresholds_sent_at) &&
             alias.storage_thresholds_sent_at[threshold.toString()] &&
             _.isDate(alias.storage_thresholds_sent_at[threshold.toString()]) &&
             new Date(
@@ -255,7 +254,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           )
             return;
 
-          if (typeof alias.storage_thresholds_sent_at !== 'object')
+          if (!_.isPlainObject(alias.storage_thresholds_sent_at))
             alias.storage_thresholds_sent_at = {};
 
           const domain = await Domains.findById(alias.domain);
