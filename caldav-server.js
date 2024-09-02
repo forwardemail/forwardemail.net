@@ -535,22 +535,17 @@ class CalDAV extends API {
       if (!comp) throw new TypeError('Component not parsed');
 
       // safeguard in case more than one event
-      // TODO: we may need to find by eventId -> uid match
       const vevents = comp.getAllSubcomponents('vevent');
-      if (vevents.length !== 1) {
-        // TODO: remove this debug once we fix
-        // debug until we determine how to fix properly
-        const err = new TypeError(
-          '0 or more than one vevent for sending invite'
-        );
-        err.isCodeBug = true;
-        err.calendar = calendar;
-        err.oldCalStr = oldCalStr;
-        err.calendarEvent = calendarEvent;
-        throw err;
-      }
-
-      const vevent = vevents[0];
+      const vevent = vevents.find(
+        (vevent) =>
+          vevent.getFirstPropertyValue('uid') === calendarEvent.eventId
+      );
+      //
+      // TODO: there shouldn't be more than one VEVENT with
+      //       same uid but if there is we may want to cleanup in future
+      //       (we have seen edge cases where this does actually happen)
+      //
+      if (!vevent) throw new TypeError('vevent missing');
 
       // if method was CANCEL then STATUS on vevent needs to be CANCELLED
       if (method === 'CANCEL')
@@ -583,25 +578,20 @@ class CalDAV extends API {
         const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
         if (!oldComp) throw new TypeError('Old component not parsed');
 
-        // TODO: we may need to find by eventId -> uid match
         // safeguard in case more than one event
         const oldEvents = oldComp.getAllSubcomponents('vevent');
-        if (oldEvents.length !== 1) {
-          // TODO: remove this debug once we fix
-          // debug until we determine how to fix properly
-          const err = new TypeError(
-            '0 or more than one vevent for sending invite'
-          );
-          err.isCodeBug = true;
-          err.calendar = calendar;
-          err.oldCalStr = oldCalStr;
-          err.calendarEvent = calendarEvent;
-          throw err;
-        }
+        const oldEvent = oldEvents.find(
+          (vevent) =>
+            vevent.getFirstPropertyValue('uid') === calendarEvent.eventId
+        );
+        //
+        // TODO: there shouldn't be more than one VEVENT with
+        //       same uid but if there is we may want to cleanup in future
+        //       (we have seen edge cases where this does actually happen)
+        //
+        if (!oldEvent) throw new TypeError('old vevent missing');
 
-        const oldEvent = new ICAL.Event(oldEvents[0]);
-
-        oldEvents[0].updatePropertyWithValue('status', 'CANCELLED');
+        oldEvent.updatePropertyWithValue('status', 'CANCELLED');
 
         if (oldEvent.attendees.length > 0) {
           for (const attendee of oldEvent.attendees) {
@@ -639,7 +629,7 @@ class CalDAV extends API {
             //
             try {
               const vc = new ICAL.Component(['vcalendar', [], []]);
-              vc.addSubcomponent(oldEvents[0]);
+              vc.addSubcomponent(oldEvent);
 
               // eslint-disable-next-line no-await-in-loop
               const ics = await this.buildICS(
@@ -812,6 +802,11 @@ class CalDAV extends API {
         }
       }
     } catch (err) {
+      // temp debugging
+      err.isCodeBug = true;
+      err.calendar = calendar;
+      err.oldCalStr = oldCalStr;
+      err.calendarEvent = calendarEvent;
       logger.fatal(err);
     }
   }
