@@ -28,7 +28,11 @@ function getHeaders(headers, specificKey = null) {
     // ignore, keep as is
   }
 
-  lines = lines.replace(/[\r\n]+$/, '').split(/\r?\n/);
+  lines = lines
+    // <https://github.com/andris9/mailsplit/issues/22>
+    .replace(/\r?\n?\t/g, ' ')
+    .replace(/[\r\n]+$/, '')
+    .split(/\r?\n/);
 
   for (const line of lines) {
     const index = line.indexOf(':');
