@@ -852,14 +852,14 @@ class CalDAV extends API {
       await refreshSession.call(this, ctx.state.session, 'CALDAV');
 
       // ensure that the default calendar exists
-      const defaultCalendar = await this.getCalendar(ctx, {
+      let defaultCalendar = await this.getCalendar(ctx, {
         calendarId: user.username,
         principalId: user.username,
         user
       });
 
       if (!defaultCalendar) {
-        await Calendars.create({
+        defaultCalendar = await Calendars.create({
           // db virtual helper
           instance: this,
           session: ctx.state.session,
@@ -894,6 +894,11 @@ class CalDAV extends API {
       if (!cache) {
         const calendars = await Calendars.find(this, ctx.state.session, {});
         for (const calendar of calendars) {
+          // if default calendar then ignore
+          if (calendar.calendarId === user.username) continue;
+          if (defaultCalendar.calendarId === calendar.calendarId) continue;
+          if (defaultCalendar?._id?.toString() === calendar?._id?.toString())
+            continue;
           // if calendar name is UUID or "Calendar" or ctx.translate("CALENDAR")
           if (
             uuid.validate(calendar.name) ||
