@@ -7853,5 +7853,15 @@
   "Calendar already exists.": "Lịch đã tồn tại.",
   "Canonical": "Chính thống",
   "Kubuntu": "Kubfox",
-  "Lubuntu": "Lubfox"
+  "Lubuntu": "Lubfox",
+  "export format already supported).": "định dạng xuất đã được hỗ trợ).",
+  "Webhook signature support": "Hỗ trợ chữ ký Webhook",
+  "header was added.": "tiêu đề đã được thêm vào.",
+  "Bounce webhook support was added": "Đã thêm hỗ trợ webhook Bounce",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "và hiện tại chúng tôi cho phép người dùng gửi bản tin, thông báo và tiếp thị qua email thông qua dịch vụ SMTP gửi đi của chúng tôi. Chúng tôi cũng đã thêm khả năng thiết lập hạn ngạch lưu trữ theo tên miền và theo bí danh cụ thể cho IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Dịch vụ của chúng tôi được thành lập vào năm 2017 và cung cấp dịch vụ email cho hơn 500.000 tên miền – bao gồm những người dùng đáng chú ý như Canonical, Netflix, The Linux Foundation, một số trường đại học và chính phủ, v.v.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Hạn ngạch lưu trữ tối đa cho các bí danh trên tên miền này. Nhập giá trị như \"1 GB\" sẽ được phân tích bởi",
+  "bytes": "byte",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Hạn ngạch lưu trữ tối đa cho bí danh này. Để trống để đặt lại hạn ngạch tối đa hiện tại của miền hoặc nhập giá trị như \"1 GB\" sẽ được phân tích cú pháp bởi",
+  ".  This value can only be adjusted by domain admins.": ". Giá trị này chỉ có thể được điều chỉnh bởi người quản trị miền."
 }

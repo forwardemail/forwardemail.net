@@ -10016,5 +10016,15 @@
   "Calendar already exists.": "日历已存在。",
   "Canonical": "典范",
   "Kubuntu": "库本图",
-  "Lubuntu": "卢本图"
+  "Lubuntu": "卢本图",
+  "export format already supported).": "已支持导出格式）。",
+  "Webhook signature support": "Webhook 签名支持",
+  "header was added.": "已添加标头。",
+  "Bounce webhook support was added": "添加了反弹 webhook 支持",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "现在，我们允许用户通过我们的出站 SMTP 服务发送新闻通讯、公告和电子邮件营销。我们还添加了为 IMAP/POP3/CalDAV 设置域范围和别名特定存储配额的功能。",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "我们的服务成立于 2017 年，为超过 500,000 个域名提供电子邮件支持，其中包括 Canonical、Netflix、Linux 基金会、多所大学和政府等知名用户。",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "此域名上别名的最大存储配额。输入一个值，例如“1 GB”，该值将由",
+  "bytes": "字节",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "此别名的最大存储配额。留空可重置为域当前的最大配额，或输入一个值（例如“1 GB”），该值将由",
+  ".  This value can only be adjusted by domain admins.": "。此值只能由域管理员调整。"
 }

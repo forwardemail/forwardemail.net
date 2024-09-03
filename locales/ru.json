@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Календарь уже существует.",
   "Canonical": "Канонический",
   "Kubuntu": "Кубунту",
-  "Lubuntu": "Лубунту"
+  "Lubuntu": "Лубунту",
+  "export format already supported).": "Формат экспорта уже поддерживается).",
+  "Webhook signature support": "Поддержка подписи WebHook",
+  "header was added.": "заголовок был добавлен.",
+  "Bounce webhook support was added": "Добавлена поддержка Bounce webhook.",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "и теперь мы позволяем пользователям отправлять информационные бюллетени, объявления и маркетинговые сообщения по электронной почте через нашу исходящую службу SMTP. Мы также добавили возможность устанавливать квоты хранения для домена и псевдонима для IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Наш сервис был основан в 2017 году и обслуживает электронную почту более чем для 500 000 доменов, включая таких известных пользователей, как Canonical, Netflix, The Linux Foundation, несколько университетов и правительств и многих других.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Максимальная квота хранения для псевдонимов на этом доменном имени. Введите значение, например \"1 ГБ\", которое будет проанализировано",
+  "bytes": "байты",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Максимальная квота хранилища для этого псевдонима. Оставьте пустым, чтобы сбросить текущую максимальную квоту домена или введите значение, например \"1 ГБ\", которое будет проанализировано",
+  ".  This value can only be adjusted by domain admins.": ". Это значение может быть изменено только администраторами домена."
 }

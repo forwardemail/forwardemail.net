@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "A naptár már létezik.",
   "Canonical": "Kánoni",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "export formátum már támogatott).",
+  "Webhook signature support": "Webhook aláírás támogatása",
+  "header was added.": "fejléc hozzáadva.",
+  "Bounce webhook support was added": "Bounce webhook támogatás hozzáadva",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "és mostantól lehetővé tesszük a felhasználók számára, hogy hírleveleket, közleményeket és e-mailes marketinget küldjenek kimenő SMTP szolgáltatásunkon keresztül.  Hozzáadtuk a tartományszintű és álnév-specifikus tárolási kvóták beállításának lehetőségét is az IMAP/POP3/CalDAV számára.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Szolgáltatásunkat 2017-ben hoztuk létre, és több mint 500 000 domain e-mailezését biztosítja – köztük olyan neves felhasználókat, mint a Canonical, a Netflix, a The Linux Foundation, számos egyetem és kormány stb.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Az álnevek maximális tárolási kvótája ezen a domainnéven.  Adjon meg egy értéket, például „1 GB”, amelyet a rendszer elemezni fog",
+  "bytes": "bájtok",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maximális tárhelykvóta ehhez az aliashoz. Hagyja üresen a domain jelenlegi maximális kvótájának visszaállításához, vagy adjon meg egy értéket, például \"1 GB\", amelyet a rendszer elemezni fog",
+  ".  This value can only be adjusted by domain admins.": ".  Ezt az értéket csak a domain rendszergazdái módosíthatják."
 }

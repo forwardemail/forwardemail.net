@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Kalender bestaat al.",
   "Canonical": "Canoniek",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "exportformaat wordt al ondersteund).",
+  "Webhook signature support": "Ondersteuning voor webhook-handtekeningen",
+  "header was added.": "header is toegevoegd.",
+  "Bounce webhook support was added": "Ondersteuning voor Bounce-webhook is toegevoegd",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "en we staan gebruikers nu toe om nieuwsbrieven, aankondigingen en e-mailmarketing te versturen via onze uitgaande SMTP-service. We hebben ook de mogelijkheid toegevoegd om domeinbrede en aliasspecifieke opslagquota in te stellen voor IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Onze service is opgericht in 2017 en verzorgt e-mail voor meer dan 500.000 domeinen, waaronder bekende gebruikers zoals Canonical, Netflix, The Linux Foundation, verschillende universiteiten en overheden, en meer.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Opslagmaximumquotum voor aliassen op deze domeinnaam. Voer een waarde in zoals \"1 GB\" die door",
+  "bytes": "bytes",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Opslagmaximumquotum voor deze alias. Laat leeg om te resetten naar het huidige maximumquotum van het domein of voer een waarde in zoals \"1 GB\" die wordt geparseerd door",
+  ".  This value can only be adjusted by domain admins.": "Deze waarde kan alleen door domeinbeheerders worden aangepast."
 }

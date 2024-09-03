@@ -286,6 +286,7 @@
     "websocket-as-promised": "2.0.1",
     "wildduck": "1.45.0",
     "wkhtmltopdf": "0.4.0",
+    "word-wrap": "1.2.5",
     "ws": "8.17.1",
     "zone-mta": "3.9.6"
   },

@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Kalendář již existuje.",
   "Canonical": "Kanonický",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "exportní formát již podporován).",
+  "Webhook signature support": "Podpora podpisu webhooku",
+  "header was added.": "byla přidána hlavička.",
+  "Bounce webhook support was added": "Byla přidána podpora Bounce webhooku",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "a nyní umožňujeme uživatelům zasílat informační bulletiny, oznámení a e-mailový marketing prostřednictvím naší odchozí služby SMTP.  Také jsme přidali možnost nastavit kvóty úložiště pro celou doménu a pro alias pro IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Naše služba byla založena v roce 2017 a poskytuje e-mail pro více než 500 000 domén – včetně významných uživatelů, jako jsou Canonical, Netflix, The Linux Foundation, několik univerzit a vlád a další.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Maximální kvóta úložiště pro aliasy na tomto názvu domény.  Zadejte hodnotu, například „1 GB“, podle které bude analyzován",
+  "bytes": "bajtů",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maximální kvóta úložiště pro tento alias. Ponechte prázdné, chcete-li obnovit aktuální maximální kvótu domény, nebo zadejte hodnotu, například „1 GB“, podle které bude analyzován",
+  ".  This value can only be adjusted by domain admins.": ".  Tuto hodnotu mohou upravit pouze správci domény."
 }

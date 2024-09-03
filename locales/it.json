@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Il calendario esiste già.",
   "Canonical": "Canonico",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "formato di esportazione già supportato).",
+  "Webhook signature support": "Supporto per la firma del webhook",
+  "header was added.": "è stata aggiunta l'intestazione.",
+  "Bounce webhook support was added": "È stato aggiunto il supporto per i webhook di rimbalzo",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "e ora consentiamo agli utenti di inviare newsletter, annunci e marketing via e-mail tramite il nostro servizio SMTP in uscita. Abbiamo anche aggiunto la possibilità di impostare quote di archiviazione specifiche per dominio e alias per IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Il nostro servizio è stato fondato nel 2017 e gestisce la posta elettronica di oltre 500.000 domini, tra cui utenti illustri come Canonical, Netflix, The Linux Foundation, diverse università e governi e molti altri.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Quota massima di archiviazione per gli alias su questo nome di dominio. Inserisci un valore come \"1 GB\" che verrà analizzato da",
+  "bytes": "byte",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Quota massima di archiviazione per questo alias. Lascia vuoto per reimpostare la quota massima corrente del dominio o inserisci un valore come \"1 GB\" che verrà analizzato da",
+  ".  This value can only be adjusted by domain admins.": "Questo valore può essere modificato solo dagli amministratori di dominio."
 }

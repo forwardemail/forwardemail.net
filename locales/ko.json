@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "이미 존재하는 달력입니다.",
   "Canonical": "정식",
   "Kubuntu": "쿠분투",
-  "Lubuntu": "루분투"
+  "Lubuntu": "루분투",
+  "export format already supported).": "이미 지원되는 내보내기 형식입니다).",
+  "Webhook signature support": "Webhook 서명 지원",
+  "header was added.": "헤더가 추가되었습니다.",
+  "Bounce webhook support was added": "Bounce 웹훅 지원이 추가되었습니다.",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "그리고 이제 우리는 사용자가 아웃바운드 SMTP 서비스를 통해 뉴스레터, 공지사항, 이메일 마케팅을 보낼 수 있도록 허용합니다. 또한 IMAP/POP3/CalDAV에 대한 도메인 전체 및 별칭별 스토리지 할당량을 설정하는 기능도 추가했습니다.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "저희 서비스는 2017년에 설립되었으며 Canonical, Netflix, The Linux Foundation, 여러 대학, 정부 기관 등 유명 사용자를 포함하여 50만 개 이상의 도메인에 이메일을 제공하고 있습니다.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "이 도메인 이름의 별칭에 대한 최대 저장 할당량입니다. \"1GB\"와 같이 구문 분석될 값을 입력하세요.",
+  "bytes": "바이트",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "이 별칭에 대한 최대 저장 할당량입니다. 도메인의 현재 최대 할당량으로 재설정하려면 비워두거나 \"1GB\"와 같이 구문 분석될 값을 입력하세요.",
+  ".  This value can only be adjusted by domain admins.": "이 값은 도메인 관리자만 조정할 수 있습니다."
 }

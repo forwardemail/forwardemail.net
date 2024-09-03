@@ -10170,5 +10170,15 @@
   "Calendar already exists.": "Kalenteri on jo olemassa.",
   "Canonical": "Kanoninen",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "vientimuoto on jo tuettu).",
+  "Webhook signature support": "Webhook-allekirjoituksen tuki",
+  "header was added.": "otsikko lisättiin.",
+  "Bounce webhook support was added": "Bounce webhook -tuki lisättiin",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "ja nyt sallimme käyttäjien lähettää uutiskirjeitä, ilmoituksia ja sähköpostimarkkinointia lähtevän SMTP-palvelumme kautta.  Lisäsimme myös mahdollisuuden asettaa verkkotunnuksen laajuisia ja aliaskohtaisia tallennuskiintiöitä IMAP/POP3/CalDAV:lle.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Palvelumme perustettiin vuonna 2017, ja se tarjoaa sähköpostin yli 500 000 verkkotunnukselle – mukaan lukien merkittävät käyttäjät, kuten Canonical, Netflix, The Linux Foundation, useat yliopistot ja hallitukset ja monet muut.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Tämän verkkotunnuksen aliasten enimmäistallennuskiintiö.  Anna arvo, kuten \"1 Gt\", joka jäsentää",
+  "bytes": "tavua",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Tämän aliaksen tallennustilan enimmäiskiintiö. Jätä tyhjäksi palauttaaksesi verkkotunnuksen nykyisen enimmäiskiintiön tai anna arvo, kuten \"1 Gt\", jonka jäsentää",
+  ".  This value can only be adjusted by domain admins.": ".  Vain verkkotunnuksen järjestelmänvalvojat voivat säätää tätä arvoa."
 }

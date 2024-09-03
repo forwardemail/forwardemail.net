@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Календар уже існує.",
   "Canonical": "Канонічний",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "формат експорту вже підтримується).",
+  "Webhook signature support": "Підтримка підпису Webhook",
+  "header was added.": "додано заголовок.",
+  "Bounce webhook support was added": "Була додана підтримка вебхуку відмов",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "і тепер ми дозволяємо користувачам надсилати інформаційні бюлетені, оголошення та рекламу електронною поштою через нашу вихідну службу SMTP.  Ми також додали можливість установлювати квоти зберігання для IMAP/POP3/CalDAV на рівні домену та на певні псевдоніми.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Наш сервіс був заснований у 2017 році та підтримує електронну пошту для понад 500 000 доменів, включаючи таких відомих користувачів, як Canonical, Netflix, The Linux Foundation, кілька університетів і урядів тощо.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Максимальна квота для зберігання псевдонімів у цьому доменному імені.  Введіть значення, наприклад \"1 ГБ\", яке буде аналізуватися",
+  "bytes": "байтів",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Максимальна квота пам’яті для цього псевдоніма. Залиште поле порожнім, щоб скинути поточну максимальну квоту домену, або введіть значення, як-от \"1 ГБ\", яке буде проаналізовано",
+  ".  This value can only be adjusted by domain admins.": ".  Це значення можуть змінити лише адміністратори домену."
 }

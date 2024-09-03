@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "التقويم موجود بالفعل.",
   "Canonical": "قانوني",
   "Kubuntu": "كوبونتو",
-  "Lubuntu": "لوبونتو"
+  "Lubuntu": "لوبونتو",
+  "export format already supported).": "(تنسيق التصدير مدعوم بالفعل).",
+  "Webhook signature support": "دعم توقيع Webhook",
+  "header was added.": "تمت إضافة الرأس.",
+  "Bounce webhook support was added": "تمت إضافة دعم Bounce webhook",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "والآن نسمح للمستخدمين بإرسال النشرات الإخبارية والإعلانات والتسويق عبر البريد الإلكتروني من خلال خدمة SMTP الصادرة. كما أضفنا القدرة على تعيين حصص تخزين على مستوى النطاق واسم مستعار محدد لـ IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "تأسست خدمتنا في عام 2017 وهي تدعم البريد الإلكتروني لأكثر من 500000 نطاق - بما في ذلك مستخدمين بارزين مثل Canonical وNetflix وLinux Foundation والعديد من الجامعات والحكومات والمزيد.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "الحد الأقصى لحصة التخزين للأسماء المستعارة على اسم المجال هذا. أدخل قيمة مثل \"1 جيجابايت\" التي سيتم تحليلها بواسطة",
+  "bytes": "بايتات",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "الحد الأقصى لحصة التخزين لهذا الاسم المستعار. اتركه فارغًا لإعادة تعيين الحد الأقصى لحصة المجال الحالية أو أدخل قيمة مثل \"1 جيجابايت\" التي سيتم تحليلها بواسطة",
+  ".  This value can only be adjusted by domain admins.": "لا يمكن تعديل هذه القيمة إلا بواسطة مسؤولي المجال."
 }

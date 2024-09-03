@@ -8,8 +8,8 @@ const path = require('node:path');
 const { Buffer } = require('node:buffer');
 
 const Boom = require('@hapi/boom');
-const QRCode = require('qrcode');
 const Meta = require('koa-meta');
+const QRCode = require('qrcode');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
@@ -21,9 +21,12 @@ const revHash = require('rev-hash');
 const sanitizeHtml = require('sanitize-html');
 const sharp = require('sharp');
 const shortID = require('mongodb-short-id');
+const splitLines = require('split-lines');
 const titleize = require('titleize');
-const { isEmail } = require('validator');
+const wrap = require('word-wrap');
+const { Octokit } = require('@octokit/core');
 const { gzip } = require('node-gzip');
+const { isEmail } = require('validator');
 
 const admin = require('./admin');
 const api = require('./api');
@@ -46,6 +49,7 @@ const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
 const config = require('#config');
+const env = require('#config/env');
 // const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -55,6 +59,30 @@ const logger = require('#helpers/logger');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const meta = new Meta(config.meta, logger);
+
+const octokit = new Octokit({
+  auth: env.GITHUB_OCTOKIT_TOKEN
+});
+
+// every 6 hours update github star count
+let STARS = 1000;
+async function checkGitHubStars() {
+  const response = await octokit.request('GET /repos/{owner}/{repo}', {
+    owner: 'forwardemail',
+    repo: 'forwardemail.net',
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  });
+  if (Number.isFinite(response?.data?.stargazers_count))
+    STARS = response.data.stargazers_count;
+  if (STARS <= 0) STARS = 1000;
+}
+
+if (config.env !== 'test') {
+  checkGitHubStars();
+  setInterval(checkGitHubStars, ms('6h'));
+}
 
 const SVG_STR = fs.readFileSync(
   config.env === 'development'
@@ -205,14 +233,10 @@ async function generateOpenGraphImage(ctx, next) {
 
     // load seo metadata
     let data = {};
-    let match = `/${ctx.locale}`;
     let found = false;
     try {
       data = meta.getByPath(url, ctx.request.t);
       found = true;
-      match = `/${ctx.locale}${url}`;
-      if (match.length > 40)
-        match = _.escape(_.unescape(match).slice(0, 40) + '...');
     } catch (err) {
       if (!keys.has(url)) logger.error(err);
       data = meta.getByPath('/', ctx.request.t);
@@ -223,8 +247,6 @@ async function generateOpenGraphImage(ctx, next) {
       for (const alternative of config.alternatives) {
         const slug = `/blog/best-${alternative.slug}-alternative`;
         if (url === slug) {
-          match = `/${ctx.locale}${slug}`;
-
           const title = ctx.state.t(
             '<span class="notranslate">%d</span> Best <span class="notranslate">%s</span> Alternatives in <span class="notranslate">%s</span>',
             config.alternatives.length - 1,
@@ -254,8 +276,6 @@ async function generateOpenGraphImage(ctx, next) {
           if (a.name === alternative.name) continue;
           const slug = `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`;
           if (url === slug) {
-            match = `/${ctx.locale}${slug}`;
-
             const title = ctx.state.t(
               `<span class="notranslate">%s</span> vs <span class="notranslate">%s</span> Comparison (<span class="notranslate">%s</span>)`,
               alternative.name,
@@ -284,17 +304,13 @@ async function generateOpenGraphImage(ctx, next) {
       }
     }
 
-    if (match === '/') match = `/${ctx.locale}`;
-    else if (match.endsWith('/')) match = match.slice(0, -1);
-    if (match === `/${i18n.config.defaultLocale}`) match = '';
-
     ctx.type = ctx.path.endsWith('.svg')
       ? 'image/svg+xml'
       : ctx.path.endsWith('.jpeg')
       ? 'image/jpeg'
       : 'image/png';
 
-    let [str] = data.title
+    let [title] = data.title
       .replace(config.views.locals.striptags(config.metaTitleAffix), '')
       .replace(
         config.views.locals
@@ -303,17 +319,16 @@ async function generateOpenGraphImage(ctx, next) {
         ''
       )
       .split(' - ');
-    str = str.trim();
-    if (url.startsWith('/guides') && str.includes(' for '))
-      str = str.split(' for ')[1].trim();
-    if (str.length > 50) str = _.escape(_.unescape(str).slice(0, 50) + '...');
-    let freeEmail = ctx.translate('FREE_EMAIL');
-    if (url.startsWith('/guides') || url.startsWith('/how-to'))
-      freeEmail = ctx.translate('TUTORIAL');
+    title = title.trim();
+    if (url.startsWith('/guides') && title.includes(' for '))
+      title = title.split(' for ')[1].trim();
+    else if (title.includes(' for ')) title = title.split(' for ')[0].trim();
+    if (title.length > 40)
+      title = _.escape(_.unescape(title.trim()).slice(0, 40).trim() + '...');
 
     // if it was a developer doc then parse the title
     const doc = config.views.locals.developerDocs.find((d) => d.slug === url);
-    if (doc && isSANB(doc.ogBtnText)) freeEmail = doc.ogBtnText;
+    if (doc && isSANB(doc.ogBtnText)) title = doc.ogBtnText.trim();
 
     // if it was a open source guide then parse the title
     const platform = config.views.locals.platforms.find(
@@ -323,32 +338,28 @@ async function generateOpenGraphImage(ctx, next) {
         `/blog/open-source/${config.views.locals.dashify(p)}-email-clients` ===
           url
     );
-    if (platform) freeEmail = platform;
+    if (platform) title = platform.trim();
+
+    // remove year
+    title = title.replace(`in ${dayjs().format('YYYY')}`, ' ').trim();
+    title = title.replace(`for ${dayjs().format('YYYY')}`, ' ').trim();
+    title = title.replace(dayjs().format('YYYY'), ' ').trim();
+    title = title.replace('( )', '').trim();
 
     // fallback safeguard
-    if (freeEmail.length > 20) freeEmail = i18n.translate('FREE_EMAIL', 'en');
+    if (title.length > 24)
+      title = i18n.translate('PRIVATE_BUSINESS', 'en').trim();
 
-    let noCreditCard = ctx.translate('NO_CREDIT_CARD');
-    if (noCreditCard.length > 60)
-      noCreditCard = i18n.translate('NO_CREDIT_CARD', 'en');
+    // LINE1, LINE2, LINE3
+    const [line1, line2, line3] = splitLines(
+      wrap(data.description.trim(), { width: 60 })
+    );
 
-    let urlBar = match;
-    if (urlBar.length > 40) {
-      urlBar = urlBar.slice(0, 40);
-      urlBar += '...';
-    }
-
-    const svgReplaced = SVG_STR.replace('NO_CREDIT_CARD', noCreditCard)
-      .replaceAll('MONOSPACE_NAME', 'Inconsolata-dz for Powerline')
-      .replaceAll('FONT_NAME', 'VC Honey')
-      .replace('PRIVATE_BUSINESS', str.trim())
-      .replace('FREE_EMAIL', freeEmail)
-      .replace(
-        'font-size="85"',
-        `font-size="${freeEmail.length >= 14 ? 65 : 85}"`
-      )
-      .replace('forwardemail.net', `forwardemail.net${urlBar}`)
-      .replace('font-size="56"', `font-size="${str.length >= 40 ? 40 : 56}"`);
+    const svgReplaced = SVG_STR.replace('TITLE', title.trim())
+      .replace('LINE1', line1 || '')
+      .replace('LINE2', line2 || '')
+      .replace('LINE3', line3 || '')
+      .replace('COUNT', STARS);
 
     const svg = Buffer.from(svgReplaced, 'utf8');
     const hash = revHash(ctx.type + ':' + svgReplaced);

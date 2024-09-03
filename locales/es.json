@@ -10321,5 +10321,15 @@
   "Calendar already exists.": "El calendario ya existe.",
   "Canonical": "Canónico",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "formato de exportación ya compatible).",
+  "Webhook signature support": "Compatibilidad con firmas de webhook",
+  "header was added.": "Se agregó encabezado.",
+  "Bounce webhook support was added": "Se agregó soporte para webhooks de rebote",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "Además, ahora permitimos que los usuarios envíen boletines informativos, anuncios y marketing por correo electrónico a través de nuestro servicio SMTP saliente. También agregamos la capacidad de establecer cuotas de almacenamiento específicas para cada dominio y alias para IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Nuestro servicio se fundó en 2017 y potencia el correo electrónico de más de 500 000 dominios, incluidos usuarios destacados como Canonical, Netflix, The Linux Foundation, varias universidades y gobiernos, entre otros.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Cuota máxima de almacenamiento para alias en este nombre de dominio. Ingrese un valor como \"1 GB\" que será analizado por",
+  "bytes": "bytes",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Cuota máxima de almacenamiento para este alias. Déjelo en blanco para restablecer la cuota máxima actual del dominio o ingrese un valor como \"1 GB\" que será analizado por",
+  ".  This value can only be adjusted by domain admins.": "Este valor sólo puede ser ajustado por los administradores del dominio."
 }

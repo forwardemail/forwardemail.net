@@ -7848,5 +7848,15 @@
   "Calendar already exists.": "Le calendrier existe déjà.",
   "Canonical": "Canonique",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "format d'exportation déjà pris en charge).",
+  "Webhook signature support": "Prise en charge des signatures Webhook",
+  "header was added.": "l'en-tête a été ajouté.",
+  "Bounce webhook support was added": "La prise en charge du webhook Bounce a été ajoutée",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "et nous permettons désormais aux utilisateurs d'envoyer des newsletters, des annonces et des e-mails marketing via notre service SMTP sortant. Nous avons également ajouté la possibilité de définir des quotas de stockage à l'échelle du domaine et spécifiques à l'alias pour IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Notre service a été fondé en 2017 et alimente la messagerie électronique de plus de 500 000 domaines, y compris des utilisateurs notables tels que Canonical, Netflix, The Linux Foundation, plusieurs universités et gouvernements, et bien d'autres.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Quota de stockage maximal pour les alias sur ce nom de domaine. Saisissez une valeur telle que « 1 Go » qui sera analysée par",
+  "bytes": "octets",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Quota de stockage maximal pour cet alias. Laissez ce champ vide pour réinitialiser le quota maximal actuel du domaine ou saisissez une valeur telle que « 1 Go » qui sera analysée par",
+  ".  This value can only be adjusted by domain admins.": "Cette valeur ne peut être ajustée que par les administrateurs de domaine."
 }

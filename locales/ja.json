@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "カレンダーはすでに存在します。",
   "Canonical": "正規",
   "Kubuntu": "クブントゥ",
-  "Lubuntu": "ルブンツ"
+  "Lubuntu": "ルブンツ",
+  "export format already supported).": "エクスポート形式はすでにサポートされています。",
+  "Webhook signature support": "Webhook署名のサポート",
+  "header was added.": "ヘッダーが追加されました。",
+  "Bounce webhook support was added": "バウンスウェブフックのサポートが追加されました",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "また、ユーザーは、送信 SMTP サービスを通じてニュースレター、お知らせ、電子メール マーケティングを送信できるようになりました。また、IMAP/POP3/CalDAV のドメイン全体およびエイリアス固有のストレージ クォータを設定する機能も追加されました。",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "当社のサービスは 2017 年に設立され、Canonical、Netflix、Linux Foundation、いくつかの大学や政府などの著名なユーザーを含む 500,000 以上のドメインの電子メールをサポートしています。",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "このドメイン名のエイリアスの最大ストレージ容量。「1 GB」などの値を入力します。",
+  "bytes": "バイト",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "このエイリアスのストレージの最大クォータ。空白のままにしておくとドメインの現在の最大クォータにリセットされます。または、「1 GB」などの値を入力すると、",
+  ".  This value can only be adjusted by domain admins.": "この値はドメイン管理者のみが調整できます。"
 }

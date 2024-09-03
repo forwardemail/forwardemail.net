@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Takvim zaten mevcut.",
   "Canonical": "Kanonik",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "(Dışa aktarma formatı zaten destekleniyor).",
+  "Webhook signature support": "Webhook imza desteği",
+  "header was added.": "Başlık eklendi.",
+  "Bounce webhook support was added": "Bounce webhook desteği eklendi",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "ve artık kullanıcıların giden SMTP hizmetimiz aracılığıyla haber bültenleri, duyurular ve e-posta pazarlaması göndermelerine izin veriyoruz. Ayrıca IMAP/POP3/CalDAV için alan adı genelinde ve takma ad özelinde depolama kotaları ayarlama olanağını da ekledik.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Hizmetimiz 2017 yılında kuruldu ve Canonical, Netflix, The Linux Foundation, çeşitli üniversiteler ve hükümetler gibi önemli kullanıcılar da dahil olmak üzere 500.000'den fazla alan adına e-posta sağlıyor.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Bu etki alanı adındaki takma adlar için depolama maksimum kotası. Ayrıştırılacak \"1 GB\" gibi bir değer girin",
+  "bytes": "baytlar",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Bu takma ad için depolama maksimum kotası. Alan geçerli maksimum kotasına sıfırlamak için boş bırakın veya ayrıştırılacak \"1 GB\" gibi bir değer girin",
+  ".  This value can only be adjusted by domain admins.": "Bu değer yalnızca alan adı yöneticileri tarafından ayarlanabilir."
 }

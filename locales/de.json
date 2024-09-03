@@ -9362,5 +9362,15 @@
   "Calendar already exists.": "Kalender existiert bereits.",
   "Canonical": "Kanonisch",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "Exportformat wird bereits unterstützt).",
+  "Webhook signature support": "Unterstützung für Webhook-Signaturen",
+  "header was added.": "Kopfzeile wurde hinzugefügt.",
+  "Bounce webhook support was added": "Bounce-Webhook-Unterstützung wurde hinzugefügt",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "und wir ermöglichen Benutzern jetzt, Newsletter, Ankündigungen und E-Mail-Marketing über unseren ausgehenden SMTP-Dienst zu versenden. Wir haben auch die Möglichkeit hinzugefügt, domänenweite und aliasspezifische Speicherkontingente für IMAP/POP3/CalDAV festzulegen.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Unser Dienst wurde 2017 gegründet und unterstützt den E-Mail-Verkehr von über 500.000 Domänen – darunter namhafte Benutzer wie Canonical, Netflix, The Linux Foundation, mehrere Universitäten und Regierungen und mehr.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Maximales Speicherkontingent für Aliase für diesen Domänennamen. Geben Sie einen Wert wie „1 GB“ ein, der analysiert wird von",
+  "bytes": "Bytes",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maximales Speicherkontingent für diesen Alias. Lassen Sie das Feld leer, um das aktuelle maximale Kontingent der Domäne zurückzusetzen, oder geben Sie einen Wert wie „1 GB“ ein, der von",
+  ".  This value can only be adjusted by domain admins.": ". Dieser Wert kann nur von Domänenadministratoren angepasst werden."
 }

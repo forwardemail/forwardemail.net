@@ -10323,5 +10323,15 @@
   "Calendar already exists.": "Kalendern finns redan.",
   "Canonical": "Kanonisk",
   "Kubuntu": "Kubuntu",
-  "Lubuntu": "Lubuntu"
+  "Lubuntu": "Lubuntu",
+  "export format already supported).": "exportformat som redan stöds).",
+  "Webhook signature support": "Webhook-signaturstöd",
+  "header was added.": "header lades till.",
+  "Bounce webhook support was added": "Stöd för Bounce webhook har lagts till",
+  "and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.": "och vi tillåter nu användare att skicka nyhetsbrev, meddelanden och e-postmarknadsföring via vår utgående SMTP-tjänst.  Vi lade också till möjligheten att ställa in domänomfattande och aliasspecifika lagringskvoter för IMAP/POP3/CalDAV.",
+  "Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.": "Vår tjänst grundades 2017 och driver e-post för över 500 000 domäner – inklusive anmärkningsvärda användare som Canonical, Netflix, The Linux Foundation, flera universitet och regeringar och mer.",
+  "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Maximal lagringskvot för alias på detta domännamn.  Ange ett värde som \"1 GB\" som ska analyseras av",
+  "bytes": "bytes",
+  "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maximal lagringskvot för detta alias. Lämna tomt för att återställa till domänens nuvarande maximala kvot eller ange ett värde som \"1 GB\" som kommer att tolkas av",
+  ".  This value can only be adjusted by domain admins.": ".  Detta värde kan endast justeras av domänadministratörer."
 }
