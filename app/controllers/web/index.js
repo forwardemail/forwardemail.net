@@ -352,7 +352,7 @@ async function generateOpenGraphImage(ctx, next) {
 
     // LINE1, LINE2, LINE3
     const [line1, line2, line3] = splitLines(
-      wrap(data.description.trim(), { width: 55 })
+      wrap(data.description.trim(), { width: 50 })
     );
 
     const svgReplaced = SVG_STR.replace('TITLE', title.trim())
