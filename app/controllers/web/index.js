@@ -351,9 +351,11 @@ async function generateOpenGraphImage(ctx, next) {
       title = i18n.translate('PRIVATE_BUSINESS', 'en').trim();
 
     // LINE1, LINE2, LINE3
-    const [line1, line2, line3] = splitLines(
+    let [line1, line2, line3, line4] = splitLines(
       wrap(data.description.trim(), { width: 50 })
     );
+
+    if (line4) line3 += '...';
 
     const svgReplaced = SVG_STR.replace('TITLE', title.trim())
       .replace('LINE1', line1 || '')
