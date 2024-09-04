@@ -10,8 +10,8 @@ const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
-const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { rrulestr } = require('rrule');
@@ -892,40 +892,6 @@ class CalDAV extends API {
         });
       }
 
-      const cache = await this.client.get(`calendar_check:${user.username}`);
-      if (!cache) {
-        const calendars = await Calendars.find(this, ctx.state.session, {});
-        for (const calendar of calendars) {
-          // if default calendar then ignore
-          if (calendar.calendarId === user.username) continue;
-          if (defaultCalendar.calendarId === calendar.calendarId) continue;
-          if (defaultCalendar?._id?.toString() === calendar?._id?.toString())
-            continue;
-          // if calendar name is UUID or "Calendar" or ctx.translate("CALENDAR")
-          if (
-            uuid.validate(calendar.name) ||
-            calendar.name === 'Calendar' ||
-            calendar.name === ctx.translate('CALENDAR')
-          ) {
-            // eslint-disable-next-line no-await-in-loop
-            const count = await CalendarEvents.countDocuments(
-              this,
-              ctx.state.session,
-              {
-                calendar: calendar._id
-              }
-            );
-            if (count === 0)
-              // eslint-disable-next-line no-await-in-loop
-              await Calendars.deleteOne(this, ctx.state.session, {
-                _id: calendar._id
-              });
-          }
-        }
-
-        await this.client.set(`calendar_check:${user.username}`, true);
-      }
-
       return user;
     } catch (err) {
       logger.error(err);
@@ -1004,8 +970,8 @@ class CalDAV extends API {
     //
     // 1) parse `ctx.request.body` for VCALENDAR and all VEVENT's
     // 2) update the calendar metadata based off VCALENDAR
-    // 3) delete existing VEVENTS
-    // 4) create new VEVENTS
+    // 3) update existing VEVENTS by uid match
+    // 4) create new VEVENTS for those that did not have uid match
     //
     let err;
     try {
@@ -1074,22 +1040,6 @@ class CalDAV extends API {
         }
       );
 
-      //
-      // NOTE: this isn't the safest way to do this (instead should only conditionally delete and update)
-      //
-
-      // delete existing VEVENTS
-      const deleted = await CalendarEvents.deleteMany(this, ctx.state.session, {
-        calendar: calendar._id
-      });
-
-      logger.debug('deleted events', {
-        deleted,
-        principalId,
-        calendarId,
-        user
-      });
-
       // create new VEVENTS
       if (vevents.length > 0) {
         const events = [];
@@ -1100,10 +1050,31 @@ class CalDAV extends API {
         // a bit of a hack but it will get us the ical string and then rebuild it together with other occurences
         for (const vevent of vevents) {
           const eventId = vevent.getFirstPropertyValue('uid');
-          if (!Array.isArray(eventIdToEvents[eventId]))
-            eventIdToEvents[eventId] = [];
+          if (!isSANB(eventId)) continue;
+
           const vc = new ICAL.Component(['vcalendar', [], []]);
           vc.addSubcomponent(vevent);
+
+          // check if the event already exists, and if so, then simply update it
+          // eslint-disable-next-line no-await-in-loop
+          const existingEvent = await CalendarEvents.findOne(
+            this,
+            ctx.state.session,
+            {
+              eventId,
+              calendar: calendar._id
+            }
+          );
+
+          if (existingEvent) {
+            existingEvent.ical = vc.toString();
+            // eslint-disable-next-line no-await-in-loop
+            await existingEvent.save();
+            continue;
+          }
+
+          if (!Array.isArray(eventIdToEvents[eventId]))
+            eventIdToEvents[eventId] = [];
           eventIdToEvents[eventId].push({
             eventId,
             calendar: calendar._id,
@@ -1130,25 +1101,26 @@ class CalDAV extends API {
           });
         }
 
-        const calendarEvents = await CalendarEvents.create(
-          this,
-          ctx.state.session,
-          events
-        );
+        if (events.length > 0) {
+          const calendarEvents = await CalendarEvents.create(
+            this,
+            ctx.state.session,
+            events
+          );
 
-        // already wrapped with try/catch
-        await Promise.all(
-          calendarEvents.map((calendarEvent) =>
-            this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
-          )
-        );
-
-        logger.debug('created events', {
-          calendarEvents,
-          principalId,
-          calendarId,
-          user
-        });
+          // already wrapped with try/catch
+          await Promise.all(
+            calendarEvents.map((calendarEvent) =>
+              this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
+            )
+          );
+          logger.debug('created events', {
+            calendarEvents,
+            principalId,
+            calendarId,
+            user
+          });
+        }
       }
 
       return calendar;
@@ -1561,25 +1533,71 @@ class CalDAV extends API {
       user
     });
 
-    // delete all events for this calendar
-    try {
-      await CalendarEvents.deleteMany(this, ctx.state.session, {
-        calendar: calendar
-          ? calendar._id
-          : new mongoose.Types.ObjectId(calendarId)
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
+    //
+    // email the user a backup of the calendar and its events
+    // (e.g. in case user accidentally deleted it)
+    //
+    const calendarEvents = await CalendarEvents.find(this, ctx.state.session, {
+      calendar: calendar._id
+    });
+
+    if (calendarEvents.length > 0) {
+      const ics = await this.buildICS(ctx, calendarEvents, calendar);
+
+      const [alias, domain] = await Promise.all([
+        // get alias (and populate user, which is required for Emails.queue method)
+        Aliases.findOne({ id: ctx.state.user.alias_id })
+          .populate('user')
+          .lean()
+          .exec(),
+        // get domain (and populate members, which is required for Emails.queue method)
+        Domains.findOne({ id: ctx.state.user.domain_id })
+          .populate(
+            'members.user',
+            `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+          )
+          .lean()
+          .exec()
+      ]);
+
+      await Emails.queue({
+        message: {
+          from: ctx.state.user.username,
+          to: ctx.state.user.username,
+          subject: i18n.translate(
+            'CALENDAR_DELETED_BACKUP',
+            ctx.locale,
+            calendar.name,
+            calendarEvents.length
+          ),
+          icalEvent: {
+            filename: 'calendar.ics',
+            content: ics
+          }
+        },
+        alias,
+        domain,
+        user: alias ? alias.user : undefined,
+        date: new Date(),
+        catchall: false,
+        isPending: false
       });
-    } catch (err) {
-      logger.error(err);
     }
 
+    // delete all events for this calendar
+    await CalendarEvents.deleteMany(this, ctx.state.session, {
+      calendar: calendar._id
+    });
+
     // delete the calendar itself
-    try {
-      await Calendars.deleteOne(this, ctx.state.session, {
-        _id: calendar ? calendarId : new mongoose.Types.ObjectId(calendarId)
-      });
-    } catch (err) {
-      logger.error(err);
-    }
+    await Calendars.deleteOne(this, ctx.state.session, {
+      _id: calendar._id
+    });
   }
 
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {

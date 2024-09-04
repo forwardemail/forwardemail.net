@@ -57,6 +57,8 @@ module.exports = {
   CALENDAR: 'Calendar',
   CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
+  CALENDAR_DELETED_BACKUP:
+    'Calendar named <span class="notranslate">%s</span> was successfully deleted with <span class="notranslate">%d</span> events (attached is a backup in case this was an accident)',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',
   EVENT_DOES_NOT_EXIST: 'Event does not exist.',
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
