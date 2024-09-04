@@ -10026,5 +10026,6 @@
   "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "此域名上别名的最大存储配额。输入一个值，例如“1 GB”，该值将由",
   "bytes": "字节",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "此别名的最大存储配额。留空可重置为域当前的最大配额，或输入一个值（例如“1 GB”），该值将由",
-  ".  This value can only be adjusted by domain admins.": "。此值只能由域管理员调整。"
+  ".  This value can only be adjusted by domain admins.": "。此值只能由域管理员调整。",
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "名为<span class=\"notranslate\">%s</span>的日历已成功删除，其中包含<span class=\"notranslate\">%d</span>事件（附件为备份，以防发生意外）"
 }

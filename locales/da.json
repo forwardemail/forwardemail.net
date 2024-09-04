@@ -7321,5 +7321,6 @@
   "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Maksimal lagringskvote for aliaser på dette domænenavn.  Indtast en værdi såsom \"1 GB\", som vil blive parset af",
   "bytes": "bytes",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maksimal lagringskvote for dette alias. Lad stå tomt for at nulstille til domænets nuværende maksimale kvote, eller indtast en værdi såsom \"1 GB\", der vil blive parset af",
-  ".  This value can only be adjusted by domain admins.": ".  Denne værdi kan kun justeres af domæneadministratorer."
+  ".  This value can only be adjusted by domain admins.": ".  Denne værdi kan kun justeres af domæneadministratorer.",
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalenderen med navnet <span class=\"notranslate\">%s</span> blev slettet med <span class=\"notranslate\">%d</span> begivenheder (vedhæftet er en sikkerhedskopi, hvis dette var et uheld)"
 }

@@ -10333,5 +10333,6 @@
   "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Maksymalny limit pamięci dla aliasów w tej nazwie domeny. Wprowadź wartość, taką jak „1 GB”, która zostanie przeanalizowana przez",
   "bytes": "bajty",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Maksymalny limit pamięci dla tego aliasu. Pozostaw puste, aby zresetować do bieżącego maksymalnego limitu domeny lub wprowadź wartość, taką jak „1 GB”, która zostanie przeanalizowana przez",
-  ".  This value can only be adjusted by domain admins.": "Wartość tę mogą zmienić tylko administratorzy domeny."
+  ".  This value can only be adjusted by domain admins.": "Wartość tę mogą zmienić tylko administratorzy domeny.",
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalendarz o nazwie <span class=\"notranslate\">%s</span> został pomyślnie usunięty z <span class=\"notranslate\">%d</span> wydarzeniami (w załączeniu kopia zapasowa na wypadek gdyby to był przypadek)"
 }

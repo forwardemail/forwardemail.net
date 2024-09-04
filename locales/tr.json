@@ -10333,5 +10333,6 @@
   "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "Bu etki alanı adındaki takma adlar için depolama maksimum kotası. Ayrıştırılacak \"1 GB\" gibi bir değer girin",
   "bytes": "baytlar",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Bu takma ad için depolama maksimum kotası. Alan geçerli maksimum kotasına sıfırlamak için boş bırakın veya ayrıştırılacak \"1 GB\" gibi bir değer girin",
-  ".  This value can only be adjusted by domain admins.": "Bu değer yalnızca alan adı yöneticileri tarafından ayarlanabilir."
+  ".  This value can only be adjusted by domain admins.": "Bu değer yalnızca alan adı yöneticileri tarafından ayarlanabilir.",
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "<span class=\"notranslate\">%s</span> adlı takvim <span class=\"notranslate\">%d</span> etkinlikle başarıyla silindi (bu bir kaza olması durumunda yedek ekte)"
 }

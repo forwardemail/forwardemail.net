@@ -10333,5 +10333,6 @@
   "Storage maximum quota for aliases on this domain name.  Enter a value such as \"1 GB\" that will be parsed by": "โควตาพื้นที่เก็บข้อมูลสูงสุดสำหรับนามแฝงบนชื่อโดเมนนี้ ป้อนค่าเช่น \"1 GB\" ที่จะถูกวิเคราะห์โดย",
   "bytes": "ไบต์",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "โควตาพื้นที่เก็บข้อมูลสูงสุดสำหรับนามแฝงนี้ ปล่อยว่างไว้เพื่อรีเซ็ตเป็นโควตาสูงสุดปัจจุบันของโดเมนหรือป้อนค่าเช่น \"1 GB\" ที่จะถูกวิเคราะห์โดย",
-  ".  This value can only be adjusted by domain admins.": "ค่านี้สามารถปรับได้โดยผู้ดูแลโดเมนเท่านั้น"
+  ".  This value can only be adjusted by domain admins.": "ค่านี้สามารถปรับได้โดยผู้ดูแลโดเมนเท่านั้น",
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "ปฏิทินชื่อ <span class=\"notranslate\">%s</span> ถูกลบสำเร็จแล้วโดยมี <span class=\"notranslate\">%d</span> กิจกรรม (แนบเป็นข้อมูลสำรองในกรณีที่เป็นอุบัติเหตุ)"
 }
