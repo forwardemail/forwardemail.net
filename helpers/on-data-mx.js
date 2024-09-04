@@ -52,11 +52,13 @@ const scanner = new SpamScanner({
 async function imap(aliases) {
   console.log('aliases', aliases);
   // TODO: finish this
+  return [];
 }
 
 async function forward(recipient) {
   console.log('recipient', recipient);
   // TODO: finish this
+  return [];
 }
 
 //
@@ -296,10 +298,10 @@ async function onDataMX(raw, session, headers, body) {
   // deliver to IMAP and forward messages in parallel
   const [imapBounces, forwardBounces] = await Promise.all([
     // imap
-    data.imap.length === 0 ? Promise.resolve() : imap(data.imap),
+    data.imap.length === 0 ? Promise.resolve([]) : imap(data.imap),
     // forwarding
     data.normalized.length === 0
-      ? Promise.resolve()
+      ? Promise.resolve([])
       : pMap(data.normalized, (recipient) => forward(recipient), {
           concurrency: config.concurrency
         })
