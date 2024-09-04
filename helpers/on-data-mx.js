@@ -9,6 +9,7 @@ const SpamScanner = require('spamscanner');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
+const pMap = require('p-map');
 const { SRS } = require('sender-rewriting-scheme');
 const { isEmail } = require('validator');
 const { sealMessage } = require('mailauth');
@@ -47,6 +48,16 @@ const scanner = new SpamScanner({
     size: Math.floor(bytes('0.5GB') / 253)
   }
 });
+
+async function imap(aliases) {
+  console.log('aliases', aliases);
+  // TODO: finish this
+}
+
+async function forward(recipient) {
+  console.log('recipient', recipient);
+  // TODO: finish this
+}
 
 //
 // TODO: all counters should be reflected in new deliverability dashboard for users
@@ -278,7 +289,25 @@ async function onDataMX(raw, session, headers, body) {
   )
     return;
 
+  // TODO: we need to check denylist for each in between deliveries
+
   console.log('WIP');
+
+  // deliver to IMAP and forward messages in parallel
+  const [imapBounces, forwardBounces] = await Promise.all([
+    // imap
+    data.imap.length === 0 ? Promise.resolve() : imap(data.imap),
+    // forwarding
+    data.normalized.length === 0
+      ? Promise.resolve()
+      : pMap(data.normalized, (recipient) => forward(recipient), {
+          concurrency: config.concurrency
+        })
+  ]);
+
+  const bounces = [...imapBounces, ...forwardBounces];
+
+  console.log('bounces', bounces);
 
   // TODO: log here
   // logger.info('email delivery attempt', {

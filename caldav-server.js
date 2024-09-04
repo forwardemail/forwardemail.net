@@ -592,10 +592,10 @@ class CalDAV extends API {
         //
         if (!oldEvent) throw new TypeError('old vevent missing');
 
-        oldEvent.updatePropertyWithValue('status', 'CANCELLED');
+        const attendees = oldEvent.getAllProperties('attendee');
 
-        if (oldEvent.attendees.length > 0) {
-          for (const attendee of oldEvent.attendees) {
+        if (attendees.length > 0) {
+          for (const attendee of attendees) {
             let oldEmail = attendee.getFirstValue();
             if (!oldEmail || !/^mailto:/i.test(oldEmail)) {
               // fallback to EMAIL param
@@ -604,17 +604,19 @@ class CalDAV extends API {
 
             if (!oldEmail) continue;
             oldEmail = oldEmail.replace('mailto:', '').toLowerCase().trim();
-            const match = event.attendees.find((attendee) => {
-              let address = attendee.getFirstValue();
-              if (!address || !/^mailto:/i.test(address)) {
-                // fallback to EMAIL param
-                address = attendee.getParameter('email');
-              }
+            const match = event.attendees
+              ? event.attendees.find((attendee) => {
+                  let address = attendee.getFirstValue();
+                  if (!address || !/^mailto:/i.test(address)) {
+                    // fallback to EMAIL param
+                    address = attendee.getParameter('email');
+                  }
 
-              if (!address) return;
-              address = address.replace('mailto:', '').toLowerCase().trim();
-              return address === oldEmail;
-            });
+                  if (!address) return;
+                  address = address.replace('mailto:', '').toLowerCase().trim();
+                  return address === oldEmail;
+                })
+              : null;
 
             // if there was a match found then that means the user wasn't removed
             if (match) continue;
@@ -681,34 +683,36 @@ class CalDAV extends API {
           .replace('mailto:', '')
           .trim()
           .toLowerCase();
-        for (const attendee of event.attendees) {
-          // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
-          // const scheduleAgent = attendee.getParameter('schedule-agent');
-          // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
+        if (event.attendees) {
+          for (const attendee of event.attendees) {
+            // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
+            // const scheduleAgent = attendee.getParameter('schedule-agent');
+            // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
 
-          // skip attendees that were already DECLINED
-          const partStat = attendee.getParameter('partstat');
-          if (partStat && partStat.toLowerCase() === 'declined') continue;
+            // skip attendees that were already DECLINED
+            const partStat = attendee.getParameter('partstat');
+            if (partStat && partStat.toLowerCase() === 'declined') continue;
 
-          let email = attendee.getFirstValue();
-          if (!email || !email.startsWith('mailto:')) {
-            // fallback to EMAIL param
-            email = attendee.getParameter('email');
-          }
+            let email = attendee.getFirstValue();
+            if (!email || !email.startsWith('mailto:')) {
+              // fallback to EMAIL param
+              email = attendee.getParameter('email');
+            }
 
-          if (!email) continue;
+            if (!email) continue;
 
-          email = email.replace('mailto:', '').toLowerCase().trim();
+            email = email.replace('mailto:', '').toLowerCase().trim();
 
-          if (!isEmail(email)) continue;
+            if (!isEmail(email)) continue;
 
-          if (email === organizerEmail) continue;
+            if (email === organizerEmail) continue;
 
-          const commonName = attendee.getParameter('cn');
-          if (commonName) {
-            to.push(`"${commonName}" <${email}>`);
-          } else {
-            to.push(email);
+            const commonName = attendee.getParameter('cn');
+            if (commonName) {
+              to.push(`"${commonName}" <${email}>`);
+            } else {
+              to.push(email);
+            }
           }
         }
 
