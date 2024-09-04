@@ -536,10 +536,23 @@ class CalDAV extends API {
 
       // safeguard in case more than one event
       const vevents = comp.getAllSubcomponents('vevent');
-      const vevent = vevents.find(
-        (vevent) =>
-          vevent.getFirstPropertyValue('uid') === calendarEvent.eventId
-      );
+      let vevent = vevents.find((vevent) => {
+        const uid = vevent.getFirstPropertyValue('uid');
+        if (uid === calendarEvent.eventId) return true;
+        // if uid was an email e.g. "xyz@google.com" then
+        // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+        if (
+          isEmail(uid, { ignore_max_length: true }) &&
+          uid.replace('@', '_') === calendarEvent.eventId
+        )
+          return true;
+        return false;
+      });
+
+      // TODO: we need to do the same for update event and other eventId lookups
+
+      // fallback in case event not found yet there were events in body
+      if (!vevent && vevents.length > 0) vevent = vevents[0];
 
       //
       // TODO: there shouldn't be more than one VEVENT with
@@ -581,10 +594,22 @@ class CalDAV extends API {
 
         // safeguard in case more than one event
         const oldEvents = oldComp.getAllSubcomponents('vevent');
-        const oldEvent = oldEvents.find(
-          (vevent) =>
-            vevent.getFirstPropertyValue('uid') === calendarEvent.eventId
-        );
+        let oldEvent = oldEvents.find((vevent) => {
+          const uid = vevent.getFirstPropertyValue('uid');
+          if (uid === calendarEvent.eventId) return true;
+          // if uid was an email e.g. "xyz@google.com" then
+          // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+          if (
+            isEmail(uid, { ignore_max_length: true }) &&
+            uid.replace('@', '_') === calendarEvent.eventId
+          )
+            return true;
+          return false;
+        });
+
+        // fallback in case event not found yet there were events in body
+        if (!oldEvent && oldEvents.length > 0) oldEvent = oldEvents[0];
+
         //
         // TODO: there shouldn't be more than one VEVENT with
         //       same uid but if there is we may want to cleanup in future
@@ -1057,14 +1082,25 @@ class CalDAV extends API {
 
           // check if the event already exists, and if so, then simply update it
           // eslint-disable-next-line no-await-in-loop
-          const existingEvent = await CalendarEvents.findOne(
+          let existingEvent = await CalendarEvents.findOne(
             this,
             ctx.state.session,
-            {
-              eventId,
-              calendar: calendar._id
-            }
+            { eventId, calendar: calendar._id }
           );
+
+          // if uid was an email e.g. "xyz@google.com" then
+          // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+          if (!existingEvent && isEmail(eventId, { ignore_max_length: true })) {
+            // eslint-disable-next-line no-await-in-loop
+            existingEvent = await CalendarEvents.findOne(
+              this,
+              ctx.state.session,
+              {
+                eventId: eventId.replace('@', '_'),
+                calendar: calendar._id
+              }
+            );
+          }
 
           if (existingEvent) {
             existingEvent.ical = vc.toString();
@@ -1305,10 +1341,19 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    const event = await CalendarEvents.findOne(this, ctx.state.session, {
+    let event = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
       calendar: calendar._id
     });
+
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!event && isEmail(eventId, { ignore_max_length: true })) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
 
     return event;
   }
@@ -1469,27 +1514,36 @@ class CalDAV extends API {
       calendar: calendar._id
     });
 
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!e && isEmail(eventId, { ignore_max_length: true })) {
+      e = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
+
     //
     // NOTE: temporary logging to investigate pre-condition issue
     //
     if (ctx.get('if-none-match') === '*') {
-      console.error('~~~~~~~~ if-none-match ~~~~~~~');
-      console.error(
-        JSON.stringify(
-          {
-            url: ctx.url,
-            headers: ctx.headers,
-            eventId,
-            principalId,
-            calendarId,
-            username: ctx.state.user.username,
-            existingBody: e ? e.ical : false,
-            newBody: ctx.request.body
-          },
-          null,
-          2
-        )
+      const err = new TypeError('If none-match precondition issue');
+      err.data = JSON.stringify(
+        {
+          url: ctx.url,
+          headers: ctx.headers,
+          eventId,
+          principalId,
+          calendarId,
+          username: ctx.state.user.username,
+          existingBody: e ? e.ical : false,
+          newBody: ctx.request.body
+        },
+        null,
+        2
       );
+      err.isCodeBug = true;
+      logger.fatal(err);
     }
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));
@@ -1615,10 +1669,19 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    const event = await CalendarEvents.findOne(this, ctx.state.session, {
+    let event = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
       calendar: calendar._id
     });
+
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!event && isEmail(eventId, { ignore_max_length: true })) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
 
     if (event) {
       // TODO: this should probably only happen if the delete was successful
