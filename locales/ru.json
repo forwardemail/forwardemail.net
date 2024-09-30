@@ -10334,5 +10334,6 @@
   "bytes": "байты",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Максимальная квота хранилища для этого псевдонима. Оставьте пустым, чтобы сбросить текущую максимальную квоту домена или введите значение, например \"1 ГБ\", которое будет проанализировано",
   ".  This value can only be adjusted by domain admins.": ". Это значение может быть изменено только администраторами домена.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Календарь с именем <span class=\"notranslate\">%s</span> был успешно удален с <span class=\"notranslate\">%d</span> событиями (прилагается резервная копия на случай, если это произошло случайно)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Календарь с именем <span class=\"notranslate\">%s</span> был успешно удален с <span class=\"notranslate\">%d</span> событиями (прилагается резервная копия на случай, если это произошло случайно)",
+  "domains": "domains"
 }

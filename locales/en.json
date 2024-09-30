@@ -6714,5 +6714,17 @@
   "bytes": "bytes",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by",
   ".  This value can only be adjusted by domain admins.": ".  This value can only be adjusted by domain admins.",
-  "Private Business Email Service": "Private Business Email Service"
+  "Private Business Email Service": "Private Business Email Service",
+  "You do not belong to the administrative user group.": "You do not belong to the administrative user group.",
+  "Admin - Users": "Admin - Users",
+  "Search for users": "Search for users",
+  "Search by first name, last name, or email": "Search by first name, last name, or email",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "email": "email",
+  "domains": "domains",
+  "plan": "plan",
+  "group": "group",
+  "Last Login": "Last Login",
+  "Log in as user": "Log in as user"
 }

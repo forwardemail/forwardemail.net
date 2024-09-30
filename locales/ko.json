@@ -10334,5 +10334,6 @@
   "bytes": "바이트",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "이 별칭에 대한 최대 저장 할당량입니다. 도메인의 현재 최대 할당량으로 재설정하려면 비워두거나 \"1GB\"와 같이 구문 분석될 값을 입력하세요.",
   ".  This value can only be adjusted by domain admins.": "이 값은 도메인 관리자만 조정할 수 있습니다.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "<span class=\"notranslate\">%s</span> 라는 이름의 달력이 <span class=\"notranslate\">%d</span> 이벤트와 함께 성공적으로 삭제되었습니다(실수로 그런 일이 발생한 경우를 대비해 백업을 첨부했습니다)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "<span class=\"notranslate\">%s</span> 라는 이름의 달력이 <span class=\"notranslate\">%d</span> 이벤트와 함께 성공적으로 삭제되었습니다(실수로 그런 일이 발생한 경우를 대비해 백업을 첨부했습니다)",
+  "domains": "domains"
 }

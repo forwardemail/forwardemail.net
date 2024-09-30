@@ -7859,5 +7859,6 @@
   "bytes": "octets",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Quota de stockage maximal pour cet alias. Laissez ce champ vide pour réinitialiser le quota maximal actuel du domaine ou saisissez une valeur telle que « 1 Go » qui sera analysée par",
   ".  This value can only be adjusted by domain admins.": "Cette valeur ne peut être ajustée que par les administrateurs de domaine.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Le calendrier nommé <span class=\"notranslate\">%s</span> a été supprimé avec succès avec <span class=\"notranslate\">%d</span> événements (une sauvegarde est jointe au cas où il s&#39;agirait d&#39;un accident)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Le calendrier nommé <span class=\"notranslate\">%s</span> a été supprimé avec succès avec <span class=\"notranslate\">%d</span> événements (une sauvegarde est jointe au cas où il s&#39;agirait d&#39;un accident)",
+  "domains": "domains"
 }

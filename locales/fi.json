@@ -10181,5 +10181,6 @@
   "bytes": "tavua",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Tämän aliaksen tallennustilan enimmäiskiintiö. Jätä tyhjäksi palauttaaksesi verkkotunnuksen nykyisen enimmäiskiintiön tai anna arvo, kuten \"1 Gt\", jonka jäsentää",
   ".  This value can only be adjusted by domain admins.": ".  Vain verkkotunnuksen järjestelmänvalvojat voivat säätää tätä arvoa.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalenteri nimeltä <span class=\"notranslate\">%s</span> poistettiin onnistuneesti <span class=\"notranslate\">%d</span> tapahtumalla (liitteenä varmuuskopio siltä varalta, että kyseessä oli onnettomuus)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalenteri nimeltä <span class=\"notranslate\">%s</span> poistettiin onnistuneesti <span class=\"notranslate\">%d</span> tapahtumalla (liitteenä varmuuskopio siltä varalta, että kyseessä oli onnettomuus)",
+  "domains": "domains"
 }

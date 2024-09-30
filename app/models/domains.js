@@ -367,6 +367,7 @@ const Domains = new mongoose.Schema({
     default: '25',
     validator: (value) => isPort(value)
   },
+  alias_count: { type: Number },
   members: [Member],
   invites: [Invite],
   name: {

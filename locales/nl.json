@@ -10334,5 +10334,6 @@
   "bytes": "bytes",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Opslagmaximumquotum voor deze alias. Laat leeg om te resetten naar het huidige maximumquotum van het domein of voer een waarde in zoals \"1 GB\" die wordt geparseerd door",
   ".  This value can only be adjusted by domain admins.": "Deze waarde kan alleen door domeinbeheerders worden aangepast.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Agenda met de naam <span class=\"notranslate\">%s</span> is succesvol verwijderd met <span class=\"notranslate\">%d</span> gebeurtenissen (bijgevoegd is een backup voor het geval dit per ongeluk was)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Agenda met de naam <span class=\"notranslate\">%s</span> is succesvol verwijderd met <span class=\"notranslate\">%d</span> gebeurtenissen (bijgevoegd is een backup voor het geval dit per ongeluk was)",
+  "domains": "domains"
 }

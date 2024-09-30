@@ -219,6 +219,12 @@ const jobs = [
     name: 'past-due-relief',
     interval: '1h',
     timeout: 0
+  },
+  // aggregate alias_count and domain_count each day
+  {
+    name: 'update-alias-and-domain-counts',
+    interval: '1d',
+    timeout: 0
   }
 ];
 

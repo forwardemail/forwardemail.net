@@ -272,6 +272,11 @@ object[config.userFields.defaultDomain] = {
   ref: 'Domains'
 };
 
+object[config.userFields.domainCount] = {
+  type: Number,
+  index: true
+};
+
 // Rate limit whitelisting
 // TODO: change to allowlist
 object[config.userFields.isRateLimitWhitelisted] = {
