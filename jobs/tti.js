@@ -166,40 +166,44 @@ async function checkTTI() {
     // get the data
     const providers = await Promise.all(
       config.imapConfigurations.map(async (provider) => {
+        let directMs = 0;
+        let forwardingMs = 0;
         let imapClient;
-        // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
-        if (
-          imapClients.has(provider.name) &&
-          imapClients.get(provider.name).usable
-        ) {
-          imapClient = imapClients.get(provider.name);
-        } else {
-          imapClients.delete(provider.name);
-          imapClient = new ImapFlow({
-            ...provider.config,
-            socketTimeout: ms('1d') // long-lived IMAP connections
-          });
-          await imapClient.connect();
-          await imapClient.mailboxOpen('INBOX');
-          imapClients.set(provider.name, imapClient);
-        }
+        try {
+          // https://github.com/postalsys/imapflow/blob/88e46d9bbcdc347d22df27bc591841431d8dc831/lib/imap-flow.js#L243-L247
+          if (
+            imapClients.has(provider.name) &&
+            imapClients.get(provider.name).usable
+          ) {
+            imapClient = imapClients.get(provider.name);
+          } else {
+            imapClients.delete(provider.name);
+            imapClient = new ImapFlow({
+              ...provider.config,
+              socketTimeout: ms('1d') // long-lived IMAP connections
+            });
+            await imapClient.connect();
+            await imapClient.mailboxOpen('INBOX');
+            imapClients.set(provider.name, imapClient);
+          }
 
-        const [directMs, forwardingMs] = await Promise.all(
-          [provider.config.auth.user, provider.forwarder].map(async (to, i) => {
-            const messageId = `<${randomstring({
-              characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
-              length: 10
-            })}@${config.supportEmail.split('@')[1]}>`;
+          const results = await Promise.all(
+            [provider.config.auth.user, provider.forwarder].map(
+              async (to, i) => {
+                const messageId = `<${randomstring({
+                  characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+                  length: 10
+                })}@${config.supportEmail.split('@')[1]}>`;
 
-            const raw = `
+                const raw = `
 MIME-Version: 1.0
 Content-Language: en-US
 To: ${to}
 From: ${config.supportEmail}
 Message-ID: ${messageId}
 Subject: ${
-              i === 0 ? 'Direct' : 'Forward'
-            }: ${falso.randEmoji()} ${falso.randCatchPhrase()}
+                  i === 0 ? 'Direct' : 'Forward'
+                }: ${falso.randEmoji()} ${falso.randCatchPhrase()}
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
@@ -214,114 +218,116 @@ Forward Email
 "${falso.randCatchPhrase()}"
 `.trim();
 
-            const envelope = {
-              from: config.supportEmail,
-              to
-            };
+                const envelope = {
+                  from: config.supportEmail,
+                  to
+                };
 
-            let info;
+                let info;
 
-            let date = new Date();
-            const newRaw = Buffer.from(
-              `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-            );
-
-            const signResult = await dkimSign(newRaw, {
-              canonicalization: 'relaxed/relaxed',
-              algorithm: 'rsa-sha256',
-              signTime: new Date(),
-              signatureData: [config.signatureData]
-            });
-
-            if (signResult.errors.length > 0) {
-              const err = combineErrors(
-                signResult.errors.map((error) => error.err)
-              );
-              // we may want to remove cyclical reference
-              // for (const error of signResult.errors) {
-              //   delete error.err;
-              // }
-              err.signResult = signResult;
-              throw err;
-            }
-
-            const signatures = Buffer.from(signResult.signatures, 'utf8');
-
-            try {
-              info = await sendEmail({
-                session: createSession({
-                  envelope: {
-                    from: config.supportEmail,
-                    to: [to]
-                  },
-                  headers: {}
-                }),
-                cache,
-                target: to.split('@')[1],
-                port: 25,
-                envelope,
-                raw: Buffer.concat(
-                  [signatures, newRaw],
-                  signatures.length + newRaw.length
-                ),
-                localAddress: IP_ADDRESS,
-                localHostname: HOSTNAME,
-                resolver,
-                client
-              });
-              if (
-                Array.isArray(info.rejectedErrors) &&
-                info.rejectedErrors.length > 0
-              )
-                throw combineErrors(info.rejectedErrors);
-            } catch (err) {
-              err.isCodeBug = true;
-              logger.error(err);
-              // TODO: this needs to retry from another server
-              // attempt to send email with our SMTP server
-              // (e.g. in case bree.forwardemail.net is blocked)
-              date = new Date();
-              // TODO: handle transporter cleanup
-              // TODO: handle mx socket close
-              const newRaw = Buffer.from(
-                `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
-              );
-
-              const signResult = await dkimSign(newRaw, {
-                canonicalization: 'relaxed/relaxed',
-                algorithm: 'rsa-sha256',
-                signTime: new Date(),
-                signatureData: [config.signatureData]
-              });
-
-              if (signResult.errors.length > 0) {
-                const err = combineErrors(
-                  signResult.errors.map((error) => error.err)
+                let date = new Date();
+                const newRaw = Buffer.from(
+                  `Date: ${date.toUTCString().replace(/GMT/, '+0000')}\n${raw}`
                 );
-                // we may want to remove cyclical reference
-                // for (const error of signResult.errors) {
-                //   delete error.err;
-                // }
-                err.signResult = signResult;
-                throw err;
-              }
 
-              const signatures = Buffer.from(signResult.signatures, 'utf8');
-              info = await config.email.transport.sendMail({
-                envelope,
-                raw: Buffer.concat(
-                  [signatures, newRaw],
-                  signatures.length + newRaw.length
-                )
-              });
-              if (
-                Array.isArray(info.rejectedErrors) &&
-                info.rejectedErrors.length > 0
-              )
-                throw combineErrors(info.rejectedErrors);
-            }
+                const signResult = await dkimSign(newRaw, {
+                  canonicalization: 'relaxed/relaxed',
+                  algorithm: 'rsa-sha256',
+                  signTime: new Date(),
+                  signatureData: [config.signatureData]
+                });
 
-            /*
+                if (signResult.errors.length > 0) {
+                  const err = combineErrors(
+                    signResult.errors.map((error) => error.err)
+                  );
+                  // we may want to remove cyclical reference
+                  // for (const error of signResult.errors) {
+                  //   delete error.err;
+                  // }
+                  err.signResult = signResult;
+                  throw err;
+                }
+
+                const signatures = Buffer.from(signResult.signatures, 'utf8');
+
+                try {
+                  info = await sendEmail({
+                    session: createSession({
+                      envelope: {
+                        from: config.supportEmail,
+                        to: [to]
+                      },
+                      headers: {}
+                    }),
+                    cache,
+                    target: to.split('@')[1],
+                    port: 25,
+                    envelope,
+                    raw: Buffer.concat(
+                      [signatures, newRaw],
+                      signatures.length + newRaw.length
+                    ),
+                    localAddress: IP_ADDRESS,
+                    localHostname: HOSTNAME,
+                    resolver,
+                    client
+                  });
+                  if (
+                    Array.isArray(info.rejectedErrors) &&
+                    info.rejectedErrors.length > 0
+                  )
+                    throw combineErrors(info.rejectedErrors);
+                } catch (err) {
+                  err.isCodeBug = true;
+                  logger.error(err);
+                  // TODO: this needs to retry from another server
+                  // attempt to send email with our SMTP server
+                  // (e.g. in case bree.forwardemail.net is blocked)
+                  date = new Date();
+                  // TODO: handle transporter cleanup
+                  // TODO: handle mx socket close
+                  const newRaw = Buffer.from(
+                    `Date: ${date
+                      .toUTCString()
+                      .replace(/GMT/, '+0000')}\n${raw}`
+                  );
+
+                  const signResult = await dkimSign(newRaw, {
+                    canonicalization: 'relaxed/relaxed',
+                    algorithm: 'rsa-sha256',
+                    signTime: new Date(),
+                    signatureData: [config.signatureData]
+                  });
+
+                  if (signResult.errors.length > 0) {
+                    const err = combineErrors(
+                      signResult.errors.map((error) => error.err)
+                    );
+                    // we may want to remove cyclical reference
+                    // for (const error of signResult.errors) {
+                    //   delete error.err;
+                    // }
+                    err.signResult = signResult;
+                    throw err;
+                  }
+
+                  const signatures = Buffer.from(signResult.signatures, 'utf8');
+                  info = await config.email.transport.sendMail({
+                    envelope,
+                    raw: Buffer.concat(
+                      [signatures, newRaw],
+                      signatures.length + newRaw.length
+                    )
+                  });
+                  if (
+                    Array.isArray(info.rejectedErrors) &&
+                    info.rejectedErrors.length > 0
+                  )
+                    throw combineErrors(info.rejectedErrors);
+                }
+
+                /*
             const date = new Date();
             const info = await config.email.transport.sendMail({
               envelope,
@@ -331,43 +337,54 @@ Forward Email
               throw combineErrors(info.rejectedErrors);
             */
 
-            // rewrite messageId since `raw` overrides this
-            info.messageId = messageId;
+                // rewrite messageId since `raw` overrides this
+                info.messageId = messageId;
 
-            const { received, err } = await getMessage(
-              imapClient,
-              info,
-              provider
-            );
+                const { received, err } = await getMessage(
+                  imapClient,
+                  info,
+                  provider
+                );
 
-            if (err) {
-              delete info.source;
-              delete info.originalMessage;
-              err.info = info;
-              err.provider = {
-                ...provider,
-                config: {
-                  ...provider.config,
-                  auth: {
-                    user: provider.config.auth.user
-                    // this omits pass
-                  }
+                if (err) {
+                  delete info.source;
+                  delete info.originalMessage;
+                  err.info = info;
+                  err.provider = {
+                    ...provider,
+                    config: {
+                      ...provider.config,
+                      auth: {
+                        user: provider.config.auth.user
+                        // this omits pass
+                      }
+                    }
+                  };
+                  err.isCodeBug = true;
+                  await logger.fatal(err);
                 }
-              };
-              err.isCodeBug = true;
-              await logger.fatal(err);
-            }
 
-            return _.isDate(received) ? received.getTime() - date.getTime() : 0;
-          })
-        );
-
-        // delete all messages once done
-        try {
-          await imapClient.messageDelete({ all: true });
+                return _.isDate(received)
+                  ? received.getTime() - date.getTime()
+                  : 0;
+              }
+            )
+          );
+          directMs = results[0];
+          forwardingMs = results[1];
         } catch (err) {
           err.isCodeBug = true;
           logger.fatal(err);
+        }
+
+        // delete all messages once done
+        if (imapClient) {
+          try {
+            await imapClient.messageDelete({ all: true });
+          } catch (err) {
+            err.isCodeBug = true;
+            logger.fatal(err);
+          }
         }
 
         return {
