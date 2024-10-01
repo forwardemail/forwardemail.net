@@ -45,6 +45,7 @@ const i18n = require('./i18n');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const sendEmail = require('./send-email');
+const isTimeoutError = require('./is-timeout-error');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const isMessageEncrypted = require('#helpers/is-message-encrypted');
 const encryptMessage = require('#helpers/encrypt-message');
@@ -206,7 +207,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       );
 
     // create log
-    logger.info('email queued', meta);
+    // logger.info('email queued', meta);
 
     const message = await Emails.getMessage(email.message);
 
@@ -963,6 +964,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 }
               } catch (err) {
                 if (
+                  isTimeoutError(err) ||
                   err.message === 'fetch failed' ||
                   err.message.includes('Direct WKD lookup failed')
                 ) {
@@ -1126,7 +1128,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // TODO: check against silent ban and denylist (to wherever we're sending)
 
     meta.results = results;
-    logger.info('sent email', meta);
+    // logger.info('sent email', meta);
 
     // go through the results and determine which were accepted, rejected, or deferred
     const accepted = new Set();

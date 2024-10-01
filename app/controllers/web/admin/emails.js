@@ -108,13 +108,13 @@ async function update(ctx) {
     }
   });
 
-  ctx.logger.info('email queued', {
-    session: createSession(ctx.state.email),
-    user: ctx.state.email.user,
-    email: ctx.state.email._id,
-    domains: [ctx.state.email.domain],
-    ignore_hook: false
-  });
+  // ctx.logger.info('email queued', {
+  //   session: createSession(ctx.state.email),
+  //   user: ctx.state.email.user,
+  //   email: ctx.state.email._id,
+  //   domains: [ctx.state.email.domain],
+  //   ignore_hook: false
+  // });
 
   ctx.flash('custom', {
     title: ctx.request.t('Success'),

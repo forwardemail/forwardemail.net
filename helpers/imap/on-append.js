@@ -39,6 +39,7 @@ const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const sendApn = require('#helpers/send-apn');
@@ -175,6 +176,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           isArmored = false;
         } catch (err) {
           if (
+            isTimeoutError(err) ||
             err.message === 'fetch failed' ||
             err.message.includes('Direct WKD lookup failed')
           ) {

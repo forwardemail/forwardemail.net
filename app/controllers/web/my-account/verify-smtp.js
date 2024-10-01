@@ -136,6 +136,8 @@ async function verifySMTP(ctx) {
       }
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
+      // TODO: if user already had a domain approved
+      // TODO: if A record and good domain then auto approve and email admins and users
       if (!_.isDate(domain.smtp_verified_at)) {
         // otherwise if the domain was newly verified
         // and doesn't have smtp yet then email admins
@@ -149,18 +151,32 @@ async function verifySMTP(ctx) {
           locale,
           domain.name
         );
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to,
-            bcc: config.email.message.from,
-            subject
-          },
-          locals: {
-            message,
-            locale
-          }
-        });
+        await Promise.all([
+          emailHelper({
+            template: 'alert',
+            message: {
+              to,
+              bcc: config.email.message.from,
+              subject
+            },
+            locals: {
+              message,
+              locale
+            }
+          }),
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              replyTo: to,
+              subject
+            },
+            locals: {
+              message: `<a href="${config.urls.web}/admin/domains?name=${domain.name}" class="btn btn-dark btn-md">Review Domain</a>`,
+              locale
+            }
+          })
+        ]);
         domain.smtp_verified_at = new Date();
         if (!ctx.api) ctx.flash('success', message);
       }
