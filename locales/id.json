@@ -10334,5 +10334,6 @@
   "bytes": "byte dalam bahasa inggris",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Kuota penyimpanan maksimum untuk alias ini. Kosongkan untuk mengatur ulang ke kuota maksimum domain saat ini atau masukkan nilai seperti \"1 GB\" yang akan diurai oleh",
   ".  This value can only be adjusted by domain admins.": "Nilai ini hanya dapat disesuaikan oleh admin domain.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalender dengan nama <span class=\"notranslate\">%s</span> berhasil dihapus dengan <span class=\"notranslate\">%d</span> acara (terlampir adalah cadangan jika ini merupakan suatu kecelakaan)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Kalender dengan nama <span class=\"notranslate\">%s</span> berhasil dihapus dengan <span class=\"notranslate\">%d</span> acara (terlampir adalah cadangan jika ini merupakan suatu kecelakaan)",
+  "domains": "domains"
 }

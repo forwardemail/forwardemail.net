@@ -10334,5 +10334,6 @@
   "bytes": "بايتات",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "الحد الأقصى لحصة التخزين لهذا الاسم المستعار. اتركه فارغًا لإعادة تعيين الحد الأقصى لحصة المجال الحالية أو أدخل قيمة مثل \"1 جيجابايت\" التي سيتم تحليلها بواسطة",
   ".  This value can only be adjusted by domain admins.": "لا يمكن تعديل هذه القيمة إلا بواسطة مسؤولي المجال.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "تم حذف التقويم المسمى <span class=\"notranslate\">%s</span> بنجاح مع <span class=\"notranslate\">%d</span> حدث (مرفق نسخة احتياطية في حالة وقوع هذا الحادث)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "تم حذف التقويم المسمى <span class=\"notranslate\">%s</span> بنجاح مع <span class=\"notranslate\">%d</span> حدث (مرفق نسخة احتياطية في حالة وقوع هذا الحادث)",
+  "domains": "domains"
 }

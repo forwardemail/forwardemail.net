@@ -7864,5 +7864,6 @@
   "bytes": "byte",
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "Hạn ngạch lưu trữ tối đa cho bí danh này. Để trống để đặt lại hạn ngạch tối đa hiện tại của miền hoặc nhập giá trị như \"1 GB\" sẽ được phân tích cú pháp bởi",
   ".  This value can only be adjusted by domain admins.": ". Giá trị này chỉ có thể được điều chỉnh bởi người quản trị miền.",
-  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Lịch có tên <span class=\"notranslate\">%s</span> đã được xóa thành công với <span class=\"notranslate\">%d</span> sự kiện (đính kèm bản sao lưu trong trường hợp đây là sự cố)"
+  "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "Lịch có tên <span class=\"notranslate\">%s</span> đã được xóa thành công với <span class=\"notranslate\">%d</span> sự kiện (đính kèm bản sao lưu trong trường hợp đây là sự cố)",
+  "domains": "domains"
 }

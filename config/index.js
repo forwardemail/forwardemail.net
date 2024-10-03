@@ -562,6 +562,7 @@ const config = {
     paypalPayerID: 'paypal_payer_id',
     paypalSubscriptionID: 'paypal_subscription_id',
     defaultDomain: 'default_domain',
+    domainCount: 'domain_count',
     companyName: 'company_name',
     addressLine1: 'address_line1',
     addressLine2: 'address_line2',
