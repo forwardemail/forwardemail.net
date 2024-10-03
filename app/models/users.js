@@ -274,6 +274,7 @@ object[config.userFields.defaultDomain] = {
 
 object[config.userFields.domainCount] = {
   type: Number,
+  min: 0,
   index: true
 };
 
