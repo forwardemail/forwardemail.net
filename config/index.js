@@ -71,23 +71,26 @@ const imapConfigurations = [
 
   // Microsoft Outlook/Hotmail
   // <https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-8361e398-8af4-4e97-b147-6c6c4ac95353>
-  {
-    name: 'Outlook/Hotmail',
-    forwarder: env.TTI_OUTLOOK_FORWARDER,
-    config: {
-      host:
-        typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
-        env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
-          ? 'imap-mail.outlook.com'
-          : 'outlook.office365.com',
-      port: 993,
-      secure: true,
-      auth: {
-        user: env.TTI_OUTLOOK_IMAP_USER,
-        pass: env.TTI_OUTLOOK_IMAP_PASS
-      }
-    }
-  },
+  //
+  // NOTE: temporarily removing because Outlook is trash, their captcha codes nonsense, blocking VPN, slow to load, and blocking valid logins
+  //
+  // {
+  //   name: 'Outlook/Hotmail',
+  //   forwarder: env.TTI_OUTLOOK_FORWARDER,
+  //   config: {
+  //     host:
+  //       typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
+  //       env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
+  //         ? 'imap-mail.outlook.com'
+  //         : 'outlook.office365.com',
+  //     port: 993,
+  //     secure: true,
+  //     auth: {
+  //       user: env.TTI_OUTLOOK_IMAP_USER,
+  //       pass: env.TTI_OUTLOOK_IMAP_PASS
+  //     }
+  //   }
+  // },
 
   // iCloud/Me
   // <https://support.apple.com/en-us/102525>
