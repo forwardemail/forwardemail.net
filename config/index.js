@@ -75,7 +75,11 @@ const imapConfigurations = [
     name: 'Outlook/Hotmail',
     forwarder: env.TTI_OUTLOOK_FORWARDER,
     config: {
-      host: 'outlook.office365.com',
+      host:
+        typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
+        env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
+          ? 'imap-mail.outlook.com'
+          : 'outlook.office365.com',
       port: 993,
       secure: true,
       auth: {
