@@ -6726,5 +6726,11 @@
   "plan": "plan",
   "group": "group",
   "Last Login": "Last Login",
-  "Log in as user": "Log in as user"
+  "Log in as user": "Log in as user",
+  "Alias password change (rekey) has been started for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> and you will be emailed upon completion.": "Alias password change (rekey) has been started for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> and you will be emailed upon completion.",
+  "Payment due <span class=\"notranslate\">%s</span>.": "Payment due <span class=\"notranslate\">%s</span>.",
+  "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?": "Need to <a class=\"alert-link\" href=\"%s\">enable auto-renew</a>?",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> is complete": "Alias password change (rekey) for <span class=\"notranslate\">%s</span> is complete",
+  "Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class=\"notranslate font-weight-bold text-monospace\">%s</span>.": "Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class=\"notranslate font-weight-bold text-monospace\">%s</span>.",
+  "You cannot enter your current password and also attempt to override at the same time.": "You cannot enter your current password and also attempt to override at the same time."
 }

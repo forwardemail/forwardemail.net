@@ -10335,5 +10335,10 @@
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "このエイリアスのストレージの最大クォータ。空白のままにしておくとドメインの現在の最大クォータにリセットされます。または、「1 GB」などの値を入力すると、",
   ".  This value can only be adjusted by domain admins.": "この値はドメイン管理者のみが調整できます。",
   "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "<span class=\"notranslate\">%s</span>という名前のカレンダーが<span class=\"notranslate\">%d</span>件のイベントとともに正常に削除されました (誤って削除された場合に備えてバックアップを添付しています)",
-  "domains": "domains"
+  "domains": "ドメイン",
+  "Alias password change (rekey) has been started for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> and you will be emailed upon completion.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span>のエイリアス パスワードの変更 (キー再生成) が開始されました。完了すると電子メールが送信されます。",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> is complete": "<span class=\"notranslate\">%s</span>のエイリアス パスワードの変更 (キーの再生成) が完了しました",
+  "Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class=\"notranslate font-weight-bold text-monospace\">%s</span>.": "エイリアス パスワードの変更 (キー更新) が完了しました。これで、 <span class=\"notranslate font-weight-bold text-monospace\">%s</span>の新しいパスワードを使用して IMAP、POP3、および CalDAV サーバーにログインできます。",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> has failed due to an error": "エラーのため、 <span class=\"notranslate\">%s</span>のエイリアス パスワードの変更 (キー再生成) に失敗しました",
+  "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>エイリアス パスワードの変更 (キー再生成) が失敗したため、警告が出されました。</p><p>必要に応じて再試行してください。また、必要に応じてサポートを提供するためにすぐにメールを送信する場合があります。</p><p>キー再生成プロセス中に受信したエラーは次のとおりです:</p><pre> <code>%s</code></pre>"
 }

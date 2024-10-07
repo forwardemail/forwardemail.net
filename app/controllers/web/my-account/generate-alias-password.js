@@ -185,7 +185,18 @@ async function generateAliasPassword(ctx) {
         0
       );
 
+      if (!ctx.api) {
+        ctx.flash(
+          'success',
+          ctx.translate(
+            'ALIAS_REKEY_STARTED',
+            `${alias.name}@${ctx.state.domain.name}`
+          )
+        );
+      }
+
       // don't save until we're sure that sqlite operations were performed
+      alias.is_rekey = true;
       await alias.save();
 
       // close websocket

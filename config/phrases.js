@@ -85,6 +85,16 @@ module.exports = {
     'You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.',
   ALIAS_BACKUP_LINK:
     'Please <a href="%s" target="_blank">click here</a> to download the backup. This link will expire soon.',
+  ALIAS_REKEY_STARTED:
+    'Alias password change (rekey) has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed upon completion.',
+  ALIAS_REKEY_READY:
+    'Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class="notranslate font-weight-bold text-monospace">%s</span>.',
+  ALIAS_REKEY_READY_SUBJECT:
+    'Alias password change (rekey) for <span class="notranslate">%s</span> is complete',
+  ALIAS_REKEY_FAILED_SUBJECT:
+    'Alias password change (rekey) for <span class="notranslate">%s</span> has failed due to an error',
+  ALIAS_REKEY_FAILED_MESSAGE:
+    '<p>The alias password change (rekey) for <span class="notranslate text-monospace font-weight-bold">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>',
   ALIAS_BACKUP_READY:
     'Click the button below within 4 hours to download the <span class="notranslate">"%s"</span> backup for <span class="notranslate font-weight-bold text-monospace">%s</span>.<br /><br /><a href="%s" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-lg">Download Now</a>',
   ALIAS_BACKUP_READY_SUBJECT:

@@ -92,6 +92,12 @@ APS.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // if a rekey operation is being performed then don't allow auth or read/write
+  is_rekey: {
+    type: Boolean,
+    default: false
+  },
+
   // alias specific max quota (set by admins only)
   max_quota: {
     type: Number,
@@ -409,7 +415,7 @@ Aliases.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api', 'tokens', 'pgp_error_sent_at', 'aps'],
+  omitExtraFields: ['is_rekey', 'is_api', 'tokens', 'pgp_error_sent_at', 'aps'],
   defaultLocale: i18n.getLocale()
 });
 

@@ -187,7 +187,7 @@ async function onAuth(auth, session, fn) {
           'user',
           `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
         )
-        .select('+tokens.hash +tokens.salt')
+        .select('+tokens.hash +tokens.salt +is_rekey')
         .lean()
         .exec();
 
@@ -203,11 +203,22 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     //
 
-    // IMAP and POP3 servers can only validate against aliases
+    // IMAP/POP3/CalDAV servers can only validate against aliases
     if (
       this.server instanceof IMAPServer ||
-      this.server instanceof POP3Server
+      this.server instanceof POP3Server ||
+      this?.constructor?.name === 'CalDAV'
     ) {
+      if (typeof alias.is_rekey === 'boolean' && alias.is_rekey === true)
+        throw new SMTPError(
+          'Alias is undergoing a rekey operation, please try again once completed',
+          {
+            responseCode: 535,
+            ignoreHook: true,
+            imapResponse: 'AUTHENTICATIONFAILED'
+          }
+        );
+
       if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
         throw new SMTPError(
           `Alias does not have a generated password yet, go to ${

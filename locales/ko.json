@@ -10335,5 +10335,10 @@
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "이 별칭에 대한 최대 저장 할당량입니다. 도메인의 현재 최대 할당량으로 재설정하려면 비워두거나 \"1GB\"와 같이 구문 분석될 값을 입력하세요.",
   ".  This value can only be adjusted by domain admins.": "이 값은 도메인 관리자만 조정할 수 있습니다.",
   "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "<span class=\"notranslate\">%s</span> 라는 이름의 달력이 <span class=\"notranslate\">%d</span> 이벤트와 함께 성공적으로 삭제되었습니다(실수로 그런 일이 발생한 경우를 대비해 백업을 첨부했습니다)",
-  "domains": "domains"
+  "domains": "도메인",
+  "Alias password change (rekey) has been started for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> and you will be emailed upon completion.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대한 별칭 비밀번호 변경(재입력)이 시작되었으며 완료되면 이메일로 전송해 드리겠습니다.",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> is complete": "<span class=\"notranslate\">%s</span> 에 대한 별칭 비밀번호 변경(재키)이 완료되었습니다.",
+  "Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class=\"notranslate font-weight-bold text-monospace\">%s</span>.": "별칭 비밀번호 변경(rekey)이 이제 완료되었습니다. 이제 <span class=\"notranslate font-weight-bold text-monospace\">%s</span> 에 대한 새 비밀번호로 IMAP, POP3 및 CalDAV 서버에 로그인할 수 있습니다.",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> has failed due to an error": "<span class=\"notranslate\">%s</span> 에 대한 별칭 암호 변경(재키)이 오류로 인해 실패했습니다.",
+  "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대한 별칭 비밀번호 변경(재키)이 실패하였으며 알림을 받았습니다.</p><p> 필요하다면 다시 시도해 보실 수 있으며, 필요한 경우 곧 이메일을 보내 도움을 드리겠습니다.</p><p> 재키 프로세스 중에 발생한 오류는 다음과 같습니다.</p><pre> <code>%s</code></pre>"
 }

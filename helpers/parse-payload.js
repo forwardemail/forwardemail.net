@@ -1504,10 +1504,12 @@ async function parsePayload(data, ws) {
         const cache = await this.client.get(
           `reset_check:${payload.session.user.alias_id}`
         );
+
         if (cache)
           throw Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
+
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
           true,
@@ -1515,120 +1517,26 @@ async function parsePayload(data, ws) {
           ms('30s')
         );
 
-        // check if file path was <= initial db size
-        // (and if so then perform the same logic as in "reset")
-        let reset = false;
-        if (!stats || stats.size <= config.INITIAL_DB_SIZE) {
-          try {
-            await fs.promises.rm(storagePath, {
-              force: true,
-              recursive: true
-            });
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          // -wal
-          try {
-            await fs.promises.rm(
-              storagePath.replace('.sqlite', '.sqlite-wal'),
-              {
-                force: true,
-                recursive: true
-              }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          // -shm
-          try {
-            await fs.promises.rm(
-              storagePath.replace('.sqlite', '.sqlite-shm'),
-              {
-                force: true,
-                recursive: true
-              }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          reset = true;
-
-          // close existing connection if any and purge it
-          if (
-            this?.databaseMap &&
-            this.databaseMap.has(payload.session.user.alias_id)
-          ) {
-            await closeDatabase(
-              this.databaseMap.get(payload.session.user.alias_id)
-            );
-            this.databaseMap.delete(payload.session.user.alias_id);
-          }
-
-          // TODO: this should not fix database
-          db = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            },
-            {
-              ...payload.session,
-              user: {
-                ...payload.session.user,
-                password: payload.new_password
-              }
-            }
-          );
-        }
-
         //
-        // NOTE: if we're not resetting database then assume we want to do a backup
+        // NOTE: if maxQueue exceeded then this will error and reject
+        //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
+        //       (note all of these error messages are in TimeoutError checking)
         //
-        let err;
-        if (!reset) {
-          //
-          // NOTE: if maxQueue exceeded then this will error and reject
-          //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-          //       (note all of these error messages are in TimeoutError checking)
-          //
-          try {
-            // run in worker pool to offset from main thread (because of VACUUM)
-            await this.piscina.run(payload, { name: 'rekey' });
-          } catch (_err) {
-            err = _err;
-          }
-        }
-
-        // update storage
-        try {
-          await updateStorageUsed(payload.session.user.alias_id, this.client);
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
-
-        // remove write lock
-        // await this.client.del(`reset_check:${payload.session.user.alias_id}`);
-
-        if (err) throw err;
+        // run in worker pool to offset from main thread (because of VACUUM)
+        // and run this in the background
+        //
+        this.piscina
+          .run(payload, { name: 'rekey' })
+          .then()
+          .catch((err) => logger.fatal(err, { payload }));
 
         response = {
           id: payload.id,
           data: true
         };
+
         this.client.publish('sqlite_auth_reset', payload.session.user.alias_id);
+
         break;
       }
 

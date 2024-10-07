@@ -10028,5 +10028,10 @@
   "Storage maximum quota for this alias. Leave blank to reset to domain current maximum quota or enter a value such as \"1 GB\" that will be parsed by": "此别名的最大存储配额。留空可重置为域当前的最大配额，或输入一个值（例如“1 GB”），该值将由",
   ".  This value can only be adjusted by domain admins.": "。此值只能由域管理员调整。",
   "Calendar named <span class=\"notranslate\">%s</span> was successfully deleted with <span class=\"notranslate\">%d</span> events (attached is a backup in case this was an accident)": "名为<span class=\"notranslate\">%s</span>的日历已成功删除，其中包含<span class=\"notranslate\">%d</span>事件（附件为备份，以防发生意外）",
-  "domains": "domains"
+  "domains": "域",
+  "Alias password change (rekey) has been started for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> and you will be emailed upon completion.": "<span class=\"notranslate text-monospace font-weight-bold\">%s</span>的别名密码更改（重新密钥）已开始，完成后您将收到电子邮件。",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> is complete": "<span class=\"notranslate\">%s</span>的别名密码更改（重新密钥）已完成",
+  "Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class=\"notranslate font-weight-bold text-monospace\">%s</span>.": "别名密码更改（重新密钥）现已完成。您现在可以使用<span class=\"notranslate font-weight-bold text-monospace\">%s</span>的新密码登录 IMAP、POP3 和 CalDAV 服务器。",
+  "Alias password change (rekey) for <span class=\"notranslate\">%s</span> has failed due to an error": "由于错误， <span class=\"notranslate\">%s</span>的别名密码更改（重新密钥）失败",
+  "<p>The alias password change (rekey) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>": "<p><span class=\"notranslate text-monospace font-weight-bold\">%s</span>的别名密码更改（重新密钥）已失败，我们已收到警报。</p><p>如有必要，您可以继续重试，我们也可能会很快给您发送电子邮件以提供帮助。</p><p>重新密钥过程中收到的错误是：</p><pre> <code>%s</code></pre>"
 }
