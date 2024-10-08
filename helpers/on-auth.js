@@ -207,9 +207,13 @@ async function onAuth(auth, session, fn) {
     if (
       this.server instanceof IMAPServer ||
       this.server instanceof POP3Server ||
-      this?.constructor?.name === 'CalDAV'
+      (alias && this?.constructor?.name === 'CalDAV')
     ) {
-      if (typeof alias.is_rekey === 'boolean' && alias.is_rekey === true)
+      if (
+        alias &&
+        typeof alias.is_rekey === 'boolean' &&
+        alias.is_rekey === true
+      )
         throw new SMTPError(
           'Alias is undergoing a rekey operation, please try again once completed',
           {
@@ -219,7 +223,10 @@ async function onAuth(auth, session, fn) {
           }
         );
 
-      if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
+      if (
+        (alias && !Array.isArray(alias.tokens)) ||
+        alias?.tokens?.length === 0
+      )
         throw new SMTPError(
           `Alias does not have a generated password yet, go to ${
             config.urls.web
