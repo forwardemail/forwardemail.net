@@ -66,8 +66,14 @@ async function onAuth(auth, session, fn) {
     if (this.server instanceof IMAPServer) {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
-      if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-        throw new SocketError();
+      if (!socket || socket?.destroyed || socket?.readyState !== 'open') {
+        const err = new SocketError();
+        err.isCodeBug = true;
+        err.socket = socket;
+        err.session = session;
+        this.logger.fatal(err);
+        // throw err; // TODO: investigate why socket error occurs here
+      }
     }
 
     // override session.getQueryResponse (safeguard)
