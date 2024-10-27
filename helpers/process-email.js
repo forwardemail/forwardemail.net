@@ -1293,7 +1293,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
           retries: 1
         });
         // consume body
-        if (!response?.signal?.aborted) await response.body.dump();
+        if (
+          !response?.signal?.aborted &&
+          typeof response?.body?.dump === 'function'
+        )
+          await response.body.dump();
       })
         .then()
         .catch(async (err) => {

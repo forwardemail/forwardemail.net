@@ -151,6 +151,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#loadextensionpath-entrypoint---this>
   // db.loadExtension(...);
 
+  // ensure we don't use memory and instead use disk for tmp storage
+  // (otherwise 10 GB sqlite file will take up +10 GB memory)
+  db.pragma('temp_store=1;');
+
   //
   // NOTE: if we don't set this then we get the following error for VACUUM commands:
   //

@@ -13,11 +13,10 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
-const pify = require('pify');
+const parseErr = require('parse-err');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 
-const parseErr = require('parse-err');
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const CalendarEvents = require('#models/calendar-events');
@@ -30,15 +29,13 @@ const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
-const onExpunge = require('#helpers/imap/on-expunge');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-
-const onExpungePromise = pify(onExpunge, { multiArgs: true });
 
 const builder = new Builder();
 
@@ -599,6 +596,7 @@ async function getDatabase(
     let folderCheck = !instance.server;
     let trashCheck = !instance.server;
     let threadCheck = !instance.server;
+    let vacuumCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -606,12 +604,14 @@ async function getDatabase(
           `migrate_check:${session.user.alias_id}`,
           `folder_check:${session.user.alias_id}`,
           `trash_check:${session.user.alias_id}`,
-          `thread_check:${session.user.alias_id}`
+          `thread_check:${session.user.alias_id}`,
+          `vacuum_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
         trashCheck = boolean(results[2]);
         threadCheck = boolean(results[3]);
+        vacuumCheck = boolean(results[4]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -765,7 +765,7 @@ async function getDatabase(
           throw new TypeError('Trash folder(s) do not exist');
 
         const sql = builder.build({
-          type: 'update',
+          type: 'remove',
           table: 'Messages',
           condition: {
             $or: [
@@ -785,28 +785,20 @@ async function getDatabase(
                 rdate: {
                   $lte: dayjs().subtract(30, 'days').toDate().getTime()
                 }
+              },
+              {
+                mailbox: {
+                  $in: mailboxes.map((m) => m._id.toString())
+                },
+                undeleted: 0
               }
             ]
-          },
-          modifier: {
-            $set: {
-              undeleted: false
-            }
           }
         });
 
         db.prepare(sql.query).run(sql.values);
 
-        await Promise.all(
-          mailboxes.map((mailbox) =>
-            onExpungePromise.call(
-              instance,
-              mailbox._id.toString(),
-              { silent: true },
-              session
-            )
-          )
-        );
+        // TODO: wss broadcast changes here to connected clients
 
         await instance.client.set(
           `trash_check:${session.user.alias_id}`,
@@ -855,8 +847,86 @@ async function getDatabase(
       }
     }
 
-    if (!migrateCheck || !folderCheck || !trashCheck || !threadCheck) {
+    if (
+      !migrateCheck ||
+      !folderCheck ||
+      !trashCheck ||
+      !threadCheck ||
+      !vacuumCheck
+    ) {
       try {
+        //
+        // Ensure that auto vacuum is enabled
+        // (otherwise we email the user that this operation is taking place)
+        //
+        const hasAutoVacuum = db.pragma('auto_vacuum', { simple: true }) === 1;
+        if (!hasAutoVacuum) {
+          // get latest from cache in case another connection started a vacuum
+          vacuumCheck = boolean(
+            await instance.client.get(`vacuum_check:${session.user.alias_id}`)
+          );
+          if (!vacuumCheck) {
+            // only once per week should we attempt this
+            await instance.client.set(
+              `vacuum_check:${session.user.alias_id}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+
+            //
+            // email user it's taking place
+            //
+            email({
+              template: 'alert',
+              message: {
+                to: session.user.username,
+                bcc: config.email.message.from,
+                subject: i18n.translate(
+                  'IMAP_VACUUM_STARTED_SUBJECT',
+                  session.user.locale
+                )
+              },
+              locals: {
+                message: i18n.translate(
+                  'IMAP_VACUUM_STARTED_MESSAGE',
+                  session.user.locale
+                ),
+                locale: session.user.locale
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
+
+            db.pragma('auto_vacuum=FULL');
+            db.prepare('VACUUM').run();
+
+            //
+            // email user once it's complete
+            //
+            email({
+              template: 'alert',
+              message: {
+                to: session.user.username,
+                bcc: config.email.message.from,
+                subject: i18n.translate(
+                  'IMAP_VACUUM_COMPLETE_SUBJECT',
+                  session.user.locale
+                )
+              },
+              locals: {
+                message: i18n.translate(
+                  'IMAP_VACUUM_COMPLETE_MESSAGE',
+                  session.user.locale
+                ),
+                locale: session.user.locale
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
+          }
+        }
+
         //
         // All applications should run "PRAGMA optimize;" after a schema change,
         // especially after one or more CREATE INDEX statements.

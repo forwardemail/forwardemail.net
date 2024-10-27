@@ -26,7 +26,8 @@ function validateDomain(domain, domainName) {
       i18n.translate(
         'EMAIL_SMTP_GLOBAL_NOT_PERMITTED',
         i18n.config.defaultLocale
-      )
+      ),
+      { responseCode: 535, ignoreHook: true }
     );
 
   //
@@ -49,7 +50,8 @@ function validateDomain(domain, domainName) {
     )
   )
     throw new SMTPError(
-      i18n.translate('PAST_DUE_OR_INVALID_ADMIN', i18n.config.defaultLocale)
+      i18n.translate('PAST_DUE_OR_INVALID_ADMIN', i18n.config.defaultLocale),
+      { responseCode: 535, ignoreHook: true }
     );
 }
 

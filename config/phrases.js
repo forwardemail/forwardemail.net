@@ -20,6 +20,13 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  IMAP_VACUUM_STARTED_SUBJECT:
+    'Mailbox temporarily unavailable for automatic optimization',
+  IMAP_VACUUM_STARTED_MESSAGE:
+    'Your database is being automatically optimized via SQLite VACUUM in order to ensure "auto_vacuum=FULL" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.',
+  IMAP_VACUUM_COMPLETE_SUBJECT: 'Mailbox optimization completed',
+  IMAP_VACUUM_COMPLETE_MESSAGE:
+    'Your database optimization process has been completed.  The "auto_vacuum=FULL" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.',
   INVALID_BYTES:
     'Bytes were invalid, must be a string such as "1 GB" or "100 MB".',
   ALIAS_QUOTA_EXCEEDS_DOMAIN:

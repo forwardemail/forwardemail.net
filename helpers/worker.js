@@ -852,6 +852,10 @@ async function backup(payload) {
   }
 
   //
+  // NOTE: this was commented out because auto_vacuum wasn't enabled properly
+  //
+  /*
+  //
   // NOTE: if the SQLite file is 2x larger than the backup, then we
   //       should run a VACUUM since auto vacuum isn't optimal
   //
@@ -911,6 +915,7 @@ async function backup(payload) {
       await logger.fatal(_err, { payload });
     }
   }
+  */
 
   // always do cleanup in case of errors
   if (tmp && backup) {
