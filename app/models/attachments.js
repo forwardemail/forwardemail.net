@@ -49,7 +49,7 @@ const Attachments = new mongoose.Schema(
     transferEncoding: { type: String, required: true },
     lineCount: { type: Number, required: true },
     counter: { type: Number, required: true }, // metadata.c
-    counterUpdated: { type: Date, required: true }, // metadata.cu
+    counterUpdated: { type: Date, required: true, index: true }, // metadata.cu
     size: { type: Number, required: true }, // metadata.esize (attachment body length)
     // unlike wildduck we don't use these right now:
     // - `metadata.decoded` (Boolean)

@@ -28,6 +28,7 @@ const Threads = require('#models/threads');
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
+const getAttachments = require('#helpers/get-attachments');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -511,87 +512,6 @@ async function getDatabase(
       return db;
     }
 
-    //
-    // NOTE: this logic can be removed in the future
-    //       it is here to cleanup duplicate mailboxes (legacy bug)
-    //       and fix an issue where idate was set incorrectly (legacy bug)
-    //       note that these must come before schema operations (e.g. unique index constraints)
-    //
-    /*
-    try {
-      // since we didn't originally have "UNIQUE" constraint on "path"
-      // we need to keep this in here for a while until we're sure it's fixed
-      for (const path of REQUIRED_PATHS) {
-        // eslint-disable-next-line no-await-in-loop
-        const mailboxes = await Mailboxes.find(instance, session, {
-          path
-        });
-
-        if (mailboxes.length > 1) {
-          // merge together mailboxes without notifications for now
-          // (assume user will close/reopen app at some point)
-          for (const mailbox of mailboxes.slice(1)) {
-            // eslint-disable-next-line no-await-in-loop
-            await Messages.updateMany(
-              instance,
-              session,
-              {
-                mailbox: mailbox._id
-              },
-              {
-                $set: {
-                  mailbox: mailboxes[0]._id
-                }
-              }
-            );
-            // eslint-disable-next-line no-await-in-loop
-            await Mailboxes.deleteOne(
-              instance,
-              session,
-              {
-                _id: mailbox._id
-              }
-            );
-          }
-        }
-      }
-
-
-      // for any idate values that were set from `new Date(false)`
-      // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
-      // we need to set the value of `idate` to the value of `hdate`
-      {
-        const messages = await Messages.find(instance, session, {
-          idate: new Date(false)
-        });
-        for (const message of messages) {
-          // eslint-disable-next-line no-await-in-loop
-          await Messages.findOneAndUpdate(
-            instance,
-            session,
-            {
-              _id: message._id
-            },
-            {
-              $set: {
-                idate: message.hdate
-              }
-            }
-          );
-        }
-      }
-    } catch (err) {
-      err._stack = stack;
-      err.session = session;
-
-      if (
-        err.code !== 'SQLITE_ERROR' ||
-        !err.message.startsWith('no such table:')
-      )
-        logger.fatal(err, { session });
-    }
-    */
-
     let migrateCheck = !instance.server;
     let folderCheck = !instance.server;
     let trashCheck = !instance.server;
@@ -764,47 +684,96 @@ async function getDatabase(
         if (mailboxes.length === 0)
           throw new TypeError('Trash folder(s) do not exist');
 
-        const sql = builder.build({
-          type: 'remove',
-          table: 'Messages',
-          condition: {
-            $or: [
-              {
-                mailbox: {
-                  $in: mailboxes.map((m) => m._id.toString())
+        {
+          const sql = builder.build({
+            type: 'remove',
+            table: 'Messages',
+            condition: {
+              $or: [
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  exp: 1,
+                  rdate: {
+                    $lte: Date.now()
+                  }
                 },
-                exp: 1,
-                rdate: {
-                  $lte: Date.now()
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  rdate: {
+                    $lte: dayjs().subtract(30, 'days').toDate().getTime()
+                  }
+                },
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  undeleted: 0
                 }
-              },
-              {
-                mailbox: {
-                  $in: mailboxes.map((m) => m._id.toString())
-                },
-                rdate: {
-                  $lte: dayjs().subtract(30, 'days').toDate().getTime()
-                }
-              },
-              {
-                mailbox: {
-                  $in: mailboxes.map((m) => m._id.toString())
-                },
-                undeleted: 0
-              }
-            ]
-          }
-        });
+              ]
+            }
+          });
 
-        db.prepare(sql.query).run(sql.values);
+          db.prepare(sql.query).run(sql.values);
+        }
 
         // TODO: wss broadcast changes here to connected clients
+
+        // iterate over all messages to get an array of attachment ids
+        // and then iterate over all attachments to delete those not in the list
+        const now = new Date().toISOString();
+        const sql = builder.build({
+          type: 'select',
+          table: 'Messages',
+          condition: {
+            created_at: {
+              $lte: now
+            },
+            ha: true
+          },
+          fields: ['mimeTree']
+        });
+
+        const stmt = db.prepare(sql.query);
+
+        const hashSet = new Set();
+
+        for (const message of stmt.iterate(sql.values)) {
+          const hashes = getAttachments(message.mimeTree);
+          for (const hash of hashes) {
+            hashSet.add(hash);
+          }
+        }
+
+        // TODO: <https://github.com/nodemailer/wildduck/issues/750>
+        if (hashSet.size > 0) {
+          // TODO: rewrite this to avoid "Too many variables" error
+          const sql = builder.build({
+            type: 'remove',
+            table: 'Attachments',
+            condition: {
+              created_at: {
+                $lte: now
+              },
+              counterUpdated: {
+                $lte: now
+              },
+              hash: {
+                $nin: [...hashSet]
+              }
+            }
+          });
+          db.prepare(sql.query).run(sql.values);
+        }
 
         await instance.client.set(
           `trash_check:${session.user.alias_id}`,
           true,
           'PX',
-          ms('1d')
+          ms('7d')
         );
       } catch (err) {
         logger.fatal(err, { session });
@@ -816,6 +785,13 @@ async function getDatabase(
     //
     if (!threadCheck) {
       try {
+        db.exec(
+          `DELETE FROM Threads WHERE _id NOT IN (SELECT thread FROM Messages);`
+        );
+        /*
+        //
+        // NOTE: The below results in Too many variables SQLite error
+        //
         const sql = builder.build({
           type: 'select',
           table: 'Messages',
@@ -835,7 +811,7 @@ async function getDatabase(
           });
           db.prepare(removeSql.query).run(removeSql.values);
         }
-
+        */
         await instance.client.set(
           `thread_check:${session.user.alias_id}`,
           true,
@@ -881,7 +857,6 @@ async function getDatabase(
               template: 'alert',
               message: {
                 to: session.user.username,
-                bcc: config.email.message.from,
                 subject: i18n.translate(
                   'IMAP_VACUUM_STARTED_SUBJECT',
                   session.user.locale
@@ -908,7 +883,6 @@ async function getDatabase(
               template: 'alert',
               message: {
                 to: session.user.username,
-                bcc: config.email.message.from,
                 subject: i18n.translate(
                   'IMAP_VACUUM_COMPLETE_SUBJECT',
                   session.user.locale
