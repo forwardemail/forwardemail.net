@@ -752,25 +752,39 @@ async function getDatabase(
           }
         }
 
+        // NOTE: this only works if there's at least one hash from existing messages
+        //       (otherwise to do it for all we'd just remove this conditional check)
         // TODO: <https://github.com/nodemailer/wildduck/issues/750>
         if (hashSet.size > 0) {
-          // TODO: rewrite this to avoid "Too many variables" error
+          // iterate over all attachments from the past
+          // and if the hash is not in the array then remove it
           const sql = builder.build({
-            type: 'remove',
+            type: 'select',
             table: 'Attachments',
             condition: {
-              created_at: {
-                $lte: now
-              },
-              counterUpdated: {
-                $lte: now
-              },
-              hash: {
-                $nin: [...hashSet]
-              }
-            }
+              created_at: { $lte: now },
+              counterUpdated: { $lte: now }
+            },
+            fields: ['hash']
           });
-          db.prepare(sql.query).run(sql.values);
+
+          const existingHashes = db.prepare(sql.query).pluck().all(sql.values);
+
+          db.transaction((hashes) => {
+            for (const hash of hashes) {
+              if (hashSet.has(hash)) continue;
+              const sql = builder.build({
+                type: 'remove',
+                table: 'Attachments',
+                condition: {
+                  created_at: { $lte: now },
+                  counterUpdated: { $lte: now },
+                  hash
+                }
+              });
+              db.prepare(sql.query).run(sql.values);
+            }
+          }).immediate(existingHashes);
         }
       } catch (err) {
         logger.fatal(err, { session });
