@@ -30,7 +30,6 @@ const email = require('#helpers/email');
 const env = require('#config/env');
 const getAttachments = require('#helpers/get-attachments');
 const getPathToDatabase = require('#helpers/get-path-to-database');
-const i18n = require('#helpers/i18n');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
@@ -540,47 +539,6 @@ async function getDatabase(
     // migrate schema
     // TODO: add p-timeout to the client.get calls below
     if (!migrateCheck) {
-      //
-      // NOTE: if we change schema on db then we
-      //       need to stop sqlite server then
-      //       purge all migrate_check:* keys
-      //
-      const commands = await migrateSchema(db, session, {
-        Mailboxes,
-        Messages,
-        Threads,
-        Attachments,
-        Calendars,
-        CalendarEvents
-      });
-
-      if (commands.length > 0) {
-        for (const command of commands) {
-          try {
-            // TODO: wsp here (?)
-            db.prepare(command).run();
-            // await knexDatabase.raw(command);
-          } catch (err) {
-            err.isCodeBug = true;
-            logger.fatal(err, { command, alias, session });
-            // migration support in case existing rows
-            if (
-              err.message.includes(
-                'Cannot add a NOT NULL column with default value NULL'
-              ) &&
-              command.endsWith(' NOT NULL')
-            ) {
-              try {
-                db.prepare(command.replace(' NOT NULL', '')).run();
-              } catch (err) {
-                err.isCodeBug = true;
-                logger.fatal(err, { command, alias, session });
-              }
-            }
-          }
-        }
-      }
-
       try {
         await instance.client.set(
           `migrate_check:${session.user.alias_id}`,
@@ -588,6 +546,46 @@ async function getDatabase(
           'PX',
           ms('1d')
         );
+        //
+        // NOTE: if we change schema on db then we
+        //       need to stop sqlite server then
+        //       purge all migrate_check:* keys
+        //
+        const commands = await migrateSchema(db, session, {
+          Mailboxes,
+          Messages,
+          Threads,
+          Attachments,
+          Calendars,
+          CalendarEvents
+        });
+
+        if (commands.length > 0) {
+          for (const command of commands) {
+            try {
+              // TODO: wsp here (?)
+              db.prepare(command).run();
+              // await knexDatabase.raw(command);
+            } catch (err) {
+              err.isCodeBug = true;
+              logger.fatal(err, { command, alias, session });
+              // migration support in case existing rows
+              if (
+                err.message.includes(
+                  'Cannot add a NOT NULL column with default value NULL'
+                ) &&
+                command.endsWith(' NOT NULL')
+              ) {
+                try {
+                  db.prepare(command.replace(' NOT NULL', '')).run();
+                } catch (err) {
+                  err.isCodeBug = true;
+                  logger.fatal(err, { command, alias, session });
+                }
+              }
+            }
+          }
+        }
       } catch (err) {
         logger.fatal(err);
       }
@@ -599,6 +597,12 @@ async function getDatabase(
     //
     if (!folderCheck) {
       try {
+        await instance.client.set(
+          `folder_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
+        );
         const paths = await Mailboxes.distinct(instance, session, 'path', {});
         const required = [];
         for (const path of REQUIRED_PATHS) {
@@ -655,13 +659,6 @@ async function getDatabase(
             })
           );
         }
-
-        await instance.client.set(
-          `folder_check:${session.user.alias_id}`,
-          true,
-          'PX',
-          ms('1d')
-        );
       } catch (err) {
         logger.fatal(err, { session });
       }
@@ -672,6 +669,13 @@ async function getDatabase(
     //       (but we only do this once every day)
     if (!trashCheck) {
       try {
+        await instance.client.set(
+          `trash_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('7d')
+        );
+
         const mailboxes = await Mailboxes.find(instance, session, {
           path: {
             $in: ['Trash', 'Spam', 'Junk']
@@ -768,13 +772,6 @@ async function getDatabase(
           });
           db.prepare(sql.query).run(sql.values);
         }
-
-        await instance.client.set(
-          `trash_check:${session.user.alias_id}`,
-          true,
-          'PX',
-          ms('7d')
-        );
       } catch (err) {
         logger.fatal(err, { session });
       }
@@ -785,38 +782,15 @@ async function getDatabase(
     //
     if (!threadCheck) {
       try {
-        db.exec(
-          `DELETE FROM Threads WHERE _id NOT IN (SELECT thread FROM Messages);`
-        );
-        /*
-        //
-        // NOTE: The below results in Too many variables SQLite error
-        //
-        const sql = builder.build({
-          type: 'select',
-          table: 'Messages',
-          distinct: true,
-          fields: ['thread']
-        });
-        const threadIds = db.prepare(sql.query).pluck().all(sql.values);
-        if (threadIds.length > 0) {
-          const removeSql = builder.build({
-            type: 'remove',
-            table: 'Threads',
-            condition: {
-              _id: {
-                $nin: threadIds
-              }
-            }
-          });
-          db.prepare(removeSql.query).run(removeSql.values);
-        }
-        */
         await instance.client.set(
           `thread_check:${session.user.alias_id}`,
           true,
           'PX',
           ms('1d')
+        );
+
+        db.exec(
+          `DELETE FROM Threads WHERE _id NOT IN (SELECT thread FROM Messages);`
         );
       } catch (err) {
         logger.fatal(err, { session });
@@ -850,54 +824,8 @@ async function getDatabase(
               ms('7d')
             );
 
-            //
-            // email user it's taking place
-            //
-            email({
-              template: 'alert',
-              message: {
-                to: session.user.username,
-                subject: i18n.translate(
-                  'IMAP_VACUUM_STARTED_SUBJECT',
-                  session.user.locale
-                )
-              },
-              locals: {
-                message: i18n.translate(
-                  'IMAP_VACUUM_STARTED_MESSAGE',
-                  session.user.locale
-                ),
-                locale: session.user.locale
-              }
-            })
-              .then()
-              .catch((err) => logger.fatal(err));
-
             db.pragma('auto_vacuum=FULL');
             db.prepare('VACUUM').run();
-
-            //
-            // email user once it's complete
-            //
-            email({
-              template: 'alert',
-              message: {
-                to: session.user.username,
-                subject: i18n.translate(
-                  'IMAP_VACUUM_COMPLETE_SUBJECT',
-                  session.user.locale
-                )
-              },
-              locals: {
-                message: i18n.translate(
-                  'IMAP_VACUUM_COMPLETE_MESSAGE',
-                  session.user.locale
-                ),
-                locale: session.user.locale
-              }
-            })
-              .then()
-              .catch((err) => logger.fatal(err));
           }
         }
 
