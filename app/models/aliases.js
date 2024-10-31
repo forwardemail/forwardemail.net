@@ -872,7 +872,7 @@ Aliases.statics.isOverQuota = async function (
   // log fatal error to admins (so they will get notified by email/text)
   if (isOverQuota)
     logger.fatal(
-      new TypeError(
+      new Error(
         `Alias ${alias.id} is over quota (${bytes(storageUsed + size)}/${bytes(
           maxQuotaPerAlias
         )})`

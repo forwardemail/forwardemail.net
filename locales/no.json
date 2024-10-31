@@ -10327,7 +10327,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kvoten for <span class=\"notranslate\">%s</span> av <span class=\"notranslate\">%s</span> overskrider maksimumskvoten på <span class=\"notranslate\">%s</span> fra administratorer av domenet.",
   "Calendar already exists.": "Kalender eksisterer allerede.",
   "Canonical": "Kanonisk",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "I menneskeheten",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "eksportformat støttes allerede).",
   "Webhook signature support": "Webhook-signaturstøtte",
@@ -10349,5 +10349,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "Postboks er midlertidig utilgjengelig for automatisk optimalisering",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Databasen din blir automatisk optimalisert via SQLite VACUUM for å sikre at \"auto_vacuum=FULL\"-pragmaen er riktig innstilt på postboksen din.  Denne operasjonen vil ta omtrent 1 minutt per GB lagringsplass du bruker på dette aliaset.  Det er nødvendig å utføre denne operasjonen for å holde databasestørrelsen optimalisert over tid når du leser og skriver fra postkassen.  Når du er ferdig, vil du motta en e-postbekreftelse.",
   "Mailbox optimization completed": "Postboksoptimalisering fullført",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Din databaseoptimaliseringsprosess er fullført.  \"auto_vacuum=FULL\"-pragmaen har blitt satt riktig på SQLite-databasepostboksen og over tid vil databasefilstørrelsen din bli optimalisert."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Din databaseoptimaliseringsprosess er fullført.  \"auto_vacuum=FULL\"-pragmaen har blitt satt riktig på SQLite-databasepostboksen og over tid vil databasefilstørrelsen din bli optimalisert.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> godkjent for nyhetsbrevtilgang",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Domenet ditt <span class=\"notranslate\">%s</span> ble godkjent for nyhetsbrevtilgang.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Fullfør oppsett</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Domenet ditt <span class=\"notranslate\">%s</span> fikk tilgang til nyhetsbrevet fjernet.</p>"
 }

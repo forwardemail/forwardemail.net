@@ -117,7 +117,9 @@ async function onConnect(session, fn) {
   // NOTE: we return early here because we do not want to limit concurrent connections from allowlisted values
   //
   //
-  if (session.isAllowlisted) return fn();
+  if (session.isAllowlisted) {
+    return fn();
+  }
 
   //
   // NOTE: until onConnect is available for IMAP and POP3 servers
@@ -126,8 +128,9 @@ async function onConnect(session, fn) {
   //       <https://github.com/nodemailer/wildduck/issues/721>
   //       (see this same comment in `helpers/on-auth.js`)
   //
-  if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
+  if (this.server instanceof IMAPServer || this.server instanceof POP3Server) {
     return fn();
+  }
 
   // do not allow more than 10 concurrent connections using constructor
   try {
@@ -143,6 +146,7 @@ async function onConnect(session, fn) {
         `Too many concurrent connections from ${session.remoteAddress}`,
         { responseCode: 421, ignoreHook: true }
       );
+
     fn();
   } catch (err) {
     fn(refineAndLogError(err, session, false, this));

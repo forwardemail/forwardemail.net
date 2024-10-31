@@ -4303,7 +4303,7 @@
   "Send us an email": "Pošli nám email",
   "Careers": "Kariéra",
   "100% Systems Online": "100% systémy online",
-  "100%": "100%",
+  "100%": "100 %",
   "Email Setup Guides": "Průvodce nastavením e-mailu",
   "<span class=\"notranslate\">%s</span> Email Server Setup": "<span class=\"notranslate\">%s</span> Nastavení e-mailového serveru",
   "Email API Reference": "Email API Reference",
@@ -6532,7 +6532,7 @@
   "Invalid WebAuthn key.": "Neplatný klíč WebAuthn.",
   "Verify by <span class=\"notranslate\">%s</span> to prevent deletion.": "Ověřte do <span class=\"notranslate\">%s</span> , abyste zabránili smazání.",
   "100% OPEN-SOURCE + QUANTUM SAFE + ENCRYPTED EMAIL": "100% OPEN-SOURCE + QUANTUM SAFE + ŠIFROVANÝ EMAIL",
-  "Tutorial": "Tutorial",
+  "Tutorial": "Konzultace",
   "Tour": "Prohlídka",
   "Enterprise email": "Podnikový e-mail",
   "Business Email": "Obchodní e-mail",
@@ -10322,7 +10322,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kvóta pro <span class=\"notranslate\">%s</span> z <span class=\"notranslate\">%s</span> překračuje maximální kvótu <span class=\"notranslate\">%s</span> od administrátorů domény.",
   "Calendar already exists.": "Kalendář již existuje.",
   "Canonical": "Kanonický",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "V lidskosti",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "exportní formát již podporován).",
   "Webhook signature support": "Podpora podpisu webhooku",
@@ -10344,5 +10344,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "Schránka dočasně nedostupná pro automatickou optimalizaci",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Vaše databáze je automaticky optimalizována pomocí SQLite VACUUM, aby bylo zajištěno správné nastavení pragma \"auto_vacuum=FULL\" ve vaší poštovní schránce.  Tato operace bude trvat zhruba 1 minutu na každý GB úložiště, které aktuálně používáte na tomto aliasu.  Tuto operaci je nutné provést, aby velikost vaší databáze byla optimalizována v průběhu času při čtení a psaní z vaší poštovní schránky.  Po dokončení obdržíte potvrzení e-mailem.",
   "Mailbox optimization completed": "Optimalizace poštovní schránky dokončena",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Proces optimalizace databáze byl dokončen.  Pragma \"auto_vacuum=FULL\" bylo správně nastaveno ve vaší poštovní schránce databáze SQLite a časem bude velikost vašeho databázového souboru optimalizována."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Proces optimalizace databáze byl dokončen.  Pragma \"auto_vacuum=FULL\" bylo správně nastaveno ve vaší poštovní schránce databáze SQLite a časem bude velikost vašeho databázového souboru optimalizována.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> schválen pro přístup k newsletteru",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Vaše doména <span class=\"notranslate\">%s</span> byla schválena pro přístup k bulletinu.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Dokončete nastavení</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Vaší doméně <span class=\"notranslate\">%s</span> byl odebrán přístup k bulletinu.</p>"
 }

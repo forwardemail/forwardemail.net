@@ -215,7 +215,22 @@ async function migrateSchema(db, session, tables) {
       columnInfo.map((c) => c.name),
       columnInfo
     );
-    // TODO: drop other columns that we don't need (?)
+
+    //
+    // NOTE: this is a migration for columns removed (e.g. CalendarEvents.uid)
+    //       which previously caused NOT NULL constraint errors
+    //       (and we could have done a workaround to set a default value, e.g. '')
+    //       (however newer version of SQLite - which we use - support dropping columns)
+    //       <https://stackoverflow.com/a/66399224>
+    //
+    for (const key of Object.keys(columnInfoByKey)) {
+      const column = columnInfoByKey[key];
+      if (!column) continue; // safeguard
+      // ensure mapping exists, otherwise remove it
+      if (tables[table].mapping[key]) continue;
+      db.exec(`ALTER TABLE ${table} DROP COLUMN ${key}`);
+    }
+
     for (const key of Object.keys(tables[table].mapping)) {
       const column = columnInfoByKey[key];
       if (!column) {

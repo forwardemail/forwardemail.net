@@ -5224,7 +5224,7 @@
   "Unix": "Unix",
   "Twelve Factor": "Tolvfaktor",
   "Occam's razor": "Occams rakkniv",
-  "dogfooding": "dogfooding",
+  "dogfooding": "hundmat",
   "Target the scrappy, bootstrapped, and": "Inrikta dig på de skrapiga, stövlade och",
   "ramen-profitable": "ramen-lönsamt",
   "developer": "utvecklare",
@@ -9852,7 +9852,7 @@
   "\"Experts in technical cybersecurity\"": "\"Experter på teknisk cybersäkerhet\"",
   "https://www.assured.se/publications": "https://www.assured.se/publications",
   "Mullvad Email Servers": "Mullvad e-postservrar",
-  "Mullvad API": "Mullvad API",
+  "Mullvad API": "Bubbles API",
   "Mullvad DNS": "Bubbla DNS",
   "Trail of Bits": "Trail of Bits",
   "https://www.trailofbits.com/": "https://www.trailofbits.com/",
@@ -10322,7 +10322,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Kvoten för <span class=\"notranslate\">%s</span> av <span class=\"notranslate\">%s</span> överskrider den maximala kvoten på <span class=\"notranslate\">%s</span> från domänens administratörer.",
   "Calendar already exists.": "Kalendern finns redan.",
   "Canonical": "Kanonisk",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "I mänskligheten",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "exportformat som redan stöds).",
   "Webhook signature support": "Webhook-signaturstöd",
@@ -10344,5 +10344,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "Mailbox tillfälligt otillgänglig för automatisk optimering",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Din databas optimeras automatiskt via SQLite VACUUM för att säkerställa att \"auto_vacuum=FULL\"-pragman är korrekt inställd på din brevlåda.  Den här åtgärden tar ungefär 1 minut per GB lagringsutrymme som du för närvarande använder på detta alias.  Det är nödvändigt att utföra denna operation för att hålla din databasstorlek optimerad över tid när du läser och skriver från din brevlåda.  När du är klar får du en e-postbekräftelse.",
   "Mailbox optimization completed": "Postlådeoptimering slutförd",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Din databasoptimeringsprocess har slutförts.  \"auto_vacuum=FULL\"-pragman har ställts in korrekt på din SQLite-databasbrevlåda och med tiden kommer din databasfilstorlek att optimeras."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Din databasoptimeringsprocess har slutförts.  \"auto_vacuum=FULL\"-pragman har ställts in korrekt på din SQLite-databasbrevlåda och med tiden kommer din databasfilstorlek att optimeras.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> godkänd för åtkomst till nyhetsbrev",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> godkändes för åtkomst till nyhetsbrev.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Slutför installationen</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Din domän <span class=\"notranslate\">%s</span> fick sin nyhetsbrevsåtkomst borttagen.</p>"
 }

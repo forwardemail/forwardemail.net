@@ -486,25 +486,24 @@ async function getDatabase(
     ) {
       db = instance.databaseMap.get(alias.id);
       session.db = db;
-      return db;
+    } else {
+      db = new Database(dbFilePath, {
+        readonly,
+        fileMustExist: readonly,
+        timeout: config.busyTimeout,
+        // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+        verbose: env.AXE_SILENT ? null : console.log
+      });
+
+      // store in-memory open connection
+      if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
+
+      await setupPragma(db, session); // takes about 30ms
+
+      // assigns to session so we can easily re-use
+      // (also used in allocateConnection in IMAP notifier)
+      session.db = db;
     }
-
-    db = new Database(dbFilePath, {
-      readonly,
-      fileMustExist: readonly,
-      timeout: config.busyTimeout,
-      // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: env.AXE_SILENT ? null : console.log
-    });
-
-    // store in-memory open connection
-    if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
-
-    await setupPragma(db, session); // takes about 30ms
-
-    // assigns to session so we can easily re-use
-    // (also used in allocateConnection in IMAP notifier)
-    session.db = db;
 
     // if it is readonly then return early
     if (readonly) {
@@ -546,6 +545,7 @@ async function getDatabase(
           'PX',
           ms('1d')
         );
+
         //
         // NOTE: if we change schema on db then we
         //       need to stop sqlite server then
@@ -700,7 +700,7 @@ async function getDatabase(
                   },
                   exp: 1,
                   rdate: {
-                    $lte: Date.now()
+                    $lte: new Date().toISOString()
                   }
                 },
                 {
@@ -708,7 +708,7 @@ async function getDatabase(
                     $in: mailboxes.map((m) => m._id.toString())
                   },
                   rdate: {
-                    $lte: dayjs().subtract(30, 'days').toDate().getTime()
+                    $lte: dayjs().subtract(30, 'days').toDate().toISOString()
                   }
                 },
                 {
@@ -770,6 +770,7 @@ async function getDatabase(
 
           const existingHashes = db.prepare(sql.query).pluck().all(sql.values);
 
+          // TODO: this is too slow, it took 1 hour in production
           db.transaction((hashes) => {
             for (const hash of hashes) {
               if (hashSet.has(hash)) continue;
@@ -782,6 +783,7 @@ async function getDatabase(
                   hash
                 }
               });
+
               db.prepare(sql.query).run(sql.values);
             }
           }).immediate(existingHashes);
@@ -854,11 +856,6 @@ async function getDatabase(
         logger.fatal(err);
       }
     }
-
-    //
-    // TODO: delete orphaned attachments (those without messages that reference them)
-    //       (note this is unlikely as we already take care of this in EXPUNGE)
-    //
 
     return db;
   } catch (err) {

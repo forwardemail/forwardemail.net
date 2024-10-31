@@ -10322,7 +10322,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "Квота для <span class=\"notranslate\">%s</span> з <span class=\"notranslate\">%s</span> перевищує максимальну квоту <span class=\"notranslate\">%s</span> від адміністраторів домену.",
   "Calendar already exists.": "Календар уже існує.",
   "Canonical": "Канонічний",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "У людяності",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "формат експорту вже підтримується).",
   "Webhook signature support": "Підтримка підпису Webhook",
@@ -10344,5 +10344,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "Поштова скринька тимчасово недоступна для автоматичної оптимізації",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Ваша база даних автоматично оптимізується за допомогою SQLite VACUUM, щоб переконатися, що прагма \"auto_vacuum=FULL\" правильно встановлена у вашій поштовій скриньці.  Ця операція займе приблизно 1 хвилину на кожен ГБ пам’яті, яку ви зараз використовуєте на цьому псевдонімі.  Цю операцію необхідно виконати, щоб підтримувати розмір вашої бази даних оптимізованим з часом, коли ви читаєте та пишете з поштової скриньки.  Після завершення ви отримаєте підтвердження електронною поштою.",
   "Mailbox optimization completed": "Оптимізацію поштової скриньки завершено",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Процес оптимізації бази даних завершено.  Прагма \"auto_vacuum=FULL\" була правильно встановлена у вашій поштовій скриньці бази даних SQLite, і з часом розмір файлу вашої бази даних буде оптимізовано."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Процес оптимізації бази даних завершено.  Прагма \"auto_vacuum=FULL\" була правильно встановлена у вашій поштовій скриньці бази даних SQLite, і з часом розмір файлу вашої бази даних буде оптимізовано.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> схвалено для доступу до інформаційного бюлетеня",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Для вашого домену <span class=\"notranslate\">%s</span> схвалено доступ до розсилки.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Повне налаштування</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Для вашого домену <span class=\"notranslate\">%s</span> скасовано доступ до розсилки новин.</p>"
 }

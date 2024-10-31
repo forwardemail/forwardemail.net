@@ -129,6 +129,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     db.loadExtension(sqliteRegex.getLoadablePath());
   } catch (err) {
     // <https://github.com/asg017/sqlite-regex/issues/14>
+    err.isCodeBug = true;
     logger.fatal(err);
     if (err.message.includes('sqlite-regex-linux-arm64'))
       logger.error(

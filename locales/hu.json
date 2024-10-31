@@ -5224,7 +5224,7 @@
   "Unix": "Unix",
   "Twelve Factor": "Tizenkét faktor",
   "Occam's razor": "Occam borotvája",
-  "dogfooding": "dogfooding",
+  "dogfooding": "kutyaeledel",
   "Target the scrappy, bootstrapped, and": "Célozza meg a selejtes, bootstrapped és",
   "ramen-profitable": "ramen nyereséges",
   "developer": "fejlesztő",
@@ -10322,7 +10322,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "A <span class=\"notranslate\">%s</span> <span class=\"notranslate\">%s</span> kvótája meghaladja a domain rendszergazdáitól származó maximális <span class=\"notranslate\">%s</span> kvótát.",
   "Calendar already exists.": "A naptár már létezik.",
   "Canonical": "Kánoni",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "Az emberiségben",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "export formátum már támogatott).",
   "Webhook signature support": "Webhook aláírás támogatása",
@@ -10344,5 +10344,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "A postafiók átmenetileg nem érhető el az automatikus optimalizáláshoz",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Az adatbázisa automatikusan optimalizálásra kerül az SQLite VACUUM segítségével annak érdekében, hogy az \"auto_vacuum=FULL\" pragma megfelelően legyen beállítva a postafiókjában.  Ez a művelet nagyjából 1 percet vesz igénybe az ezen az álnéven jelenleg használt GB tárhelyenként.  Ezt a műveletet azért kell végrehajtani, hogy az adatbázis mérete idővel optimalizálva legyen, miközben a postafiókjából olvas és ír.  Miután elkészült, e-mailben kap visszaigazolást.",
   "Mailbox optimization completed": "A postafiók optimalizálása befejeződött",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Az adatbázis-optimalizálási folyamat befejeződött.  Az \"auto_vacuum=FULL\" pragma megfelelően be van állítva az SQLite adatbázis-postafiókjában, és idővel az adatbázisfájl mérete optimalizálódik."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Az adatbázis-optimalizálási folyamat befejeződött.  Az \"auto_vacuum=FULL\" pragma megfelelően be van állítva az SQLite adatbázis-postafiókjában, és idővel az adatbázisfájl mérete optimalizálódik.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> jóváhagyva a hírlevélhez való hozzáférést",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">A(z <span class=\"notranslate\">%s</span> domain hírlevélhez való hozzáférését jóváhagyták.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Teljes beállítás</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domain hírlevél-hozzáférése megszűnt.</p>"
 }

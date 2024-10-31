@@ -4568,7 +4568,7 @@
   ". You could alternatively use the open-source (proprietary licensing) plugin": ". אתה יכול לחלופין להשתמש בתוסף קוד פתוח (רישוי קנייני).",
   "Google Chrome": "גוגל כרום",
   "You can download the open-source browser extension": "אתה יכול להוריד את תוסף הדפדפן בקוד פתוח",
-  "Mozilla Firefox": "Mozilla Firefox",
+  "Mozilla Firefox": "מוזילה פיירפוקס",
   "Microsoft Edge": "מיקרוסופט אדג",
   "Brave": "אַמִיץ",
   "Balsa": "בלסה",
@@ -8365,5 +8365,8 @@
   "Mailbox temporarily unavailable for automatic optimization": "תיבת הדואר אינה זמינה זמנית עבור אופטימיזציה אוטומטית",
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "מסד הנתונים שלך עובר אופטימיזציה אוטומטית באמצעות SQLite VACUUM על מנת להבטיח שהפרגמה \"auto_vacuum=FULL\" מוגדרת כראוי בתיבת הדואר שלך.  פעולה זו תיקח בערך דקה אחת לכל GB של שטח אחסון שאתה משתמש כעת בכינוי זה.  יש צורך לבצע פעולה זו על מנת לשמור על גודל מסד הנתונים שלך אופטימלי לאורך זמן בזמן שאתה קריאה וכתיבה מתיבת הדואר שלך.  לאחר השלמתו תקבל אישור בדוא\"ל.",
   "Mailbox optimization completed": "אופטימיזציית תיבת הדואר הושלמה",
-  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "תהליך האופטימיזציה של מסד הנתונים שלך הושלם.  הפרגמה \"auto_vacuum=FULL\" הוגדרה כראוי בתיבת הדואר של מסד הנתונים של SQLite ועם הזמן גודל קובץ מסד הנתונים שלך יעבור אופטימיזציה."
+  "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "תהליך האופטימיזציה של מסד הנתונים שלך הושלם.  הפרגמה \"auto_vacuum=FULL\" הוגדרה כראוי בתיבת הדואר של מסד הנתונים של SQLite ועם הזמן גודל קובץ מסד הנתונים שלך יעבור אופטימיזציה.",
+  "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> אושרה לגישה לניוזלטר",
+  "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">הדומיין שלך <span class=\"notranslate\">%s</span> אושר לגישה לניוזלטר.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">השלם את ההגדרה</a></p>",
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">הגישה לניוזלטר הוסרה לדומיין <span class=\"notranslate\">%s</span> שלך.</p>"
 }

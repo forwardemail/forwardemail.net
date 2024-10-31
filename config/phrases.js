@@ -174,11 +174,11 @@ module.exports = {
   EMAIL_SMTP_ACCESS_DISABLED:
     '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its outbound SMTP access removed.</p>',
   EMAIL_NEWSLETTER_ACCESS_ENABLED_SUBJECT:
-    '<span class="notranslate">%s</span> approved for NEWSLETTER access',
+    '<span class="notranslate">%s</span> approved for newsletter access',
   EMAIL_NEWSLETTER_ACCESS_ENABLED_MESSAGE:
-    '<p class="text-center">Your domain <span class="notranslate">%s</span> was approved for NEWSLETTER access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Complete Setup</a></p>',
+    '<p class="text-center">Your domain <span class="notranslate">%s</span> was approved for newsletter access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Complete Setup</a></p>',
   EMAIL_NEWSLETTER_ACCESS_DISABLED:
-    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its NEWSLETTER access removed.</p>',
+    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its newsletter access removed.</p>',
   EMAIL_SMTP_ACCESS_REQUIRED:
     'Domain is not approved for outbound SMTP access, please <a class="font-weight-bold" href="/help">contact us</a>.',
   ENVELOPE_FROM_MISSING:
