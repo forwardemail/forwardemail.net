@@ -216,7 +216,9 @@ block body
               li.list-group-item.d-flex.align-items-center.font-weight-bold
                 i.fa.fa-fw.fa-paperclip.text-themed.mr-3
                 = " "
-                != t('<span class="notranslate">%s</span> attachment limit', config.smtpMessageMaxSize)
+                = config.smtpMessageMaxSize
+                != "&nbsp;"
+                = t("attachment limit")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-themed.text-decoration-underline(
