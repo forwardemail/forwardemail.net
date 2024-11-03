@@ -10347,5 +10347,6 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Proses optimasi basis data Anda telah selesai. Pragma \"auto_vacuum=FULL\" telah ditetapkan dengan benar di kotak surat basis data SQLite Anda dan seiring waktu ukuran file basis data Anda akan dioptimalkan.",
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> disetujui untuk akses buletin",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Domain Anda <span class=\"notranslate\">%s</span> telah disetujui untuk akses buletin.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Pengaturan Lengkap</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Akses buletin domain Anda <span class=\"notranslate\">%s</span> telah dihapus.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Akses buletin domain Anda <span class=\"notranslate\">%s</span> telah dihapus.</p>",
+  "attachment limit": "batas lampiran"
 }

@@ -10347,5 +10347,6 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Az adatbázis-optimalizálási folyamat befejeződött.  Az \"auto_vacuum=FULL\" pragma megfelelően be van állítva az SQLite adatbázis-postafiókjában, és idővel az adatbázisfájl mérete optimalizálódik.",
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> jóváhagyva a hírlevélhez való hozzáférést",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">A(z <span class=\"notranslate\">%s</span> domain hírlevélhez való hozzáférését jóváhagyták.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Teljes beállítás</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domain hírlevél-hozzáférése megszűnt.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domain hírlevél-hozzáférése megszűnt.</p>",
+  "attachment limit": "csatolási korlát"
 }

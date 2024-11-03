@@ -10347,5 +10347,6 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "데이터베이스 최적화 프로세스가 완료되었습니다. \"auto_vacuum=FULL\" 프래그마가 SQLite 데이터베이스 사서함에 제대로 설정되었으며 시간이 지남에 따라 데이터베이스 파일 크기가 최적화됩니다.",
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> 뉴스레터 접근을 승인했습니다.",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">귀하의 도메인 <span class=\"notranslate\">%s</span> 뉴스레터 접근이 승인되었습니다.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">완전한 설정</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">귀하의 도메인 <span class=\"notranslate\">%s</span> 의 뉴스레터 접근 권한이 제거되었습니다.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">귀하의 도메인 <span class=\"notranslate\">%s</span> 의 뉴스레터 접근 권한이 제거되었습니다.</p>",
+  "attachment limit": "첨부 제한"
 }

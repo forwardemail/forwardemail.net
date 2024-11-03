@@ -10347,5 +10347,6 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Proces optimalizace databáze byl dokončen.  Pragma \"auto_vacuum=FULL\" bylo správně nastaveno ve vaší poštovní schránce databáze SQLite a časem bude velikost vašeho databázového souboru optimalizována.",
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> schválen pro přístup k newsletteru",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Vaše doména <span class=\"notranslate\">%s</span> byla schválena pro přístup k bulletinu.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Dokončete nastavení</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Vaší doméně <span class=\"notranslate\">%s</span> byl odebrán přístup k bulletinu.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Vaší doméně <span class=\"notranslate\">%s</span> byl odebrán přístup k bulletinu.</p>",
+  "attachment limit": "limit přílohy"
 }

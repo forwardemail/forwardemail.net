@@ -7335,5 +7335,6 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Din databaseoptimeringsproces er afsluttet.  \"auto_vacuum=FULL\"-pragmaen er blevet indstillet korrekt på din SQLite-databasepostkasse, og over tid vil din databasefilstørrelse blive optimeret.",
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> godkendt til nyhedsbrevsadgang",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Dit domæne <span class=\"notranslate\">%s</span> blev godkendt til nyhedsbrevsadgang.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Fuldfør opsætning</a></p>",
-  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Dit domæne <span class=\"notranslate\">%s</span> fik sin nyhedsbrevsadgang fjernet.</p>"
+  "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Dit domæne <span class=\"notranslate\">%s</span> fik sin nyhedsbrevsadgang fjernet.</p>",
+  "attachment limit": "tilknytningsgrænse"
 }
