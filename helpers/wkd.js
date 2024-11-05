@@ -8,6 +8,9 @@ const ms = require('ms');
 const undici = require('undici');
 
 const TimeoutError = require('./timeout-error');
+const config = require('#config');
+
+const DURATION = config.env === 'test' ? '5s' : '2s';
 
 //
 // NOTE: this uses `fetch` which is OK because
@@ -32,14 +35,16 @@ function WKD(resolver) {
     const abortController = new AbortController();
     const t = setTimeout(() => {
       if (!abortController?.signal?.aborted)
-        abortController.abort(new TimeoutError(`${url} took longer than 2s`));
-    }, ms('2s'));
+        abortController.abort(
+          new TimeoutError(`${url} took longer than ${DURATION}`)
+        );
+    }, ms(DURATION));
     const response = await undici.fetch(url, {
       signal: abortController.signal,
       dispatcher: new undici.Agent({
-        headersTimeout: ms('2s'),
-        connectTimeout: ms('2s'),
-        bodyTimeout: ms('2s'),
+        headersTimeout: ms(DURATION),
+        connectTimeout: ms(DURATION),
+        bodyTimeout: ms(DURATION),
         connect: {
           lookup(hostname, options, fn) {
             resolver
