@@ -2452,6 +2452,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>
   <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
   <li class="list-inline-item"><code class="notranslate">pw</code></li>
   <li class="list-inline-item"><code class="notranslate">rs</code></li>
   <li class="list-inline-item"><code class="notranslate">sc</code></li>

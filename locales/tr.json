@@ -10322,7 +10322,7 @@
   "The quota for <span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span> exceeds the maximum quota of <span class=\"notranslate\">%s</span> from admins of the domain.": "<span class=\"notranslate\">%s</span> için <span class=\"notranslate\">%s</span> kotası, etki alanının yöneticilerinden <span class=\"notranslate\">%s</span> maksimum kotasını aşıyor.",
   "Calendar already exists.": "Takvim zaten mevcut.",
   "Canonical": "Kanonik",
-  "Kubuntu": "Kubuntu",
+  "Kubuntu": "İnsanlıkta",
   "Lubuntu": "Lubuntu",
   "export format already supported).": "dışa aktarma formatı zaten destekleniyor.",
   "Webhook signature support": "Webhook imza desteği",
@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> bülten erişimi için onaylandı",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Alan adınız <span class=\"notranslate\">%s</span> bültene erişim için onaylandı.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Kurulumu Tamamla</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\"><span class=\"notranslate\">%s</span> alan adınızın bülten erişimi kaldırıldı.</p>",
-  "attachment limit": "ek sınırı"
+  "attachment limit": "ek sınırı",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": "Maksimum sınırın ötesinde e-postaları yinelemeli olarak iletmeye çalışırsanız bir hata oluşacağını unutmayın."
 }

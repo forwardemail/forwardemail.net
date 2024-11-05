@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span>ニュースレターへのアクセスが承認されました",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">ドメイン<span class=\"notranslate\">%s</span>ニュースレターへのアクセスが承認されました。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">セットアップを完了する</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">ドメイン<span class=\"notranslate\">%s</span>のニュースレター アクセスが削除されました。</p>",
-  "attachment limit": "添付ファイルの制限"
+  "attachment limit": "添付ファイルの制限",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": "最大制限を超えてメールを再帰的に転送しようとすると、エラーが発生することに注意してください。"
 }

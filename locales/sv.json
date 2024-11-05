@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> godkänd för åtkomst till nyhetsbrev",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Din domän <span class=\"notranslate\">%s</span> godkändes för åtkomst till nyhetsbrev.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Slutför installationen</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Din domän <span class=\"notranslate\">%s</span> fick sin nyhetsbrevsåtkomst borttagen.</p>",
-  "attachment limit": "anknytningsgräns"
+  "attachment limit": "anknytningsgräns",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ".  Observera att ett fel kommer att visas om du försöker vidarebefordra e-postmeddelanden rekursivt utöver maxgränsen."
 }

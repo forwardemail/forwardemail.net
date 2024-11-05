@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> ได้รับการอนุมัติให้เข้าถึงจดหมายข่าว",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">โดเมน <span class=\"notranslate\">%s</span> ของคุณได้รับการอนุมัติให้เข้าถึงจดหมายข่าวได้</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">การติดตั้งแบบสมบูรณ์</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">โดเมน <span class=\"notranslate\">%s</span> ของคุณถูกถอดสิทธิ์การเข้าถึงจดหมายข่าว</p>",
-  "attachment limit": "ขีดจำกัดการแนบไฟล์"
+  "attachment limit": "ขีดจำกัดการแนบไฟล์",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": "โปรดทราบว่าจะมีข้อผิดพลาดเกิดขึ้นหากคุณพยายามส่งต่ออีเมลซ้ำๆ เกินกว่าขีดจำกัดสูงสุด"
 }

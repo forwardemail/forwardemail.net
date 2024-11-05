@@ -7878,5 +7878,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> đã được chấp thuận để truy cập bản tin",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Tên miền <span class=\"notranslate\">%s</span> của bạn đã được chấp thuận để nhận bản tin.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Thiết lập hoàn chỉnh</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">Tên miền <span class=\"notranslate\">%s</span> của bạn đã bị xóa quyền truy cập nhận bản tin.</p>",
-  "attachment limit": "giới hạn đính kèm"
+  "attachment limit": "giới hạn đính kèm",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ". Lưu ý rằng lỗi sẽ xuất hiện nếu bạn cố gắng chuyển tiếp email vượt quá giới hạn tối đa."
 }

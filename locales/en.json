@@ -6737,5 +6737,7 @@
   "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.": "Your database is being automatically optimized via SQLite VACUUM in order to ensure \"auto_vacuum=FULL\" pragma is set properly on your mailbox.  This operation will take roughly 1 minute per GB of storage you currently use on this alias.  It is necessary to perform this operation in order to keep your database size optimized over time as you read and write from your mailbox.  Once completed you will receive an email confirmation.",
   "Mailbox optimization completed": "Mailbox optimization completed",
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.",
-  "attachment limit": "attachment limit"
+  "attachment limit": "attachment limit",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.",
+  "Request Time-out": "Request Time-out"
 }

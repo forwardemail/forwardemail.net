@@ -1436,6 +1436,7 @@ const config = {
     'org',
     'pl',
     'pr',
+    'pt',
     'pw',
     'rs',
     'sc',

@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> goedgekeurd voor toegang tot nieuwsbrief",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Uw domein <span class=\"notranslate\">%s</span> is goedgekeurd voor toegang tot de nieuwsbrief.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Volledige installatie</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">De toegang tot de nieuwsbrief van uw domein <span class=\"notranslate\">%s</span> is verwijderd.</p>",
-  "attachment limit": "bijlage limiet"
+  "attachment limit": "bijlage limiet",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": "Houd er rekening mee dat er een foutmelding wordt gegenereerd als u probeert e-mails recursief door te sturen boven de maximumlimiet."
 }

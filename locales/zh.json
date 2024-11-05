@@ -10041,5 +10041,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span>已获准访问新闻通讯",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">您的域<span class=\"notranslate\">%s</span>已被批准访问新闻通讯。</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">完成设置</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">您的域<span class=\"notranslate\">%s</span>的新闻通讯访问权限已被删除。</p>",
-  "attachment limit": "附件限制"
+  "attachment limit": "附件限制",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": "。请注意，如果您尝试递归转发超出最大限制的电子邮件，则会引发错误。"
 }

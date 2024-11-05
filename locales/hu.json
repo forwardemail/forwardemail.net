@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> jóváhagyva a hírlevélhez való hozzáférést",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">A(z <span class=\"notranslate\">%s</span> domain hírlevélhez való hozzáférését jóváhagyták.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Teljes beállítás</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">A(z <span class=\"notranslate\">%s</span> domain hírlevél-hozzáférése megszűnt.</p>",
-  "attachment limit": "csatolási korlát"
+  "attachment limit": "csatolási korlát",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ".  Vegye figyelembe, hogy hibaüzenet jelenik meg, ha a maximális korlátot meghaladó e-maileket próbál meg rekurzív módon továbbítani."
 }

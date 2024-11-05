@@ -10348,5 +10348,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> aprovado para acesso ao boletim informativo",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\">Seu domínio <span class=\"notranslate\">%s</span> foi aprovado para acesso ao boletim informativo.</p><p class=\"text-center mb-0\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">Configuração completa</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\">O acesso ao boletim informativo do seu domínio <span class=\"notranslate\">%s</span> foi removido.</p>",
-  "attachment limit": "limite de anexo"
+  "attachment limit": "limite de anexo",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ". Observe que um erro será gerado se você tentar encaminhar recursivamente e-mails além do limite máximo."
 }

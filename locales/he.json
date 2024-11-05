@@ -8369,5 +8369,6 @@
   "<span class=\"notranslate\">%s</span> approved for newsletter access": "<span class=\"notranslate\">%s</span> אושרה לגישה לניוזלטר",
   "<p class=\"text-center\">Your domain <span class=\"notranslate\">%s</span> was approved for newsletter access.</p><p class=\"text-center mb-0\"><a class=\"btn btn-lg btn-danger\" href=\"%s\">Complete Setup</a></p>": "<p class=\"text-center\" style=\";text-align:right;direction:rtl\">הדומיין שלך <span class=\"notranslate\">%s</span> אושר לגישה לניוזלטר.</p><p class=\"text-center mb-0\" style=\";text-align:right;direction:rtl\"> <a class=\"btn btn-lg btn-danger\" href=\"%s\">השלם את ההגדרה</a></p>",
   "<p class=\"text-center text-danger\">Your domain <span class=\"notranslate\">%s</span> had its newsletter access removed.</p>": "<p class=\"text-center text-danger\" style=\";text-align:right;direction:rtl\">הגישה לניוזלטר הוסרה לדומיין <span class=\"notranslate\">%s</span> שלך.</p>",
-  "attachment limit": "מגבלת התקשרות"
+  "attachment limit": "מגבלת התקשרות",
+  ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ".  שים לב שתופיע שגיאה אם תנסה להעביר הודעות דוא\"ל רקורסיביות מעבר למגבלה המקסימלית."
 }
