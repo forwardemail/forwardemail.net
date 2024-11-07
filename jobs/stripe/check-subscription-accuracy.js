@@ -72,10 +72,16 @@ async function mapper(customer) {
     })
   ]);
 
-  if (activeSubscriptions.has_more || trialingSubscriptions.has_more)
-    throw new Error(
-      'Subscriptions has_more bug - this should not have pagination'
+  if (activeSubscriptions.has_more || trialingSubscriptions.has_more) {
+    const err = new TypeError(
+      'Subscriptions has_more issue - this should not have pagination'
     );
+    err.isCodeBug = true;
+    err.customer = customer;
+    err.activeSubscriptions = activeSubscriptions;
+    err.trialingSubscriptions = trialingSubscriptions;
+    throw err;
+  }
 
   let subscriptions = [
     ...activeSubscriptions.data,
