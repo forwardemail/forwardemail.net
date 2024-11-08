@@ -144,7 +144,7 @@ async function verifyRecords(ctx) {
               .join('')}</ul>`;
       if (!ctx.api) ctx.flash('warning', extra);
     } else if (errors.length > 0) {
-      const err = new Error(
+      const err = Boom.badRequest(
         errors.length === 1
           ? errors[0]
           : ctx.translate('MULTIPLE_VERIFICATION_ERRORS')
