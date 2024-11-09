@@ -9,6 +9,10 @@ async function enforcePaidPlan(ctx, next) {
   if (!ctx.isAuthenticated())
     return ctx.throw(Boom.unauthorized(ctx.translateError('LOGIN_REQUIRED')));
 
+  // if the user is a member of a team plan and in the admin group, continue
+  if (ctx.state?.domain?.group === 'admin' && ctx.state?.domain?.plan === 'team')
+    return next();
+
   if (ctx.state.user.plan === 'free')
     return ctx.throw(
       Boom.paymentRequired(

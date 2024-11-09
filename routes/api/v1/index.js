@@ -168,7 +168,6 @@ router
     policies.ensureApiToken,
     policies.checkVerifiedEmail,
     web.myAccount.ensureNotBanned,
-    api.v1.enforcePaidPlan,
     web.myAccount.ensurePaidToDate,
     (ctx, next) => {
       //
@@ -200,23 +199,27 @@ router
     '/domains',
     web.myAccount.validateDomain,
     rateLimit(50, 'create domain'),
+    api.v1.enforcePaidPlan,
     web.myAccount.createDomain,
     api.v1.domains.retrieve
   )
   .get(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
+    api.v1.enforcePaidPlan,
     api.v1.domains.retrieve
   )
   .get(
     '/domains/:domain_id/verify-records',
     web.myAccount.retrieveDomain,
+    api.v1.enforcePaidPlan,
     web.myAccount.verifyRecords
   )
   .put(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.updateDomain,
     web.myAccount.retrieveDomains,
@@ -226,6 +229,7 @@ router
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
+    api.v1.enforcePaidPlan,
     web.myAccount.removeDomain,
     web.myAccount.retrieveDomains,
     api.v1.domains.retrieve
@@ -238,6 +242,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
+    api.v1.enforcePaidPlan,
     web.myAccount.ensureUpgradedPlan,
     rateLimit(10, 'create invite'),
     web.myAccount.createInvite,
@@ -250,6 +255,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
+    api.v1.enforcePaidPlan,
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.removeInvite,
     web.myAccount.retrieveDomains,
@@ -264,6 +270,7 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
+    api.v1.enforcePaidPlan,
     web.myAccount.retrieveAliases,
     web.myAccount.updateMember,
     web.myAccount.retrieveDomains,
@@ -276,6 +283,7 @@ router
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureTeamPlan,
     web.myAccount.ensureUpgradedPlan,
+    api.v1.enforcePaidPlan,
     web.myAccount.retrieveAliases,
     web.myAccount.removeMember,
     web.myAccount.retrieveDomains,

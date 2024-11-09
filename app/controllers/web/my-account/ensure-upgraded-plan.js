@@ -15,7 +15,11 @@ function ensureUpgradedPlan(ctx, next) {
   )
     return next();
 
-  if (!ctx.state.domain && ctx.state.user.plan !== 'free') return next();
+  if (
+    (!ctx.state.domain && ctx.state.user.plan !== 'free') ||
+    ctx.state?.domain?.plan === 'team'
+  )
+    return next();
 
   const redirectTo = ctx.state.domain
     ? ctx.state.l(
