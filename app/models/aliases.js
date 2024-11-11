@@ -677,12 +677,24 @@ Aliases.pre('save', async function (next) {
       if (domain.is_global && !alias.is_new_user && user) {
         // user must be on a paid plan to use a global domain
         if (user.plan === 'free' && !alias.is_update) {
-          const domainIds = await conn.models.Domains.distinct('_id', {
-            is_global: true
-          });
+          const arr = await conn.models.Domains.aggregate([
+            {
+              $match: {
+                is_global: true
+              }
+            },
+            {
+              $group: {
+                _id: '$_id'
+              }
+            }
+          ])
+            .allowDiskUse(true)
+            .exec();
+
           const aliasCount = await alias.constructor.countDocuments({
             user: user._id,
-            domain: { $in: domainIds }
+            domain: { $in: arr.map((v) => v._id) }
           });
           throw Boom.paymentRequired(
             i18n.translateError(
@@ -763,17 +775,29 @@ Aliases.pre('save', async function (next) {
 
 async function updateDomainCatchallRegexBooleans(alias) {
   try {
-    const names = await alias.constructor.distinct('name', {
-      domain: alias.domain
-    });
+    const arr = await alias.constructor
+      .aggregate([
+        {
+          $match: {
+            domain: alias.domain
+          }
+        },
+        {
+          $group: {
+            _id: '$name'
+          }
+        }
+      ])
+      .allowDiskUse(true)
+      .exec();
 
     let hasCatchall = false;
     let hasRegex = false;
 
-    for (const name of names) {
+    for (const v of arr) {
       if (hasCatchall && hasRegex) break;
-      if (name === '*') hasCatchall = true;
-      else if (name.startsWith('/')) hasRegex = true;
+      if (v._id === '*') hasCatchall = true;
+      else if (v._id.startsWith('/')) hasRegex = true;
     }
 
     await conn.models.Domains.findByIdAndUpdate(alias.domain, {

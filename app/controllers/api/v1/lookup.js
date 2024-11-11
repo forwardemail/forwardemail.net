@@ -137,7 +137,6 @@ async function lookup(ctx) {
   //
   if (domain.is_global) {
     // TODO: implement caching here
-    // TODO: maxTimeMS: 30000
     const arr = await Users.aggregate([
       {
         $match: {

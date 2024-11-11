@@ -1154,17 +1154,20 @@ Domains.pre('save', async function (next) {
       return next();
     }
 
-    const names = await conn.models.Aliases.distinct('name', {
-      domain: this._id
-    });
+    const arr = await conn.models.Aliases.aggregate([
+      { $match: { domain: this._id } },
+      { $group: { _id: '$name' } }
+    ])
+      .allowDiskUse(true)
+      .exec();
 
     let hasCatchall = false;
     let hasRegex = false;
 
-    for (const name of names) {
+    for (const v of arr) {
       if (hasCatchall && hasRegex) break;
-      if (name === '*') hasCatchall = true;
-      else if (name.startsWith('/')) hasRegex = true;
+      if (v._id === '*') hasCatchall = true;
+      else if (v._id.startsWith('/')) hasRegex = true;
     }
 
     this.has_catchall = hasCatchall;
