@@ -96,21 +96,36 @@ async function sendEmails() {
   //
   // get list of all suspended domains
   // and recently blocked emails to exclude
-  const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
-    Domains.distinct('_id', {
-      is_smtp_suspended: true
-    }),
-    Emails.distinct('_id', {
-      updated_at: {
-        $gte: dayjs().subtract(1, 'hour').toDate(),
-        $lte: now
+  const [suspendedDomains, recentlyBlocked] = await Promise.all([
+    Domains.aggregate([
+      { $match: { is_smtp_suspended: true } },
+      { $group: { _id: '$_id' } }
+    ])
+      .allowDiskUse(true)
+      .exec(),
+    Emails.aggregate([
+      {
+        $match: {
+          updated_at: {
+            $gte: dayjs().subtract(1, 'hour').toDate(),
+            $lte: now
+          },
+          has_blocked_hashes: true,
+          blocked_hashes: {
+            $in: getBlockedHashes(IP_ADDRESS)
+          }
+        }
       },
-      has_blocked_hashes: true,
-      blocked_hashes: {
-        $in: getBlockedHashes(IP_ADDRESS)
+      {
+        $group: { _id: '$_id' }
       }
-    })
+    ])
+      .allowDiskUse(true)
+      .exec()
   ]);
+
+  const suspendedDomainIds = suspendedDomains.map((v) => v._id);
+  const recentlyBlockedIds = recentlyBlocked.map((v) => v._id);
 
   logger.info('%d suspended domain ids', suspendedDomainIds.length);
 
