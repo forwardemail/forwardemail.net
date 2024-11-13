@@ -162,7 +162,7 @@ async function retrieveAliases(ctx, next) {
         ? // eslint-disable-next-line unicorn/no-array-callback-reference
           Aliases.find(query)
             .limit(ctx.query.limit)
-            .skip(ctx.paginate.skip)
+            .skip(ctx?.paginate?.skip)
             .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'created_at')
             .populate(
               'user',
@@ -202,7 +202,7 @@ async function retrieveAliases(ctx, next) {
       // eslint-disable-next-line unicorn/no-array-callback-reference
       Aliases.find(query)
         .limit(ctx.query.limit)
-        .skip(ctx.paginate.skip)
+        .skip(ctx?.paginate?.skip)
         .sort(isSANB(ctx.query.sort) ? ctx.query.sort : 'name')
         .populate(
           'user',
