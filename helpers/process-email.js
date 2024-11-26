@@ -699,7 +699,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     //
     // accepted [String]
-    // rejected [String]
     // rejectedErrors [Object] (an Array of Objects which were parsed Errors via `parse-err`)
     //
     // - [x] filter out recipients already accepted
@@ -714,7 +713,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const map = new Map();
     for (const to of envelope.to) {
       // filter out recipients already accepted
-      if (Array.isArray(email.accepted) && email.accepted.includes(to))
+      if (
+        Array.isArray(email.accepted) &&
+        email.accepted.includes(to.toLowerCase())
+      )
         continue;
 
       // filter out recipients that have 5xx errors and were already rejected
@@ -746,7 +748,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //       is already accepted it will mark the email as being sent
       //
       if (
-        email.accepted.sort().join(',') === email.envelope.to.sort().join(',')
+        email.accepted.sort().join(',') ===
+        email.envelope.to
+          .map((s) => s.toLowerCase())
+          .sort()
+          .join(',')
       ) {
         await Emails.findByIdAndUpdate(email._id, {
           $set: {
@@ -797,7 +803,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
         addresses,
         // eslint-disable-next-line complexity
         async (address) => {
-          const to = [address];
+          const to = [address.toLowerCase()];
           const target = address.split('@')[1];
           //
           // check if exists for domain being blocked

@@ -373,7 +373,7 @@ Emails.pre('validate', function (next) {
     if (!Array.isArray(this.rejectedErrors)) this.rejectedErrors = [];
 
     // ensure accepted is lowercased and unique
-    this.accepted = _.uniq(this.accepted).sort();
+    this.accepted = _.uniq(this.accepted.map((a) => a.toLowerCase())).sort();
 
     // ensure that all `rejectedErrors` are Objects not Errors
     this.rejectedErrors = this.rejectedErrors.map((err) => {
@@ -397,7 +397,7 @@ Emails.pre('validate', function (next) {
 
     // filter out any `accepted` from `rejectedErrors`
     this.rejectedErrors = this.rejectedErrors.filter(
-      (err) => !this.accepted.includes(err.recipient)
+      (err) => !this.accepted.includes(err.recipient.toLowerCase())
     );
 
     // ensure that `rejectedErrors` are unique (by most recent/last added)
