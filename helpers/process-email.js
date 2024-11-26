@@ -4,6 +4,7 @@
  */
 
 const os = require('node:os');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { createPublicKey, randomBytes, createHmac } = require('node:crypto');
 
@@ -583,6 +584,47 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // verify Return-Path (enforces domain reputation)
     if (srsDomain !== returnPath) {
+      //
+      // NOTE: this indicates typically an outbound SMTP configuration issue
+      //       (as a courtesy send this once a week to the user on a per-domain basis)
+      //
+      const cache = await client.get(`return_path_check:${domain.id}`);
+      if (!cache) {
+        await client.set(
+          `return_path_check:${domain.id}`,
+          true,
+          'PX',
+          ms('7d')
+        );
+        // send an email to all admins of the domain
+        const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+        const subject = i18n.translate(
+          'RETURN_PATH_ERROR_SUBJECT',
+          obj.locale,
+          domain.name
+        );
+        const message = i18n.translate(
+          'RETURN_PATH_ERROR_MESSAGE',
+          obj.locale,
+          domain.name,
+          `${config.urls.web}/${
+            obj.locale
+          }/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+        );
+        // TODO: if error occurs then unset cache
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: obj.to,
+            subject
+          },
+          locals: {
+            message,
+            locale: obj.locale
+          }
+        });
+      }
+
       const err = Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH'));
       err.returnPathResults = returnPathResults;
       err.srsDomain = srsDomain;

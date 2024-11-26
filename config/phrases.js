@@ -263,6 +263,10 @@ module.exports = {
     'Newsletter approval required for <span class="notranslate">%s</span>',
   NEWSLETTER_APPROVAL_REQUIRED_MESSAGE:
     'We detected that you attempted to send an outbound SMTP newsletter for <strong class="notranslate">%s</strong>.  Your domain does not yet have newsletter support approved, and an admin has been notified to begin review.  This process usually is resolved within 2-4 hours, but sometimes it may longer.',
+  RETURN_PATH_ERROR_SUBJECT:
+    '<span class="notranslate">%s</span> needs outbound SMTP configured or re-verified',
+  RETURN_PATH_ERROR_MESSAGE:
+    '<p>The domain <strong class="notranslate">%s</strong> had an issue with its outbound SMTP configuration:</p><p class="text-center mb-0"><a href="%s" class="btn btn-lg btn-danger">Resolve Issues</a></p>',
   BOUNCE_WEBHOOK_ERROR_SUBJECT:
     '<span class="notranslate">%s</span> had a bounce webhook error',
   BOUNCE_WEBHOOK_ERROR_MESSAGE:
