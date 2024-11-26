@@ -505,7 +505,9 @@ async function processEvent(ctx, event) {
       const subscriptions = await stripe.subscriptions.list({
         customer: event.data.object.customer
       });
-      const filtered = subscriptions.filter((s) => s.status !== 'canceled');
+      const filtered = subscriptions.data.filter(
+        (s) => s.status !== 'canceled'
+      );
       if (filtered.length > 1) {
         emailHelper({
           template: 'alert',
