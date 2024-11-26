@@ -47,6 +47,8 @@ async function mapper(customer) {
 
   if (!user) return;
 
+  if (user.is_banned) return;
+
   // if emails did not match
   if (user.email !== customer.email) {
     logger.info(
@@ -74,7 +76,7 @@ async function mapper(customer) {
 
   if (activeSubscriptions.has_more || trialingSubscriptions.has_more) {
     const err = new TypeError(
-      'Subscriptions has_more issue - this should not have pagination'
+      `Subscriptions has_more issue - this should not have pagination ${customer.email} (${customer.id})`
     );
     err.isCodeBug = true;
     err.customer = customer;

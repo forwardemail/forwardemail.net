@@ -129,10 +129,9 @@ router
     rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
-  // rate limit to 3 years of receipts due to PDF downloading
   .get(
     '/billing/:reference',
-    rateLimit(36, 'retrieve receipt'),
+    rateLimit(90, 'retrieve receipt'),
     web.myAccount.retrieveReceipt
   )
   .get('/domains', paginate.middleware(10, 50), web.myAccount.listDomains)

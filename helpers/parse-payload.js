@@ -22,7 +22,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const pEvent = require('p-event');
+// const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
@@ -889,6 +889,81 @@ async function parsePayload(data, ws) {
                   )} was available`
                 );
 
+              // we should only use in-memory database is if was connected (IMAP session open)
+              if (
+                this.databaseMap &&
+                this.databaseMap.has(session.user.alias_id) &&
+                this.databaseMap.get(session.user.alias_id).open === true
+              )
+                session.db = this.databaseMap.get(session.user.alias_id);
+
+              if (session.db) {
+                try {
+                  // since we use onAppend it re-uses addEntries
+                  // which notifies all connected imap users via EXISTS
+                  await onAppendPromise.call(
+                    this,
+                    'INBOX',
+                    [],
+                    _.isDate(payload.date)
+                      ? payload.date
+                      : new Date(payload.date),
+                    payload.raw,
+                    {
+                      user: {
+                        ...session.user
+                        // NOTE: we don't have the password since we're using in-memory mapping
+                        // password: user.password
+                      },
+                      db: session.db,
+                      remoteAddress: payload.remoteAddress,
+                      resolvedRootClientHostname:
+                        payload.resolvedRootClientHostname,
+                      resolvedClientHostname: payload.resolvedClientHostname,
+                      allowlistValue: payload.allowlistValue,
+
+                      // don't emit wss.broadcast
+                      selected: false,
+
+                      // don't append duplicate messages
+                      checkForExisting: true
+                    }
+                  );
+
+                  //
+                  // increase rate limiting size and count
+                  //
+                  try {
+                    await increaseRateLimiting(
+                      this.client,
+                      date,
+                      sender,
+                      root,
+                      byteLength
+                    );
+                  } catch (err) {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.fatal(err);
+                  }
+                } catch (_err) {
+                  // in order to ensure tmp write still occurs
+                  delete session.db;
+
+                  const err = Array.isArray(_err) ? _err[0] : _err;
+                  if (isRetryableError(err)) {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.error(err);
+                  } else {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.error(err);
+                  }
+                }
+              }
+
+              /*
               //
               // attempt to get in-memory password from IMAP servers
               //
@@ -970,11 +1045,13 @@ async function parsePayload(data, ws) {
                   logger.error(err);
                 }
               }
+              */
 
               //
               // fallback to writing to temporary database storage
               //
-              if (fallback) {
+              // if (fallback)
+              if (!session.db) {
                 const tmpDb = await getTemporaryDatabase.call(this, session);
 
                 let err;

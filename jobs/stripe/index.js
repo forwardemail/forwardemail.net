@@ -18,6 +18,7 @@ const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 
 const syncStripePayments = require('./sync-stripe-payments');
+const fraudCheck = require('./fraud-check');
 const checkSubscriptionAccuracy = require('./check-subscription-accuracy');
 
 const config = require('#config');
@@ -42,6 +43,27 @@ graceful.listen();
 
 (async () => {
   await setupMongoose(logger);
+
+  // check for stripe fraud
+  try {
+    await fraudCheck();
+  } catch (err) {
+    await logger.error(err);
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'Error with job for Stripe fraud check'
+      },
+      locals: {
+        message: `<pre><code>${JSON.stringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
+  }
 
   //
   // get all stripe customers and check for

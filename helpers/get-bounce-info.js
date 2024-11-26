@@ -47,7 +47,7 @@ function getBounceInfo(err) {
   if (
     bounceInfo.message === 'Unknown' ||
     (bounceInfo.action === 'reject' &&
-      ['blocklist', 'policy', 'message', 'block', 'other'].includes(
+      ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
         bounceInfo.category
       ))
   ) {
@@ -68,7 +68,9 @@ function getBounceInfo(err) {
     // <https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror>
   }
 
-  if (response.includes('Connection dropped due to SocketError')) {
+  if (response.includes('Comcast block for spam')) {
+    bounceInfo.category = 'blocklist';
+  } else if (response.includes('Connection dropped due to SocketError')) {
     // modify message to include URL for debugging
     err.message +=
       ' ; Resolve this issue by visiting https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror#cause ;';
