@@ -1,0 +1,88 @@
+name: Build and Publish Self-Hosted Docker Image
+on:
+  # push:
+  #   tags:
+  #     - 'v*'  # Trigger the workflow on tags starting with 'v', for example v1.0.0
+  release:
+    types: [published]  # Trigger the workflow on new releases
+
+jobs:
+  build-and-publish:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu-latest
+        node_version:
+          - "18.20.4"
+    env:
+      AUTH_GITHUB_ENABLED: "false"
+      AUTH_GOOGLE_ENABLED: "false"
+      I18N_SYNC_FILES: "true"
+      I18N_UPDATE_FILES: "true"
+      PREVIEW_EMAIL: "false"
+      TRUTH_SOURCES: "truthsource.com"
+      TURNSTILE_ENABLED: "false"
+      WEB_HOST: "example.com"
+      SMTP_MESSAGE_MAX_SIZE: ${{ secrets.SMTP_MESSAGE_MAX_SIZE }}
+      DKIM_PRIVATE_KEY_VALUE: ${{ secrets.DKIM_PRIVATE_KEY_VALUE }}
+      AXE_SILENT: ${{ secrets.AXE_SILENT }}
+      AXE_SHOW_META: ${{ secrets.AXE_SHOW_META }}
+      AXE_SHOW_STACK: ${{ secrets.AXE_SHOW_STACK }}
+      TXT_ENCRYPTION_KEY: ${{ secrets.TXT_ENCRYPTION_KEY }}
+      HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
+      SRS_SECRET: ${{ secrets.SRS_SECRET }}
+    steps:
+      # Checkout the repository to the runner
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      # Cache Docker layers to speed up build times
+      # - name: Cache Docker layers
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.cache/docker
+      #     key: ${{ runner.os }}-docker-${{ github.sha }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-docker-
+      
+      # Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      
+      # Log into GitHub Container Registry using a GitHub token
+      - name: Log into GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Remove parts of the schema not related to self hosted that will fail the build
+      - name: Update Schema for Self Hosted
+        run: |
+          sed -i -E \
+          -e '/^APPLE/d' \
+          -e '/^MICROSOFT/d' \
+          -e '/^TWILIO/d' \
+          -e '/^PAYPAL/d' \
+          -e '/^STRIPE/d' \
+          -e '/^SRS_SECRET/d' \
+          ".env.schema"
+
+      # Build / Publish the Docker image to GitHub Container Registry
+      - name: Build / Publish Docker image to GitHub Container Registry
+        run: |
+          IMAGE_NAME=ghcr.io/${{ github.repository }}-selfhosted:${{ github.ref_name }}
+          docker build -f self-hosting/Dockerfile-selfhosted -t $IMAGE_NAME .
+          
+          # Tag the image as 'latest' to update the latest tag
+          docker tag $IMAGE_NAME ghcr.io/${{ github.repository }}-selfhosted:latest
+          
+          # Push both the versioned and latest tags to GitHub Container Registry
+          docker push $IMAGE_NAME
+          docker push ghcr.io/${{ github.repository }}-selfhosted:latest
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled

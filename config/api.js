@@ -10,6 +10,7 @@ const sharedConfig = require('@ladjs/shared-config');
 
 const routes = require('../routes');
 
+const auth = require('./basic-auth');
 const env = require('./env');
 
 const config = require('.');
@@ -47,6 +48,7 @@ rateLimit.ignoredPathGlobs.push('/v1/emails');
 module.exports = {
   ...sharedAPIConfig,
   ...config,
+  auth,
   rateLimit,
   routes: routes.api,
   logger: cabin,

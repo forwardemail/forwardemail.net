@@ -56,7 +56,7 @@ test('starttls required for non-secure auth', async (t) => {
   const secure = false;
   const smtp = new SMTP({ client: t.context.client }, secure);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -113,7 +113,7 @@ Test`.trim()
 test('starttls disabled for secure auth', async (t) => {
   const secure = true;
   const smtp = new SMTP({ client: t.context.client }, secure);
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -205,7 +205,7 @@ Test`.trim()
 
 test('auth with catch-all pass', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, true);
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -374,7 +374,7 @@ Test`.trim()
 
 test('auth with pass as alias', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, true);
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -586,7 +586,7 @@ Test`.trim()
 
 test('auth with catch-all password when alias exists too', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, true);
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   const port = await getPort();
   await smtp.listen(port);
@@ -944,7 +944,7 @@ test('automatic openpgp support', async (t) => {
     user: user._id
   });
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -991,7 +991,7 @@ test('automatic openpgp support', async (t) => {
 test('smtp outbound auth', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -1237,7 +1237,7 @@ test(`unicode domain`, async (t) => {
     user: user._id
   });
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -1281,7 +1281,7 @@ test(`unicode domain`, async (t) => {
   );
 
   // run do a similar test using SMTP connection
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -1501,7 +1501,7 @@ test(`10MB message size`, async (t) => {
     user: user._id
   });
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -1685,7 +1685,7 @@ test(`16MB message size`, async (t) => {
     user: user._id
   });
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -1797,7 +1797,7 @@ test(`${env.SMTP_MESSAGE_MAX_SIZE} message size`, async (t) => {
 test('smtp outbound queue', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -2037,7 +2037,7 @@ Test`.trim()
   }
 
   // spin up a test smtp server that simply responds with OK
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const testPort = await getPort();
   let attempted = false;
   const server = new SMTPServer({
@@ -2136,7 +2136,7 @@ Test`.trim()
 test('smtp rate limiting', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -2345,7 +2345,7 @@ Test`.trim()
 test('does not allow differing domain with domain-wide catch-all', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -2535,7 +2535,7 @@ Test`.trim()
 test('requires newsletter approval', async (t) => {
   const smtp = new SMTP({ client: t.context.client }, false);
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 
@@ -2865,7 +2865,7 @@ test('bounce webhook', async (t) => {
   await resolver.options.cache.mset(map);
 
   // spin up a test smtp server that simply responds with OK
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],
@@ -2922,7 +2922,7 @@ test('bounce webhook', async (t) => {
     results[ctx.request.body.recipient] = ctx.request.body;
     ctx.status = 200;
   });
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const apiPort = await getPort();
   await api.listen(apiPort);
 

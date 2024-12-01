@@ -10,7 +10,7 @@ const { boolean } = require('boolean');
 
 // const config = require('#config');
 
-const jobs = [
+let jobs = [
   // 'migration',
   'vanity-domains',
   // NOTE: we had to combine paypal sync jobs together because of API 429 rate limiting
@@ -267,5 +267,55 @@ if (boolean(process.env.CACHE_RESPONSES))
     interval: '1h',
     timeout: 0
   });
+
+if (boolean(process.env.SELF_HOSTED)) {
+  jobs = [
+    {
+      name: 'bounce-report',
+      interval: '4h',
+      timeout: '1h'
+    },
+    {
+      name: 'check-domains',
+      interval: '1h',
+      timeout: '1h'
+    },
+    {
+      name: 'check-scheduled-send',
+      interval: '5m',
+      timeout: '5m'
+    },
+    {
+      name: 'check-smtp',
+      interval: '1h',
+      timeout: '5m'
+    },
+    {
+      name: 'check-smtp-frozen-queue',
+      interval: '5m',
+      timeout: '30m'
+    },
+    {
+      name: 'check-smtp-queue-count',
+      interval: '10m',
+      timeout: '10m'
+    },
+    {
+      name: 'parse-logs',
+      interval: '5m',
+      timeout: '10m'
+    },
+    {
+      name: 'update-uceprotect',
+      interval: '1h',
+      timeout: '15m'
+    },
+    {
+      name: 'update-umbrella',
+      interval: '1d',
+      timeout: '10m'
+    }
+  ];
+}
 
 module.exports = jobs;

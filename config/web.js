@@ -22,6 +22,7 @@ const { Octokit } = require('@octokit/core');
 
 const routes = require('../routes');
 const cookieOptions = require('./cookies');
+const auth = require('./basic-auth');
 const env = require('./env');
 const koaCashConfig = require('./koa-cash');
 
@@ -172,6 +173,7 @@ const cabin = new Cabin({ logger });
 module.exports = (redis) => ({
   ...sharedWebConfig,
   ...config,
+  auth,
   rateLimit: {
     ...sharedWebConfig.rateLimit,
     ...config.rateLimit

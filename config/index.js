@@ -464,9 +464,11 @@ const brandAndCorporateDomains = [
 ];
 
 // now we can set up imap clients for all providers and get their values all at once
-const imapConfigurations = [
-  // Forward Email
-  {
+const imapConfigurations = [];
+
+// Forward Email
+if (env.TTI_FE_IMAP_USER && env.TTI_FE_IMAP_PASS)
+  imapConfigurations.push({
     name: 'Forward Email',
     forwarder: env.TTI_FE_FORWARDER,
     config: {
@@ -478,11 +480,12 @@ const imapConfigurations = [
         pass: env.TTI_FE_IMAP_PASS
       }
     }
-  },
+  });
 
-  // Gmail
-  // <https://support.google.com/mail/answer/7126229?hl=en>
-  {
+// Gmail
+// <https://support.google.com/mail/answer/7126229?hl=en>
+if (env.TTI_GMAIL_IMAP_USER && env.TTI_GMAIL_IMAP_PASS)
+  imapConfigurations.push({
     name: 'Gmail',
     forwarder: env.TTI_GMAIL_FORWARDER,
     config: {
@@ -494,34 +497,36 @@ const imapConfigurations = [
         pass: env.TTI_GMAIL_IMAP_PASS
       }
     }
-  },
+  });
 
-  // Microsoft Outlook/Hotmail
-  // <https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-8361e398-8af4-4e97-b147-6c6c4ac95353>
-  //
-  // NOTE: temporarily removing because Outlook is trash, their captcha codes nonsense, blocking VPN, slow to load, and blocking valid logins
-  //
-  // {
-  //   name: 'Outlook/Hotmail',
-  //   forwarder: env.TTI_OUTLOOK_FORWARDER,
-  //   config: {
-  //     host:
-  //       typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
-  //       env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
-  //         ? 'imap-mail.outlook.com'
-  //         : 'outlook.office365.com',
-  //     port: 993,
-  //     secure: true,
-  //     auth: {
-  //       user: env.TTI_OUTLOOK_IMAP_USER,
-  //       pass: env.TTI_OUTLOOK_IMAP_PASS
-  //     }
-  //   }
-  // },
+// Microsoft Outlook/Hotmail
+// <https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-8361e398-8af4-4e97-b147-6c6c4ac95353>
+//
+// NOTE: temporarily removing because Outlook is trash, their captcha codes nonsense, blocking VPN, slow to load, and blocking valid logins
+//
+// if (env.TTI_OUTLOOK_IMAP_USER && env.TTI_OUTLOOK_IMAP_PASS)
+//   imapConfigurations.push({
+//     name: 'Outlook/Hotmail',
+//     forwarder: env.TTI_OUTLOOK_FORWARDER,
+//     config: {
+//       host:
+//         typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
+//         env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
+//           ? 'imap-mail.outlook.com'
+//           : 'outlook.office365.com',
+//       port: 993,
+//       secure: true,
+//       auth: {
+//         user: env.TTI_OUTLOOK_IMAP_USER,
+//         pass: env.TTI_OUTLOOK_IMAP_PASS
+//       }
+//     }
+//   });
 
-  // iCloud/Me
-  // <https://support.apple.com/en-us/102525>
-  {
+// iCloud/Me
+// <https://support.apple.com/en-us/102525>
+if (env.TTI_APPLE_IMAP_USER && env.TTI_APPLE_IMAP_PASS)
+  imapConfigurations.push({
     name: 'Apple iCloud',
     forwarder: env.TTI_APPLE_FORWARDER,
     config: {
@@ -533,34 +538,36 @@ const imapConfigurations = [
         pass: env.TTI_APPLE_IMAP_PASS
       }
     }
-  },
+  });
 
-  // NOTE: removing fastmail since it requires a paid account after 30d
-  // Fastmail
-  // <https://www.fastmail.help/hc/en-us/articles/1500000279921-IMAP-POP-and-SMTP>
-  // {
-  //   name: 'Fastmail',
-  //   forwarder: env.TTI_FASTMAIL_FORWARDER,
-  //   config: {
-  //     host: 'imap.fastmail.com',
-  //     port: 993,
-  //     secure: true,
-  //     auth: {
-  //       user: env.TTI_FASTMAIL_IMAP_USER,
-  //       pass: env.TTI_FASTMAIL_IMAP_PASS
-  //     }
-  //   }
-  // }
+// NOTE: removing fastmail since it requires a paid account after 30d
+// Fastmail
+// <https://www.fastmail.help/hc/en-us/articles/1500000279921-IMAP-POP-and-SMTP>
+if (env.TTI_FASTMAIL_IMAP_USER && env.TTI_FASTMAIL_IMAP_PASS)
+  imapConfigurations.push({
+    name: 'Fastmail',
+    forwarder: env.TTI_FASTMAIL_FORWARDER,
+    config: {
+      host: 'imap.fastmail.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_FASTMAIL_IMAP_USER,
+        pass: env.TTI_FASTMAIL_IMAP_PASS
+      }
+    }
+  });
 
-  //
-  // NOTE: Yahoo didn't have App Passwords working in the past
-  //       therefore it previously wasn't possible to access Yahoo via IMAP
-  //       <https://old.reddit.com/r/yahoo/comments/v5hkc6/yahoo_mail_app_password_not_working/>
-  //       <https://archive.is/SPAAT>
-  //
-  // Yahoo/AOL
-  // <https://help.yahoo.com/kb/SLN4075.html>
-  {
+//
+// NOTE: Yahoo didn't have App Passwords working in the past
+//       therefore it previously wasn't possible to access Yahoo via IMAP
+//       <https://old.reddit.com/r/yahoo/comments/v5hkc6/yahoo_mail_app_password_not_working/>
+//       <https://archive.is/SPAAT>
+//
+// Yahoo/AOL
+// <https://help.yahoo.com/kb/SLN4075.html>
+if (env.TTI_YAHOO_IMAP_USER && env.TTI_YAHOO_IMAP_PASS)
+  imapConfigurations.push({
     name: 'Yahoo/AOL',
     forwarder: env.TTI_YAHOO_FORWARDER,
     config: {
@@ -572,8 +579,7 @@ const imapConfigurations = [
         pass: env.TTI_YAHOO_IMAP_PASS
       }
     }
-  }
-];
+  });
 
 const STRIPE_LOCALES = new Set([
   'bg',
@@ -868,6 +874,7 @@ const config = {
   abuseEmail: env.EMAIL_ABUSE,
   friendlyFromEmail: env.EMAIL_FRIENDLY_FROM,
   securityEmail: env.EMAIL_SECURITY,
+  isSelfHosted: env.SELF_HOSTED,
   email: {
     preview: {
       open: env.PREVIEW_EMAIL,
