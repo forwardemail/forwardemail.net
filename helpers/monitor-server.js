@@ -229,7 +229,13 @@ async function check() {
 }
 
 function monitorServer() {
-  if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') return;
+  if (
+    env.NODE_ENV === 'development' ||
+    env.NODE_ENV === 'test' ||
+    env.isSelfHosted
+  )
+    return;
+  if (!env.ENABLE_MONITOR_SERVER) return;
   check();
   const interval = setInterval(check, ms('10s'));
   return interval;

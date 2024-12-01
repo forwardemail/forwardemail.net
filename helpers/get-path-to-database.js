@@ -22,11 +22,14 @@ function getPathToDatabase(alias) {
   if (!mongoose.isObjectIdOrHexString(alias.id))
     throw new TypeError('Invalid alias id');
 
+  // TODO: configure production location to uses env
+  // NOTE: would need to migrate / sync data
   const dir = path.join(
     config.env === 'production' ? '/mnt' : tmpdir,
     alias.storage_location
   );
 
+  // TODO: check if directory missing, create it
   if (config.env !== 'production') mkdirp.sync(dir);
 
   return path.join(dir, `${alias.id}.sqlite`);

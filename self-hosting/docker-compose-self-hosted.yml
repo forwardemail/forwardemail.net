@@ -1,0 +1,324 @@
+services:
+  web:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: web
+    network_mode: host
+    hostname: ${DOMAIN}
+    command: ["node", "web.js"]
+    volumes:
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "curl -ksL -o /dev/null https://127.0.0.1"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "api.${DOMAIN}:127.0.0.1"
+      - "caldav.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      smtp:
+        condition: service_healthy
+
+  api:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: api
+    network_mode: host
+    hostname: api.${DOMAIN}
+    command: ["node", "api.js"]
+    volumes:
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "curl -ksL -o /dev/null https://127.0.0.1:4000/v1/test"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      smtp:
+        condition: service_healthy
+
+  bree:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: bree
+    network_mode: host
+    command: ["node", "bree.js"]
+    volumes:
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  # https://forwardemail.net/en/faq#what-are-your-imap-server-configuration-settings
+  imap:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: imap
+    network_mode: host
+    hostname: imap.${DOMAIN}
+    command: ["node", "imap.js"]
+    volumes:
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "nc -z 127.0.0.1 993"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  # https://forwardemail.net/en/faq#do-you-support-pop3
+  pop3:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: pop3
+    network_mode: host
+    hostname: pop3.${DOMAIN}
+    command: ["node", "pop3.js"]
+    volumes:
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "nc -z 127.0.0.1 995"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  # https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings
+  smtp:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: smtp
+    network_mode: host
+    hostname: smtp.${DOMAIN}
+    command: ["node", "smtp.js"]
+    volumes:
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "nc -z 127.0.0.1 465"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  smtp_bree:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: smtp_bree
+    network_mode: host
+    hostname: smtp.${DOMAIN}
+    command: ["node", "smtp-bree.js"]
+    volumes:
+      - ./.env:/app/.env
+      - ./ssl:/app/ssl/
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      smtp:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+      - ./mongo-backups:/backups
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./redis-data:/data
+    env_file:
+      - .env
+
+  sqlite:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: sqlite
+    network_mode: host
+    hostname: sqlite.${DOMAIN}
+    command: ["node", "sqlite.js"]
+    volumes:
+      - ./sqlite-data:/mnt/${SQLITE_STORAGE_PATH}
+      - ./ssl:/app/ssl/
+      - ./.env:/app/.env
+    healthcheck:
+      test: "nc -z 127.0.0.1 3456"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      smtp:
+        condition: service_healthy
+
+  sqlite_bree:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: sqlite_bree
+    network_mode: host
+    hostname: sqlite.${DOMAIN}
+    command: ["node", "sqlite-bree.js"]
+    volumes:
+      - ./ssl:/app/ssl/
+      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./.env:/app/.env
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  mx:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: mx
+    network_mode: host
+    command: ["node", "mx.js"]
+    hostname: mx.${DOMAIN}
+    volumes:
+      - ./ssl:/app/ssl/
+      - /mnt/${SQLITE_STORAGE_PATH}:/mnt/${SQLITE_STORAGE_PATH}
+      - ./.env:/app/.env
+    healthcheck:
+      test: "nc -z 127.0.0.1 25"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "caldav.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  caldav:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: caldav
+    network_mode: host
+    hostname: caldav.${DOMAIN}
+    command: ["node", "caldav.js"]
+    volumes:
+      - ./.env:/app/.env
+      - ./ssl:/app/ssl/
+    healthcheck:
+      test: "nc -z 127.0.0.1 5000"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certs:/etc/letsencrypt
+  #     - certbot-logs:/var/log/letsencrypt
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 6h & wait $!; certbot renew; done;'"
+
+volumes:
+  mongo-data:
+  redis-data:
+  # certs:
+  # certbot-logs:

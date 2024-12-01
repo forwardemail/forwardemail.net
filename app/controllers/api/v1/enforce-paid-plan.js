@@ -4,6 +4,7 @@
  */
 
 const Boom = require('@hapi/boom');
+const config = require('#config');
 
 async function enforcePaidPlan(ctx, next) {
   if (!ctx.isAuthenticated())
@@ -15,6 +16,8 @@ async function enforcePaidPlan(ctx, next) {
     ctx.state?.domain?.plan === 'team'
   )
     return next();
+
+  if (config.isSelfHosted) return next();
 
   if (ctx.state.user.plan === 'free')
     throw Boom.paymentRequired(

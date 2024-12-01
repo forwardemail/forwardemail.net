@@ -50,7 +50,7 @@ async function createDomain(ctx, next) {
   ) {
     const names = await Domains.distinct('name', {
       'members.user': ctx.state.user._id,
-      plan: 'free',
+      plan: config.isSelfHosted ? 'team' : ctx.request.body.plan,
       is_global: false
     });
 
@@ -116,7 +116,7 @@ async function createDomain(ctx, next) {
         ...ctx.state.optionalBooleans
       });
     }
-
+    
     // create a default alias for the user pointing to the user or recipients
     if (boolean(ctx.api) && ctx.request.body.catchall === false) {
       // create domain without any aliases yet!
