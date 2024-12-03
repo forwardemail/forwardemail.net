@@ -16,6 +16,7 @@ const { isEmail } = require('validator');
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const logger = require('#helpers/logger');
@@ -24,11 +25,11 @@ const { emoji } = require('#config/utilities');
 
 const { fields } = config.passport;
 
-const breeSharedConfig = sharedConfig('BREE');
-
 // TODO: re-use existing connection from web
+const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
 client.setMaxListeners(0);
+const resolver = createTangerine(client, logger);
 
 class InvalidUbuntuUserError extends TypeError {
   constructor(message, options) {
@@ -98,7 +99,7 @@ async function syncUbuntuUser(user, map) {
     )
       throw new TypeError('Invalid user object');
 
-    if (!(map instanceof Map)) map = await getUbuntuMembersMap();
+    if (!(map instanceof Map)) map = await getUbuntuMembersMap(resolver);
 
     if (map.size === 0)
       throw new TypeError('Map supplied was missing or empty');
@@ -119,7 +120,7 @@ async function syncUbuntuUser(user, map) {
     // - ensure `is_ubuntu_coc_signer`
     //
     const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
-    const response = await retryRequest(url);
+    const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
     // validate booleans

@@ -155,7 +155,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       // attempt to lookup public key using WKD lookup (similar to `helpers/process-email.js`)
       if (!publicKey && session.user.alias_has_pgp) {
         try {
-          const wkd = new WKD(this.resolver);
+          const wkd = new WKD(this.resolver, this.client);
           // TODO: pending PR in wkd-client package
           // <https://github.com/openpgpjs/wkd-client/issues/3>
           // <https://github.com/openpgpjs/wkd-client/pull/4>

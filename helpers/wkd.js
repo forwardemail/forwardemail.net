@@ -3,11 +3,20 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { isIP } = require('node:net');
+
+const Boom = require('@hapi/boom');
 const WKDClient = require('@openpgp/wkd-client');
 const ms = require('ms');
 const undici = require('undici');
 
+const REGEX_LOCALHOST = require('./regex-localhost');
 const TimeoutError = require('./timeout-error');
+const i18n = require('./i18n');
+const logger = require('./logger');
+const parseRootDomain = require('./parse-root-domain');
+const { encoder, decoder } = require('./encoder-decoder');
+
 const config = require('#config');
 
 const DURATION = config.env === 'test' ? '5s' : '2s';
@@ -29,9 +38,16 @@ const DURATION = config.env === 'test' ? '5s' : '2s';
 // <https://github.com/openpgpjs/wkd-client/issues/3>
 // <https://github.com/openpgpjs/wkd-client/pull/4>
 //
-function WKD(resolver) {
+function WKD(resolver, client) {
   const _wkd = new WKDClient();
   _wkd._fetch = async (url) => {
+    // TODO: we may want to prevent localhost bound reverse hostname
+    //       (in which case we'd need `punycode.toASCII` on the domain)
+    if (
+      isIP(parseRootDomain(url)) &&
+      REGEX_LOCALHOST.test(parseRootDomain(url))
+    )
+      throw Boom.badRequest(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
     const abortController = new AbortController();
     const t = setTimeout(() => {
       if (!abortController?.signal?.aborted)
@@ -59,6 +75,42 @@ function WKD(resolver) {
     });
     clearTimeout(t);
     return response;
+  };
+
+  // override lookup so we can implement caching
+  const { lookup } = _wkd;
+  // <https://github.com/openpgpjs/wkd-client/blob/1d7a5ff05479e25cf39c62687d66863093403c4c/src/wkd.js#L33-L48>
+  _wkd.lookup = async function (options) {
+    // safeguard
+    if (typeof options?.email !== 'string')
+      throw new TypeError('Invalid email for WKD lookup');
+
+    // redis key
+    const key = `wkd:${options.email}`;
+
+    // check cache value
+    let cache = await client.get(key);
+
+    // if cache is `"false"` it indicates none
+    // if cache is a string then we can decode it
+    if (typeof cache === 'string') {
+      if (cache === 'false')
+        throw Boom.notFound('WKD key not found, try again in 30m');
+      const decoded = decoder.unpack(cache);
+      return decoded;
+    }
+
+    try {
+      cache = await lookup.call(this, options);
+      client
+        .set(key, encoder.pack(cache), 'PX', ms('1h'))
+        .then()
+        .catch((err) => logger.fatal(err));
+      return cache;
+    } catch (err) {
+      await client.set(key, 'false', 'PX', ms('1h'));
+      throw err;
+    }
   };
 
   return _wkd;

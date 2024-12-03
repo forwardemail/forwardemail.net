@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
+const { isIP } = require('node:net');
 const { promisify } = require('node:util');
 
 const { setTimeout } = require('node:timers/promises');
@@ -20,20 +21,19 @@ const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const localhostUrl = require('localhost-url-regex');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const pMap = require('p-map');
-const pWaitFor = require('p-wait-for');
 const revHash = require('rev-hash');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isIP, isEmail, isPort, isURL } = require('validator');
+const { isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 
+const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -42,13 +42,6 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
-
-// <https://github.com/frenchbread/private-ip/pull/27>
-// dynamically import private-ip
-let isPrivateIP;
-import('private-ip').then((obj) => {
-  isPrivateIP = obj.default;
-});
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -113,7 +106,8 @@ const disposableDomains = new Set();
 async function crawlDisposable() {
   try {
     const response = await retryRequest(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      { resolver }
     );
 
     const json = await response.body.json();
@@ -1012,14 +1006,11 @@ Domains.pre('save', async function (next) {
   if (config.env === 'test' && this.bounce_webhook.endsWith('?test=true'))
     return next();
   try {
-    if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
-    const value = this.bounce_webhook
-      .toLowerCase()
-      .replace('http://', '')
-      .replace('https://', '');
+    // TODO: we may want to prevent localhost bound reverse hostname
+    //       (in which case we'd need `punycode.toASCII` on the domain)
     if (
-      localhostUrl().test(punycode.toASCII(this.bounce_webhook)) ||
-      isPrivateIP(value)
+      isIP(parseRootDomain(this.bounce_webhook)) &&
+      REGEX_LOCALHOST.test(parseRootDomain(this.bounce_webhook))
     )
       throw Boom.badRequest(
         i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
@@ -1358,7 +1349,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
               'User-Agent': USER_AGENT
             },
             timeout: ms('3s'),
-            retries: 1
+            retries: 1,
+            resolver
           });
           // consume body
           if (
@@ -1576,7 +1568,8 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
               'User-Agent': USER_AGENT
             },
             timeout: ms('3s'),
-            retries: 1
+            retries: 1,
+            resolver
           });
           // consume body
           if (

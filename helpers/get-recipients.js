@@ -55,6 +55,7 @@ async function getRecipients(session, scan) {
           aliasIds,
           addresses,
           hasIMAP,
+          aliasPublicKey,
           ignored,
           softRejected,
           hardRejected
@@ -71,7 +72,8 @@ async function getRecipients(session, scan) {
             address: to.address,
             addresses: [],
             ignored: true,
-            hasIMAP: false
+            hasIMAP: false,
+            aliasPublicKey: false
           };
 
         if (softRejected)
@@ -80,6 +82,7 @@ async function getRecipients(session, scan) {
             addresses: [],
             ignored: false,
             hasIMAP: false,
+            aliasPublicKey: false,
             softRejected: true
           };
 
@@ -89,6 +92,7 @@ async function getRecipients(session, scan) {
             addresses: [],
             ignored: false,
             hasIMAP: false,
+            aliasPublicKey: false,
             hardRejected: true
           };
 
@@ -120,7 +124,8 @@ async function getRecipients(session, scan) {
                   'Basic ' +
                   Buffer.from(env.API_SECRETS[0] + ':').toString('base64')
               },
-              query: { domain }
+              query: { domain },
+              resolver: this.resolver
             });
 
             body = await response.body.json();
@@ -323,6 +328,7 @@ async function getRecipients(session, scan) {
           addresses,
           port,
           hasIMAP,
+          aliasPublicKey,
           aliasIds,
           webhookKey
         };
@@ -415,7 +421,13 @@ async function getRecipients(session, scan) {
             // if it was a URL webhook then return early
             if (isURL(address, config.isURLOptions)) {
               addresses.push({ to: address, is_webhook: true });
-            } else if (isIP(address) || isFQDN(address)) {
+            } else if (isIP(address)) {
+              // if it was an IP or FQDN then rewrite it (since it's a catch-all)
+              addresses.push({
+                to: `${parseUsername(recipient.address)}@[${address}]`,
+                host: address
+              });
+            } else if (isFQDN(address)) {
               // if it was an IP or FQDN then rewrite it (since it's a catch-all)
               addresses.push({
                 to: `${parseUsername(recipient.address)}@${address}`,
@@ -567,6 +579,7 @@ async function getRecipients(session, scan) {
           const replacements = {};
           replacements[recipient.address] = address.to; // normal;
           normalized.push({
+            aliasPublicKey: recipient.aliasPublicKey,
             webhookKey: recipient.webhookKey,
             webhook: address.to,
             to: [address.to],
@@ -581,6 +594,7 @@ async function getRecipients(session, scan) {
       const replacements = {};
       replacements[recipient.address] = address.to;
       normalized.push({
+        aliasPublicKey: recipient.aliasPublicKey,
         host: address.host,
         port: recipient.port,
         recipient: recipient.address,

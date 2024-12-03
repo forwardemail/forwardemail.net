@@ -192,6 +192,7 @@ async function onData(stream, _session, fn) {
     // safeguard in case unknown constructor
     throw new TypeError('Unknown constructor');
   } catch (err) {
+    // TODO: store counter here
     setImmediate(() => fn(refineAndLogError(err, session, false, this)));
   }
 }

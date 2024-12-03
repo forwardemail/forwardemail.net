@@ -15,7 +15,7 @@ const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
-const BLOCKED_PHRASES = new RE2(
+const REGEX_BLOCKED_PHRASES = new RE2(
   /recorded you|account is hacked|personal data has leaked/im
 );
 
@@ -30,38 +30,40 @@ const REGEX_SYSADMIN_SUBJECT = new RE2(
 );
 
 /*
-// NOTE: not being used but keeping it here in case we need it for future
 const YAHOO_DOMAINS = new Set([
-  'yahoo.com',
+  'aim.com',
   'aol.com',
   'cox.net',
-  'ymail.com',
-  'yahoo.it',
-  'rogers.com',
-  'yahoo.es',
-  'yahoo.co.nz',
-  'netscape.net',
-  'aim.com',
   'epix.net',
-  'yahoo.dk',
-  'yahoo.com.ph',
-  'yahoo.com.hk',
-  'verizon.net',
-  'yahoo.de',
-  'yahoo.ca',
-  'yahoo.gr',
+  'netscape.net',
   'rocketmail.com',
-  'yahoo.com.mx',
+  'rogers.com',
+  'sky.com'
+  'verizon.net',
+  'yahoo.ca',
   'yahoo.co.in',
+  'yahoo.co.nz',
   'yahoo.co.uk',
+  'yahoo.com',
   'yahoo.com.au',
   'yahoo.com.br',
-  'sky.com'
+  'yahoo.com.hk',
+  'yahoo.com.mx',
+  'yahoo.com.ph',
+  'yahoo.de',
+  'yahoo.dk',
+  'yahoo.es',
+  'yahoo.fr',
+  'yahoo.gr',
+  'yahoo.it',
+  'ymail.com'
 ]);
 */
 
 const REGEX_DOMAIN = new RE2(new RegExp(env.WEB_HOST, 'im'));
 const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
+const REGEX_PAYPAL_PHRASES = new RE2(/reminder|invoice|money request/im);
+const REGEX_PAYPAL = new RE2(/paypal/im);
 
 // eslint-disable-next-line complexity
 function isArbitrary(session, headers, bodyStr) {
@@ -72,10 +74,26 @@ function isArbitrary(session, headers, bodyStr) {
   const from = getHeaders(headers, 'from');
 
   // rudimentary blocking
-  if (subject && BLOCKED_PHRASES.test(subject))
+  if (subject && REGEX_BLOCKED_PHRASES.test(subject))
     throw new SMTPError(
       `Blocked phrase, please forward this to ${config.abuseEmail}`
     );
+
+  //
+  // check for paypal scam (very strict until PayPal resolves phishing on their side)
+  // (seems to only come from "outlook.com" and "paypal.com" hosts)
+  //
+  if (
+    ((subject && REGEX_PAYPAL_PHRASES.test(subject)) ||
+      (isSANB(bodyStr) && REGEX_PAYPAL_PHRASES.test(bodyStr))) &&
+    (REGEX_PAYPAL.test(from) || (isSANB(bodyStr) && REGEX_PAYPAL.test(bodyStr)))
+  ) {
+    const err = new SMTPError(
+      'Due to ongoing PayPal invoice spam, you must manually send an invoice link'
+    );
+    err.isCodeBug = true; // alert admins for inspection
+    throw err;
+  }
 
   // check for btc crypto scam
   if (

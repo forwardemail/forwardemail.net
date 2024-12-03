@@ -6739,5 +6739,12 @@
   "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.": "Your database optimization process has been completed.  The \"auto_vacuum=FULL\" pragma has been set properly on your SQLite database mailbox and over time your database file size will be optimized.",
   "attachment limit": "attachment limit",
   ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.": ".  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.",
-  "Request Time-out": "Request Time-out"
+  "Request Time-out": "Request Time-out",
+  "Localhost and private IP addresses are not permitted.": "Localhost and private IP addresses are not permitted.",
+  "WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at": "WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at",
+  "with your email address in order for us to manually purge the cache.": "with your email address in order for us to manually purge the cache.",
+  "We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.": "We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.",
+  "Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.": "Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.",
+  "Messages sent to webhooks are not currently encrypted with PGP.": "Messages sent to webhooks are not currently encrypted with PGP.",
+  "If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.": "If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules."
 }

@@ -13,20 +13,30 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-
+const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
-const Users = require('#models/users');
+const sharedConfig = require('@ladjs/shared-config');
+
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const Users = require('#models/users');
+const createTangerine = require('#helpers/create-tangerine');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
-const retryRequest = require('#helpers/retry-request');
 const monitorServer = require('#helpers/monitor-server');
+const retryRequest = require('#helpers/retry-request');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 monitorServer();
 
+// TODO: re-use existing connection from web
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
+client.setMaxListeners(0);
+const resolver = createTangerine(client, logger);
+
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -37,7 +47,8 @@ graceful.listen();
 
   try {
     const response = await retryRequest(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      { resolver }
     );
 
     const json = await response.body.json();

@@ -709,7 +709,7 @@ Test`.trim()
         fn();
       });
     },
-    logger,
+    logger: false,
     secure: false
   });
 
@@ -1109,7 +1109,7 @@ test('smtp outbound spam block detection', async (t) => {
         fn();
       });
     },
-    logger,
+    logger: false,
     secure: false
   });
 
@@ -2023,6 +2023,7 @@ test('error_code_if_disabled', async (t) => {
   t.is(res.status, 200);
   t.deepEqual(res.body, {
     alias_ids: [],
+    alias_public_key: false,
     has_imap: false,
     mapping: [user.email, '!foo', '!!bar', '!!!baz']
   });

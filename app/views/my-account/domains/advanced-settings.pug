@@ -419,7 +419,7 @@ block body
                     type="text",
                     disabled=isDisabled,
                     name="max_quota_per_alias",
-                    value=bytes(Number.isFinite(domain.max_quota_per_alias) ? domain.max_quota_per_alias : config.maxQuotaPerAlias)
+                    value=Number.isFinite(domain.max_quota_per_alias) ? bytes(domain.max_quota_per_alias) : ""
                   )
                   p.form-text.small.text-black.text-themed-50.mb-0
                     != t('Domain admins can update the maximum storage quota across all aliases. Enter a human-friendly string such as "1GB" &ndash; note that we use <a href="https://github.com/visionmedia/bytes.js" class="notranslate alert-link" target="_blank" rel="noopener noreferrer">bytes</a> to parse the value to a Number.  Domain admins can set maximum storage quota limits on a per alias basis by editing the alias directly.')

@@ -65,6 +65,8 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   }
 
   //
+  // TODO: this could possibly be replaced with striptags (?)
+  //
   // TODO: we should also mirror this to FE MX source
   //
   // NOTE: this was inspired from `koa-better-error-handler` response for API endpoints

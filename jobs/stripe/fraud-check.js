@@ -27,8 +27,11 @@ async function mapper(customer) {
   if (!user) return;
   if (user.is_banned) return;
 
-  // check for # of verified domains and # stripe payment methods
-  const [count, paymentMethods] = await Promise.all([
+  // check for:
+  // - # of verified domains
+  // - # stripe payment methods
+  // - # active subscriptions
+  const [count, paymentMethods, subscriptions] = await Promise.all([
     Domains.countDocuments({
       members: {
         $elemMatch: {
@@ -39,10 +42,16 @@ async function mapper(customer) {
       plan: { $in: ['enhanced_protection', 'team'] },
       has_txt_record: true
     }),
-    stripe.customers.listPaymentMethods(customer.id)
+    stripe.customers.listPaymentMethods(customer.id),
+    stripe.subscriptions.list({ customer: customer.id, status: 'active' })
   ]);
 
-  if (count === 0 && paymentMethods.data.length >= 3) {
+  // only do this for users with an active subscription in stripe
+  if (
+    count === 0 &&
+    paymentMethods.data.length >= 3 &&
+    subscriptions.data.length > 0
+  ) {
     emailHelper({
       template: 'alert',
       message: {

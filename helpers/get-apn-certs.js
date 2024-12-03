@@ -412,7 +412,8 @@ async function getApnCerts(client) {
   //       Accept: '*/*',
   //       'Accept-Language': 'en-us'
   //     },
-  //     body
+  //     body,
+  //     resolver
   //   }
   // );
   // const data = await response.body.text();

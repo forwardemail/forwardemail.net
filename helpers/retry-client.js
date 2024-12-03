@@ -39,6 +39,24 @@ class RetryClient extends undici.Client {
             );
         }, timeout);
 
+        if (options.resolver)
+          options.dispatcher = new undici.Agent({
+            // TODO: should we change defaults here; if so, change elsewhere too
+            // headersTimeout: ms(DURATION),
+            // connectTimeout: ms(DURATION),
+            // bodyTimeout: ms(DURATION),
+            connect: {
+              lookup(hostname, options, fn) {
+                options.resolver
+                  .lookup(hostname, options)
+                  .then((result) => {
+                    fn(null, result?.address, result?.family);
+                  })
+                  .catch((err) => fn(err));
+              }
+            }
+          });
+
         const response = await this._request(options);
         clearTimeout(t);
 

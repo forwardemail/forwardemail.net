@@ -30,6 +30,24 @@ async function retryRequest(url, opts = {}, count = 1) {
         );
     }, opts.timeout);
 
+    if (opts.resolver)
+      opts.dispatcher = new undici.Agent({
+        // TODO: should we change defaults here; if so, change elsewhere too
+        // headersTimeout: ms(DURATION),
+        // connectTimeout: ms(DURATION),
+        // bodyTimeout: ms(DURATION),
+        connect: {
+          lookup(hostname, options, fn) {
+            opts.resolver
+              .lookup(hostname, options)
+              .then((result) => {
+                fn(null, result?.address, result?.family);
+              })
+              .catch((err) => fn(err));
+          }
+        }
+      });
+
     const response = await undici.request(url, opts);
     clearTimeout(t);
 

@@ -124,7 +124,6 @@ async function verifySMTP(ctx) {
           template: 'alert',
           message: {
             to,
-            bcc: config.email.message.from,
             subject
           },
           locals: {
@@ -156,7 +155,6 @@ async function verifySMTP(ctx) {
             template: 'alert',
             message: {
               to,
-              bcc: config.email.message.from,
               subject
             },
             locals: {

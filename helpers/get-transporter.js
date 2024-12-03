@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
 const { callbackify } = require('node:util');
 const { isIP } = require('node:net');
 
 const Axe = require('axe');
+const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -80,6 +82,9 @@ const OUTLOOK_HOSTS = new Set([
   'msn.com'
 ]);
 
+const HOSTNAME = os.hostname();
+const IP_ADDRESS = ip.address();
+
 // eslint-disable-next-line complexity
 async function getTransporter(options = {}, err) {
   const {
@@ -87,8 +92,6 @@ async function getTransporter(options = {}, err) {
     mxLastError,
     target,
     port,
-    localAddress,
-    localHostname,
     resolver,
     logger,
     cache
@@ -113,8 +116,8 @@ async function getTransporter(options = {}, err) {
       mxLastError,
       target,
       port,
-      localAddress,
-      localHostname,
+      localAddress: IP_ADDRESS,
+      localHostname: HOSTNAME,
       // the default in mx-connect is 300s (5 min)
       // <https://github.com/zone-eu/mx-connect/blob/f9e20ceff5a4a7cfb85fba58ca2f040aaa7c2358/lib/get-connection.js#L6>
       maxConnectTime,
@@ -195,7 +198,7 @@ async function getTransporter(options = {}, err) {
     secure: false,
     secured: false,
     logger: new Axe({ silent: true }),
-    name: localHostname,
+    name: HOSTNAME,
     requireTLS,
     ignoreTLS,
     opportunisticTLS,

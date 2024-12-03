@@ -50,7 +50,7 @@ function addToSet(entries, set) {
   }
 }
 
-async function getUbuntuMembersMap() {
+async function getUbuntuMembersMap(resolver) {
   const map = new Map();
 
   await pMapSeries(Object.keys(config.ubuntuTeamMapping), async (name) => {
@@ -60,7 +60,7 @@ async function getUbuntuMembersMap() {
     // (note the results are paginated so we use a while loop)
     //
     const url = `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[name]}/participants`;
-    const response = await retryRequest(url);
+    const response = await retryRequest(url, { resolver });
     let json = await response.body.json();
 
     if (!Number.isFinite(json.total_size) || json.total_size < 0)
@@ -101,7 +101,9 @@ async function getUbuntuMembersMap() {
         logger.debug('fetching', { url: json.next_collection_link });
 
         // eslint-disable-next-line no-await-in-loop
-        const response = await retryRequest(json.next_collection_link);
+        const response = await retryRequest(json.next_collection_link, {
+          resolver
+        });
         // eslint-disable-next-line no-await-in-loop
         json = await response.body.json();
 

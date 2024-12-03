@@ -26,7 +26,10 @@ function parseAddresses(input) {
     (addr) =>
       _.isObject(addr) &&
       isSANB(addr.address) &&
-      isEmail(punycode.toASCII(addr.address), { ignore_max_length: true })
+      isEmail(punycode.toASCII(addr.address), {
+        allow_ip_domain: true,
+        ignore_max_length: true
+      })
   );
 
   return addresses;

@@ -14,6 +14,7 @@ const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
 const tsdav = require('tsdav');
+const undici = require('undici');
 const { Semaphore } = require('@shopify/semaphore');
 
 const utils = require('../utils');
@@ -870,7 +871,7 @@ test('updateObject should be able to update object', async (t) => {
 
   t.true(updateResult.ok);
 
-  const result = await fetch(objectUrl, {
+  const result = await undici.fetch(objectUrl, {
     headers: t.context.authHeaders
   });
 

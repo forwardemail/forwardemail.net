@@ -22,6 +22,8 @@ const splitLines = require('split-lines');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
+
 const pkg = require('../package');
 const env = require('./env');
 const filters = require('./filters');
@@ -198,10 +200,6 @@ const POSTMASTER_USERNAMES = new Set([
   'bounce-notification',
   'bounce-notifications',
   'bounces',
-  'e-bounce',
-  'ebounce',
-  'host-master',
-  'host.master',
   'hostmaster',
   'localhost',
   'mail-daemon',
@@ -213,16 +211,8 @@ const POSTMASTER_USERNAMES = new Set([
   'mailerdaemon',
   'post-master',
   'post.master',
-  'postmaster'
-  // NOTE: excluding these because we try to go by SAFE MODE
-  // <https://www.backscatterer.org/?target=usage>
-  // 'www',
-  // 'www-data'
-  // 'root',
-  // 'abuse',
-  // 'admin',
-  // 'admini',
-  // ...noReplyList
+  'postmaster',
+  ...noReplyList
 ]);
 
 const config = {
@@ -302,6 +292,7 @@ const config = {
       skipHtmlToText: true,
       skipTextLinks: true,
       skipTextToHtml: true,
+      skipImageLinks: true,
       maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
     },
     returnHTML: true
@@ -320,7 +311,18 @@ const config = {
       : []
   ),
 
+  ignoredSelfTestDomains: new Set(
+    _.isArray(env.IGNORED_SELF_TEST_DOMAINS)
+      ? env.IGNORED_SELF_TEST_DOMAINS.map((key) => key.toLowerCase().trim())
+      : isSANB(env.IGNORED_SELF_TEST_DOMAINS)
+      ? env.IGNORED_SELF_TEST_DOMAINS.split(',').map((key) =>
+          key.toLowerCase().trim()
+        )
+      : []
+  ),
+
   fingerprintPrefix: 'f',
+  fingerprintTTL: ms('7d'),
 
   denylist: new Set(
     _.isArray(env.DENYLIST)
@@ -434,6 +436,10 @@ const config = {
       openSimulator: false,
       simpleParser: {
         Iconv,
+        skipHtmlToText: true,
+        skipTextLinks: true,
+        skipTextToHtml: true,
+        skipImageLinks: true,
         maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
       }
     },

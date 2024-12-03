@@ -132,7 +132,7 @@ if domain && domain.group === 'admin'
     input#input-max-quota.form-control(
       type="text",
       name="max_quota",
-      value=bytes(alias && Number.isFinite(alias.max_quota) ? alias.max_quota : Number.isFinite(domain.max_quota_per_alias) ? domain.max_quota_per_alias : config.maxQuotaPerAlias)
+      value=alias && Number.isFinite(alias.max_quota) ? bytes(alias.max_quota) : ""
     )
     .alert.alert-secondary.small.mt-3
       != t('Domain admins can update the storage quota for this alias.  Leave blank and hit save to reset it to the current domain\'s maximum storage quota of <span class="notranslate">%s</span>.  Enter a human-friendly string such as "1GB" &ndash; note that we use <a href="https://github.com/visionmedia/bytes.js" class="notranslate alert-link" target="_blank" rel="noopener noreferrer">bytes</a> to parse the value to a Number.  If you would like to update the max storage quota across all aliases for this domain, then go to the domain\'s Settings page.', bytes(Number.isFinite(domain.max_quota_per_alias) ? domain.max_quota_per_alias : config.maxQuotaPerAlias))

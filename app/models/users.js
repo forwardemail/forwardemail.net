@@ -695,7 +695,8 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 // async function crawlDisposable() {
 //   try {
 //     const response = await retryRequest(
-//       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+//       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+//       { resolver }
 //     );
 //
 //     const json = await response.body.json();

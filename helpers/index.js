@@ -129,6 +129,8 @@ const sendPaginationCheck = require('./send-pagination-check');
 const populateDomainStorage = require('./populate-domain-storage');
 const parseAddresses = require('./parse-addresses');
 
+const REGEX_LOCALHOST = require('./regex-localhost');
+
 module.exports = {
   decrypt,
   email,
@@ -256,5 +258,6 @@ module.exports = {
   setPaginationHeaders,
   sendPaginationCheck,
   populateDomainStorage,
-  parseAddresses
+  parseAddresses,
+  REGEX_LOCALHOST
 };

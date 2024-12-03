@@ -6,23 +6,32 @@
 const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
+const URLParse = require('url-parse');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
+const { isURL } = require('validator');
 
 const SMTPError = require('#helpers/smtp-error');
 const parseAddresses = require('#helpers/parse-addresses');
 
 function parseHostFromDomainOrAddress(address) {
-  const parsedAddresses = parseAddresses(address);
   let domain = address;
 
   if (
-    _.isArray(parsedAddresses) &&
-    _.isObject(parsedAddresses[0]) &&
-    isSANB(parsedAddresses[0].address)
+    isURL(address, { require_protocol: true, protocols: ['http', 'https'] })
   ) {
-    domain = parsedAddresses[0].address;
+    const url = new URLParse(address);
+    domain = url.hostname;
+  } else {
+    const parsedAddresses = parseAddresses(address);
+    if (
+      _.isArray(parsedAddresses) &&
+      _.isObject(parsedAddresses[0]) &&
+      isSANB(parsedAddresses[0].address)
+    ) {
+      domain = parsedAddresses[0].address;
+    }
   }
 
   const atPos = domain.indexOf('@');
@@ -35,6 +44,18 @@ function parseHostFromDomainOrAddress(address) {
   } catch {
     // ignore punycode conversion errors
   }
+
+  //
+  // if it starts with [ and ends with ] and value inside is IP then use that
+  // (this is nodemailer supported IP address syntax to send email to an IP)
+  //
+  if (
+    domain &&
+    domain.startsWith('[') &&
+    domain.endsWith(']') &&
+    isIP(domain.slice(1, -1))
+  )
+    domain = domain.slice(1, -1);
 
   // ensure fully qualified domain name or IP address
   if (!domain || (!isFQDN(domain) && !isIP(domain)))

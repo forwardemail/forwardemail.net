@@ -20,6 +20,7 @@ const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getKeyInfo = require('#helpers/get-key-info');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -45,14 +46,21 @@ async function getForwardingAddresses(
   session
 ) {
   let hasIMAP = false;
+  let aliasPublicKey = false;
   let aliasIds;
 
   const domain = parseHostFromDomainOrAddress(address);
+
   const rootDomain = parseRootDomain(domain);
 
-  // if it is a truth source then don't bother fetching
+  // if it is a truth source then don't bother fetching (e.g. gmail)
+  // if domain/subdomain mismatch
+  // if not an ip
   let records = [];
-  if (domain !== rootDomain || !config.truthSources.has(rootDomain)) {
+  if (
+    !isIP(domain) &&
+    (domain !== rootDomain || !config.truthSources.has(rootDomain))
+  ) {
     try {
       records = await this.resolver.resolveTxt(domain);
     } catch (err) {
@@ -183,7 +191,8 @@ async function getForwardingAddresses(
         username,
         ignore_billing: ignoreBilling,
         verification_record: verifications[0]
-      }
+      },
+      resolver: this.resolver
     });
 
     const body = await response.body.json();
@@ -193,6 +202,15 @@ async function getForwardingAddresses(
     // }
     hasIMAP = boolean(body.has_imap);
     if (hasIMAP) badDomainExtension = false;
+    if (isSANB(body.alias_public_key)) {
+      try {
+        const keyInfo = await getKeyInfo(body.alias_public_key);
+        aliasPublicKey = keyInfo.publicKey;
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
+
     if (
       body.alias_ids &&
       Array.isArray(body.alias_ids) &&
@@ -654,7 +672,8 @@ async function getForwardingAddresses(
         },
         query: {
           domain
-        }
+        },
+        resolver: this.resolver
       });
 
       const body = await response.body.json();
@@ -688,11 +707,17 @@ async function getForwardingAddresses(
   // and then resolve with the newly formatted forwarding address
   // (we can return early here if there was no + symbol)
   if (!address.includes('+'))
-    return { aliasIds, hasIMAP, addresses: forwardingAddresses };
+    return {
+      aliasIds,
+      hasIMAP,
+      aliasPublicKey,
+      addresses: forwardingAddresses
+    };
 
   return {
     aliasIds,
     hasIMAP,
+    aliasPublicKey,
     addresses: forwardingAddresses.map((forwardingAddress) => {
       if (
         isFQDN(forwardingAddress) ||

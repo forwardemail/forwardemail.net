@@ -4,7 +4,9 @@
  */
 
 const Boom = require('@hapi/boom');
+const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
+const { Iconv } = require('iconv');
 const { isEmail } = require('validator');
 const { simpleParser } = require('mailparser');
 
@@ -41,7 +43,14 @@ async function create(ctx) {
 
   let parsed;
   try {
-    parsed = await simpleParser(body.raw);
+    parsed = await simpleParser(body.raw, {
+      Iconv,
+      skipHtmlToText: true,
+      skipTextLinks: true,
+      skipTextToHtml: true,
+      skipImageLinks: true,
+      maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
+    });
   } catch (err) {
     ctx.logger.error(err);
     return ctx.throw(err);
