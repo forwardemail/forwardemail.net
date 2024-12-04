@@ -22,6 +22,7 @@ const revHash = require('rev-hash');
 const status = require('statuses');
 const { Iconv } = require('iconv');
 const { SRS } = require('sender-rewriting-scheme');
+const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
@@ -57,6 +58,7 @@ const sendEmail = require('#helpers/send-email');
 const updateHeaders = require('#helpers/update-headers');
 const { Users, SelfTests } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
+const { encoder } = require('#helpers/encoder-decoder');
 
 const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 const HOSTNAME = os.hostname();
@@ -80,22 +82,15 @@ const scanner = new SpamScanner({
 
 async function sendBounce(bounce, headers, session, sealedMessage) {
   try {
-    //
     // bounces are unique by fingerprint, address, and error code
-    //
-    const key = `${config.fingerprintPrefix}:${
-      session.fingerprint
-    }:bounce:${revHash(bounce.address)}:${getErrorCode(bounce.err)}`;
+    const key = getFingerprintKey(
+      session,
+      encoder.pack([bounce.address, getErrorCode(bounce.err)])
+    );
 
-    //
     // prevent sending a duplicate bounce to this address
-    //
-    const value = await this.client.get(key);
-    if (value) {
-      const int = Number.parseInt(value, 10);
-      // if it was > 0 then it indicates previously sent
-      if (Number.isFinite(int) && int > 0) return;
-    }
+    const count = await this.client.incrby(key, 0);
+    if (count > 0) return;
 
     const stream = createBounce(
       {
@@ -129,6 +124,15 @@ async function sendBounce(bounce, headers, session, sealedMessage) {
       });
 
       logger.info('sent email', { info, session });
+
+      // store that we sent this so we don't again
+      this.client
+        .pipeline()
+        .incr(key)
+        .pexpire(key, config.fingerprintTTL)
+        .exec()
+        .then()
+        .catch((err) => logger.fatal(err));
 
       // accepted counter
       if (info.accepted && info.accepted.length > 0) {
@@ -311,15 +315,44 @@ async function processBounces(headers, bounces, session, sealedMessage) {
   }
 }
 
+function getFingerprintKey(session, value) {
+  return `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(value)}`;
+}
+
 async function imap(aliases, session, raw) {
   const accepted = [];
   const bounces = [];
+
+  //
+  // NOTE: we filter out already accepted aliases here
+  //
+  // aliases = [
+  //   {
+  //     address: 'test@example.com',
+  //     id: '674f6167316b8198f8a09f32'
+  //   },
+  //   ...
+  // ]
+  const values = await this.client.mget(
+    aliases.map((a) => getFingerprintKey(session, a.id))
+  );
+  const unsentAliases = [];
+  for (const [i, value] of values.entries()) {
+    if (boolean(value)) {
+      accepted.push(aliases[i].address);
+      continue;
+    }
+
+    unsentAliases.push(aliases[i]);
+  }
+
+  if (unsentAliases.length === 0) return { accepted, bounces };
 
   try {
     // <https://github.com/websockets/ws/issues/1959>
     const response = await this.wsp.request({
       action: 'tmp',
-      aliases,
+      aliases: unsentAliases,
       remoteAddress: session.remoteAddress,
       resolvedRootClientHostname: session.resolvedRootClientHostname,
       resolvedClientHostname: session.resolvedClientHostname,
@@ -332,7 +365,7 @@ async function imap(aliases, session, raw) {
       timeout: ms('1m')
     });
 
-    for (const alias of aliases) {
+    for (const alias of unsentAliases) {
       if (response[alias.address]) {
         // convert response object error into an Error
         const err = parseError(response[alias.address]);
@@ -343,17 +376,27 @@ async function imap(aliases, session, raw) {
           host: env.SQLITE_HOST
         });
       } else {
+        // store that we sent this message so we don't again
+        const key = getFingerprintKey(session, alias.id);
+        this.client
+          .pipeline()
+          .incr(key)
+          .pexpire(key, config.fingerprintTTL)
+          .exec()
+          .then()
+          .catch((err) => logger.fatal(err));
+        // push to accepted array
         accepted.push(alias.address);
       }
     }
   } catch (_err) {
     // an error occurred here with websockets so we bounce all IMAP recipients
     logger.fatal(_err, { session });
-    // aliases = [
+    // unsentAliases = [
     //   { address: 'some@address.com', id: 'some-alias-id-in-our-db' },
     //   ...
     // ]
-    for (const alias of aliases) {
+    for (const alias of unsentAliases) {
       const err = parseError(_err);
       err.target = env.IMAP_HOST;
       bounces.push({
@@ -367,35 +410,32 @@ async function imap(aliases, session, raw) {
   return { accepted, bounces };
 }
 
+//
+// TODO: since we rewrote most of this and sendEmail only accepts one email at a time
+//       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
+//
+
 // eslint-disable-next-line complexity
 async function forward(recipient, session, raw) {
   const accepted = [];
   const bounces = [];
 
+  // prevent sending to the same webhook or email twice
+  const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
+
+  const count = await this.client.incrby(key, 0);
+
+  if (count > 0) {
+    // NOTE: we group together recipients based off endpoint
+    for (const replacement of Object.keys(recipient.replacements)) {
+      if (!accepted.includes(replacement)) accepted.push(replacement);
+    }
+
+    return { accepted, bounces };
+  }
+
   if (recipient.webhook) {
     try {
-      const key = `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(
-        JSON.stringify(Object.keys(recipient.replacements))
-      )}`;
-
-      try {
-        const value = await this.client.get(key);
-        // if the value was corrupt and it gets sent successfully it will get corrected
-        if (value) {
-          const int = Number.parseInt(value, 10);
-          if (Number.isFinite(int) && int > 0) {
-            // NOTE: we group together recipients based off endpoint
-            for (const replacement of Object.keys(recipient.replacements)) {
-              if (!accepted.includes(replacement)) accepted.push(replacement);
-            }
-
-            return { accepted, bounces };
-          }
-        }
-      } catch (err) {
-        logger.fatal(err);
-      }
-
       const mail = await simpleParser(raw, {
         Iconv,
         skipHtmlToText: true,
@@ -478,6 +518,7 @@ async function forward(recipient, session, raw) {
       )
         await response.body.dump();
 
+      // store that we sent this so we don't again
       this.client
         .pipeline()
         .incr(key)
@@ -599,17 +640,6 @@ async function forward(recipient, session, raw) {
     throw new TypeError('Invalid array of recipients');
 
   try {
-    //
-    // TODO: we'd need to modify our existing send email function used in process-email
-    //       to return `alreadyAccepted` since it currently doesn't and the one in MX server does
-    //
-    // TODO: filter out already accepted here in advance (similar to `helpers/process-email.js`)
-    //
-    // NOTE: `sendEmail` either throws an error or returns an info nodemailer object
-    //       info = { accepted: [String], rejected: [String], rejectedErrors [err] }
-    //       (whereas `err` in `rejectedErrors` has `err.recipient`)
-    //       (if an error is thrown then it is assumed that all recipients to target failed)
-    //
     // TODO: add Feedback-ID header if not exists for Google recipients to `sendEmail` function
     //       and add automated job to scrape Google Postmaster API (they have an API) for detection
     //       and abuse/spam complaint automation
@@ -635,6 +665,15 @@ async function forward(recipient, session, raw) {
       session
     });
 
+    // store that we sent this so we don't again
+    this.client
+      .pipeline()
+      .incr(key)
+      .pexpire(key, config.fingerprintTTL)
+      .exec()
+      .then()
+      .catch((err) => logger.fatal(err));
+
     if (info.accepted && info.accepted.length > 0) {
       // add the masked recipient to the final accepted array
       // (we don't want to reveal forwarding config to client SMTP servers)
@@ -642,22 +681,7 @@ async function forward(recipient, session, raw) {
         if (!accepted.includes(replacement)) accepted.push(replacement);
       }
 
-      const pipeline = this.client.pipeline();
-
-      //
-      // consolidated logic for redis pipeline
-      // and checking for self-test emails sent
-      // into one loop for performance
-      //
       for (const a of info.accepted) {
-        if (info.alreadyAccepted && info.alreadyAccepted.includes(a)) continue;
-        // add to pipeline operation
-        const key = `${config.fingerprintPrefix}:${
-          session.fingerprint
-        }:${revHash(a)}`;
-        pipeline.incr(key);
-        pipeline.pexpire(key, config.fingerprintTTL);
-
         //
         // check to see if we sent an email to the same address it was coming from
         // (and if so, then send a self test email to notify sender it won't show up twice)
@@ -703,12 +727,6 @@ async function forward(recipient, session, raw) {
             .catch((err) => logger.fatal(err));
         }
       }
-
-      if (pipeline)
-        pipeline
-          .exec()
-          .then()
-          .catch((err) => logger.fatal(err));
     }
 
     if (info.rejectedErrors && info.rejectedErrors.length > 0) {
@@ -988,8 +1006,6 @@ async function onDataMX(raw, session, headers, body) {
 
   // TODO: we need to check denylist for each in between deliveries
 
-  console.log('WIP');
-
   //
   // TODO: we need to set x-original-to, and add received headers
   // TODO: add X-Original-To and Received headers to outbound SMTP (to top of message)
@@ -1056,22 +1072,6 @@ async function onDataMX(raw, session, headers, body) {
   console.log('accepted', accepted);
   console.log('bounces', bounces);
 
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-  // TODO: alreadyAccepted needs returned from all results
-
-  // TODO: store accepted and bounce counters
-
   // accepted counter
   if (accepted.length > 0) {
     this.client
@@ -1083,16 +1083,14 @@ async function onDataMX(raw, session, headers, body) {
       .catch((err) => logger.fatal(err));
   }
 
-  // rejected counter
-  if (bounces.length > 0) {
-    this.client
-      .incrby(`mail_rejected:${session.arrivalDateFormatted}`, bounces.length)
-      .then()
-      .catch((err) => logger.fatal(err));
-  }
-
   // return early if no bounces (complete successful delivery)
   if (bounces.length === 0) return;
+
+  // rejected counter
+  this.client
+    .incrby(`mail_rejected:${session.arrivalDateFormatted}`, bounces.length)
+    .then()
+    .catch((err) => logger.fatal(err));
 
   //
   // prepare final combined error and message

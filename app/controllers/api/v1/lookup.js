@@ -551,7 +551,7 @@ async function lookup(ctx) {
     ctx.client
       .get(`multiple_pgp_check:${domain.id}`)
       .then(async (cache) => {
-        if (!boolean(cache)) return;
+        if (boolean(cache)) return;
         try {
           await ctx.client.set(
             `multiple_pgp_check:${domain.id}`,
