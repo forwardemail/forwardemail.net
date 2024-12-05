@@ -426,21 +426,60 @@ async function imap(aliases, session, raw) {
 
 async function checkBounceForSpam(bounce, headers, session) {
   //
+  // if the bounce error was a code bug then
+  // return early since it was on our side
+  // (and we don't want any blocking to occur)
+  //
+  if (bounce?.err?.isCodeBug) return;
+
+  //
   // NOTE: we always store the message fingerprint in our greylist database
   //       in order to prevent the sender from retrying and having the same
   //       bounce occur by the recipient's mail server (which could affect our reputation)
   //       since it appears to the recipient's mail server as if we're the spammer
   //       (see `helpers/is-greylisted.js` which checks the PTTL of this at top of the function)
   //
+  //       (this also takes into account DNS bounces, which would prevent unnecessary lookups)
+  //
+  //       bounce.err = Error: Failed to resolve any IP addresses for the Mail Exchange (MX) server associated with "beep.com"
+  //           at /path/to/web/node_modules/.pnpm/mx-connect@1.5.5/node_modules/mx-connect/lib/resolve-ip.js:110:33
+  //           at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  //         code: 'ENOTFOUND',
+  //         response: 'DNS Error: Failed to resolve any IP addresses for the Mail Exchange (MX) server associated with "beep.com"',
+  //         category: 'dns',
+  //         _message: 'Failed to resolve any IP addresses for the Mail Exchange (MX) server associated with "beep.com"',
+  //         target: 'beep.com'
+  //       },
+  //
+
+  // always ensure bounce info object is set
+  if (!bounce?.err?.bounceInfo)
+    bounce.err.bounceInfo = getBounceInfo(bounce?.err);
+
+  //
+  // NOTE: if it was a network (DNS) error then we greylist
+  //       for a much shorter duration as opposed to the blanket rule
+  //
   await this.client.set(
     getGreylistKey(session.fingerprint),
     true,
     'PX',
-    session.isAllowlisted ? ms('10m') : ms('1h')
+    ms(
+      session.isAllowlisted
+        ? bounce.err.bounceInfo.category === 'network'
+          ? '1m'
+          : '10m'
+        : bounce.err.bounceInfo.category === 'network'
+        ? '5m'
+        : '1h'
+    )
   );
 
-  // return early if the bounce was not from a truth source
-  if (!bounce?.err?.truthSource) return;
+  //
+  // NOTE: we prevent actors from maliciously flooding us with DNS requests
+  //       (e.g. they configure a server that forwards to a non-routeable destination)
+  //       (which results in a lot of DNS lookups/failures, and so we need to alert admins at the least)
+  //
 
   //
   // bounce = {
@@ -474,15 +513,11 @@ async function checkBounceForSpam(bounce, headers, session) {
   // }
   //
 
-  // always ensure bounce info object is set
-  if (!bounce?.err?.bounceInfo)
-    bounce.err.bounceInfo = getBounceInfo(bounce?.err);
-
   //
   // `getAttributes` function will always return a unique array of lowercase metadata (e.g. hostnames, emails, etc)
   // also note that `true` here indicates it must be SPF or DKIM aligned metadata (since users could otherwise spoof and we could denylist incorrectly)
   //
-  const attributes = await getAttributes(headers, session, true);
+  const attributes = await getAttributes(headers, session, this.resolver, true);
 
   //
   // NOTE: we don't denylist attributes that are allowlisted as it would have no impact
@@ -543,7 +578,7 @@ async function checkBounceForSpam(bounce, headers, session) {
         const err = new TypeError(
           `${config.views.locals.emoji(
             isAttributeAllowlisted ? 'rotating_light' : 'warning'
-          )} ${attr} sent ${sendCountEmail}+ ${
+          )} ${attr} sent ${sendCountEmail} ${
             bounce.err.bounceInfo.category
           } bounces in 24 hours`
         );
@@ -552,6 +587,9 @@ async function checkBounceForSpam(bounce, headers, session) {
         err.isCodeBug = true;
         logger.fatal(err);
       }
+
+      // return early if the bounce was not from a truth source
+      if (!bounce?.err?.truthSource) return;
 
       // attributes that are email addresses sending viruses get denylisted immediately
       if (
@@ -659,8 +697,6 @@ async function checkBounceForSpam(bounce, headers, session) {
 
 // eslint-disable-next-line complexity
 async function forward(recipient, headers, session, raw) {
-  console.log('recipient', recipient);
-
   //
   // NOTE: we send emails in series therefore we can check
   //       if the sender was denylisted since sending started
@@ -1316,8 +1352,6 @@ async function onDataMX(raw, session, headers, body) {
     body
   ]);
 
-  console.log('data', data);
-
   // deliver to IMAP and forward messages in parallel
   const [imapResults, forwardResults] = await Promise.all([
     // imap
@@ -1334,9 +1368,6 @@ async function onDataMX(raw, session, headers, body) {
 
   const accepted = [];
   const bounces = [];
-
-  console.log('imapResults', imapResults);
-  console.log('forwardResults', forwardResults);
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
   if (imapResults) {
@@ -1362,9 +1393,6 @@ async function onDataMX(raw, session, headers, body) {
       }
     }
   }
-
-  console.log('accepted', accepted);
-  console.log('bounces', bounces);
 
   // return early if no bounces (complete successful delivery)
   if (bounces.length === 0) return;

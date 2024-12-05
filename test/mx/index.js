@@ -178,6 +178,15 @@ test('imap/forward/webhook', async (t) => {
     })
     .create();
 
+  await t.context.aliasFactory
+    .withState({
+      name: 'foo',
+      user: user._id,
+      domain: domain._id,
+      recipients: ['foo@beep.com'] // we spoof this MX server
+    })
+    .create();
+
   // spoof dns records
   const map = new Map();
 
@@ -204,6 +213,16 @@ test('imap/forward/webhook', async (t) => {
       domain.name,
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  map.set(
+    'mx:beep.com',
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: '', priority: 0 }],
       true
     )
   );
@@ -293,33 +312,33 @@ test('imap/forward/webhook', async (t) => {
   // set our local IP to allowlist so message does not get greylisted
   await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
 
-  const mx = await asyncMxConnect({
-    target: IP_ADDRESS,
-    port: smtp.server.address().port,
-    dnsOptions: {
-      // <https://github.com/zone-eu/mx-connect/pull/4>
-      resolve: util.callbackify(resolver.resolve.bind(resolver))
-    }
-  });
+  {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        // <https://github.com/zone-eu/mx-connect/pull/4>
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
 
-  const transporter = nodemailer.createTransport({
-    logger,
-    debug: true,
-    host: mx.host,
-    port: mx.port,
-    connection: mx.socket,
-    ignoreTLS: true,
-    secure: false,
-    tls
-  });
-
-  await t.notThrowsAsync(
-    transporter.sendMail({
-      envelope: {
-        from: 'test@test.com',
-        to: `test@${domain.name}`
-      },
-      raw: `
+    await t.notThrowsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: 'test@test.com',
+          to: `test@${domain.name}`
+        },
+        raw: `
 To: test@${domain.name}
 From: test@test.com
 Subject: test
@@ -327,13 +346,109 @@ Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 Test`.trim()
-    })
-  );
+      })
+    );
+  }
+
+  {
+    const mx = await asyncMxConnect({
+      target: IP_ADDRESS,
+      port: smtp.server.address().port,
+      dnsOptions: {
+        // <https://github.com/zone-eu/mx-connect/pull/4>
+        resolve: util.callbackify(resolver.resolve.bind(resolver))
+      }
+    });
+    const transporter = nodemailer.createTransport({
+      logger,
+      debug: true,
+      host: mx.host,
+      port: mx.port,
+      connection: mx.socket,
+      ignoreTLS: true,
+      secure: false,
+      tls
+    });
+    const err = await t.throwsAsync(
+      transporter.sendMail({
+        envelope: {
+          from: 'test@test.com',
+          to: `foo@${domain.name}`
+        },
+        raw: `
+To: foo@${domain.name}
+From: test@test.com
+Subject: test
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+      })
+    );
+
+    t.regex(err.message, /Failed to resolve any IP addresses/);
+    t.is(err.responseCode, 421);
+  }
 
   await smtp.close();
 });
 
-// TODO: test forwarding
-// TODO: test IMAP
-// TODO: test EICAR
-// TODO: other tests to copy over (e.g. webhooks)
+// TODO: checkBounceForSpam logic
+
+//
+// backscatter
+// - empty MAIL FROM and not backscatter works
+// - empty MAIL FROM and on backscatter does not work (`backscatter:$val` key in redis)
+//
+
+//
+// denylisted
+// - value not on denylist works
+// - value that is denylisted does not work (`denylist:$val` key in redis)
+// - it should error /The $str $val is denylisted by/
+//
+
+//
+// fingerprint expired
+// - get the message fingerprint (same value used for `session.fingerprint`)
+// - set the time to 5 days ago
+// - it should error /This message has been retried/
+//
+
+//
+// greylisted
+// - can be greylisted by message fingerprint
+// - can be greylisted by non-allowlisted domain
+// - allowlisted domains are not greylisted
+// - it should error /Message was greylisted/
+//
+
+//
+// is authenticated message
+// - spf failure but dkim passing -> OK
+// - spf passing but dkim failure -> OK
+// - spf hardfail dkim none -> error /has failed SPF validation/
+// - dmarc failure -> error /has failed DMARC validation/
+//
+
+//
+// is arbitrary
+// - subject contains "recorded you" /Blocked phrase/
+// - paypal scam subject contains "reminder" and From contains "paypal" /ongoing PayPal invoice spam/
+// - body contains "bitcoin" and "hacked" /Blocked crypto scam/
+// - From is postmaster@outlook.com and subject starts with "Undeliverable: " /onmicrosoft/
+// ... and several more (see `#helpers/is-arbitrary` codebase)
+//
+
+// silent ban
+
+// spam scanner EICAR test
+
+// adds the following headers
+// - X-Report-Abuse-To
+// - X-Report-Abuse
+// - X-Complaints-To
+// - X-ForwardEmail-Version
+// - X-ForwardEmail-Sender
+
+// friendly-from rewrite if necessary

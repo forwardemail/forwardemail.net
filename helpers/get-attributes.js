@@ -26,7 +26,7 @@ const HOSTNAME = os.hostname();
 //       (e.g. a From header that has aligned SPF or DKIM)
 //       (e.g. a Reply-To header that has aligned SPF or DKIM)
 //
-async function getAttributes(headers, session, isAligned = false) {
+async function getAttributes(headers, session, resolver, isAligned = false) {
   const replyToAddresses = parseAddresses(getHeaders(headers, 'reply-to'));
 
   // NOTE: we don't check HELO command input because it's arbitrary and can be spoofed
@@ -114,7 +114,7 @@ async function getAttributes(headers, session, isAligned = false) {
           ip: session.remoteAddress,
           helo: session.hostNameAppearsAs,
           mta: HOSTNAME,
-          resolver: this.resolver.resolve,
+          resolver: resolver.resolve,
           sender: checkSRS(sender).toLowerCase()
         });
         if (result?.status?.result === 'pass') {
@@ -152,7 +152,7 @@ async function getAttributes(headers, session, isAligned = false) {
             ip: session.remoteAddress,
             helo: session.hostNameAppearsAs,
             mta: HOSTNAME,
-            resolver: this.resolver.resolve,
+            resolver: resolver.resolve,
             sender: checkSRS(session.envelope.mailFrom.address).toLowerCase()
           });
           if (result?.status?.result === 'pass') arr.push(...mailFrom);

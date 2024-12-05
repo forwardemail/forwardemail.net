@@ -5,6 +5,7 @@
 
 const RE2 = require('re2');
 const isSANB = require('is-string-and-not-blank');
+const { fromUrl, parseDomain } = require('parse-domain');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -61,6 +62,17 @@ const YAHOO_DOMAINS = new Set([
 */
 
 const REGEX_DOMAIN = new RE2(new RegExp(env.WEB_HOST, 'im'));
+
+//
+// this accounts for spammers that spoof our domain name in From
+// but omit the ".com" portion, e.g. "ForwardEmail" or "forwardemail"
+// (this will return just the domain portion, e.g. "forwardemail")
+//
+const result = parseDomain(fromUrl(env.WEB_HOST));
+const domainWithoutTLD =
+  result?.type === 'LISTED' && result?.domain ? result.domain : env.WEB_HOST;
+
+const REGEX_DOMAIN_WITHOUT_TLD = new RE2(new RegExp(domainWithoutTLD, 'im'));
 const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 const REGEX_PAYPAL_PHRASES = new RE2(/reminder|invoice|money request/im);
 const REGEX_PAYPAL = new RE2(/paypal/im);
@@ -174,7 +186,9 @@ function isArbitrary(session, headers, bodyStr) {
         session.originalFromAddressRootDomain !== env.WEB_HOST)) &&
     (session.spfFromHeader.status.result !== 'pass' ||
       session.originalFromAddressRootDomain !== env.WEB_HOST) &&
-    (REGEX_DOMAIN.test(from) || REGEX_APP_NAME.test(from))
+    (REGEX_DOMAIN.test(from) ||
+      REGEX_DOMAIN_WITHOUT_TLD.test(from) ||
+      REGEX_APP_NAME.test(from))
   )
     throw new SMTPError(
       `Blocked spoofing, please forward this to ${config.abuseEmail}`
@@ -219,8 +233,9 @@ function isArbitrary(session, headers, bodyStr) {
     ) {
       // TODO: until we're certain this is properly working we're going to monitor it with code bug to admins
       const err = new TypeError(
-        `Spoofing detected: ${session.originalFromAddressRootDomain}`
+        `Spoofing detected and was soft blocked from ${session.originalFromAddressRootDomain}`
       );
+      err.isCodeBug = true;
       err.session = session;
       logger.fatal(err);
 

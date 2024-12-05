@@ -145,7 +145,12 @@ async function getForwardingAddresses(
   // check if we have a specific redirect and store global redirects (if any)
   // get username from recipient email address
   // (e.g. user@example.com => hello)
-  const username = parseUsername(address);
+  const username = isEmail(address, {
+    ignore_max_length: true,
+    allow_ip_domain: true
+  })
+    ? parseUsername(address)
+    : null;
 
   //
   // store if the domain was bad and not on paid plan (required for bad domains)
@@ -167,7 +172,7 @@ async function getForwardingAddresses(
     }
   }
 
-  if (verifications.length > 0) {
+  if (verifications.length > 0 && username) {
     if (verifications.length > 1)
       throw new SMTPError(
         // TODO: we may want to replace with "Invalid Recipients"
@@ -403,7 +408,7 @@ async function getForwardingAddresses(
         logger.fatal(err, { address });
       }
 
-      if (regex && regex.test(username.toLowerCase())) {
+      if (username && regex && regex.test(username.toLowerCase())) {
         const hasDollarInterpolation =
           REGEX_INTERPOLATED_DOLLAR.test(elementWithoutRegex);
 
@@ -451,6 +456,7 @@ async function getForwardingAddresses(
         else forwardingAddresses.push(substitutedAlias.toLowerCase());
       }
     } else if (
+      username &&
       (element.includes(':') || element.indexOf('!') === 0) &&
       !isURL(element, config.isURLOptions)
     ) {
@@ -514,7 +520,10 @@ async function getForwardingAddresses(
           forwardingAddresses.push(addr[1]);
         else forwardingAddresses.push(addr[1].toLowerCase());
       }
-    } else if (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress)) {
+    } else if (
+      username &&
+      (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress))
+    ) {
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(`${username}@${lowerCaseAddress}`);
@@ -582,7 +591,10 @@ async function getForwardingAddresses(
       const newRecursive = [...forwardingAddresses, ...recursive];
 
       // prevent a double-lookup if user is using + symbols
-      if (forwardingAddress.includes('+'))
+      if (
+        isEmail(address, { ignore_max_length: true, allow_ip_domain: true }) &&
+        forwardingAddress.includes('+')
+      )
         newRecursive.push(
           `${parseUsername(address)}@${parseHostFromDomainOrAddress(address)}`
         );

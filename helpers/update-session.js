@@ -64,7 +64,7 @@ async function updateSession(raw, headers, session) {
   );
 
   // get all sender attributes (e.g. email, domain, root domain)
-  session.attributes = await getAttributes(headers, session);
+  session.attributes = await getAttributes(headers, session, this.resolver);
 
   // get message fingerprint
   session.fingerprint = getFingerprint(session, headers, raw);
