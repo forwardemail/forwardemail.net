@@ -12,9 +12,9 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const mongoose = require('mongoose');
 const ms = require('ms');
 
@@ -45,21 +45,34 @@ graceful.listen();
     // get list of all suspended domains
     // and recently blocked emails to exclude
     const now = new Date();
-    const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
-      Domains.distinct('_id', {
-        is_smtp_suspended: true
-      }),
-      Emails.distinct('_id', {
-        updated_at: {
-          $gte: dayjs().subtract(1, 'hour').toDate(),
-          $lte: now
+    let [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
+      Domains.aggregate([
+        { $match: { is_smtp_suspended: true } },
+        { $group: { _id: '$_id' } }
+      ])
+        .allowDiskUse(true)
+        .exec(),
+      Emails.aggregate([
+        {
+          $match: {
+            updated_at: {
+              $gte: dayjs().subtract(1, 'hour').toDate(),
+              $lte: now
+            },
+            has_blocked_hashes: true,
+            blocked_hashes: {
+              $in: getBlockedHashes(env.SMTP_HOST)
+            }
+          }
         },
-        has_blocked_hashes: true,
-        blocked_hashes: {
-          $in: getBlockedHashes(env.SMTP_HOST)
-        }
-      })
+        { $group: { _id: '$_id' } }
+      ])
+        .allowDiskUse(true)
+        .exec()
     ]);
+
+    suspendedDomainIds = suspendedDomainIds.map((v) => v._id);
+    recentlyBlockedIds = recentlyBlockedIds.map((v) => v._id);
 
     logger.info('%d suspended domain ids', suspendedDomainIds.length);
 
@@ -84,7 +97,13 @@ graceful.listen();
       }
     };
 
-    const ids = await Emails.distinct('id', query);
+    let ids = await Emails.aggregate([
+      { $match: query },
+      { $group: { _id: '$id' } }
+    ])
+      .allowDiskUse(true)
+      .exec();
+    ids = ids.map((v) => v.id);
 
     // if no ids then return early
     if (ids.length === 0) {
@@ -94,15 +113,24 @@ graceful.listen();
     }
 
     // wait 1 minute
-    await delay(ms('1m'));
+    await setTimeout(ms('1m'));
 
     // check if ids is the same
-    const newIds = await Emails.distinct('id', {
-      ...query,
-      date: {
-        $lte: new Date()
-      }
-    });
+    let newIds = await Emails.aggregate([
+      {
+        $match: {
+          ...query,
+          date: {
+            $lte: new Date()
+          }
+        }
+      },
+      { $group: { _id: '$id' } }
+    ])
+      .allowDiskUse(true)
+      .exec();
+
+    newIds = newIds.map((v) => v.id);
 
     // if no ids then return early
     if (newIds.length === 0) {
@@ -120,7 +148,7 @@ graceful.listen();
     await logger.error(err);
     // only send one of these emails every 1 hour
     // (this prevents the job from exiting)
-    await delay(ms('1h'));
+    await setTimeout(ms('1h'));
   }
 
   if (parentPort) parentPort.postMessage('done');

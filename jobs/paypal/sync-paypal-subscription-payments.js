@@ -24,6 +24,8 @@ async function syncPayPalSubscriptionPayments() {
   //       download the entire TSV/CSV file and then run steps like here:
   //
   //       <https://github.com/paypal/PayPal-REST-API-issues/issues/5>
+  //       (NOTE: PayPal for some reason completely disabled/deleted all issues...)
+  //       (but here's a snapshot from Wayback <https://web.archive.org/web/20201019010837/https://github.com/paypal/PayPal-REST-API-issues/issues/5>)
   //
   const paypalCustomers = await Users.find({
     $or: [

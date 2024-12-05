@@ -65,6 +65,8 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   }
 
   //
+  // TODO: this could possibly be replaced with striptags (?)
+  //
   // TODO: we should also mirror this to FE MX source
   //
   // NOTE: this was inspired from `koa-better-error-handler` response for API endpoints
@@ -120,8 +122,12 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
       )
         err.imapResponse = 'UNAVAILABLE';
     }
-    // TODO: we could arbitrarily render alerts if we updated wildduck
-    // else if (!err.imapResponse) err.imapResponse = 'ALERT';
+
+    //
+    // NOTE: do not set `err.response` here since WildDuck uses it internally
+    //       (e.g. NO or BAD must be value of err.response for commands like AUTHENTICATE PLAIN
+    //       (otherwise the client will think that the authentication succeeded)
+    //
   }
 
   return err;

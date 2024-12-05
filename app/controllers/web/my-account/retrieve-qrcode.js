@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const QRCode = require('qrcode');
 const isSANB = require('is-string-and-not-blank');
@@ -17,7 +19,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 
 async function retrieveQRCode(ctx) {
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   );
 
   try {
@@ -139,7 +141,7 @@ async function retrieveQRCode(ctx) {
     } else {
       ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
       const redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/aliases`
+        `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
       );
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };

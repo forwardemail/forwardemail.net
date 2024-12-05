@@ -10,9 +10,9 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const delay = require('delay');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -39,7 +39,7 @@ const graceful = new Graceful({
     async () => {
       // wait for connection rate limiter to finish
       // (since `onClose` is run in the background)
-      await delay(ms('3s'));
+      await setTimeout(ms('3s'));
     }
   ],
   logger

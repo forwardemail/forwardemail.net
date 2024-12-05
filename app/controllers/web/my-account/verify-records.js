@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
@@ -62,7 +64,9 @@ async function verifyRecords(ctx) {
       if (err && err.isBoom && err.output && err.output.statusCode === 402) {
         const redirectTo = ctx.state.l(
           domain.plan === 'free'
-            ? `/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            ? `/my-account/domains/${punycode.toASCII(
+                domain.name
+              )}/billing?plan=enhanced_protection`
             : `/my-account/billing/upgrade?plan=${domain.plan}`
         );
 
@@ -140,7 +144,7 @@ async function verifyRecords(ctx) {
               .join('')}</ul>`;
       if (!ctx.api) ctx.flash('warning', extra);
     } else if (errors.length > 0) {
-      const err = new Error(
+      const err = Boom.badRequest(
         errors.length === 1
           ? errors[0]
           : ctx.translate('MULTIPLE_VERIFICATION_ERRORS')
@@ -171,7 +175,7 @@ async function verifyRecords(ctx) {
     });
 
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

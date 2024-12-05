@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
@@ -88,6 +90,7 @@ async function list(ctx) {
   ctx.body = { table };
 }
 
+// eslint-disable-next-line complexity
 async function update(ctx) {
   const domain = await Domains.findById(ctx.params.id);
 
@@ -111,7 +114,7 @@ async function update(ctx) {
       throw Boom.forbidden(ctx.translateError('DOMAIN_REQUIRES_SMTP_ACCESS'));
     }
 
-    domain.has_smtp = boolean(body.has_newsletter);
+    domain.has_newsletter = boolean(body.has_newsletter);
   }
 
   // smtp_suspended_sent_at
@@ -195,7 +198,9 @@ async function update(ctx) {
       'EMAIL_SMTP_ACCESS_ENABLED_MESSAGE',
       obj.locale,
       domain.name,
-      `${config.urls.web}/${obj.locale}/my-account/domains/${domain.name}/verify-smtp`
+      `${config.urls.web}/${obj.locale}/my-account/domains/${punycode.toASCII(
+        domain.name
+      )}/verify-smtp`
     );
     await emailHelper({
       template: 'alert',

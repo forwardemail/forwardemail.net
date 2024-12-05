@@ -6,7 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
 const pFilter = require('p-filter');
 const safeStringify = require('fast-safe-stringify');
@@ -17,6 +17,7 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
+const getHeaders = require('#helpers/get-headers');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
@@ -44,7 +45,9 @@ async function onData(stream, _session, fn) {
       maxBytes: MAX_BYTES
     });
 
-    const body = await getStream.buffer(stream.pipe(messageSplitter));
+    stream.pipe(messageSplitter);
+
+    const body = await getStream.buffer(messageSplitter);
 
     if (messageSplitter.sizeExceeded)
       throw new SMTPError('Size exceeded', { responseCode: 552 });
@@ -150,7 +153,7 @@ async function onData(stream, _session, fn) {
     // in addition to RCPT TO being incorrect due to improperly configured server sending to SRS forwarded address
     // we also need to rewrite the "To" header an rewrite any SRS forwarded addresses with their actual ones
     //
-    const originalToAddresses = parseAddresses(headers.getFirst('to'));
+    const originalToAddresses = parseAddresses(getHeaders(headers, 'to'));
     for (const obj of originalToAddresses) {
       const shouldThrow =
         parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===
@@ -189,6 +192,7 @@ async function onData(stream, _session, fn) {
     // safeguard in case unknown constructor
     throw new TypeError('Unknown constructor');
   } catch (err) {
+    // TODO: store counter here
     setImmediate(() => fn(refineAndLogError(err, session, false, this)));
   }
 }

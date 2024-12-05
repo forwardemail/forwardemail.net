@@ -18,12 +18,12 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
-const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 
 const Aliases = require('#models/aliases');
@@ -225,7 +225,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
           const [storageUsed, maxQuotaPerAlias] = await Promise.all([
             Aliases.getStorageUsed(alias),
-            Domains.getMaxQuota(alias.domain)
+            Domains.getMaxQuota(alias.domain, alias)
           ]);
 
           const percentageUsed = Math.round(
@@ -245,8 +245,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // and the notification was sent within the past 7 days
           // then we can return early
           if (
-            _.isObject(alias.storage_thresholds_sent_at) &&
-            !_.isArray(alias.storage_thresholds_sent_at) &&
+            _.isPlainObject(alias.storage_thresholds_sent_at) &&
             alias.storage_thresholds_sent_at[threshold.toString()] &&
             _.isDate(alias.storage_thresholds_sent_at[threshold.toString()]) &&
             new Date(
@@ -255,7 +254,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           )
             return;
 
-          if (typeof alias.storage_thresholds_sent_at !== 'object')
+          if (!_.isPlainObject(alias.storage_thresholds_sent_at))
             alias.storage_thresholds_sent_at = {};
 
           const domain = await Domains.findById(alias.domain);
@@ -277,8 +276,8 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             'STORAGE_THRESHOLD_MESSAGE',
             locale,
             percentageUsed,
-            prettyBytes(storageUsed),
-            prettyBytes(maxQuotaPerAlias),
+            bytes(storageUsed),
+            bytes(maxQuotaPerAlias),
             `${config.urls.web}/${locale}/my-account/billing`
           );
 

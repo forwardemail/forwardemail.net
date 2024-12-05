@@ -23,6 +23,12 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 // TODO: make note that the API must be able to send email
 // TODO: outbound smtp monthly limit
 // TODO: webhooks
+// TODO: CardDAV/CalDAV
+// TODO: inbound limit
+// TODO: webmail
+// TODO: desktop app
+// TODO: mobile app
+// TODO: iOS Push Notification support (via XAPPLEPUSHSERVICE capability)
 // TODO: regex-based aliases
 // TODO: calendar/contacts/newsletter columns
 
@@ -471,7 +477,7 @@ const obj = {
   ],
   'Forward Email': [
     // description
-    'Email service for everyone',
+    'Email for everyone',
     // website
     'https://forwardemail.net',
     // oss
@@ -3656,7 +3662,10 @@ for (const name of Object.keys(obj)) {
 //
 // only run puppeteer if we're on the web server
 //
-if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
+if (
+  env.NODE_ENV !== 'test' &&
+  (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname())
+) {
   (async () => {
     let browser;
     try {
@@ -3689,6 +3698,13 @@ if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
           logger.fatal(err);
           // eslint-disable-next-line no-await-in-loop
           const page = await browser.newPage();
+
+          // <https://www.useragents.me/>
+          const customUserAgent =
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.1';
+          // eslint-disable-next-line no-await-in-loop
+          await page.setUserAgent(customUserAgent);
+
           // eslint-disable-next-line no-await-in-loop
           await page.setViewport({
             width: 1366,
@@ -3706,6 +3722,10 @@ if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
             err.isCodeBug = true;
             logger.fatal(err);
           }
+
+          // <https://stackoverflow.com/a/76505750>
+          // eslint-disable-next-line no-await-in-loop
+          await page.close();
         }
 
         // unlimited_domains, unlimited_aliases, smtp, imap, pop3, api, openpgp, wkd (boolean | string)
@@ -3735,11 +3755,22 @@ if (env.NODE_ENV !== 'production' || env.WEB_HOST === os.hostname()) {
       logger.fatal(err);
     }
 
-    if (browser)
-      browser
-        .close()
-        .then()
-        .catch((err) => logger.fatal(err));
+    if (browser) {
+      try {
+        // <https://stackoverflow.com/a/76505750>
+
+        const pages = await browser.pages();
+        for (const page of pages) {
+          // eslint-disable-next-line no-await-in-loop
+          await page.close();
+        }
+
+        await browser.close();
+      } catch (err) {
+        err.isCodeBug = true;
+        logger.fatal(err);
+      }
+    }
   })();
 }
 

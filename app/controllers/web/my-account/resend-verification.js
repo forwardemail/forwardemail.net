@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
@@ -40,7 +42,7 @@ async function resendVerification(ctx) {
       position: 'top'
     });
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/aliases`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

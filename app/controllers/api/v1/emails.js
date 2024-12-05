@@ -5,12 +5,16 @@
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const isSANB = require('is-string-and-not-blank');
 const pickOriginal = require('@ladjs/pick-original');
+const { Libmime } = require('libmime');
 
 const Emails = require('#models/emails');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const toObject = require('#helpers/to-object');
+
+const EMOJI_HEADERS = ['from', 'to', 'cc', 'bcc', 'subject', 'replyTo'];
 
 const REJECTED_ERROR_KEYS = [
   'recipient',
@@ -18,6 +22,13 @@ const REJECTED_ERROR_KEYS = [
   'response',
   'message'
 ];
+
+// NOTE: tested to be safe using the following package:
+//       <https://github.com/fastify/safe-regex2>
+const EMOJI_REGEX =
+  /(\u00A9|\u00AE|[\u2000-\u3300]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/gm;
+
+const libmime = new Libmime();
 
 function json(email, isList = false) {
   const object = toObject(Emails, email);
@@ -95,6 +106,7 @@ async function limit(ctx) {
   };
 }
 
+// eslint-disable-next-line complexity
 async function create(ctx) {
   try {
     if (!_.isPlainObject(ctx.request.body))
@@ -135,6 +147,62 @@ async function create(ctx) {
 
       // dkim (handled by sending job)
     ]);
+
+    //
+    // users may forget to programmatically encode their emoji
+    // so we do this automatically for them for specific headers
+    // - from
+    // - to
+    // - cc
+    // - bcc
+    // - subject
+    // - replyTo
+    //
+    for (const header of EMOJI_HEADERS) {
+      if (isSANB(message[header])) {
+        const matches = message[header].match(EMOJI_REGEX);
+        if (!matches || !Array.isArray(matches)) continue;
+        for (const match of matches) {
+          message[header] = message[header].replaceAll(
+            match,
+            libmime.encodeWord(match)
+          );
+        }
+      }
+    }
+
+    // additionally we attempt to parse the body if there was a regex match
+    if (isSANB(message.raw)) {
+      const hasEmojiRegex = EMOJI_REGEX.test(message.raw);
+      if (hasEmojiRegex) {
+        //
+        // detect the position of the line break in headers
+        // if the match is before, then replace, otherwise if it's after then don't
+        //
+        let index;
+        let delimiter;
+        if (message.raw.indexOf('\n\n')) {
+          index = message.raw.indexOf('\n\n');
+          delimiter = '\n\n';
+        } else if (message.raw.indexOf('\r\n')) {
+          index = message.raw.indexOf('\r\n');
+          delimiter = '\r\n';
+        }
+
+        if (index && delimiter) {
+          let subject = message.raw.slice(0, index);
+          const body = message.raw.slice(index + delimiter.length);
+          for (const match of message.raw.matchAll(EMOJI_REGEX)) {
+            subject = subject.replaceAll(
+              match[0],
+              libmime.encodeWord(match[0])
+            );
+          }
+
+          message.raw = [subject, body].join(delimiter);
+        }
+      }
+    }
 
     // ensure `message.attachments` is an Array if it was set
     if (

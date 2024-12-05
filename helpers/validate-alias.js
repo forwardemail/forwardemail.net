@@ -3,13 +3,19 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 
 function validateAlias(alias, domain, name) {
   if (!alias)
     throw new SMTPError(
-      `Alias does not exist, go to ${config.urls.web}/my-account/domains/${domain.name} and add the alias of "${name}"`,
+      `Alias does not exist, go to ${
+        config.urls.web
+      }/my-account/domains/${punycode.toASCII(
+        domain.name
+      )} and add the alias of "${name}"`,
       { responseCode: 535, ignoreHook: true }
     );
 

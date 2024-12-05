@@ -17,6 +17,8 @@ function parseRootDomain(name) {
       ? `${parseResult.icann.domain}.${parseResult.icann.topLevelDomains.join(
           '.'
         )}`
+      : parseResult?.type === 'IP' && parseResult?.hostname
+      ? parseResult.hostname
       : name
   ).toLowerCase();
 }

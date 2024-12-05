@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
@@ -195,7 +197,7 @@ async function importAliases(ctx) {
       : messages.join(' ');
 
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   );
 
   if (!ctx.state.hasExistingTXT) {

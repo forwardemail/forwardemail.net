@@ -14,7 +14,10 @@ const { isEmail, isIP } = require('validator');
 const config = require('#config');
 const { email, decrypt } = require('#helpers');
 const { Inquiries } = require('#models');
+const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+
+const isEmailOptions = { ignore_max_length: true };
 
 // eslint-disable-next-line complexity
 async function validate(ctx, next) {
@@ -32,7 +35,7 @@ async function validate(ctx, next) {
   if (
     ctx.state.user.group === 'admin' &&
     isSANB(ctx.request.body.email) &&
-    !isEmail(ctx.request.body.email)
+    !isEmail(ctx.request.body.email, isEmailOptions)
   )
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
 
@@ -41,7 +44,7 @@ async function validate(ctx, next) {
   // normalize by converting to lowercase and trimming
   q = q.toLowerCase().trim();
 
-  if (!isFQDN(q) && !isIP(q) && !isEmail(q)) {
+  if (!isFQDN(q) && !isIP(q) && !isEmail(q, isEmailOptions)) {
     // check if it was encrypted value and can be decrypted without error
     // and the decrypted value is a FQDN, IP, or Email
     // otherwise throw the same error as above
@@ -55,7 +58,7 @@ async function validate(ctx, next) {
       );
     }
 
-    if (!isFQDN(q) && !isIP(q) && !isEmail(q))
+    if (!isFQDN(q) && !isIP(q) && !isEmail(q, isEmailOptions))
       return ctx.throw(
         Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
       );
@@ -72,7 +75,8 @@ async function validate(ctx, next) {
   }
 
   // set the root domain value in state for validate fn
-  if (isEmail(q) || isFQDN(q)) ctx.state.rootDomain = parseRootDomain(q);
+  if (isEmail(q, isEmailOptions) || isFQDN(q))
+    ctx.state.rootDomain = parseRootDomain(q);
 
   // check that the value is in the denylist
   // (or the root value is in the denylist)
@@ -97,7 +101,7 @@ async function validate(ctx, next) {
         ctx.state.rootDomain && // if it was an email or if the root domain value was different
         // then we need to check denylist against root value and if it was an email
         // then we need to check the combo of denylist:root:email
-        (isEmail(q) || ctx.state.rootDomain !== q)
+        (isEmail(q, isEmailOptions) || ctx.state.rootDomain !== q)
       ) {
         result = await ctx.client.get(`denylist:${ctx.state.rootDomain}`);
 
@@ -114,7 +118,7 @@ async function validate(ctx, next) {
 
           // if it was an email then check `denylist:root:email` combo
 
-          if (isEmail(q)) {
+          if (isEmail(q, isEmailOptions)) {
             result = await ctx.client.get(
               `denylist:${ctx.state.rootDomain}:${q}`
             );
@@ -130,6 +134,45 @@ async function validate(ctx, next) {
               result = false;
             }
           }
+        }
+      }
+
+      // if no result and it was an email then check against hard-coded denylist
+      // (and also check parsed domain and root domain)
+      if (!result && isEmail(q, isEmailOptions)) {
+        const domain = parseHostFromDomainOrAddress(q);
+        const root = parseRootDomain(domain);
+        if (config.denylist.has(q)) {
+          result = true;
+          ctx.state.isHardCoded = true;
+        } else if (config.denylist.has(domain)) {
+          result = true;
+          ctx.state.isHardCoded = true;
+          q = domain;
+        } else if (config.denylist.has(root)) {
+          result = true;
+          ctx.state.isHardCoded = true;
+          q = root;
+        }
+      }
+
+      // if no result and it was an IP then check against hard-coded denylist
+      if (!result && isIP(q) && config.denylist.has(q)) {
+        result = true;
+        ctx.state.isHardCoded = true;
+      }
+
+      // if no result and it was a domain then check against hard-coded denylist
+      // (and also check parsed root domain)
+      if (!result && isFQDN(q)) {
+        const root = parseRootDomain(q);
+        if (config.denylist.has(q)) {
+          result = true;
+          ctx.state.isHardCoded = true;
+        } else if (config.denylist.has(root)) {
+          result = true;
+          ctx.state.isHardCoded = true;
+          q = root;
         }
       }
     }
@@ -202,14 +245,6 @@ async function remove(ctx) {
     }
   }
 
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-  // TODO: redo this to check permanent hard-coded denylist and email admins of this
-
   // if user is on free plan then send an email
   // with link for admins to /denylist?q=ctx.state.q
   if (ctx.state.user.group !== 'admin') {
@@ -219,7 +254,7 @@ async function remove(ctx) {
     // automatic spam activity detected bug or a spammer
     //
     let isAllowlisted = false;
-    if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
+    if (isEmail(ctx.state.q, isEmailOptions) && ctx.state.rootDomain) {
       try {
         isAllowlisted = await ctx.client.get(
           `allowlist:${ctx.state.rootDomain}`
@@ -267,6 +302,37 @@ async function remove(ctx) {
     return;
   }
 
+  //
+  // if it is in hard-coded list then email admins and cc user and return early
+  //
+  if (ctx.state.isHardCoded) {
+    // email admins here
+    await email({
+      template: 'alert',
+      message: {
+        to: ctx.request.body.email,
+        subject: `Hard-coded Denylist Removal: ${ctx.state.q}`
+      },
+      locals: {
+        message: `<p class="text-center"><code>${ctx.state.q}</code> for <code>${ctx.state.user.email}</code></p>`
+      }
+    });
+    const message = ctx.translate(
+      'DENYLIST_HARD_CODED',
+      ctx.state.isEncrypted && ctx.state.user.group !== 'admin'
+        ? ctx.translate('ENCRYPTED_VALUE')
+        : ctx.state.q
+    );
+    ctx.flash('warning', message);
+    if (ctx.accepts('html')) {
+      ctx.redirect(redirectTo);
+    } else {
+      ctx.body = { redirectTo };
+    }
+
+    return;
+  }
+
   // delete from all denylists
   try {
     if (isIP(ctx.state.q)) {
@@ -290,7 +356,7 @@ async function remove(ctx) {
       }
 
       // if it was an email then delete the combo
-      if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
+      if (isEmail(ctx.state.q, isEmailOptions) && ctx.state.rootDomain) {
         await ctx.client.del(`denylist:${ctx.state.q}`);
         await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
         await ctx.client.set(
@@ -323,7 +389,7 @@ async function remove(ctx) {
   if (
     ctx.state.user.group === 'admin' &&
     isSANB(ctx.request.body.email) &&
-    isEmail(ctx.request.body.email)
+    isEmail(ctx.request.body.email, isEmailOptions)
   )
     email({
       template: 'alert',

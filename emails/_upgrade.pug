@@ -7,7 +7,7 @@
     != t("Outbound SMTP support means you can send email using any alias with your custom domain name.")
   .d-block.mb-1
     a.btn.btn-lg.btn-success(
-      href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+      href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )
       = t("Upgrade for $3")
@@ -47,7 +47,7 @@
     = t("Upgrading includes unlimited domains and aliases, real-time alerts and logs, outbound SMTP access, and more.")
   .d-block.mb-1
     a.btn.btn-lg.btn-success(
-      href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
+      href=domain && domain.name ? `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection` : `${config.urls.web}/my-account/billing/upgrade?plan=enhanced_protection`,
       role="button"
     )
       = t("Upgrade for $3")

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 
 function ensureUpgradedPlan(ctx, next) {
@@ -17,7 +19,9 @@ function ensureUpgradedPlan(ctx, next) {
 
   const redirectTo = ctx.state.domain
     ? ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/billing?plan=enhanced_protection`
+        `/my-account/domains/${punycode.toASCII(
+          ctx.state.domain.name
+        )}/billing?plan=enhanced_protection`
       )
     : ctx.state.l(`/my-account/billing/upgrade?plan=enhanced_protection`);
 
@@ -40,7 +44,9 @@ function ensureUpgradedPlan(ctx, next) {
           `/my-account/domains/${ctx.state.domain.id}/aliases/new`) ||
       (ctx.state.domain &&
         ctx.pathWithoutLocale ===
-          `/my-account/domains/${ctx.state.domain.name}/aliases/new`))
+          `/my-account/domains/${punycode.toASCII(
+            ctx.state.domain.name
+          )}/aliases/new`))
   ) {
     swal.title = ctx.state.t('Unlock this feature');
     swal.html = `

@@ -5,7 +5,9 @@
 
 const punycode = require('node:punycode');
 
+const POP3Server = require('wildduck/lib/pop3/server');
 const isFQDN = require('is-fqdn');
+const { IMAPServer } = require('wildduck/imap-core');
 
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
@@ -115,28 +117,36 @@ async function onConnect(session, fn) {
   // NOTE: we return early here because we do not want to limit concurrent connections from allowlisted values
   //
   //
-  if (session.isAllowlisted) return fn();
+  if (session.isAllowlisted) {
+    return fn();
+  }
 
   //
-  // do not allow more than 10 concurrent connections using constructor
+  // NOTE: until onConnect is available for IMAP and POP3 servers
+  //       we leverage the existing SMTP helper in the interim
+  //       <https://github.com/nodemailer/wildduck/issues/540>
+  //       <https://github.com/nodemailer/wildduck/issues/721>
+  //       (see this same comment in `helpers/on-auth.js`)
   //
+  if (this.server instanceof IMAPServer || this.server instanceof POP3Server) {
+    return fn();
+  }
+
+  // do not allow more than 10 concurrent connections using constructor
   try {
     // NOTE: do not change this prefix unless you also change it in `helpers/on-close.js`
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
       config.env
     }`;
-    const key = `${prefix}:${
-      session.resolvedRootClientHostname || session.remoteAddress
-    }`;
+    const key = `${prefix}:${session.remoteAddress}`;
     const count = await this.client.incr(key);
     await this.client.pexpire(key, config.socketTimeout);
-    if (count >= 10)
+    if (count > 10)
       throw new SMTPError(
-        `Too many concurrent connections from ${
-          session.resolvedRootClientHostname || session.remoteAddress
-        }`,
+        `Too many concurrent connections from ${session.remoteAddress}`,
         { responseCode: 421, ignoreHook: true }
       );
+
     fn();
   } catch (err) {
     fn(refineAndLogError(err, session, false, this));

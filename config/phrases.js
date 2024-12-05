@@ -20,6 +20,16 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  MULTIPLE_PGP_SUBJECT:
+    'Multiple PGP key conflict detected for <span class="notranslate">%s</span>',
+  MULTIPLE_PGP_MESSAGE:
+    'An email that was attempted to be forwarded under <span class="notranslate">%s</span> for <span class="notranslate">%s</span> matched multiple aliases that had PGP keys uploaded and enabled. Due to this conflict, PGP encryption was not enabled for the forwarded message as no primary public key could be determined. Please ensure only one PGP key matches this address match.',
+  INVALID_BYTES:
+    'Bytes were invalid, must be a string such as "1 GB" or "100 MB".',
+  ALIAS_QUOTA_EXCEEDS_DOMAIN:
+    "The quota for <span class='notranslate'>%s</span> of <span class='notranslate'>%s</span> exceeds the domain's maximum quota of <span class='notranslate'>%s</span>.",
+  DOMAIN_MAX_QUOTA_EXCEEDS_USER:
+    'The quota for <span class="notranslate">%s</span> of <span class="notranslate">%s</span> exceeds the maximum quota of <span class="notranslate">%s</span> from admins of the domain.',
   PAGINATION_CHECK_SUBJECT:
     'Notice: API pagination required starting November 1st',
   PAGINATION_CHECK_MESSAGE:
@@ -49,7 +59,10 @@ module.exports = {
   UBUNTU_INVALID_GROUP:
     'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.',
   CALENDAR: 'Calendar',
+  CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',
+  CALENDAR_DELETED_BACKUP:
+    'Calendar named <span class="notranslate">%s</span> was successfully deleted with <span class="notranslate">%d</span> events (attached is a backup in case this was an accident)',
   EVENT_ALREADY_EXISTS: 'Event ID already exists within the same calendar.',
   EVENT_DOES_NOT_EXIST: 'Event does not exist.',
   PGP_ENCRYPTION_ERROR: 'An error occurred with OpenPGP encryption',
@@ -76,6 +89,16 @@ module.exports = {
     'You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us.',
   ALIAS_BACKUP_LINK:
     'Please <a href="%s" target="_blank">click here</a> to download the backup. This link will expire soon.',
+  ALIAS_REKEY_STARTED:
+    'Alias password change (rekey) has been started for <span class="notranslate text-monospace font-weight-bold">%s</span> and you will be emailed upon completion.',
+  ALIAS_REKEY_READY:
+    'Alias password change (rekey) is now complete.  You can now log in to IMAP, POP3, and CalDAV servers with the new password for <span class="notranslate font-weight-bold text-monospace">%s</span>.',
+  ALIAS_REKEY_READY_SUBJECT:
+    'Alias password change (rekey) for <span class="notranslate">%s</span> is complete',
+  ALIAS_REKEY_FAILED_SUBJECT:
+    'Alias password change (rekey) for <span class="notranslate">%s</span> has failed due to an error',
+  ALIAS_REKEY_FAILED_MESSAGE:
+    '<p>The alias password change (rekey) for <span class="notranslate text-monospace font-weight-bold">%s</span> has failed and we have been alerted.</p><p>You may proceed to retry if necessary, and we may email you soon to provide help if necessary.</p><p>The error received during the rekey process was:</p><pre><code>%s</code></pre>',
   ALIAS_BACKUP_READY:
     'Click the button below within 4 hours to download the <span class="notranslate">"%s"</span> backup for <span class="notranslate font-weight-bold text-monospace">%s</span>.<br /><br /><a href="%s" target="_blank" rel="noopener noreferrer" class="btn btn-dark btn-lg">Download Now</a>',
   ALIAS_BACKUP_READY_SUBJECT:
@@ -114,6 +137,8 @@ module.exports = {
   CANNOT_CREATE_REGEX_ON_DOMAIN:
     'Cannot create regex on domain due to large alias volume size.',
   ALL_RECIPIENTS_BLOCKED: 'All recipients are blocked from sending mail to.',
+  DENYLIST_HARD_CODED:
+    'The value <span class="notranslate">%s</span> was listed in our permanent and hard-coded denylist.  Our team has been notified of your request for removal and we will follow up soon.',
   RECIPIENT_BLOCKED: 'Recipient is blocked from sending mail to.',
   SMTP_ERROR_SUBJECT:
     'Outbound SMTP Configuration Issue Detected for <span class="notranslate">%s</span>',
@@ -129,9 +154,9 @@ module.exports = {
   ALIAS_PASSWORD_EMAIL:
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
   ALIAS_GENERATED_PASSWORD:
-    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered if lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><small class="alert alert-primary d-inline-block font-weight-bold">Scan the QR codes below and open them to easily setup your account.</small><ul class="list-inline mt-3 mb-0"><li class="list-inline-item"><strong>Apple Mail (macOS/iOS)</strong><br /><br /><img alt="" src="%s" class="bg-white p-3" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li><li class="list-inline-item ml-md-5"><strong>K-9 Mail (Android)</strong><br /><br /><img alt="" src="%s" class="p-3 bg-white" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li></ul><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
+    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered if lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><small class="alert alert-primary d-inline-block font-weight-bold">Scan the QR codes below and open them to easily setup your account.</small><ul class="list-inline mt-3 mb-0"><li class="list-inline-item"><strong>Apple Mail (macOS/iOS)</strong><br /><br /><img alt="" src="%s" class="bg-white p-3" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li><li class="list-inline-item ml-md-5"><strong>K-9 Mail (Android)</strong><br /><br /><img alt="" src="%s" class="p-3 bg-white" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li></ul><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
   ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG:
-    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
+    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
   FASTEST_EMAIL: 'The Fastest Email Service',
   CLOSE_POPUP: 'Close Pop-up',
   PAST_DUE_OR_INVALID_ADMIN:
@@ -153,11 +178,11 @@ module.exports = {
   EMAIL_SMTP_ACCESS_DISABLED:
     '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its outbound SMTP access removed.</p>',
   EMAIL_NEWSLETTER_ACCESS_ENABLED_SUBJECT:
-    '<span class="notranslate">%s</span> approved for NEWSLETTER access',
+    '<span class="notranslate">%s</span> approved for newsletter access',
   EMAIL_NEWSLETTER_ACCESS_ENABLED_MESSAGE:
-    '<p class="text-center">Your domain <span class="notranslate">%s</span> was approved for NEWSLETTER access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Complete Setup</a></p>',
+    '<p class="text-center">Your domain <span class="notranslate">%s</span> was approved for newsletter access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Complete Setup</a></p>',
   EMAIL_NEWSLETTER_ACCESS_DISABLED:
-    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its NEWSLETTER access removed.</p>',
+    '<p class="text-center text-danger">Your domain <span class="notranslate">%s</span> had its newsletter access removed.</p>',
   EMAIL_SMTP_ACCESS_REQUIRED:
     'Domain is not approved for outbound SMTP access, please <a class="font-weight-bold" href="/help">contact us</a>.',
   ENVELOPE_FROM_MISSING:
@@ -183,7 +208,7 @@ module.exports = {
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
   ENCRYPTED_VALUE:
-    '<br /><small class="alert alert-danger d-inline-block">You must copy the encrypted output below before closing this pop-up; it will not be shown again.</small><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code><br /><br /><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button>',
+    '<br /><small class="notranslate alert alert-danger d-inline-block">You must copy the encrypted output below before closing this pop-up; it will not be shown again.</small><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code><br /><br /><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="btn btn-dark notranslate"><i class="fa fa-clipboard"></i> Copy</button>',
   INPUT_HAD_FE_SV: 'You do not need to encrypt site verification records',
   SEARCH_PAGE: 'Search page',
   TABLE_OF_CONTENTS: 'Table of Contents',
@@ -242,6 +267,10 @@ module.exports = {
     'Newsletter approval required for <span class="notranslate">%s</span>',
   NEWSLETTER_APPROVAL_REQUIRED_MESSAGE:
     'We detected that you attempted to send an outbound SMTP newsletter for <strong class="notranslate">%s</strong>.  Your domain does not yet have newsletter support approved, and an admin has been notified to begin review.  This process usually is resolved within 2-4 hours, but sometimes it may longer.',
+  RETURN_PATH_ERROR_SUBJECT:
+    '<span class="notranslate">%s</span> needs outbound SMTP configured or re-verified',
+  RETURN_PATH_ERROR_MESSAGE:
+    '<p>The domain <strong class="notranslate">%s</strong> had an issue with its outbound SMTP configuration:</p><p class="text-center mb-0"><a href="%s" class="btn btn-lg btn-danger">Resolve Issues</a></p>',
   BOUNCE_WEBHOOK_ERROR_SUBJECT:
     '<span class="notranslate">%s</span> had a bounce webhook error',
   BOUNCE_WEBHOOK_ERROR_MESSAGE:

@@ -25,20 +25,20 @@ async function getKeyInfo(pubKeyArmored, locale = i18n.config.defaultLocale) {
     return false;
   }
 
-  const pubKey = await openpgp.readKey({
+  const publicKey = await openpgp.readKey({
     armoredKey: tools.prepareArmoredPubKey(pubKeyArmored),
     config: { tolerant: true }
   });
 
-  if (!pubKey)
+  if (!publicKey)
     throw Boom.badRequest(i18n.translateError('FAILED_TO_PROCESS_PUBLIC_KEY'));
 
-  const fingerprint = pubKey.getFingerprint();
-  const { name, address } = tools.getPGPUserId(pubKey);
+  const fingerprint = publicKey.getFingerprint();
+  const { name, address } = tools.getPGPUserId(publicKey);
 
   const ciphertext = await openpgp.encrypt({
     message: await openpgp.createMessage({ text: 'Hello, World!' }),
-    encryptionKeys: pubKey, // for encryption
+    encryptionKeys: publicKey, // for encryption
     format: 'armored',
     config: { minRSABits: 1024 }
   });
@@ -48,7 +48,8 @@ async function getKeyInfo(pubKeyArmored, locale = i18n.config.defaultLocale) {
     return {
       name,
       address,
-      fingerprint
+      fingerprint,
+      publicKey
     };
   }
 

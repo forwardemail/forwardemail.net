@@ -7,34 +7,33 @@ const crypto = require('node:crypto');
 const os = require('node:os');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
+const { isIP } = require('node:net');
 const { promisify } = require('node:util');
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
-const isLocalhost = require('is-localhost-ip');
 const isSANB = require('is-string-and-not-blank');
-const localhostUrl = require('localhost-url-regex');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
 const pMap = require('p-map');
-const pWaitFor = require('p-wait-for');
 const revHash = require('rev-hash');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isIP, isEmail, isPort, isURL } = require('validator');
+const { isEmail, isPort, isURL } = require('validator');
 
 const pkg = require('../../package.json');
 
+const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const env = require('#config/env');
 const config = require('#config');
 const i18n = require('#helpers/i18n');
@@ -43,12 +42,6 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const retryRequest = require('#helpers/retry-request');
 const verificationRecordOptions = require('#config/verification-record');
 const { encrypt, decrypt } = require('#helpers/encrypt-decrypt');
-
-// dynamically import private-ip
-let isPrivateIP;
-import('private-ip').then((obj) => {
-  isPrivateIP = obj.default;
-});
 
 const concurrency = os.cpus().length;
 const CACHE_TYPES = ['NS', 'MX', 'TXT'];
@@ -113,7 +106,8 @@ const disposableDomains = new Set();
 async function crawlDisposable() {
   try {
     const response = await retryRequest(
-      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+      'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+      { resolver }
     );
 
     const json = await response.body.json();
@@ -222,6 +216,15 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // domain specific max quota per alias
+  max_quota_per_alias: {
+    type: Number,
+    min: 0,
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    max: bytes('100GB')
+  },
   // URL to POST to when a bounce is detected from outbound SMTP servers
   // (NOTE: see additional validation below where we prevent localhost and private IP's from being webhooks)
   bounce_webhook: {
@@ -357,6 +360,11 @@ const Domains = new mongoose.Schema({
     type: String,
     default: '25',
     validator: (value) => isPort(value)
+  },
+  alias_count: {
+    type: Number,
+    min: 0,
+    index: true
   },
   members: [Member],
   invites: [Invite],
@@ -747,8 +755,52 @@ Domains.pre('validate', async function (next) {
       _id: { $in: domain.members.map((m) => m.user) }
     })
       .lean()
-      .select('plan email')
+      .select(`id plan email ${config.userFields.maxQuotaPerAlias}`)
       .exec();
+
+    //
+    // NOTE: we ensure that max quota per alias cannot exceed global
+    //       max or value higher than any current admin's max quota
+    //
+    const adminUserIds = new Set(
+      domain.members
+        .filter((m) => m.group === 'admin' && m.user)
+        .map((m) =>
+          m?.user?._id
+            ? m.user._id.toString()
+            : m?.user?.id || m.user.toString()
+        )
+    );
+    const adminUsers = users.filter((user) => adminUserIds.has(user.id));
+
+    const adminMaxQuota =
+      adminUsers.length === 0
+        ? config.maxQuotaPerAlias
+        : _.max(
+            adminUsers.map((user) =>
+              typeof user[config.userFields.maxQuotaPerAlias] === 'number'
+                ? user[config.userFields.maxQuotaPerAlias]
+                : config.maxQuotaPerAlias
+            )
+          );
+
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    const maxQuota = _.clamp(adminMaxQuota, 0, bytes('100GB'));
+    if (
+      Number.isFinite(domain.max_quota_per_alias) &&
+      domain.max_quota_per_alias > maxQuota
+    )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'DOMAIN_MAX_QUOTA_EXCEEDS_USER',
+          domain.locale,
+          domain.name,
+          bytes(domain.max_quota_per_alias),
+          bytes(maxQuota)
+        )
+      );
 
     const hasValidPlan = users.some((user) => {
       if (domain.plan === 'team' && user.plan === 'team') {
@@ -795,7 +847,9 @@ Domains.pre('validate', async function (next) {
             'RESTRICTED_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -808,7 +862,9 @@ Domains.pre('validate', async function (next) {
             'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -823,7 +879,9 @@ Domains.pre('validate', async function (next) {
             'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
             domain.locale,
             domain.name,
-            `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+            `/${domain.locale}/my-account/domains/${punycode.toASCII(
+              domain.name
+            )}/billing?plan=enhanced_protection`
           )
         );
       }
@@ -836,7 +894,9 @@ Domains.pre('validate', async function (next) {
           domain.locale,
           domain.name,
           i18n.translate(domain.plan.toUpperCase(), domain.locale),
-          `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
+          `/${domain.locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/billing?plan=${domain.plan}`
         )
       );
     }
@@ -943,16 +1003,14 @@ Domains.pre('validate', function (next) {
 //
 Domains.pre('save', async function (next) {
   if (!isSANB(this.bounce_webhook)) return next();
+  if (config.env === 'test' && this.bounce_webhook.endsWith('?test=true'))
+    return next();
   try {
-    if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
-    const value = this.bounce_webhook
-      .toLowerCase()
-      .replace('http://', '')
-      .replace('https://', '');
+    // TODO: we may want to prevent localhost bound reverse hostname
+    //       (in which case we'd need `punycode.toASCII` on the domain)
     if (
-      localhostUrl().test(punycode.toASCII(this.bounce_webhook)) ||
-      isPrivateIP(value) ||
-      (await isLocalhost(punycode.toASCII(value)))
+      isIP(parseRootDomain(this.bounce_webhook)) &&
+      REGEX_LOCALHOST.test(parseRootDomain(this.bounce_webhook))
     )
       throw Boom.badRequest(
         i18n.translateError('INVALID_LOCALHOST_URL', this.locale)
@@ -1087,17 +1145,20 @@ Domains.pre('save', async function (next) {
       return next();
     }
 
-    const names = await conn.models.Aliases.distinct('name', {
-      domain: this._id
-    });
+    const arr = await conn.models.Aliases.aggregate([
+      { $match: { domain: this._id } },
+      { $group: { _id: '$name' } }
+    ])
+      .allowDiskUse(true)
+      .exec();
 
     let hasCatchall = false;
     let hasRegex = false;
 
-    for (const name of names) {
+    for (const v of arr) {
       if (hasCatchall && hasRegex) break;
-      if (name === '*') hasCatchall = true;
-      else if (name.startsWith('/')) hasRegex = true;
+      if (v._id === '*') hasCatchall = true;
+      else if (v._id.startsWith('/')) hasRegex = true;
     }
 
     this.has_catchall = hasCatchall;
@@ -1288,10 +1349,15 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
               'User-Agent': USER_AGENT
             },
             timeout: ms('3s'),
-            retries: 1
+            retries: 1,
+            resolver
           });
           // consume body
-          if (!response?.signal?.aborted) await response.body.dump();
+          if (
+            !response?.signal?.aborted &&
+            typeof response?.body?.dump === 'function'
+          )
+            await response.body.dump();
         },
         { concurrency }
       );
@@ -1300,7 +1366,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         records
       });
       // Wait one second for DNS changes to propagate
-      await delay(ms('1s'));
+      await setTimeout(ms('1s'));
     } catch (err) {
       err.domain = domain;
       err.records = records;
@@ -1502,10 +1568,15 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
               'User-Agent': USER_AGENT
             },
             timeout: ms('3s'),
-            retries: 1
+            retries: 1,
+            resolver
           });
           // consume body
-          if (!response?.signal?.aborted) await response.body.dump();
+          if (
+            !response?.signal?.aborted &&
+            typeof response?.body?.dump === 'function'
+          )
+            await response.body.dump();
         },
         { concurrency }
       );
@@ -1514,7 +1585,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
         types: CACHE_TYPES
       });
       // Wait one second for DNS changes to propagate
-      await delay(ms('1s'));
+      await setTimeout(ms('1s'));
     } catch (err) {
       err.domain = domain;
       logger.error(err);
@@ -1566,9 +1637,11 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                 i18n.translateError(
                   'PAID_PLAN_HAS_UNENCRYPTED_RECORDS',
                   domain.locale,
-                  `/my-account/domains/${domain.name}/aliases`,
+                  `/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/aliases`,
                   config.recordPrefix,
-                  `/my-account/domains/${domain.name}`
+                  `/my-account/domains/${punycode.toASCII(domain.name)}`
                 )
               )
             );
@@ -1639,7 +1712,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'RESTRICTED_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -1651,7 +1726,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'MALICIOUS_DOMAIN_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -1663,7 +1740,9 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
                   'RESERVED_KEYWORD_DOMAIN_PLAN_UPGRADE_REQUIRED',
                   domain.locale,
                   domain.name,
-                  `/${domain.locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+                  `/${domain.locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/billing?plan=enhanced_protection`
                 )
               )
             );
@@ -2159,7 +2238,9 @@ async function ensureUserHasValidPlan(user, locale) {
           locale,
           domain.name,
           i18n.translate(domain.plan.toUpperCase(), locale),
-          `/${locale}/my-account/domains/${domain.name}/billing?plan=${domain.plan}`
+          `/${locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/billing?plan=${domain.plan}`
         )
       );
     }
@@ -2188,23 +2269,34 @@ async function ensureUserHasValidPlan(user, locale) {
 
 Domains.statics.ensureUserHasValidPlan = ensureUserHasValidPlan;
 
-async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
-  const domain = await this.findById(_id)
-    .populate(
-      'members.user',
-      `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
-    )
-    .lean()
-    .exec();
+//
+// NOTE: in order to save db lookups, you can pass an alias object with `max_quota` property
+//       instead of a string for `aliasId` value, so it will re-use an existing alias object
+//
+async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
+  if (typeof conn?.models?.Aliases?.findOne !== 'function')
+    throw new TypeError('Aliases model is not ready');
 
-  if (!domain) {
-    throw Boom.notFound(
-      i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
-    );
-  }
+  const [domain, alias] = await Promise.all([
+    this.findById(_id)
+      .populate(
+        'members.user',
+        `_id id plan ${config.userFields.isBanned} ${config.userFields.maxQuotaPerAlias}`
+      )
+      .lean()
+      .exec(),
+    typeof aliasId === 'string'
+      ? conn.models.Aliases.findOne({ id: aliasId })
+          .select('max_quota')
+          .lean()
+          .exec()
+      : Promise.resolve(
+          typeof aliasId === 'object' && aliasId !== null ? aliasId : null
+        )
+  ]);
 
   if (!domain)
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
 
@@ -2221,7 +2313,9 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
         locale,
         domain.name,
         i18n.translate('ENHANCED_PROTECTION', locale),
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/billing?plan=enhanced_protection`
       )
     );
   }
@@ -2231,6 +2325,18 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     throw new TypeError(
       `Domain ${domain.name} (${domain.id}) has more than one member`
     );
+  }
+
+  if (aliasId && !alias) {
+    const err = Boom.badRequest(
+      i18n.translateError('ALIAS_DOES_NOT_EXIST', locale)
+    );
+    err.isCodeBug = true;
+    err._id = _id;
+    err.aliasId = aliasId;
+    err.alias = alias;
+    logger.fatal(err);
+    throw err;
   }
 
   // Filter out a domain's members without actual users
@@ -2243,7 +2349,7 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
   );
 
   if (adminMembers.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2256,7 +2362,7 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
   }
 
   // go through all admins and get the max value
-  const max = _.max(
+  let max = _.max(
     adminMembers.map((member) =>
       typeof member.user[config.userFields.maxQuotaPerAlias] === 'number'
         ? member.user[config.userFields.maxQuotaPerAlias]
@@ -2264,10 +2370,25 @@ async function getMaxQuota(_id, locale = i18n.config.defaultLocale) {
     )
   );
 
+  // if domain had a max value set, and it was less than `max`, then set new max
+  if (
+    Number.isFinite(domain.max_quota_per_alias) &&
+    domain.max_quota_per_alias < max
+  )
+    max = domain.max_quota_per_alias;
+
+  // if alias passed, and had a max value set, and it was less than `max`, then set new max
+  if (
+    alias &&
+    Number.isFinite(alias.max_quota) &&
+    alias.max_quota_per_alias < max
+  )
+    max = alias.max_quota_per_alias;
+
   //
   // NOTE: hard-coded max of 100 GB (safeguard)
   //
-  return _.clamp(max, config.maxQuotaPerAlias, bytes('100GB'));
+  return _.clamp(max, 0, bytes('100GB'));
 }
 
 Domains.statics.getMaxQuota = getMaxQuota;
@@ -2285,7 +2406,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
     .exec();
 
   if (!domain) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError(
         'DOMAIN_DOES_NOT_EXIST_ANYWHERE',
         _locale || i18n.config.defaultLocale
@@ -2308,7 +2429,9 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         locale,
         domain.name,
         i18n.translate('ENHANCED_PROTECTION', locale),
-        `${config.urls.web}/${locale}/my-account/domains/${domain.name}/billing?plan=enhanced_protection`
+        `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/billing?plan=enhanced_protection`
       )
     );
   }
@@ -2330,7 +2453,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   );
 
   if (adminMembers.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2356,7 +2479,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
 
   // Safeguard
   if (domainIds.length === 0) {
-    throw Boom.notFound(
+    throw Boom.badRequest(
       i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
     );
   }
@@ -2399,7 +2522,7 @@ async function getStorageUsed(_id, _locale, aliasesOnly = false) {
         (typeof results[0] !== 'object' ||
           typeof results[0].storage_used !== 'number'))
     ) {
-      throw Boom.notFound(
+      throw Boom.badRequest(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', locale)
       );
     }

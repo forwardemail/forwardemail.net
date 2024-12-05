@@ -8,7 +8,7 @@ block content
           h1.h5.card-header.text-center= t("Configuration issue!")
           .card-body.p-0
             a(
-              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+              href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`
             )
               img.img-fluid.d-block.align-top(
                 src=manifest("img/emails/self-test.gif"),
@@ -38,7 +38,7 @@ block content
                   .mt-2.text-monospace.text-uppercase.text-white= "TXT"
               if !domain.has_mx_record || !domain.has_txt_record
                 a.btn.btn-lg.btn-danger(
-                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`,
+                  href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`,
                   role="button"
                 )
                   = t("Verify Records")

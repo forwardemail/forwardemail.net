@@ -18,6 +18,7 @@ const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 
+const Emails = require('#models/emails');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
@@ -76,7 +77,7 @@ graceful.listen();
         .exec();
 
       // eslint-disable-next-line no-await-in-loop
-      const email = await emailHelper({
+      const { email, info } = await emailHelper({
         template: 'inquiry',
         message: {
           to: inquiry?.email || inquiry?.sender_email,
@@ -93,11 +94,19 @@ graceful.listen();
         }
       });
 
-      // eslint-disable-next-line no-await-in-loop
-      const info = await transporter.sendMail(email.originalMessage);
+      let raw;
+      if (email) {
+        // eslint-disable-next-line no-await-in-loop
+        raw = await Emails.getMessage(email.message);
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        const obj = await transporter.sendMail(info.originalMessage);
+        raw = obj.message;
+      }
+
       const messages = [
         {
-          raw: info.raw,
+          raw,
           text: inquiry.message || inquiry?.text
         }
       ];

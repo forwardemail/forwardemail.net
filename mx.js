@@ -10,23 +10,28 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const delay = require('delay');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
 
 const MX = require('./mx-server');
+
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
 const monitorServer = require('#helpers/monitor-server');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const breeSharedConfig = sharedConfig('BREE');
 const client = new Redis(breeSharedConfig.redis, logger);
+client.setMaxListeners(0);
 
-const mx = new MX({ client });
+const wsp = createWebSocketAsPromised();
+
+const mx = new MX({ client, wsp });
 
 const graceful = new Graceful({
   mongooses: [mongoose],
@@ -39,7 +44,15 @@ const graceful = new Graceful({
     async () => {
       // wait for connection rate limiter to finish
       // (since `onClose` is run in the background)
-      await delay(ms('3s'));
+      await setTimeout(ms('3s'));
+    },
+    // <https://github.com/vitalets/websocket-as-promised#wspclosecode-reason--promiseevent>
+    () => {
+      try {
+        wsp.close();
+      } catch (err) {
+        logger.fatal(err);
+      }
     }
   ],
   logger

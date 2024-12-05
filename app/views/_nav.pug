@@ -128,7 +128,7 @@ nav.navbar(class=navbarClasses.join(" "))
         )= "Forward Email"
 
     - const isUbuntu = (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale);
-    - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/billing` : false;
+    - const isDomainSpecificUpgrade = domain && domain.name ? ctx.pathWithoutLocale === `/my-account/domains/${punycode.toASCII(domain.name)}/billing` : false;
     if user && user.plan === 'free' && !domain && Array.isArray(domains)
       - const filteredDomains = domains.filter((domain) => domain.plan === "free" && !domain.is_global && domain.group === "admin");
       if filteredDomains.length > 0
@@ -151,7 +151,7 @@ nav.navbar(class=navbarClasses.join(" "))
         if !isUbuntu
           li.list-inline-item
             a.btn.btn-sm.btn-danger(
-              href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
+              href=domain && domain.name ? l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
             )
               = t("Upgrade")
     else if user
@@ -222,13 +222,14 @@ nav.navbar(class=navbarClasses.join(" "))
                   = t("Signup")
       .no-js.is-bot.d-inline-block.mr-3
     if !isBot(ctx.get('User-Agent'))
-      button.navbar-toggler.d-lg-none.no-js.text-dark.text-themed(
+      button.navbar-toggler.d-lg-none.no-js(
         type="button",
         data-toggle="collapse",
         data-target="#navbar-header",
         aria-controls="navbar-header",
         aria-expanded="false",
-        aria-label=t("Toggle navigation")
+        aria-label=t("Toggle navigation"),
+        class=user ? "text-white" : "text-dark text-themed"
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap
@@ -275,7 +276,7 @@ nav.navbar(class=navbarClasses.join(" "))
           if !isUbuntu && user && user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade && ctx.pathWithoutLocale !== '/denylist'
             li.nav-item.mr-md-3.d-none.d-md-inline-block
               a.btn.btn-danger.d-block.text-left(
-                href=domain && domain.name ? l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
+                href=domain && domain.name ? l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`) : l("/my-account/billing/upgrade?plan=enhanced_protection")
               )
                 = t("Upgrade")
 
@@ -589,11 +590,21 @@ nav.navbar(class=navbarClasses.join(" "))
                 a.dropdown-item(
                   href=l("/email-api"),
                   class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
-                )= t("Email API Reference")
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    = t("Email API Reference")
+                  else
+                    = t("API Reference")
                 a.dropdown-item(
-                  href=l("/free-email-webhooks"),
+                  href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
                   class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active" : ""
-                )= t("Free Email Webhooks")
+                )
+                  if isBot(ctx.get("User-Agent"))
+                    = t("Free Email Webhooks")
+                  else
+                    = t("Email Webhooks")
+                a.dropdown-item(href=l("/faq#do-you-support-bounce-webhooks"))
+                  = t("Bounce Webhooks")
                 a.dropdown-item(
                   href=l("/email-forwarding-regex-pattern-filter"),
                   class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""

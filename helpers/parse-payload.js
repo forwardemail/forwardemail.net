@@ -12,7 +12,7 @@ const { randomUUID } = require('node:crypto');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
@@ -22,11 +22,10 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const pEvent = require('p-event');
+// const pEvent = require('p-event');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const pify = require('pify');
-const prettyBytes = require('pretty-bytes');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const { isEmail } = require('validator');
@@ -654,7 +653,7 @@ async function parsePayload(data, ws) {
                   `id email ${config.userFields.isBanned} ${config.lastLocaleField}`
                 )
                 .select(
-                  'id has_imap has_pgp public_key storage_location user is_enabled name domain'
+                  'id has_imap has_pgp public_key storage_location user is_enabled name domain max_quota'
                 )
                 .lean()
                 .exec();
@@ -718,9 +717,7 @@ async function parsePayload(data, ws) {
 
               if (isOverQuota) {
                 const err = new TypeError(
-                  `${
-                    session.user.username
-                  } has exceeded quota with ${prettyBytes(
+                  `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
                 );
@@ -739,15 +736,14 @@ async function parsePayload(data, ws) {
               }
 
               const maxQuotaPerAlias = await Domains.getMaxQuota(
-                alias.domain.id
+                alias.domain.id,
+                alias
               );
               const exceedsQuota = storageUsed + byteLength > maxQuotaPerAlias;
 
               if (exceedsQuota) {
                 const err = new TypeError(
-                  `${
-                    session.user.username
-                  } has exceeded quota with ${prettyBytes(
+                  `${session.user.username} has exceeded quota with ${bytes(
                     storageUsed
                   )} storage used`
                 );
@@ -798,7 +794,7 @@ async function parsePayload(data, ws) {
                     // 1) Senders that we consider to be "trusted" as a source of truth
                     if (size >= bytes('100GB')) {
                       const err = new SMTPError(
-                        `${sender} limited to 100 GB with current of ${prettyBytes(
+                        `${sender} limited to 100 GB with current of ${bytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
@@ -817,7 +813,7 @@ async function parsePayload(data, ws) {
                       // 2) Senders that are allowlisted are limited to sending 10 GB per day.
                       if (size >= bytes('10GB')) {
                         const err = new SMTPError(
-                          `${sender} limited to 10 GB with current of ${prettyBytes(
+                          `${sender} limited to 10 GB with current of ${bytes(
                             size
                           )} from ${count} messages`,
                           { responseCode: 421 }
@@ -829,7 +825,7 @@ async function parsePayload(data, ws) {
                       // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                     } else if (size >= bytes('1GB') || count >= 1000) {
                       const err = new SMTPError(
-                        `#3 ${sender} limited with current of ${prettyBytes(
+                        `#3 ${sender} limited with current of ${bytes(
                           size
                         )} from ${count} messages`,
                         { responseCode: 421 }
@@ -842,7 +838,7 @@ async function parsePayload(data, ws) {
                 } else if (size >= bytes('1GB') || count >= 1000) {
                   // 3) All other Senders are limited to sending 1 GB and/or 1000 messages per day.
                   const err = new SMTPError(
-                    `#3 ${sender} limited with current of ${prettyBytes(
+                    `#3 ${sender} limited with current of ${bytes(
                       size
                     )} from ${count} messages`,
                     { responseCode: 421 }
@@ -866,7 +862,7 @@ async function parsePayload(data, ws) {
 
                 if (specific.size >= bytes('1GB') || specific.count >= 1000) {
                   const err = new SMTPError(
-                    `${sender} limited with current of ${prettyBytes(
+                    `${sender} limited with current of ${bytes(
                       specific.size
                     )} from ${specific.count} messages to ${root}`,
                     {
@@ -888,11 +884,86 @@ async function parsePayload(data, ws) {
               const diskSpace = await checkDiskSpace(storagePath);
               if (diskSpace.free < spaceRequired)
                 throw new TypeError(
-                  `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                  `Needed ${bytes(spaceRequired)} but only ${bytes(
                     diskSpace.free
                   )} was available`
                 );
 
+              // we should only use in-memory database is if was connected (IMAP session open)
+              if (
+                this.databaseMap &&
+                this.databaseMap.has(session.user.alias_id) &&
+                this.databaseMap.get(session.user.alias_id).open === true
+              )
+                session.db = this.databaseMap.get(session.user.alias_id);
+
+              if (session.db) {
+                try {
+                  // since we use onAppend it re-uses addEntries
+                  // which notifies all connected imap users via EXISTS
+                  await onAppendPromise.call(
+                    this,
+                    'INBOX',
+                    [],
+                    _.isDate(payload.date)
+                      ? payload.date
+                      : new Date(payload.date),
+                    payload.raw,
+                    {
+                      user: {
+                        ...session.user
+                        // NOTE: we don't have the password since we're using in-memory mapping
+                        // password: user.password
+                      },
+                      db: session.db,
+                      remoteAddress: payload.remoteAddress,
+                      resolvedRootClientHostname:
+                        payload.resolvedRootClientHostname,
+                      resolvedClientHostname: payload.resolvedClientHostname,
+                      allowlistValue: payload.allowlistValue,
+
+                      // don't emit wss.broadcast
+                      selected: false,
+
+                      // don't append duplicate messages
+                      checkForExisting: true
+                    }
+                  );
+
+                  //
+                  // increase rate limiting size and count
+                  //
+                  try {
+                    await increaseRateLimiting(
+                      this.client,
+                      date,
+                      sender,
+                      root,
+                      byteLength
+                    );
+                  } catch (err) {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.fatal(err);
+                  }
+                } catch (_err) {
+                  // in order to ensure tmp write still occurs
+                  delete session.db;
+
+                  const err = Array.isArray(_err) ? _err[0] : _err;
+                  if (isRetryableError(err)) {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.error(err);
+                  } else {
+                    err.isCodeBug = true;
+                    err.payload = _.omit(payload, 'raw');
+                    logger.error(err);
+                  }
+                }
+              }
+
+              /*
               //
               // attempt to get in-memory password from IMAP servers
               //
@@ -974,11 +1045,13 @@ async function parsePayload(data, ws) {
                   logger.error(err);
                 }
               }
+              */
 
               //
               // fallback to writing to temporary database storage
               //
-              if (fallback) {
+              // if (fallback)
+              if (!session.db) {
                 const tmpDb = await getTemporaryDatabase.call(this, session);
 
                 let err;
@@ -1224,7 +1297,8 @@ async function parsePayload(data, ws) {
         const diskSpace = await checkDiskSpace(storagePath);
 
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
 
         // slight 2x overhead for backups
@@ -1232,7 +1306,7 @@ async function parsePayload(data, ws) {
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );
@@ -1473,7 +1547,8 @@ async function parsePayload(data, ws) {
         });
         const diskSpace = await checkDiskSpace(storagePath);
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
 
         let stats;
@@ -1497,7 +1572,7 @@ async function parsePayload(data, ws) {
 
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );
@@ -1506,10 +1581,12 @@ async function parsePayload(data, ws) {
         const cache = await this.client.get(
           `reset_check:${payload.session.user.alias_id}`
         );
+
         if (cache)
           throw Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
+
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
           true,
@@ -1517,120 +1594,26 @@ async function parsePayload(data, ws) {
           ms('30s')
         );
 
-        // check if file path was <= initial db size
-        // (and if so then perform the same logic as in "reset")
-        let reset = false;
-        if (!stats || stats.size <= config.INITIAL_DB_SIZE) {
-          try {
-            await fs.promises.rm(storagePath, {
-              force: true,
-              recursive: true
-            });
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          // -wal
-          try {
-            await fs.promises.rm(
-              storagePath.replace('.sqlite', '.sqlite-wal'),
-              {
-                force: true,
-                recursive: true
-              }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          // -shm
-          try {
-            await fs.promises.rm(
-              storagePath.replace('.sqlite', '.sqlite-shm'),
-              {
-                force: true,
-                recursive: true
-              }
-            );
-          } catch (err) {
-            if (err.code !== 'ENOENT') {
-              err.isCodeBug = true;
-              throw err;
-            }
-          }
-
-          reset = true;
-
-          // close existing connection if any and purge it
-          if (
-            this?.databaseMap &&
-            this.databaseMap.has(payload.session.user.alias_id)
-          ) {
-            await closeDatabase(
-              this.databaseMap.get(payload.session.user.alias_id)
-            );
-            this.databaseMap.delete(payload.session.user.alias_id);
-          }
-
-          // TODO: this should not fix database
-          db = await getDatabase(
-            this,
-            // alias
-            {
-              id: payload.session.user.alias_id,
-              storage_location: payload.session.user.storage_location
-            },
-            {
-              ...payload.session,
-              user: {
-                ...payload.session.user,
-                password: payload.new_password
-              }
-            }
-          );
-        }
-
         //
-        // NOTE: if we're not resetting database then assume we want to do a backup
+        // NOTE: if maxQueue exceeded then this will error and reject
+        //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
+        //       (note all of these error messages are in TimeoutError checking)
         //
-        let err;
-        if (!reset) {
-          //
-          // NOTE: if maxQueue exceeded then this will error and reject
-          //       <https://github.com/piscinajs/piscina/blob/5169c75a4d744c8503b64f6e5aaac358c4f72e6c/src/errors.ts#L5>
-          //       (note all of these error messages are in TimeoutError checking)
-          //
-          try {
-            // run in worker pool to offset from main thread (because of VACUUM)
-            await this.piscina.run(payload, { name: 'rekey' });
-          } catch (_err) {
-            err = _err;
-          }
-        }
-
-        // update storage
-        try {
-          await updateStorageUsed(payload.session.user.alias_id, this.client);
-        } catch (err) {
-          logger.fatal(err, { payload });
-        }
-
-        // remove write lock
-        // await this.client.del(`reset_check:${payload.session.user.alias_id}`);
-
-        if (err) throw err;
+        // run in worker pool to offset from main thread (because of VACUUM)
+        // and run this in the background
+        //
+        this.piscina
+          .run(payload, { name: 'rekey' })
+          .then()
+          .catch((err) => logger.fatal(err, { payload }));
 
         response = {
           id: payload.id,
           data: true
         };
+
         this.client.publish('sqlite_auth_reset', payload.session.user.alias_id);
+
         break;
       }
 
@@ -1659,13 +1642,14 @@ async function parsePayload(data, ws) {
 
         // slight 2x overhead for backups
         const maxQuotaPerAlias = await Domains.getMaxQuota(
-          payload.session.user.domain_id
+          payload.session.user.domain_id,
+          payload.session.user.alias_id
         );
         const spaceRequired = maxQuotaPerAlias * 2;
 
         if (config.env !== 'development' && diskSpace.free < spaceRequired)
           throw new TypeError(
-            `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
               diskSpace.free
             )} was available`
           );

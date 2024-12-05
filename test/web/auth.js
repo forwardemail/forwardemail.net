@@ -6,6 +6,7 @@
 const util = require('node:util');
 
 const cryptoRandomString = require('crypto-random-string');
+const falso = require('@ngneat/falso');
 const test = require('ava');
 // const { request, errors } = require('undici');
 
@@ -17,14 +18,15 @@ const phrases = require('#config/phrases');
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
 test.beforeEach(utils.setupWebServer);
+test.beforeEach(utils.setupFactories);
 
 test('creates new user', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory.make();
+  const user = await t.context.userFactory.make();
 
   const res = await web.post('/en/register').send({
     email: user.email,
-    password: '!@K#NLK!#N'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 302);
@@ -56,7 +58,7 @@ test('rejects new user with disposable email', async (t) => {
 
   const res = await web.post('/en/register').send({
     email: `test@${json[0]}`,
-    password: '!@K#NLK!#N'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 400);
@@ -69,7 +71,7 @@ test('fails registering with easy password', async (t) => {
 
   const res = await web.post('/en/register').send({
     email: 'emilydickinson@example.com',
-    password: 'password'
+    password: falso.randPassword({ size: 2 })
   });
 
   t.is(res.status, 400);
@@ -81,11 +83,11 @@ test('fails registering with easy password', async (t) => {
 
 test('successfully registers with strong password', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory.make();
+  const user = await t.context.userFactory.make();
 
   const res = await web.post('/en/register').send({
     email: user.email,
-    password: 'Thi$i$@$r0ng3rP@$$W0rdMyDude'
+    password: falso.randPassword()
   });
 
   t.is(res.body.message, undefined);
@@ -112,7 +114,7 @@ test('fails registering invalid email', async (t) => {
 
   const res = await web.post('/en/register').send({
     email: 'test123',
-    password: 'testpassword'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 400);
@@ -121,11 +123,11 @@ test('fails registering invalid email', async (t) => {
 
 test('if user exists then try to log them in if they were accidentally on the registration page', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory.create();
+  const user = await t.context.userFactory.create();
 
   const res = await web.post('/en/register').send({
     email: user.email,
-    password: 'wrongpassword'
+    password: falso.randPassword()
   });
 
   t.is(res.status, 400);
@@ -138,7 +140,7 @@ test('if user exists then try to log them in if they were accidentally on the re
 test('allows password reset for valid email (HTML)', async (t) => {
   const { web } = t.context;
 
-  const user = await utils.userFactory.make();
+  const user = await t.context.userFactory.make();
 
   const res = await web
     .post('/en/forgot-password')
@@ -152,7 +154,7 @@ test('allows password reset for valid email (HTML)', async (t) => {
 test('allows password reset for valid email (JSON)', async (t) => {
   const { web } = t.context;
 
-  const user = await utils.userFactory.make();
+  const user = await t.context.userFactory.make();
 
   const res = await web.post('/en/forgot-password').send({ email: user.email });
 
@@ -162,14 +164,15 @@ test('allows password reset for valid email (JSON)', async (t) => {
 
 test('resets password with valid email and token (HTML)', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory
+  const password = falso.randPassword();
+  const user = await t.context.userFactory
     .withState({
+      password,
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
     })
     .create();
   const { email } = user;
-  const password = '!@K#NLK!#N';
 
   const res = await web
     .post('/en/reset-password/token')
@@ -182,14 +185,15 @@ test('resets password with valid email and token (HTML)', async (t) => {
 
 test('resets password with valid email and token (JSON)', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory
+  const password = falso.randPassword();
+  const user = await t.context.userFactory
     .withState({
+      password,
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
     })
     .create();
   const { email } = user;
-  const password = '!@K#NLK!#N';
 
   const res = await web
     .post('/en/reset-password/token')
@@ -202,7 +206,7 @@ test('resets password with valid email and token (JSON)', async (t) => {
 test('fails resetting password for non-existent user', async (t) => {
   const { web } = t.context;
   const email = 'test7@example.com';
-  const password = '!@K#NLK!#N';
+  const password = falso.randPassword();
 
   const res = await web
     .post('/en/reset-password/randomtoken')
@@ -214,14 +218,15 @@ test('fails resetting password for non-existent user', async (t) => {
 
 test('fails resetting password with invalid reset token', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory
+  const password = falso.randPassword();
+  const user = await t.context.userFactory
     .withState({
+      password,
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
     })
     .create();
   const { email } = user;
-  const password = '!@K#NLK!#N';
 
   const res = await web
     .post('/en/reset-password/wrongtoken')
@@ -233,7 +238,7 @@ test('fails resetting password with invalid reset token', async (t) => {
 
 test('fails resetting password with missing new password', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
@@ -249,7 +254,7 @@ test('fails resetting password with missing new password', async (t) => {
 
 test('fails resetting password with invalid email', async (t) => {
   const { web } = t.context;
-  await utils.userFactory
+  await t.context.userFactory
     .withState({
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
@@ -266,13 +271,14 @@ test('fails resetting password with invalid email', async (t) => {
 
 test('fails resetting password with invalid email + reset token match', async (t) => {
   const { web } = t.context;
-  await utils.userFactory
+  const password = falso.randPassword();
+  await t.context.userFactory
     .withState({
+      password,
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
     })
     .create();
-  const password = '!@K#NLK!#N';
 
   const res = await web
     .post('/en/reset-password/token')
@@ -284,7 +290,7 @@ test('fails resetting password with invalid email + reset token match', async (t
 
 test('fails resetting password if new password is too weak', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       [config.userFields.resetToken]: 'token',
       [config.userFields.resetTokenExpiresAt]: new Date(Date.now() + 10000)
@@ -294,7 +300,7 @@ test('fails resetting password if new password is too weak', async (t) => {
 
   const res = await web
     .post('/en/reset-password/token')
-    .send({ email, password: 'password' });
+    .send({ email, password: falso.randPassword({ size: 2 }) });
 
   t.is(res.status, 400);
   t.regex(
@@ -305,7 +311,7 @@ test('fails resetting password if new password is too weak', async (t) => {
 
 test('fails resetting password if reset was already tried in the last 30 mins', async (t) => {
   const { web } = t.context;
-  const user = await utils.userFactory.create();
+  const user = await t.context.userFactory.create();
   const { email } = user;
 
   await web.post('/en/forgot-password').send({ email });

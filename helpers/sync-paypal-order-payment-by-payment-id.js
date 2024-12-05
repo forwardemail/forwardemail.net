@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const delay = require('delay');
+const { setTimeout } = require('node:timers/promises');
 const ms = require('ms');
 const _ = require('lodash');
 
@@ -128,7 +128,7 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
     // therefore we need a delay of ~5 seconds in between each
     // 60/5 = 12 (and 12*4 = 48)
     //
-    await delay(FIVE_SECONDS);
+    await setTimeout(FIVE_SECONDS);
   } catch (err) {
     // if a paypal account is deleted/removed then history is erased
     if (err.status === 404) {

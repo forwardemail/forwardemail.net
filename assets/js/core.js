@@ -704,8 +704,6 @@ if (window.PublicKeyCredential) {
 
       const response = await sendRequest({}, '/auth/webauthn/challenge');
 
-      console.log('response', response);
-
       // Prepare a message if the body is not accurate
       if (
         typeof response.body !== 'object' ||
@@ -724,8 +722,6 @@ if (window.PublicKeyCredential) {
         }
       });
 
-      console.log('credential', credential);
-
       const body = {
         id: credential.id,
         response: {
@@ -742,8 +738,6 @@ if (window.PublicKeyCredential) {
 
       if (credential.authenticatorAttachment)
         body.authenticatorAttachment = credential.authenticatorAttachment;
-
-      console.log('sending body to /auth/webauthn/ok', body);
 
       // send post request to /auth/webauthn
       const webauthnResponse = await sendRequest(body, '/auth/webauthn/ok');
@@ -842,3 +836,59 @@ window.addEventListener(
   'resize',
   setViewportProperty(document.documentElement)
 );
+
+function handleBulkReply() {
+  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
+  const ids = checkboxes
+    .map(function () {
+      return $(this).val();
+    })
+    .get();
+
+  if (ids.length === 0) {
+    Swal.fire(window._types.error, 'No inquiries selected.', 'error');
+    return;
+  }
+
+  if (ids.length === 1) {
+    const { origin, pathname } = window.location;
+    const redirectUrl = `${origin}${pathname}/${ids[0]}`;
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  $('#bulk-reply-modal').modal('show');
+}
+
+async function handleSubmitBulkReply() {
+  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
+  const ids = checkboxes
+    .map(function () {
+      return $(this).val();
+    })
+    .get();
+
+  const message = $('#textarea-bulk-reply-message').val();
+
+  try {
+    spinner.show();
+
+    const url = `${window.location.pathname}/bulk`;
+    const response = await sendRequest({ ids, message }, url);
+
+    if (response.err) {
+      throw response.err;
+    }
+
+    spinner.hide();
+
+    location.reload(true);
+  } catch (err) {
+    console.error(err);
+    spinner.hide();
+    Swal.fire(window._types.error, err.message, 'error');
+  }
+}
+
+$('#table-inquiries').on('click', '#bulk-reply-button', handleBulkReply);
+$('#table-inquiries').on('click', '#submit-bulk-reply', handleSubmitBulkReply);

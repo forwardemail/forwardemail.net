@@ -34,7 +34,7 @@ function setPaginationHeaders(
   if (!ctx.api) return;
 
   // developer and human-friendly easy to parse HTTP pagination headers
-  ctx.set('X-Page-Count', pageCount);
+  ctx.set('X-Page-Count', pageCount || 1);
   ctx.set('X-Page-Current', currentPage);
   ctx.set('X-Page-Size', size || 1);
   ctx.set('X-Item-Count', itemCount);

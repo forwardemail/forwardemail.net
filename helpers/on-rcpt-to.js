@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
@@ -43,7 +44,10 @@ async function onRcptTo(address, session, fn) {
   if (
     typeof address === 'object' &&
     isSANB(address.address) &&
-    !isEmail(address.address, { ignore_max_length: true })
+    !isEmail(address.address, {
+      allow_ip_domain: true,
+      ignore_max_length: true
+    })
   )
     return setImmediate(() =>
       fn(
@@ -76,14 +80,17 @@ async function onRcptTo(address, session, fn) {
     //
     if (this?.constructor?.name === 'MX') {
       const domain = parseHostFromDomainOrAddress(checkSRS(address.address));
-      const records = await this.resolver.resolveMx(domain);
-      if (!records || records.length === 0)
-        throw new SMTPError(
-          `${checkSRS(
-            address.address
-          )} does not have any MX records configured on its domain ${domain}`,
-          { ignoreHook: true }
-        );
+      // we don't want to perform a lookup if it's an IP address
+      if (isFQDN(domain)) {
+        const records = await this.resolver.resolveMx(domain);
+        if (!records || records.length === 0)
+          throw new SMTPError(
+            `${checkSRS(
+              address.address
+            )} does not have any MX records configured on its domain ${domain}`,
+            { ignoreHook: true }
+          );
+      }
     }
   } catch (err) {
     return setImmediate(() => fn(refineAndLogError(err, session, false, this)));

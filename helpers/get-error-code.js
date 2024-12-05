@@ -21,6 +21,11 @@ function getErrorCode(err) {
     return 550;
   }
 
+  //
+  // TODO: we should probably not do this property assignment here
+  //       and instead manually do it elsewhere and simply just
+  //       have `const bounceInfo = getBounceInfo(err)` below
+  //
   // get bounce info
   err.bounceInfo = getBounceInfo(err);
 

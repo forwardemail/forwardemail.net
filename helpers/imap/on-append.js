@@ -15,7 +15,7 @@
 
 const { Buffer } = require('node:buffer');
 
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const isHTML = require('is-html');
 const mongoose = require('mongoose');
@@ -39,6 +39,7 @@ const getFingerprint = require('#helpers/get-fingerprint');
 const i18n = require('#helpers/i18n');
 const isCodeBug = require('#helpers/is-code-bug');
 const isRetryableError = require('#helpers/is-retryable-error');
+const isTimeoutError = require('#helpers/is-timeout-error');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const sendApn = require('#helpers/send-apn');
@@ -154,7 +155,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       // attempt to lookup public key using WKD lookup (similar to `helpers/process-email.js`)
       if (!publicKey && session.user.alias_has_pgp) {
         try {
-          const wkd = new WKD(this.resolver);
+          const wkd = new WKD(this.resolver, this.client);
           // TODO: pending PR in wkd-client package
           // <https://github.com/openpgpjs/wkd-client/issues/3>
           // <https://github.com/openpgpjs/wkd-client/pull/4>
@@ -175,6 +176,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           isArmored = false;
         } catch (err) {
           if (
+            isTimeoutError(err) ||
             err.message === 'fetch failed' ||
             err.message.includes('Direct WKD lookup failed')
           ) {
@@ -371,7 +373,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
-    const maxQuotaPerAlias = await Domains.getMaxQuota(session.user.domain_id);
+    const maxQuotaPerAlias = await Domains.getMaxQuota(
+      session.user.domain_id,
+      session.user.alias_id
+    );
 
     const exceedsQuota = storageUsed + size > maxQuotaPerAlias;
     if (exceedsQuota)

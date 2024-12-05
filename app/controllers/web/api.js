@@ -66,7 +66,7 @@ async function api(ctx) {
 
   Object.assign(ctx.state.meta, data);
 
-  let html = pug
+  const html = pug
     .renderFile(filePath, ctx.state)
     .replace(new RE2(/BASE_URI/g), config.urls.api)
     .replace(new RE2(/AMP4EMAIL/g), 'amp4email')
@@ -79,14 +79,18 @@ async function api(ctx) {
     .replace(new RE2(/ALIAS_ID/g), ':alias_id')
     .replace(new RE2(/MEMBER_ID/g), ':member_id');
 
-  if (ctx.isAuthenticated())
-    html = html.replace(
-      new RE2(/API_TOKEN/g),
-      ctx.state.user[config.userFields.apiToken]
-    );
+  if (!ctx.isAuthenticated()) {
+    ctx.body = html;
+    return;
+  }
 
   // expose it to the view
-  const dom = new JSDOM(html);
+  const dom = new JSDOM(
+    html.replace(
+      new RE2(/API_TOKEN/g),
+      ctx.state.user[config.userFields.apiToken]
+    )
+  );
   const $codeTags = dom.window.document.querySelectorAll(
     'code.hljs.language-sh'
   );

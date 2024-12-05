@@ -8,14 +8,14 @@ const path = require('node:path');
 
 const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
-const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
-const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const test = require('ava');
 const tsdav = require('tsdav');
+const undici = require('undici');
+const { Semaphore } = require('@shopify/semaphore');
 
 const utils = require('../utils');
 const CalDAV = require('../../caldav-server');
@@ -29,6 +29,14 @@ const createTangerine = require('#helpers/create-tangerine');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
+const semaphore = new Semaphore(2);
 
 const {
   DAVNamespace,
@@ -50,7 +58,6 @@ const {
 const { serviceDiscovery, fetchPrincipalUrl, fetchHomeUrl } = tsdav.default;
 
 const IP_ADDRESS = ip.address();
-const caldavSharedConfig = sharedConfig('CALDAV');
 
 function extractVEvent(str) {
   return splitLines(
@@ -60,26 +67,21 @@ function extractVEvent(str) {
 
 test.before(utils.setupMongoose);
 test.after.always(utils.teardownMongoose);
+test.beforeEach(utils.setupFactories);
 
 // TODO: `app.close()` for CalDAV server after each
 
 test.beforeEach(async (t) => {
-  const client = new Redis(
-    caldavSharedConfig.redis,
-    logger,
-    caldavSharedConfig.redisMonitor
-  );
-  const subscriber = new Redis(
-    caldavSharedConfig.redis,
-    logger,
-    caldavSharedConfig.redisMonitor
-  );
+  t.context.permit = await semaphore.acquire();
+  const client = new Redis();
+  const subscriber = new Redis();
   client.setMaxListeners(0);
   subscriber.setMaxListeners(0);
   subscriber.channels.setMaxListeners(0);
 
   t.context.client = client;
 
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   const sqlitePort = await getPort();
 
@@ -105,14 +107,14 @@ test.beforeEach(async (t) => {
 
   t.context.serverUrl = `http://${IP_ADDRESS}:${port}/`;
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -128,7 +130,7 @@ test.beforeEach(async (t) => {
 
   const resolver = createTangerine(t.context.client, logger);
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -138,7 +140,7 @@ test.beforeEach(async (t) => {
     .create();
   t.context.domain = domain;
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,
@@ -242,6 +244,10 @@ test.beforeEach(async (t) => {
     account: t.context.account,
     headers: t.context.authHeaders
   });
+});
+
+test.afterEach.always(async (t) => {
+  await t.context.permit.release();
 });
 
 //
@@ -434,7 +440,7 @@ test('it should send calendar invite', async (t) => {
     headers: t.context.authHeaders
   });
   const response = await createObject({
-    url: new URL('invite.ics', calendars[0].url).href,
+    url: new URL('12345.ics', calendars[0].url).href,
     data: str,
     headers: {
       'content-type': 'text/calendar; charset=utf-8',
@@ -865,7 +871,7 @@ test('updateObject should be able to update object', async (t) => {
 
   t.true(updateResult.ok);
 
-  const result = await fetch(objectUrl, {
+  const result = await undici.fetch(objectUrl, {
     headers: t.context.authHeaders
   });
 

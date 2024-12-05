@@ -14,20 +14,20 @@ const path = require('node:path');
 const punycode = require('node:punycode');
 const { PassThrough } = require('node:stream');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
-const delay = require('delay');
 const getStream = require('get-stream');
 const hasha = require('hasha');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
-const prettyBytes = require('pretty-bytes');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const {
@@ -100,7 +100,7 @@ const graceful = new Graceful({
   customHandlers: [
     async () => {
       isCancelled = true;
-      if (config.env === 'production') await delay(ms('30s'));
+      if (config.env === 'production') await setTimeout(ms('30s'));
     }
   ]
 });
@@ -134,108 +134,108 @@ async function rekey(payload) {
   await setupMongoose(logger);
 
   await logger.debug('rekey worker', { payload });
+
   let err;
-
-  const storagePath = getPathToDatabase({
-    id: payload.session.user.alias_id,
-    storage_location: payload.session.user.storage_location
-  });
-
-  // <https://github.com/nodejs/node/issues/38006>
-  const stats = await fs.promises.stat(storagePath);
-  if (
-    !stats.isFile() ||
-    stats.size === 0 ||
-    stats.size <= config.INITIAL_DB_SIZE
-  ) {
-    const err = new TypeError('Database empty');
-    err.stats = stats;
-    throw err;
-  }
-
-  // we calculate size of db x 2 (backup + tarball)
-  const spaceRequired = stats.size * 2;
-
-  const diskSpace = await checkDiskSpace(storagePath);
-  if (diskSpace.free < spaceRequired)
-    throw new TypeError(
-      `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
-        diskSpace.free
-      )} was available`
-    );
-
-  //
-  // ensure that we have the space required available in memory
-  // (prevents multiple backups from taking up all of the memory on server)
-  try {
-    await pWaitFor(
-      () => {
-        return os.freemem() > spaceRequired;
-      },
-      {
-        interval: ms('30s'),
-        timeout: ms('5m')
-      }
-    );
-  } catch (err) {
-    if (isRetryableError(err)) {
-      err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
-      err.isCodeBug = true;
-    }
-
-    err.freemem = os.freemem();
-    err.spaceRequired = spaceRequired;
-    err.payload = payload;
-    throw err;
-  }
-
-  // create backup
-  const tmp = path.join(
-    path.dirname(storagePath),
-    `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
-  );
-
-  if (isCancelled) throw new ServerShutdownError();
-
-  //
-  // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
-  //       because if a page is modified during backup, it has to start over
-  //       <https://news.ycombinator.com/item?id=31387556>
-  //       <https://github.com/benbjohnson/litestream.io/issues/56>
-  //
-  //       also, if we used `backup` then for a temporary period
-  //       the database would be unencrypted on disk, and instead
-  //       we use VACUUM INTO which keeps the encryption as-is
-  //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
-  //
-  //       const results = await db.backup(tmp);
-  //
-  //       so instead we use the VACUUM INTO command with the `tmp` path
-  //
-  // TODO: this should not fix database
-  const db = await getDatabase(
-    instance,
-    // alias
-    {
-      id: payload.session.user.alias_id,
-      storage_location: payload.session.user.storage_location
-    },
-    payload.session
-  );
-
-  // run a checkpoint to copy over wal to db
-  db.pragma('wal_checkpoint(FULL)');
-
-  // create backup
-  db.exec(`VACUUM INTO '${tmp}'`);
-
-  await closeDatabase(db);
-
-  if (isCancelled) throw new ServerShutdownError();
-
+  let tmp;
   let backup = true;
 
   try {
+    const storagePath = getPathToDatabase({
+      id: payload.session.user.alias_id,
+      storage_location: payload.session.user.storage_location
+    });
+
+    // <https://github.com/nodejs/node/issues/38006>
+    const stats = await fs.promises.stat(storagePath);
+    if (
+      !stats.isFile() ||
+      stats.size === 0
+      // || stats.size <= config.INITIAL_DB_SIZE
+    ) {
+      const err = new TypeError('Database empty');
+      err.stats = stats;
+      throw err;
+    }
+
+    // we calculate size of db x 2 (backup + tarball)
+    const spaceRequired = stats.size * 2;
+
+    const diskSpace = await checkDiskSpace(storagePath);
+    if (diskSpace.free < spaceRequired)
+      throw new TypeError(
+        `Needed ${bytes(spaceRequired)} but only ${bytes(
+          diskSpace.free
+        )} was available`
+      );
+
+    //
+    // ensure that we have the space required available in memory
+    // (prevents multiple backups from taking up all of the memory on server)
+    try {
+      await pWaitFor(
+        () => {
+          return os.freemem() > spaceRequired;
+        },
+        {
+          interval: ms('30s'),
+          timeout: ms('5m')
+        }
+      );
+    } catch (err) {
+      if (isRetryableError(err)) {
+        err.message = `Backup not complete due to OOM for ${payload.session.user.username}`;
+        err.isCodeBug = true;
+      }
+
+      err.freemem = os.freemem();
+      err.spaceRequired = spaceRequired;
+      err.payload = payload;
+      throw err;
+    }
+
+    // create backup
+    tmp = path.join(
+      path.dirname(storagePath),
+      `${payload.session.user.alias_id}-${payload.id}-backup.sqlite`
+    );
+
+    if (isCancelled) throw new ServerShutdownError();
+
+    //
+    // NOTE: we don't use `backup` command and instead use `VACUUM INTO`
+    //       because if a page is modified during backup, it has to start over
+    //       <https://news.ycombinator.com/item?id=31387556>
+    //       <https://github.com/benbjohnson/litestream.io/issues/56>
+    //
+    //       also, if we used `backup` then for a temporary period
+    //       the database would be unencrypted on disk, and instead
+    //       we use VACUUM INTO which keeps the encryption as-is
+    //       <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927>
+    //
+    //       const results = await db.backup(tmp);
+    //
+    //       so instead we use the VACUUM INTO command with the `tmp` path
+    //
+    // TODO: this should not fix database
+    const db = await getDatabase(
+      instance,
+      // alias
+      {
+        id: payload.session.user.alias_id,
+        storage_location: payload.session.user.storage_location
+      },
+      payload.session
+    );
+
+    // run a checkpoint to copy over wal to db
+    db.pragma('wal_checkpoint(FULL)');
+
+    // create backup
+    db.exec(`VACUUM INTO '${tmp}'`);
+
+    await closeDatabase(db);
+
+    if (isCancelled) throw new ServerShutdownError();
     // open the backup and encrypt it
     const backupDb = await getDatabase(
       instance,
@@ -259,7 +259,6 @@ async function rekey(payload) {
     if (journalModeResult !== 'delete')
       throw new TypeError('Journal mode could not be changed');
 
-    // TODO: we need to remove VACUUM call here somehow
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/91>
     backupDb.prepare('VACUUM').run();
     if (isCancelled) throw new ServerShutdownError();
@@ -274,7 +273,6 @@ async function rekey(payload) {
     //       (the next time the database is opened the journal mode will get switched to WAL)
     //
 
-    // TODO: we need to remove VACUUM call here somehow
     // NOTE: VACUUM will persist the rekey operation and write to db
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/23#issuecomment-1152634207>
     if (isCancelled) throw new ServerShutdownError();
@@ -321,7 +319,7 @@ async function rekey(payload) {
   }
 
   // always do cleanup in case of errors
-  if (backup) {
+  if (backup && tmp) {
     try {
       await fs.promises.rm(tmp, {
         force: true,
@@ -332,7 +330,77 @@ async function rekey(payload) {
     }
   }
 
-  if (err) throw err;
+  try {
+    await client.del(`reset_check:${payload.session.user.alias_id}`);
+  } catch (err) {
+    await logger.fatal(err);
+  }
+
+  try {
+    // unset `is_rekey` on the user
+    await Aliases.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(payload.session.user.alias_id),
+        domain: new mongoose.Types.ObjectId(payload.session.user.domain_id)
+      },
+      {
+        $set: {
+          is_rekey: false
+        }
+      }
+    );
+  } catch (err) {
+    await logger.fatal(err);
+  }
+
+  if (err) {
+    await email({
+      template: 'alert',
+      message: {
+        to: payload.session.user.owner_full_email,
+        cc: config.email.message.from,
+        subject: i18n.translate(
+          'ALIAS_REKEY_FAILED_SUBJECT',
+          payload.session.user.locale,
+          payload.session.user.username
+        )
+      },
+      locals: {
+        message: i18n.translate(
+          'ALIAS_REKEY_FAILED_MESSAGE',
+          payload.session.user.locale,
+          payload.session.user.username,
+          err.message === 'Database empty'
+            ? err.message
+            : refineAndLogError(err, payload.session).message
+        ),
+        locale: payload.session.user.locale
+      }
+    });
+
+    throw err;
+  }
+
+  // email the user
+  await email({
+    template: 'alert',
+    message: {
+      to: payload.session.user.owner_full_email,
+      subject: i18n.translate(
+        'ALIAS_REKEY_READY_SUBJECT',
+        payload.session.user.locale,
+        payload.session.user.username
+      )
+    },
+    locals: {
+      message: i18n.translate(
+        'ALIAS_REKEY_READY',
+        payload.session.user.locale,
+        payload.session.user.username
+      ),
+      locale: payload.session.user.locale
+    }
+  });
 }
 
 // eslint-disable-next-line complexity
@@ -411,7 +479,7 @@ async function backup(payload) {
 
     if (diskSpace.free < spaceRequired)
       throw new TypeError(
-        `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+        `Needed ${bytes(spaceRequired)} but only ${bytes(
           diskSpace.free
         )} was available`
       );
@@ -649,7 +717,6 @@ async function backup(payload) {
           stream.end();
         }
 
-        archive.finalize();
         archive.on('warning', (err) => {
           logger.warn(err);
         });
@@ -657,6 +724,7 @@ async function backup(payload) {
           archive.once('error', reject);
           archive.once('end', resolve);
         });
+        archive.finalize();
         break;
       }
 
@@ -719,7 +787,6 @@ async function backup(payload) {
           }
         }
 
-        archive.finalize();
         archive.on('warning', (err) => {
           logger.warn(err);
         });
@@ -727,6 +794,7 @@ async function backup(payload) {
           archive.on('error', reject);
           archive.on('end', resolve);
         });
+        archive.finalize();
         break;
       }
       // No default
@@ -783,6 +851,72 @@ async function backup(payload) {
     await logger.fatal(err, { payload });
   }
 
+  //
+  // NOTE: this was commented out because auto_vacuum wasn't enabled properly
+  //
+  /*
+  //
+  // NOTE: if the SQLite file is 2x larger than the backup, then we
+  //       should run a VACUUM since auto vacuum isn't optimal
+  //
+  if (payload.format === 'sqlite' && tmp && backup) {
+    try {
+      // check how much space is remaining on storage location
+      const storagePath = getPathToDatabase({
+        id: payload.session.user.alias_id,
+        storage_location: payload.session.user.storage_location
+      });
+      const diskSpace = await checkDiskSpace(storagePath);
+
+      // <https://github.com/nodejs/node/issues/38006>
+      const stats = await fs.promises.stat(storagePath);
+      if (!stats.isFile() || stats.size === 0) {
+        const err = new TypeError('Database empty');
+        err.stats = stats;
+        throw err;
+      }
+
+      // we calculate size of db x 2 (backup + tarball)
+      const spaceRequired = stats.size * 2;
+
+      if (diskSpace.free < spaceRequired)
+        throw new TypeError(
+          `Needed ${bytes(spaceRequired)} but only ${bytes(
+            diskSpace.free
+          )} was available`
+        );
+
+      //
+      // check if main sqlite file is >= 25% larger than tmp file
+      //
+      // <https://github.com/nodejs/node/issues/38006>
+      const tmpStats = await fs.promises.stat(tmp);
+      if (!tmpStats.isFile() || tmpStats.size === 0) {
+        const err = new TypeError('Database empty');
+        err.stats = stats;
+        throw err;
+      }
+
+      if (stats.size >= Math.round(tmpStats.size * 1.25)) {
+        const db = await getDatabase(
+          instance,
+          // alias
+          {
+            id: payload.session.user.alias_id,
+            storage_location: payload.session.user.storage_location
+          },
+          payload.session
+        );
+        db.prepare('VACUUM').run();
+        await closeDatabase(db);
+      }
+    } catch (_err) {
+      _err.isCodeBug = true;
+      await logger.fatal(_err, { payload });
+    }
+  }
+  */
+
   // always do cleanup in case of errors
   if (tmp && backup) {
     try {
@@ -802,7 +936,7 @@ async function backup(payload) {
   try {
     await client.del(`backup_check:${payload.session.user.alias_id}`);
   } catch (err) {
-    logger.fatal(err);
+    await logger.fatal(err);
   }
 
   // if an error occurred then allow cache to attempt again

@@ -6,10 +6,10 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const ms = require('ms');
 const pify = require('pify');
-const prettyBytes = require('pretty-bytes');
 const { Builder } = require('json-sql');
 
 const getPathToDatabase = require('./get-path-to-database');
@@ -99,7 +99,7 @@ async function syncTemporaryMailbox(session) {
             const diskSpace = await checkDiskSpace(storagePath);
             if (diskSpace.free < spaceRequired)
               throw new TypeError(
-                `Needed ${prettyBytes(spaceRequired)} but only ${prettyBytes(
+                `Needed ${bytes(spaceRequired)} but only ${bytes(
                   diskSpace.free
                 )} was available`
               );

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const QRCode = require('qrcode');
 const _ = require('lodash');
@@ -26,7 +28,7 @@ const { encrypt } = require('#helpers/encrypt-decrypt');
 // eslint-disable-next-line complexity
 async function generateAliasPassword(ctx) {
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   );
 
   let originalTokens;
@@ -183,7 +185,18 @@ async function generateAliasPassword(ctx) {
         0
       );
 
+      if (!ctx.api) {
+        ctx.flash(
+          'success',
+          ctx.translate(
+            'ALIAS_REKEY_STARTED',
+            `${alias.name}@${ctx.state.domain.name}`
+          )
+        );
+      }
+
       // don't save until we're sure that sqlite operations were performed
+      alias.is_rekey = true;
       await alias.save();
 
       // close websocket
@@ -482,7 +495,7 @@ async function generateAliasPassword(ctx) {
     } else {
       ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
       const redirectTo = ctx.state.l(
-        `/my-account/domains/${ctx.state.domain.name}/aliases`
+        `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
       );
       if (ctx.accepts('html')) ctx.redirect(redirectTo);
       else ctx.body = { redirectTo };

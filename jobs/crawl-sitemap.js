@@ -8,17 +8,19 @@ require('#config/env');
 
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
+const { setTimeout } = require('node:timers/promises');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const _ = require('lodash');
-const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { XMLParser } = require('fast-xml-parser');
 const { convert } = require('html-to-text');
@@ -27,23 +29,29 @@ const { parse } = require('node-html-parser');
 const RetryClient = require('#helpers/retry-client');
 const SearchResults = require('#models/search-results');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const monitorServer = require('#helpers/monitor-server');
 const retryRequest = require('#helpers/retry-request');
 const setupMongoose = require('#helpers/setup-mongoose');
-const monitorServer = require('#helpers/monitor-server');
 
 monitorServer();
-
-const graceful = new Graceful({
-  mongooses: [mongoose],
-  logger
-});
 
 // <https://github.com/nodejs/undici/issues/583>
 const client = new RetryClient(config.urls.web, {
   autoSelectFamily: config.env !== 'production'
+});
+
+const breeSharedConfig = sharedConfig('BREE');
+const redisClient = new Redis(breeSharedConfig.redis, logger);
+const resolver = createTangerine(redisClient, logger);
+
+const graceful = new Graceful({
+  mongooses: [mongoose],
+  redisClients: [redisClient],
+  logger
 });
 
 graceful.listen();
@@ -58,7 +66,8 @@ graceful.listen();
     //
     const response = await client.request({
       method: 'GET',
-      path: '/sitemap.xml'
+      path: '/sitemap.xml',
+      resolver
     });
 
     const xml = await response.body.text();
@@ -251,7 +260,8 @@ graceful.listen();
     //   const { body } = await retryRequest(
     //     `https://www.google.com/ping?sitemap=${sitemap}`,
     //     {
-    //       method: 'POST'
+    //       method: 'POST',
+    //       resolver
     //     }
     //   );
     //   await body.text();
@@ -265,7 +275,8 @@ graceful.listen();
       const { body } = await retryRequest(
         `https://webmaster.yandex.ru/ping?sitemap=${sitemap}`,
         {
-          method: 'POST'
+          method: 'POST',
+          resolver
         }
       );
       await body.text();
@@ -309,7 +320,8 @@ graceful.listen();
               body: JSON.stringify({
                 siteUrl: config.urls.web,
                 urlList
-              })
+              }),
+              resolver
             }
           );
           // eslint-disable-next-line no-await-in-loop
@@ -325,7 +337,7 @@ graceful.listen();
     }
 
     // after successful run wait 24 hours then exit
-    await delay(ms('1d'));
+    await setTimeout(ms('1d'));
   } catch (err) {
     await logger.error(err);
     // send an email to admins of the error

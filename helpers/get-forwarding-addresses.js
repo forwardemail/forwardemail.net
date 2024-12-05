@@ -20,6 +20,7 @@ const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getKeyInfo = require('#helpers/get-key-info');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -45,14 +46,21 @@ async function getForwardingAddresses(
   session
 ) {
   let hasIMAP = false;
+  let aliasPublicKey = false;
   let aliasIds;
 
   const domain = parseHostFromDomainOrAddress(address);
+
   const rootDomain = parseRootDomain(domain);
 
-  // if it is a truth source then don't bother fetching
+  // if it is a truth source then don't bother fetching (e.g. gmail)
+  // if domain/subdomain mismatch
+  // if not an ip
   let records = [];
-  if (domain !== rootDomain || !config.truthSources.has(rootDomain)) {
+  if (
+    !isIP(domain) &&
+    (domain !== rootDomain || !config.truthSources.has(rootDomain))
+  ) {
     try {
       records = await this.resolver.resolveTxt(domain);
     } catch (err) {
@@ -137,7 +145,12 @@ async function getForwardingAddresses(
   // check if we have a specific redirect and store global redirects (if any)
   // get username from recipient email address
   // (e.g. user@example.com => hello)
-  const username = parseUsername(address);
+  const username = isEmail(address, {
+    ignore_max_length: true,
+    allow_ip_domain: true
+  })
+    ? parseUsername(address)
+    : null;
 
   //
   // store if the domain was bad and not on paid plan (required for bad domains)
@@ -159,7 +172,7 @@ async function getForwardingAddresses(
     }
   }
 
-  if (verifications.length > 0) {
+  if (verifications.length > 0 && username) {
     if (verifications.length > 1)
       throw new SMTPError(
         // TODO: we may want to replace with "Invalid Recipients"
@@ -183,7 +196,8 @@ async function getForwardingAddresses(
         username,
         ignore_billing: ignoreBilling,
         verification_record: verifications[0]
-      }
+      },
+      resolver: this.resolver
     });
 
     const body = await response.body.json();
@@ -193,6 +207,15 @@ async function getForwardingAddresses(
     // }
     hasIMAP = boolean(body.has_imap);
     if (hasIMAP) badDomainExtension = false;
+    if (isSANB(body.alias_public_key)) {
+      try {
+        const keyInfo = await getKeyInfo(body.alias_public_key);
+        aliasPublicKey = keyInfo.publicKey;
+      } catch (err) {
+        logger.fatal(err);
+      }
+    }
+
     if (
       body.alias_ids &&
       Array.isArray(body.alias_ids) &&
@@ -385,7 +408,7 @@ async function getForwardingAddresses(
         logger.fatal(err, { address });
       }
 
-      if (regex && regex.test(username.toLowerCase())) {
+      if (username && regex && regex.test(username.toLowerCase())) {
         const hasDollarInterpolation =
           REGEX_INTERPOLATED_DOLLAR.test(elementWithoutRegex);
 
@@ -433,6 +456,7 @@ async function getForwardingAddresses(
         else forwardingAddresses.push(substitutedAlias.toLowerCase());
       }
     } else if (
+      username &&
       (element.includes(':') || element.indexOf('!') === 0) &&
       !isURL(element, config.isURLOptions)
     ) {
@@ -496,7 +520,10 @@ async function getForwardingAddresses(
           forwardingAddresses.push(addr[1]);
         else forwardingAddresses.push(addr[1].toLowerCase());
       }
-    } else if (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress)) {
+    } else if (
+      username &&
+      (isFQDN(lowerCaseAddress) || isIP(lowerCaseAddress))
+    ) {
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(`${username}@${lowerCaseAddress}`);
@@ -564,7 +591,10 @@ async function getForwardingAddresses(
       const newRecursive = [...forwardingAddresses, ...recursive];
 
       // prevent a double-lookup if user is using + symbols
-      if (forwardingAddress.includes('+'))
+      if (
+        isEmail(address, { ignore_max_length: true, allow_ip_domain: true }) &&
+        forwardingAddress.includes('+')
+      )
         newRecursive.push(
           `${parseUsername(address)}@${parseHostFromDomainOrAddress(address)}`
         );
@@ -654,7 +684,8 @@ async function getForwardingAddresses(
         },
         query: {
           domain
-        }
+        },
+        resolver: this.resolver
       });
 
       const body = await response.body.json();
@@ -688,11 +719,17 @@ async function getForwardingAddresses(
   // and then resolve with the newly formatted forwarding address
   // (we can return early here if there was no + symbol)
   if (!address.includes('+'))
-    return { aliasIds, hasIMAP, addresses: forwardingAddresses };
+    return {
+      aliasIds,
+      hasIMAP,
+      aliasPublicKey,
+      addresses: forwardingAddresses
+    };
 
   return {
     aliasIds,
     hasIMAP,
+    aliasPublicKey,
     addresses: forwardingAddresses.map((forwardingAddress) => {
       if (
         isFQDN(forwardingAddress) ||

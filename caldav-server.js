@@ -10,6 +10,7 @@ const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
@@ -462,6 +463,7 @@ class CalDAV extends API {
     this.createEvent = this.createEvent.bind(this);
     this.updateEvent = this.updateEvent.bind(this);
     this.deleteEvent = this.deleteEvent.bind(this);
+    this.deleteCalendar = this.deleteCalendar.bind(this);
     this.buildICS = this.buildICS.bind(this);
     this.getCalendarId = this.getCalendarId.bind(this);
     this.getETag = this.getETag.bind(this);
@@ -490,6 +492,7 @@ class CalDAV extends API {
           createEvent: this.createEvent,
           updateEvent: this.updateEvent,
           deleteEvent: this.deleteEvent,
+          deleteCalendar: this.deleteCalendar,
           buildICS: this.buildICS,
           getCalendarId: this.getCalendarId,
           getETag: this.getETag
@@ -532,22 +535,31 @@ class CalDAV extends API {
       if (!comp) throw new TypeError('Component not parsed');
 
       // safeguard in case more than one event
-      // TODO: we may need to find by eventId -> uid match
       const vevents = comp.getAllSubcomponents('vevent');
-      if (vevents.length !== 1) {
-        // TODO: remove this debug once we fix
-        // debug until we determine how to fix properly
-        const err = new TypeError(
-          '0 or more than one vevent for sending invite'
-        );
-        err.isCodeBug = true;
-        err.calendar = calendar;
-        err.oldCalStr = oldCalStr;
-        err.calendarEvent = calendarEvent;
-        throw err;
-      }
+      let vevent = vevents.find((vevent) => {
+        const uid = vevent.getFirstPropertyValue('uid');
+        if (uid === calendarEvent.eventId) return true;
+        // if uid was an email e.g. "xyz@google.com" then
+        // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+        if (
+          isEmail(uid, { ignore_max_length: true }) &&
+          uid.replace('@', '_') === calendarEvent.eventId
+        )
+          return true;
+        return false;
+      });
 
-      const vevent = vevents[0];
+      // TODO: we need to do the same for update event and other eventId lookups
+
+      // fallback in case event not found yet there were events in body
+      if (!vevent && vevents.length > 0) vevent = vevents[0];
+
+      //
+      // TODO: there shouldn't be more than one VEVENT with
+      //       same uid but if there is we may want to cleanup in future
+      //       (we have seen edge cases where this does actually happen)
+      //
+      if (!vevent) throw new TypeError('vevent missing');
 
       // if method was CANCEL then STATUS on vevent needs to be CANCELLED
       if (method === 'CANCEL')
@@ -580,28 +592,35 @@ class CalDAV extends API {
         const oldComp = new ICAL.Component(ICAL.parse(oldCalStr));
         if (!oldComp) throw new TypeError('Old component not parsed');
 
-        // TODO: we may need to find by eventId -> uid match
         // safeguard in case more than one event
         const oldEvents = oldComp.getAllSubcomponents('vevent');
-        if (oldEvents.length !== 1) {
-          // TODO: remove this debug once we fix
-          // debug until we determine how to fix properly
-          const err = new TypeError(
-            '0 or more than one vevent for sending invite'
-          );
-          err.isCodeBug = true;
-          err.calendar = calendar;
-          err.oldCalStr = oldCalStr;
-          err.calendarEvent = calendarEvent;
-          throw err;
-        }
+        let oldEvent = oldEvents.find((vevent) => {
+          const uid = vevent.getFirstPropertyValue('uid');
+          if (uid === calendarEvent.eventId) return true;
+          // if uid was an email e.g. "xyz@google.com" then
+          // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+          if (
+            isEmail(uid, { ignore_max_length: true }) &&
+            uid.replace('@', '_') === calendarEvent.eventId
+          )
+            return true;
+          return false;
+        });
 
-        const oldEvent = new ICAL.Event(oldEvents[0]);
+        // fallback in case event not found yet there were events in body
+        if (!oldEvent && oldEvents.length > 0) oldEvent = oldEvents[0];
 
-        oldEvents[0].updatePropertyWithValue('status', 'CANCELLED');
+        //
+        // TODO: there shouldn't be more than one VEVENT with
+        //       same uid but if there is we may want to cleanup in future
+        //       (we have seen edge cases where this does actually happen)
+        //
+        if (!oldEvent) throw new TypeError('old vevent missing');
 
-        if (oldEvent.attendees.length > 0) {
-          for (const attendee of oldEvent.attendees) {
+        const attendees = oldEvent.getAllProperties('attendee');
+
+        if (attendees.length > 0) {
+          for (const attendee of attendees) {
             let oldEmail = attendee.getFirstValue();
             if (!oldEmail || !/^mailto:/i.test(oldEmail)) {
               // fallback to EMAIL param
@@ -610,17 +629,19 @@ class CalDAV extends API {
 
             if (!oldEmail) continue;
             oldEmail = oldEmail.replace('mailto:', '').toLowerCase().trim();
-            const match = event.attendees.find((attendee) => {
-              let address = attendee.getFirstValue();
-              if (!address || !/^mailto:/i.test(address)) {
-                // fallback to EMAIL param
-                address = attendee.getParameter('email');
-              }
+            const match = event.attendees
+              ? event.attendees.find((attendee) => {
+                  let address = attendee.getFirstValue();
+                  if (!address || !/^mailto:/i.test(address)) {
+                    // fallback to EMAIL param
+                    address = attendee.getParameter('email');
+                  }
 
-              if (!address) return;
-              address = address.replace('mailto:', '').toLowerCase().trim();
-              return address === oldEmail;
-            });
+                  if (!address) return;
+                  address = address.replace('mailto:', '').toLowerCase().trim();
+                  return address === oldEmail;
+                })
+              : null;
 
             // if there was a match found then that means the user wasn't removed
             if (match) continue;
@@ -636,7 +657,7 @@ class CalDAV extends API {
             //
             try {
               const vc = new ICAL.Component(['vcalendar', [], []]);
-              vc.addSubcomponent(oldEvents[0]);
+              vc.addSubcomponent(oldEvent);
 
               // eslint-disable-next-line no-await-in-loop
               const ics = await this.buildICS(
@@ -687,34 +708,36 @@ class CalDAV extends API {
           .replace('mailto:', '')
           .trim()
           .toLowerCase();
-        for (const attendee of event.attendees) {
-          // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
-          // const scheduleAgent = attendee.getParameter('schedule-agent');
-          // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
+        if (event.attendees) {
+          for (const attendee of event.attendees) {
+            // TODO: if SCHEDULE-AGENT=CLIENT then do not send invite (?)
+            // const scheduleAgent = attendee.getParameter('schedule-agent');
+            // if (scheduleAgent && scheduleAgent.toLowerCase() === 'client') continue;
 
-          // skip attendees that were already DECLINED
-          const partStat = attendee.getParameter('partstat');
-          if (partStat && partStat.toLowerCase() === 'declined') continue;
+            // skip attendees that were already DECLINED
+            const partStat = attendee.getParameter('partstat');
+            if (partStat && partStat.toLowerCase() === 'declined') continue;
 
-          let email = attendee.getFirstValue();
-          if (!email || !email.startsWith('mailto:')) {
-            // fallback to EMAIL param
-            email = attendee.getParameter('email');
-          }
+            let email = attendee.getFirstValue();
+            if (!email || !email.startsWith('mailto:')) {
+              // fallback to EMAIL param
+              email = attendee.getParameter('email');
+            }
 
-          if (!email) continue;
+            if (!email) continue;
 
-          email = email.replace('mailto:', '').toLowerCase().trim();
+            email = email.replace('mailto:', '').toLowerCase().trim();
 
-          if (!isEmail(email)) continue;
+            if (!isEmail(email)) continue;
 
-          if (email === organizerEmail) continue;
+            if (email === organizerEmail) continue;
 
-          const commonName = attendee.getParameter('cn');
-          if (commonName) {
-            to.push(`"${commonName}" <${email}>`);
-          } else {
-            to.push(email);
+            const commonName = attendee.getParameter('cn');
+            if (commonName) {
+              to.push(`"${commonName}" <${email}>`);
+            } else {
+              to.push(email);
+            }
           }
         }
 
@@ -809,6 +832,11 @@ class CalDAV extends API {
         }
       }
     } catch (err) {
+      // temp debugging
+      err.isCodeBug = true;
+      err.calendar = calendar;
+      err.oldCalStr = oldCalStr;
+      err.calendarEvent = calendarEvent;
       logger.fatal(err);
     }
   }
@@ -851,13 +879,43 @@ class CalDAV extends API {
       await refreshSession.call(this, ctx.state.session, 'CALDAV');
 
       // ensure that the default calendar exists
-      const defaultCalendar = await this.getCalendar(ctx, {
+      let defaultCalendar = await this.getCalendar(ctx, {
         calendarId: user.username,
         principalId: user.username,
         user
       });
 
-      logger.debug('defaultCalendar', { defaultCalendar });
+      if (!defaultCalendar) {
+        defaultCalendar = await Calendars.create({
+          // db virtual helper
+          instance: this,
+          session: ctx.state.session,
+
+          // calendarId
+          calendarId: user.username,
+
+          // calendar obj
+          // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
+          name: ctx.translate('CALENDAR'),
+          description: config.urls.web,
+          prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
+          //
+          // NOTE: instead of using timezone from IP we use
+          //       their last time zone set in a browser session
+          //       (this is way more accurate and faster)
+          //
+          //       here were some alternatives though during R&D:
+          //       * <https://github.com/runk/node-maxmind>
+          //       * <https://github.com/evansiroky/node-geo-tz>
+          //       * <https://github.com/safing/mmdbmeld>
+          //       * <https://github.com/sapics/ip-location-db>
+          //
+          timezone: ctx.state.session.user.timezone,
+          url: config.urls.web,
+          readonly: false,
+          synctoken: `${config.urls.web}/ns/sync-token/1`
+        });
+      }
 
       return user;
     } catch (err) {
@@ -873,15 +931,25 @@ class CalDAV extends API {
       timezone,
       params: ctx.state.params
     });
-    name = name || ctx.state.params.calendarId || randomUUID();
-    const calendarId = ctx.state.params.calendarId || name;
+
+    // if calendar already exists with calendarId value then return 405
+    // <https://github.com/sabre-io/dav/blob/da8c1f226f1c053849540a189262274ef6809d1c/tests/Sabre/CalDAV/PluginTest.php#L289>
+    const calendar = await this.getCalendar(ctx, {
+      calendarId: ctx.state.params.calendarId
+    });
+
+    if (calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_ALREADY_EXISTS')
+      );
+
     return Calendars.create({
       // db virtual helper
       instance: this,
       session: ctx.state.session,
 
       // calendarId
-      calendarId,
+      calendarId: ctx.state.params.calendarId || name || randomUUID(),
 
       // calendar obj
       name,
@@ -911,38 +979,6 @@ class CalDAV extends API {
       calendar = await Calendars.findOne(this, ctx.state.session, {
         name: calendarId
       });
-    if (!calendar)
-      calendar = await Calendars.create({
-        // db virtual helper
-        instance: this,
-        session: ctx.state.session,
-
-        // calendarId
-        calendarId,
-
-        // calendar obj
-        // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
-        name: mongoose.isObjectIdOrHexString(calendarId)
-          ? ctx.translate('CALENDAR')
-          : calendarId,
-        description: config.urls.web,
-        prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
-        //
-        // NOTE: instead of using timezone from IP we use
-        //       their last time zone set in a browser session
-        //       (this is way more accurate and faster)
-        //
-        //       here were some alternatives though during R&D:
-        //       * <https://github.com/runk/node-maxmind>
-        //       * <https://github.com/evansiroky/node-geo-tz>
-        //       * <https://github.com/safing/mmdbmeld>
-        //       * <https://github.com/sapics/ip-location-db>
-        //
-        timezone: ctx.state.session.user.timezone,
-        url: config.urls.web,
-        readonly: false,
-        synctoken: `${config.urls.web}/ns/sync-token/1`
-      });
 
     logger.debug('getCalendar result', { calendar });
 
@@ -959,8 +995,8 @@ class CalDAV extends API {
     //
     // 1) parse `ctx.request.body` for VCALENDAR and all VEVENT's
     // 2) update the calendar metadata based off VCALENDAR
-    // 3) delete existing VEVENTS
-    // 4) create new VEVENTS
+    // 3) update existing VEVENTS by uid match
+    // 4) create new VEVENTS for those that did not have uid match
     //
     let err;
     try {
@@ -993,6 +1029,11 @@ class CalDAV extends API {
         user
       });
 
+      if (!calendar)
+        throw Boom.methodNotAllowed(
+          ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+        );
+
       const update = {
         name: comp.getFirstPropertyValue('name'),
         prodId: comp.getFirstPropertyValue('prodid'),
@@ -1024,22 +1065,6 @@ class CalDAV extends API {
         }
       );
 
-      //
-      // NOTE: this isn't the safest way to do this (instead should only conditionally delete and update)
-      //
-
-      // delete existing VEVENTS
-      const deleted = await CalendarEvents.deleteMany(this, ctx.state.session, {
-        calendar: calendar._id
-      });
-
-      logger.debug('deleted events', {
-        deleted,
-        principalId,
-        calendarId,
-        user
-      });
-
       // create new VEVENTS
       if (vevents.length > 0) {
         const events = [];
@@ -1050,10 +1075,42 @@ class CalDAV extends API {
         // a bit of a hack but it will get us the ical string and then rebuild it together with other occurences
         for (const vevent of vevents) {
           const eventId = vevent.getFirstPropertyValue('uid');
-          if (!Array.isArray(eventIdToEvents[eventId]))
-            eventIdToEvents[eventId] = [];
+          if (!isSANB(eventId)) continue;
+
           const vc = new ICAL.Component(['vcalendar', [], []]);
           vc.addSubcomponent(vevent);
+
+          // check if the event already exists, and if so, then simply update it
+          // eslint-disable-next-line no-await-in-loop
+          let existingEvent = await CalendarEvents.findOne(
+            this,
+            ctx.state.session,
+            { eventId, calendar: calendar._id }
+          );
+
+          // if uid was an email e.g. "xyz@google.com" then
+          // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+          if (!existingEvent && isEmail(eventId, { ignore_max_length: true })) {
+            // eslint-disable-next-line no-await-in-loop
+            existingEvent = await CalendarEvents.findOne(
+              this,
+              ctx.state.session,
+              {
+                eventId: eventId.replace('@', '_'),
+                calendar: calendar._id
+              }
+            );
+          }
+
+          if (existingEvent) {
+            existingEvent.ical = vc.toString();
+            // eslint-disable-next-line no-await-in-loop
+            await existingEvent.save();
+            continue;
+          }
+
+          if (!Array.isArray(eventIdToEvents[eventId]))
+            eventIdToEvents[eventId] = [];
           eventIdToEvents[eventId].push({
             eventId,
             calendar: calendar._id,
@@ -1080,25 +1137,26 @@ class CalDAV extends API {
           });
         }
 
-        const calendarEvents = await CalendarEvents.create(
-          this,
-          ctx.state.session,
-          events
-        );
+        if (events.length > 0) {
+          const calendarEvents = await CalendarEvents.create(
+            this,
+            ctx.state.session,
+            events
+          );
 
-        // already wrapped with try/catch
-        await Promise.all(
-          calendarEvents.map((calendarEvent) =>
-            this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
-          )
-        );
-
-        logger.debug('created events', {
-          calendarEvents,
-          principalId,
-          calendarId,
-          user
-        });
+          // already wrapped with try/catch
+          await Promise.all(
+            calendarEvents.map((calendarEvent) =>
+              this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
+            )
+          );
+          logger.debug('created events', {
+            calendarEvents,
+            principalId,
+            calendarId,
+            user
+          });
+        }
       }
 
       return calendar;
@@ -1132,6 +1190,11 @@ class CalDAV extends API {
       user
     });
 
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
     return CalendarEvents.find(this, ctx.state.session, {
       calendar: calendar._id
     });
@@ -1156,6 +1219,11 @@ class CalDAV extends API {
       principalId,
       user
     });
+
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
 
     // TODO: incorporate database date query instead of this in-memory filtering
     // TODO: we could do partial query for not recurring and b/w and then has recurring and after
@@ -1268,10 +1336,24 @@ class CalDAV extends API {
       user
     });
 
-    const event = await CalendarEvents.findOne(this, ctx.state.session, {
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
+    let event = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
       calendar: calendar._id
     });
+
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!event && isEmail(eventId, { ignore_max_length: true })) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
 
     return event;
   }
@@ -1294,6 +1376,11 @@ class CalDAV extends API {
       principalId,
       user
     });
+
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
 
     // check if there is an event with same calendar ID already
     const exists = await CalendarEvents.findOne(this, ctx.state.session, {
@@ -1417,32 +1504,46 @@ class CalDAV extends API {
       user
     });
 
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
     let e = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
       calendar: calendar._id
     });
 
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!e && isEmail(eventId, { ignore_max_length: true })) {
+      e = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
+
     //
     // NOTE: temporary logging to investigate pre-condition issue
     //
     if (ctx.get('if-none-match') === '*') {
-      console.error('~~~~~~~~ if-none-match ~~~~~~~');
-      console.error(
-        JSON.stringify(
-          {
-            url: ctx.url,
-            headers: ctx.headers,
-            eventId,
-            principalId,
-            calendarId,
-            username: ctx.state.user.username,
-            existingBody: e ? e.ical : false,
-            newBody: ctx.request.body
-          },
-          null,
-          2
-        )
+      const err = new TypeError('If none-match precondition issue');
+      err.data = JSON.stringify(
+        {
+          url: ctx.url,
+          headers: ctx.headers,
+          eventId,
+          principalId,
+          calendarId,
+          username: ctx.state.user.username,
+          existingBody: e ? e.ical : false,
+          newBody: ctx.request.body
+        },
+        null,
+        2
       );
+      err.isCodeBug = true;
+      logger.fatal(err);
     }
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));
@@ -1476,7 +1577,85 @@ class CalDAV extends API {
     return e;
   }
 
+  async deleteCalendar(ctx, { principalId, calendarId, user }) {
+    // , calendar
+    logger.debug('deleteCalendar', { principalId, calendarId, user });
+
+    const calendar = await this.getCalendar(ctx, {
+      calendarId,
+      principalId,
+      user
+    });
+
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
+    //
+    // email the user a backup of the calendar and its events
+    // (e.g. in case user accidentally deleted it)
+    //
+    const calendarEvents = await CalendarEvents.find(this, ctx.state.session, {
+      calendar: calendar._id
+    });
+
+    if (calendarEvents.length > 0) {
+      const ics = await this.buildICS(ctx, calendarEvents, calendar);
+
+      const [alias, domain] = await Promise.all([
+        // get alias (and populate user, which is required for Emails.queue method)
+        Aliases.findOne({ id: ctx.state.user.alias_id })
+          .populate('user')
+          .lean()
+          .exec(),
+        // get domain (and populate members, which is required for Emails.queue method)
+        Domains.findOne({ id: ctx.state.user.domain_id })
+          .populate(
+            'members.user',
+            `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+          )
+          .lean()
+          .exec()
+      ]);
+
+      await Emails.queue({
+        message: {
+          from: ctx.state.user.username,
+          to: ctx.state.user.username,
+          subject: i18n.translate(
+            'CALENDAR_DELETED_BACKUP',
+            ctx.locale,
+            calendar.name,
+            calendarEvents.length
+          ),
+          icalEvent: {
+            filename: 'calendar.ics',
+            content: ics
+          }
+        },
+        alias,
+        domain,
+        user: alias ? alias.user : undefined,
+        date: new Date(),
+        catchall: false,
+        isPending: false
+      });
+    }
+
+    // delete all events for this calendar
+    await CalendarEvents.deleteMany(this, ctx.state.session, {
+      calendar: calendar._id
+    });
+
+    // delete the calendar itself
+    await Calendars.deleteOne(this, ctx.state.session, {
+      _id: calendar._id
+    });
+  }
+
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {
+    // , calendar
     logger.debug('deleteEvent', { eventId, principalId, calendarId, user });
 
     const calendar = await this.getCalendar(ctx, {
@@ -1485,10 +1664,24 @@ class CalDAV extends API {
       user
     });
 
-    const event = await CalendarEvents.findOne(this, ctx.state.session, {
+    if (!calendar)
+      throw Boom.methodNotAllowed(
+        ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+      );
+
+    let event = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
       calendar: calendar._id
     });
+
+    // if uid was an email e.g. "xyz@google.com" then
+    // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
+    if (!event && isEmail(eventId, { ignore_max_length: true })) {
+      event = await CalendarEvents.findOne(this, ctx.state.session, {
+        eventId: eventId.replace('@', '_'),
+        calendar: calendar._id
+      });
+    }
 
     if (event) {
       // TODO: this should probably only happen if the delete was successful

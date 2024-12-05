@@ -348,6 +348,7 @@ class IMAPNotifier extends EventEmitter {
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/lib/imap-notifier.js#L368>
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/imap-core/lib/imap-connection.js#L364C46-L365>
   async releaseConnection(data, fn) {
+    // TODO: decrease # connections for this IP address
     if (!data?.session) return fn(null, true);
 
     // cleanup `WeakMap` instance
@@ -359,7 +360,7 @@ class IMAPNotifier extends EventEmitter {
       return fn(null, true);
 
     // decrease # connections for this alias (or domain if using catch-all)
-    const key = `connections_${config.env}:${
+    const key = `concurrent_imap_${config.env}:${
       data.session.user.alias_id || data.session.user.domain_id
     }`;
 

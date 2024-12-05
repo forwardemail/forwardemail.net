@@ -5,12 +5,14 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const punycode = require('node:punycode');
 
 const RE2 = require('re2');
 const _ = require('lodash');
 const ajc = require('array-join-conjunction');
 const ansiHTML = require('ansi-html-community');
 const arrayJoinConjunction = require('array-join-conjunction');
+const bytes = require('@forwardemail/bytes');
 const capitalize = require('capitalize');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
@@ -24,7 +26,6 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const numeral = require('numeral');
 const pluralize = require('pluralize');
-const prettyBytes = require('pretty-bytes');
 const prettyMilliseconds = require('pretty-ms');
 const shortID = require('mongodb-short-id');
 const splitLines = require('split-lines');
@@ -1231,7 +1232,6 @@ module.exports = {
   validator,
   ms,
   prettyMilliseconds,
-  prettyBytes,
   developerDocs,
   platforms,
   arrayJoinConjunction,
@@ -1240,5 +1240,7 @@ module.exports = {
   highlightWords,
   randomstring,
   useCases,
-  decrypt
+  decrypt,
+  punycode,
+  bytes
 };

@@ -6,24 +6,16 @@
 const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
-const isLocalhost = require('is-localhost-ip');
-const localhostUrl = require('localhost-url-regex');
-const pWaitFor = require('p-wait-for');
 const { boolean } = require('boolean');
 const isFQDN = require('is-fqdn');
 const { isEmail } = require('validator');
 
+const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
-
-// dynamically import private-ip
-let isPrivateIP;
-import('private-ip').then((obj) => {
-  isPrivateIP = obj.default;
-});
 
 // eslint-disable-next-line complexity
 async function isAllowlisted(val, client, resolver) {
@@ -35,11 +27,8 @@ async function isAllowlisted(val, client, resolver) {
   // check hard-coded truth source list
   if (config.truthSources.has(lowerCased)) return true;
 
-  if (!isPrivateIP) await pWaitFor(() => Boolean(isPrivateIP));
-
   // if it's localhost or local IP address then return early
-  if (localhostUrl().test(val) || isPrivateIP(val) || (await isLocalhost(val)))
-    return true;
+  if (isIP(val) && REGEX_LOCALHOST.test(val)) return true;
 
   // if it is a FQDN and ends with restricted domain
   if (

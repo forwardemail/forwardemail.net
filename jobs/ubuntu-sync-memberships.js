@@ -13,12 +13,15 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
+const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
+const sharedConfig = require('@ladjs/shared-config');
 
 const Users = require('#models/users');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const logger = require('#helpers/logger');
@@ -35,6 +38,13 @@ const graceful = new Graceful({
 
 graceful.listen();
 
+// TODO: re-use existing connection from web
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
+client.setMaxListeners(0);
+
+const resolver = createTangerine(client, logger);
+
 (async () => {
   await setupMongoose(logger);
 
@@ -43,7 +53,7 @@ graceful.listen();
   // and get an in-memory cache of ubuntu memberships
   //
   try {
-    const map = await getUbuntuMembersMap();
+    const map = await getUbuntuMembersMap(resolver);
 
     const ids = await Users.distinct('_id', {
       [config.passport.fields.ubuntuProfileID]: {

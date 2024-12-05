@@ -265,6 +265,7 @@ graceful.listen();
           }
 
           // email admins regarding this specific domain
+          /*
           if (list.length > 0)
             await emailHelper({
               template: 'alert',
@@ -280,6 +281,7 @@ graceful.listen();
                 )}</li></ul>`
               }
             });
+          */
         }
       }
 
@@ -295,6 +297,7 @@ graceful.listen();
         }
 
         // email admins regarding this specific domain
+        /*
         if (list.length > 0) {
           await emailHelper({
             template: 'alert',
@@ -320,6 +323,7 @@ graceful.listen();
 
           await p.exec();
         }
+        */
       }
 
       if (set.size === 0) continue;

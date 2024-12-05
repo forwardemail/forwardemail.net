@@ -20,13 +20,12 @@ const {
 //   heapdumpOnOOM: false
 // });
 
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 // const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const osu = require('node-os-utils');
-const prettyBytes = require('pretty-bytes');
 
 const env = require('#config/env');
 const logger = require('#helpers/logger');
@@ -97,7 +96,7 @@ async function check() {
       }
 
       const err = new TypeError(message);
-      err.memoryUsed = prettyBytes(memoryInfo.heapTotal);
+      err.memoryUsed = bytes(memoryInfo.heapTotal);
       err.memoryInfo = memoryInfo;
       logger.fatal(err);
 
@@ -118,7 +117,7 @@ async function check() {
         //   .then(() => {
         //     // alert admins
         //     const err = new TypeError(
-        //       `New snapshot created on ${HOSTNAME} (${IP_ADDRESS} for ${prettyBytes(
+        //       `New snapshot created on ${HOSTNAME} (${IP_ADDRESS} for ${bytes(
         //         memoryInfo.heapTotal
         //       )} heap size`
         //     );

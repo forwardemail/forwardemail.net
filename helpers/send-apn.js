@@ -5,9 +5,9 @@
 
 const crypto = require('node:crypto');
 
+const { setTimeout } = require('node:timers/promises');
 const apn = require('@parse/node-apn');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const ms = require('ms');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
@@ -91,7 +91,7 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
       await client.set(key, true, 'PX', ms('1m'));
 
       // artificial 10s delay
-      await delay(ms('10s'));
+      await setTimeout(ms('10s'));
 
       const note = createNote(obj, mailboxPath);
 
@@ -149,7 +149,8 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
           .exec();
 
         await pMap(
-          aliases.map(async (alias) => {
+          aliases,
+          async (alias) => {
             await Aliases.findByIdAndUpdate(alias._id, {
               $set: {
                 aps: alias.aps.filter(
@@ -160,13 +161,13 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
                 )
               }
             });
-          }),
+          },
           { concurrency: config.concurrency }
         );
       } else {
         // trigger sending the note again in another 20s
         // (just to be sure the device refreshes)
-        await delay(ms('20s'));
+        await setTimeout(ms('20s'));
         const note = createNote(obj, mailboxPath);
         provider
           .send(note, obj.device_token)

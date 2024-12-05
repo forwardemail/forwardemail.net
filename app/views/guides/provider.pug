@@ -22,7 +22,7 @@ block body
           li.list-inline-item
             if domain && domain.name
               form.ajax-form(
-                action=l(`/my-account/domains/${domain.name}/verify-records`),
+                action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
                 method="POST"
               )
                 button.btn.btn-success.btn-sm(type="submit")
@@ -174,7 +174,7 @@ block body
               span.d-none.d-md-inline= t(" and click ")
               if domain && domain.name
                 form.ajax-form.d-none.d-md-inline(
-                  action=l(`/my-account/domains/${domain.name}/verify-records`),
+                  action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
                   method="POST"
                 )
                   button.btn.btn-success.btn-sm.d-inline(type="submit")
@@ -357,7 +357,7 @@ block body
               a.alert-link(href=l("/faq#dns-configuration-options"))= t("See Options A to G in our FAQ")
             if domain && domain.name
               form.ajax-form(
-                action=l(`/my-account/domains/${domain.name}/verify-records`),
+                action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-records`),
                 method="POST"
               )
                 button.btn.btn-success.btn-lg.btn-block(type="submit")

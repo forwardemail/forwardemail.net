@@ -4,6 +4,7 @@
  */
 
 const os = require('node:os');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { createPublicKey, randomBytes, createHmac } = require('node:crypto');
 
@@ -13,7 +14,6 @@ const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
 const ip = require('ip');
-const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -26,11 +26,9 @@ const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { isEmail } = require('validator');
 const { isURL } = require('validator');
-const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const pkg = require('../package.json');
 
-const WKD = require('./wkd');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -46,8 +44,6 @@ const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const sendEmail = require('./send-email');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
-const isMessageEncrypted = require('#helpers/is-message-encrypted');
-const encryptMessage = require('#helpers/encrypt-message');
 const updateHeaders = require('#helpers/update-headers');
 
 const config = require('#config');
@@ -206,7 +202,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       );
 
     // create log
-    logger.info('email queued', meta);
+    logger.debug('email queued', meta);
 
     const message = await Emails.getMessage(email.message);
 
@@ -286,7 +282,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
               hardBounces.push(error.recipient);
 
-              logger.info('email created', {
+              logger.debug('email created', {
                 session: createSession(bounceEmail),
                 user: bounceEmail.user,
                 email: bounceEmail._id,
@@ -428,9 +424,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
       // set Message-ID header
       const messageId = data.headers.getFirst('message-id');
-      if (!messageId || messageId !== email.messageId) {
+      if (!messageId || messageId !== `<${email.messageId}>`) {
         data.headers.remove('message-id');
-        data.headers.add('Message-ID', email.messageId);
+        data.headers.add('Message-ID', `<${email.messageId}>`);
       }
 
       // set Date header
@@ -582,6 +578,47 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     // verify Return-Path (enforces domain reputation)
     if (srsDomain !== returnPath) {
+      //
+      // NOTE: this indicates typically an outbound SMTP configuration issue
+      //       (as a courtesy send this once a week to the user on a per-domain basis)
+      //
+      const cache = await client.get(`return_path_check:${domain.id}`);
+      if (!cache) {
+        await client.set(
+          `return_path_check:${domain.id}`,
+          true,
+          'PX',
+          ms('7d')
+        );
+        // send an email to all admins of the domain
+        const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+        const subject = i18n.translate(
+          'RETURN_PATH_ERROR_SUBJECT',
+          obj.locale,
+          domain.name
+        );
+        const message = i18n.translate(
+          'RETURN_PATH_ERROR_MESSAGE',
+          obj.locale,
+          domain.name,
+          `${config.urls.web}/${
+            obj.locale
+          }/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
+        );
+        // TODO: if error occurs then unset cache
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: obj.to,
+            subject
+          },
+          locals: {
+            message,
+            locale: obj.locale
+          }
+        });
+      }
+
       const err = Boom.badRequest(i18n.translateError('INVALID_RETURN_PATH'));
       err.returnPathResults = returnPathResults;
       err.srsDomain = srsDomain;
@@ -698,7 +735,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
     //
     // accepted [String]
-    // rejected [String]
     // rejectedErrors [Object] (an Array of Objects which were parsed Errors via `parse-err`)
     //
     // - [x] filter out recipients already accepted
@@ -713,7 +749,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const map = new Map();
     for (const to of envelope.to) {
       // filter out recipients already accepted
-      if (Array.isArray(email.accepted) && email.accepted.includes(to))
+      if (
+        Array.isArray(email.accepted) &&
+        email.accepted.includes(to.toLowerCase())
+      )
         continue;
 
       // filter out recipients that have 5xx errors and were already rejected
@@ -745,7 +784,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //       is already accepted it will mark the email as being sent
       //
       if (
-        email.accepted.sort().join(',') === email.envelope.to.sort().join(',')
+        email.accepted.sort().join(',') ===
+        email.envelope.to
+          .map((s) => s.toLowerCase())
+          .sort()
+          .join(',')
       ) {
         await Emails.findByIdAndUpdate(email._id, {
           $set: {
@@ -777,26 +820,13 @@ async function processEmail({ email, port = 25, resolver, client }) {
       addresses.push(...map.get(target));
     }
 
-    // check if the message was encrypted already
-    let isEncrypted = false;
-    try {
-      isEncrypted = isMessageEncrypted(raw);
-    } catch (err) {
-      logger.fatal(err, {
-        user: email.user,
-        email: email._id,
-        domains: [email.domain],
-        session: createSession(email)
-      });
-    }
-
     let results = [];
     if (addresses.length > 0)
       results = await pMap(
         addresses,
-        // eslint-disable-next-line complexity
+
         async (address) => {
-          const to = [address];
+          const to = address.toLowerCase();
           const target = address.split('@')[1];
           //
           // check if exists for domain being blocked
@@ -821,42 +851,47 @@ async function processEmail({ email, port = 25, resolver, client }) {
 
           try {
             //
-            // NOTE: check `target` against recently blocked domains and if so then retry later
-            //       (this gives postmasters like Outlook and Gmail a back-off period)
-            //       (and gives opportunity for another server to try sending it)
+            // if target is our own service then ignore
             //
-            const isRecentlyBlocked = await Emails.exists({
-              updated_at: {
-                $gte: dayjs().subtract(1, 'hour').toDate(),
-                $lte: new Date()
-              },
-              has_blocked_hashes: true,
-              blocked_hashes: {
-                $in: getBlockedHashes(IP_ADDRESS)
-              },
-              rejectedErrors: {
-                $elemMatch: {
-                  date: {
-                    $gte: dayjs().subtract(1, 'hour').toDate(),
-                    $lte: new Date()
-                  },
-                  target,
-                  'bounceInfo.category': 'blocklist',
-                  'mx.localAddress': IP_ADDRESS
+            if (target !== env.WEB_HOST) {
+              //
+              // NOTE: check `target` against recently blocked domains and if so then retry later
+              //       (this gives postmasters like Outlook and Gmail a back-off period)
+              //       (and gives opportunity for another server to try sending it)
+              //
+              const isRecentlyBlocked = await Emails.exists({
+                updated_at: {
+                  $gte: dayjs().subtract(1, 'hour').toDate(),
+                  $lte: new Date()
+                },
+                has_blocked_hashes: true,
+                blocked_hashes: {
+                  $in: getBlockedHashes(IP_ADDRESS)
+                },
+                rejectedErrors: {
+                  $elemMatch: {
+                    date: {
+                      $gte: dayjs().subtract(1, 'hour').toDate(),
+                      $lte: new Date()
+                    },
+                    target,
+                    'bounceInfo.category': 'blocklist',
+                    'mx.localAddress': IP_ADDRESS
+                  }
                 }
-              }
-            });
+              });
 
-            if (isRecentlyBlocked) {
-              const err = Boom.badRequest(
-                i18n.translateError(
-                  'RECENTLY_BLOCKED',
-                  i18n.config.defaultLocale,
-                  target
-                )
-              );
-              err.is_recently_blocked = true;
-              throw err;
+              if (isRecentlyBlocked) {
+                const err = Boom.badRequest(
+                  i18n.translateError(
+                    'RECENTLY_BLOCKED',
+                    i18n.config.defaultLocale,
+                    target
+                  )
+                );
+                err.is_recently_blocked = true;
+                throw err;
+              }
             }
 
             const options = {
@@ -875,134 +910,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
               client
             };
 
-            //
-            // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
-            //       (e.g. when it arrives at the destination mail server, it is already encrypted)
-            //
-            let pgp = false;
-            // TODO: cache the responses below
-            if (!isEncrypted) {
-              try {
-                logger.info('address', { address });
-
-                const wkd = new WKD(resolver);
-
-                // TODO: pending PR in wkd-client package
-                // <https://github.com/openpgpjs/wkd-client/issues/3>
-                // <https://github.com/openpgpjs/wkd-client/pull/4>
-                const binaryKey = await wkd.lookup({
-                  email: address
-                });
-
-                // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
-                // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
-                const str = new TextDecoder().decode(binaryKey);
-                if (str && isHTML(str))
-                  throw new Error('Invalid WKD lookup HTML result');
-
-                logger.info('binaryKey', { binaryKey });
-
-                const publicKey = await readKey({
-                  binaryKey
-                });
-
-                if (publicKey) {
-                  try {
-                    const encryptedUnsignedMessage = await encryptMessage(
-                      publicKey,
-                      unsigned,
-                      false
-                    );
-                    const signResult = await dkimSign(
-                      encryptedUnsignedMessage,
-                      {
-                        canonicalization: 'relaxed/relaxed',
-                        algorithm: 'rsa-sha256',
-                        signTime: new Date(),
-                        signatureData: [
-                          {
-                            signingDomain: domain.name,
-                            selector: domain.dkim_key_selector,
-                            privateKey: decrypt(domain.dkim_private_key),
-                            algorithm: 'rsa-sha256',
-                            canonicalization: 'relaxed/relaxed'
-                          }
-                        ]
-                      }
-                    );
-
-                    if (signResult.errors.length > 0) {
-                      const err = combineErrors(
-                        signResult.errors.map((error) => error.err)
-                      );
-                      // we may want to remove cyclical reference
-                      // for (const error of signResult.errors) {
-                      //   delete error.err;
-                      // }
-                      err.signResult = signResult;
-                      throw err;
-                    }
-
-                    const signatures = Buffer.from(
-                      signResult.signatures,
-                      'utf8'
-                    );
-                    options.raw = Buffer.concat(
-                      [signatures, encryptedUnsignedMessage],
-                      signatures.length + encryptedUnsignedMessage.length
-                    );
-                    pgp = true;
-                  } catch (err) {
-                    logger.fatal(err, {
-                      user: email.user,
-                      email: email._id,
-                      domains: [email.domain],
-                      session: createSession(email)
-                    });
-                  }
-                }
-              } catch (err) {
-                if (
-                  err.message === 'fetch failed' ||
-                  err.message.includes('Direct WKD lookup failed')
-                ) {
-                  logger.debug(err, {
-                    user: email.user,
-                    email: email._id,
-                    domains: [email.domain],
-                    session: createSession(email)
-                  });
-                } else {
-                  logger.fatal(err, {
-                    user: email.user,
-                    email: email._id,
-                    domains: [email.domain],
-                    session: createSession(email)
-                  });
-                }
-                /*
-                // rudimentary logging for admins to see how well the `keys.openpgp.org` servers hold up
-                if (
-                  !err.message.includes('NotFound') &&
-                  !err.message.includes('Gone') &&
-                  !isRetryableError(err)
-                )
-                  err.isCodeBug = true;
-                if (err.isCodeBug)
-                  logger.error(err, {
-                    user: email.user,
-                    email: email._id,
-                    domains: [email.domain],
-                    session: createSession(email)
-                  });
-                */
-              }
-            }
-
-            logger.debug('sending email', { options, pgp });
-            const info = await sendEmail(options);
-            logger.debug('sent email', { info, pgp });
-            info.pgp = pgp;
+            const info = await sendEmail(options, email, domain);
+            logger.debug('sent email', {
+              info,
+              options: _.omit(options, ['raw', 'session']),
+              session: options.session
+            });
             return info;
           } catch (err) {
             // log the error (dups will be removed)
@@ -1104,15 +1017,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
               throw error;
             }
 
+            const rejectedErrors = [];
+            const error = parseErr(err);
+            error.recipient = to;
+            error.date = new Date();
+            rejectedErrors.push(error);
+
             return {
               accepted: [],
               rejected: to,
-              rejectedErrors: to.map((recipient) => {
-                const error = parseErr(err);
-                error.recipient = recipient;
-                error.date = new Date();
-                return error;
-              })
+              rejectedErrors
             };
           }
         },
@@ -1126,7 +1040,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // TODO: check against silent ban and denylist (to wherever we're sending)
 
     meta.results = results;
-    logger.info('sent email', meta);
+    logger.debug('sent email', meta);
 
     // go through the results and determine which were accepted, rejected, or deferred
     const accepted = new Set();
@@ -1265,7 +1179,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
           response: error.response,
           response_code: error.responseCode,
           truth_source: error.truthSource,
-          bounce: getBounceInfo(error)
+          bounce: getBounceInfo(error),
+          headers: email.headers,
+          bounced_at:
+            typeof error.date !== 'undefined' && _.isDate(new Date(error.date))
+              ? new Date(error.date).toISOString()
+              : new Date().toISOString()
         });
         // dummyproofing
         const url = domain.bounce_webhook
@@ -1283,10 +1202,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
           },
           body,
           timeout: ms('5s'),
-          retries: 1
+          retries: 1,
+          resolver
         });
         // consume body
-        if (!response?.signal?.aborted) await response.body.dump();
+        if (
+          !response?.signal?.aborted &&
+          typeof response?.body?.dump === 'function'
+        )
+          await response.body.dump();
       })
         .then()
         .catch(async (err) => {
@@ -1313,7 +1237,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   domain.bounce_webhook
                 ) +
                 `<pre><code>${JSON.stringify(
-                  parseErr(err),
+                  _.omit(parseErr(err), 'stack'),
                   null,
                   2
                 )}</code></pre>`;
@@ -1380,7 +1304,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
             if (code < 500) softBounces.push(error.recipient);
             else hardBounces.push(error.recipient);
 
-            logger.info('email created', {
+            logger.debug('email created', {
               session: createSession(bounceEmail),
               user: bounceEmail.user,
               email: bounceEmail._id,

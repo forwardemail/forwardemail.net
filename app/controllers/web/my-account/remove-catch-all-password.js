@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
@@ -43,7 +45,7 @@ async function removeCatchAllPassword(ctx) {
     });
 
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${domain.name}/advanced-settings`
+      `/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`
     );
     if (ctx.accepts('html')) {
       ctx.redirect(redirectTo);
@@ -56,7 +58,9 @@ async function removeCatchAllPassword(ctx) {
     ctx.logger.fatal(err);
     ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/advanced-settings`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

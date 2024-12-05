@@ -16,12 +16,11 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
-const prettyBytes = require('pretty-bytes');
 const { getDirSize } = require('fast-dir-size');
 
 const config = require('#config');
@@ -51,7 +50,7 @@ graceful.listen();
     //
     const size = await getDirSize(TMP_DIR);
     if (size >= bytes('5GB')) {
-      const subject = `${TMP_DIR} on ${os.hostname()} (${IP_ADDRESS}) is ${prettyBytes(
+      const subject = `${TMP_DIR} on ${os.hostname()} (${IP_ADDRESS}) is ${bytes(
         size
       )}`;
       emailHelper({

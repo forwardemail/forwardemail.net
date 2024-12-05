@@ -10,7 +10,7 @@ const path = require('node:path');
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const consolidate = require('@ladjs/consolidate');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -18,8 +18,11 @@ const manifestRev = require('manifest-rev');
 const ms = require('ms');
 const nodemailer = require('nodemailer');
 const tlds = require('tlds');
+const splitLines = require('split-lines');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
+
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 
 const pkg = require('../package');
 const env = require('./env');
@@ -70,19 +73,26 @@ const imapConfigurations = [
 
   // Microsoft Outlook/Hotmail
   // <https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-8361e398-8af4-4e97-b147-6c6c4ac95353>
-  {
-    name: 'Outlook/Hotmail',
-    forwarder: env.TTI_OUTLOOK_FORWARDER,
-    config: {
-      host: 'outlook.office365.com',
-      port: 993,
-      secure: true,
-      auth: {
-        user: env.TTI_OUTLOOK_IMAP_USER,
-        pass: env.TTI_OUTLOOK_IMAP_PASS
-      }
-    }
-  },
+  //
+  // NOTE: temporarily removing because Outlook is trash, their captcha codes nonsense, blocking VPN, slow to load, and blocking valid logins
+  //
+  // {
+  //   name: 'Outlook/Hotmail',
+  //   forwarder: env.TTI_OUTLOOK_FORWARDER,
+  //   config: {
+  //     host:
+  //       typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
+  //       env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
+  //         ? 'imap-mail.outlook.com'
+  //         : 'outlook.office365.com',
+  //     port: 993,
+  //     secure: true,
+  //     auth: {
+  //       user: env.TTI_OUTLOOK_IMAP_USER,
+  //       pass: env.TTI_OUTLOOK_IMAP_PASS
+  //     }
+  //   }
+  // },
 
   // iCloud/Me
   // <https://support.apple.com/en-us/102525>
@@ -190,10 +200,6 @@ const POSTMASTER_USERNAMES = new Set([
   'bounce-notification',
   'bounce-notifications',
   'bounces',
-  'e-bounce',
-  'ebounce',
-  'host-master',
-  'host.master',
   'hostmaster',
   'localhost',
   'mail-daemon',
@@ -205,16 +211,8 @@ const POSTMASTER_USERNAMES = new Set([
   'mailerdaemon',
   'post-master',
   'post.master',
-  'postmaster'
-  // NOTE: excluding these because we try to go by SAFE MODE
-  // <https://www.backscatterer.org/?target=usage>
-  // 'www',
-  // 'www-data'
-  // 'root',
-  // 'abuse',
-  // 'admin',
-  // 'admini',
-  // ...noReplyList
+  'postmaster',
+  ...noReplyList
 ]);
 
 const config = {
@@ -226,7 +224,8 @@ const config = {
     privateKey: isSANB(env.DKIM_PRIVATE_KEY_PATH)
       ? fs.readFileSync(env.DKIM_PRIVATE_KEY_PATH, 'utf8')
       : isSANB(env.DKIM_PRIVATE_KEY_VALUE)
-      ? env.DKIM_PRIVATE_KEY_VALUE
+      ? // GitHub CI may convert \n to \\n in env var rendering
+        splitLines(env.DKIM_PRIVATE_KEY_VALUE.replace(/\\n/g, '\n')).join('\n')
       : undefined,
     algorithm: 'rsa-sha256',
     canonicalization: 'relaxed/relaxed'
@@ -249,7 +248,7 @@ const config = {
     'SQLITE_BUSY_TIMEOUT',
     'SQLITE_LOCKED'
   ]),
-  INITIAL_DB_SIZE: 196608, // 200704,
+  INITIAL_DB_SIZE: 204800, // 196608, // 200704,
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',
   returnPath: 'fe-bounces',
@@ -268,6 +267,7 @@ const config = {
     from: env.TWILIO_FROM_NUMBER,
     to: env.TWILIO_TO_NUMBER
   },
+  smtpMessageMaxSize: env.SMTP_MESSAGE_MAX_SIZE,
   defaultModulusLength: 1024,
   defaultStoragePath: env.SQLITE_STORAGE_PATH,
   // 100 items (50 MB * 100 = 5000 MB = 5 GB)
@@ -292,7 +292,8 @@ const config = {
       skipHtmlToText: true,
       skipTextLinks: true,
       skipTextToHtml: true,
-      maxHtmlLengthToParse: bytes('50MB')
+      skipImageLinks: true,
+      maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
     },
     returnHTML: true
   },
@@ -310,7 +311,18 @@ const config = {
       : []
   ),
 
+  ignoredSelfTestDomains: new Set(
+    _.isArray(env.IGNORED_SELF_TEST_DOMAINS)
+      ? env.IGNORED_SELF_TEST_DOMAINS.map((key) => key.toLowerCase().trim())
+      : isSANB(env.IGNORED_SELF_TEST_DOMAINS)
+      ? env.IGNORED_SELF_TEST_DOMAINS.split(',').map((key) =>
+          key.toLowerCase().trim()
+        )
+      : []
+  ),
+
   fingerprintPrefix: 'f',
+  fingerprintTTL: ms('7d'),
 
   denylist: new Set(
     _.isArray(env.DENYLIST)
@@ -424,7 +436,11 @@ const config = {
       openSimulator: false,
       simpleParser: {
         Iconv,
-        maxHtmlLengthToParse: bytes('50MB')
+        skipHtmlToText: true,
+        skipTextLinks: true,
+        skipTextToHtml: true,
+        skipImageLinks: true,
+        maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
       }
     },
     subjectPrefix: `${env.APP_NAME} – `,
@@ -559,6 +575,7 @@ const config = {
     paypalPayerID: 'paypal_payer_id',
     paypalSubscriptionID: 'paypal_subscription_id',
     defaultDomain: 'default_domain',
+    domainCount: 'domain_count',
     companyName: 'company_name',
     addressLine1: 'address_line1',
     addressLine2: 'address_line2',
@@ -1425,6 +1442,7 @@ const config = {
     'org',
     'pl',
     'pr',
+    'pt',
     'pw',
     'rs',
     'sc',
@@ -1507,6 +1525,7 @@ config.alternatives = alternatives;
 
 // add selective `config` object to be used by views
 config.views.locals.config = _.pick(config, [
+  'smtpMessageMaxSize',
   'alternatives',
   'smtpLimitMessages',
   'smtpLimitDuration',
@@ -1538,19 +1557,15 @@ config.views.locals.config = _.pick(config, [
   'metaTitleAffix',
   'modulusLength',
   'openPGPKey',
-  'ubuntuTeamMapping'
+  'ubuntuTeamMapping',
+  'maxQuotaPerAlias'
 ]);
 
 // <https://nodemailer.com/transports/>
 // <https://github.com/nodemailer/nodemailer/pull/1539>
 config.email.transport = nodemailer.createTransport({
-  host: env.SMTP_TRANSPORT_HOST,
-  port: env.SMTP_TRANSPORT_PORT,
-  secure: env.SMTP_TRANSPORT_SECURE,
-  auth: {
-    user: env.SMTP_TRANSPORT_USER,
-    pass: env.SMTP_TRANSPORT_PASS
-  },
+  streamTransport: true,
+  buffer: false,
   logger,
   debug: boolean(env.TRANSPORT_DEBUG)
 });

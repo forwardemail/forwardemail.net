@@ -18,6 +18,13 @@ const REGEX_DENYLIST = new RE2(/denylist|deny\s+list/im);
 const REGEX_BLACKLIST = new RE2(/blacklist|black\s+list/im);
 const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
 
+//
+// NOTE: we have access to `err.truthSource` if needed here
+//       (e.g. google.com, qq.com, is the value)
+//       but note we don't need to rely on it because we only
+//       take action if a given `truthSource` value actually exists
+//
+
 // eslint-disable-next-line complexity
 function getBounceInfo(err) {
   //
@@ -47,7 +54,7 @@ function getBounceInfo(err) {
   if (
     bounceInfo.message === 'Unknown' ||
     (bounceInfo.action === 'reject' &&
-      ['blocklist', 'policy', 'message', 'block', 'other'].includes(
+      ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
         bounceInfo.category
       ))
   ) {
@@ -68,7 +75,9 @@ function getBounceInfo(err) {
     // <https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror>
   }
 
-  if (response.includes('Connection dropped due to SocketError')) {
+  if (response.includes('Comcast block for spam')) {
+    bounceInfo.category = 'blocklist';
+  } else if (response.includes('Connection dropped due to SocketError')) {
     // modify message to include URL for debugging
     err.message +=
       ' ; Resolve this issue by visiting https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror#cause ;';
@@ -80,6 +89,80 @@ function getBounceInfo(err) {
       ' ; Resolve this issue by visiting https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/configure-proofpoint-with-exchange#specify-a-limit-for-the-number-of-messages-per-connection ;';
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
+  } else if (err.truthSource === '163.com' && response.includes('DT:SPM')) {
+    bounceInfo.category = 'spam';
+  } else if (err.truthSource === 'orange.fr' && response.includes('[506]')) {
+    // <https://github.com/sisimai/p5-Sisimai/issues/243>
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'qq.com' &&
+    (response.includes('mailbox unavailable') ||
+      response.includes('Access denied') ||
+      (response.includes('550 recipient') && response.includes('denied')))
+  ) {
+    bounceInfo.category = 'recipient';
+  } else if (err.truthSource && response.includes('Too many emails')) {
+    bounceInfo.category = 'greylist';
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Suspected bounce attacks')
+  ) {
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'qq.com' &&
+    response.includes('Mail is rejected by recipients')
+  ) {
+    bounceInfo.category = 'blocklist';
+  } else if (
+    err.truthSource === 'yahoodns.net' &&
+    response.includes('mailbox is disabled')
+  ) {
+    bounceInfo.category = 'recipient';
+  } else if (
+    err.truthSource === 'secureserver.net' &&
+    response.includes('judged to be spam')
+  ) {
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'secureserver.net' &&
+    response.includes('Recipient not found')
+  ) {
+    bounceInfo.category = 'recipient';
+  } else if (
+    err.truthSource === 'synchronoss.net' &&
+    response.includes('Resources restricted')
+  ) {
+    bounceInfo.category = 'blocklist';
+  } else if (
+    err.truthSource === 'yandex.net' &&
+    response.includes('No such user')
+  ) {
+    bounceInfo.category = 'recipient';
+  } else if (
+    response.includes('RFC') &&
+    (response.includes('compliance') || response.includes('complaint'))
+  ) {
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('this message exceeded its quota') &&
+    response.includes('messages with the same Message-ID')
+  ) {
+    // Gmail has detected this message exceeded its quota for sending
+    // ...
+    // messages with the same Message-ID
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('originating from your DKIM') &&
+    response.includes('temporarily rate limited')
+  ) {
+    bounceInfo.category = 'spam';
+  } else if (
+    err.truthSource === 'google.com' &&
+    response.includes('very low reputation')
+  ) {
+    bounceInfo.category = 'spam';
   } else if (
     response.includes('Your IP subnet has been temporarily deferred')
   ) {

@@ -3,16 +3,28 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
+
 const _ = require('lodash');
+const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
+const { dkimSign } = require('mailauth/lib/dkim/sign');
+const { isEmail } = require('validator');
+const { readKey } = require('openpgp/dist/node/openpgp.js');
 
+const WKD = require('./wkd');
+const encryptMessage = require('./encrypt-message');
 const getTransporter = require('./get-transporter');
+const isMessageEncrypted = require('./is-message-encrypted');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
 const shouldThrow = require('./should-throw');
+const combineErrors = require('./combine-errors');
+const { decrypt } = require('./encrypt-decrypt');
+const createSession = require('./create-session');
 
 const config = require('#config');
 
@@ -21,18 +33,143 @@ const config = require('#config');
 // TODO: similarly we need to store this for rejectedErrors so we can see details of error raw message (and end users can too)
 //
 
-async function sendEmail({
-  session,
-  cache,
-  target,
-  port = 25,
-  envelope,
-  raw,
-  localAddress,
-  localHostname,
-  resolver,
-  client
-}) {
+// eslint-disable-next-line complexity
+async function sendEmail(
+  {
+    session,
+    cache,
+    target,
+    port = 25,
+    envelope,
+    raw,
+    resolver,
+    client,
+    publicKey
+  },
+  email,
+  domain
+) {
+  if (
+    !_.isObject(envelope) ||
+    typeof envelope.to !== 'string' ||
+    !isEmail(envelope.to, { allow_ip_domain: true, ignore_max_length: true })
+  )
+    throw new TypeError('Envelope to missing or not a single email');
+
+  // check if the message was encrypted already
+  let isEncrypted = false;
+  try {
+    isEncrypted = isMessageEncrypted(raw);
+  } catch (err) {
+    err.isCodeBug = true;
+    logger.fatal(err, { session });
+  }
+
+  //
+  // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
+  //       (e.g. when it arrives at the destination mail server, it is already encrypted)
+  //
+  let pgp = false;
+  if (!isEncrypted) {
+    try {
+      if (!publicKey) {
+        const wkd = new WKD(resolver, client);
+
+        // TODO: pending PR in wkd-client package
+        // <https://github.com/openpgpjs/wkd-client/issues/3>
+        // <https://github.com/openpgpjs/wkd-client/pull/4>
+        const binaryKey = await wkd.lookup({
+          email: envelope.to
+        });
+
+        //
+        // TODO: we may not want to do isHTML check (?) see comment in GH discussion
+        //
+
+        // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
+        // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
+        const str = new TextDecoder().decode(binaryKey);
+        if (str && isHTML(str))
+          throw new Error('Invalid WKD lookup HTML result');
+
+        logger.info('binaryKey', { binaryKey });
+
+        publicKey = await readKey({
+          binaryKey
+        });
+      }
+
+      if (publicKey) {
+        try {
+          const encryptedUnsignedMessage = await encryptMessage(
+            publicKey,
+            raw,
+            false
+          );
+          const signResult = await dkimSign(encryptedUnsignedMessage, {
+            canonicalization: 'relaxed/relaxed',
+            algorithm: 'rsa-sha256',
+            signTime: new Date(),
+            signatureData: domain
+              ? [
+                  {
+                    signingDomain: domain.name,
+                    selector: domain.dkim_key_selector,
+                    privateKey: decrypt(domain.dkim_private_key),
+                    algorithm: 'rsa-sha256',
+                    canonicalization: 'relaxed/relaxed'
+                  }
+                ]
+              : [config.signatureData]
+          });
+
+          if (signResult.errors.length > 0) {
+            const err = combineErrors(
+              signResult.errors.map((error) => error.err)
+            );
+            // we may want to remove cyclical reference
+            // for (const error of signResult.errors) {
+            //   delete error.err;
+            // }
+            err.signResult = signResult;
+            throw err;
+          }
+
+          const signatures = Buffer.from(signResult.signatures, 'utf8');
+          raw = Buffer.concat(
+            [signatures, encryptedUnsignedMessage],
+            signatures.length + encryptedUnsignedMessage.length
+          );
+          pgp = true;
+        } catch (err) {
+          logger.fatal(
+            err,
+            email
+              ? {
+                  user: email.user,
+                  email: email._id,
+                  domains: [email.domain],
+                  session: createSession(email)
+                }
+              : undefined
+          );
+        }
+      }
+    } catch (err) {
+      logger.debug(
+        err,
+        email
+          ? {
+              user: email.user,
+              email: email._id,
+              domains: [email.domain],
+              session: createSession(email)
+            }
+          : undefined
+      );
+    }
+  }
+
   //
   // if we're in development mode then use preview-email to render queue processing
   //
@@ -64,8 +201,6 @@ async function sendEmail({
     } = await getTransporter({
       target,
       port,
-      localAddress,
-      localHostname,
       resolver,
       logger,
       cache,
@@ -81,10 +216,13 @@ async function sendEmail({
 
     // TODO: handle transporter cleanup
     // TODO: handle mx socket close
+
     const info = await transporter.sendMail({
       envelope,
       raw
     });
+
+    info.pgp = pgp;
 
     return info;
   } catch (err) {
@@ -98,9 +236,9 @@ async function sendEmail({
     err.target = target;
     err.port = port;
     err.envelope = envelope;
+    err.truthSource = session.truthSource; // necessary for bounce parsing
 
     // TODO: clean this up (shouldn't be mirrored to `err` probably?)
-    err.truthSource = session.truthSource;
     err.mx = session.mx;
     err.requireTLS = session.requireTLS;
     err.ignoreTLS = session.ignoreTLS;
@@ -156,8 +294,6 @@ async function sendEmail({
             mxLastError,
             target,
             port,
-            localAddress,
-            localHostname,
             resolver,
             logger,
             cache,
@@ -180,6 +316,8 @@ async function sendEmail({
           envelope,
           raw
         });
+
+        info.pgp = pgp;
 
         return info;
       } catch (err) {

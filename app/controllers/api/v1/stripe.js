@@ -3,22 +3,24 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const pMapSeries = require('p-map-series');
 const titleize = require('titleize');
 
 const { Users, Domains } = require('#models');
 const config = require('#config');
 const env = require('#config/env');
-const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const emailHelper = require('#helpers/email');
+const logger = require('#helpers/logger');
+const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const { STRIPE_PRODUCTS } = config.payments;
@@ -30,6 +32,107 @@ async function processEvent(ctx, event) {
   // <https://stripe.com/docs/cli/trigger#trigger-event>
   //
   switch (event.type) {
+    //
+    // NOTE: due to unprecedented Stripe credit card fraud (which Stripe has refused to help mitigate)
+    //       we've implemented our own logic here to prevent fraud (user's doing client-side attacks with generated numbers)
+    //       <https://docs.stripe.com/disputes/prevention/card-testing>
+    //
+    // prevent fraud by checking for users with 5+ failed charges in < 30 days
+    // with zero verified domains on their account and/or unverified email address
+    // ban user and notify admins, and refund all other charges from them
+    //
+    case 'charge.failed': {
+      // exit early if it wasn't a charge failure
+      if (event?.data?.object?.object !== 'charge') break;
+      if (typeof event?.data?.object?.customer !== 'string')
+        throw new Error('Charge did not have customer');
+      const user = await Users.findOne({
+        [config.userFields.stripeCustomerID]: event.data.object.customer
+      });
+      if (!user) throw new Error('User did not exist for customer');
+      // <https://docs.stripe.com/api/charges/list>
+      const charges = await stripe.charges.list({
+        customer: event.data.object.customer,
+        created: {
+          gte: dayjs().subtract(1, 'month').unix() // only search last 30 days to prevent false positives
+        }
+      });
+
+      const filtered = charges.data.filter(
+        (d) => d.status === 'failed' && d.failure_code === 'card_declined'
+      );
+
+      // if not more than 5 then return early
+      if (filtered.length < 5) break;
+
+      // TODO: we may want to use payment methods count here too instead of just failed charges
+      //       (see `jobs/stripe/fraud-check.js` which uses this approach on a recurring basis)
+
+      // if user had verified domains then alert admins
+      // otherwise ban the user and refund all their payments
+      const count = await Domains.countDocuments({
+        members: {
+          $elemMatch: {
+            user: user._id,
+            group: 'admin'
+          }
+        },
+        plan: { $in: ['enhanced_protection', 'team'] },
+        has_txt_record: true
+      });
+
+      const subject = `${user.email} - ${event.data.object.customer} - ${filtered.length} declined charges and ${count} verified domains`;
+
+      emailHelper({
+        template: 'alert',
+        message: {
+          to: config.email.message.from,
+          subject: `${
+            count > 0
+              ? 'Potential Fraud to Investigate'
+              : 'Banned User for Fraud Alert'
+          }: ${subject}`
+        },
+        locals: {
+          message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+        }
+      })
+        .then()
+        .catch((err) => logger.fatal(err));
+
+      if (count === 0) {
+        user.is_banned = true;
+        await user.save();
+
+        const [charges, subscriptions] = await Promise.all([
+          stripe.charges.list({
+            customer: event.data.object.customer
+          }),
+          stripe.subscriptions.list({
+            customer: event.data.object.customer
+          })
+        ]);
+
+        // refund all payments as fraudulent
+        if (charges?.data?.length > 0)
+          await pMapSeries(charges.data, async (charge) => {
+            if (charge.status !== 'succeeded' || charge.paid !== true) return;
+            await stripe.refunds.create({
+              charge: charge.id
+            });
+          });
+
+        // cancel all subscriptions
+        if (subscriptions?.data?.length > 0)
+          await pMapSeries(subscriptions.data, async (subscription) => {
+            if (subscription.status !== 'canceled') return;
+            await stripe.subscriptions.cancel(subscription.id);
+          });
+      }
+
+      break;
+    }
+
     // create or update existing payment
     // (we may also want to upgrade plan; e.g. in case redirect does not occur)
     // (also need to ensure no conflicts with redirect)
@@ -325,7 +428,7 @@ async function processEvent(ctx, event) {
       });
       if (!user) throw new Error('User did not exist for customer');
       // artificially wait 5s for refund to process
-      await delay(ms('15s'));
+      await setTimeout(ms('15s'));
       //
       // NOTE: this re-uses the payment intent mapper that is also used
       //       in the job for `sync-stripe-payments` which syncs payments
@@ -387,18 +490,39 @@ async function processEvent(ctx, event) {
       // event.data.object is a subscription object
       if (event.data.object.object !== 'subscription')
         throw new Error('Event object was not a subscription');
-      const subscription = event.data.object;
-      if (['active', 'trialing'].includes(subscription.status))
+      if (['active', 'trialing'].includes(event.data.object.status))
         await Users.findOneAndUpdate(
           {
-            [config.userFields.stripeCustomerID]: subscription.customer
+            [config.userFields.stripeCustomerID]: event.data.object.customer
           },
           {
             $set: {
-              [config.userFields.stripeSubscriptionID]: subscription.id
+              [config.userFields.stripeSubscriptionID]: event.data.object.id
             }
           }
         );
+      // if user had more than one subscription then notify admins by email
+      const subscriptions = await stripe.subscriptions.list({
+        customer: event.data.object.customer
+      });
+      const filtered = subscriptions.data.filter(
+        (s) => s.status !== 'canceled'
+      );
+      if (filtered.length > 1) {
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `Multiple Subscriptions Detected: ${event.data.object.customer}`
+          },
+          locals: {
+            message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+          }
+        })
+          .then()
+          .catch((err) => logger.fatal(err));
+      }
+
       break;
     }
 

@@ -15,10 +15,12 @@
 
 const { Buffer } = require('node:buffer');
 
+const _ = require('lodash');
 const intoStream = require('into-stream');
+const ms = require('ms');
+const pRetry = require('p-retry');
 const pify = require('pify');
 const revHash = require('rev-hash');
-const _ = require('lodash');
 const { Builder } = require('json-sql');
 
 const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
@@ -30,6 +32,8 @@ const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 //
 
 const Attachments = require('#models/attachments');
+const logger = require('#helpers/logger');
+const isRetryableError = require('#helpers/is-retryable-error');
 const { syncConvertResult } = require('#helpers/mongoose-to-sqlite');
 
 const builder = new Builder();
@@ -108,7 +112,28 @@ async function updateAttachments(attachmentIds, magic, session) {
   }
 }
 
-async function createAttachment(instance, session, node, isRetry = false) {
+async function retryCreateAttachment(...args) {
+  return pRetry(() => createAttachment.call(this, ...args), {
+    retries: 2,
+    minTimeout: ms('5s'),
+    async onFailedAttempt(error) {
+      // TODO: add fallback mechanism which returns existing unique attachment
+      if (error.message === 'UNIQUE constraint failed: Attachments.hash') {
+        error.isCodeBug = true;
+        throw error;
+      }
+
+      if (isRetryableError(error)) {
+        logger.fatal(error);
+        return;
+      }
+
+      throw error;
+    }
+  });
+}
+
+async function createAttachment(instance, session, node) {
   const hex = await this.calculateHashPromise(node.body);
   node.hash = revHash(Buffer.from(hex, 'hex'));
   node.counter = 1;
@@ -169,14 +194,8 @@ async function createAttachment(instance, session, node, isRetry = false) {
   node.instance = instance;
   node.session = session;
 
-  try {
-    const attachment = Attachments.create(node);
-    return attachment;
-  } catch (err) {
-    if (err.message !== 'UNIQUE constraint failed: Attachments.hash' || isRetry)
-      throw err;
-    return createAttachment.call(this, instance, session, node, true);
-  }
+  const attachment = Attachments.create(node);
+  return attachment;
 }
 
 class AttachmentStorage {
@@ -218,8 +237,8 @@ class AttachmentStorage {
     };
   }
 
-  async create(instance, session, node, isRetry = false) {
-    return createAttachment.call(this, instance, session, node, isRetry);
+  async create(instance, session, node) {
+    return retryCreateAttachment.call(this, instance, session, node);
   }
 
   //

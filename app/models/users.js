@@ -5,6 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
+const bytes = require('@forwardemail/bytes');
 const captainHook = require('captain-hook');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
@@ -152,7 +153,12 @@ const object = {};
 
 object[config.userFields.maxQuotaPerAlias] = {
   type: Number,
-  default: config.maxQuotaPerAlias
+  default: config.maxQuotaPerAlias,
+  min: 0,
+  //
+  // NOTE: hard-coded max of 100 GB (safeguard)
+  //
+  max: bytes('100GB')
 };
 
 object[config.userFields.smtpLimit] = {
@@ -264,6 +270,12 @@ object[config.userFields.fullEmail] = {
 object[config.userFields.defaultDomain] = {
   type: mongoose.Schema.ObjectId,
   ref: 'Domains'
+};
+
+object[config.userFields.domainCount] = {
+  type: Number,
+  min: 0,
+  index: true
 };
 
 // Rate limit whitelisting
@@ -477,6 +489,7 @@ Users.pre('validate', async function (next) {
 // Plan expires at should get updated everytime the user is saved
 Users.pre('save', async function (next) {
   const user = this;
+
   // If user has a paid plan then consider their email verified
   if (user.plan !== 'free') user[config.userFields.hasVerifiedEmail] = true;
 
@@ -682,7 +695,8 @@ Users.virtual(config.userFields.verificationPinHasExpired).get(function () {
 // async function crawlDisposable() {
 //   try {
 //     const response = await retryRequest(
-//       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json'
+//       'https://raw.githubusercontent.com/disposable/disposable-email-domains/master/domains.json',
+//       { resolver }
 //     );
 //
 //     const json = await response.body.json();

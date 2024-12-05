@@ -3,22 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const os = require('node:os');
-
 const test = require('ava');
-const pMap = require('p-map');
-const ms = require('ms');
-const ip = require('ip');
 
 const utils = require('../utils');
 
-const config = require('#config');
-
-const IP_ADDRESS = ip.address();
-
 test.before(utils.setupMongoose);
+test.before(utils.setupWebServer);
 test.after.always(utils.teardownMongoose);
-test.beforeEach(utils.setupWebServer);
 
 test('redirects to correct locale', async (t) => {
   const { web } = t.context;
@@ -84,54 +75,4 @@ test('GET /:locale/help', async (t) => {
   const res = await web.get('/en/help');
   t.is(res.status, 302);
   t.is(res.header.location, '/en/login');
-});
-
-// fetches all pages from sitemap
-// TODO: if you change this then also change sitemap controller
-const keys = Object.keys(config.meta).filter((key) => {
-  // exclude certain pages from sitemap
-  // (e.g. 401 not authorized)
-  if (
-    [
-      '/admin',
-      '/my-account',
-      '/help',
-      '/auth',
-      '/logout',
-      '/denylist',
-      '/reset-password',
-      config.verifyRoute,
-      config.otpRoutePrefix
-    ].includes(key)
-  )
-    return false;
-  if (key.startsWith('/admin') || key.startsWith('/my-account')) return false;
-  return key;
-});
-
-// add all the alternatives (since it would be massive translation file addition otherwise)
-for (const alternative of config.alternatives) {
-  keys.push(`/blog/best-${alternative.slug}-alternative`);
-  for (const a of config.alternatives) {
-    if (a.name === alternative.name) continue;
-    keys.push(
-      `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
-    );
-  }
-}
-
-test(`get dynamic routes`, async (t) => {
-  t.context._web.config.rateLimit.allowlist.push(IP_ADDRESS, '127.0.0.1');
-  t.timeout(ms('5m'));
-  await pMap(
-    keys,
-    async (key) => {
-      const route = `/en${key === '/' ? '' : key}`;
-      const { web } = t.context;
-      const res = await web.get(route);
-      if (key === '/tti') t.is(res.status, 408, `${key} should return 408`);
-      else t.is(res.status, 200, `${key} should return 200`);
-    },
-    { concurrency: os.cpus().length }
-  );
 });

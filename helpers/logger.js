@@ -188,6 +188,15 @@ async function hook(err, message, meta) {
           log.email = log.meta.email;
       }
 
+      //
+      // NOTE: if we get a cyclic dependency error here
+      //       it means that whatever object we're storing here
+      //       has a cyclic dependency inside of it, which
+      //       typically only happens on `log.err` e.g. `log.err.bounces`
+      //       therefore we use this as a way to convert to [Circular] if needed
+      //
+      if (log.err) log.err = JSON.parse(safeStringify(log.err));
+
       return conn.models.Logs.create(log)
         .then()
         .catch((err) => {

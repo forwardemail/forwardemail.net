@@ -13,11 +13,10 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
-const pify = require('pify');
+const parseErr = require('parse-err');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 
-const parseErr = require('parse-err');
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const CalendarEvents = require('#models/calendar-events');
@@ -29,16 +28,14 @@ const Threads = require('#models/threads');
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
+const getAttachments = require('#helpers/get-attachments');
 const getPathToDatabase = require('#helpers/get-path-to-database');
 const isRetryableError = require('#helpers/is-retryable-error');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const migrateSchema = require('#helpers/migrate-schema');
-const onExpunge = require('#helpers/imap/on-expunge');
 const setupPragma = require('#helpers/setup-pragma');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-
-const onExpungePromise = pify(onExpunge, { multiArgs: true });
 
 const builder = new Builder();
 
@@ -489,126 +486,50 @@ async function getDatabase(
     ) {
       db = instance.databaseMap.get(alias.id);
       session.db = db;
-      return db;
+    } else {
+      db = new Database(dbFilePath, {
+        readonly,
+        fileMustExist: readonly,
+        timeout: config.busyTimeout,
+        // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
+        verbose: env.AXE_SILENT ? null : console.log
+      });
+
+      // store in-memory open connection
+      if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
+
+      await setupPragma(db, session); // takes about 30ms
+
+      // assigns to session so we can easily re-use
+      // (also used in allocateConnection in IMAP notifier)
+      session.db = db;
     }
-
-    db = new Database(dbFilePath, {
-      readonly,
-      fileMustExist: readonly,
-      timeout: config.busyTimeout,
-      // <https://github.com/WiseLibs/better-sqlite3/issues/217#issuecomment-456535384>
-      verbose: env.AXE_SILENT ? null : console.log
-    });
-
-    // store in-memory open connection
-    if (instance.databaseMap) instance.databaseMap.set(alias.id, db);
-
-    await setupPragma(db, session); // takes about 30ms
-
-    // assigns to session so we can easily re-use
-    // (also used in allocateConnection in IMAP notifier)
-    session.db = db;
 
     // if it is readonly then return early
     if (readonly) {
       return db;
     }
 
-    //
-    // NOTE: this logic can be removed in the future
-    //       it is here to cleanup duplicate mailboxes (legacy bug)
-    //       and fix an issue where idate was set incorrectly (legacy bug)
-    //       note that these must come before schema operations (e.g. unique index constraints)
-    //
-    /*
-    try {
-      // since we didn't originally have "UNIQUE" constraint on "path"
-      // we need to keep this in here for a while until we're sure it's fixed
-      for (const path of REQUIRED_PATHS) {
-        // eslint-disable-next-line no-await-in-loop
-        const mailboxes = await Mailboxes.find(instance, session, {
-          path
-        });
-
-        if (mailboxes.length > 1) {
-          // merge together mailboxes without notifications for now
-          // (assume user will close/reopen app at some point)
-          for (const mailbox of mailboxes.slice(1)) {
-            // eslint-disable-next-line no-await-in-loop
-            await Messages.updateMany(
-              instance,
-              session,
-              {
-                mailbox: mailbox._id
-              },
-              {
-                $set: {
-                  mailbox: mailboxes[0]._id
-                }
-              }
-            );
-            // eslint-disable-next-line no-await-in-loop
-            await Mailboxes.deleteOne(
-              instance,
-              session,
-              {
-                _id: mailbox._id
-              }
-            );
-          }
-        }
-      }
-
-
-      // for any idate values that were set from `new Date(false)`
-      // (e.g. the value is `1970-01-01T00:00:00.000Z` which is incorrect)
-      // we need to set the value of `idate` to the value of `hdate`
-      {
-        const messages = await Messages.find(instance, session, {
-          idate: new Date(false)
-        });
-        for (const message of messages) {
-          // eslint-disable-next-line no-await-in-loop
-          await Messages.findOneAndUpdate(
-            instance,
-            session,
-            {
-              _id: message._id
-            },
-            {
-              $set: {
-                idate: message.hdate
-              }
-            }
-          );
-        }
-      }
-    } catch (err) {
-      err._stack = stack;
-      err.session = session;
-
-      if (
-        err.code !== 'SQLITE_ERROR' ||
-        !err.message.startsWith('no such table:')
-      )
-        logger.fatal(err, { session });
-    }
-    */
-
     let migrateCheck = !instance.server;
     let folderCheck = !instance.server;
     let trashCheck = !instance.server;
+    let threadCheck = !instance.server;
+    let vacuumCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
         const results = await instance.client.mget([
           `migrate_check:${session.user.alias_id}`,
           `folder_check:${session.user.alias_id}`,
-          `trash_check:${session.user.alias_id}`
+          `trash_check:${session.user.alias_id}`,
+          `thread_check:${session.user.alias_id}`,
+          `vacuum_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
         trashCheck = boolean(results[2]);
+        threadCheck = boolean(results[3]);
+        vacuumCheck = boolean(results[4]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -617,47 +538,6 @@ async function getDatabase(
     // migrate schema
     // TODO: add p-timeout to the client.get calls below
     if (!migrateCheck) {
-      //
-      // NOTE: if we change schema on db then we
-      //       need to stop sqlite server then
-      //       purge all migrate_check:* keys
-      //
-      const commands = await migrateSchema(db, session, {
-        Mailboxes,
-        Messages,
-        Threads,
-        Attachments,
-        Calendars,
-        CalendarEvents
-      });
-
-      if (commands.length > 0) {
-        for (const command of commands) {
-          try {
-            // TODO: wsp here (?)
-            db.prepare(command).run();
-            // await knexDatabase.raw(command);
-          } catch (err) {
-            err.isCodeBug = true;
-            logger.fatal(err, { command, alias, session });
-            // migration support in case existing rows
-            if (
-              err.message.includes(
-                'Cannot add a NOT NULL column with default value NULL'
-              ) &&
-              command.endsWith(' NOT NULL')
-            ) {
-              try {
-                db.prepare(command.replace(' NOT NULL', '')).run();
-              } catch (err) {
-                err.isCodeBug = true;
-                logger.fatal(err, { command, alias, session });
-              }
-            }
-          }
-        }
-      }
-
       try {
         await instance.client.set(
           `migrate_check:${session.user.alias_id}`,
@@ -665,6 +545,47 @@ async function getDatabase(
           'PX',
           ms('1d')
         );
+
+        //
+        // NOTE: if we change schema on db then we
+        //       need to stop sqlite server then
+        //       purge all migrate_check:* keys
+        //
+        const commands = await migrateSchema(db, session, {
+          Mailboxes,
+          Messages,
+          Threads,
+          Attachments,
+          Calendars,
+          CalendarEvents
+        });
+
+        if (commands.length > 0) {
+          for (const command of commands) {
+            try {
+              // TODO: wsp here (?)
+              db.prepare(command).run();
+              // await knexDatabase.raw(command);
+            } catch (err) {
+              err.isCodeBug = true;
+              logger.fatal(err, { command, alias, session });
+              // migration support in case existing rows
+              if (
+                err.message.includes(
+                  'Cannot add a NOT NULL column with default value NULL'
+                ) &&
+                command.endsWith(' NOT NULL')
+              ) {
+                try {
+                  db.prepare(command.replace(' NOT NULL', '')).run();
+                } catch (err) {
+                  err.isCodeBug = true;
+                  logger.fatal(err, { command, alias, session });
+                }
+              }
+            }
+          }
+        }
       } catch (err) {
         logger.fatal(err);
       }
@@ -674,8 +595,14 @@ async function getDatabase(
     // create initial folders for the user if they do not yet exist
     // (only do this once every day)
     //
-    try {
-      if (!folderCheck) {
+    if (!folderCheck) {
+      try {
+        await instance.client.set(
+          `folder_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('1d')
+        );
         const paths = await Mailboxes.distinct(instance, session, 'path', {});
         const required = [];
         for (const path of REQUIRED_PATHS) {
@@ -732,23 +659,23 @@ async function getDatabase(
             })
           );
         }
-
-        await instance.client.set(
-          `folder_check:${session.user.alias_id}`,
-          true,
-          'PX',
-          ms('1d')
-        );
+      } catch (err) {
+        logger.fatal(err, { session });
       }
-    } catch (err) {
-      logger.fatal(err, { session });
     }
 
     //
     // NOTE: we remove messages in Junk/Trash folder that are >= 30 days old
     //       (but we only do this once every day)
-    try {
-      if (!trashCheck) {
+    if (!trashCheck) {
+      try {
+        await instance.client.set(
+          `trash_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('7d')
+        );
+
         const mailboxes = await Mailboxes.find(instance, session, {
           path: {
             $in: ['Trash', 'Spam', 'Junk']
@@ -761,63 +688,163 @@ async function getDatabase(
         if (mailboxes.length === 0)
           throw new TypeError('Trash folder(s) do not exist');
 
+        {
+          const sql = builder.build({
+            type: 'remove',
+            table: 'Messages',
+            condition: {
+              $or: [
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  exp: 1,
+                  rdate: {
+                    $lte: new Date().toISOString()
+                  }
+                },
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  rdate: {
+                    $lte: dayjs().subtract(30, 'days').toDate().toISOString()
+                  }
+                },
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  undeleted: 0
+                }
+              ]
+            }
+          });
+
+          db.prepare(sql.query).run(sql.values);
+        }
+
+        // TODO: wss broadcast changes here to connected clients
+
+        // iterate over all messages to get an array of attachment ids
+        // and then iterate over all attachments to delete those not in the list
+        const now = new Date().toISOString();
         const sql = builder.build({
-          type: 'update',
+          type: 'select',
           table: 'Messages',
           condition: {
-            $or: [
-              {
-                mailbox: {
-                  $in: mailboxes.map((m) => m._id.toString())
-                },
-                exp: 1,
-                rdate: {
-                  $lte: Date.now()
-                }
-              },
-              {
-                mailbox: {
-                  $in: mailboxes.map((m) => m._id.toString())
-                },
-                rdate: {
-                  $lte: dayjs().subtract(30, 'days').toDate().getTime()
-                }
-              }
-            ]
+            created_at: {
+              $lte: now
+            },
+            ha: true
           },
-          modifier: {
-            $set: {
-              undeleted: false
-            }
-          }
+          fields: ['mimeTree']
         });
 
-        db.prepare(sql.query).run(sql.values);
+        const stmt = db.prepare(sql.query);
 
-        await Promise.all(
-          mailboxes.map((mailbox) =>
-            onExpungePromise.call(
-              instance,
-              mailbox._id.toString(),
-              { silent: true },
-              session
-            )
-          )
-        );
+        const hashSet = new Set();
 
+        for (const message of stmt.iterate(sql.values)) {
+          const hashes = getAttachments(message.mimeTree);
+          for (const hash of hashes) {
+            hashSet.add(hash);
+          }
+        }
+
+        // NOTE: this only works if there's at least one hash from existing messages
+        //       (otherwise to do it for all we'd just remove this conditional check)
+        // TODO: <https://github.com/nodemailer/wildduck/issues/750>
+        if (hashSet.size > 0) {
+          // iterate over all attachments from the past
+          // and if the hash is not in the array then remove it
+          const sql = builder.build({
+            type: 'select',
+            table: 'Attachments',
+            condition: {
+              created_at: { $lte: now },
+              counterUpdated: { $lte: now }
+            },
+            fields: ['hash']
+          });
+
+          const existingHashes = db.prepare(sql.query).pluck().all(sql.values);
+
+          // TODO: this is too slow, it took 1 hour in production
+          db.transaction((hashes) => {
+            for (const hash of hashes) {
+              if (hashSet.has(hash)) continue;
+              const sql = builder.build({
+                type: 'remove',
+                table: 'Attachments',
+                condition: {
+                  created_at: { $lte: now },
+                  counterUpdated: { $lte: now },
+                  hash
+                }
+              });
+
+              db.prepare(sql.query).run(sql.values);
+            }
+          }).immediate(existingHashes);
+        }
+      } catch (err) {
+        logger.fatal(err, { session });
+      }
+    }
+
+    //
+    // NOTE: we delete thread ids that don't correspond to messages anymore
+    //
+    if (!threadCheck) {
+      try {
         await instance.client.set(
-          `trash_check:${session.user.alias_id}`,
+          `thread_check:${session.user.alias_id}`,
           true,
           'PX',
           ms('1d')
         );
+
+        db.exec(
+          `DELETE FROM Threads WHERE _id NOT IN (SELECT thread FROM Messages);`
+        );
+      } catch (err) {
+        logger.fatal(err, { session });
       }
-    } catch (err) {
-      logger.fatal(err, { session });
     }
 
-    if (!migrateCheck || !folderCheck || !trashCheck) {
+    if (
+      !migrateCheck ||
+      !folderCheck ||
+      !trashCheck ||
+      !threadCheck ||
+      !vacuumCheck
+    ) {
       try {
+        //
+        // Ensure that auto vacuum is enabled
+        // (otherwise we email the user that this operation is taking place)
+        //
+        const hasAutoVacuum = db.pragma('auto_vacuum', { simple: true }) === 1;
+        if (!hasAutoVacuum) {
+          // get latest from cache in case another connection started a vacuum
+          vacuumCheck = boolean(
+            await instance.client.get(`vacuum_check:${session.user.alias_id}`)
+          );
+          if (!vacuumCheck) {
+            // only once per week should we attempt this
+            await instance.client.set(
+              `vacuum_check:${session.user.alias_id}`,
+              true,
+              'PX',
+              ms('7d')
+            );
+
+            db.pragma('auto_vacuum=FULL');
+            db.prepare('VACUUM').run();
+          }
+        }
+
         //
         // All applications should run "PRAGMA optimize;" after a schema change,
         // especially after one or more CREATE INDEX statements.
@@ -829,11 +856,6 @@ async function getDatabase(
         logger.fatal(err);
       }
     }
-
-    //
-    // TODO: delete orphaned attachments (those without messages that reference them)
-    //       (note this is unlikely as we already take care of this in EXPUNGE)
-    //
 
     return db;
   } catch (err) {

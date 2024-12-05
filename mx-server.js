@@ -5,13 +5,14 @@
 
 const fs = require('node:fs');
 
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
 const pify = require('pify');
 const { SMTPServer } = require('smtp-server');
 
 const RetryClient = require('#helpers/retry-client');
 const config = require('#config');
+const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
@@ -39,7 +40,9 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 class MX {
   constructor(options = {}) {
     this.client = options.client;
+    this.wsp = options.wsp;
     this.resolver = createTangerine(this.client, logger);
+    this.cache = createMtaStsCache(this.client);
 
     // NOTE: this is useful for tests since we can pass `apiEndpoint` in test options
     // TODO: remove API and replace with MongoDB calls (and then we can remove API from MX tests)

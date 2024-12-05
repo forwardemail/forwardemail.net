@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
@@ -70,7 +72,9 @@ function json(domain, isList = false) {
     ),
     ...virtuals,
     // add a helper url
-    link: `${config.urls.web}/my-account/domains/${domain.name}`
+    link: `${config.urls.web}/my-account/domains/${punycode.toASCII(
+      domain.name
+    )}`
   };
 }
 

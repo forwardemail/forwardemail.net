@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
-function getHeaders(headers) {
+function getHeaders(headers, specificKey = null) {
   const _headers = {};
-  const lines = headers.headers
-    .toString('binary')
-    .replace(/[\r\n]+$/, '')
-    .split(/\r?\n/);
 
+  //
+  // NOTE: we should only decode these headers, but we're going to decode all anyways for now
+  //       <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L329>
   //
   // NOTE: we decode header values because
   //       want them to be easily searchable
@@ -21,26 +18,36 @@ function getHeaders(headers) {
   //       > 🎉 beep
   //       (e.g. so a user could search for 🎉)
   //
-  for (const line of lines) {
-    const value = Buffer.from(line, 'binary').toString();
-    const index = value.indexOf(': ');
-    const key = value.slice(0, index);
-
-    _headers[key] = value.slice(index + 2);
-
-    // <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L329>
-    if (
-      ['subject', 'references', 'message-id', 'in-reply-to'].includes(
-        key.toLowerCase()
-      )
-    ) {
-      try {
-        _headers[key] = headers.libmime.decodeWords(_headers[key]);
-      } catch {
-        // ignore, keep as is
-      }
-    }
+  //       we can't use mailsplit b/c unicode characters get rewritten
+  //       <https://github.com/andris9/mailsplit/issues/21>
+  //
+  let lines = headers.headers.toString();
+  try {
+    lines = headers.libmime.decodeWords(lines);
+  } catch {
+    // ignore, keep as is
   }
+
+  lines = lines
+    // <https://github.com/andris9/mailsplit/issues/22>
+    .replace(/\r?\n?\t/g, ' ')
+    .replace(/[\r\n]+$/, '')
+    .split(/\r?\n/);
+
+  for (const line of lines) {
+    const index = line.indexOf(':');
+    const key = line.slice(0, index);
+
+    _headers[key] = line.slice(index + 1).trim();
+
+    if (
+      typeof specificKey === 'string' &&
+      key.toLowerCase() === specificKey.toLowerCase()
+    )
+      return _headers[key];
+  }
+
+  if (typeof specificKey === 'string') return;
 
   return _headers;
 }

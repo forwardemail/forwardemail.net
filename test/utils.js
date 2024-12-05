@@ -3,17 +3,23 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const API = require('@ladjs/api');
+const { randomUUID } = require('node:crypto');
+
+// <https://github.com/simonexmachina/factory-girl/issues/157>
+// <https://github.com/thiagomini/factory-girl-ts/issues/34>
 const BaseFactory = require('@zainundin/mongoose-factory').default;
+
+const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
 const _ = require('lodash');
 const falso = require('@ngneat/falso');
-const getPort = require('get-port');
 const mongoose = require('mongoose');
+const ms = require('ms');
+const pWaitFor = require('p-wait-for');
 const request = require('supertest');
-const sharedConfig = require('@ladjs/shared-config');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { listen } = require('async-listen');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
@@ -24,6 +30,12 @@ const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
 
 const { Users, Domains, Payments, Aliases } = require('#models');
+
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
 
 //
 // setup utilities
@@ -44,15 +56,8 @@ exports.setupMongoose = async () => {
 };
 
 exports.setupWebServer = async (t) => {
-  // must require here in order to load changes made during setup
-  const webSharedConfig = sharedConfig('WEB');
-  const client = new Redis(
-    webSharedConfig.redis,
-    logger,
-    webSharedConfig.redisMonitor
-  );
+  const client = new Redis({ keyPrefix: randomUUID() });
   client.setMaxListeners(0);
-  await client.flushall();
   const web = new Web(
     {
       ..._.defaultsDeep(webConfig(client), t.context.webConfig || {}),
@@ -61,20 +66,18 @@ exports.setupWebServer = async (t) => {
     Users
   );
   t.context._web = web;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
-  t.context.web = request.agent(web.app.listen(port));
+  // remove trailing slash from web URL
+  t.context.webURL = await listen(web.server, { host: '127.0.0.1', port });
+  t.context.webURL = t.context.webURL.toString().slice(0, -1);
+  t.context.web = request.agent(web.server);
 };
 
 exports.setupApiServer = async (t) => {
-  // must require here in order to load changes made during setup
-  const apiSharedConfig = sharedConfig('API');
-  const client = new Redis(
-    apiSharedConfig.redis,
-    logger,
-    apiSharedConfig.redisMonitor
-  );
+  const client = new Redis({ keyPrefix: randomUUID() });
   client.setMaxListeners(0);
-  await client.flushall();
+  t.context.client = client;
   const api = new API(
     {
       ...apiConfig,
@@ -82,27 +85,26 @@ exports.setupApiServer = async (t) => {
     },
     Users
   );
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
-  t.context.client = client;
-  const instance = await api.app.listen(port);
-  t.context.api = request.agent(instance);
-  t.context.apiAddress = instance.address();
+  // remove trailing slash from API URL
+  t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
+  t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
+  t.context.api = request.agent(api.server);
 };
 
-exports.setupSMTPServer = async (t) => {
-  // must require here in order to load changes made during setup
-  const breeSharedConfig = sharedConfig('BREE');
-  const client = new Redis(
-    breeSharedConfig.redis,
-    logger,
-    breeSharedConfig.redisMonitor
-  );
+exports.setupRedisClient = async (t) => {
+  const keyPrefix = randomUUID();
+  const client = new Redis({ keyPrefix });
   client.setMaxListeners(0);
-  await client.flushall();
   t.context.client = client;
+
+  const subscriber = new Redis({ keyPrefix });
+  subscriber.setMaxListeners(0);
+  subscriber.channels.setMaxListeners(0);
+  t.context.subscriber = subscriber;
 };
 
-// make sure to load the web server first using setupWebServer
 exports.loginUser = async (t) => {
   const { web, user, password } = t.context;
 
@@ -130,11 +132,12 @@ class UserFactory extends BaseFactory {
   async definition() {
     return {
       email: falso.randEmail({ provider: 'example', suffic: 'com' }),
-      password: '!@K#NLK!#N' // TODO: use `falso.randPassword()`
+      password: falso.randPassword()
     };
   }
 }
-exports.userFactory = new UserFactory();
+
+exports.UserFactory = UserFactory;
 
 class DomainFactory extends BaseFactory {
   constructor() {
@@ -147,7 +150,8 @@ class DomainFactory extends BaseFactory {
     };
   }
 }
-exports.domainFactory = new DomainFactory();
+
+exports.DomainFactory = DomainFactory;
 
 class PaymentFactory extends BaseFactory {
   constructor() {
@@ -158,12 +162,9 @@ class PaymentFactory extends BaseFactory {
     return {};
   }
 }
-exports.paymentFactory = new PaymentFactory();
 
-//
-// <https://github.com/simonexmachina/factory-girl/issues/157>
-// <https://github.com/thiagomini/factory-girl-ts/issues/34>
-//
+exports.PaymentFactory = PaymentFactory;
+
 class AliasFactory extends BaseFactory {
   constructor() {
     super(Aliases);
@@ -175,4 +176,12 @@ class AliasFactory extends BaseFactory {
     };
   }
 }
-exports.aliasFactory = new AliasFactory();
+
+exports.AliasFactory = AliasFactory;
+
+exports.setupFactories = (t) => {
+  t.context.userFactory = new UserFactory();
+  t.context.domainFactory = new DomainFactory();
+  t.context.paymentFactory = new PaymentFactory();
+  t.context.aliasFactory = new AliasFactory();
+};

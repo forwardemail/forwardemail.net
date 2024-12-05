@@ -10,9 +10,9 @@ block content
             .p-3.text-center
               p.card-text: strong.text-decoration-underline!= t("Don't worry &ndash; this only takes a minute!")
               if domains.length === 1
-                p.card-text!= t('Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.', domains[0].name, `${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`)
+                p.card-text!= t('Your domain <span class="notranslate font-weight-bold">%s</span> has not yet completed setup. You must follow <a href="%s" class="font-weight-bold">steps 1 and 2</a> as soon as possible to complete setup.', domains[0].name, `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domains[0].name)}`)
                 a.btn.btn-lg.btn-danger(
-                  href=`${config.urls.web}/${locale}/my-account/domains/${domains[0].name}`
+                  href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domains[0].name)}`
                 )= t("Click here to resolve")
               else
                 p.card-text.mb-0!= t('Follow setup for <strong class="text-decoration-underline">each</strong> of <a href="%s">your domains</a>:', `${config.urls.web}/${locale}/my-account/domains`)
@@ -20,7 +20,7 @@ block content
                   ul.list-inline.text-center.mb-0
                     li.list-inline-item.mt-3
                       a.btn.btn-md.btn-dark(
-                        href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+                        href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`
                       )= domain.name
                 if domains.length > 10
                   p.text-muted.text-center.mt-1.mb-0

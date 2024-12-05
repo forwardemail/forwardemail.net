@@ -12,7 +12,7 @@ block content
               = t("Your domain is verified!")
           .card-body.text-center.p-0
             a(
-              href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}`
+              href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}`
             )
               img.img-fluid.d-block.align-top(
                 src=manifest("img/emails/domain-verified.gif"),
@@ -27,7 +27,7 @@ block content
               p.card-text!= t('We detected that your domain <strong><span class="notranslate">%s</span></strong> is now verified.', domain.name)
               if !errorMessage && domain.plan !== 'free'
                 a.btn.btn-lg.btn-success(
-                  href=`${config.urls.web}/${locale}/my-account/domains/${domain.name}/aliases`,
+                  href=`${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(domain.name)}/aliases`,
                   role="button"
                 )= t("Manage aliases")
             if errorMessage

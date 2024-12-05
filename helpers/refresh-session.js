@@ -57,8 +57,14 @@ async function refreshSession(session, command) {
     this?.constructor?.name !== 'CalDAV'
   ) {
     const socket = (session.socket && session.socket._parent) || session.socket;
-    if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-      throw new SocketError();
+    if (!socket || socket?.destroyed || socket?.readyState !== 'open') {
+      const err = new SocketError();
+      err.isCodeBug = true;
+      err.socket = socket;
+      err.session = session;
+      this.logger.fatal(err);
+      // throw err; // TODO: investigate why socket error occurs here
+    }
   }
 
   if (!isSANB(session?.user?.domain_id) || !isSANB(session?.user?.domain_name))
@@ -154,7 +160,7 @@ async function refreshSession(session, command) {
     );
   if (!isValid)
     throw new IMAPError(
-      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+      `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${punycode.toASCII(session.user.domain_name)}/aliases and click "Generate Password"`,
       {
         responseCode: 535
         // ignoreHook: true

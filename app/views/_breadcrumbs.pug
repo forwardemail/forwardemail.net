@@ -25,11 +25,11 @@ if breadcrumbs.length > 1
         = _.isObject(breadcrumbs[0]) ? breadcrumbs[0].header || breadcrumbs[0].name : t(titleize(humanize(breadcrumbs[0])))
     if !breadcrumbHeaderCentered
       .flex-grow-1.ml-md-5.d-md-flex.align-items-center.justify-content-md-end.justify-content-center.mt-3.mt-md-0
-        if domain && ((domain.has_mx_record && domain.has_txt_record) || domain.plan !== 'free') && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}`)
+        if domain && ((domain.has_mx_record && domain.has_txt_record) || domain.plan !== 'free') && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}` || ctx.pathWithoutLocale === `/my-account/domains/${punycode.toASCII(domain.name)}`)
           ul.list-inline.mb-0
             li.list-inline-item.mb-1
               a.btn.btn-sm.btn-outline-dark(
-                href=domain.plan === "free" ? "#" : l(`/my-account/domains/${domain.name}/aliases`),
+                href=domain.plan === "free" ? "#" : l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`),
                 role=domain.plan === "free" ? "button" : false,
                 data-target=domain.plan === "free" ? "#modal-upgrade" : false,
                 data-toggle=domain.plan === "free" ? "modal" : false
@@ -50,7 +50,7 @@ if breadcrumbs.length > 1
                   = t("Logs")
               li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
-                  href=l(`/my-account/domains/${domain.name}/advanced-settings`)
+                  href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`)
                 )
                   i.fa.fa-fw.fa-tools
                   = " "
@@ -70,7 +70,7 @@ if breadcrumbs.length > 1
                     h6.dropdown-header= t("Change Plan")
                     each plan in [ 'free', 'enhanced_protection', 'team' ]
                       a.dropdown-item(
-                        href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`),
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`),
                         disabled=plan === domain.plan,
                         class=plan === domain.plan ? "disabled" : ""
                       )
@@ -96,12 +96,12 @@ if breadcrumbs.length > 1
                     a.dropdown-item.small.text-muted(
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
-        else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${domain.name}/aliases`)
+        else if domain && (ctx.pathWithoutLocale === `/my-account/domains/${domain.id}/aliases` || ctx.pathWithoutLocale === `/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
           ul.list-inline.mb-0
             if !domain.is_global && domain.group === 'admin'
               li.list-inline-item.mb-1
                 form.ajax-form.confirm-prompt.d-inline-block(
-                  action=l(`/my-account/domains/${domain.name}/aliases/import`),
+                  action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/import`),
                   method="POST"
                 )
                   button.btn.btn-dark(type="submit")
@@ -111,7 +111,7 @@ if breadcrumbs.length > 1
             if domain.group === 'admin' || (config.ubuntuTeamMapping && !Object.keys(config.ubuntuTeamMapping).includes(domain.name))
               li.list-inline-item.mb-1
                 a.btn.btn-dark(
-                  href=l(`/my-account/domains/${domain.name}/aliases/new`),
+                  href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases/new`),
                   role="button",
                   data-toggle="modal-anchor",
                   data-target="#modal-alias"

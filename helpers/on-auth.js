@@ -49,6 +49,8 @@ async function onAuth(auth, session, fn) {
     // NOTE: until onConnect is available for IMAP and POP3 servers
     //       we leverage the existing SMTP helper in the interim
     //       <https://github.com/nodemailer/wildduck/issues/540>
+    //       <https://github.com/nodemailer/wildduck/issues/721>
+    //       (see this same comment in `helpers/on-connect.js`)
     //
     if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
       await onConnectPromise.call(this, session);
@@ -64,8 +66,14 @@ async function onAuth(auth, session, fn) {
     if (this.server instanceof IMAPServer) {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
-      if (!socket || socket?.destroyed || socket?.readyState !== 'open')
-        throw new SocketError();
+      if (!socket || socket?.destroyed || socket?.readyState !== 'open') {
+        const err = new SocketError();
+        err.isCodeBug = true;
+        err.socket = socket;
+        err.session = session;
+        this.logger.fatal(err);
+        // throw err; // TODO: investigate why socket error occurs here
+      }
     }
 
     // override session.getQueryResponse (safeguard)
@@ -107,7 +115,11 @@ async function onAuth(auth, session, fn) {
       auth.password === 'REPLACE-WITH-YOUR-GENERATED-PASSWORD'
     )
       throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -126,12 +138,16 @@ async function onAuth(auth, session, fn) {
           verifications.push(record.replace(config.paidPrefix, '').trim());
       }
     } catch (err) {
-      this.logger.error(err, { session });
+      this.logger.debug(err, { session });
     }
 
     if (verifications.length === 0)
       throw new SMTPError(
-        `Domain is missing TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        `Domain is missing TXT verification record, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )} and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -140,7 +156,11 @@ async function onAuth(auth, session, fn) {
 
     if (verifications.length > 1)
       throw new SMTPError(
-        `Domain has more than one TXT verification record, go to ${config.urls.web}/my-account/domains/${domainName} and click "Verify"`,
+        `Domain has more than one TXT verification record, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )} and click "Verify"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -173,7 +193,7 @@ async function onAuth(auth, session, fn) {
           'user',
           `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
         )
-        .select('+tokens.hash +tokens.salt')
+        .select('+tokens.hash +tokens.salt +is_rekey')
         .lean()
         .exec();
 
@@ -189,14 +209,36 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     //
 
-    // IMAP and POP3 servers can only validate against aliases
+    // IMAP/POP3/CalDAV servers can only validate against aliases
     if (
       this.server instanceof IMAPServer ||
-      this.server instanceof POP3Server
+      this.server instanceof POP3Server ||
+      (alias && this?.constructor?.name === 'CalDAV')
     ) {
-      if (!Array.isArray(alias.tokens) || alias?.tokens?.length === 0)
+      if (
+        alias &&
+        typeof alias.is_rekey === 'boolean' &&
+        alias.is_rekey === true
+      )
         throw new SMTPError(
-          `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+          'Alias is undergoing a rekey operation, please try again once completed',
+          {
+            responseCode: 535,
+            ignoreHook: true,
+            imapResponse: 'AUTHENTICATIONFAILED'
+          }
+        );
+
+      if (
+        (alias && !Array.isArray(alias.tokens)) ||
+        alias?.tokens?.length === 0
+      )
+        throw new SMTPError(
+          `Alias does not have a generated password yet, go to ${
+            config.urls.web
+          }/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/aliases and click "Generate Password"`,
           {
             responseCode: 535,
             ignoreHook: true,
@@ -210,7 +252,11 @@ async function onAuth(auth, session, fn) {
     )
       // SMTP servers can validate against both alias and domain-wide tokens
       throw new SMTPError(
-        `Alias does not have a generated password yet, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Generate Password"`,
+        `Alias does not have a generated password yet, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true,
@@ -292,11 +338,15 @@ async function onAuth(auth, session, fn) {
       }
 
       throw new SMTPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${domainName}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
-          imapResponse: 'AUTHENTICATIONFAILED'
-          // ignoreHook: true
+          imapResponse: 'AUTHENTICATIONFAILED',
+          ignoreHook: true
         }
       );
     }
@@ -355,7 +405,11 @@ async function onAuth(auth, session, fn) {
                 message: i18n.translate(
                   'CALDAV_SMTP_NOT_ENABLED_MESSAGE',
                   locale,
-                  `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`,
+                  `${
+                    config.urls.web
+                  }/${locale}/my-account/domains/${punycode.toASCII(
+                    domain.name
+                  )}/verify-smtp`,
                   domain.name
                 ),
                 locale
@@ -448,7 +502,11 @@ async function onAuth(auth, session, fn) {
 
       // throw an error
       throw new SMTPError(
-        `Alias does not have IMAP enabled, go to ${config.urls.web}/my-account/domains/${domain.name}/aliases and click "Edit" to enable IMAP storage`,
+        `Alias does not have IMAP enabled, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domain.name
+        )}/aliases and click "Edit" to enable IMAP storage`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -479,7 +537,9 @@ async function onAuth(auth, session, fn) {
       this.server &&
       !(this.server instanceof POP3Server) // not needed but keeping here anyways
     ) {
-      const key = `connections_${config.env}:${alias ? alias.id : domain.id}`;
+      const key = `concurrent_${this.constructor.name.toLowerCase()}_${
+        config.env
+      }:${alias ? alias.id : domain.id}`;
       const count = await this.client.incrby(key, 0);
       if (count < 0) await this.client.del(key); // safeguard
       else if (!adminExists && count > 60) {
@@ -641,26 +701,24 @@ async function onAuth(auth, session, fn) {
         .catch((err) => this.logger.warn(err, { session }));
     }
   } catch (err) {
+    //
     // NOTE: if err.response === 'NO' then WildDuck POP3 will return error message too
-    // NOTE: if err.response is a message then WildDuck IMAP will return the error message
+    //       similarly if `error.response` is set then IMAP will return that instead of TEMPFAIL
     //
     // NOTE: we should actually share error message if it was not a code bug
     //       (otherwise it won't be intuitive to users if they're late on payment)
     //       (and we now do this via "ALERT" `imapResponse` code set in refineAndLogError
     //
     // <https://github.com/nodemailer/smtp-server/blob/a570d0164e4b4ef463eeedd80cadb37d5280e9da/lib/sasl.js#L189-L222>
+    // <https://github.com/nodemailer/wildduck/issues/726>
     const error = refineAndLogError(
       err,
       session,
       this.server instanceof IMAPServer,
       this
     );
-    if (this.server instanceof IMAPServer) {
-      error.response = error.message;
-      fn(error);
-    } else {
-      fn(error);
-    }
+    error.response = 'NO';
+    fn(error);
   }
 }
 

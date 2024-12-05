@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 
@@ -47,7 +49,9 @@ const DNS_RETRY_CODES = new Set([
 async function verifySMTP(ctx) {
   try {
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/verify-smtp`
+      `/my-account/domains/${punycode.toASCII(
+        ctx.state.domain.name
+      )}/verify-smtp`
     );
     const domain = await Domains.findById(ctx.state.domain._id);
     if (!domain)
@@ -112,13 +116,14 @@ async function verifySMTP(ctx) {
           'SMTP_ERROR_MESSAGE',
           locale,
           domain.name,
-          `${config.urls.web}/${locale}/my-account/domains/${domain.name}/verify-smtp`
+          `${config.urls.web}/${locale}/my-account/domains/${punycode.toASCII(
+            domain.name
+          )}/verify-smtp`
         );
         await emailHelper({
           template: 'alert',
           message: {
             to,
-            bcc: config.email.message.from,
             subject
           },
           locals: {
@@ -130,6 +135,8 @@ async function verifySMTP(ctx) {
       }
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
+      // TODO: if user already had a domain approved
+      // TODO: if A record and good domain then auto approve and email admins and users
       if (!_.isDate(domain.smtp_verified_at)) {
         // otherwise if the domain was newly verified
         // and doesn't have smtp yet then email admins
@@ -143,18 +150,31 @@ async function verifySMTP(ctx) {
           locale,
           domain.name
         );
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to,
-            bcc: config.email.message.from,
-            subject
-          },
-          locals: {
-            message,
-            locale
-          }
-        });
+        await Promise.all([
+          emailHelper({
+            template: 'alert',
+            message: {
+              to,
+              subject
+            },
+            locals: {
+              message,
+              locale
+            }
+          }),
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              replyTo: to,
+              subject
+            },
+            locals: {
+              message: `<a href="${config.urls.web}/admin/domains?name=${domain.name}" class="btn btn-dark btn-md">Review Domain</a>`,
+              locale
+            }
+          })
+        ]);
         domain.smtp_verified_at = new Date();
         if (!ctx.api) ctx.flash('success', message);
       }

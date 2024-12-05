@@ -21,8 +21,11 @@ async function updateSession(raw, headers, session) {
   //
   session.headers = getHeaders(headers);
 
+  // <https://github.com/andris9/mailsplit/issues/21>
+  const from = getHeaders(headers, 'from');
+
   // getFromAddress will thrown an error if it's not RFC 5322 compliant
-  session.originalFromAddress = getFromAddress(headers.getFirst('from'));
+  session.originalFromAddress = getFromAddress(from);
   session.originalFromAddressDomain = parseHostFromDomainOrAddress(
     session.originalFromAddress
   );
@@ -61,7 +64,7 @@ async function updateSession(raw, headers, session) {
   );
 
   // get all sender attributes (e.g. email, domain, root domain)
-  session.attributes = getAttributes(headers, session);
+  session.attributes = await getAttributes(headers, session, this.resolver);
 
   // get message fingerprint
   session.fingerprint = getFingerprint(session, headers, raw);

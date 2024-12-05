@@ -10,7 +10,7 @@ const { Transform } = require('node:stream');
 // Many thanks to Andris Reissman
 // <https://gist.github.com/andris9/94e73deef71640322c422b27cded5add>
 //
-const bytes = require('bytes');
+const bytes = require('@forwardemail/bytes');
 const { Headers } = require('mailsplit');
 const { Iconv } = require('iconv');
 
@@ -133,9 +133,7 @@ class MessageSplitter extends Transform {
     this.dataBytes += chunk.length;
     this.sizeExceeded = this.dataBytes > this._maxBytes;
     if (this.sizeExceeded) {
-      const err = new Error(
-        `Maximum allowed message size ${bytes(this._maxBytes)} exceeded`
-      );
+      const err = new Error(`Email size of ${bytes(this._maxBytes)} exceeded.`);
       err.responseCode = 552;
       return callback(err);
     }
@@ -169,7 +167,7 @@ class MessageSplitter extends Transform {
       // join all chunks into a header block
       this.rawHeaders = Buffer.concat(this.headerChunks, this.headerBytes);
 
-      this.headers = new Headers(this.rawHeaders);
+      this.headers = new Headers(this.rawHeaders, { Iconv });
 
       // this.emit('headers', this.headers);
       this.headerChunks = null;

@@ -52,9 +52,12 @@ function createBounce(email, error, message) {
     'Subject',
     `Delivery Status Notification (${isDelayed ? 'Delayed' : 'Failure'})`
   );
-  rootNode.setHeader('In-Reply-To', email.messageId);
-  rootNode.setHeader('References', email.messageId);
-  rootNode.setHeader('X-Original-Message-ID', email.messageId);
+
+  if (email.messageId) {
+    rootNode.setHeader('In-Reply-To', `<${email.messageId}>`);
+    rootNode.setHeader('References', `<${email.messageId}>`);
+    rootNode.setHeader('X-Original-Message-ID', `<${email.messageId}>`);
+  }
 
   const response = convert(error.response || error.message, {
     wordwrap: false,
@@ -123,9 +126,12 @@ function createBounce(email, error, message) {
       email.envelope.from,
       HOSTNAME,
       IP_ADDRESS
-    ].join(', ')}`,
-    `X-ForwardEmail-ID: ${email.id}`
+    ].join(', ')}`
   );
+
+  if (email.id) arr.push(`X-ForwardEmail-ID: ${email.id}`);
+
+  // TODO: add X-ForwardEmail-Session-ID here (?)
 
   rootNode
     .createChild('message/delivery-status')

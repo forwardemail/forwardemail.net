@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const dashify = require('dashify');
@@ -32,7 +34,7 @@ const S3 = new S3Client({
 
 async function downloadAliasBackup(ctx) {
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${ctx.state.domain.name}/aliases`
+    `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
   );
   try {
     const alias = await Aliases.findById(ctx.state.alias._id)
@@ -194,7 +196,7 @@ async function downloadAliasBackup(ctx) {
     ctx.logger.fatal(err);
     ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
     const redirectTo = ctx.state.l(
-      `/my-account/domains/${ctx.state.domain.name}/aliases`
+      `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`
     );
     if (ctx.accepts('html')) ctx.redirect(redirectTo);
     else ctx.body = { redirectTo };

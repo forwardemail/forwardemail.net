@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const Boom = require('@hapi/boom');
 
 const Domains = require('#models/domains');
@@ -11,11 +13,11 @@ async function changeModulusLength(ctx) {
   const domain = await Domains.findById(ctx.state.domain._id);
   if (!domain)
     return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
+      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
     );
 
   const redirectTo = ctx.state.l(
-    `/my-account/domains/${domain.name}/verify-smtp`
+    `/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`
   );
 
   const text = ctx.translate('CHANGED_MODULUS_LENGTH');

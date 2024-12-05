@@ -6,13 +6,13 @@
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
+const bytes = require('@forwardemail/bytes');
 const captainHook = require('captain-hook');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
 const ms = require('ms');
-const prettyBytes = require('pretty-bytes');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
@@ -92,6 +92,22 @@ APS.plugin(mongooseCommonPlugin, {
 });
 
 const Aliases = new mongoose.Schema({
+  // if a rekey operation is being performed then don't allow auth or read/write
+  is_rekey: {
+    type: Boolean,
+    default: false
+  },
+
+  // alias specific max quota (set by admins only)
+  max_quota: {
+    type: Number,
+    min: 0,
+    //
+    // NOTE: hard-coded max of 100 GB (safeguard)
+    //
+    max: bytes('100GB')
+  },
+
   // apple push notification support
   // <https://github.com/nodemailer/wildduck/issues/711>
   aps: [APS],
@@ -399,7 +415,7 @@ Aliases.pre('validate', function (next) {
 // it populates "id" String automatically for comparisons
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
-  omitExtraFields: ['is_api', 'tokens', 'pgp_error_sent_at', 'aps'],
+  omitExtraFields: ['is_rekey', 'is_api', 'tokens', 'pgp_error_sent_at', 'aps'],
   defaultLocale: i18n.getLocale()
 });
 
@@ -461,12 +477,12 @@ Aliases.pre('save', async function (next) {
     ]);
 
     if (!domain)
-      throw Boom.notFound(
+      throw Boom.badRequest(
         i18n.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE', alias.locale)
       );
 
     if (!user && !alias.is_new_user)
-      throw Boom.notFound(i18n.translateError('INVALID_USER', alias.locale));
+      throw Boom.badRequest(i18n.translateError('INVALID_USER', alias.locale));
 
     // filter out a domain's members without actual users
     domain.members = domain.members.filter(
@@ -526,6 +542,24 @@ Aliases.pre('save', async function (next) {
     )
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
+    //
+    // NOTE: we ensure that `alias.max_quota` cannot exceed `domain.max_quota_per_alias`
+    //
+    if (
+      Number.isFinite(domain.max_quota_per_alias) &&
+      Number.isFinite(alias.max_quota) &&
+      alias.max_quota > domain.max_quota_per_alias
+    )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'ALIAS_QUOTA_EXCEEDS_DOMAIN',
+          alias.locale,
+          `${alias.name}@${domain.name}`,
+          bytes(alias.max_quota),
+          bytes(domain.max_quota_per_alias)
+        )
+      );
+
     // determine the domain membership for the user
     let member = domain.members.find((member) =>
       user
@@ -550,7 +584,9 @@ Aliases.pre('save', async function (next) {
     //       but populate above is trying to populate it, we can assume it's new
     //
     if (!member)
-      throw Boom.notFound(i18n.translateError('INVALID_MEMBER', alias.locale));
+      throw Boom.badRequest(
+        i18n.translateError('INVALID_MEMBER', alias.locale)
+      );
 
     const string = alias.name.replace(/[^\da-z]/g, '');
 
@@ -564,7 +600,7 @@ Aliases.pre('save', async function (next) {
       ) {
         const existingAlias = await alias.constructor.findById(alias._id);
         if (!existingAlias)
-          throw Boom.notFound(
+          throw Boom.badRequest(
             i18n.translateError('ALIAS_DOES_NOT_EXIST', alias.locale)
           );
         if (existingAlias.name !== alias.name)
@@ -641,12 +677,24 @@ Aliases.pre('save', async function (next) {
       if (domain.is_global && !alias.is_new_user && user) {
         // user must be on a paid plan to use a global domain
         if (user.plan === 'free' && !alias.is_update) {
-          const domainIds = await conn.models.Domains.distinct('_id', {
-            is_global: true
-          });
+          const arr = await conn.models.Domains.aggregate([
+            {
+              $match: {
+                is_global: true
+              }
+            },
+            {
+              $group: {
+                _id: '$_id'
+              }
+            }
+          ])
+            .allowDiskUse(true)
+            .exec();
+
           const aliasCount = await alias.constructor.countDocuments({
             user: user._id,
-            domain: { $in: domainIds }
+            domain: { $in: arr.map((v) => v._id) }
           });
           throw Boom.paymentRequired(
             i18n.translateError(
@@ -727,17 +775,29 @@ Aliases.pre('save', async function (next) {
 
 async function updateDomainCatchallRegexBooleans(alias) {
   try {
-    const names = await alias.constructor.distinct('name', {
-      domain: alias.domain
-    });
+    const arr = await alias.constructor
+      .aggregate([
+        {
+          $match: {
+            domain: alias.domain
+          }
+        },
+        {
+          $group: {
+            _id: '$name'
+          }
+        }
+      ])
+      .allowDiskUse(true)
+      .exec();
 
     let hasCatchall = false;
     let hasRegex = false;
 
-    for (const name of names) {
+    for (const v of arr) {
       if (hasCatchall && hasRegex) break;
-      if (name === '*') hasCatchall = true;
-      else if (name.startsWith('/')) hasRegex = true;
+      if (v._id === '*') hasCatchall = true;
+      else if (v._id.startsWith('/')) hasRegex = true;
     }
 
     await conn.models.Domains.findByIdAndUpdate(alias.domain, {
@@ -836,10 +896,10 @@ Aliases.statics.isOverQuota = async function (
   // log fatal error to admins (so they will get notified by email/text)
   if (isOverQuota)
     logger.fatal(
-      new TypeError(
-        `Alias ${alias.id} is over quota (${prettyBytes(
-          storageUsed + size
-        )}/${prettyBytes(maxQuotaPerAlias)})`
+      new Error(
+        `Alias ${alias.id} is over quota (${bytes(storageUsed + size)}/${bytes(
+          maxQuotaPerAlias
+        )})`
       )
     );
 

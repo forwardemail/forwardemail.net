@@ -12,12 +12,12 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Stripe = require('stripe');
 const _ = require('lodash');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
@@ -287,7 +287,7 @@ async function mapper(user) {
     //       and this does 2 API requests per call
     //       and with a 3s delay we can get 60/3 = 20 in 1 min (so 40 requests total)
     //
-    await delay(THREE_SECONDS);
+    await setTimeout(THREE_SECONDS);
   }
 }
 

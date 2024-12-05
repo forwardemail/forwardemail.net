@@ -7,22 +7,18 @@ const config = require('#config');
 const logger = require('#helpers/logger');
 
 async function onClose(session) {
-  // NOTE: do not change this prefix unless you also change it in `helpers/on-connect.js`
+  // NOTE: do not change this prefix unless you also change it in `helpers/on-connect.js` and `helpers/on-auth.js`
   const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
     config.env
   }`;
   await Promise.all([
     //
-    // decrease # concurrent connections for
-    // client hostname or remote address
+    // decrease # concurrent connections for remote address
     //
     (async () => {
-      if (!session?.resolvedRootClientHostname && !session?.remoteAddress)
-        return;
+      if (!session?.remoteAddress) return;
       try {
-        const key = `${prefix}:${
-          session.resolvedRootClientHostname || session.remoteAddress
-        }`;
+        const key = `${prefix}:${session.remoteAddress}`;
         const count = await this.client.incrby(key, 0);
         if (count > 0) await this.client.decr(key);
       } catch (err) {

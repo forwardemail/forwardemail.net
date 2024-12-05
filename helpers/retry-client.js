@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const timers = require('node:timers/promises');
 const undici = require('undici');
-const delay = require('delay');
 const ms = require('ms');
 
 const TimeoutError = require('./timeout-error');
@@ -39,6 +39,24 @@ class RetryClient extends undici.Client {
             );
         }, timeout);
 
+        if (options.resolver)
+          options.dispatcher = new undici.Agent({
+            // TODO: should we change defaults here; if so, change elsewhere too
+            // headersTimeout: ms(DURATION),
+            // connectTimeout: ms(DURATION),
+            // bodyTimeout: ms(DURATION),
+            connect: {
+              lookup(hostname, options, fn) {
+                options.resolver
+                  .lookup(hostname, options)
+                  .then((result) => {
+                    fn(null, result?.address, result?.family);
+                  })
+                  .catch((err) => fn(err));
+              }
+            }
+          });
+
         const response = await this._request(options);
         clearTimeout(t);
 
@@ -65,7 +83,7 @@ class RetryClient extends undici.Client {
       } catch (err) {
         if (count >= retries || !isRetryableError(err)) throw err;
         const ms = calculateDelay(count);
-        if (ms) await delay(ms);
+        if (ms) await timers.setTimeout(ms);
         return this.request(options, count + 1);
       }
     };

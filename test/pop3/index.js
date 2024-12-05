@@ -14,12 +14,11 @@
  */
 
 const Pop3Command = require('node-pop3');
-const Redis = require('ioredis-mock');
 const dayjs = require('dayjs-with-plugins');
-const getPort = require('get-port');
 const ip = require('ip');
 const ms = require('ms');
 const pify = require('pify');
+const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
 
@@ -29,52 +28,56 @@ const POP3 = require('../../pop3-server');
 
 const Mailboxes = require('#models/mailboxes');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const onAppend = require('#helpers/imap/on-append');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
+// dynamically import @ava/get-port
+let getPort;
+import('@ava/get-port').then((obj) => {
+  getPort = obj.default;
+});
+
 const onAppendPromise = pify(onAppend, { multiArgs: true });
-const client = new Redis({}, logger);
-const subscriber = new Redis({}, logger);
 const tlsOptions = { rejectUnauthorized: false };
 const IP_ADDRESS = ip.address();
 
-client.setMaxListeners(0);
-subscriber.setMaxListeners(0);
-subscriber.channels.setMaxListeners(0);
-
 test.before(utils.setupMongoose);
-test.before(async () => {
-  const smtpLimitKeys = await client.keys(`${config.smtpLimitNamespace}*`);
-  await smtpLimitKeys.map((k) => client.del(k));
-});
+test.before(utils.setupRedisClient);
 test.after.always(utils.teardownMongoose);
+test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   const secure = false;
   t.context.secure = secure;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
   const port = await getPort();
   const sqlitePort = await getPort();
-  const sqlite = new SQLite({ client, subscriber });
+  const sqlite = new SQLite({
+    client: t.context.client,
+    subscriber: t.context.subscriber
+  });
   t.context.sqlite = sqlite;
   await sqlite.listen(sqlitePort);
   const wsp = createWebSocketAsPromised({
     port: sqlitePort
   });
   t.context.wsp = wsp;
-  const pop3 = new POP3({ client, subscriber, wsp }, secure);
+  const pop3 = new POP3(
+    { client: t.context.client, subscriber: t.context.subscriber, wsp },
+    secure
+  );
   t.context.port = port;
   t.context.server = await pop3.listen(port);
   t.context.pop3 = pop3;
 
-  const user = await utils.userFactory
+  const user = await t.context.userFactory
     .withState({
       plan: 'enhanced_protection',
       [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
     })
     .create();
 
-  await utils.paymentFactory
+  await t.context.paymentFactory
     .withState({
       user: user._id,
       amount: 300,
@@ -88,7 +91,7 @@ test.beforeEach(async (t) => {
 
   t.context.user = await user.save();
 
-  const domain = await utils.domainFactory
+  const domain = await t.context.domainFactory
     .withState({
       members: [{ user: user._id, group: 'admin' }],
       plan: user.plan,
@@ -99,7 +102,7 @@ test.beforeEach(async (t) => {
 
   t.context.domain = domain;
 
-  const alias = await utils.aliasFactory
+  const alias = await t.context.aliasFactory
     .withState({
       user: user._id,
       domain: domain._id,

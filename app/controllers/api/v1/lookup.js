@@ -10,15 +10,17 @@ const RE2 = require('re2');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
 const { isEmail } = require('validator');
 
-const config = require('#config');
+const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
-const Aliases = require('#models/aliases');
+const config = require('#config');
 const email = require('#helpers/email');
+const i18n = require('#helpers/i18n');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
@@ -42,6 +44,8 @@ async function lookup(ctx) {
     ctx.body = {};
     return;
   }
+
+  let hasMultiplePGP = false;
 
   const bannedUserIdSet = await Users.getBannedUserIdSet(ctx.client);
 
@@ -97,7 +101,7 @@ async function lookup(ctx) {
   // eslint-disable-next-line unicorn/no-array-callback-reference
   let aliases = await Aliases.find(aliasQuery)
     .select(
-      'id user has_imap recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
+      'id user has_imap has_pgp public_key recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
     )
     .lean()
     .exec();
@@ -119,7 +123,7 @@ async function lookup(ctx) {
       name: punycode.toUnicode(username)
     })
       .select(
-        'id user has_imap recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
+        'id user has_imap has_pgp public_key recipients name is_enabled error_code_if_disabled has_recipient_verification verified_recipients'
       )
       .lean()
       .exec();
@@ -136,25 +140,30 @@ async function lookup(ctx) {
   // that belong to users with a non-banned and paid account
   //
   if (domain.is_global) {
-    // TODO: implement caching here
-    // TODO: maxTimeMS: 30000
-    const validUserIds = await Users.distinct('id', {
-      $or: [
-        // get all paid users with expiration is >= 30 days ago
-        {
-          plan: { $in: ['enhanced_protection', 'team'] },
-          [config.userFields.planExpiresAt]: {
-            $gte: dayjs().subtract(30, 'days').toDate()
-          }
-        },
-        // get all admin users
-        {
-          group: 'admin'
+    const arr = await Users.aggregate([
+      {
+        $match: {
+          $or: [
+            // get all paid users with expiration is >= 30 days ago
+            {
+              plan: { $in: ['enhanced_protection', 'team'] },
+              [config.userFields.planExpiresAt]: {
+                $gte: dayjs().subtract(30, 'days').toDate()
+              }
+            },
+            // get all admin users
+            {
+              group: 'admin'
+            }
+          ]
         }
-      ]
-    });
+      },
+      { $group: { _id: '$id' } }
+    ])
+      .allowDiskUse(true)
+      .exec();
 
-    const validUserIdSet = new Set(validUserIds);
+    const validUserIdSet = new Set(arr.map((v) => v._id));
 
     aliases = aliases.filter((a) => {
       return (
@@ -309,9 +318,11 @@ async function lookup(ctx) {
   const body = {
     alias_ids: [], // ids of IMAP storage to deliver to (supports 1 nested lookup)
     has_imap: false,
+    alias_public_key: false,
     mapping: []
   };
 
+  // eslint-disable-next-line complexity
   function pushToBody(alias) {
     // alias.name = "*" (wildcard catchall) otherwise an alias
     // alias.is_enabled = "!" prefixed alias name (or !! or !!!)
@@ -330,6 +341,25 @@ async function lookup(ctx) {
     ) {
       body.alias_ids.push(alias.id);
       body.has_imap = true;
+    }
+
+    //
+    // set PGP key for body response
+    // (see FAQ note about this; we don't encrypt if we detect multiple matches)
+    // (and instead we send a one-time courtesy email for the owner once a week)
+    //
+    if (
+      !hasMultiplePGP &&
+      alias.is_enabled &&
+      alias.has_pgp &&
+      isSANB(alias.public_key)
+    ) {
+      if (body.alias_public_key) {
+        hasMultiplePGP = true;
+        delete body.alias_public_key;
+      } else {
+        body.alias_public_key = alias.public_key;
+      }
     }
 
     // recursively lookup all inboxes we need to deliver this to
@@ -510,10 +540,55 @@ async function lookup(ctx) {
 
     if (username !== alias.name && punycode.toUnicode(username) !== alias.name)
       continue;
+
     pushToBody(alias);
   }
 
   ctx.body = body;
+
+  // send error alert email regarding multiple PGP setup
+  if (hasMultiplePGP) {
+    ctx.client
+      .get(`multiple_pgp_check:${domain.id}`)
+      .then(async (cache) => {
+        if (boolean(cache)) return;
+        try {
+          await ctx.client.set(
+            `multiple_pgp_check:${domain.id}`,
+            true,
+            'PX',
+            ms('7d')
+          );
+          const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+          const subject = i18n.translate(
+            'MULTIPLE_PGP_SUBJECT',
+            obj.locale,
+            username
+          );
+          const message = i18n.translate(
+            'MULTIPLE_PGP_MESSAGE',
+            obj.locale,
+            domain.name,
+            username
+          );
+          await email({
+            template: 'alert',
+            message: {
+              to: obj.to,
+              bcc: config.email.message.from,
+              subject
+            },
+            locals: {
+              message,
+              locale: obj.locale
+            }
+          });
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
+      })
+      .catch((err) => ctx.logger.fatal(err));
+  }
 }
 
 module.exports = lookup;

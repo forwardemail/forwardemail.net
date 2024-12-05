@@ -6,7 +6,11 @@
 const Boom = require('@hapi/boom');
 
 function ensureDomainAdmin(ctx, next) {
-  if (ctx.state.domain.group === 'admin') return next();
+  if (ctx.state.domain.group === 'admin') {
+    if (typeof next !== 'function') return;
+    return next();
+  }
+
   // if no `ctx.state.domain.group` property exists, then we can try to find it
   if (
     ctx.state.domain &&
@@ -20,10 +24,15 @@ function ensureDomainAdmin(ctx, next) {
         return m.user.toString() === ctx.state.user.id;
       return false;
     });
-    if (member && member.group === 'admin') return next();
+    if (member && member.group === 'admin') {
+      if (typeof next !== 'function') return;
+      return next();
+    }
   }
 
-  ctx.throw(Boom.badRequest(ctx.translateError('IS_NOT_ADMIN')));
+  const err = Boom.badRequest(ctx.translateError('IS_NOT_ADMIN'));
+  if (typeof next !== 'function') throw err;
+  ctx.throw(err);
 }
 
 module.exports = ensureDomainAdmin;

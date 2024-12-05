@@ -58,7 +58,7 @@
             )= t("Visit our FAQ for more options")
         if domain && domain.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
-            href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`)
           )
             if user.plan === 'free'
               = t("Upgrade Now")
@@ -110,7 +110,7 @@
             != t('To access it for this domain, you need to click "Change Plan" &rarr; "<span class="notranslate">%s</span>", and then follow setup instructions.', titleize(humanize(user.plan)))
         if domain && domain.plan === 'free'
           a.btn.btn-dark.btn-lg.btn-block(
-            href=l(`/my-account/domains/${domain.name}/billing?plan=enhanced_protection`)
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`)
           )
             if user.plan === 'free'
               = t("Upgrade Now")

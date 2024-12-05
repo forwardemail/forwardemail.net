@@ -6,7 +6,7 @@ ul.list-unstyled.mb-3
   li.mb-3
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
-    != t('<strong class="text-decoration-underline">Unlimited</strong> addresses and domains for just $3/mo')
+    != t('<strong class="text-decoration-underline">Unlimited</strong> addresses and domains')
   li.mb-3
     i.fa.fa-fw.fa-check-circle.text-success
     = " "
@@ -145,6 +145,14 @@ ul.list-unstyled.mb-3
       li.list-inline-item.mr-1
         a.badge.badge-light(
           target="_blank",
+          href=l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd")
+        )
+          = "E2EE"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
           href=l("/faq#do-you-support-sending-email-with-smtp")
         )
           = "SMTP"
@@ -169,9 +177,25 @@ ul.list-unstyled.mb-3
       li.list-inline-item.mr-1
         a.badge.badge-light(
           target="_blank",
+          href=l("/faq#do-you-support-calendars-caldav")
+        )
+          = "CalDAV"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
+          href=l("/faq#do-you-support-bounce-webhooks")
+        )
+          = "Bounce Webhooks"
+          = " "
+          i.fa.fa-angle-right
+      li.list-inline-item.mr-1
+        a.badge.badge-light(
+          target="_blank",
           href=l("/faq#do-you-support-webhooks")
         )
-          = "HTTP"
+          = "HTTP Webhooks"
           = " "
           i.fa.fa-angle-right
       li.list-inline-item.mr-1

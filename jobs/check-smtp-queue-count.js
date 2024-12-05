@@ -12,9 +12,9 @@ const { parentPort } = require('node:worker_threads');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
-const delay = require('delay');
 const mongoose = require('mongoose');
 const ms = require('ms');
 
@@ -46,21 +46,36 @@ graceful.listen();
     // get list of all suspended domains
     // and recently blocked emails to exclude
     const now = new Date();
-    const [suspendedDomainIds, recentlyBlockedIds] = await Promise.all([
-      Domains.distinct('_id', {
-        is_smtp_suspended: true
-      }),
-      Emails.distinct('_id', {
-        updated_at: {
-          $gte: dayjs().subtract(1, 'hour').toDate(),
-          $lte: now
+    const [suspendedDomains, recentlyBlocked] = await Promise.all([
+      Domains.aggregate([
+        { $match: { is_smtp_suspended: true } },
+        { $group: { _id: '$_id' } }
+      ])
+        .allowDiskUse(true)
+        .exec(),
+      Emails.aggregate([
+        {
+          $match: {
+            updated_at: {
+              $gte: dayjs().subtract(1, 'hour').toDate(),
+              $lte: now
+            },
+            has_blocked_hashes: true,
+            blocked_hashes: {
+              $in: getBlockedHashes(env.SMTP_HOST)
+            }
+          }
         },
-        has_blocked_hashes: true,
-        blocked_hashes: {
-          $in: getBlockedHashes(env.SMTP_HOST)
+        {
+          $group: { _id: '$_id' }
         }
-      })
+      ])
+        .allowDiskUse(true)
+        .exec()
     ]);
+
+    const suspendedDomainIds = suspendedDomains.map((v) => v._id);
+    const recentlyBlockedIds = recentlyBlocked.map((v) => v._id);
 
     logger.info('%d suspended domain ids', suspendedDomainIds.length);
 
@@ -96,7 +111,7 @@ graceful.listen();
     await logger.error(err);
     // only send one of these emails every 15m
     // (this prevents the job from exiting)
-    await delay(ms('15m'));
+    await setTimeout(ms('15m'));
   }
 
   if (parentPort) parentPort.postMessage('done');

@@ -19,6 +19,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { Buffer } = require('node:buffer');
+const { isMainThread } = require('node:worker_threads');
 
 const X509 = require('@peculiar/x509');
 const _ = require('lodash');
@@ -34,7 +35,7 @@ const logger = require('#helpers/logger');
 
 // <https://github.com/JCMais/node-libcurl/issues/414>
 let Curl;
-if (config.env !== 'test') Curl = require('node-libcurl').Curl;
+if (config.env !== 'test' && isMainThread) Curl = require('node-libcurl').Curl;
 
 X509.cryptoProvider.set(crypto);
 
@@ -411,7 +412,8 @@ async function getApnCerts(client) {
   //       Accept: '*/*',
   //       'Accept-Language': 'en-us'
   //     },
-  //     body
+  //     body,
+  //     resolver
   //   }
   // );
   // const data = await response.body.text();

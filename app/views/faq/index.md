@@ -86,7 +86,6 @@
 * [Do you support email best practices](#do-you-support-email-best-practices)
 * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
-* [Will you ever increase prices](#will-you-ever-increase-prices)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
 
 
@@ -94,7 +93,9 @@
 
 Forward Email is a **fully featured email service provider** and **email hosting provider for custom domain names**.
 
-Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-safe encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
+We're an all-in-one alternative to Gmail + Mailchimp + Sendgrid.
+
+Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-resistant encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
 
 **Unlike other services, we don't charge you per user.**  You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.
 
@@ -102,6 +103,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
+* Canonical
 * Netflix
 * The Linux Foundation
 * The PHP Foundation
@@ -109,6 +111,9 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Disney Ad Sales
 * jQuery
 * LineageOS
+* Ubuntu
+* Kubuntu
+* Lubuntu
 * The University of Maryland
 * The University of Washington
 * Tufts University
@@ -139,20 +144,6 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
   <i class="fa fa-stopwatch font-weight-bold"></i>
   <strong class="font-weight-bold">Estimated Setup Time:</strong>
   <span>Less than 10 minutes</span>
-</div>
-
-<div class="alert my-3 alert-danger">
-  <i class="fa fa-stop-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Enhanced Privacy Protection:
-  </strong>
-  <span>
-    If you would like to hide your information from being publicly searchable over the Internet, then please go to <a class="alert-link" href="/my-account/domains" target="_blank">My Account <i class="fa fa-angle-right"></i> Domains</a> and upgrade your domain to a paid plan before starting this guide.
-    Publicly searchable information on free plans includes, but is not limited to: aliases, forwarded addresses, recipients, and advanced settings such as custom port forwarding.
-    If you would like to learn more about paid plans see our <a class="alert-link" rel="noopener noreferrer" href="/private-business-email">Pricing</a> page &ndash; otherwise keep reading!
-    All plans abide by our <a class="alert-link" href="/privacy">Privacy</a> policy of strictly not storing metadata nor emails.
-    We don't track you like other services do.
-  </span>
 </div>
 
 <div class="alert my-3 alert-success">
@@ -1081,6 +1072,12 @@ Yes, as of October 16, 2023 we support receiving email over IMAP as an add-on fo
 ## Do you support OpenPGP/MIME, end-to-end encryption ("E2EE"), and Web Key Directory ("WKD")
 
 Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end encryption ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), and the discovery of public keys using [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD).  You can configure OpenPGP using [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) or [self-host your own keys](https://wiki.gnupg.org/WKDHosting) (refer to [this gist for WKD server setup](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+
+* WKD lookups are cached for 1 hour to ensure timely email delivery → therefore if you add, change, or remove your WKD key, then please email us at `support@forwardemail.net` with your email address in order for us to manually purge the cache.
+* We support PGP encryption for messages that are forwarded via WKD lookup or using an uploaded PGP key on our interface.
+* Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
+* Messages sent to webhooks are not currently encrypted with PGP.
+* If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2461,6 +2458,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">org</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>
   <li class="list-inline-item"><code class="notranslate">pr</code></li>
+  <li class="list-inline-item"><code class="notranslate">pt</code></li>
   <li class="list-inline-item"><code class="notranslate">pw</code></li>
   <li class="list-inline-item"><code class="notranslate">rs</code></li>
   <li class="list-inline-item"><code class="notranslate">sc</code></li>
@@ -2757,6 +2755,16 @@ Note that if you upgrade or downgrade between paid plans within a 30-day window 
 
 ## Do you support bounce webhooks
 
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on email webhooks?  See <a href="/faq#do-you-support-webhooks" class="alert-link">Do you support webhooks?</a> for more insight.
+  <span>
+  </span>
+</div>
+
 Yes, as of August 14, 2024 we have added this feature.  You can now go to My Account → Domains → Settings → Bounce Webhook URL and configure an `http://` or `https://` URL that we will send a `POST` request to whenever outbound SMTP emails bounce.
 
 This is useful for you to manage and monitor your outbound SMTP – and can be used to maintain subscribers, opt-out, and detect whenever bounces occur.
@@ -2779,6 +2787,8 @@ Bounce webhook payloads are sent as a JSON with these properties:
   * `code` (Number) - bounce status code (e.g. `554`)
   * `status` (String) - bounce code from response message (e.g. `5.7.1`)
   * `line` (Number) - parsed line number, if any, [from Zone-MTA bounce parse list](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (e.g. `526`)
+* `headers` (Object) - key value pair of headers for the outbound email
+* `bounced_at` (String) - [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) formatted Date for when the bounce error occurred
 
 For example:
 
@@ -2797,7 +2807,9 @@ For example:
     "code": 552,
     "status": "5.2.2",
     "line": 300
-  }
+  },
+  "headers": {},
+  "bounced_at": "2024-08-24T01:50:02.828Z"
 }
 ```
 
@@ -2816,6 +2828,16 @@ Here are a few additional notes regarding bounce webhooks:
 
 
 ## Do you support webhooks
+
+<div class="alert my-3 alert-primary">
+  <i class="fa fa-info-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Tip:
+  </strong>
+    Looking for documentation on bounce webhooks?  See <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">Do you support bounce webhooks?</a> for more insight.
+  <span>
+  </span>
+</div>
 
 Yes, as of May 15, 2020 we have added this feature.  You can simply add webhook(s) exactly like you would with any recipient!  Please ensure that you have the "http" or "https" protocol prefixed in the webhook's URL.
 
@@ -3545,7 +3567,7 @@ Yes, the default limit is 10.  This does NOT mean that you can only have 10 alia
 
 ## Can I recursively forward emails
 
-Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails.
+Yes, you can, however you still must adhere to the maximum limit.  If you have `hello:linus@example.com` and `linus:user@gmail.com`, then emails to `hello@example.com` would get forwarded to `linus@example.com` and `user@gmail.com`.  Note that an error will be thrown if you attempt to recursively forward emails beyond the maximum limit.
 
 
 ## Can people unregister or register my email forwarding without my permission
@@ -3659,13 +3681,27 @@ We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) aga
 You can try to use one or more of these tools to check your domain's reputation and categorization:
 
 * [Cloudflare Domain Categorization Feedback](https://radar.cloudflare.com/domains/feedback)
-* [Spamhaus IP and Domain Reputation Checker](https://check.spamhaus.org/)
+* [Spamhaus IP and Domain Reputation Checker](https://check.spamhaus.org/) (DNSBL)
 * [Cisco Talos IP and Domain Reputation Center](https://talosintelligence.com/reputation_center)
-* [Barracuda IP and Domain Reputation Lookup](https://www.barracudacentral.org/lookups/lookup-reputation)
+* [Barracuda IP and Domain Reputation Lookup](https://www.barracudacentral.org/lookups/lookup-reputation) (DNSBL)
 * [MX Toolbox Blacklist Check](https://mxtoolbox.com/blacklists.aspx)
 * [Google Postmaster Tools](https://www.gmail.com/postmaster/)
 * [Yahoo Sender Hub](https://senders.yahooinc.com/) (includes Verizon/AOL)
-* [MultiRBL.valli.org Blacklist Check](https://multirbl.valli.org/lookup/)
+* [MultiRBL.valli.org Blacklist Check](https://multirbl.valli.org/lookup/) (DNSBL)
+* [Sender Score](https://senderscore.org/act/blocklist-remover/)
+* [Invaluement](https://www.invaluement.com/lookup/) (DNSBL)
+* [SURBL](https://www.surbl.org/) (DNSBL)
+* [Apple/Proofpoint IP removal](https://ipcheck.proofpoint.com/)
+* [Cloudmark IP removal](https://csi.cloudmark.com/en/reset/)
+* [SpamCop](https://www.spamcop.net/bl.shtml) (DNSBL)
+* [Microsoft Outlook and Office 365 IP removal](https://sendersupport.olc.protection.outlook.com/pm/Postmaster) – also see their sender portal at <https://sendersupport.olc.protection.outlook.com/pm/Postmaster>
+* [UCEPROTECT's Levels 1, 2, and 3](https://www.uceprotect.net/en/rblcheck.php) (DNSBL)
+* [UCEPROTECT's backscatterer.org](https://www.backscatterer.org/) (please read usage; it's not a spammer/DNSBL, it is used by some mail servers for protection against open relays and misdirected bounces – also known as "backscatter")
+* [UCEPROTECT's whitelisted.org](https://www.whitelisted.org/) (requires a fee)
+* AT\&T includes `abuse_rbl@abuse-att.net` in SMTP error messages, which is the best address to email to request removal
+* AOL/Verizon includes `[IPTS04]` in SMTP error messages, which indicates you need to submit removal request form at <https://senders.yahooinc.com/>
+* Cox Communications includes `unblock.request@cox.net` in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated
+* t-online.de (German/T-Mobile) includes `tobr@rx.t-online.de` in SMTP error messages, but they have not been reliable per our removal requests in the past
 
 If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 
@@ -3777,11 +3813,6 @@ Yes. Regardless of which plan you are on, you will pay only one monthly rate –
 ## Which payment methods do you accept
 
 We accept cards, wallets, and bank transfers using [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com/) – for one-time payments or monthly, quarterly, or yearly subscriptions.
-
-
-## Will you ever increase prices
-
-No. Prices will never increase. Unlike other companies, we will never shutdown our service either.
 
 
 ## How do you perform DNS lookups on domain names

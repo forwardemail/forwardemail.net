@@ -11,6 +11,7 @@ function isMongoError(err) {
     (isErrorConstructorName(err, 'MongooseError') &&
       !isErrorConstructorName(err, 'ValidationError')) ||
     isErrorConstructorName(err, 'MongoError') ||
+    isErrorConstructorName(err, 'MongoServerError') ||
     isErrorConstructorName(err, 'MongoBulkWriteError') ||
     isErrorConstructorName(err, 'MongoNetworkError') ||
     isErrorConstructorName(err, 'MongoNotConnectedError') ||

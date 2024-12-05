@@ -4,6 +4,7 @@
  */
 
 const path = require('node:path');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
 const pWaitFor = require('p-wait-for');
@@ -50,7 +51,11 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     // invalid password
     if (err.code === 'SQLITE_NOTADB') {
       const _err = new IMAPError(
-        `Invalid password, please try again or go to ${config.urls.web}/my-account/domains/${session.user.domain_name}/aliases and click "Generate Password"`,
+        `Invalid password, please try again or go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          session.user.domain_name
+        )}/aliases and click "Generate Password"`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -124,6 +129,7 @@ async function setupPragma(db, session, cipher = 'chacha20') {
     db.loadExtension(sqliteRegex.getLoadablePath());
   } catch (err) {
     // <https://github.com/asg017/sqlite-regex/issues/14>
+    err.isCodeBug = true;
     logger.fatal(err);
     if (err.message.includes('sqlite-regex-linux-arm64'))
       logger.error(
@@ -145,6 +151,10 @@ async function setupPragma(db, session, cipher = 'chacha20') {
   // TODO: compression, e.g. https://github.com/phiresky/sqlite-zstd
   // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#loadextensionpath-entrypoint---this>
   // db.loadExtension(...);
+
+  // ensure we don't use memory and instead use disk for tmp storage
+  // (otherwise 10 GB sqlite file will take up +10 GB memory)
+  db.pragma('temp_store=1;');
 
   //
   // NOTE: if we don't set this then we get the following error for VACUUM commands:

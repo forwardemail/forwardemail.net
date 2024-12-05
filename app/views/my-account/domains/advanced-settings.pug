@@ -8,7 +8,7 @@ mixin deleteDomain
         .alert.alert-danger.small.mb-0= t("Deleting your domain is irreversible.  Please take extreme caution when deleting your domain.")
       .card-footer.text-right
         form.ajax-form.confirm-prompt(
-          action=l(`/my-account/domains/${domain.name}`),
+          action=l(`/my-account/domains/${punycode.toASCII(domain.name)}`),
           method="POST"
         )
           input(type="hidden", name="_method", value="DELETE")
@@ -39,7 +39,7 @@ block append stylesheets
 
 mixin planRequired(isTeam = false)
   if domain.plan === 'free' || (isTeam && domain.plan !== 'team')
-    .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${domain.name}/billing?plan=${isTeam ? "team" : "enhanced_protection"}`), isTeam ? "Team" : "Enhanced Protection")
+    .alert.alert-warning.text-center!= t('Please <a class="alert-link" href="%s">upgrade to the <span class="notranslate">%s</span> plan</a> to unlock this feature.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${isTeam ? "team" : "enhanced_protection"}`), isTeam ? "Team" : "Enhanced Protection")
 
 block body
   - const isDisabled = domain.plan === "free";
@@ -66,7 +66,7 @@ block body
           .modal-body
             .text-center
               form.ajax-form.confirm-prompt(
-                action=l(`/my-account/domains/${domain.name}/catch-all-passwords`),
+                action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/catch-all-passwords`),
                 method="POST"
               )
                 p.font-weight-bold.lead= t("Enter a strong new password:")
@@ -156,7 +156,7 @@ block body
                           = dayjs(token.created_at).format("M/D/YY h:mm A z")
                         td.align-middle
                           form.ajax-form.confirm-prompt.d-inline-block(
-                            action=l(`/my-account/domains/${domain.name}/catch-all-passwords/${token.id}`),
+                            action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/catch-all-passwords/${token.id}`),
                             method="POST"
                           )
                             input(
@@ -191,7 +191,7 @@ block body
             .text-center
               +planRequired(true)
             form.ajax-form.confirm-prompt(
-              action=l(`/my-account/domains/${domain.name}/invites`),
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/invites`),
               method="POST",
               disabled=isTeamDisabled
             )
@@ -325,13 +325,13 @@ block body
                         = " "
                         != t("Congratulations &ndash; you completed setup!")
                     else
-                      .alert.alert-danger!= t('You must <a href="%s" class="alert-link">complete setup</a> to send emails via SMTP and API.', l(`/my-account/domains/${domain.name}/verify-smtp`))
+                      .alert.alert-danger!= t('You must <a href="%s" class="alert-link">complete setup</a> to send emails via SMTP and API.', l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`))
               //- Render setup instructions relative to the provider
               if !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
                 .card-footer.text-right
                   ul.list-inline.mb-0
                     li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-success(
-                      href=l(`/my-account/domains/${domain.name}/aliases`)
+                      href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                     )= t("Generate alias passwords")
                     li.list-inline-item.mb-3.mb-md-0: a.btn.btn-sm.btn-dark(
                       href=l("/faq#do-you-support-sending-email-with-smtp"),
@@ -343,7 +343,7 @@ block body
                     )= t("Send via API")
                     li.list-inline-item
                       a.btn.btn-sm(
-                        href=l(`/my-account/domains/${domain.name}/verify-smtp`),
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/verify-smtp`),
                         class=domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record ? "btn-secondary" : "btn-danger"
                       )
                         if domain.has_dkim_record && domain.has_return_path_record && domain.has_dmarc_record
@@ -377,7 +377,7 @@ block body
                     h6.dropdown-header= t("Change plan to:")
                     each plan in [ 'free', 'enhanced_protection', 'team' ].filter(plan => plan !== domain.plan)
                       a.dropdown-item(
-                        href=l(`/my-account/domains/${domain.name}/billing?plan=${plan}`)
+                        href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=${plan}`)
                       )
                         case plan
                           when 'enhanced_protection'
@@ -397,6 +397,44 @@ block body
                     a.dropdown-item.small.text-muted(
                       href=l(`/private-business-email?domain=${domain.name}`)
                     )= t("See all plan features")
+
+          //- Max Quota Per Alias
+          if domain.group === 'admin'
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(
+                type="hidden",
+                name="_section",
+                value="max_quota_per_alias"
+              )
+              h2.h6.card-header= t("Storage Max Quota Per Alias")
+              .card-body
+                +planRequired(false)
+                .form-group.mb-0
+                  input#input-max-quota-per-alias.form-control(
+                    type="text",
+                    disabled=isDisabled,
+                    name="max_quota_per_alias",
+                    value=Number.isFinite(domain.max_quota_per_alias) ? bytes(domain.max_quota_per_alias) : ""
+                  )
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t('Domain admins can update the maximum storage quota across all aliases. Enter a human-friendly string such as "1GB" &ndash; note that we use <a href="https://github.com/visionmedia/bytes.js" class="notranslate alert-link" target="_blank" rel="noopener noreferrer">bytes</a> to parse the value to a Number.  Domain admins can set maximum storage quota limits on a per alias basis by editing the alias directly.')
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
 
           //- Ignore MX Check
           if domain.group === 'admin'
@@ -544,7 +582,7 @@ block body
                 ul.list-inline.mb-0
                   li.list-inline-item
                     form.ajax-form.confirm-prompt(
-                      action=l(`/my-account/domains/${domain.name}/advanced-settings/reset-domain-webhook-key`),
+                      action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings/reset-domain-webhook-key`),
                       method="POST"
                     )
                       input(type="hidden", name="_method", value="DELETE")
@@ -555,7 +593,7 @@ block body
           //- Restricted Alias Names
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
-              action=l(`/my-account/domains/${domain.name}/restricted-alias-names`),
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/restricted-alias-names`),
               method="POST",
               disabled=isTeamDisabled
             )
@@ -580,7 +618,7 @@ block body
           //- Allowlisted Senders
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
-              action=l(`/my-account/domains/${domain.name}/allowlist`),
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/allowlist`),
               method="POST"
             )
               h2.h6.card-header= t("Allowlisted Senders")
@@ -600,7 +638,7 @@ block body
           //- Denylisted Senders
           if domain.group === 'admin'
             form.ajax-form.confirm-prompt.card.border-themed.mb-3(
-              action=l(`/my-account/domains/${domain.name}/denylist`),
+              action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/denylist`),
               method="POST"
             )
               h2.h6.card-header= t("Denylisted Senders")
@@ -648,7 +686,7 @@ block body
                                 ul.list-inline.mb-0
                                   li.list-inline-item
                                     form.ajax-form.confirm-prompt.d-inline-block(
-                                      action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
+                                      action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/members/${member.user.id}`),
                                       method="POST",
                                       disabled=isTeamDisabled
                                     )
@@ -669,7 +707,7 @@ block body
                                   //- if member.user.id !== user.id
                                   li.list-inline-item
                                     form.ajax-form.confirm-prompt.d-inline-block(
-                                      action=l(`/my-account/domains/${domain.name}/members/${member.user.id}`),
+                                      action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/members/${member.user.id}`),
                                       method="POST",
                                       disabled=isTeamDisabled
                                     )
@@ -715,7 +753,7 @@ block body
                                   //- delete invite
                                   li.list-inline-item
                                     form.ajax-form.confirm-prompt.d-inline-block(
-                                      action=l(`/my-account/domains/${domain.name}/invites`),
+                                      action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/invites`),
                                       method="POST",
                                       disabled=isTeamDisabled
                                     )
@@ -1043,7 +1081,7 @@ block body
       .row.text-center.my-5
         .col
           a.btn.btn-outline-secondary(
-            href=l(domain.group === "admin" ? `/my-account/domains/${domain.name}` : "/my-account/domains")
+            href=l(domain.group === "admin" ? `/my-account/domains/${punycode.toASCII(domain.name)}` : "/my-account/domains")
           )
             i.fa.fa-angle-double-left
             = " "

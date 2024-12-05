@@ -25,6 +25,7 @@ async function getMessage(imapClient, info, provider) {
           })) {
             if (received) continue;
             if (
+              message.headers &&
               message.headers
                 .toString()
                 .includes(
