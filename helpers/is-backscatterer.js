@@ -40,7 +40,7 @@ async function isBackscatterer(value, client, resolver) {
     if (!boolean(result)) continue;
     const v = filtered[i];
     throw new DenylistError(
-      `The IP ${v} is listed on https://www.backscatterer.org. To request removal, you must visit https://www.backscatterer.org/index.php?target=test&ip=${v} ;`,
+      `MAIL FROM missing or has a mailer-daemon like From header, and the IP ${v} is listed at https://www.backscatterer.org/index.php?target=test&ip=${v} ;`,
       421,
       v
     );

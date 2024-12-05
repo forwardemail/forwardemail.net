@@ -8,15 +8,29 @@ const os = require('node:os');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
-const RE2 = require('re2');
+// TODO: SMTP needs resolver option
+//       https://github.com/nodemailer/smtp-server/issues/177
+
+// TODO: block these file attachments in spam scanner
+// .ade, .adp, .apk, .appx, .appxbundle, .bat, .cab, .chm, .cmd, .com, .cpl, .diagcab, .diagcfg, .diagpack, .dll, .dmg, .ex, .ex_, .exe, .hta, .img, .ins, .iso, .isp, .jar, .jnlp, .js, .jse, .lib, .lnk, .mde, .msc, .msi, .msix, .msixbundle, .msp, .mst, .nsh, .pif, .ps1, .scr, .sct, .shb, .sys, .vb, .vbe, .vbs, .vhd, .vxd, .wsc, .wsf, .wsh, .xll
+// (.7z?, .z?)
 const SpamScanner = require('spamscanner');
+
+// TODO: integrate ASN check and reputation check into spam scanner
+
+// TODO: mullvad dns blocklist (Extended)
+// <https://github.com/mullvad/dns-blocklists/blob/main/inventory/group_vars/all.yml>
+
+const RE2 = require('re2');
 const _ = require('lodash');
+const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
 const escapeStringRegexp = require('escape-string-regexp');
 const getStream = require('get-stream');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
+const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const revHash = require('rev-hash');
 const status = require('statuses');
@@ -36,11 +50,15 @@ const config = require('#config');
 const createBounce = require('#helpers/create-bounce');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
+const getAttributes = require('#helpers/get-attributes');
+const getBounceInfo = require('#helpers/get-bounce-info');
 const getErrorCode = require('#helpers/get-error-code');
+const getGreylistKey = require('#helpers/get-greylist-key');
 const getHeaders = require('#helpers/get-headers');
 const getRecipients = require('#helpers/get-recipients');
 const hasFingerprintExpired = require('#helpers/has-fingerprint-expired');
 const i18n = require('#helpers/i18n');
+const isAllowlisted = require('#helpers/is-allowlisted');
 const isArbitrary = require('#helpers/is-arbitrary');
 const isAuthenticatedMessage = require('#helpers/is-authenticated-message');
 const isBackscatterer = require('#helpers/is-backscatterer');
@@ -296,12 +314,8 @@ async function processBounces(headers, bounces, session, sealedMessage) {
     // iterate over each unique bounces and send if we already haven't
     // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
     //
-    await pMap(
-      uniqueBounces,
-      (bounce) => sendBounce.call(this, bounce, headers, sealedMessage),
-      {
-        concurrency: config.concurrency
-      }
+    await pMapSeries(uniqueBounces, (bounce) =>
+      sendBounce.call(this, bounce, headers, sealedMessage)
     );
   } catch (err) {
     logger.warn(err, { session });
@@ -410,13 +424,260 @@ async function imap(aliases, session, raw) {
   return { accepted, bounces };
 }
 
+async function checkBounceForSpam(bounce, headers, session) {
+  //
+  // NOTE: we always store the message fingerprint in our greylist database
+  //       in order to prevent the sender from retrying and having the same
+  //       bounce occur by the recipient's mail server (which could affect our reputation)
+  //       since it appears to the recipient's mail server as if we're the spammer
+  //       (see `helpers/is-greylisted.js` which checks the PTTL of this at top of the function)
+  //
+  await this.client.set(
+    getGreylistKey(session.fingerprint),
+    true,
+    'PX',
+    session.isAllowlisted ? ms('10m') : ms('1h')
+  );
+
+  // return early if the bounce was not from a truth source
+  if (!bounce?.err?.truthSource) return;
+
+  //
+  // bounce = {
+  //   address: 'foo@example.com',
+  //   host: 'example.com',
+  //   err: Error,
+  //   recipient: {
+  //     aliasPublicKey: PublicKey {
+  //       keyPacket: PublicKeyPacket {
+  //         version: 4,
+  //         created: 2024-12-04T21:52:42.000Z,
+  //         algorithm: 22,
+  //         publicParams: [Object],
+  //         expirationTimeV3: 0,
+  //         fingerprint: [Uint8Array],
+  //         keyID: [KeyID],
+  //         packets: PacketList(0) [],
+  //         fromStream: false
+  //       },
+  //       revocationSignatures: [],
+  //       directSignatures: [],
+  //       users: [ [User] ],
+  //       subkeys: [ [Subkey] ]
+  //     },
+  //     webhookKey: '...',
+  //     webhook: 'http://example.com:15836',
+  //     to: [ 'http://example.com:15836' ],
+  //     recipient: 'test@exmaple.com',
+  //     replacements: { 'test@example.com': 'http://example.com:15836' }
+  //   }
+  // }
+  //
+
+  // always ensure bounce info object is set
+  if (!bounce?.err?.bounceInfo)
+    bounce.err.bounceInfo = getBounceInfo(bounce?.err);
+
+  //
+  // `getAttributes` function will always return a unique array of lowercase metadata (e.g. hostnames, emails, etc)
+  // also note that `true` here indicates it must be SPF or DKIM aligned metadata (since users could otherwise spoof and we could denylist incorrectly)
+  //
+  const attributes = await getAttributes(headers, session, true);
+
+  //
+  // NOTE: we don't denylist attributes that are allowlisted as it would have no impact
+  //       instead, for those cases we alert admins of allowlisted values that may need to be denylisted
+  //
+  await pMap(
+    attributes,
+    // eslint-disable-next-line complexity
+    async (attr) => {
+      const isAttributeAllowlisted = await isAllowlisted(
+        attr,
+        this.client,
+        this.resolver
+      );
+
+      //
+      // NOTE: the key needs to have the date in it, otherwise it will keep rolling over
+      //       (this is a rudimentary and very simple approach)
+      //
+      // increase counter for category:attribute:date key
+      const key = `counter_${bounce.err.bounceInfo.category}:${attr}:${session.arrivalDateFormatted}`;
+      const count = await this.client.incr(key);
+      await this.client.pexpire(key, ms('1d'));
+
+      //
+      // NOTE: this is an arbitrary counting system that will need refined over time
+      //       until we have our spam scanner v7 reputation/tokenization system implemented
+      //       (which would come with a bayesian spam filter, phishing/malware token scanning, etc)
+      //
+      //       if the attribute was a truth source and counter >= 500 in a 24 hour period
+      //       or if the attribute was allowlisted and counter is >= 100 in a 24 hour period
+      //       or if the attribute was not allowlisted but the session was and counter >= 50 in a 24 hour period
+      //       or if the attribute was not allowlisted and nor was the session with >= 10 in a 24 hour period
+      //
+      //       (this will allow admins to see in real-time which bounce
+      //       categories and actions need hard-coded rules implemented)
+      //
+      let sendCountEmail = false;
+      if (config.truthSources.has(attr) && count >= 500) {
+        sendCountEmail = 500;
+      } else if (isAttributeAllowlisted && count >= 100) {
+        sendCountEmail = 100;
+      } else if (
+        !isAttributeAllowlisted &&
+        session.isAllowlisted &&
+        count >= 50
+      ) {
+        sendCountEmail = 50;
+      } else if (
+        !isAttributeAllowlisted &&
+        !session.isAllowlisted &&
+        count >= 10
+      ) {
+        sendCountEmail = 10;
+      }
+
+      if (sendCountEmail) {
+        const err = new TypeError(
+          `${config.views.locals.emoji(
+            isAttributeAllowlisted ? 'rotating_light' : 'warning'
+          )} ${attr} sent ${sendCountEmail}+ ${
+            bounce.err.bounceInfo.category
+          } bounces in 24 hours`
+        );
+        err.bounce = bounce;
+        err.session = session;
+        err.isCodeBug = true;
+        logger.fatal(err);
+      }
+
+      // attributes that are email addresses sending viruses get denylisted immediately
+      if (
+        bounce.err.bounceInfo.category === 'virus' &&
+        isEmail(attr, { ignore_max_length: true })
+      ) {
+        if (isAttributeAllowlisted) {
+          const err = new TypeError(
+            `${config.views.locals.emoji(
+              'microbe'
+            )} ${config.views.locals.emoji(
+              'rotating_light'
+            )} ${attr} was allowlisted and sent virus`
+          );
+          err.bounce = bounce;
+          err.session = session;
+          err.isCodeBug = true;
+          logger.fatal(err);
+        } else {
+          if (session.isAllowlisted) {
+            const err = new TypeError(
+              `${config.views.locals.emoji(
+                'microbe'
+              )} ${config.views.locals.emoji(
+                'warning'
+              )} ${attr} had allowlisted session and sent virus`
+            );
+            err.bounce = bounce;
+            err.session = session;
+            err.isCodeBug = true;
+            logger.fatal(err);
+          }
+
+          await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
+        }
+
+        return;
+      }
+
+      //
+      // NOTE: this is another arbitrary counter approach here for non-email virus attributes and spam in general
+      //       (note that admins will get an email if they see an allowlisted domain or email sending a lot of spam per above counter email)
+      //
+      //       if the attribute was allowlisted (e.g. truth source) then don't do anything (denylisting would have no effect anyways)
+      //       else if the attribute was a non-allowlisted email with >= 5 in a 24 hour period
+      //       else if the attribute was non-allowlisted with >= 10 in a 24 hour period
+      //
+
+      // return early if it was not a spam bounce
+      if (bounce.err.bounceInfo.category !== 'spam') return;
+
+      if (isAttributeAllowlisted) {
+        const err = new TypeError(
+          `${config.views.locals.emoji(
+            'canned_food'
+          )} ${config.views.locals.emoji(
+            'rotating_light'
+          )} ${attr} was allowlisted and sent spam`
+        );
+        err.bounce = bounce;
+        err.session = session;
+        err.isCodeBug = true;
+        logger.fatal(err);
+      } else {
+        let shouldDenylist = false;
+        if (isEmail(attr, { ignore_max_length: true }) && count >= 5) {
+          shouldDenylist = true;
+        } else if (count >= 10) {
+          shouldDenylist = true;
+        }
+
+        if (shouldDenylist) {
+          if (session.isAllowlisted) {
+            const err = new TypeError(
+              `${config.views.locals.emoji(
+                'canned_food'
+              )} ${config.views.locals.emoji(
+                'warning'
+              )} ${attr} had allowlisted session and sent spam`
+            );
+            err.bounce = bounce;
+            err.session = session;
+            err.isCodeBug = true;
+            logger.fatal(err);
+          }
+
+          await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
+        }
+      }
+    },
+    { concurrency: config.concurrency }
+  );
+}
+
 //
 // TODO: since we rewrote most of this and sendEmail only accepts one email at a time
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
+//
+// TODO: subtract already accepted if necessary
+// TODO: or alternatively only do mail_accepted
+//       after successful webhook and email sending
+//
+
 // eslint-disable-next-line complexity
-async function forward(recipient, session, raw) {
+async function forward(recipient, headers, session, raw) {
+  console.log('recipient', recipient);
+
+  //
+  // NOTE: we send emails in series therefore we can check
+  //       if the sender was denylisted since sending started
+  //       so that we can stop the spam right away rather
+  //       then wait until we're done iterating over RCPT TO values
+  //
+  try {
+    await isDenylisted(session.attributes, this.client, this.resolver);
+  } catch (err) {
+    // store a counter
+    if (err instanceof DenylistError)
+      await this.client.incr(
+        `denylist_prevented:${session.arrivalDateFormatted}`
+      );
+    throw err;
+  }
+
   const accepted = [];
   const bounces = [];
 
@@ -434,6 +695,7 @@ async function forward(recipient, session, raw) {
     return { accepted, bounces };
   }
 
+  // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks
   if (recipient.webhook) {
     try {
       const mail = await simpleParser(raw, {
@@ -727,6 +989,15 @@ async function forward(recipient, session, raw) {
             .catch((err) => logger.fatal(err));
         }
       }
+
+      // accepted counter
+      this.client
+        .incrby(
+          `mail_accepted:${session.arrivalDateFormatted}`,
+          info.accepted.length
+        )
+        .then()
+        .catch((err) => logger.fatal(err));
     }
 
     if (info.rejectedErrors && info.rejectedErrors.length > 0) {
@@ -752,9 +1023,18 @@ async function forward(recipient, session, raw) {
           address: recipient.recipient,
           host: recipient.host,
           err,
-          recipient // TODO: should this be `recipient.to` (?) or more specific
+          recipient
         });
       }
+
+      // rejected counter
+      this.client
+        .incrby(
+          `mail_rejected:${session.arrivalDateFormatted}`,
+          info.rejectedErrors.length
+        )
+        .then()
+        .catch((err) => logger.fatal(err));
     }
   } catch (err) {
     // here we do some magic so that we push an error message
@@ -776,7 +1056,26 @@ async function forward(recipient, session, raw) {
       err,
       recipient
     });
+
+    // rejected counter
+    this.client
+      .incr(`mail_rejected:${session.arrivalDateFormatted}`)
+      .then()
+      .catch((err) => logger.fatal(err));
   }
+
+  //
+  // NOTE: here is where we denylist and greylist in real-time
+  //       in order to prevent spammers from sending to bulk RCPT TO
+  //       (this is the reason why we use pMapSeries instead of pMap)
+  //
+  await pMap(
+    bounces,
+    (bounce) => checkBounceForSpam.call(this, bounce, headers, session),
+    {
+      concurrency: config.concurrency
+    }
+  );
 
   return { accepted, bounces };
 }
@@ -918,7 +1217,7 @@ async function onDataMX(raw, session, headers, body) {
   // (this throws an error if it exceeds duration)
   await hasFingerprintExpired(session, this.client);
 
-  // TODO: possibly store a counter here too
+  // TODO: possibly store a counter here too for greylisting by day
   // check if the message needs to be greylisted
   // (this throws an error if so)
   await isGreylisted(session, this.client);
@@ -930,7 +1229,7 @@ async function onDataMX(raw, session, headers, body) {
   //
   await isAuthenticatedMessage(raw, session, this.resolver);
 
-  // TODO: possibly store a counter here too
+  // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)
   // (this relies on `isAuthenticatedMessage` to populate `session.spf` etc)
@@ -1004,8 +1303,6 @@ async function onDataMX(raw, session, headers, body) {
     return;
   }
 
-  // TODO: we need to check denylist for each in between deliveries
-
   //
   // TODO: we need to set x-original-to, and add received headers
   // TODO: add X-Original-To and Received headers to outbound SMTP (to top of message)
@@ -1030,12 +1327,8 @@ async function onDataMX(raw, session, headers, body) {
     // forwarding
     data.normalized.length === 0
       ? Promise.resolve()
-      : pMap(
-          data.normalized,
-          (recipient) => forward.call(this, recipient, session, sealedMessage),
-          {
-            concurrency: config.concurrency
-          }
+      : pMapSeries(data.normalized, (recipient) =>
+          forward.call(this, recipient, headers, session, sealedMessage)
         )
   ]);
 
@@ -1045,6 +1338,7 @@ async function onDataMX(raw, session, headers, body) {
   console.log('imapResults', imapResults);
   console.log('forwardResults', forwardResults);
 
+  // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
   if (imapResults) {
     if (imapResults.accepted.length > 0) {
       for (const a of imapResults.accepted) {
@@ -1072,25 +1366,8 @@ async function onDataMX(raw, session, headers, body) {
   console.log('accepted', accepted);
   console.log('bounces', bounces);
 
-  // accepted counter
-  if (accepted.length > 0) {
-    this.client
-      .incrby(
-        `mail_accepted:${session.arrivalDateFormatted}`,
-        accepted.length // TODO: `- alreadyAccepted.length`
-      )
-      .then()
-      .catch((err) => logger.fatal(err));
-  }
-
   // return early if no bounces (complete successful delivery)
   if (bounces.length === 0) return;
-
-  // rejected counter
-  this.client
-    .incrby(`mail_rejected:${session.arrivalDateFormatted}`, bounces.length)
-    .then()
-    .catch((err) => logger.fatal(err));
 
   //
   // prepare final combined error and message
@@ -1099,6 +1376,16 @@ async function onDataMX(raw, session, headers, body) {
   const codes = [];
   let isDenylistError = false;
   let hasCodeBug = false;
+
+  //
+  // TODO: we may want to redo this in the future
+  //     (it's vague as to what email addresses specifically fail)
+  //     (although we do not want to expose destination addresses)
+  //
+  if (accepted.length > 0)
+    errors.push(
+      new Error(`Message delivered to ${arrayJoinConjunction(accepted.sort())}`)
+    );
 
   for (const bounce of bounces) {
     errors.push(bounce.err);
@@ -1119,6 +1406,11 @@ async function onDataMX(raw, session, headers, body) {
 
   // if lowest error code was >= 500 then don't send a bounce email notification
   if (err.responseCode >= 500) return;
+
+  //
+  // NOTE: we might not even want to send bounces here altogether
+  //       and rely on the existing users SMTP queue to send a bounce to them
+  //
 
   // process (and then send) bounces if any in the background
   processBounces

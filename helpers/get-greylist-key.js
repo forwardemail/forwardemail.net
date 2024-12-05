@@ -5,8 +5,8 @@
 
 const revHash = require('rev-hash');
 
-function getGreylistKey(clientRootDomainOrIP) {
-  return `greylist:${revHash(clientRootDomainOrIP)}`;
+function getGreylistKey(value) {
+  return `greylist:${revHash(value)}`;
 }
 
 module.exports = getGreylistKey;

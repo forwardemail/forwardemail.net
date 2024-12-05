@@ -244,9 +244,19 @@ async function getRecipients(session, scan) {
             messages.push(
               'For more information on Spam Scanner visit https://spamscanner.net'
             );
-            throw new SMTPError(_.uniq(messages).join(' '), {
+            const err = new SMTPError(_.uniq(messages).join(' '), {
               responseCode: 554
             });
+
+            //
+            // NOTE: we don't scan messages going to abuse@forwardemail.net
+            //
+            if (to.address.toLowerCase() === config.abuseEmail) {
+              err.isCodeBug = true;
+              logger.fatal(err, { session });
+            } else {
+              throw err;
+            }
           }
         }
 

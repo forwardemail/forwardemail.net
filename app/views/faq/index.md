@@ -3681,13 +3681,27 @@ We routinely monitor our [IP addresses](#what-are-your-servers-ip-addresses) aga
 You can try to use one or more of these tools to check your domain's reputation and categorization:
 
 * [Cloudflare Domain Categorization Feedback](https://radar.cloudflare.com/domains/feedback)
-* [Spamhaus IP and Domain Reputation Checker](https://check.spamhaus.org/)
+* [Spamhaus IP and Domain Reputation Checker](https://check.spamhaus.org/) (DNSBL)
 * [Cisco Talos IP and Domain Reputation Center](https://talosintelligence.com/reputation_center)
-* [Barracuda IP and Domain Reputation Lookup](https://www.barracudacentral.org/lookups/lookup-reputation)
+* [Barracuda IP and Domain Reputation Lookup](https://www.barracudacentral.org/lookups/lookup-reputation) (DNSBL)
 * [MX Toolbox Blacklist Check](https://mxtoolbox.com/blacklists.aspx)
 * [Google Postmaster Tools](https://www.gmail.com/postmaster/)
 * [Yahoo Sender Hub](https://senders.yahooinc.com/) (includes Verizon/AOL)
-* [MultiRBL.valli.org Blacklist Check](https://multirbl.valli.org/lookup/)
+* [MultiRBL.valli.org Blacklist Check](https://multirbl.valli.org/lookup/) (DNSBL)
+* [Sender Score](https://senderscore.org/act/blocklist-remover/)
+* [Invaluement](https://www.invaluement.com/lookup/) (DNSBL)
+* [SURBL](https://www.surbl.org/) (DNSBL)
+* [Apple/Proofpoint IP removal](https://ipcheck.proofpoint.com/)
+* [Cloudmark IP removal](https://csi.cloudmark.com/en/reset/)
+* [SpamCop](https://www.spamcop.net/bl.shtml) (DNSBL)
+* [Microsoft Outlook and Office 365 IP removal](https://sendersupport.olc.protection.outlook.com/pm/Postmaster) – also see their sender portal at <https://sendersupport.olc.protection.outlook.com/pm/Postmaster>
+* [UCEPROTECT's Levels 1, 2, and 3](https://www.uceprotect.net/en/rblcheck.php) (DNSBL)
+* [UCEPROTECT's backscatterer.org](https://www.backscatterer.org/) (please read usage; it's not a spammer/DNSBL, it is used by some mail servers for protection against open relays and misdirected bounces – also known as "backscatter")
+* [UCEPROTECT's whitelisted.org](https://www.whitelisted.org/) (requires a fee)
+* AT\&T includes `abuse_rbl@abuse-att.net` in SMTP error messages, which is the best address to email to request removal
+* AOL/Verizon includes `[IPTS04]` in SMTP error messages, which indicates you need to submit removal request form at <https://senders.yahooinc.com/>
+* Cox Communications includes `unblock.request@cox.net` in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated
+* t-online.de (German/T-Mobile) includes `tobr@rx.t-online.de` in SMTP error messages, but they have not been reliable per our removal requests in the past
 
 If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
 

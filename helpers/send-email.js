@@ -236,9 +236,9 @@ async function sendEmail(
     err.target = target;
     err.port = port;
     err.envelope = envelope;
+    err.truthSource = session.truthSource; // necessary for bounce parsing
 
     // TODO: clean this up (shouldn't be mirrored to `err` probably?)
-    err.truthSource = session.truthSource;
     err.mx = session.mx;
     err.requireTLS = session.requireTLS;
     err.ignoreTLS = session.ignoreTLS;

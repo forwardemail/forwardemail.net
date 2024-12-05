@@ -10,6 +10,22 @@ const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 
 async function isGreylisted(session, client) {
+  //
+  // check if the message fingerprint was greylisted
+  // (message fingerprints get greylisted if they bounce)
+  // (see the logic in `helpers/on-data-mx.js`)
+  //
+  const msToGo = await client.pttl(getGreylistKey(session.fingerprint));
+  if (msToGo > 0) {
+    throw new SMTPError(
+      `Message was greylisted, try again in ${prettyMilliseconds(msToGo, {
+        verbose: true,
+        secondsDecimalDigits: 0
+      })}; see https://forwardemail.net/faq#do-you-have-a-greylist for more information`,
+      { responseCode: 450, ignoreHook: true }
+    );
+  }
+
   // safeguard to return early if the sender was allowlisted
   if (session.isAllowlisted) return;
 
