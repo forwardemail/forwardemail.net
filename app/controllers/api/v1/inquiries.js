@@ -5,10 +5,8 @@
 
 const { createHmac } = require('node:crypto');
 const Boom = require('@hapi/boom');
-const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('lodash');
-const { Iconv } = require('iconv');
 const { isEmail } = require('validator');
 const { Headers } = require('mailsplit');
 
