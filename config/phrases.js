@@ -302,6 +302,9 @@ module.exports = {
   INVALID_INQUIRY_WEBHOOK_PAYLOAD: 'Invalid inquiry webhook payload.',
   INVALID_INQUIRY_WEBHOOK_REQUEST:
     'Webhook request did not originate from a valid hostname',
+  MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER:
+    'Webhook request missing X-Signature-Header',
+  INVALID_INQUIRY_WEBHOOK_SIGNATURE: 'Invalid signature in webhook request',
   INVALID_USER: 'User does not exist.',
   INVALID_LOG: 'Log does not exist.',
   INVALID_MEMBER: 'Member does not exist.',

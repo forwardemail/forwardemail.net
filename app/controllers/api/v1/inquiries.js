@@ -3,16 +3,22 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { createHmac } = require('node:crypto');
 const Boom = require('@hapi/boom');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('lodash');
 const { Iconv } = require('iconv');
 const { isEmail } = require('validator');
-const { simpleParser } = require('mailparser');
+const { Headers } = require('mailsplit');
 
+const { decrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
+
+const webhookSignatureKey = env.WEBHOOK_SIGNATURE_KEY;
+const WEBHOOK_SIGNATURE_HEADER = 'X-Webhook-Signature';
 
 function findHeaderByName(name, headers) {
   for (const header of headers) {
@@ -27,12 +33,10 @@ function findHeaderByName(name, headers) {
 
 // eslint-disable-next-line complexity
 async function create(ctx) {
-  const { body } = ctx.request;
+  const { body, headers: requestHeaders } = ctx.request;
 
   ctx.logger.info('creating inquiry from webhook');
 
-  // TODO: Add support for webhook payload signature:
-  // https://stackoverflow.com/questions/68885086/how-to-create-signed-webhook-requests-in-nodejs/68885281#68885281
   if (
     !ctx.allowlistValue ||
     ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
@@ -41,22 +45,37 @@ async function create(ctx) {
       Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'))
     );
 
-  let parsed;
-  try {
-    parsed = await simpleParser(body.raw, {
-      Iconv,
-      skipHtmlToText: true,
-      skipTextLinks: true,
-      skipTextToHtml: true,
-      skipImageLinks: true,
-      maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
-    });
-  } catch (err) {
-    ctx.logger.error(err);
-    return ctx.throw(err);
+  if (
+    !_.isObject(requestHeaders) ||
+    !isSANB(requestHeaders[WEBHOOK_SIGNATURE_HEADER])
+  )
+    return ctx.throw(
+      Boom.badRequest(
+        ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
+      )
+    );
+
+  if (isSANB(webhookSignatureKey)) {
+    const webhookSignature = createHmac('sha256', decrypt(webhookSignatureKey))
+      .update(body)
+      .digest('hex');
+
+    if (requestHeaders[WEBHOOK_SIGNATURE_HEADER] !== webhookSignature) {
+      return ctx.throw(
+        Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE'))
+      );
+    }
+  } else {
+    const err = new TypeError(
+      'Webhook signature key missing, did you forget to add it to .env?'
+    );
+    err.isCodeBug = true;
+    ctx.logger.fatal(err);
   }
 
   const { headerLines, session, text } = body;
+  const headers = new Headers(headerLines);
+
   if (!session)
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
@@ -68,29 +87,21 @@ async function create(ctx) {
     );
 
   if (
-    (parsed.headers.has('Auto-submitted') &&
-      parsed.headers.get('Auto-submitted') !== 'no') ||
-    (parsed.headers.has('Auto-Submitted') &&
-      parsed.headers.get('Auto-Submitted') !== 'no') ||
-    (parsed.headers.has('X-Auto-Response-Suppress') &&
+    (headers.hasHeader('auto-submitted') &&
+      headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no') ||
+    (headers.hasHeader('x-auto-response-suppress') &&
       ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-        parsed.headers.get('X-Auto-Response-Suppress').toLowerCase().trim()
+        headers.getFirst('x-auto-response-suppress').toLowerCase().trim()
       )) ||
-    parsed.headers.has('List-Id') ||
-    parsed.headers.has('List-id') ||
-    parsed.headers.has('List-Unsubscribe') ||
-    parsed.headers.has('List-unsubscribe') ||
-    parsed.headers.has('Feedback-ID') ||
-    parsed.headers.has('Feedback-Id') ||
-    parsed.headers.has('X-Autoreply') ||
-    parsed.headers.has('X-Auto-Reply') ||
-    parsed.headers.has('X-AutoReply') ||
-    parsed.headers.has('X-Autorespond') ||
-    parsed.headers.has('X-Auto-Respond') ||
-    parsed.headers.has('X-AutoRespond') ||
-    (parsed.headers.has('Precedence') &&
+    headers.hasHeader('list-id') ||
+    headers.hasHeader('list-unsubscribe') ||
+    headers.hasHeader('feedback-id') ||
+    headers.hasHeader('x-autoreply') ||
+    headers.hasHeader('x-autorespond') ||
+    headers.hasHeader('x-auto-respond') ||
+    (headers.hasHeader('precedence') &&
       ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
-        parsed.headers.get('Precedence').toLowerCase().trim()
+        headers.getFirst('precedence').toLowerCase().trim()
       ))
   )
     return;
