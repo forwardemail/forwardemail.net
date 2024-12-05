@@ -27,7 +27,7 @@ jobs:
       SMTP_MESSAGE_MAX_SIZE: ${{ secrets.SMTP_MESSAGE_MAX_SIZE }}
       DKIM_PRIVATE_KEY_VALUE: ${{ secrets.DKIM_PRIVATE_KEY_VALUE }}
       AXE_SILENT: ${{ secrets.AXE_SILENT }}
-      AXE_SHOW_META: ${{ secrets.AXE_SILENT }}
+      AXE_SHOW_META: ${{ secrets.AXE_SHOW_META }}
       AXE_SHOW_STACK: ${{ secrets.AXE_SHOW_STACK }}
       TXT_ENCRYPTION_KEY: ${{ secrets.TXT_ENCRYPTION_KEY }}
       HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
