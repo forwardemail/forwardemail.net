@@ -10,10 +10,10 @@ const _ = require('lodash');
 const { isEmail } = require('validator');
 const { Headers } = require('mailsplit');
 
-const { decrypt } = require('./encrypt-decrypt');
 const config = require('#config');
 const env = require('#config/env');
 const { Inquiries, Users } = require('#models');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 const webhookSignatureKey = env.WEBHOOK_SIGNATURE_KEY;
 const WEBHOOK_SIGNATURE_HEADER = 'X-Webhook-Signature';

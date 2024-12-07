@@ -40,7 +40,7 @@ async function getRecipients(session, scan) {
     session.envelope.rcptTo,
     // eslint-disable-next-line complexity
     async (to) => {
-      let port = '25';
+      let port = 25;
       try {
         let hasAdultContentProtection = true;
         let hasPhishingProtection = true;
@@ -146,7 +146,7 @@ async function getRecipients(session, scan) {
         if (_.isObject(body)) {
           // `port` (String) - a valid port number, defaults to 25
           if (isSANB(body.port) && isPort(body.port) && body.port !== '25') {
-            port = body.port;
+            port = Number.parseInt(body.port, 10);
             logger.debug(`Custom port for ${to.address} detected`, {
               port,
               session

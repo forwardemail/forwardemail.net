@@ -98,6 +98,9 @@ async function getTransporter(options = {}, err) {
     // client
   } = options;
 
+  // safeguard to ensure port is always a number
+  if (typeof port === 'string') throw new TypeError('Port must be a number');
+
   let mx = {
     host: target,
     port
@@ -109,7 +112,7 @@ async function getTransporter(options = {}, err) {
   //
 
   // this is required since custom port forwarding would be recursive otherwise
-  if (env.NODE_ENV === 'test' || port === 25) {
+  if (port === 25) {
     // <https://github.com/zone-eu/mx-connect#configuration-options>
     mx = await asyncMxConnect({
       ignoreMXHosts,
