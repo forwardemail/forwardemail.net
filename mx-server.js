@@ -28,15 +28,6 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 //       and replace with catch (err) for onData to detect and store counter
 //       based off err.name detected or if it was combined then err.errors
 
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
-// TODO: we probably should disable spam scanner
 class MX {
   constructor(options = {}) {
     this.client = options.client;

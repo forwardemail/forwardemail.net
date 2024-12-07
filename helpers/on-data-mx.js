@@ -12,9 +12,8 @@ const { isIP } = require('node:net');
 //       https://github.com/nodemailer/smtp-server/issues/177
 
 // TODO: block these file attachments in spam scanner
-// .ade, .adp, .apk, .appx, .appxbundle, .bat, .cab, .chm, .cmd, .com, .cpl, .diagcab, .diagcfg, .diagpack, .dll, .dmg, .ex, .ex_, .exe, .hta, .img, .ins, .iso, .isp, .jar, .jnlp, .js, .jse, .lib, .lnk, .mde, .msc, .msi, .msix, .msixbundle, .msp, .mst, .nsh, .pif, .ps1, .scr, .sct, .shb, .sys, .vb, .vbe, .vbs, .vhd, .vxd, .wsc, .wsf, .wsh, .xll
-// (.7z?, .z?)
-const SpamScanner = require('spamscanner');
+// .z, .ade, .adp, .apk, .appx, .appxbundle, .bat, .cab, .chm, .cmd, .com, .cpl, .diagcab, .diagcfg, .diagpack, .dll, .dmg, .ex, .ex_, .exe, .hta, .img, .ins, .iso, .isp, .jar, .jnlp, .js, .jse, .lib, .lnk, .mde, .msc, .msi, .msix, .msixbundle, .msp, .mst, .nsh, .pif, .ps1, .scr, .sct, .shb, .sys, .vb, .vbe, .vbs, .vhd, .vxd, .wsc, .wsf, .wsh, .xll
+// const SpamScanner = require('spamscanner');
 
 // TODO: integrate ASN check and reputation check into spam scanner
 
@@ -83,6 +82,8 @@ const HOSTNAME = os.hostname();
 
 const srs = new SRS(config.srs);
 
+/*
+// TODO: re-enable spam scanner once v7 released
 const scanner = new SpamScanner({
   logger,
   clamscan: config.env === 'test',
@@ -97,6 +98,7 @@ const scanner = new SpamScanner({
     size: Math.floor(bytes('0.5GB') / 253)
   }
 });
+*/
 
 async function sendBounce(bounce, headers, session, sealedMessage) {
   try {
@@ -1301,6 +1303,8 @@ async function onDataMX(raw, session, headers, body) {
     if (silentBanned) return;
   }
 
+  /*
+  // TODO: re-enable spam scanner once v7 released
   const scan = await scanner.scan(raw);
 
   // arbitrary tests (e.g. EICAR) always should throw
@@ -1308,6 +1312,7 @@ async function onDataMX(raw, session, headers, body) {
     throw new SMTPError(scan.results.arbitrary.join(' '), {
       responseCode: 554
     });
+  */
 
   //
   // NOTE: however the other spamscanner tests including these should be on a per-domain basis
@@ -1326,7 +1331,9 @@ async function onDataMX(raw, session, headers, body) {
   await updateMXHeaders(session, headers, body);
 
   // this is the core logic that determines where to forward and deliver emails to
-  const data = await getRecipients.call(this, session, scan);
+  // TODO: re-enable spam scanner once v7 released
+  // const data = await getRecipients.call(this, session, scan);
+  const data = await getRecipients.call(this, session);
 
   // return early if necessary (e.g. all recipients were silent banned)
   if (
