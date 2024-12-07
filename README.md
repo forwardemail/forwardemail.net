@@ -329,7 +329,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 16. Set up GitHub deployment keys for all the servers. Note that the `deployment-keys` directory is ignored from git, so if you have a private repository and wish to commit it, then remove `deployment-keys` from the `.gitignore` file.
 
     ```sh
-    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    node ansible-playbook ansible/playbooks/deployment-keys.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
     ```
 
 17. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
@@ -409,6 +409,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-pop3.json production exec "pm2 reload all"
     pm2 deploy ecosystem-sqlite.json production exec "pm2 reload all"
     pm2 deploy ecosystem-caldav.json production exec "pm2 reload all"
+    pm2 deploy ecosystem-mx.json production exec "pm2 reload all"
     ```
 
 20. Create a DKIM key for your domain name (must match `WEB_HOST` environment variable) with a default selector of `default` (must match `DKIM_KEY_SELECTOR` environment variable).  Then upload it to the servers:
@@ -420,13 +421,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 21. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    node ansible-playbook ansible/playbooks/gapp-creds.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    node ansible-playbook ansible/playbooks/gapp-creds.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
     ```
 
 22. (Optional) Copy over custom TTF or OTF fonts to be installed on the server (e.g. used for PDF rendering, rendering with Sharp, open-graph images, etc):
 
     ```sh
-    node ansible-playbook ansible/playbooks/fonts.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    node ansible-playbook ansible/playbooks/fonts.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
     ```
 
     Note that at the time of this writing we copy these files:
@@ -441,13 +442,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     > **NOTE:** This assumes that you have also set in `.env` file the keys of `GPG_SECURITY_KEY` with the full file path to the key *and* `GPG_SECURITY_PASSPHRASE` with the GPG passphrase. You can export via `gpg --armor --export-secret-key YOURKEYIDHERE > .gpg-security-key`. You can get `YOURKEYIDHERE` via `gpg --list-keys`.  You can generate a key with `gpg --full-generate-key` (e.g. for `support@yourdomain.com` or `security@yourdomain.com`).  Note you should also update the path in `config/index.js` for `openPGPKey` value.
 
     ```sh
-    node ansible-playbook ansible/playbooks/gpg-security-key.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    node ansible-playbook ansible/playbooks/gpg-security-key.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
     ```
 
 24. Copy the `.env.production` to the servers:
 
     ```sh
-    node ansible-playbook ansible/playbooks/env.yml -l 'imap:pop3:smtp:http:bree:sqlite' --user deploy
+    node ansible-playbook ansible/playbooks/env.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
     ```
 
 25. Run an initial deploy to all the servers:
@@ -484,6 +485,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-caldav.json production
     ```
 
+    ```sh
+    pm2 deploy ecosystem-mx.json production
+    ```
+
 26. Save the process list on the servers so when if the server were to reboot, it will automatically boot back up the processes:
 
     ```sh
@@ -516,6 +521,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
     ```sh
     pm2 deploy ecosystem-caldav.json production exec "pm2 save"
+    ```
+
+    ```sh
+    pm2 deploy ecosystem-mx.json production exec "pm2 save"
     ```
 
 27. Test by visiting your web and API server in your browser (click "proceed to unsafe" site and bypass certificate warning).
