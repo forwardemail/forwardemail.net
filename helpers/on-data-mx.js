@@ -691,12 +691,6 @@ async function checkBounceForSpam(bounce, headers, session) {
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
-//
-// TODO: subtract already accepted if necessary
-// TODO: or alternatively only do mail_accepted
-//       after successful webhook and email sending
-//
-
 // eslint-disable-next-line complexity
 async function forward(recipient, headers, session, raw) {
   //
@@ -1180,8 +1174,6 @@ async function updateMXHeaders(session, headers, body) {
     );
   }
 }
-
-// TODO: ensure MX servers have database/redis access
 
 // eslint-disable-next-line complexity
 async function onDataMX(raw, session, headers, body) {
