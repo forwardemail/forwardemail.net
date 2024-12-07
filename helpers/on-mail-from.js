@@ -19,33 +19,34 @@ function onMailFrom(address, session, fn) {
   if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
   // validate email address
-  if (
-    typeof address === 'object' &&
-    isSANB(address.address) &&
-    !isEmail(address.address, { ignore_max_length: true })
-  )
-    return setImmediate(() =>
-      fn(
-        refineAndLogError(
-          new SMTPError('Address is not a valid RFC 5321 email address', {
-            responseCode: 553,
-            ignoreHook: true
-          }),
-          session,
-          false,
-          this
+  if (typeof address === 'object' && isSANB(address.address)) {
+    if (!isEmail(address.address, { ignore_max_length: true }))
+      return setImmediate(() =>
+        fn(
+          refineAndLogError(
+            new SMTPError('Address is not a valid RFC 5321 email address', {
+              responseCode: 553,
+              ignoreHook: true
+            }),
+            session,
+            false,
+            this
+          )
         )
-      )
-    );
+      );
 
-  //
-  // check if it was invalid SRS (pass `shouldThrow` as `true`)
-  //
-  try {
-    if (parseHostFromDomainOrAddress(address.address) === env.WEB_HOST)
-      checkSRS(address.address, true, true);
-  } catch (err) {
-    return setImmediate(() => fn(refineAndLogError(err, session, false, this)));
+    //
+    // check if it was invalid SRS (pass `shouldThrow` as `true`)
+    // (we need to support blank MAIL FROM, e.g. "MAIL FROM: <>")
+    //
+    try {
+      if (parseHostFromDomainOrAddress(address.address) === env.WEB_HOST)
+        checkSRS(address.address, true, true);
+    } catch (err) {
+      return setImmediate(() =>
+        fn(refineAndLogError(err, session, false, this))
+      );
+    }
   }
 
   setImmediate(fn);
