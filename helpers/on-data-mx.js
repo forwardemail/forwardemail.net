@@ -317,7 +317,7 @@ async function processBounces(headers, bounces, session, sealedMessage) {
     // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
     //
     await pMapSeries(uniqueBounces, (bounce) =>
-      sendBounce.call(this, bounce, headers, sealedMessage)
+      sendBounce.call(this, bounce, headers, session, sealedMessage)
     );
   } catch (err) {
     logger.warn(err, { session });

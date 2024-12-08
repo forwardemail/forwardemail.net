@@ -46,7 +46,6 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
     session.originalFromAddressRootDomain
   ];
 
-  // TODO: this is null it seems
   const replyTo = [
     // check the Reply-To header
     ...replyToAddresses.map((addr) => checkSRS(addr.address).toLowerCase()),
@@ -95,7 +94,7 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
     //       if any Reply-To has SPF pass (or) DKIM alignment then push _all_ of the addresses
     //
     let hasAlignedReplyTo = false;
-    for (const sender of replyToAddresses) {
+    for (const sender of replyTo) {
       if (
         session?.signingDomains?.size > 0 &&
         (session.signingDomains.has(

@@ -27,7 +27,7 @@ const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
 
 // TODO: remove yum here and wrap these with spaces or something
 const REGEX_SYSADMIN_SUBJECT = new RE2(
-  /docker|system events|monit alert|cron|yum|exim|backup|logwatch|unattended-upgrades/im
+  /docker|graylog|digest|event notification|event alert|system events|monit alert|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
 );
 
 /*
@@ -216,7 +216,11 @@ function isArbitrary(session, headers, bodyStr) {
   //       therefore we check for those cases with a simple regular expression against the Subject line
   //       and if the SPF policy was not strictly failing, then it's probably a legitimate message
   //
-  if (!session.hasSameHostnameAsFrom && !session.hadAlignedAndPassingDKIM) {
+  if (
+    !session.hasSameHostnameAsFrom &&
+    !session.hadAlignedAndPassingDKIM &&
+    !session.isAllowlisted
+  ) {
     const hasSameRcptToAsFrom = session.envelope.rcptTo.some(
       (to) =>
         parseRootDomain(parseHostFromDomainOrAddress(checkSRS(to.address))) ===
