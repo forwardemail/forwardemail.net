@@ -576,7 +576,8 @@ async function checkBounceForSpam(bounce, headers, session) {
         sendCountEmail = 10;
       }
 
-      if (sendCountEmail) {
+      // NOTE: we may want to trigger alerts for non-allowlisted senders if they exceed a threshold in future
+      if (session.isAllowlisted && sendCountEmail) {
         const err = new TypeError(
           `${config.views.locals.emoji(
             isAttributeAllowlisted ? 'rotating_light' : 'warning'
