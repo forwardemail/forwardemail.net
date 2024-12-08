@@ -46,6 +46,7 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
     session.originalFromAddressRootDomain
   ];
 
+  // TODO: this is null it seems
   const replyTo = [
     // check the Reply-To header
     ...replyToAddresses.map((addr) => checkSRS(addr.address).toLowerCase()),

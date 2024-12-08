@@ -112,7 +112,7 @@ async function getTransporter(options = {}, err) {
   //
 
   // this is required since custom port forwarding would be recursive otherwise
-  if (port === 25) {
+  if (env.NODE_ENV === 'test' || port === 25) {
     // <https://github.com/zone-eu/mx-connect#configuration-options>
     mx = await asyncMxConnect({
       ignoreMXHosts,

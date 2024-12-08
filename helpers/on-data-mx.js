@@ -120,7 +120,7 @@ async function sendBounce(bounce, headers, session, sealedMessage) {
         messageId: headers.getFirst('message-id'),
         date: session.arrivalDate
       },
-      bounce.error,
+      bounce.err,
       sealedMessage
     );
 
