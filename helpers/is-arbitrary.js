@@ -74,8 +74,6 @@ const domainWithoutTLD =
 
 const REGEX_DOMAIN_WITHOUT_TLD = new RE2(new RegExp(domainWithoutTLD, 'im'));
 const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
-const REGEX_PAYPAL_PHRASES = new RE2(/reminder|invoice|money request/im);
-const REGEX_PAYPAL = new RE2(/paypal/im);
 
 // eslint-disable-next-line complexity
 function isArbitrary(session, headers, bodyStr) {
@@ -95,10 +93,12 @@ function isArbitrary(session, headers, bodyStr) {
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
   // (seems to only come from "outlook.com" and "paypal.com" hosts)
   //
+  // X-Email-Type-Id = RT000238
+  //
   if (
-    ((subject && REGEX_PAYPAL_PHRASES.test(subject)) ||
-      (isSANB(bodyStr) && REGEX_PAYPAL_PHRASES.test(bodyStr))) &&
-    (REGEX_PAYPAL.test(from) || (isSANB(bodyStr) && REGEX_PAYPAL.test(bodyStr)))
+    session.originalFromAddressRootDomain === 'paypal.com' &&
+    headers.hasHeader('x-email-type-id') &&
+    headers.getFirst('x-email-type-id') === 'RT000238'
   ) {
     const err = new SMTPError(
       'Due to ongoing PayPal invoice spam, you must manually send an invoice link'
