@@ -230,14 +230,18 @@ function isArbitrary(session, headers, bodyStr) {
       hasSameRcptToAsFrom &&
       session.spfFromHeader.status.result !== 'pass' &&
       !(
-        session.spfFromHeader.status.result !== 'fail' &&
+        !['softfail', 'fail'].includes(session.spfFromHeader.status.result) &&
         subject &&
+        (!headers.hasHeader('x-mailer') ||
+          headers.getFirst('x-mailer').toLowerCase().includes('drupal')) &&
         REGEX_SYSADMIN_SUBJECT.test(subject)
       )
     ) {
       // TODO: until we're certain this is properly working we're going to monitor it with code bug to admins
       const err = new TypeError(
-        `Spoofing detected and was soft blocked from ${session.originalFromAddressRootDomain}`
+        `Spoofing detected and was soft blocked from ${
+          session.resolvedRootClientHostname || session.remoteAddress
+        }`
       );
       err.isCodeBug = true;
       err.session = session;
