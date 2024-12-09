@@ -29,6 +29,7 @@
   * [Provisioning](#provisioning)
   * [Deployment](#deployment)
 * [Deployment Advice](#deployment-advice)
+* [Bare Metal Advice](#bare-metal-advice)
 * [License](#license)
 
 
@@ -553,6 +554,39 @@ For example, if you made changes to a web controller, then you only need to depl
 ```sh
 pm2 deploy ecosystem-web.json production exec "git reset --hard HEAD && git pull origin master && pm2 reload all"
 ```
+
+
+## Bare Metal Advice
+
+To set up initial servers, you may need to append the flag `--` to the scripts above, for example:
+
+```sh
+node ansible-playbook ansible/playbooks/mx2.yml --user ubuntu -l 'mx2' --ask-become-pass
+```
+
+If you are provisioning servers after IPMI/VPN access, then you may need to take these additional steps:
+
+1. Remove the `ubuntu` (or other named) default user created during ISO installation:
+
+   ```sh
+   sudo deluser --remove-home ubuntu
+   ```
+
+2. Resize the disk partiion to 100%:
+
+   ```sh
+   df -h
+   sudo lvdisplay
+   sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+   sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+   df -h
+   ```
+
+3. Setup crypttab for auto-mount of LUKS encrypted root volume.
+
+   ```sh
+   TODO
+   ```
 
 
 ## License
