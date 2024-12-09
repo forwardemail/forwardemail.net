@@ -585,7 +585,9 @@ async function checkBounceForSpam(bounce, headers, session) {
       if (
         session.isAllowlisted &&
         sendCountEmail &&
-        !['network', 'blocklist'].includes(bounce.err.bounceInfo.category)
+        !['envelope', 'network', 'greylist', 'blocklist'].includes(
+          bounce.err.bounceInfo.category
+        )
       ) {
         const err = new TypeError(
           `${config.views.locals.emoji(
