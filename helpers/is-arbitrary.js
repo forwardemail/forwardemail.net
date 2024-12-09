@@ -27,7 +27,7 @@ const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
 
 // TODO: remove yum here and wrap these with spaces or something
 const REGEX_SYSADMIN_SUBJECT = new RE2(
-  /docker|graylog|digest|event notification|event alert|system events|monit alert|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
+  /docker|graylog|digest|event notification|package update manager|event alert|system events|monit alert|ping|monitor|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
 );
 
 /*

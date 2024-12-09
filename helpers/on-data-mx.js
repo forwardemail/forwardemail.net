@@ -299,7 +299,12 @@ async function processBounces(headers, bounces, session, sealedMessage) {
       checkSRS(session.envelope.mailFrom.address).endsWith('+donotreply') ||
       checkSRS(session.envelope.mailFrom.address).endsWith('-donotreply') ||
       checkSRS(session.originalFromAddress).endsWith('+donotreply') ||
-      checkSRS(session.originalFromAddress).endsWith('-donotreply')
+      checkSRS(session.originalFromAddress).endsWith('-donotreply') ||
+      // mssecurity-noreply@microsoft.com
+      checkSRS(session.envelope.mailFrom.address).endsWith('+noreply') ||
+      checkSRS(session.envelope.mailFrom.address).endsWith('-noreply') ||
+      checkSRS(session.originalFromAddress).endsWith('+noneply') ||
+      checkSRS(session.originalFromAddress).endsWith('-noneply')
     )
       throw new Error('Bounce prevented due to mailer-daemon username');
 
@@ -577,7 +582,11 @@ async function checkBounceForSpam(bounce, headers, session) {
       }
 
       // NOTE: we may want to trigger alerts for non-allowlisted senders if they exceed a threshold in future
-      if (session.isAllowlisted && sendCountEmail) {
+      if (
+        session.isAllowlisted &&
+        sendCountEmail &&
+        !['network', 'blocklist'].includes(bounce.err.bounceInfo.category)
+      ) {
         const err = new TypeError(
           `${config.views.locals.emoji(
             isAttributeAllowlisted ? 'rotating_light' : 'warning'
