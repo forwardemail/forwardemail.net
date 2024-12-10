@@ -81,28 +81,31 @@ async function processEvent(ctx, event) {
         has_txt_record: true
       });
 
-      const subject = `${user.email} - ${event.data.object.customer} - ${filtered.length} declined charges and ${count} verified domains`;
-
-      emailHelper({
-        template: 'alert',
-        message: {
-          to: config.email.message.from,
-          subject: `${
-            count > 0
-              ? 'Potential Fraud to Investigate'
-              : 'Banned User for Fraud Alert'
-          }: ${subject}`
-        },
-        locals: {
-          message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
-        }
-      })
-        .then()
-        .catch((err) => logger.fatal(err));
+      if (!user.is_banned) {
+        const subject = `${user.email} - ${event.data.object.customer} - ${filtered.length} declined charges and ${count} verified domains`;
+        emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            subject: `${
+              count > 0
+                ? 'Potential Fraud to Investigate'
+                : 'Banned User for Fraud Alert'
+            }: ${subject}`
+          },
+          locals: {
+            message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+          }
+        })
+          .then()
+          .catch((err) => logger.fatal(err));
+      }
 
       if (count === 0) {
-        user.is_banned = true;
-        await user.save();
+        if (!user.is_banned) {
+          user.is_banned = true;
+          await user.save();
+        }
 
         const [charges, subscriptions] = await Promise.all([
           stripe.charges.list({
