@@ -243,8 +243,9 @@ function getBounceInfo(err) {
     response.includes(`?test=${IP_ADDRESS}`) ||
     response.includes(`?query=${IP_ADDRESS}`) ||
     response.includes(`?ip=${IP_ADDRESS}`) ||
-    (['rate', 'block', 'spam'].includes(bounceInfo.category) &&
-      response.includes(IP_ADDRESS))
+    (['rate', 'block', 'spam', 'other'].includes(bounceInfo.category) &&
+      response.includes(IP_ADDRESS)) ||
+    response.includes('exceeded the maximum number of connections')
   ) {
     // test against our IP and put into blocklist category if so
     bounceInfo.category = 'blocklist';
