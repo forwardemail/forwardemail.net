@@ -257,7 +257,9 @@ function getBounceInfo(err) {
     bounceInfo.category = 'blocklist';
   else if (response.includes('tobr@rx.t-online.de'))
     bounceInfo.category = 'blocklist';
-  else if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS)) {
+  else if (response.includes('an unusual rate of unsolicited mail')) {
+    bounceInfo.category = 'blocklist';
+  } else if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS)) {
     //
     // Message failed: 550-5.7.1 [121.127.44.56      19] Gmail has detected that this message is likely\n550-5.7.1 suspicious due to the very low reputation of the sending domain. To\n550-5.7.1 best protect our users from spam, the message has been blocked. For\n550-5.7.1 more information, go to\n550 5.7.1  https://support.google.com/mail/answer/188131 71dfb90a1353d-51750f8b609si2030842e0c.156
     //
