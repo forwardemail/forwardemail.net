@@ -317,6 +317,10 @@ function getBounceInfo(err) {
   if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS))
     bounceInfo.category = 'blocklist';
 
+  // posteo seems to have IP warmup issues
+  if (bounceInfo.category === 'spam' && err.truthSource === 'posteo.de')
+    bounceInfo.category = 'blocklist';
+
   return bounceInfo;
 }
 
