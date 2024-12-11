@@ -171,6 +171,7 @@ function getBounceInfo(err) {
     // 421-4.7.28 Gmail has detected an unusual rate of unsolicited mail originating
     // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]
     if (
+      response.includes(IP_ADDRESS) ||
       response.includes('IP address') ||
       response.includes('from your SPF domain') ||
       response.includes('from your IP Netblock')
@@ -286,7 +287,10 @@ function getBounceInfo(err) {
     // <https://sender.office.com/> <-- submit request here
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     bounceInfo.category = 'blocklist';
-  } else if (response.includes('unusual rate of mail')) {
+  } else if (
+    response.includes('unusual rate of mail') &&
+    !response.includes(IP_ADDRESS)
+  ) {
     bounceInfo.category = 'spam';
     //
     // dmarc failures shouldn't occur since we check them on our side
@@ -306,6 +310,12 @@ function getBounceInfo(err) {
   if (bounceInfo.category === 'blocklist') bounceInfo.action = 'defer';
   else if (['virus', 'spam'].includes(bounceInfo.category))
     bounceInfo.action = 'reject';
+
+  //
+  // safeguard in case IP warmup
+  //
+  if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS))
+    bounceInfo.category = 'blocklist';
 
   return bounceInfo;
 }
