@@ -233,7 +233,7 @@ function isArbitrary(session, headers, bodyStr) {
         !['softfail', 'fail'].includes(session.spfFromHeader.status.result) &&
         subject &&
         (!headers.hasHeader('x-mailer') ||
-          headers.getFirst('x-mailer').toLowerCase().includes('drupal')) &&
+          !headers.getFirst('x-mailer').toLowerCase().includes('drupal')) &&
         REGEX_SYSADMIN_SUBJECT.test(subject)
       )
     ) {
