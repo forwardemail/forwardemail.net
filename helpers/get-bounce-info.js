@@ -271,14 +271,16 @@ function getBounceInfo(err) {
       response.includes('blacklisted') ||
       response.includes('blocklisted')) &&
     response.includes(IP_ADDRESS)
-  )
+  ) {
     // <https://sender.office.com/> <-- submit request here
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     bounceInfo.category = 'blocklist';
-  //
-  // dmarc failures shouldn't occur since we check them on our side
-  //
-  else if (bounceInfo.category === 'dmarc') bounceInfo.action = 'defer';
+  } else if (response.includes('unusual rate of mail')) {
+    bounceInfo.category = 'spam';
+    //
+    // dmarc failures shouldn't occur since we check them on our side
+    //
+  } else if (bounceInfo.category === 'dmarc') bounceInfo.action = 'defer';
   else if (
     REGEX_DENYLIST.test(response) ||
     REGEX_BLACKLIST.test(response) ||

@@ -563,13 +563,13 @@ async function lookup(ctx) {
           const subject = i18n.translate(
             'MULTIPLE_PGP_SUBJECT',
             obj.locale,
-            username
+            `${username}@${domain.name}`
           );
           const message = i18n.translate(
             'MULTIPLE_PGP_MESSAGE',
             obj.locale,
             domain.name,
-            username
+            `${username}@${domain.name}`
           );
           await email({
             template: 'alert',
