@@ -239,6 +239,7 @@ function getBounceInfo(err) {
   } else if (bounceInfo.category === 'policy' && REGEX_SPOOFING.test(response))
     bounceInfo.category = 'spam';
   else if (
+    bounceInfo.category === 'policy' ||
     response.includes(`?q=${IP_ADDRESS}`) ||
     response.includes(`?test=${IP_ADDRESS}`) ||
     response.includes(`?query=${IP_ADDRESS}`) ||
