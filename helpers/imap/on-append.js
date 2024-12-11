@@ -19,7 +19,6 @@ const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const isHTML = require('is-html');
 const mongoose = require('mongoose');
-const parseErr = require('parse-err');
 const splitLines = require('split-lines');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { convert } = require('html-to-text');
@@ -32,7 +31,6 @@ const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const Threads = require('#models/threads');
 const WKD = require('#helpers/wkd');
-const config = require('#config');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const getFingerprint = require('#helpers/get-fingerprint');
@@ -252,18 +250,19 @@ async function onAppend(path, flags, date, raw, session, fn) {
                   template: 'alert',
                   message: {
                     to: session.user.owner_full_email,
-                    cc: config.email.message.from,
+                    // cc: config.email.message.from,
                     subject: i18n.translate(
                       'PGP_ENCRYPTION_ERROR',
                       session.user.locale
                     )
                   },
                   locals: {
-                    message: `<pre><code>${JSON.stringify(
-                      parseErr(err),
-                      null,
-                      2
-                    )}</code></pre>`,
+                    message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
+                    // message: `<pre><code>${JSON.stringify(
+                    //   parseErr(err),
+                    //   null,
+                    //   2
+                    // )}</code></pre>`,
                     locale: session.user.locale
                   }
                 })

@@ -573,7 +573,7 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    sudo deluser --remove-home ubuntu
    ```
 
-2. Resize the disk partiion to 100%:
+2. Resize the disk partition to 100%:
 
    ```sh
    df -h
@@ -583,10 +583,67 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    df -h
    ```
 
-3. Setup crypttab for auto-mount of LUKS encrypted root volume.
+3. Setup `crypttab` for auto-mount of LUKS encrypted root volume:
+
+   > **Important:** if you have multiple LUKS devices you cannot use these steps below.
+   > Instead you will need to modify the one-liner commands below to specifically replace UUID value.
+   > This guide only accounts for one LUKS encrypted volume (e.g. use `sudo blkid | grep "crypto_LUKS"` or [refer to this guide](https://www.golinuxcloud.com/mount-luks-encrypted-disk-partition-linux/) to determine your values).
+
+   > Run the following commands individually:
 
    ```sh
-   TODO
+   sudo mkdir /etc/luks
+   sudo dd if=/dev/urandom of=/etc/luks/root.keyfile bs=4096 count=1
+   sudo chmod 700 /etc/luks
+   sudo chmod 400 /etc/luks/root.keyfile
+   sudo cryptsetup luksAddKey $(sudo blkid | grep "crypto_LUKS" | cut -d ':' -f 1) /etc/luks/root.keyfile
+   echo "KEYFILE_PATTERN=/etc/luks/*.keyfile" | sudo tee -a /etc/cryptsetup-initramfs/conf-hook
+   echo "UMASK=0077" | sudo tee -a /etc/initramfs-tools/initramfs.conf
+   sudo sed -i '/dm_crypt-0/d' /etc/crypttab
+   echo "dm_crypt-0 UUID=$(sudo blkid | grep "crypto_LUKS" | cut -d '"' -f 2) /etc/luks/root.keyfile luks,discard" | sudo tee -a /etc/crypttab > /dev/null
+   ```
+
+   ```sh
+   sudo vim /etc/initramfs-tools/hooks/cryptroot
+   ```
+
+   ```diff
+   +#!/bin/sh
+   +cp /etc/crypttab "${DESTDIR}/cryptroot/crypttab"
+   +sed -i 's/\/etc\/luks\/root\.keyfile/\/cryptroot\/keyfiles\/dm_crypt-0\.key/' "${DESTDIR}/cryptroot/crypttab"
+   +exit 0
+   ```
+
+   ```sh
+   sudo chmod +x /etc/initramfs-tools/hooks/cryptroot
+   sudo update-initramfs -c -k all
+   ```
+
+4. If you get sent to a `BusyBox` shell on reboot, then something in your configuration is wrong.
+
+   Fortunately you can regain access by running the following command ([source](https://unix.stackexchange.com/questions/708445/etc-crypttab-not-updating-in-initramfs#:\~:text=I%20was%20able%20to%20successfully%20boot%20the%20system%20again%20by%20entering%20the%20following%20commands%20at%20the%20BusyBox%20prompt%3A)):
+
+   Note that the path to `/dev/nvme0n1p3` will instead be the path to your device in `/dev` that uses LUKS encryption for mounting as the root volume (in our case it's a NVMe SSD, hence `nvme` in the name).
+
+   ```sh
+   sudo cryptsetup luksOpen /dev/nvme0n1p3 dm_crypt-0
+   exit
+   ```
+
+   Additionally, you can inspect your `initrd` image (the generated file from `sudo update-initramfs -c -k all`) using these commands ([source](https://unix.stackexchange.com/a/767065)):
+
+   ```sh
+   sudo update-initramfs -c -k all
+   ```
+
+   ```sh
+   sudo -i
+   rm -rf /tmp/x
+   mkdir /tmp/x
+   cd /tmp/x
+   unmkinitramfs -v /boot/initrd.img-$(uname -r) .
+   cd /tmp/x/main/cryptroot/crypttab
+   ll
    ```
 
 

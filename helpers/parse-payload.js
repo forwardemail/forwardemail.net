@@ -1155,18 +1155,19 @@ async function parsePayload(data, ws) {
                               template: 'alert',
                               message: {
                                 to: session.user.owner_full_email,
-                                cc: config.email.message.from,
+                                // cc: config.email.message.from,
                                 subject: i18n.translate(
                                   'PGP_ENCRYPTION_ERROR',
                                   session.user.locale
                                 )
                               },
                               locals: {
-                                message: `<pre><code>${safeStringify(
-                                  parseErr(err),
-                                  null,
-                                  2
-                                )}</code></pre>`,
+                                message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
+                                // message: `<pre><code>${safeStringify(
+                                //   parseErr(err),
+                                //   null,
+                                //   2
+                                // )}</code></pre>`,
                                 locale: session.user.locale
                               }
                             })
