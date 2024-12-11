@@ -585,7 +585,7 @@ async function checkBounceForSpam(bounce, headers, session) {
       if (
         session.isAllowlisted &&
         sendCountEmail &&
-        !['envelope', 'network', 'greylist', 'blocklist'].includes(
+        !['capacity', 'envelope', 'network', 'greylist', 'blocklist'].includes(
           bounce.err.bounceInfo.category
         )
       ) {
