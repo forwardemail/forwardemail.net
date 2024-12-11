@@ -619,7 +619,9 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    sudo update-initramfs -c -k all
    ```
 
-4. If you get sent to a `BusyBox` shell on reboot, then something in your configuration is wrong.
+   > **NOTE:** THE REST OF THIS STEP IS NOT MEANT TO BE COPIED/PASTED, IT IS A SECTION DEDICATED FOR DEBUGGING:
+
+   If you get sent to a `BusyBox` shell on reboot, then something in your configuration is wrong.
 
    Fortunately you can regain access by running the following command ([source](https://unix.stackexchange.com/questions/708445/etc-crypttab-not-updating-in-initramfs#:\~:text=I%20was%20able%20to%20successfully%20boot%20the%20system%20again%20by%20entering%20the%20following%20commands%20at%20the%20BusyBox%20prompt%3A)):
 
@@ -644,6 +646,45 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    unmkinitramfs -v /boot/initrd.img-$(uname -r) .
    cd /tmp/x/main/cryptroot/crypttab
    ll
+   ```
+
+4. If you need to configure IPv6 on your server, here is an example network config:
+
+   ```sh
+   sudo vim /etc/cloud/cloud.cfg.d/90-installer-network.cfg
+   ```
+
+   > Replace `IPV4_GOES_HERE` with IPv4 address, `IPV6_GOES_HERE` with IPv6 address, `IPV6_GATEWAY` with IPv6 gateway, and `IPV4_GATEWAY` with IPV4 gateway:
+
+   ```sh
+   # This is the network config written by 'subiquity'
+   network:
+     bonds:
+       bond0:
+         addresses:
+         - IPV4_GOES_HERE/24
+         - IPV6_GOES_HERE/64
+         interfaces:
+         - enp1s0f0
+         - enp1s0f1
+         nameservers:
+           addresses:
+           - 1.1.1.1
+           - 1.0.0.1
+           - 2606:4700:4700::1111
+           - 2606:4700:4700::1001
+           search: []
+         parameters:
+           mode: balance-rr
+         routes:
+         - to: ::/0
+           via: IPV6_GATEWAY
+         - to: default
+           via: IPV4_GATEWAY
+     ethernets:
+       enp1s0f0: {}
+       enp1s0f1: {}
+     version: 2
    ```
 
 
