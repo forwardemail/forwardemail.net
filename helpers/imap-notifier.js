@@ -335,14 +335,14 @@ class IMAPNotifier extends EventEmitter {
   // <https://github.com/nodemailer/wildduck/blob/c9188b3766b547b091d140a33308b5c3ec3aa1d4/imap-core/lib/imap-connection.js#L616-L619>
   getUpdates(mailbox, modifyIndex, fn) {
     modifyIndex = Number(modifyIndex) || 0;
-    Journals.collection
-      .find({
-        mailbox: mailbox._id || mailbox,
-        modseq: {
-          $gt: modifyIndex
-        }
-      })
-      .toArray(fn);
+    Journals.find({
+      mailbox: mailbox._id || mailbox,
+      modseq: {
+        $gt: modifyIndex
+      }
+    })
+      .lean()
+      .exec(fn);
   }
 
   // <https://github.com/nodemailer/wildduck/blob/48b9efb8ca4b300597b2e8f5ef4aa307ac97dcfe/lib/imap-notifier.js#L368>
