@@ -17,7 +17,7 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const REGEX_BLOCKED_PHRASES = new RE2(
-  /recorded you|account is hacked|personal data has leaked/im
+  /recorded you|you've been hacked|account is hacked|personal data has leaked/im
 );
 
 const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
@@ -27,7 +27,7 @@ const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
 
 // TODO: remove yum here and wrap these with spaces or something
 const REGEX_SYSADMIN_SUBJECT = new RE2(
-  /wpforms|docker|graylog|digest|event notification|package update manager|event alert|system events|monit alert|ping|monitor|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
+  /wordfence|wpforms|docker|graylog|digest|event notification|package update manager|event alert|system events|monit alert|ping|monitor|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
 );
 
 /*
@@ -226,16 +226,15 @@ function isArbitrary(session, headers, bodyStr) {
         parseRootDomain(parseHostFromDomainOrAddress(checkSRS(to.address))) ===
         session.originalFromAddressRootDomain
     );
+    // TODO: add exception if A/AAAA record of domain parsed from From address is session.remoteAddress
     if (
       hasSameRcptToAsFrom &&
       session.spfFromHeader.status.result !== 'pass' &&
       !(
-        !['softfail', 'fail'].includes(session.spfFromHeader.status.result) &&
-        subject &&
-        (!headers.hasHeader('x-mailer') ||
-          !headers.getFirst('x-mailer').toLowerCase().includes('drupal')) &&
-        REGEX_SYSADMIN_SUBJECT.test(subject)
-      )
+        headers.hasHeader('x-mailer') &&
+        headers.getFirst('x-mailer').toLowerCase().includes('drupal')
+      ) &&
+      !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))
     ) {
       // TODO: until we're certain this is properly working we're going to monitor it with code bug to admins
       const err = new TypeError(
