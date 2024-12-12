@@ -464,7 +464,7 @@ async function getRecipients(session, scan) {
 
       // TODO: how does work with IMAP (?)
       // custom port support
-      if (recipient.addresses.length === 0 && recipient.port !== '25') {
+      if (recipient.addresses.length === 0 && recipient.port !== 25) {
         recipient.addresses.push({
           to: recipient.address,
           host: parseHostFromDomainOrAddress(recipient.address)
