@@ -138,7 +138,7 @@ async function getRecipients(session, scan) {
             );
           } catch (err) {
             err.isCodeBug = true;
-            logger.err(err);
+            logger.error(err);
           }
         }
 
@@ -420,9 +420,9 @@ async function getRecipients(session, scan) {
               err.message = `The address ${
                 recipient.address
               } is denylisted by ${
-                config.website
+                config.urls.web
               } ; To request removal, you must visit ${
-                config.website
+                config.urls.web
               }/denylist?q=${encrypt(address.toLowerCase())} ;`;
               err.address = address;
               throw err;
