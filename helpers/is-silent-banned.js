@@ -14,9 +14,6 @@ const isAllowlisted = require('#helpers/is-allowlisted');
 async function isSilentBanned(value, client, resolver) {
   if (!Array.isArray(value)) value = [value];
 
-  // lowercase and trim all the values
-  value = value.map((v) => punycode.toASCII(v).toLowerCase().trim());
-
   // `value` can be anything arbitrary (IP, hostname, email address)
   // and it can be an Array of Strings or a String
 
@@ -24,7 +21,16 @@ async function isSilentBanned(value, client, resolver) {
   const filtered = await pFilter(
     value,
     async (v) => {
-      const allowlisted = await isAllowlisted(v, client, resolver);
+      //
+      // NOTE: `true` as the last arg makes it so this ignores redis cache and only
+      //       checks for hard-coded allowlist/truth source values (and our own hostname)
+      //
+      const allowlisted = await isAllowlisted(
+        punycode.toASCII(v).toLowerCase().trim(),
+        client,
+        resolver,
+        true
+      );
       return !allowlisted;
     },
     { concurrency: config.concurrency }

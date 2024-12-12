@@ -18,7 +18,7 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 // eslint-disable-next-line complexity
-async function isAllowlisted(val, client, resolver) {
+async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
   const lowerCased = punycode.toASCII(val).toLowerCase().trim();
 
   // check hard-coded allowlist
@@ -70,12 +70,13 @@ async function isAllowlisted(val, client, resolver) {
       const [clientHostname] = await resolver.reverse(val);
       if (isFQDN(clientHostname)) {
         // check domain
-        if (await isAllowlisted(clientHostname, client, resolver)) return true;
+        if (await isAllowlisted(clientHostname, client, resolver, ignoreRedis))
+          return true;
         // check root domain (if differed)
         const root = parseRootDomain(clientHostname);
         if (
           clientHostname !== root &&
-          (await isAllowlisted(root, client, resolver))
+          (await isAllowlisted(root, client, resolver, ignoreRedis))
         )
           return true;
       }
@@ -87,6 +88,8 @@ async function isAllowlisted(val, client, resolver) {
       if (env.NODE_ENV !== 'production') logger.debug(err);
     }
   }
+
+  if (ignoreRedis) return false;
 
   const result = await client.get(`allowlist:${lowerCased}`);
 
