@@ -296,15 +296,31 @@ async function processBounces(headers, bounces, session, sealedMessage) {
       config.POSTMASTER_USERNAMES.has(username) ||
       config.POSTMASTER_USERNAMES.has(fromUsername) ||
       // google groups
-      checkSRS(session.envelope.mailFrom.address).endsWith('+donotreply') ||
-      checkSRS(session.envelope.mailFrom.address).endsWith('-donotreply') ||
-      checkSRS(session.originalFromAddress).endsWith('+donotreply') ||
-      checkSRS(session.originalFromAddress).endsWith('-donotreply') ||
+      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
+        '+donotreply'
+      ) ||
+      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
+        '-donotreply'
+      ) ||
+      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
+        '+donotreply'
+      ) ||
+      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
+        '-donotreply'
+      ) ||
       // mssecurity-noreply@microsoft.com
-      checkSRS(session.envelope.mailFrom.address).endsWith('+noreply') ||
-      checkSRS(session.envelope.mailFrom.address).endsWith('-noreply') ||
-      checkSRS(session.originalFromAddress).endsWith('+noneply') ||
-      checkSRS(session.originalFromAddress).endsWith('-noneply')
+      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
+        '+noreply'
+      ) ||
+      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
+        '-noreply'
+      ) ||
+      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
+        '+noneply'
+      ) ||
+      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
+        '-noneply'
+      )
     )
       throw new Error('Bounce prevented due to mailer-daemon username');
 

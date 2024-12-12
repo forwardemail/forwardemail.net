@@ -7,6 +7,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('validator');
 
+const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
@@ -14,7 +15,10 @@ const config = require('#config');
 const env = require('#config/env');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const parseUsername = require('#helpers/parse-username');
 const refineAndLogError = require('#helpers/refine-and-log-error');
+
+const NO_REPLY_USERNAMES = new Set(noReplyList);
 
 async function onRcptTo(address, session, fn) {
   this.logger.debug('RCPT TO', { address, session });
@@ -41,27 +45,54 @@ async function onRcptTo(address, session, fn) {
     );
 
   // validate email address
-  if (
-    typeof address === 'object' &&
-    isSANB(address.address) &&
-    !isEmail(address.address, {
-      allow_ip_domain: true,
-      ignore_max_length: true
-    })
-  )
-    return setImmediate(() =>
-      fn(
-        refineAndLogError(
-          new SMTPError('Address is not a valid RFC 5321 email address', {
-            responseCode: 553,
-            ignoreHook: true
-          }),
-          session,
-          false,
-          this
+  if (typeof address === 'object' && isSANB(address.address)) {
+    if (
+      !isEmail(address.address, {
+        allow_ip_domain: true,
+        ignore_max_length: true
+      })
+    )
+      return setImmediate(() =>
+        fn(
+          refineAndLogError(
+            new SMTPError('Address is not a valid RFC 5321 email address', {
+              responseCode: 553,
+              ignoreHook: true
+            }),
+            session,
+            false,
+            this
+          )
         )
-      )
-    );
+      );
+
+    // prevent emails to no-reply@forwardemail.net
+    // and other no-reply usernames
+    // and also ending with +donotreply and -donotreply
+    if (
+      NO_REPLY_USERNAMES.has(parseUsername(checkSRS(address.address))) ||
+      parseUsername(checkSRS(address.address), true).endsWith('+donotreply') ||
+      parseUsername(checkSRS(address.address), true).endsWith('-donotreply') ||
+      parseUsername(checkSRS(address.address), true).endsWith('-noreply') ||
+      parseUsername(checkSRS(address.address), true).endsWith('+noreply')
+    )
+      return setImmediate(() =>
+        fn(
+          refineAndLogError(
+            new SMTPError(
+              'You cannot send a message to a "no-reply" recipient; try sending to the "Reply-To" header if it exists',
+              {
+                responseCode: 553,
+                ignoreHook: true
+              }
+            ),
+            session,
+            false,
+            this
+          )
+        )
+      );
+  }
 
   try {
     //

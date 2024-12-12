@@ -27,7 +27,7 @@ const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
 
 // TODO: remove yum here and wrap these with spaces or something
 const REGEX_SYSADMIN_SUBJECT = new RE2(
-  /wordfence|wpforms|docker|graylog|digest|event notification|package update manager|event alert|system events|monit alert|ping|monitor|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
+  /weekly report|wordfence|wordpress|wpforms|docker|graylog|digest|event notification|package update manager|event alert|system events|monit alert|ping|monitor|cron|yum|sendmail|exim|backup|logwatch|unattended-upgrades/im
 );
 
 /*
@@ -226,13 +226,18 @@ function isArbitrary(session, headers, bodyStr) {
         parseRootDomain(parseHostFromDomainOrAddress(checkSRS(to.address))) ===
         session.originalFromAddressRootDomain
     );
-    // TODO: add exception if A/AAAA record of domain parsed from From address is session.remoteAddress
     if (
       hasSameRcptToAsFrom &&
       session.spfFromHeader.status.result !== 'pass' &&
       !(
         headers.hasHeader('x-mailer') &&
-        headers.getFirst('x-mailer').toLowerCase().includes('drupal')
+        // Drupal
+        (headers.getFirst('x-mailer').toLowerCase().includes('drupal') ||
+          // PHPMailer (modern)
+          headers
+            .getFirst('x-mailer')
+            .toLowerCase()
+            .includes('https://github.com/phpmailer/phpmailer'))
       ) &&
       !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))
     ) {

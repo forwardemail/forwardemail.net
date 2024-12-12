@@ -7,11 +7,12 @@ const punycode = require('node:punycode');
 
 const parseAddresses = require('#helpers/parse-addresses');
 
-function parseUsername(address) {
+function parseUsername(address, ignorePlus = false) {
   ({ address } = parseAddresses(address)[0]);
-  let username = address.includes('+')
-    ? address.split('+')[0]
-    : address.split('@')[0];
+  let username =
+    !ignorePlus && address.includes('+')
+      ? address.split('+')[0]
+      : address.split('@')[0];
 
   username = punycode.toASCII(username).toLowerCase();
   return username;
