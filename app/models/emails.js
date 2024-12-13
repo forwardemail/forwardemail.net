@@ -29,11 +29,11 @@ const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isEmail } = require('validator');
 
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Users = require('./users');
+const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
 const checkSRS = require('#helpers/check-srs');
@@ -191,7 +191,7 @@ const Emails = new mongoose.Schema(
         required: true,
         lowercase: true,
         trim: true,
-        validate: (v) => isEmail(v, { ignore_max_length: true })
+        validate: (v) => isEmail(v)
       },
       // list of email addresses to sent to
       // (combined To, Cc, Bcc - and then Bcc is removed from headers)
@@ -230,7 +230,7 @@ const Emails = new mongoose.Schema(
         type: String,
         lowercase: true,
         trim: true,
-        validate: (v) => isEmail(v, { ignore_max_length: true })
+        validate: (v) => isEmail(v)
       }
     ],
     //
@@ -293,16 +293,10 @@ Emails.pre('validate', function (next) {
   try {
     if (!_.isObject(this.envelope)) throw Boom.badRequest('Envelope missing');
 
-    if (
-      !isSANB(this.envelope.from) ||
-      !isEmail(this.envelope.from, { ignore_max_length: true })
-    )
+    if (!isSANB(this.envelope.from) || !isEmail(this.envelope.from))
       throw Boom.badRequest('Envelope from missing');
 
-    if (
-      isSANB(this.envelope.to) &&
-      isEmail(this.envelope.to, { ignore_max_length: true })
-    )
+    if (isSANB(this.envelope.to) && isEmail(this.envelope.to))
       this.envelope.to = [this.envelope.to];
 
     // list of email addresses to sent to
@@ -330,9 +324,7 @@ Emails.pre('validate', function (next) {
     );
 
     // ensure all valid emails
-    if (
-      !this.envelope.to.every((to) => isEmail(to, { ignore_max_length: true }))
-    )
+    if (!this.envelope.to.every((to) => isEmail(to)))
       throw Boom.badRequest('Envelope to requires valid email addresses');
 
     // prevent sending to no-reply address
@@ -384,10 +376,7 @@ Emails.pre('validate', function (next) {
       //
       e.isCodeBug = isCodeBug(err);
       e.responseCode = getErrorCode(err);
-      if (
-        typeof e.recipient !== 'string' ||
-        !isEmail(e.recipient, { ignore_max_length: true })
-      )
+      if (typeof e.recipient !== 'string' || !isEmail(e.recipient))
         throw Boom.badRequest('Recipient was missing from error');
       // always set date if not set already
       if (typeof e.date === 'undefined' || !(e.date instanceof Date))
@@ -971,10 +960,7 @@ Emails.statics.queue = async function (
   // and ensure that either the user is an admin or the alias is owned by them
   // (and the domain must be on a paid plan)
   //
-  if (
-    !info.envelope.from ||
-    !isEmail(info.envelope.from, { ignore_max_length: true })
-  )
+  if (!info.envelope.from || !isEmail(info.envelope.from))
     throw Boom.forbidden(i18n.translateError('ENVELOPE_FROM_MISSING', locale));
 
   let [aliasName, domainName] = info.envelope.from.split('@');
@@ -1176,7 +1162,7 @@ Emails.statics.queue = async function (
   //
   if (
     isSANB(info?.envelope?.from) &&
-    isEmail(info.envelope.from, { ignore_max_length: true }) &&
+    isEmail(info.envelope.from) &&
     config.supportEmail !== info.envelope.from.toLowerCase() &&
     //
     // we don't want to scan messages sent with our own SMTP service
@@ -1189,7 +1175,7 @@ Emails.statics.queue = async function (
     info.envelope.to.every(
       (to) =>
         isSANB(to) &&
-        isEmail(to, { ignore_max_length: true }) &&
+        isEmail(to) &&
         ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
     )
   ) {

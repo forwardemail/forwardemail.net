@@ -26,7 +26,6 @@ const titleize = require('titleize');
 const wrap = require('word-wrap');
 const { Octokit } = require('@octokit/core');
 const { gzip } = require('node-gzip');
-const { isEmail } = require('validator');
 
 const admin = require('./admin');
 const api = require('./api');
@@ -44,6 +43,7 @@ const sitemap = require('./sitemap');
 const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

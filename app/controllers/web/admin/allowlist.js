@@ -9,7 +9,9 @@ const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
-const { isEmail, isIP } = require('validator');
+const { isIP } = require('@forwardemail/validator');
+
+const isEmail = require('#helpers/is-email');
 
 async function list(ctx) {
   let results = await ctx.client.keys('allowlist:*');

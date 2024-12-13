@@ -13,9 +13,10 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { JSDOM } = require('jsdom');
-const { isIP, isEmail } = require('validator');
+const { isIP } = require('@forwardemail/validator');
 
 const exec = util.promisify(childProcess.exec);
+const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const markdown = require('#helpers/markdown');
 const logger = require('#helpers/logger');

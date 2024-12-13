@@ -9,15 +9,14 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const { boolean } = require('boolean');
-const { isEmail, isIP } = require('validator');
+const { isIP } = require('@forwardemail/validator');
 
+const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const { email, decrypt } = require('#helpers');
 const { Inquiries } = require('#models');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
-
-const isEmailOptions = { ignore_max_length: true };
 
 // eslint-disable-next-line complexity
 async function validate(ctx, next) {
@@ -35,7 +34,7 @@ async function validate(ctx, next) {
   if (
     ctx.state.user.group === 'admin' &&
     isSANB(ctx.request.body.email) &&
-    !isEmail(ctx.request.body.email, isEmailOptions)
+    !isEmail(ctx.request.body.email)
   )
     return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
 
@@ -44,7 +43,7 @@ async function validate(ctx, next) {
   // normalize by converting to lowercase and trimming
   q = q.toLowerCase().trim();
 
-  if (!isFQDN(q) && !isIP(q) && !isEmail(q, isEmailOptions)) {
+  if (!isFQDN(q) && !isIP(q) && !isEmail(q)) {
     // check if it was encrypted value and can be decrypted without error
     // and the decrypted value is a FQDN, IP, or Email
     // otherwise throw the same error as above
@@ -58,7 +57,7 @@ async function validate(ctx, next) {
       );
     }
 
-    if (!isFQDN(q) && !isIP(q) && !isEmail(q, isEmailOptions))
+    if (!isFQDN(q) && !isIP(q) && !isEmail(q))
       return ctx.throw(
         Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
       );
@@ -75,8 +74,7 @@ async function validate(ctx, next) {
   }
 
   // set the root domain value in state for validate fn
-  if (isEmail(q, isEmailOptions) || isFQDN(q))
-    ctx.state.rootDomain = parseRootDomain(q);
+  if (isEmail(q) || isFQDN(q)) ctx.state.rootDomain = parseRootDomain(q);
 
   // check that the value is in the denylist
   // (or the root value is in the denylist)
@@ -101,7 +99,7 @@ async function validate(ctx, next) {
         ctx.state.rootDomain && // if it was an email or if the root domain value was different
         // then we need to check denylist against root value and if it was an email
         // then we need to check the combo of denylist:root:email
-        (isEmail(q, isEmailOptions) || ctx.state.rootDomain !== q)
+        (isEmail(q) || ctx.state.rootDomain !== q)
       ) {
         result = await ctx.client.get(`denylist:${ctx.state.rootDomain}`);
 
@@ -118,7 +116,7 @@ async function validate(ctx, next) {
 
           // if it was an email then check `denylist:root:email` combo
 
-          if (isEmail(q, isEmailOptions)) {
+          if (isEmail(q)) {
             result = await ctx.client.get(
               `denylist:${ctx.state.rootDomain}:${q}`
             );
@@ -139,7 +137,7 @@ async function validate(ctx, next) {
 
       // if no result and it was an email then check against hard-coded denylist
       // (and also check parsed domain and root domain)
-      if (!result && isEmail(q, isEmailOptions)) {
+      if (!result && isEmail(q)) {
         const domain = parseHostFromDomainOrAddress(q);
         const root = parseRootDomain(domain);
         if (config.denylist.has(q)) {
@@ -254,7 +252,7 @@ async function remove(ctx) {
     // automatic spam activity detected bug or a spammer
     //
     let isAllowlisted = false;
-    if (isEmail(ctx.state.q, isEmailOptions) && ctx.state.rootDomain) {
+    if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
       try {
         isAllowlisted = await ctx.client.get(
           `allowlist:${ctx.state.rootDomain}`
@@ -356,7 +354,7 @@ async function remove(ctx) {
       }
 
       // if it was an email then delete the combo
-      if (isEmail(ctx.state.q, isEmailOptions) && ctx.state.rootDomain) {
+      if (isEmail(ctx.state.q) && ctx.state.rootDomain) {
         await ctx.client.del(`denylist:${ctx.state.q}`);
         await ctx.client.del(`denylist:${ctx.state.rootDomain}:${ctx.state.q}`);
         await ctx.client.set(
@@ -389,7 +387,7 @@ async function remove(ctx) {
   if (
     ctx.state.user.group === 'admin' &&
     isSANB(ctx.request.body.email) &&
-    isEmail(ctx.request.body.email, isEmailOptions)
+    isEmail(ctx.request.body.email)
   )
     email({
       template: 'alert',

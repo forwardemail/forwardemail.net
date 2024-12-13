@@ -28,7 +28,6 @@ const splitLines = require('split-lines');
 // const twilio = require('twilio');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isEmail } = require('validator');
 
 //
 // TODO: we need to replace and remove $eq and $exists everywhere
@@ -45,6 +44,7 @@ const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
+const isEmail = require('#helpers/is-email');
 // const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');

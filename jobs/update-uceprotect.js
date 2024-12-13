@@ -18,7 +18,7 @@ const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
 const safeStringify = require('fast-safe-stringify');
 const splitLines = require('split-lines');
-const validator = require('validator');
+const validator = require('@forwardemail/validator');
 const { ungzip } = require('node-gzip');
 
 const config = require('#config');

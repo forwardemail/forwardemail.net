@@ -10,7 +10,7 @@ const URLParse = require('url-parse');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isURL } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 
 const SMTPError = require('#helpers/smtp-error');
 const parseAddresses = require('#helpers/parse-addresses');

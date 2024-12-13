@@ -40,7 +40,7 @@ const {
 const { Builder } = require('json-sql');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
@@ -705,8 +705,7 @@ async function backup(payload) {
               `From ${
                 message.mimeTree?.parsedHeader?.from?.find(
                   (obj) =>
-                    typeof obj.address === 'string' &&
-                    isEmail(obj.address, { ignore_max_length: true })
+                    typeof obj.address === 'string' && isEmail(obj.address)
                 )?.address || 'MAILER-DAEMON'
               } ${asctime(new Date(message.hdate))}\n${splitLines(
                 content.trim()

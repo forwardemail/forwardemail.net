@@ -8,7 +8,7 @@ const { isIP } = require('node:net');
 
 const { boolean } = require('boolean');
 const isFQDN = require('is-fqdn');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const config = require('#config');
@@ -57,7 +57,7 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
     return true;
 
   // if it was an email address or domain and was our domain then whitelist
-  if (isEmail(val, { ignore_max_length: true })) {
+  if (isEmail(val)) {
     const domain = parseHostFromDomainOrAddress(val);
     const root = parseRootDomain(domain);
     if (root === env.WEB_HOST) return true;

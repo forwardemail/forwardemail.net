@@ -25,7 +25,7 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

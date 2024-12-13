@@ -20,7 +20,7 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const safeStringify = require('fast-safe-stringify');
 const sanitizeHtml = require('sanitize-html');
 const striptags = require('striptags');
-const validator = require('validator');
+const validator = require('@forwardemail/validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
 

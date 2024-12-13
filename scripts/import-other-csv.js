@@ -16,9 +16,9 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
-
 const mongoose = require('mongoose');
+const isEmail = require('#helpers/is-email');
+
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 

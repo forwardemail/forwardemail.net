@@ -15,10 +15,10 @@ const mongoose = require('mongoose');
 const plist = require('plist');
 const shortID = require('mongodb-short-id');
 const titleize = require('titleize');
-const { isEmail } = require('validator');
+const getUuid = require('@forwardemail/uuid-by-string');
+const isEmail = require('#helpers/is-email');
 
 // https://github.com/danakt/uuid-by-string/issues/24
-const getUuid = require('@forwardemail/uuid-by-string');
 
 const Aliases = require('#models/aliases');
 const env = require('#config/env');
@@ -379,10 +379,7 @@ async function mobileConfig(ctx, next) {
       return next(); // 404
 
     // ctx.params.username must be a valid email address
-    if (
-      !isSANB(ctx.params.username) ||
-      !isEmail(ctx.params.username, { ignore_max_length: true })
-    )
+    if (!isSANB(ctx.params.username) || !isEmail(ctx.params.username))
       return next(); // 404
 
     // ?a= alias ID

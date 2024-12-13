@@ -11,7 +11,7 @@ const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

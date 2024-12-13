@@ -11,8 +11,9 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
-const { isEmail, isIP } = require('validator');
+const { isIP } = require('@forwardemail/validator');
 
+const isEmail = require('#helpers/is-email');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 // eslint-disable-next-line complexity

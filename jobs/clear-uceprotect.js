@@ -12,7 +12,7 @@ const { parentPort } = require('node:worker_threads');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const sharedConfig = require('@ladjs/shared-config');
-const validator = require('validator');
+const validator = require('@forwardemail/validator');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');

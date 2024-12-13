@@ -18,12 +18,13 @@ const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
-const { isIP, isEmail, isURL } = require('validator');
+const { isIP, isURL } = require('@forwardemail/validator');
 const { randomstring } = require('@sidoshi/random-string');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
+const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const createPassword = require('#helpers/create-password');
 const getKeyInfo = require('#helpers/get-key-info');
@@ -135,10 +136,7 @@ const Aliases = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    validate: (value) =>
-      typeof value === 'string'
-        ? isEmail(value, { ignore_max_length: true })
-        : true
+    validate: (value) => (typeof value === 'string' ? isEmail(value) : true)
   },
   imap_not_enabled_sent_at: Date,
   imap_backup_at: Date,
@@ -246,7 +244,7 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value, { ignore_max_length: true })
+      validate: (value) => isEmail(value)
     }
   ],
   // this is an array of emails that have been sent a verification email
@@ -255,7 +253,7 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value, { ignore_max_length: true })
+      validate: (value) => isEmail(value)
     }
   ],
   recipients: [
@@ -268,7 +266,7 @@ const Aliases = new mongoose.Schema({
         validator: (value) =>
           isIP(value) ||
           isFQDN(value) ||
-          isEmail(value, { ignore_max_length: true }) ||
+          isEmail(value) ||
           isURL(value, config.isURLOptions),
         message:
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
@@ -351,8 +349,7 @@ Aliases.pre('validate', function (next) {
       _.uniq(
         this[prop].map((r) => {
           // some webhooks are case-sensitive
-          if (isEmail(r, { ignore_max_length: true }))
-            return r.toLowerCase().trim();
+          if (isEmail(r)) return r.toLowerCase().trim();
           return r.trim();
         })
       )
@@ -362,7 +359,7 @@ Aliases.pre('validate', function (next) {
   // all recipients must be emails if it requires verification
   if (
     this.has_recipient_verification &&
-    this.recipients.some((r) => !isEmail(r, { ignore_max_length: true }))
+    this.recipients.some((r) => !isEmail(r))
   )
     return next(
       Boom.badRequest(
@@ -536,10 +533,7 @@ Aliases.pre('save', async function (next) {
       );
 
     // if it starts with a forward slash then it must be a regex
-    if (
-      !alias.name.startsWith('/') &&
-      !isEmail(`${alias.name}@${domain.name}`, { ignore_max_length: true })
-    )
+    if (!alias.name.startsWith('/') && !isEmail(`${alias.name}@${domain.name}`))
       throw Boom.badRequest(i18n.translateError('INVALID_EMAIL', alias.locale));
 
     //

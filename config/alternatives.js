@@ -11,7 +11,7 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const puppeteer = require('puppeteer');
 const slug = require('speakingurl');
-const { isURL } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 const { parse } = require('node-html-parser');
 
 const env = require('./env');

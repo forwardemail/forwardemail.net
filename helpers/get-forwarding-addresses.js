@@ -14,8 +14,9 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
-const { isURL, isEmail } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 
+const isEmail = require('#helpers/is-email');
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
@@ -48,7 +49,6 @@ async function getForwardingAddresses(
   let hasIMAP = false;
   let aliasPublicKey = false;
   let aliasIds;
-
   const domain = parseHostFromDomainOrAddress(address);
 
   const rootDomain = parseRootDomain(domain);
@@ -145,12 +145,7 @@ async function getForwardingAddresses(
   // check if we have a specific redirect and store global redirects (if any)
   // get username from recipient email address
   // (e.g. user@example.com => hello)
-  const username = isEmail(address, {
-    ignore_max_length: true,
-    allow_ip_domain: true
-  })
-    ? parseUsername(address)
-    : null;
+  const username = isEmail(address) ? parseUsername(address) : null;
 
   //
   // store if the domain was bad and not on paid plan (required for bad domains)
@@ -443,7 +438,7 @@ async function getForwardingAddresses(
         if (
           !isFQDN(substitutedAlias) &&
           !isIP(substitutedAlias) &&
-          !isEmail(substitutedAlias, { ignore_max_length: true }) &&
+          !isEmail(substitutedAlias) &&
           !isURL(substitutedAlias, config.isURLOptions)
         )
           throw new SMTPError(
@@ -507,7 +502,7 @@ async function getForwardingAddresses(
         !_.isString(addr[1]) ||
         (!isFQDN(addr[1]) &&
           !isIP(addr[1]) &&
-          !isEmail(addr[1], { ignore_max_length: true }) &&
+          !isEmail(addr[1]) &&
           !isURL(addr[1], config.isURLOptions))
       )
         throw new SMTPError(
@@ -527,7 +522,7 @@ async function getForwardingAddresses(
       // allow domain alias forwarding
       // (e.. the record is just "b.com" if it's not a valid email)
       globalForwardingAddresses.push(`${username}@${lowerCaseAddress}`);
-    } else if (isEmail(lowerCaseAddress, { ignore_max_length: true })) {
+    } else if (isEmail(lowerCaseAddress)) {
       globalForwardingAddresses.push(lowerCaseAddress);
     } else if (isURL(element, config.isURLOptions)) {
       globalForwardingAddresses.push(element);
@@ -591,10 +586,7 @@ async function getForwardingAddresses(
       const newRecursive = [...forwardingAddresses, ...recursive];
 
       // prevent a double-lookup if user is using + symbols
-      if (
-        isEmail(address, { ignore_max_length: true, allow_ip_domain: true }) &&
-        forwardingAddress.includes('+')
-      )
+      if (isEmail(address) && forwardingAddress.includes('+'))
         newRecursive.push(
           `${parseUsername(address)}@${parseHostFromDomainOrAddress(address)}`
         );

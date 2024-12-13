@@ -9,7 +9,7 @@ const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

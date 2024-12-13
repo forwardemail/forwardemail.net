@@ -32,6 +32,7 @@
     "@forwardemail/highlight-pug": "1.0.1",
     "@forwardemail/passport-fido2-webauthn": "0.1.0",
     "@forwardemail/uuid-by-string": "5.0.0",
+    "@forwardemail/validator": "^14.0.0",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",
     "@koa/multer": "3.0.2",
@@ -279,7 +280,6 @@
     "url-parse": "1.5.10",
     "url-regex-safe": "4.0.0",
     "utf-8-validate": "6.0.5",
-    "validator": "13.12.0",
     "web-resource-inliner": "6.0.1",
     "websocket-as-promised": "2.0.1",
     "wildduck": "1.45.3",
@@ -441,7 +441,8 @@
     "url": "https://github.com/forwardemail/forwardemail.net"
   },
   "resolutions": {
-    "eslint-plugin-import": "2.26.0"
+    "eslint-plugin-import": "2.26.0",
+    "validator": "npm:@forwardemail/validator@14.0.0"
   },
   "scripts": {
     "build": "nps build",

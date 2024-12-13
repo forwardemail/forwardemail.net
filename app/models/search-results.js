@@ -5,7 +5,7 @@
 
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
-const validator = require('validator');
+const validator = require('@forwardemail/validator');
 
 const locales = require('#config/locales');
 

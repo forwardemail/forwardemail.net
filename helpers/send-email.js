@@ -10,7 +10,6 @@ const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
-const { isEmail } = require('validator');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const WKD = require('./wkd');
@@ -25,6 +24,7 @@ const shouldThrow = require('./should-throw');
 const combineErrors = require('./combine-errors');
 const { decrypt } = require('./encrypt-decrypt');
 const createSession = require('./create-session');
+const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 
@@ -52,7 +52,7 @@ async function sendEmail(
   if (
     !_.isObject(envelope) ||
     typeof envelope.to !== 'string' ||
-    !isEmail(envelope.to, { allow_ip_domain: true, ignore_max_length: true })
+    !isEmail(envelope.to)
   )
     throw new TypeError('Envelope to missing or not a single email');
 

@@ -10,7 +10,7 @@ const _ = require('lodash');
 const safeStringify = require('fast-safe-stringify');
 const ms = require('ms');
 const isSANB = require('is-string-and-not-blank');
-const { isPort, isURL, isIP, isFQDN } = require('validator');
+const { isPort, isURL, isIP, isFQDN } = require('@forwardemail/validator');
 
 const DenylistError = require('#helpers/denylist-error');
 const SMTPError = require('#helpers/smtp-error');

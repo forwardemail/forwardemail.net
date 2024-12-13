@@ -12,7 +12,7 @@ const slug = require('speakingurl');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
-// const { isEmail } = require('validator');
+// const isEmail = require('#helpers/is-email');
 
 const ensureDomainAdmin = require('./ensure-domain-admin');
 
@@ -184,7 +184,7 @@ function validateAlias(ctx, next) {
     if (
       _.isArray(body.recipients) &&
       body.recipients.some(
-        (r) => isEmail(r, { ignore_max_length: true }) && r.endsWith(`@${ctx.state.domain.name}`)
+        (r) => isEmail(r) && r.endsWith(`@${ctx.state.domain.name}`)
       )
     )
       return ctx.throw(

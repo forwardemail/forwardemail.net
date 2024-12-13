@@ -8,7 +8,7 @@ const { isIP } = require('node:net');
 
 const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const DenylistError = require('#helpers/denylist-error');
 const config = require('#config');
@@ -18,7 +18,7 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 
 function createDenylistError(val) {
   let str = 'value';
-  if (isEmail(val, { ignore_max_length: true })) str = 'address';
+  if (isEmail(val)) str = 'address';
   else if (isIP(val)) str = 'IP';
   else if (isFQDN(val)) str = 'domain';
   return new DenylistError(
@@ -40,7 +40,7 @@ async function isDenylisted(value, client, resolver) {
     if (config.denylist.has(v)) throw createDenylistError(v);
 
     // if it was an email address then check domain and root domain (if differs) against hard-coded denylist
-    if (isEmail(v, { ignore_max_length: true })) {
+    if (isEmail(v)) {
       const domain = parseHostFromDomainOrAddress(v);
       if (config.denylist.has(domain)) throw createDenylistError(domain);
       const root = parseRootDomain(domain);
@@ -67,7 +67,7 @@ async function isDenylisted(value, client, resolver) {
     // check if the root domain is allowlisted but IFF the value was different
     // (only applies to email and FQDN values)
     //
-    if (isEmail(v, { ignore_max_length: true }) || isFQDN(v)) {
+    if (isEmail(v) || isFQDN(v)) {
       const root = parseRootDomain(
         isFQDN(v) ? v : parseHostFromDomainOrAddress(v)
       );
@@ -87,7 +87,7 @@ async function isDenylisted(value, client, resolver) {
         // (this is a safeguard in case the email is not denylisted but domain:email is)
         //
         if (isRootDomainAllowlisted) {
-          if (isEmail(v, { ignore_max_length: true })) {
+          if (isEmail(v)) {
             // eslint-disable-next-line no-await-in-loop
             const result = await client.get(`denylist:${root}:${v}`);
 

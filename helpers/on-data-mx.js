@@ -36,9 +36,9 @@ const status = require('statuses');
 const { Iconv } = require('iconv');
 const { SRS } = require('sender-rewriting-scheme');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
 const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
+const isEmail = require('#helpers/is-email');
 
 const DenylistError = require('#helpers/denylist-error');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
@@ -622,10 +622,7 @@ async function checkBounceForSpam(bounce, headers, session) {
       if (!bounce?.err?.truthSource) return;
 
       // attributes that are email addresses sending viruses get denylisted immediately
-      if (
-        bounce.err.bounceInfo.category === 'virus' &&
-        isEmail(attr, { ignore_max_length: true })
-      ) {
+      if (bounce.err.bounceInfo.category === 'virus' && isEmail(attr)) {
         if (isAttributeAllowlisted) {
           const err = new TypeError(
             `${config.views.locals.emoji(
@@ -634,6 +631,7 @@ async function checkBounceForSpam(bounce, headers, session) {
               'rotating_light'
             )} ${attr} was allowlisted and sent virus`
           );
+          err.headers = headers;
           err.bounce = bounce;
           err.session = session;
           err.isCodeBug = true;
@@ -650,6 +648,7 @@ async function checkBounceForSpam(bounce, headers, session) {
             err.bounce = bounce;
             err.session = session;
             err.isCodeBug = true;
+            err.headers = headers;
             logger.fatal(err);
           }
 
@@ -682,10 +681,11 @@ async function checkBounceForSpam(bounce, headers, session) {
         err.bounce = bounce;
         err.session = session;
         err.isCodeBug = true;
+        err.headers = headers;
         logger.fatal(err);
       } else {
         let shouldDenylist = false;
-        if (isEmail(attr, { ignore_max_length: true }) && count >= 5) {
+        if (isEmail(attr) && count >= 5) {
           shouldDenylist = true;
         } else if (count >= 10) {
           shouldDenylist = true;
@@ -703,6 +703,7 @@ async function checkBounceForSpam(bounce, headers, session) {
             err.bounce = bounce;
             err.session = session;
             err.isCodeBug = true;
+            err.headers = headers;
             logger.fatal(err);
           }
 
@@ -1149,7 +1150,7 @@ async function updateMXHeaders(session, headers, body) {
   const senderHeader = [];
   if (
     isSANB(session.envelope.mailFrom.address) &&
-    isEmail(session.envelope.mailFrom.address, { ignore_max_length: true })
+    isEmail(session.envelope.mailFrom.address)
   )
     senderHeader.push(checkSRS(session.envelope.mailFrom.address));
   if (session.resolvedClientHostname)
@@ -1217,7 +1218,7 @@ async function onDataMX(raw, session, headers, body) {
     // check against MAIL FROM
     if (
       isSANB(session.envelope.mailFrom.address) &&
-      isEmail(session.envelope.mailFrom.address, { ignore_max_length: true })
+      isEmail(session.envelope.mailFrom.address)
     ) {
       const username = parseUsername(
         checkSRS(session.envelope.mailFrom.address)

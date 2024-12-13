@@ -6,7 +6,7 @@
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isIP } = require('validator');
+const { isIP } = require('@forwardemail/validator');
 
 function sortedDomains(ctx, next) {
   ctx.state.sortedDomains = _.clone(ctx.state.domains);

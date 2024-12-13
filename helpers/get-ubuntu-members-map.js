@@ -6,7 +6,7 @@
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
-const { isURL } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 
 const config = require('#config');
 const logger = require('#helpers/logger');

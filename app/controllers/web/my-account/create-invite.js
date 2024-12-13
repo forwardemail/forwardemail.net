@@ -5,7 +5,7 @@
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const emailHelper = require('#helpers/email');
 const { Users, Domains } = require('#models');

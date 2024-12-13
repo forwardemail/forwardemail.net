@@ -11,7 +11,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const sendPaginationCheck = require('#helpers/send-pagination-check');

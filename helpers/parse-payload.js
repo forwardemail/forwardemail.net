@@ -28,9 +28,9 @@ const parseErr = require('parse-err');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
-const { isEmail } = require('validator');
-
 const Boom = require('@hapi/boom');
+const isEmail = require('#helpers/is-email');
+
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
@@ -586,7 +586,7 @@ async function parsePayload(data, ws) {
               a.id === undefined ||
               !mongoose.isObjectIdOrHexString(a.id) ||
               typeof a.address !== 'string' ||
-              !isEmail(a.address, { ignore_max_length: true })
+              !isEmail(a.address)
           )
         )
           throw new TypeError('Invalid aliases');

@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 const mongooseCommonPlugin = require('mongoose-common-plugin');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');

@@ -29,10 +29,11 @@ const revHash = require('rev-hash');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
-const { isEmail, isPort, isURL } = require('validator');
+const { isPort, isURL } = require('@forwardemail/validator');
 
 const pkg = require('../../package.json');
 
+const isEmail = require('#helpers/is-email');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const env = require('#config/env');
 const config = require('#config');

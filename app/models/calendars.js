@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 //       and map the lookup alias from groups, e.g. Asia/Calcutta
 //
 const validationErrorTransform = require('mongoose-validation-error-transform');
-const { isURL } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');

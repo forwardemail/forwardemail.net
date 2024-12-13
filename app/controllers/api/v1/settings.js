@@ -10,7 +10,7 @@ const Boom = require('@hapi/boom');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isPort } = require('validator');
+const { isPort } = require('@forwardemail/validator');
 
 const env = require('#config/env');
 const config = require('#config');

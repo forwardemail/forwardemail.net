@@ -11,7 +11,7 @@ const pEvent = require('p-event');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
 const sharedConfig = require('@ladjs/shared-config');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

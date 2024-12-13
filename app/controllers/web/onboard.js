@@ -14,10 +14,11 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { boolean } = require('boolean');
-const { isEmail, isIP } = require('validator');
+const { isIP } = require('@forwardemail/validator');
 const { ValidationError } = require('mongoose/lib/error');
 const { parse } = require('node-html-parser');
 
+const isEmail = require('#helpers/is-email');
 const config = require('#config');
 const logger = require('#helpers/logger');
 const sendVerificationEmail = require('#helpers/send-verification-email');

@@ -7,7 +7,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const { UpgradeReminders } = require('#models');
 

@@ -4,7 +4,7 @@
  */
 
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
@@ -20,7 +20,7 @@ function onMailFrom(address, session, fn) {
 
   // validate email address
   if (typeof address === 'object' && isSANB(address.address)) {
-    if (!isEmail(address.address, { ignore_max_length: true }))
+    if (!isEmail(address.address))
       return setImmediate(() =>
         fn(
           refineAndLogError(

@@ -9,7 +9,7 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 const email = require('#helpers/email');

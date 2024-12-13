@@ -9,8 +9,9 @@ const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const { boolean } = require('boolean');
-const { isURL, isEmail, isIP } = require('validator');
+const { isURL, isIP } = require('@forwardemail/validator');
 
+const isEmail = require('#helpers/is-email');
 const { Domains, Aliases } = require('#models');
 const config = require('#config');
 

@@ -24,8 +24,7 @@ const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
-const { isEmail } = require('validator');
-const { isURL } = require('validator');
+const { isURL } = require('@forwardemail/validator');
 
 const pkg = require('../package.json');
 
@@ -44,6 +43,7 @@ const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
 const sendEmail = require('./send-email');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
+const isEmail = require('#helpers/is-email');
 const updateHeaders = require('#helpers/update-headers');
 
 const config = require('#config');
@@ -251,7 +251,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       const filteredErrors = email.rejectedErrors.filter(
         (error) =>
           isSANB(error.recipient) &&
-          isEmail(error.recipient, { ignore_max_length: true }) &&
+          isEmail(error.recipient) &&
           !email.hard_bounces.includes(error.recipient) &&
           // code must be 550 (safeguard)
           getErrorCode(error) === 550
@@ -1091,7 +1091,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (!Array.isArray(email.rejectedErrors)) email.rejectedErrors = [];
     if (rejectedErrors.length > 0) {
       for (const err of rejectedErrors) {
-        if (!isEmail(err.recipient, { ignore_max_length: true }))
+        if (!isEmail(err.recipient))
           throw new Error('Recipient not assigned to error');
         email.rejectedErrors.push(err instanceof Error ? parseErr(err) : err);
         /*
@@ -1120,7 +1120,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const filteredErrors = email.rejectedErrors.filter(
       (error) =>
         isSANB(error.recipient) &&
-        isEmail(error.recipient, { ignore_max_length: true }) &&
+        isEmail(error.recipient) &&
         !error.is_recently_blocked &&
         !email.soft_bounces.includes(error.recipient) &&
         !email.hard_bounces.includes(error.recipient)
@@ -1136,7 +1136,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     const bounceErrors = email.rejectedErrors.filter(
       (error) =>
         isSANB(error.recipient) &&
-        isEmail(error.recipient, { ignore_max_length: true }) &&
+        isEmail(error.recipient) &&
         !error.is_recently_blocked
       // this is similar to filteredErrors except we send it for every bounce attempt so we don't need these:
       // !email.soft_bounces.includes(error.recipient) &&

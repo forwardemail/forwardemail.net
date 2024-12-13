@@ -13,7 +13,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

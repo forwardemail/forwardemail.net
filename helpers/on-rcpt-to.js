@@ -5,9 +5,9 @@
 
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
-
 const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
+const isEmail = require('#helpers/is-email');
+
 const SMTPError = require('#helpers/smtp-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
@@ -46,12 +46,7 @@ async function onRcptTo(address, session, fn) {
 
   // validate email address
   if (typeof address === 'object' && isSANB(address.address)) {
-    if (
-      !isEmail(address.address, {
-        allow_ip_domain: true,
-        ignore_max_length: true
-      })
-    )
+    if (!isEmail(address.address))
       return setImmediate(() =>
         fn(
           refineAndLogError(

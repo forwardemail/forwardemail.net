@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const punycode = require('node:punycode');
-
 const _ = require('lodash');
 const addressParser = require('nodemailer/lib/addressparser');
 const addrs = require('email-addresses');
 const isSANB = require('is-string-and-not-blank');
-const { isEmail } = require('validator');
 
+const isEmail = require('#helpers/is-email');
+
+// <https://github.com/validatorjs/validator.js/issues/2508>
 function parseAddresses(input) {
   if (!isSANB(input)) return [];
 
@@ -23,13 +23,7 @@ function parseAddresses(input) {
   if (addresses.length === 0) addresses = addressParser(input);
 
   addresses = addresses.filter(
-    (addr) =>
-      _.isObject(addr) &&
-      isSANB(addr.address) &&
-      isEmail(punycode.toASCII(addr.address), {
-        allow_ip_domain: true,
-        ignore_max_length: true
-      })
+    (addr) => _.isObject(addr) && isSANB(addr.address) && isEmail(addr.address)
   );
 
   return addresses;

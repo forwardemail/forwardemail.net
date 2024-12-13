@@ -216,7 +216,6 @@ async function sendRequest(wsp, requestId, data) {
           await wsp.open();
           return true;
         } catch (err) {
-          err.wsData = data;
           logger.fatal(err);
           return false;
         }
@@ -378,7 +377,6 @@ function createWebSocketAsPromised(options = {}) {
               factor: 1,
               onFailedAttempt(error) {
                 error.isCodeBug = true;
-                error.wsData = data;
                 logger.error(error);
 
                 if (isRetryableError(error)) {
@@ -406,7 +404,6 @@ function createWebSocketAsPromised(options = {}) {
       return recursivelyParse(response.data, true);
     } catch (err) {
       err.isCodeBug = true;
-      err.wsData = data;
       throw refineAndLogError(err);
     }
   };

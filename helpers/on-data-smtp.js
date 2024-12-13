@@ -8,7 +8,7 @@ const punycode = require('node:punycode');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const { isEmail } = require('validator');
+const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -199,11 +199,7 @@ async function onDataSMTP(raw, session, date) {
   // prepare envelope
   const envelope = {};
 
-  if (
-    isEmail(session?.envelope?.mailFrom?.address, {
-      ignore_max_length: true
-    })
-  )
+  if (isEmail(session?.envelope?.mailFrom?.address))
     envelope.from = session.envelope.mailFrom.address;
 
   if (
@@ -212,7 +208,7 @@ async function onDataSMTP(raw, session, date) {
   ) {
     const to = [];
     for (const rcpt of session.envelope.rcptTo) {
-      if (isEmail(rcpt.address, { ignore_max_length: true })) to.push(rcpt);
+      if (isEmail(rcpt.address)) to.push(rcpt);
     }
 
     if (to.length > 0) envelope.to = to;

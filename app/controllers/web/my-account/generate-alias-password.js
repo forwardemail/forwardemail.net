@@ -12,9 +12,9 @@ const isSANB = require('is-string-and-not-blank');
 const sanitizeHtml = require('sanitize-html');
 const shortID = require('mongodb-short-id');
 const { boolean } = require('boolean');
-const { isEmail } = require('validator');
-
 const ms = require('ms');
+const isEmail = require('#helpers/is-email');
+
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const config = require('#config');

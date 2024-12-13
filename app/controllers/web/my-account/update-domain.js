@@ -11,7 +11,7 @@ const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
-const { isPort } = require('validator');
+const { isPort } = require('@forwardemail/validator');
 
 const { Domains } = require('#models');
 

@@ -15,8 +15,8 @@ const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
-const { isEmail } = require('validator');
 const ms = require('ms');
+const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
