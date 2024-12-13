@@ -5,6 +5,7 @@
 
 const punycode = require('node:punycode');
 
+const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('@forwardemail/validator');
 
 //
@@ -14,6 +15,7 @@ const { isEmail } = require('@forwardemail/validator');
 // <https://github.com/validatorjs/validator.js/issues/2508>
 // <https://github.com/validatorjs/validator.js/issues/2504>
 module.exports = function (str) {
+  if (!isSANB(str)) return false;
   return isEmail(punycode.toASCII(str), {
     allow_ip_domain: true,
     ignore_max_length: true,

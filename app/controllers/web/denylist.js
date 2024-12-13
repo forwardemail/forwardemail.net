@@ -308,7 +308,10 @@ async function remove(ctx) {
     await email({
       template: 'alert',
       message: {
-        to: ctx.request.body.email,
+        to: config.email.message.from,
+        cc: isEmail(ctx.request.body.email)
+          ? ctx.request.body.email
+          : ctx.state.user.email,
         subject: `Hard-coded Denylist Removal: ${ctx.state.q}`
       },
       locals: {
