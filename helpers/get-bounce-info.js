@@ -314,7 +314,13 @@ function getBounceInfo(err) {
   //
   // safeguard in case IP warmup
   //
-  if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS))
+  if (
+    bounceInfo.category === 'spam' &&
+    (response.includes(IP_ADDRESS) ||
+      response.includes(
+        'Gmail has detected an unusual rate of unsolicited mail'
+      ))
+  )
     bounceInfo.category = 'blocklist';
 
   // posteo seems to have IP warmup issues
