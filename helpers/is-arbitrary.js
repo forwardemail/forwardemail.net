@@ -94,11 +94,12 @@ function isArbitrary(session, headers, bodyStr) {
   // (seems to only come from "outlook.com" and "paypal.com" hosts)
   //
   // X-Email-Type-Id = RT000238
+  //                   PPC001017
   //
   if (
     session.originalFromAddressRootDomain === 'paypal.com' &&
     headers.hasHeader('x-email-type-id') &&
-    headers.getFirst('x-email-type-id') === 'RT000238'
+    ['PPC001017', 'RT000238'].includes(headers.getFirst('x-email-type-id'))
   ) {
     const err = new SMTPError(
       'Due to ongoing PayPal invoice spam, you must manually send an invoice link'
