@@ -1425,7 +1425,6 @@ async function onDataMX(raw, session, headers, body) {
   // if at least one was accepted and potential phishing
   // was detected from `helpers/is-arbitrary.js` then
   // send a one-time email to each of the accepted recipients
-  session.isPotentialPhishing = true;
   if (accepted.length > 0 && session.isPotentialPhishing) {
     pMapSeries(accepted, async (to) => {
       try {
@@ -1441,9 +1440,9 @@ async function onDataMX(raw, session, headers, body) {
           locals: {
             from: session.originalFromAddress,
             domain: session.originalFromAddressRootDomain,
-            subject: headers.getFirst('subject'),
-            date: headers.getFirst('date'),
-            messageId: headers.getFirst('message-id'),
+            subject: getHeaders(headers, 'subject'),
+            date: getHeaders(headers, 'date'),
+            messageId: getHeaders(headers, 'message-id'),
             remoteAddress: session.remoteAddress
           }
         });
