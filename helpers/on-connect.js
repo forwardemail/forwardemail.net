@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const os = require('node:os');
 const punycode = require('node:punycode');
 
 const POP3Server = require('wildduck/lib/pop3/server');
@@ -14,9 +15,13 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
 const env = require('#config/env');
 const isAllowlisted = require('#helpers/is-allowlisted');
+const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
+const HOSTNAME = os.hostname();
+
+// eslint-disable-next-line complexity
 async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
 
@@ -101,38 +106,6 @@ async function onConnect(session, fn) {
     return fn(refineAndLogError(err, session, false, this));
   }
 
-  //
-  // NOTE: we do not check in onConnect for denylist/silent/backscatter in MX server
-  //       because we need to let users know of a given email/sender that was rejected
-  //       so we need to store a log for it with subject, RCPT TO, MAIL FROM, etc
-  //       and if we were to throw an error here if someone was denylisted for instance,
-  //       then the connection would not proceed to onRcptTo, onMailFrom, etc
-  //       and therefore it would not be possible to store an error log for this case
-  //
-  //       additionally, we do not check against denylist/silent/backscatter for SMTP server
-  //       because AUTH is required for a user to access the SMTP server anyways
-  //
-
-  //
-  // NOTE: we return early here because we do not want to limit concurrent connections from allowlisted values
-  //
-  //
-  if (session.isAllowlisted) {
-    return fn();
-  }
-
-  //
-  // NOTE: until onConnect is available for IMAP and POP3 servers
-  //       we leverage the existing SMTP helper in the interim
-  //       <https://github.com/nodemailer/wildduck/issues/540>
-  //       <https://github.com/nodemailer/wildduck/issues/721>
-  //       (see this same comment in `helpers/on-auth.js`)
-  //
-  if (this.server instanceof IMAPServer || this.server instanceof POP3Server) {
-    return fn();
-  }
-
-  // do not allow more than 10 concurrent connections using constructor
   try {
     // NOTE: do not change this prefix unless you also change it in `helpers/on-close.js`
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
@@ -141,6 +114,67 @@ async function onConnect(session, fn) {
     const key = `${prefix}:${session.remoteAddress}`;
     const count = await this.client.incr(key);
     await this.client.pexpire(key, config.socketTimeout);
+
+    // NOTE if more than 50 connections open in 3m then alert admins
+    if (count >= 50) {
+      const err = new TypeError(
+        `${HOSTNAME} detected 50+ connections from ${
+          session.resolvedClientHostname || session.remoteAddress
+        }`
+      );
+      err.isCodeBug = true;
+      err.session = session;
+      logger.fatal(err);
+    }
+
+    //
+    // TODO: we need to do this for all other cloud providers (e.g. via a maintained list)
+    //       <https://github.com/MISP/misp-warninglists>
+    //       <https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#web-services-platform>
+    //
+    // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
+    //
+    const isAWS =
+      session.resolvedClientHostname &&
+      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
+
+    //
+    // NOTE: we do not check in onConnect for denylist/silent/backscatter in MX server
+    //       because we need to let users know of a given email/sender that was rejected
+    //       so we need to store a log for it with subject, RCPT TO, MAIL FROM, etc
+    //       and if we were to throw an error here if someone was denylisted for instance,
+    //       then the connection would not proceed to onRcptTo, onMailFrom, etc
+    //       and therefore it would not be possible to store an error log for this case
+    //
+    //       additionally, we do not check against denylist/silent/backscatter for SMTP server
+    //       because AUTH is required for a user to access the SMTP server anyways
+    //
+
+    //
+    // NOTE: we return early here because we do not want to limit concurrent connections from allowlisted values
+    //
+    //
+    if (!isAWS && session.isAllowlisted && count <= 50) {
+      return fn();
+    }
+
+    //
+    // NOTE: until onConnect is available for IMAP and POP3 servers
+    //       we leverage the existing SMTP helper in the interim
+    //       <https://github.com/nodemailer/wildduck/issues/540>
+    //       <https://github.com/nodemailer/wildduck/issues/721>
+    //       (see this same comment in `helpers/on-auth.js`)
+    //
+    if (
+      !isAWS &&
+      (this.server instanceof IMAPServer ||
+        this.server instanceof POP3Server) &&
+      count <= 50
+    ) {
+      return fn();
+    }
+
+    // do not allow more than 10 concurrent connections using constructor
     if (count > 10)
       throw new SMTPError(
         `Too many concurrent connections from ${session.remoteAddress}`,
