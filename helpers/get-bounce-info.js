@@ -327,6 +327,15 @@ function getBounceInfo(err) {
   if (bounceInfo.category === 'spam' && err.truthSource === 'posteo.de')
     bounceInfo.category = 'blocklist';
 
+  // bounce attack
+  // >  550 Suspected bounce attacks
+  // <https://service.mail.qq.com/detail/122/57>
+  if (
+    response.includes('bounce attack') ||
+    response.includes('misdirected bounce')
+  )
+    bounceInfo.category = 'spam';
+
   return bounceInfo;
 }
 
