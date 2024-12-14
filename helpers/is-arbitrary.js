@@ -227,18 +227,18 @@ function isArbitrary(session, headers, bodyStr) {
         parseRootDomain(parseHostFromDomainOrAddress(checkSRS(to.address))) ===
         session.originalFromAddressRootDomain
     );
+    if (hasSameRcptToAsFrom && session.spfFromHeader.status.result !== 'pass')
+      session.isPotentialPhishing = true; // used after email is delivered to imap/webhook/forwarding to send a one-time email
     if (
       hasSameRcptToAsFrom &&
       session.spfFromHeader.status.result !== 'pass' &&
+      // NOTE: a lot of sysadmins have improperly configured SPF/DKIM
+      //       on their servers and send wordpress/php script alerts
+      !headers.hasHeader('x-php-script') &&
       !(
         headers.hasHeader('x-mailer') &&
-        // Drupal
-        (headers.getFirst('x-mailer').toLowerCase().includes('drupal') ||
-          // PHPMailer (modern)
-          headers
-            .getFirst('x-mailer')
-            .toLowerCase()
-            .includes('https://github.com/phpmailer/phpmailer'))
+        // PHP/PHPMailer/Drupal
+        ['php', 'drupal'].includes(headers.getFirst('x-mailer').toLowerCase())
       ) &&
       !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))
     ) {

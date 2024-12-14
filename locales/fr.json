@@ -7909,5 +7909,20 @@
   "Cox Communications includes": "Cox Communications comprend",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "dans les messages d'erreur SMTP, mais ils fusionnent avec Yahoo Mail et cela sera obsolète",
   "t-online.de (German/T-Mobile) includes": "t-online.de (allemand/T-Mobile) comprend",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "dans les messages d'erreur SMTP, mais ils n'ont pas été fiables suite à nos demandes de suppression dans le passé"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "dans les messages d'erreur SMTP, mais ils n'ont pas été fiables suite à nos demandes de suppression dans le passé",
+  "We detected a possible phishing email": "Nous avons détecté un possible e-mail de phishing",
+  "Don't worry &ndash; everything is OK!": "Ne vous inquiétez pas, tout va bien !",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "Nous avons détecté qu&#39;un e-mail qui vous a été envoyé par <strong class=\"notranslate\">%s</strong> pourrait être un e-mail de phishing. Si vous avez reçu ce message, veuillez le déplacer vers votre dossier de courrier indésirable/spam s&#39;il ne s&#39;agit pas d&#39;un faux positif.",
+  "Message-ID": "ID du message",
+  "IP": "Propriété intellectuelle",
+  "Do you send this every time?": "Est-ce que tu envoies ça à chaque fois ?",
+  "No, we only send it once a month per sender's root domain.": "Non, nous l'envoyons seulement une fois par mois par domaine racine de l'expéditeur.",
+  "Why are you sending this email?": "Pourquoi envoyez-vous cet email ?",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "Cet e-mail est envoyé pour votre protection et dans le cas où un développeur ou un spécialiste informatique n'aurait pas configuré correctement SPF/DKIM.",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "La raison pour laquelle nous avons envoyé cet e-mail est que nous avons détecté qu'il n'avait pas de SPF ni de DKIM de passage et que le domaine racine de l'expéditeur ne correspondait pas au domaine racine de l'adresse de l'expéditeur.",
+  "What is Forward Email?": "Qu'est-ce que le transfert d'e-mails ?",
+  "If you have any questions or comments, then please let us know.": "Si vous avez des questions ou des commentaires, n'hésitez pas à nous le faire savoir.",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Hameçonnage possible de la part de <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "La requête Webhook manque d'en-tête X-Signature",
+  "Invalid signature in webhook request": "Signature non valide dans la demande de webhook"
 }

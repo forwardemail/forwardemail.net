@@ -1,0 +1,6 @@
+# <https://github.com/nodemailer/wildduck/issues/768>
+[log]
+    [log.gelf]
+        enabled=false
+        hostname=false # defaults to os.hostname()
+        component="forwardemail"

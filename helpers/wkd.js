@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
 const WKDClient = require('@openpgp/wkd-client');
+const isHTML = require('is-html');
 const ms = require('ms');
 const undici = require('undici');
 
@@ -89,26 +91,35 @@ function WKD(resolver, client) {
     const key = `wkd:${options.email}`;
 
     // check cache value
-    let cache = await client.get(key);
+    let cache = await client.getBuffer(key);
 
     // if cache is `"false"` it indicates none
     // if cache is a string then we can decode it
-    if (typeof cache === 'string') {
-      if (cache === 'false')
+    if (cache) {
+      if (cache.equals(Buffer.from('false')))
         throw Boom.notFound('WKD key not found, try again in 30m');
-      const decoded = decoder.unpack(cache);
-      return decoded;
+      return decoder.unpack(cache);
     }
 
     try {
       cache = await lookup.call(this, options);
+
+      //
+      // TODO: we may not want to do isHTML check (?) see comment in GH discussion
+      //
+
+      // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
+      // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
+      const str = new TextDecoder().decode(cache);
+      if (str && isHTML(str)) throw new Error('Invalid WKD lookup HTML result');
+
       client
         .set(key, encoder.pack(cache), 'PX', ms('1h'))
         .then()
         .catch((err) => logger.fatal(err));
       return cache;
     } catch (err) {
-      await client.set(key, 'false', 'PX', ms('1h'));
+      await client.set(key, Buffer.from('false'), 'PX', ms('1h'));
       throw err;
     }
   };

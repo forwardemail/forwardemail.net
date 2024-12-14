@@ -6,7 +6,6 @@
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const isHTML = require('is-html');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
@@ -81,16 +80,6 @@ async function sendEmail(
         const binaryKey = await wkd.lookup({
           email: envelope.to
         });
-
-        //
-        // TODO: we may not want to do isHTML check (?) see comment in GH discussion
-        //
-
-        // TODO: this is a temporary fix until the PR noted in `helpers/wkd.js` is merged
-        // <https://github.com/sindresorhus/is-html/blob/bc57478683406b11aac25c4a7df78b66c42cc27c/index.js#L1-L11>
-        const str = new TextDecoder().decode(binaryKey);
-        if (str && isHTML(str))
-          throw new Error('Invalid WKD lookup HTML result');
 
         logger.info('binaryKey', { binaryKey });
 

@@ -1422,6 +1422,39 @@ async function onDataMX(raw, session, headers, body) {
     }
   }
 
+  // if at least one was accepted and potential phishing
+  // was detected from `helpers/is-arbitrary.js` then
+  // send a one-time email to each of the accepted recipients
+  session.isPotentialPhishing = true;
+  if (accepted.length > 0 && session.isPotentialPhishing) {
+    pMapSeries(accepted, async (to) => {
+      try {
+        const key = `phishing_check:${
+          session.originalFromAddressRootDomain
+        }:${to.toLowerCase()}`;
+        const cache = await this.client.get(key);
+        if (cache) return;
+        await this.client.set(key, true, 'PX', ms('30d'));
+        await emailHelper({
+          template: 'phishing',
+          message: { to, bcc: config.email.message.from },
+          locals: {
+            from: session.originalFromAddress,
+            domain: session.originalFromAddressRootDomain,
+            subject: headers.getFirst('subject'),
+            date: headers.getFirst('date'),
+            messageId: headers.getFirst('message-id'),
+            remoteAddress: session.remoteAddress
+          }
+        });
+      } catch (err) {
+        logger.fatal(err);
+      }
+    })
+      .then()
+      .catch((err) => logger.fatal(err));
+  }
+
   // return early if no bounces (complete successful delivery)
   if (bounces.length === 0) return;
 

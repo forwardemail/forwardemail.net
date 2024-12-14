@@ -9423,5 +9423,15 @@
   "Cox Communications includes": "Cox Communications umfasst",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "in SMTP-Fehlermeldungen, aber sie werden mit Yahoo Mail verschmelzen und dies wird veraltet sein",
   "t-online.de (German/T-Mobile) includes": "t-online.de (Deutsch/T-Mobile) beinhaltet",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "in SMTP-Fehlermeldungen, aber sie waren in der Vergangenheit gemäß unseren Entfernungsanforderungen nicht zuverlässig"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "in SMTP-Fehlermeldungen, aber sie waren in der Vergangenheit gemäß unseren Entfernungsanforderungen nicht zuverlässig",
+  "We detected a possible phishing email": "Wir haben eine mögliche Phishing-E-Mail entdeckt",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "Wir haben festgestellt, dass eine von <strong class=\"notranslate\">%s</strong> an Sie gesendete E-Mail möglicherweise eine Phishing-E-Mail ist. Wenn Sie diese Nachricht erhalten haben, verschieben Sie sie bitte in Ihren Junk-/Spam-Ordner, sofern es sich nicht um eine Fehlalarmmeldung handelt.",
+  "Message-ID": "Nachrichten-ID",
+  "IP": "IP",
+  "No, we only send it once a month per sender's root domain.": "Nein, wir versenden es nur einmal im Monat pro Stammdomäne des Absenders.",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "Diese E-Mail wird zu Ihrem Schutz gesendet und für den Fall, dass ein Entwickler oder IT-Spezialist SPF/DKIM nicht richtig konfiguriert hat.",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "Wir haben diese E-Mail gesendet, weil wir festgestellt haben, dass sie weder SPF noch DKIM bestanden hat und die Stammdomäne des Absenders nicht mit der Stammdomäne der Absenderadresse übereinstimmte.",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Mögliches Phishing von <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "Webhook-Anfrage ohne X-Signature-Header",
+  "Invalid signature in webhook request": "Ungültige Signatur in der Webhook-Anforderung"
 }

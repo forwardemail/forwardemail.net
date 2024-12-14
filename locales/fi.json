@@ -10231,5 +10231,15 @@
   "Cox Communications includes": "Cox Communications sisältää",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "SMTP-virhesanomissa, mutta ne sulautuvat Yahoo-postiin ja tämä poistetaan käytöstä",
   "t-online.de (German/T-Mobile) includes": "t-online.de (saksa/T-Mobile) sisältää",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "SMTP-virhesanomissa, mutta ne eivät ole olleet luotettavia aiempien poistopyyntöjemme mukaan"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "SMTP-virhesanomissa, mutta ne eivät ole olleet luotettavia aiempien poistopyyntöjemme mukaan",
+  "We detected a possible phishing email": "Havaitsimme mahdollisen tietojenkalasteluviestin",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "Havaitsimme, että osoitteesta <strong class=\"notranslate\">%s</strong> sinulle lähetetty sähköposti saattaa olla tietojenkalasteluviesti. Jos sait tämän viestin, siirrä se roskapostikansioosi, jos se ei ole väärä positiivinen.",
+  "Message-ID": "Viesti-ID",
+  "IP": "IP",
+  "No, we only send it once a month per sender's root domain.": "Ei, lähetämme sen vain kerran kuukaudessa lähettäjän juuriverkkotunnusta kohden.",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "Tämä sähköposti lähetetään suojaksesi ja siltä varalta, että kehittäjä tai IT-asiantuntija ei ole määrittänyt SPF/DKIM:ää oikein.",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "Lähetimme tämän sähköpostin, koska havaitsimme, että siinä ei ollut läpäisevää SPF:ää tai DKIM:ää ja että lähettäjän juuriverkkotunnus ei vastannut Lähettäjä-osoitteen pääverkkotunnusta.",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Mahdollinen tietojenkalastelu käyttäjältä <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "Webhook-pyynnöstä puuttuu X-Signature-Header",
+  "Invalid signature in webhook request": "Virheellinen allekirjoitus webhook-pyynnössä"
 }

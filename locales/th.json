@@ -10384,5 +10384,15 @@
   "Cox Communications includes": "Cox Communications รวมถึง",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "ในข้อความแสดงข้อผิดพลาด SMTP แต่กำลังรวมเข้ากับ Yahoo Mail และจะไม่รองรับอีกต่อไป",
   "t-online.de (German/T-Mobile) includes": "t-online.de (เยอรมัน/T-Mobile) รวมถึง",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "ในข้อความแสดงข้อผิดพลาด SMTP แต่ข้อความเหล่านี้ไม่น่าเชื่อถือตามคำขอการลบของเราในอดีต"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "ในข้อความแสดงข้อผิดพลาด SMTP แต่ข้อความเหล่านี้ไม่น่าเชื่อถือตามคำขอการลบของเราในอดีต",
+  "We detected a possible phishing email": "เราตรวจพบอีเมลฟิชชิ่งที่เป็นไปได้",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "เราตรวจพบว่าอีเมลที่ส่งถึงคุณจาก <strong class=\"notranslate\">%s</strong> อาจเป็นอีเมลฟิชชิ่ง หากคุณได้รับข้อความนี้ โปรดย้ายข้อความดังกล่าวไปยังโฟลเดอร์ขยะ/สแปม หากไม่พบผลบวกเท็จ",
+  "Message-ID": "ข้อความ ID",
+  "IP": "ไอพี",
+  "No, we only send it once a month per sender's root domain.": "ไม่ เราจะส่งเพียงครั้งเดียวต่อเดือนต่อโดเมนรากของผู้ส่งเท่านั้น",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "อีเมลนี้ถูกส่งเพื่อการปกป้องคุณ และในกรณีที่นักพัฒนาหรือผู้เชี่ยวชาญด้านไอทีไม่ได้กำหนดค่า SPF/DKIM อย่างถูกต้อง",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "สาเหตุที่เราส่งอีเมลฉบับนี้เนื่องจากเราตรวจพบว่าอีเมลดังกล่าวไม่มีการผ่าน SPF หรือ DKIM และโดเมนรูทของผู้ส่งไม่ตรงกับโดเมนรูทของที่อยู่ผู้ส่ง",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "ฟิชชิ่งที่เป็นไปได้จาก <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "คำขอ Webhook ขาด X-Signature-Header",
+  "Invalid signature in webhook request": "ลายเซ็นไม่ถูกต้องในการร้องขอเว็บฮุก"
 }

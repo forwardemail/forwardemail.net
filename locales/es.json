@@ -10382,5 +10382,15 @@
   "Cox Communications includes": "Cox Communications incluye",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "en los mensajes de error SMTP, pero se están fusionando con el correo de Yahoo y esto quedará obsoleto",
   "t-online.de (German/T-Mobile) includes": "t-online.de (alemán/T-Mobile) incluye",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "en los mensajes de error SMTP, pero no han sido confiables según nuestras solicitudes de eliminación en el pasado"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "en los mensajes de error SMTP, pero no han sido confiables según nuestras solicitudes de eliminación en el pasado",
+  "We detected a possible phishing email": "Detectamos un posible correo electrónico de phishing",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "Hemos detectado que un correo electrónico que le enviamos desde <strong class=\"notranslate\">%s</strong> puede ser un correo electrónico de phishing. Si recibió este mensaje, muévalo a su carpeta de correo no deseado si no es un falso positivo.",
+  "Message-ID": "ID del mensaje",
+  "IP": "Propiedad intelectual",
+  "No, we only send it once a month per sender's root domain.": "No, solo lo enviamos una vez al mes por dominio raíz del remitente.",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "Este correo electrónico se envía para su protección y en caso de que un desarrollador o especialista en TI no haya configurado SPF/DKIM correctamente.",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "El motivo por el que enviamos este correo electrónico es porque detectamos que no tenía SPF ni DKIM adecuados y el dominio raíz del remitente no coincidía con el dominio raíz de la dirección De.",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Posible phishing de <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "Falta el encabezado X-Signature-Header en la solicitud de webhook",
+  "Invalid signature in webhook request": "Firma no válida en la solicitud de webhook"
 }

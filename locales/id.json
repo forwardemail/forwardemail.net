@@ -10384,5 +10384,15 @@
   "Cox Communications includes": "Cox Communications meliputi",
   "in SMTP error messages, but they are merging with Yahoo mail and this will be deprecated": "dalam pesan kesalahan SMTP, tetapi mereka bergabung dengan email Yahoo dan ini akan ditinggalkan",
   "t-online.de (German/T-Mobile) includes": "t-online.de (Jerman/T-Mobile) termasuk",
-  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "dalam pesan kesalahan SMTP, tetapi pesan tersebut tidak dapat diandalkan berdasarkan permintaan penghapusan kami di masa lalu"
+  "in SMTP error messages, but they have not been reliable per our removal requests in the past": "dalam pesan kesalahan SMTP, tetapi pesan tersebut tidak dapat diandalkan berdasarkan permintaan penghapusan kami di masa lalu",
+  "We detected a possible phishing email": "Kami mendeteksi kemungkinan email phishing",
+  "We detected that an email sent to you from <strong class=\"notranslate\">%s</strong> may be a phishing email.  If you received this message, then please move it to your junk/spam folder if it is not a false positive.": "Kami mendeteksi bahwa email yang dikirimkan kepada Anda dari <strong class=\"notranslate\">%s</strong> mungkin merupakan email phishing. Jika Anda menerima pesan ini, silakan pindahkan ke folder spam/sampah jika bukan positif palsu.",
+  "Message-ID": "ID Pesan",
+  "IP": "AKU P",
+  "No, we only send it once a month per sender's root domain.": "Tidak, kami hanya mengirimkannya sebulan sekali per domain root pengirim.",
+  "This email is sent for your protection and in the event a developer or IT specialist did not configure SPF/DKIM correctly.": "Email ini dikirim untuk perlindungan Anda dan seandainya pengembang atau spesialis TI tidak mengonfigurasi SPF/DKIM dengan benar.",
+  "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "Alasan kami mengirimkan email ini adalah karena kami mendeteksi bahwa email ini tidak lolos SPF maupun DKIM dan domain root pengirim tidak cocok dengan domain root alamat Dari.",
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Kemungkinan Phishing dari <span class=\"notranslate\">%s</span>",
+  "Webhook request missing X-Signature-Header": "Permintaan webhook tidak memiliki X-Signature-Header",
+  "Invalid signature in webhook request": "Tanda tangan tidak valid dalam permintaan webhook"
 }
