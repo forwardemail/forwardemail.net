@@ -20,10 +20,10 @@ const REGEX_BLOCKED_PHRASES = new RE2(
   /recorded you|you've been hacked|account is hacked|personal data has leaked/im
 );
 
-const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
-const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
-  /hacked|malware|infected|trojan|recorded you/im
-);
+// const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
+// const REGEX_PASSWORD_MALWARE_INFECTED_VIDEO = new RE2(
+//   /hacked|malware|infected|trojan|recorded you/im
+// );
 
 // TODO: remove yum here and wrap these with spaces or something
 const REGEX_SYSADMIN_SUBJECT = new RE2(
@@ -75,8 +75,9 @@ const domainWithoutTLD =
 const REGEX_DOMAIN_WITHOUT_TLD = new RE2(new RegExp(domainWithoutTLD, 'im'));
 const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
+// function isArbitrary(session, headers, bodyStr) {
 // eslint-disable-next-line complexity
-function isArbitrary(session, headers, bodyStr) {
+function isArbitrary(session, headers) {
   let subject = getHeaders(headers, 'subject');
   if (!isSANB(subject)) subject = null;
 
@@ -108,6 +109,8 @@ function isArbitrary(session, headers, bodyStr) {
     throw err;
   }
 
+  /*
+  // NOTE: disabled due to false positives
   // check for btc crypto scam
   if (
     isSANB(bodyStr) &&
@@ -117,6 +120,7 @@ function isArbitrary(session, headers, bodyStr) {
     throw new SMTPError(
       `Blocked crypto scam, please forward this to ${config.abuseEmail}`
     );
+  */
 
   //
   // NOTE: due to unprecendented spam from Microsoft's "onmicrosoft.com" domain
