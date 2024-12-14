@@ -8,9 +8,9 @@ const punycode = require('node:punycode');
 
 const POP3Server = require('wildduck/lib/pop3/server');
 const isFQDN = require('is-fqdn');
-const { IMAPServer } = require('wildduck/imap-core');
 
 const SMTPError = require('#helpers/smtp-error');
+const DenylistError = require('#helpers/denylist-error');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const config = require('#config');
 const env = require('#config/env');
@@ -106,6 +106,30 @@ async function onConnect(session, fn) {
     return fn(refineAndLogError(err, session, false, this));
   }
 
+  // check against hard-coded denylist
+  let isDenylisted = false;
+  if (
+    session.resolvedClientHostname &&
+    config.denylist.has(session.resolvedClientHostname)
+  )
+    isDenylisted = session.resolvedClientHostname;
+  else if (
+    session.resolvedRootClientHostname &&
+    config.denylist.has(session.resolvedRootClientHostname)
+  )
+    isDenylisted = session.resolvedRootClientHostname;
+  else if (config.denylist.has(session.remoteAddress))
+    isDenylisted = session.remoteAddress;
+
+  if (isDenylisted) {
+    const err = new DenylistError(
+      `The value ${isDenylisted} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${isDenylisted} ;`,
+      550,
+      isDenylisted
+    );
+    return fn(refineAndLogError(err, session, false, this));
+  }
+
   try {
     // NOTE: do not change this prefix unless you also change it in `helpers/on-close.js`
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
@@ -120,7 +144,7 @@ async function onConnect(session, fn) {
       const err = new TypeError(
         `${HOSTNAME} detected 50+ connections from ${
           session.resolvedClientHostname || session.remoteAddress
-        }`
+        } (${session.allowlistValue || 'not allowlisted'})`
       );
       err.isCodeBug = true;
       err.session = session;
@@ -150,13 +174,8 @@ async function onConnect(session, fn) {
     //       because AUTH is required for a user to access the SMTP server anyways
     //
 
-    //
-    // NOTE: we return early here because we do not want to limit concurrent connections from allowlisted values
-    //
-    //
-    if (!isAWS && session.isAllowlisted && count <= 50) {
-      return fn();
-    }
+    if (this.server instanceof POP3Server) return fn();
+    if (!isAWS && session.isAllowlisted) return fn();
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
@@ -165,14 +184,6 @@ async function onConnect(session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/721>
     //       (see this same comment in `helpers/on-auth.js`)
     //
-    if (
-      !isAWS &&
-      (this.server instanceof IMAPServer ||
-        this.server instanceof POP3Server) &&
-      count <= 50
-    ) {
-      return fn();
-    }
 
     // do not allow more than 10 concurrent connections using constructor
     if (count > 10) {
