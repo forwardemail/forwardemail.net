@@ -66,6 +66,30 @@ async function onConnect(session, fn) {
       if (env.NODE_ENV !== 'production') this.logger.debug(err, { session });
     }
 
+    // check against hard-coded denylist
+    let isDenylisted = false;
+    if (
+      session.resolvedClientHostname &&
+      config.denylist.has(session.resolvedClientHostname)
+    )
+      isDenylisted = session.resolvedClientHostname;
+    else if (
+      session.resolvedRootClientHostname &&
+      config.denylist.has(session.resolvedRootClientHostname)
+    )
+      isDenylisted = session.resolvedRootClientHostname;
+    else if (config.denylist.has(session.remoteAddress))
+      isDenylisted = session.remoteAddress;
+
+    if (isDenylisted) {
+      const err = new DenylistError(
+        `The value ${isDenylisted} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${isDenylisted} ;`,
+        550,
+        isDenylisted
+      );
+      throw err;
+    }
+
     //
     // check if the connecting remote IP address is allowlisted
     //
@@ -103,30 +127,6 @@ async function onConnect(session, fn) {
       if (session.isAllowlisted) session.allowlistValue = session.remoteAddress;
     }
   } catch (err) {
-    return fn(refineAndLogError(err, session, false, this));
-  }
-
-  // check against hard-coded denylist
-  let isDenylisted = false;
-  if (
-    session.resolvedClientHostname &&
-    config.denylist.has(session.resolvedClientHostname)
-  )
-    isDenylisted = session.resolvedClientHostname;
-  else if (
-    session.resolvedRootClientHostname &&
-    config.denylist.has(session.resolvedRootClientHostname)
-  )
-    isDenylisted = session.resolvedRootClientHostname;
-  else if (config.denylist.has(session.remoteAddress))
-    isDenylisted = session.remoteAddress;
-
-  if (isDenylisted) {
-    const err = new DenylistError(
-      `The value ${isDenylisted} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${isDenylisted} ;`,
-      550,
-      isDenylisted
-    );
     return fn(refineAndLogError(err, session, false, this));
   }
 
