@@ -171,7 +171,6 @@ function getBounceInfo(err) {
     // 421-4.7.28 Gmail has detected an unusual rate of unsolicited mail originating
     // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]
     if (
-      response.includes(IP_ADDRESS) ||
       response.includes('IP address') ||
       response.includes('from your SPF domain') ||
       response.includes('from your IP Netblock')
@@ -245,8 +244,6 @@ function getBounceInfo(err) {
     response.includes(`?test=${IP_ADDRESS}`) ||
     response.includes(`?query=${IP_ADDRESS}`) ||
     response.includes(`?ip=${IP_ADDRESS}`) ||
-    (['rate', 'block', 'spam', 'other'].includes(bounceInfo.category) &&
-      response.includes(IP_ADDRESS)) ||
     response.includes('exceeded the maximum number of connections')
   ) {
     // test against our IP and put into blocklist category if so
@@ -260,11 +257,6 @@ function getBounceInfo(err) {
     bounceInfo.category = 'blocklist';
   else if (response.includes('an unusual rate of unsolicited mail')) {
     bounceInfo.category = 'blocklist';
-  } else if (bounceInfo.category === 'spam' && response.includes(IP_ADDRESS)) {
-    //
-    // Message failed: 550-5.7.1 [121.127.44.56      19] Gmail has detected that this message is likely\n550-5.7.1 suspicious due to the very low reputation of the sending domain. To\n550-5.7.1 best protect our users from spam, the message has been blocked. For\n550-5.7.1 more information, go to\n550 5.7.1  https://support.google.com/mail/answer/188131 71dfb90a1353d-51750f8b609si2030842e0c.156
-    //
-    bounceInfo.category = 'blocklist'; // TODO: improve this, e.g. if it also contains "reputation"
   } else if (
     bounceInfo.category !== 'spam' &&
     (response.includes('rate limited') ||
@@ -287,11 +279,6 @@ function getBounceInfo(err) {
     // <https://sender.office.com/> <-- submit request here
     // <https://sendersupport.olc.protection.outlook.com/pm/>
     bounceInfo.category = 'blocklist';
-  } else if (
-    response.includes('unusual rate of mail') &&
-    !response.includes(IP_ADDRESS)
-  ) {
-    bounceInfo.category = 'spam';
     //
     // dmarc failures shouldn't occur since we check them on our side
     //
@@ -310,22 +297,6 @@ function getBounceInfo(err) {
   if (bounceInfo.category === 'blocklist') bounceInfo.action = 'defer';
   else if (['virus', 'spam'].includes(bounceInfo.category))
     bounceInfo.action = 'reject';
-
-  //
-  // safeguard in case IP warmup
-  //
-  if (
-    bounceInfo.category === 'spam' &&
-    (response.includes(IP_ADDRESS) ||
-      response.includes(
-        'Gmail has detected an unusual rate of unsolicited mail'
-      ))
-  )
-    bounceInfo.category = 'blocklist';
-
-  // posteo seems to have IP warmup issues
-  if (bounceInfo.category === 'spam' && err.truthSource === 'posteo.de')
-    bounceInfo.category = 'blocklist';
 
   // bounce attack
   // >  550 Suspected bounce attacks
