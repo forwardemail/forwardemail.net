@@ -175,11 +175,20 @@ async function onConnect(session, fn) {
     }
 
     // do not allow more than 10 concurrent connections using constructor
-    if (count > 10)
+    if (count > 10) {
+      const err = new TypeError(
+        `${HOSTNAME} detected 10+ connections from ${
+          session.resolvedClientHostname || session.remoteAddress
+        }`
+      );
+      err.isCodeBug = true;
+      err.session = session;
+      logger.fatal(err);
       throw new SMTPError(
         `Too many concurrent connections from ${session.remoteAddress}`,
         { responseCode: 421, ignoreHook: true }
       );
+    }
 
     fn();
   } catch (err) {
