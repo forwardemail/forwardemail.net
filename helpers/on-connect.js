@@ -130,6 +130,17 @@ async function onConnect(session, fn) {
     return fn(refineAndLogError(err, session, false, this));
   }
 
+  // safeguard in case we recursively connect to our own server
+  // (this should NOT happen, and can result in OOM/CPU issues)
+  if (session.resolvedRootClientHostname === env.WEB_HOST) {
+    const err = new TypeError(
+      `${HOSTNAME} detected recursive connection from ${session.resolvedClientHostname} (${session.remoteAddress})`
+    );
+    err.isCodeBug = true;
+    err.session = session;
+    logger.fatal(err);
+  }
+
   try {
     // NOTE: do not change this prefix unless you also change it in `helpers/on-close.js`
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
