@@ -14,8 +14,9 @@ module.exports = {
   logger: typeof window === 'object' ? console : signale,
   level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   levels:
+    // ? ['info', 'warn', 'error', 'fatal']
     env.NODE_ENV === 'production'
-      ? ['info', 'warn', 'error', 'fatal']
+      ? ['error', 'fatal']
       : ['trace', 'info', 'debug', 'warn', 'error', 'fatal'],
   showStack: env.AXE_SHOW_STACK,
   meta: {
