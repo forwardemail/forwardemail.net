@@ -698,7 +698,7 @@ async function onAuth(auth, session, fn) {
         .then((backup) => {
           this.logger.debug('backup complete', { backup, session });
         })
-        .catch((err) => this.logger.warn(err, { session }));
+        .catch((err) => this.logger.debug(err, { session }));
     }
   } catch (err) {
     //
