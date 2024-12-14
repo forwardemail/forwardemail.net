@@ -279,7 +279,8 @@ async function getRecipients(session, scan) {
             pass = true;
           else if (
             session.resolvedRootClientHostname &&
-            customAllowlist.includes(session.resolvedRootClientHostname)
+            (customAllowlist.includes(session.resolvedRootClientHostname) ||
+              session.resolvedRootClientHostname === env.WEB_HOST)
           )
             pass = true;
           else if (
