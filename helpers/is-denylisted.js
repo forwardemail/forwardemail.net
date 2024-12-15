@@ -82,14 +82,14 @@ async function isDenylisted(value, client, resolver) {
         //
         // if the root domain was allowlisted and it was an email
         // then we need to check the combination of:
-        // `denylist:domain:email` against the denylist
+        // `denylist:email` against the denylist
         //
         // (this is a safeguard in case the email is not denylisted but domain:email is)
         //
         if (isRootDomainAllowlisted) {
           if (isEmail(v)) {
             // eslint-disable-next-line no-await-in-loop
-            const result = await client.get(`denylist:${root}:${v}`);
+            const result = await client.get(`denylist:${v}`);
 
             if (boolean(result)) throw createDenylistError(v);
           }
