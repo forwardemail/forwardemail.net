@@ -93,13 +93,15 @@ async function isDenylisted(value, client, resolver) {
 
             if (boolean(result)) throw createDenylistError(v);
           }
-        } else {
-          // check redis denylist on root domain
-          // eslint-disable-next-line no-await-in-loop
-          const isRootDomainDenylisted = await client.get(`denylist:${root}`);
 
-          if (boolean(isRootDomainDenylisted)) throw createDenylistError(root);
+          return false;
         }
+
+        // check redis denylist on root domain
+        // eslint-disable-next-line no-await-in-loop
+        const isRootDomainDenylisted = await client.get(`denylist:${root}`);
+
+        if (boolean(isRootDomainDenylisted)) throw createDenylistError(root);
       }
     }
 
