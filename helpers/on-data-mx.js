@@ -729,7 +729,11 @@ async function forward(recipient, headers, session, raw) {
   //       then wait until we're done iterating over RCPT TO values
   //
   try {
-    await isDenylisted(session.attributes, this.client, this.resolver);
+    await isDenylisted(
+      [recipient.webhook || recipient.to[0], ...session.attributes],
+      this.client,
+      this.resolver
+    );
   } catch (err) {
     // store a counter
     if (err instanceof DenylistError)
