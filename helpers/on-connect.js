@@ -95,21 +95,10 @@ async function onConnect(session, fn) {
     }
 
     //
-    // TODO: we need to do this for all other cloud providers (e.g. via a maintained list)
-    //       <https://github.com/MISP/misp-warninglists>
-    //       <https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#web-services-platform>
-    //
-    // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
-    //
-    const isAWS =
-      session.resolvedClientHostname &&
-      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
-
-    //
     // check if the connecting remote IP address is allowlisted
     //
     session.isAllowlisted = false;
-    if (!isDenylisted && !isAWS) {
+    if (!isDenylisted) {
       if (
         session.resolvedClientHostname &&
         session.resolvedRootClientHostname
@@ -198,7 +187,18 @@ async function onConnect(session, fn) {
     //       because AUTH is required for a user to access the SMTP server anyways
     //
 
-    if (!session.isAllowlisted) return fn();
+    //
+    // TODO: we need to do this for all other cloud providers (e.g. via a maintained list)
+    //       <https://github.com/MISP/misp-warninglists>
+    //       <https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#web-services-platform>
+    //
+    // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
+    //
+    const isAWS =
+      session.resolvedClientHostname &&
+      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
+
+    if (!session.isAllowlisted && !isAWS) return fn();
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
