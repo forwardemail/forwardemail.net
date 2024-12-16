@@ -6,8 +6,9 @@
 const os = require('node:os');
 const punycode = require('node:punycode');
 
-const POP3Server = require('wildduck/lib/pop3/server');
 const isFQDN = require('is-fqdn');
+const POP3Server = require('wildduck/lib/pop3/server');
+const { IMAPServer } = require('wildduck/imap-core');
 
 const SMTPError = require('#helpers/smtp-error');
 const DenylistError = require('#helpers/denylist-error');
@@ -26,6 +27,9 @@ async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
 
   if (this.isClosing) return fn(new ServerShutdownError());
+
+  const isPOP = this.server instanceof POP3Server;
+  const isIMAP = this.server instanceof IMAPServer;
 
   try {
     // this is used for setting Date header if missing on SMTP submission
@@ -81,7 +85,7 @@ async function onConnect(session, fn) {
     else if (config.denylist.has(session.remoteAddress))
       isDenylisted = session.remoteAddress;
 
-    if (isDenylisted) {
+    if (isDenylisted && !isPOP && !isIMAP) {
       const err = new DenylistError(
         `The value ${isDenylisted} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${isDenylisted} ;`,
         550,
@@ -91,40 +95,57 @@ async function onConnect(session, fn) {
     }
 
     //
+    // TODO: we need to do this for all other cloud providers (e.g. via a maintained list)
+    //       <https://github.com/MISP/misp-warninglists>
+    //       <https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#web-services-platform>
+    //
+    // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
+    //
+    const isAWS =
+      session.resolvedClientHostname &&
+      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
+
+    //
     // check if the connecting remote IP address is allowlisted
     //
     session.isAllowlisted = false;
-    if (session.resolvedClientHostname && session.resolvedRootClientHostname) {
-      // check the root domain
-      session.isAllowlisted = await isAllowlisted(
-        session.resolvedRootClientHostname,
-        this.client,
-        this.resolver
-      );
-      if (session.isAllowlisted) {
-        session.allowlistValue = session.resolvedRootClientHostname;
-      } else if (
-        session.resolvedRootClientHostname !== session.resolvedClientHostname
+    if (!isDenylisted && !isAWS) {
+      if (
+        session.resolvedClientHostname &&
+        session.resolvedRootClientHostname
       ) {
-        // if differed, check the sub-domain
+        // check the root domain
         session.isAllowlisted = await isAllowlisted(
-          session.resolvedClientHostname,
+          session.resolvedRootClientHostname,
           this.client,
           this.resolver
         );
+        if (session.isAllowlisted) {
+          session.allowlistValue = session.resolvedRootClientHostname;
+        } else if (
+          session.resolvedRootClientHostname !== session.resolvedClientHostname
+        ) {
+          // if differed, check the sub-domain
+          session.isAllowlisted = await isAllowlisted(
+            session.resolvedClientHostname,
+            this.client,
+            this.resolver
+          );
 
-        if (session.isAllowlisted)
-          session.allowlistValue = session.resolvedClientHostname;
+          if (session.isAllowlisted)
+            session.allowlistValue = session.resolvedClientHostname;
+        }
       }
-    }
 
-    if (!session.isAllowlisted) {
-      session.isAllowlisted = await isAllowlisted(
-        session.remoteAddress,
-        this.client,
-        this.resolver
-      );
-      if (session.isAllowlisted) session.allowlistValue = session.remoteAddress;
+      if (!session.isAllowlisted) {
+        session.isAllowlisted = await isAllowlisted(
+          session.remoteAddress,
+          this.client,
+          this.resolver
+        );
+        if (session.isAllowlisted)
+          session.allowlistValue = session.remoteAddress;
+      }
     }
   } catch (err) {
     return fn(refineAndLogError(err, session, false, this));
@@ -142,6 +163,7 @@ async function onConnect(session, fn) {
   }
 
   try {
+    // TODO: we need to use rate limiting concept here where it's rolling as opposed to fix
     // NOTE: do not change this prefix unless you also change it in `helpers/on-close.js`
     const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
       config.env
@@ -154,24 +176,15 @@ async function onConnect(session, fn) {
     if (count >= 50) {
       const err = new TypeError(
         `${HOSTNAME} detected 50+ connections from ${
-          session.resolvedClientHostname || session.remoteAddress
+          session.resolvedRootClientHostname ||
+          session.resolvedClientHostname ||
+          session.remoteAddress
         } (${session.allowlistValue || 'not allowlisted'})`
       );
       err.isCodeBug = true;
       err.session = session;
       logger.fatal(err);
     }
-
-    //
-    // TODO: we need to do this for all other cloud providers (e.g. via a maintained list)
-    //       <https://github.com/MISP/misp-warninglists>
-    //       <https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#web-services-platform>
-    //
-    // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
-    //
-    const isAWS =
-      session.resolvedClientHostname &&
-      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
 
     //
     // NOTE: we do not check in onConnect for denylist/silent/backscatter in MX server
@@ -185,8 +198,7 @@ async function onConnect(session, fn) {
     //       because AUTH is required for a user to access the SMTP server anyways
     //
 
-    if (this.server instanceof POP3Server) return fn();
-    if (!isAWS && session.isAllowlisted) return fn();
+    if (!session.isAllowlisted) return fn();
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
@@ -195,6 +207,9 @@ async function onConnect(session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/721>
     //       (see this same comment in `helpers/on-auth.js`)
     //
+
+    // NOTE: auth is handled for POP3/IMAP in onAuth so we don't throw concurrency issue here
+    if (isPOP || isIMAP) return fn();
 
     // do not allow more than 10 concurrent connections using constructor
     if (count > 10) {

@@ -8420,5 +8420,9 @@
   "If you have any questions or comments, then please let us know.": "אם יש לך שאלות או הערות, אנא הודע לנו.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "פישינג אפשרי מ- <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "בקשת Webhook חסרה X-Signature-Header",
-  "Invalid signature in webhook request": "חתימה לא חוקית בבקשת webhook"
+  "Invalid signature in webhook request": "חתימה לא חוקית בבקשת webhook",
+  "DataPacket": "DataPacket",
+  "(US/UK; hosting provider),": "(ארה\"ב/בריטניה; ספק אירוח),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "שרתי מתכת חשופה תואמי SOC 2 Type 2 מ-DataPacket, Vultr ו-Digital Ocean."
 }

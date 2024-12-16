@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "السبب الذي جعلنا نرسل هذا البريد الإلكتروني هو أننا اكتشفنا أنه لا يحتوي على SPF أو DKIM ناجحين وأن نطاق الجذر الخاص بالمرسل لا يتطابق مع نطاق الجذر الخاص بعنوان المرسل.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "احتمالية حدوث تصيد احتيالي من <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "طلب Webhook مفقود X-Signature-Header",
-  "Invalid signature in webhook request": "توقيع غير صالح في طلب الويب هوك"
+  "Invalid signature in webhook request": "توقيع غير صالح في طلب الويب هوك",
+  "DataPacket": "حزمة البيانات",
+  "(US/UK; hosting provider),": "(الولايات المتحدة/المملكة المتحدة؛ مزود الاستضافة)،",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "خوادم معدنية متوافقة مع SOC 2 Type 2 من DataPacket وVultr وDigital Ocean."
 }

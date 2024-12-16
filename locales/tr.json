@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "Bu e-postayı göndermemizin nedeni, e-postanın SPF veya DKIM'e sahip olmadığını ve gönderenin kök etki alanının Gönderen adresi kök etki alanıyla eşleşmediğini tespit etmemizdir.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> Olası Kimlik Avı",
   "Webhook request missing X-Signature-Header": "Webhook isteğinde X-Signature-Header eksik",
-  "Invalid signature in webhook request": "Webhook isteğinde geçersiz imza"
+  "Invalid signature in webhook request": "Webhook isteğinde geçersiz imza",
+  "DataPacket": "VeriPaketi",
+  "(US/UK; hosting provider),": "(ABD/İngiltere; barındırma sağlayıcısı),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket, Vultr ve Digital Ocean'dan SOC 2 Tip 2 uyumlu yalın donanım sunucuları."
 }

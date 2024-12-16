@@ -559,6 +559,7 @@ async function onAuth(auth, session, fn) {
                 template: 'alert',
                 message: {
                   to,
+                  bcc: config.email.message.from,
                   subject: i18n.translate(
                     'CONCURRENCY_EXCEEDED_SUBJECT',
                     locale,
@@ -594,6 +595,7 @@ async function onAuth(auth, session, fn) {
         });
       }
 
+      // TODO: we need to use rate limiting concept here where it's rolling as opposed to fix
       // increase counter for alias by 1 (with ttl safeguard)
       await this.client
         .pipeline()

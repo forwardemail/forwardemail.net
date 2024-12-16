@@ -6791,5 +6791,9 @@
   "Powered by bare metal servers": "Powered by bare metal servers",
   "Email API designed for developers": "Email API designed for developers",
   "If you have any questions or comments, then please let us know.": "If you have any questions or comments, then please let us know.",
-  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Possible Phishing from <span class=\"notranslate\">%s</span>"
+  "Possible Phishing from <span class=\"notranslate\">%s</span>": "Possible Phishing from <span class=\"notranslate\">%s</span>",
+  "DataPacket": "DataPacket",
+  "(US/UK; hosting provider),": "(US/UK; hosting provider),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean."
 }

@@ -32,6 +32,7 @@ Listed below are our providers which we use to transfer data internationally and
 | Provider                                  | [Data Privacy Framework Program](https://www.dataprivacyframework.gov/) ("DPF") Certified | GDPR Compliance Page                              |
 | ----------------------------------------- | :---------------------------------------------------------------------------------------: | ------------------------------------------------- |
 | [Cloudflare](https://cloudflare.com)      |                                   :white_check_mark: Yes                                  | <https://www.cloudflare.com/trust-hub/gdpr/>      |
+| [DataPacket](https://www.datapacket.com/) |                                           :x: No                                          | <https://www.datapacket.com/privacy-policy>       |
 | [Digital Ocean](https://digitalocean.com) |                                           :x: No                                          | <https://www.digitalocean.com/legal/gdpr>         |
 | [Vultr](https://www.vultr.com)            |                                           :x: No                                          | <https://www.vultr.com/legal/eea-gdpr-privacy/>   |
 | [Stripe](https://stripe.com/)             |                                   :white_check_mark: Yes                                  | <https://stripe.com/legal/privacy-center>         |

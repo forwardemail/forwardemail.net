@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "สาเหตุที่เราส่งอีเมลฉบับนี้เนื่องจากเราตรวจพบว่าอีเมลดังกล่าวไม่มีการผ่าน SPF หรือ DKIM และโดเมนรูทของผู้ส่งไม่ตรงกับโดเมนรูทของที่อยู่ผู้ส่ง",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "ฟิชชิ่งที่เป็นไปได้จาก <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "คำขอ Webhook ขาด X-Signature-Header",
-  "Invalid signature in webhook request": "ลายเซ็นไม่ถูกต้องในการร้องขอเว็บฮุก"
+  "Invalid signature in webhook request": "ลายเซ็นไม่ถูกต้องในการร้องขอเว็บฮุก",
+  "DataPacket": "ดาต้าแพ็คเก็ต",
+  "(US/UK; hosting provider),": "(สหรัฐอเมริกา/สหราชอาณาจักร; ผู้ให้บริการโฮสติ้ง)",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "เซิร์ฟเวอร์โลหะเปล่าที่สอดคล้องกับ SOC 2 ประเภท 2 จาก DataPacket, Vultr และ Digital Ocean"
 }

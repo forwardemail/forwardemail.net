@@ -7397,5 +7397,9 @@
   "If you have any questions or comments, then please let us know.": "Hvis du har spørgsmål eller kommentarer, så lad os det vide.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "Muligt phishing fra <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "Webhook-anmodning mangler X-Signature-Header",
-  "Invalid signature in webhook request": "Ugyldig signatur i webhook-anmodning"
+  "Invalid signature in webhook request": "Ugyldig signatur i webhook-anmodning",
+  "DataPacket": "Datapakke",
+  "(US/UK; hosting provider),": "(USA/UK; hostingudbyder),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "SOC 2 Type 2-kompatible bare metal-servere fra DataPacket, Vultr og Digital Ocean."
 }

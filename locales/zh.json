@@ -10087,5 +10087,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "我们发送这封电子邮件的原因是我们检测到它没有通过 SPF 或 DKIM，并且发件人的根域与发件人地址根域不匹配。",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "可能来自<span class=\"notranslate\">%s</span>网络钓鱼",
   "Webhook request missing X-Signature-Header": "Webhook 请求缺少 X-Signature-Header",
-  "Invalid signature in webhook request": "Webhook 请求中的签名无效"
+  "Invalid signature in webhook request": "Webhook 请求中的签名无效",
+  "DataPacket": "数据包",
+  "(US/UK; hosting provider),": "（美国/英国；托管服务提供商），",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr 和 Digital Ocean 的 SOC 2 Type 2 兼容裸机服务器。"
 }

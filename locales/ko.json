@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "이 이메일을 보낸 이유는 SPF나 DKIM이 통과하지 못했고 발신자의 루트 도메인이 보낸 사람 주소 루트 도메인과 일치하지 않는다는 것을 감지했기 때문입니다.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span> 에서 피싱이 발생할 가능성이 있습니다",
   "Webhook request missing X-Signature-Header": "Webhook 요청에 X-Signature-Header가 없습니다.",
-  "Invalid signature in webhook request": "웹훅 요청의 서명이 잘못되었습니다."
+  "Invalid signature in webhook request": "웹훅 요청의 서명이 잘못되었습니다.",
+  "DataPacket": "데이터 패킷",
+  "(US/UK; hosting provider),": "(미국/영국; 호스팅 제공자),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket, Vultr, Digital Ocean의 SOC 2 Type 2 호환 베어 메탈 서버입니다."
 }

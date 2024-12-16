@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "Azért küldtük el ezt az e-mailt, mert azt észleltük, hogy nem rendelkezik átmenő SPF-vel vagy DKIM-mel, és a feladó gyökérdomainje nem egyezik a feladó cím gyökérdomainjével.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "Lehetséges adathalászat a következőtől: <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "A webhook kérésből hiányzik az X-Signature-Header",
-  "Invalid signature in webhook request": "Érvénytelen aláírás a webhook-kérésben"
+  "Invalid signature in webhook request": "Érvénytelen aláírás a webhook-kérésben",
+  "DataPacket": "DataPacket",
+  "(US/UK; hosting provider),": "(USA/Egyesült Királyság; tárhelyszolgáltató),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "SOC 2 Type 2 kompatibilis csupasz fém szerverek a DataPacket, Vultr és Digital Ocean cégektől."
 }

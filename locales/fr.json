@@ -7924,5 +7924,9 @@
   "If you have any questions or comments, then please let us know.": "Si vous avez des questions ou des commentaires, n'hésitez pas à nous le faire savoir.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "Hameçonnage possible de la part de <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "La requête Webhook manque d'en-tête X-Signature",
-  "Invalid signature in webhook request": "Signature non valide dans la demande de webhook"
+  "Invalid signature in webhook request": "Signature non valide dans la demande de webhook",
+  "DataPacket": "Paquet de données",
+  "(US/UK; hosting provider),": "(États-Unis/Royaume-Uni ; fournisseur d'hébergement),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Serveurs bare metal conformes SOC 2 Type 2 de DataPacket, Vultr et Digital Ocean."
 }

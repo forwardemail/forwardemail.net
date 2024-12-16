@@ -7929,5 +7929,9 @@
   "If you have any questions or comments, then please let us know.": "Nếu bạn có bất kỳ câu hỏi hoặc bình luận nào, vui lòng cho chúng tôi biết.",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "Có thể lừa đảo từ <span class=\"notranslate\">%s</span>",
   "Webhook request missing X-Signature-Header": "Yêu cầu webhook thiếu X-Signature-Header",
-  "Invalid signature in webhook request": "Chữ ký không hợp lệ trong yêu cầu webhook"
+  "Invalid signature in webhook request": "Chữ ký không hợp lệ trong yêu cầu webhook",
+  "DataPacket": "Gói dữ liệu",
+  "(US/UK; hosting provider),": "(Mỹ/Anh; nhà cung cấp dịch vụ lưu trữ),",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Máy chủ bare metal tuân thủ SOC 2 Loại 2 từ DataPacket, Vultr và Digital Ocean."
 }

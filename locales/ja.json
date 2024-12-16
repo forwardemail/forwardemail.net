@@ -10394,5 +10394,9 @@
   "The reason we sent this email is because we detected that it did not have passing SPF nor DKIM and the sender's root domain did not match the From address root domain.": "このメールを送信した理由は、SPF も DKIM も通過しておらず、送信者のルート ドメインが送信元アドレスのルート ドメインと一致しなかったことが検出されたためです。",
   "Possible Phishing from <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>からのフィッシングの可能性があります",
   "Webhook request missing X-Signature-Header": "Webhook リクエストに X-Signature-Header がありません",
-  "Invalid signature in webhook request": "Webhook リクエストの署名が無効です"
+  "Invalid signature in webhook request": "Webhook リクエストの署名が無効です",
+  "DataPacket": "データパケット",
+  "(US/UK; hosting provider),": "（米国/英国、ホスティングプロバイダー）、",
+  "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr、Digital Ocean の SOC 2 タイプ 2 準拠ベアメタル サーバー。"
 }
