@@ -242,7 +242,9 @@ function isArbitrary(session, headers) {
       !(
         headers.hasHeader('x-mailer') &&
         // PHP/PHPMailer/Drupal
-        ['php', 'drupal'].includes(headers.getFirst('x-mailer').toLowerCase())
+        ['php', 'drupal'].some((str) =>
+          headers.getFirst('x-mailer').toLowerCase().includes(str)
+        )
       ) &&
       !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))
     ) {
