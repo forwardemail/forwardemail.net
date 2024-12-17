@@ -87,7 +87,7 @@ function noop(fnName) {
     const err = new TypeError(
       `This model is dummy proofed from Mongoose "${fnName}()" usage and is to be used with SQLite only`
     );
-    err.args = args;
+    err.args = JSON.parse(safeStringify(args));
     throw err;
   };
 }

@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
-const ms = require('ms');
+const dayjs = require('dayjs-with-plugins');
 const pify = require('pify');
 const { Builder } = require('json-sql');
 
@@ -34,11 +32,12 @@ async function syncTemporaryMailbox(session) {
 
   if (!cache) {
     // set cache so we don't sync twice at once
+    let expireAtMs = dayjs().add(1, 'minute').toDate().getTime();
     await this.client.set(
       `sync_check:${session.user.alias_id}`,
       true,
-      'PX',
-      ms('5m')
+      'PXAT',
+      expireAtMs
     );
 
     const tmpDb = await getTemporaryDatabase.call(this, session);
@@ -61,18 +60,22 @@ async function syncTemporaryMailbox(session) {
       let hasMore = true;
       while (hasMore) {
         // set cache so we don't sync twice at once
-        // eslint-disable-next-line no-await-in-loop
-        await this.client.set(
-          `sync_check:${session.user.alias_id}`,
-          true,
-          'PX',
-          ms('5m')
-        );
+        // if it's been more than 60s
+        if (Date.now() >= expireAtMs) {
+          expireAtMs = dayjs().add(1, 'minute').toDate().getTime();
+          // eslint-disable-next-line no-await-in-loop
+          await this.client.set(
+            `sync_check:${session.user.alias_id}`,
+            true,
+            'PXAT',
+            expireAtMs
+          );
+        }
 
         const sql = builder.build({
           type: 'select',
           table: 'TemporaryMessages',
-          limit: 10
+          limit: 25 // 250mb max (50mb per message)
         });
 
         const messages = tmpDb.prepare(sql.query).all(sql.values);
@@ -82,6 +85,21 @@ async function syncTemporaryMailbox(session) {
           break;
         }
 
+        // check that we have available space
+        const storagePath = getPathToDatabase({
+          id: session.user.alias_id,
+          storage_location: session.user.storage_location
+        });
+        const spaceRequired = Math.round(bytes('50MB') * messages.length * 2);
+        // eslint-disable-next-line no-await-in-loop
+        const diskSpace = await checkDiskSpace(storagePath);
+        if (diskSpace.free < spaceRequired)
+          throw new TypeError(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
+              diskSpace.free
+            )} was available`
+          );
+
         for (const m of messages) {
           try {
             const message = syncConvertResult(TemporaryMessages, m);
@@ -89,21 +107,6 @@ async function syncTemporaryMailbox(session) {
             // if one message fails then not all of them should
             // (e.g. one might have an issue with `date` or `raw`)
             //
-            // check that we have available space
-            const storagePath = getPathToDatabase({
-              id: session.user.alias_id,
-              storage_location: session.user.storage_location
-            });
-            const spaceRequired = Buffer.byteLength(message.raw) * 2;
-            // eslint-disable-next-line no-await-in-loop
-            const diskSpace = await checkDiskSpace(storagePath);
-            if (diskSpace.free < spaceRequired)
-              throw new TypeError(
-                `Needed ${bytes(spaceRequired)} but only ${bytes(
-                  diskSpace.free
-                )} was available`
-              );
-
             // eslint-disable-next-line no-await-in-loop
             await onAppendPromise.call(
               this,
@@ -162,13 +165,8 @@ async function syncTemporaryMailbox(session) {
 
     if (err) throw err;
 
-    // update cache so we can try again in 1m
-    await this.client.set(
-      `sync_check:${session.user.alias_id}`,
-      true,
-      'PX',
-      ms('1m')
-    );
+    // update cache so we can try again
+    await this.client.del(`sync_check:${session.user.alias_id}`);
   }
 
   return deleted;

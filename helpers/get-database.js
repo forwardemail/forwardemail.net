@@ -673,7 +673,7 @@ async function getDatabase(
           `trash_check:${session.user.alias_id}`,
           true,
           'PX',
-          ms('7d')
+          ms('1d')
         );
 
         const mailboxes = await Mailboxes.find(instance, session, {
