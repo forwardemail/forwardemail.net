@@ -31,7 +31,7 @@ async function removeEmail(ctx, next) {
   ctx.state.email.locked_at = undefined;
   ctx.state.email = await ctx.state.email.save();
 
-  ctx.logger.info('email removed', {
+  ctx.logger.debug('email removed', {
     session: createSession(ctx.state.email),
     user: ctx.state.email.user,
     email: ctx.state.email._id,

@@ -526,7 +526,9 @@ p.text-center.d-lg-none
                   if domain.plan === 'free' || !alias.has_recipient_verification
                     each recipient in alias.recipients
                       li.list-inline-item.markdown-body
-                        code.badge.badge-dark.text-monospace.font-weight-normal.text-nowrap
+                        code.badge.badge-dark.text-monospace.font-weight-normal(
+                          class=validator.isURL(recipient) ? "" : "text-nowrap"
+                        )
                           if validator.isEmail(recipient) || validator.isURL(recipient)
                             = recipient
                           else
@@ -562,7 +564,7 @@ p.text-center.d-lg-none
                           )
                             i.fa.fa-fw.fa-exclamation-circle
                         if validator.isEmail(recipient) || validator.isURL(recipient)
-                          code.text-nowrap= recipient
+                          code(class=validator.isURL(recipient) ? "" : "text-nowrap")= recipient
                         else
                           code.text-nowrap= `${alias.name}@${recipient}`
                         if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
@@ -713,7 +715,9 @@ p.text-center.d-lg-none
                 if domain.plan === 'free' || !alias.has_recipient_verification
                   each recipient in alias.recipients
                     li.list-inline-item.markdown-body
-                      code.badge.badge-dark.text-monospace.font-weight-normal.text-nowrap
+                      code.badge.badge-dark.text-monospace.font-weight-normal(
+                        class=validator.isURL(recipient) ? "" : "text-nowrap"
+                      )
                         if validator.isEmail(recipient) || validator.isURL(recipient)
                           = recipient
                         else
@@ -749,7 +753,7 @@ p.text-center.d-lg-none
                         )
                           i.fa.fa-fw.fa-exclamation-circle
                       if validator.isEmail(recipient) || validator.isURL(recipient)
-                        code.text-nowrap= recipient
+                        code(class=validator.isURL(recipient) ? "" : "text-nowrap")= recipient
                       else
                         code.text-nowrap= `${alias.name}@${recipient}`
                       if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)

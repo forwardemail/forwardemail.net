@@ -10091,5 +10091,8 @@
   "DataPacket": "数据包",
   "(US/UK; hosting provider),": "（美国/英国；托管服务提供商），",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr 和 Digital Ocean 的 SOC 2 Type 2 兼容裸机服务器。"
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr 和 Digital Ocean 的 SOC 2 Type 2 兼容裸机服务器。",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "如果发件人的 DMARC 策略为拒绝，则 PGP 加密不会应用于通过我们的 MX 服务器转发的电子邮件。如果您需要 PGP 加密",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "邮件，那么我们建议使用我们的 IMAP 服务并为您的入站邮件别名配置 PGP 密钥。",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "请注意，当且仅当发件人的 DMARC 策略未通过且没有 DKIM 签名与“发件人”标头对齐时，我们才会对电子邮件进行“Friendly-From”重写。这意味着我们将更改邮件上的“发件人”标头，设置“X-Original-From”，如果尚未设置，还将设置“回复”。更改这些标头后，我们还将在邮件上重新密封 ARC 封条。"
 }

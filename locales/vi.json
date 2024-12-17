@@ -7933,5 +7933,8 @@
   "DataPacket": "Gói dữ liệu",
   "(US/UK; hosting provider),": "(Mỹ/Anh; nhà cung cấp dịch vụ lưu trữ),",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Máy chủ bare metal tuân thủ SOC 2 Loại 2 từ DataPacket, Vultr và Digital Ocean."
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Máy chủ bare metal tuân thủ SOC 2 Loại 2 từ DataPacket, Vultr và Digital Ocean.",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "Mã hóa PGP sẽ không được áp dụng cho việc chuyển tiếp email qua máy chủ MX của chúng tôi nếu người gửi có chính sách từ chối DMARC. Nếu bạn yêu cầu mã hóa PGP trên",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "thư thì chúng tôi đề xuất bạn sử dụng dịch vụ IMAP và cấu hình khóa PGP làm bí danh cho thư đến.",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "Lưu ý rằng chúng tôi sẽ thực hiện viết lại \"Friendly-From\" trên các email nếu và chỉ khi chính sách DMARC của người gửi không được thông qua VÀ không có chữ ký DKIM nào được căn chỉnh với tiêu đề \"From\". Điều này có nghĩa là chúng tôi sẽ thay đổi tiêu đề \"From\" trên tin nhắn, đặt \"X-Original-From\" và cũng đặt \"Reply-To\" nếu nó chưa được đặt. Chúng tôi cũng sẽ niêm phong lại niêm phong ARC trên tin nhắn sau khi thay đổi các tiêu đề này."
 }

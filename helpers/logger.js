@@ -206,8 +206,8 @@ async function hook(err, message, meta) {
           // we should try to create and log the error that occurred
           // but we should indicate that we should ignore the next log hook
           if (!err.is_duplicate_log) console.error(err);
-          // if (meta.ignore_next_hook) logger.error(err, { ignore_hook: true });
-          // else logger.error(err, { ignore_next_hook: true });
+          if (meta.ignore_next_hook) logger.error(err, { ignore_hook: true });
+          else logger.error(err, { ignore_next_hook: true });
         });
     } catch (err) {
       logger.error(err, { ignore_hook: true });

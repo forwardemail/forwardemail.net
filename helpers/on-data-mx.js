@@ -785,7 +785,7 @@ async function forward(recipient, headers, session, raw) {
         // - `session.spfFromHeader`
         // - `session.signingDomains` (Set)
         // - `session.alignedDKIMResults`
-        // - `sesion.hadAlignedAndPassingDKIM`
+        // - `session.hadAlignedAndPassingDKIM`
         headers: session.headers,
         recipients: Object.keys(recipient.replacements),
         session: {

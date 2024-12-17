@@ -10403,5 +10403,8 @@
   "DataPacket": "Datapakke",
   "(US/UK; hosting provider),": "(USA/UK; vertsleverandør),",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "SOC 2 Type 2-kompatible barmetallservere fra DataPacket, Vultr og Digital Ocean."
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "SOC 2 Type 2-kompatible barmetallservere fra DataPacket, Vultr og Digital Ocean.",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "PGP-kryptering vil ikke bli brukt på videresending av e-post via våre MX-servere hvis avsenderen hadde en DMARC-policy for avvisning.  Hvis du trenger PGP-kryptering på",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "mail, så foreslår vi at du bruker IMAP-tjenesten vår og konfigurerer PGP-nøkkelen din for alias for innkommende e-post.",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "Merk at vi vil foreta en \"Vennlig-fra\"-omskriving av e-postene hvis og bare hvis DMARC-policyen til avsenderen ikke ble godkjent OG ingen DKIM-signaturer ble justert med \"Fra\"-overskriften.  Dette betyr at vi vil endre \"Fra\"-overskriften på meldingen, sette \"X-Original-From\", og også sette en \"Svar-Til\" hvis den ikke allerede var satt.  Vi vil også forsegle ARC-forseglingen på meldingen etter å ha endret disse overskriftene."
 }

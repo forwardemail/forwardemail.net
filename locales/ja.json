@@ -10398,5 +10398,8 @@
   "DataPacket": "データパケット",
   "(US/UK; hosting provider),": "（米国/英国、ホスティングプロバイダー）、",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr、Digital Ocean の SOC 2 タイプ 2 準拠ベアメタル サーバー。"
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr、Digital Ocean の SOC 2 タイプ 2 準拠ベアメタル サーバー。",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "送信者がDMARCポリシーを拒否した場合、MXサーバー経由のメール転送にはPGP暗号化は適用されません。",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "メールを受信しない場合は、IMAP サービスを使用し、受信メールのエイリアスに PGP キーを設定することをお勧めします。",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "送信者の DMARC ポリシーが通らず、DKIM 署名が「From」ヘッダーと一致していない場合にのみ、電子メールの「Friendly-From」の書き換えが行われます。つまり、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、まだ設定されていない場合は「Reply-To」も設定します。また、これらのヘッダーを変更した後、メッセージの ARC シールを再シールします。"
 }

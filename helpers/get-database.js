@@ -21,6 +21,7 @@ const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const Domains = require('#models/domains');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
@@ -688,6 +689,18 @@ async function getDatabase(
         if (mailboxes.length === 0)
           throw new TypeError('Trash folder(s) do not exist');
 
+        const [storageUsed, maxQuotaPerAlias] = await Promise.all([
+          Domains.getStorageUsed(session.user.domain_id),
+          Domains.getMaxQuota(session.user.domain_id, session.user.alias_id)
+        ]);
+
+        const percentageUsed = Math.round(
+          (storageUsed / maxQuotaPerAlias) * 100
+        );
+
+        // subtract the % from 30d and round up with min 0
+        const days = Math.max(Math.round(30 * (1 - percentageUsed / 100)), 0);
+
         {
           const sql = builder.build({
             type: 'remove',
@@ -708,7 +721,7 @@ async function getDatabase(
                     $in: mailboxes.map((m) => m._id.toString())
                   },
                   rdate: {
-                    $lte: dayjs().subtract(30, 'days').toDate().toISOString()
+                    $lte: dayjs().subtract(days, 'days').toDate().toISOString()
                   }
                 },
                 {

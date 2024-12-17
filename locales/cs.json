@@ -10398,5 +10398,8 @@
   "DataPacket": "DataPacket",
   "(US/UK; hosting provider),": "(USA/Velká Británie; poskytovatel hostingu),",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Holé kovové servery vyhovující standardu SOC 2 Type 2 od společností DataPacket, Vultr a Digital Ocean."
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "Holé kovové servery vyhovující standardu SOC 2 Type 2 od společností DataPacket, Vultr a Digital Ocean.",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "Šifrování PGP nebude použito na přeposílání e-mailů prostřednictvím našich serverů MX, pokud odesílatel měl zásadu odmítnutí DMARC.  Pokud požadujete zapnuté šifrování PGP",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "mail, pak vám doporučujeme použít naši službu IMAP a nakonfigurovat váš klíč PGP pro váš alias pro příchozí poštu.",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "Všimněte si, že provedeme přepsání „Friendly-From“ v e-mailech tehdy a pouze tehdy, pokud zásady DMARC odesílatele neprošly A žádné podpisy DKIM nebyly zarovnány se záhlavím „Od“.  To znamená, že změníme hlavičku „Od“ zprávy, nastavíme „X-Original-From“ a také nastavíme „Odpovědět“, pokud již nebylo nastaveno.  Po změně těchto záhlaví také znovu zapečetíme pečeť ARC na zprávě."
 }

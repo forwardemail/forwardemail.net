@@ -259,7 +259,7 @@ async function create(ctx) {
       ctx.locale
     );
 
-    ctx.logger.info('email created', {
+    ctx.logger.debug('email created', {
       session: createSession(email),
       user: email.user,
       email: email._id,

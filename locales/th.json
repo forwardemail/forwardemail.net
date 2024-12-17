@@ -10398,5 +10398,8 @@
   "DataPacket": "ดาต้าแพ็คเก็ต",
   "(US/UK; hosting provider),": "(สหรัฐอเมริกา/สหราชอาณาจักร; ผู้ให้บริการโฮสติ้ง)",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "เซิร์ฟเวอร์โลหะเปล่าที่สอดคล้องกับ SOC 2 ประเภท 2 จาก DataPacket, Vultr และ Digital Ocean"
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "เซิร์ฟเวอร์โลหะเปล่าที่สอดคล้องกับ SOC 2 ประเภท 2 จาก DataPacket, Vultr และ Digital Ocean",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "การเข้ารหัส PGP จะไม่ถูกนำไปใช้กับการส่งต่ออีเมลผ่านเซิร์ฟเวอร์ MX ของเราหากผู้ส่งมีนโยบายปฏิเสธ DMARC หากคุณต้องการการเข้ารหัส PGP",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "อีเมล จากนั้นเราขอแนะนำให้ใช้บริการ IMAP ของเราและตั้งค่าคีย์ PGP ให้เป็นนามแฝงสำหรับอีเมลขาเข้าของคุณ",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "โปรดทราบว่าเราจะเขียนอีเมลใหม่โดยใช้ \"Friendly-From\" ก็ต่อเมื่อนโยบาย DMARC ของผู้ส่งไม่ผ่าน และลายเซ็น DKIM ไม่ได้จัดตำแหน่งให้ตรงกับส่วนหัว \"From\" ซึ่งหมายความว่าเราจะแก้ไขส่วนหัว \"From\" ในข้อความ ตั้งค่าเป็น \"X-Original-From\" และตั้งค่า \"Reply-To\" หากยังไม่ได้ตั้งค่า นอกจากนี้ เราจะปิดผนึก ARC บนข้อความอีกครั้งหลังจากแก้ไขส่วนหัวเหล่านี้"
 }

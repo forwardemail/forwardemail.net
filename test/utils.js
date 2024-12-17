@@ -120,7 +120,9 @@ exports.loginUser = async (t) => {
 exports.teardownMongoose = async () => {
   await mongoose.disconnect();
   await Promise.all(
-    mongoose.connections.map((connection) => connection.mongod.stop())
+    mongoose.connections.map((connection) =>
+      connection?.mongod?.stop === 'function' ? connection.mongod.stop() : ''
+    )
   );
 };
 

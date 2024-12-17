@@ -10398,5 +10398,8 @@
   "DataPacket": "حزمة البيانات",
   "(US/UK; hosting provider),": "(الولايات المتحدة/المملكة المتحدة؛ مزود الاستضافة)،",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "خوادم معدنية متوافقة مع SOC 2 Type 2 من DataPacket وVultr وDigital Ocean."
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "خوادم معدنية متوافقة مع SOC 2 Type 2 من DataPacket وVultr وDigital Ocean.",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "لن يتم تطبيق تشفير PGP على إعادة توجيه البريد الإلكتروني عبر خوادم MX الخاصة بنا إذا كان لدى المرسل سياسة رفض DMARC. إذا كنت بحاجة إلى تشفير PGP على",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "ثم نقترح عليك استخدام خدمة IMAP الخاصة بنا وتكوين مفتاح PGP الخاص بك لاسمك المستعار للبريد الوارد.",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "لاحظ أننا سنقوم بإعادة كتابة \"من الصديق\" على رسائل البريد الإلكتروني فقط إذا لم يتم تمرير سياسة DMARC الخاصة بالمرسل ولم يتم محاذاة توقيعات DKIM مع رأس \"من\". وهذا يعني أننا سنغير رأس \"من\" في الرسالة، ونحدد \"X-Original-From\"، ونحدد أيضًا \"Reply-To\" إذا لم يكن محددًا بالفعل. وسنعيد أيضًا ختم ختم ARC على الرسالة بعد تغيير هذه الرؤوس."
 }

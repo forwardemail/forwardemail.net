@@ -449,7 +449,7 @@ async function onDataSMTP(raw, session, date) {
 
   // TODO: implement credit system
 
-  logger.info('email created', {
+  logger.debug('email created', {
     session: {
       ...session,
       ...createSession(email)

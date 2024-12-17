@@ -69,7 +69,30 @@ async function sendEmail(
   //       (e.g. when it arrives at the destination mail server, it is already encrypted)
   //
   let pgp = false;
-  if (!isEncrypted) {
+
+  //
+  // NOTE: if we already didn't do a friendly-from rewrite
+  //       and if the message had passing DMARC, then
+  //       obviously it's going to fail here because
+  //       Content-Type and the message's body hash will change
+  //       so we would need to do another friendly-from rewrite here
+  //
+  //       however we would also want to conditionally encrypt bounces as well
+  //       (see `sendBounce` in `helpers/on-data-mx.js`)
+  //       and we would also have to pass around `headers` and `body` here
+  //
+  //       therefore to keep things simple
+  //       (and also get users to use our IMAP service which encrypts with PGP upon storage)
+  //       we only will do PGP forwarding if DMARC was not passing on the domain altogether
+  //
+  // NOTE: this only happens for the MX server which is
+  //       why we do a conditional check for !email; but a better way
+  //       might be do to a server instanceof check as similar elsewhere
+  //
+  if (
+    !isEncrypted &&
+    (email || (!email && session?.dmarc?.policy !== 'reject'))
+  ) {
     try {
       if (!publicKey) {
         const wkd = new WKD(resolver, client);
@@ -157,6 +180,33 @@ async function sendEmail(
           : undefined
       );
     }
+  }
+
+  //
+  // if we did not apply a PGP signature that also means we haven't
+  // signed the message with our DKIM-Signature yet, which we only
+  // want to do if this was an MX server (since `#helpers/process-email` already applies it for SMTP)
+  //
+  if (!pgp && !domain) {
+    const signResult = await dkimSign(raw, {
+      canonicalization: 'relaxed/relaxed',
+      algorithm: 'rsa-sha256',
+      signTime: new Date(),
+      signatureData: [config.signatureData]
+    });
+
+    if (signResult.errors.length > 0) {
+      const err = combineErrors(signResult.errors.map((error) => error.err));
+      // we may want to remove cyclical reference
+      // for (const error of signResult.errors) {
+      //   delete error.err;
+      // }
+      err.signResult = signResult;
+      throw err;
+    }
+
+    const signatures = Buffer.from(signResult.signatures, 'utf8');
+    raw = Buffer.concat([signatures, raw], signatures.length + raw.length);
   }
 
   //

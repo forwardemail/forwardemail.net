@@ -926,7 +926,10 @@ async function parsePayload(data, ws) {
                       selected: false,
 
                       // don't append duplicate messages
-                      checkForExisting: true
+                      checkForExisting: true,
+
+                      // don't retry so we can timely store to tmp storage instead
+                      retries: 0
                     }
                   );
 

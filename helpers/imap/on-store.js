@@ -319,6 +319,8 @@ async function onStore(mailboxId, update, session, fn) {
 
               $set.modseq = newModseq;
 
+              // TODO: <https://github.com/nodemailer/wildduck/issues/770>
+
               const condition = prepareQuery(Messages.mapping, {
                 _id: message._id,
                 mailbox: mailbox._id,
@@ -329,6 +331,14 @@ async function onStore(mailboxId, update, session, fn) {
                   $lt: newModseq
                 }
               });
+
+              // > I suggest treating modseq as if it only applies per message,
+              // > nothing more finely tuned, and implementing CONDSTORE only as
+              // > described in RFC 7162, not in either of the earlier
+              // > documents. The example is correct in 7162.
+              // <https://stackoverflow.com/a/53308943>
+
+              // TODO: edge case where modseq not accurate and so update does not occur
 
               const sql = builder.build({
                 type: 'update',

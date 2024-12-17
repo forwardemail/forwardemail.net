@@ -1078,6 +1078,7 @@ Yes, we support [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#Open
 * Uploaded keys take prevalance as long as the PGP checkbox is enabled/checked.
 * Messages sent to webhooks are not currently encrypted with PGP.
 * If you have multiple aliases that match for a given forwarding address (e.g. regex/wildcard/exact combo) and if more than one of these contains an uploaded PGP key and has PGP checked → then we will send you an error alert email and will not encrypt the message with your uploaded PGP key.  This is very rare and usually only applies to advanced users with complex alias rules.
+* **PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on *all* mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.**
 
 <div class="alert my-3 alert-success">
   <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1662,7 +1663,7 @@ This section describes our process related to the SMTP protocol command `DATA` i
 
 ## How do you handle email delivery issues
 
-Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was `p=reject`, AND it has a passing SPF, AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
+Note that we will do a "Friendly-From" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the "From" header.  This means that we will alter the "From" header on the message, set "X-Original-From", and also set a "Reply-To" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.
 
 We also use smart-parsing of error messages at every level of our stack – in our code, DNS requests, Node.js internals, HTTP requests (e.g. 408, 413, and 429 are mapped to the SMTP response code of 421 if the recipient is a webhook), and mail server responses (e.g. responses with "defer" or "slowdown" would be retried as 421 errors).
 

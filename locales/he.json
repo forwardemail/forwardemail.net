@@ -8424,5 +8424,8 @@
   "DataPacket": "DataPacket",
   "(US/UK; hosting provider),": "(ארה\"ב/בריטניה; ספק אירוח),",
   "https://www.datapacket.com/privacy-policy": "https://www.datapacket.com/privacy-policy",
-  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "שרתי מתכת חשופה תואמי SOC 2 Type 2 מ-DataPacket, Vultr ו-Digital Ocean."
+  "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "שרתי מתכת חשופה תואמי SOC 2 Type 2 מ-DataPacket, Vultr ו-Digital Ocean.",
+  "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "הצפנת PGP לא תוחל על העברת אימייל דרך שרתי ה-MX שלנו אם לשולח הייתה מדיניות DMARC של דחייה.  אם אתה זקוק להצפנת PGP",
+  "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "דואר, אז אנו מציעים להשתמש בשירות ה-IMAP שלנו ולהגדיר את מפתח ה-PGP שלך עבור הכינוי שלך עבור דואר נכנס.",
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "שים לב שאנו נבצע שכתוב \"Friendly-From\" על המיילים אם ורק אם מדיניות ה-DMARC של השולח לא עברה ולא היו חתימות DKIM מיושרות עם הכותרת \"מאת\".  המשמעות היא שנשנה את הכותרת \"מאת\" בהודעה, נגדיר \"X-Original-From\", וגם נגדיר \"Reply-To\" אם היא לא הוגדרה כבר.  אנו גם נסגור מחדש את חותמת ARC בהודעה לאחר שינוי הכותרות הללו."
 }

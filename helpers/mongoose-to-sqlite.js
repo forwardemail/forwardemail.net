@@ -891,14 +891,21 @@ async function distinct(instance, session, field, conditions = {}) {
 
 function wrapWithRetry(fn, model) {
   return function (...args) {
+    // arg[0] -> instance
+    // arg[1] -> session
+    const retries =
+      typeof args[1] === 'object' && _.isFinite(args[1].retries)
+        ? args[1].retries
+        : 3;
+
     return pRetry(() => fn.call(model, ...args), {
-      retries: 3,
+      retries,
       minTimeout: config.busyTimeout / 2,
       maxTimeout: config.busyTimeout,
       factor: 1,
       onFailedAttempt(error) {
         error.isCodeBug = true;
-        error.args = args;
+        error.args = JSON.parse(safeStringify(args));
         logger.error(error);
 
         if (isRetryableError(error)) return;
@@ -944,7 +951,7 @@ function dummyProofModel(model) {
       factor: 1,
       onFailedAttempt(error) {
         error.isCodeBug = true;
-        error.args = args;
+        error.args = JSON.parse(safeStringify(args));
         logger.error(error);
 
         if (isRetryableError(error)) return;
