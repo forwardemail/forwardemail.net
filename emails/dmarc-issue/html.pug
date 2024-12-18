@@ -28,17 +28,20 @@ block content
                 tbody
                   tr
                     th: span.badge.badge-pill.badge-dark MAIL FROM
-                    td: code= mailFrom
+                    td: code.text-break= mailFrom
                   tr
                     th: span.badge.badge-pill.badge-dark RCPT TO
                     td
-                      code= rcptTo
+                      code.text-break= rcptTo
                   tr
                     th: span.badge.badge-pill.badge-primary Message-ID
-                    td: code= messageId
+                    td: code.text-break= messageId
+                  tr
+                    th: span.badge.badge-pill.badge-primary From
+                    td= fromAddress
                   tr
                     th: span.badge.badge-pill.badge-primary Subject
-                    td= subject
+                    td.text-break= subject
                   tr
                     th: span.badge.badge-pill.badge-primary Date
                     td= date
@@ -51,10 +54,10 @@ block content
                     td.text-left= truthSource
                   tr
                     th= t("SMTP Response")
-                    td.markdown-body.text-left: pre.mb-0: code= response
+                    td.markdown-body.text-left.text-break: pre.mb-0: code.text-break= response
                   tr
                     th= t("DMARC Results")
-                    td.markdown-body.text-left: pre.mb-0: code= JSON.stringify(dmarc, null, 2)
+                    td.markdown-body.text-left.text-break: pre.mb-0: code.text-break= JSON.stringify(dmarc, null, 2)
             .p-3
               h2.h5= t("What will happen if I don't resolve this?")
               p.card-text

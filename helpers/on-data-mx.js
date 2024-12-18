@@ -161,6 +161,7 @@ async function sendSysAdminEmail(template, err, session, headers) {
         : '',
       rcptTo: session.envelope.rcptTo.map((to) => to.address).join(', '),
       messageId: getHeaders(headers, 'message-id'),
+      fromAddress: session.originalFromAddress,
       subject: getHeaders(headers, 'subject'),
       date: getHeaders(headers, 'date'),
       response: err.response || err.message,
