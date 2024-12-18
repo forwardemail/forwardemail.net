@@ -282,24 +282,34 @@ for (const level of logger.config.levels) {
       // clone the data so that we don't mutate it
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
-      message = global.structuredClone(message, {
-        // avoid throwing
-        lossy: true,
-        // avoid throwing *and* looks for toJSON
-        json: true
-      });
+      try {
+        message = global.structuredClone(message, {
+          // avoid throwing
+          lossy: true,
+          // avoid throwing *and* looks for toJSON
+          json: true
+        });
+      } catch (err) {
+        console.error({ message, err });
+        message = JSON.parse(safeStringify(message));
+      }
     }
 
     if (typeof meta === 'object' && global.structuredClone) {
       // clone the data so that we don't mutate it
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
-      meta = global.structuredClone(meta, {
-        // avoid throwing
-        lossy: true,
-        // avoid throwing *and* looks for toJSON
-        json: true
-      });
+      try {
+        meta = global.structuredClone(meta, {
+          // avoid throwing
+          lossy: true,
+          // avoid throwing *and* looks for toJSON
+          json: true
+        });
+      } catch (err) {
+        console.error({ meta, err });
+        message = JSON.parse(safeStringify(message));
+      }
     }
 
     // add `isCodeBug` parsing here to `err` (safeguard)
