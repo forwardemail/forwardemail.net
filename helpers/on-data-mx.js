@@ -1008,7 +1008,7 @@ async function forward(recipient, headers, session, raw, body) {
       ) {
         // log for admins so we can see in real-time all the rewrites
         err.isCodeBug = true;
-        logger.fatal(err);
+        logger.fatal(err, { session });
 
         // (the below logic is duplicated from elsewhere in this file)
         session.rewriteFriendlyFrom = true;
