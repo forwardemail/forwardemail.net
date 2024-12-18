@@ -198,7 +198,7 @@ async function onConnect(session, fn) {
       session.resolvedClientHostname &&
       session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
 
-    if (!session.isAllowlisted && !isAWS) return fn();
+    if (session.isAllowlisted && !isAWS) return fn();
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
