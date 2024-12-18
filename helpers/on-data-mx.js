@@ -150,8 +150,8 @@ async function sendSysAdminEmail(template, err, session, headers) {
       to: session.originalFromAddress,
       cc: ['info', 'help', 'support', 'admin', 'security'].map(
         (str) => `${str}@${session.originalFromAddressRootDomain}`
-      ),
-      bcc: config.email.message.from
+      )
+      // bcc: config.email.message.from
     },
     locals: {
       domain: session.originalFromAddressDomain,
