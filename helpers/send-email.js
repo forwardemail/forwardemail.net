@@ -187,7 +187,7 @@ async function sendEmail(
   // signed the message with our DKIM-Signature yet, which we only
   // want to do if this was an MX server (since `#helpers/process-email` already applies it for SMTP)
   //
-  if (!pgp && !domain) {
+  if (!pgp && !email && !domain) {
     const signResult = await dkimSign(raw, {
       canonicalization: 'relaxed/relaxed',
       algorithm: 'rsa-sha256',

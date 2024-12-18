@@ -1072,7 +1072,6 @@ async function forward(recipient, headers, session, raw, body) {
       if (
         !session.rewriteFriendlyFrom &&
         session.dmarc?.status?.result === 'pass' &&
-        // session.hadAlignedAndPassingDKIM &&
         err.bounceInfo.category === 'dmarc'
       ) {
         // log for admins so we can see in real-time all the rewrites
@@ -1328,10 +1327,11 @@ async function updateMXHeaders(session, headers, body) {
   //
   if (
     session.dmarc?.status?.result === 'pass' &&
-    session.alignedDKIMResults.every(
-      (r) => r.signingDomain !== session.dmarc?.status?.header?.d
-    ) &&
-    session.dmarc?.status?.header?.d !== session.dmarc?.alignment?.dkim?.result
+    !session.hadAlignedAndPassingDKIM
+    // session.alignedDKIMResults.every(
+    //   (r) => r.signingDomain !== session.dmarc?.status?.header?.d
+    // ) &&
+    // session.dmarc?.status?.header?.d !== session.dmarc?.alignment?.dkim?.result
   ) {
     session.rewriteFriendlyFrom = true;
 
