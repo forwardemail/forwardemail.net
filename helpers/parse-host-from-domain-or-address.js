@@ -8,7 +8,6 @@ const { isIP } = require('node:net');
 
 const URLParse = require('url-parse');
 const isFQDN = require('is-fqdn');
-const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
 
 const SMTPError = require('#helpers/smtp-error');

@@ -18,12 +18,6 @@ const _ = require('lodash');
 // in order to make the client-side payload less kb
 const mongoose = require('mongoose');
 
-// this package is ignored in `browser` config in `package.json`
-// in order to make the client-side payload less kb
-let structuredClone = require('@ungap/structured-clone');
-
-if (structuredClone) structuredClone = structuredClone.default;
-
 const loggerConfig = require('../config/logger');
 const isCodeBug = require('./is-code-bug');
 
@@ -284,11 +278,11 @@ for (const level of logger.config.levels) {
     // NOTE: we can't use `superjson` because they don't export CJS right now
     //       <https://github.com/blitz-js/superjson/issues/268#issuecomment-1863659516>
     //
-    if (typeof message === 'object' && structuredClone) {
+    if (typeof message === 'object' && global.structuredClone) {
       // clone the data so that we don't mutate it
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
-      message = structuredClone(message, {
+      message = global.structuredClone(message, {
         // avoid throwing
         lossy: true,
         // avoid throwing *and* looks for toJSON
@@ -296,11 +290,11 @@ for (const level of logger.config.levels) {
       });
     }
 
-    if (typeof meta === 'object' && structuredClone) {
+    if (typeof meta === 'object' && global.structuredClone) {
       // clone the data so that we don't mutate it
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
-      meta = structuredClone(meta, {
+      meta = global.structuredClone(meta, {
         // avoid throwing
         lossy: true,
         // avoid throwing *and* looks for toJSON
