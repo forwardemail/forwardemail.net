@@ -66,8 +66,12 @@ function getBounceInfo(err) {
     }
   }
 
-  // WHM/cPanel generic country error
-  if (
+  // <https://github.com/zone-eu/zone-mta/issues/434>
+  if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
+    bounceInfo.category = 'dmarc';
+    bounceInfo.action = 'defer';
+  } else if (
+    // WHM/cPanel generic country error
     response.includes('Your country is not allowed to connect to this server')
   ) {
     bounceInfo.action = 'defer';

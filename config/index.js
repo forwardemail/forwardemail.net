@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const punycode = require('node:punycode');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
@@ -720,6 +721,29 @@ const config = {
   // (this gets re-used by email-templates and @ladjs/i18n; see below)
   lastLocaleField: 'last_locale',
 
+  // <https://en.wikipedia.org/wiki/Top-level_domain#Reserved_domains:~:text=%5B8%5D-,Reserved%20domains,-%5Bedit%5D>
+  testDomains: [
+    'example',
+    'invalid',
+    'localhost',
+    'test',
+    'local',
+    'onion',
+    'internal',
+    'alt',
+    punycode.toASCII('испытание'),
+    punycode.toASCII('テスト'),
+    punycode.toASCII('δοκιμή'),
+    punycode.toASCII('טעסט'),
+    punycode.toASCII('آزمایشی'),
+    punycode.toASCII('테스트'),
+    punycode.toASCII('测试'),
+    punycode.toASCII('परीक्षा'),
+    punycode.toASCII('பரிட்சை'),
+    punycode.toASCII('إختبار'),
+    punycode.toASCII('測試')
+  ],
+
   // <https://symantec-enterprise-blogs.security.com/blogs/feature-stories/top-20-shady-top-level-domains>
   // <https://www.spamhaus.org/statistics/tlds/>
   // <https://krebsonsecurity.com/tag/top-20-shady-top-level-domains/>
@@ -735,8 +759,10 @@ const config = {
     // IANA
     'int',
 
-    // 'arpa'
-    'arpa',
+    // TODO: we don't allow this because IPv4 addresses like this
+    //       would then get allowlisted and could be sending spam
+    //       (e.g. "x.x.x.x.in-addr.arpa")
+    // 'arpa',
 
     // us
     'dni.us',

@@ -54,6 +54,12 @@ async function isDenylisted(value, client, resolver) {
       const root = parseRootDomain(v);
       if (v !== root && config.denylist.has(root))
         throw createDenylistError(root);
+      //
+      // TODO: we need to ensure we're not adding this in `jobs/update-umbrella.js`
+      //
+      // if it ends with any of the test/restricted extensions return false
+      if (config.testDomains.some((s) => v.endsWith(`.${s}`)))
+        throw createDenylistError(v);
     }
 
     // if allowlisted return early

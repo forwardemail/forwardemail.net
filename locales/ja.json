@@ -10401,5 +10401,16 @@
   "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr、Digital Ocean の SOC 2 タイプ 2 準拠ベアメタル サーバー。",
   "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "送信者がDMARCポリシーを拒否した場合、MXサーバー経由のメール転送にはPGP暗号化は適用されません。",
   "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "メールを受信しない場合は、IMAP サービスを使用し、受信メールのエイリアスに PGP キーを設定することをお勧めします。",
-  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "送信者の DMARC ポリシーが通らず、DKIM 署名が「From」ヘッダーと一致していない場合にのみ、電子メールの「Friendly-From」の書き換えが行われます。つまり、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、まだ設定されていない場合は「Reply-To」も設定します。また、これらのヘッダーを変更した後、メッセージの ARC シールを再シールします。"
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "送信者の DMARC ポリシーが通らず、DKIM 署名が「From」ヘッダーと一致していない場合にのみ、電子メールの「Friendly-From」の書き換えが行われます。つまり、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、まだ設定されていない場合は「Reply-To」も設定します。また、これらのヘッダーを変更した後、メッセージの ARC シールを再シールします。",
+  "Email deliverability issue discovered for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>のメール配信の問題が見つかりました",
+  "DMARC Issue Detected": "DMARC の問題が検出されました",
+  "Resolve this issue to improve your deliverability.": "この問題を解決すると配信性が向上します。",
+  "We are an email service provider called <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Forward Email</a> and processed an email from your domain name of <strong class=\"notranslate\">%s</strong>.": "当社は<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Forward Email</a>という電子メール サービス プロバイダーであり、お客様のドメイン名<strong class=\"notranslate\">%s</strong>からの電子メールを処理しました。",
+  "This email did not pass DMARC verification during processing from our trusted source of <strong class=\"notranslate\">%s</strong>.": "このメールは、信頼できるソース<strong class=\"notranslate\">%s</strong>からの処理中に DMARC 検証に合格しませんでした。",
+  "What was the email?": "メールは何でしたか？",
+  "DMARC Results": "DMARC の結果",
+  "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">フレンドリーな送信元</a>アプローチを使用してメールを書き直しました。",
+  "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "つまり、メールは別の「From」ヘッダーと追加された「Reply-To」ヘッダーで転送されることになります。",
+  "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "配信性を向上させ、このような事態を防ぐために、DKIM 署名が正しく設定され、通過していることを確認してください。",
+  "This automated email is sent conditionally once a month.": "この自動メールは条件付きで月に 1 回送信されます。"
 }

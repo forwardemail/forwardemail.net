@@ -19,40 +19,50 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 
 // eslint-disable-next-line complexity
 async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
-  const lowerCased = punycode.toASCII(val).toLowerCase().trim();
+  const lc = punycode.toASCII(val).toLowerCase().trim();
 
   // check hard-coded allowlist
-  if (config.allowlist.has(lowerCased)) return true;
+  if (config.allowlist.has(lc)) return true;
 
   // check hard-coded truth source list
-  if (config.truthSources.has(lowerCased)) return true;
+  if (config.truthSources.has(lc)) return true;
+
+  //
+  // TODO: we need to ensure we're not adding this in `jobs/update-umbrella.js`
+  //
+  // if it ends with any of the test/restricted extensions return false
+  // <https://en.wikipedia.org/wiki/Top-level_domain#Reserved_domains:~:text=%5B8%5D-,Reserved%20domains,-%5Bedit%5D>
+  if (
+    isFQDN(lc) &&
+    (lc.endsWith('.arpa') ||
+      config.testDomains.some((s) => lc.endsWith(`.${s}`)))
+  )
+    return false;
 
   // if it's localhost or local IP address then return early
   if (isIP(val) && REGEX_LOCALHOST.test(val)) return true;
 
   // if it is a FQDN and ends with restricted domain
   if (
-    isFQDN(val) &&
-    !val.endsWith('.edu.cn') &&
-    !val.endsWith('.edu.eg') &&
-    !val.endsWith('.edu.ge') &&
-    !val.endsWith('.edu.gr') &&
-    !val.endsWith('.edu.gt') &&
-    !val.endsWith('.edu.hk') &&
-    !val.endsWith('.edu.kg') &&
-    !val.endsWith('.edu.lk') &&
-    !val.endsWith('.edu.my') &&
-    !val.endsWith('.edu.om') &&
-    !val.endsWith('.edu.pe') &&
-    !val.endsWith('.edu.pk') &&
-    !val.endsWith('.edu.pl') &&
-    !val.endsWith('.edu.sg') &&
-    !val.endsWith('.edu.vn') &&
-    !val.endsWith('.edu.za') &&
-    !val.endsWith('.edu.eu.org') &&
-    config.restrictedDomains.some(
-      (ext) => lowerCased === ext || lowerCased.endsWith(`.${ext}`)
-    )
+    isFQDN(lc) &&
+    !lc.endsWith('.edu.cn') &&
+    !lc.endsWith('.edu.eg') &&
+    !lc.endsWith('.edu.ge') &&
+    !lc.endsWith('.edu.gr') &&
+    !lc.endsWith('.edu.gt') &&
+    !lc.endsWith('.edu.hk') &&
+    !lc.endsWith('.edu.kg') &&
+    !lc.endsWith('.edu.lk') &&
+    !lc.endsWith('.edu.my') &&
+    !lc.endsWith('.edu.om') &&
+    !lc.endsWith('.edu.pe') &&
+    !lc.endsWith('.edu.pk') &&
+    !lc.endsWith('.edu.pl') &&
+    !lc.endsWith('.edu.sg') &&
+    !lc.endsWith('.edu.vn') &&
+    !lc.endsWith('.edu.za') &&
+    !lc.endsWith('.edu.eu.org') &&
+    config.restrictedDomains.some((ext) => lc === ext || lc.endsWith(`.${ext}`))
   )
     return true;
 
@@ -61,8 +71,8 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
     const domain = parseHostFromDomainOrAddress(val);
     const root = parseRootDomain(domain);
     if (root === env.WEB_HOST) return true;
-  } else if (isFQDN(val)) {
-    const root = parseRootDomain(val);
+  } else if (isFQDN(lc)) {
+    const root = parseRootDomain(lc);
     if (root === env.WEB_HOST) return true;
   } else if (isIP(val)) {
     try {
@@ -91,7 +101,7 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
 
   if (ignoreRedis) return false;
 
-  const result = await client.get(`allowlist:${lowerCased}`);
+  const result = await client.get(`allowlist:${lc}`);
 
   return boolean(result);
 }

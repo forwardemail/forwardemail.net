@@ -100,6 +100,75 @@ const scanner = new SpamScanner({
 });
 */
 
+//
+// NOTE: Outlook appears to have a major bug in their system
+//       and they go against the protocol by rejecting for p=quarantine as well
+//       (this thread has extensive comments about this)
+//       <https://techcommunity.microsoft.com/blog/exchange/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email-security/3878883/replies/3942410>>
+//
+// TODO: if `err.truthSource` is `outlook.com` then link to this article
+//
+// TODO: we need to be careful here because of false positives for DMARC failures
+async function sendSysAdminEmail(template, err, session, headers) {
+  // safeguard in case we add more of these kinds of alerts
+  if (template !== 'dmarc-issue') throw new TypeError('Invalid template');
+
+  // TODO: if it was due to domain vs subdomain mismatch (specific note for admins)
+  // TODO: ensure `err` is passed in all invocations
+
+  //
+  // NOTE: to prevent spammers from abusing this automation
+  //       we only permit allowlisted senders
+  //       or senders that have same root domain connecting as in From header
+  //       to receive this developer-friendly system admin alerts
+  //
+  if (
+    !session.isAllowlisted &&
+    (!session.resolvedRootClientHostname ||
+      session.resolvedRootClientHostname !==
+        session.originalFromAddressRootDomain)
+  ) {
+    const _err = new TypeError(
+      `Preventing sysadmin ${template} email to ${session.originalFromAddressRootDomain}`
+    );
+    _err.isCodeBug = true;
+    _err.session = session;
+    _err.original_error = parseErr(err);
+    logger.fatal(_err);
+    return;
+  }
+
+  const key = `${_.snakeCase(template)}_check:${
+    session.originalFromAddressRootDomain
+  }`;
+  const cache = await this.client.get(key);
+  if (boolean(cache)) return;
+  await this.client.set(key, true, 'PX', ms('30d'));
+  await emailHelper({
+    template,
+    message: {
+      to: session.originalFromAddress,
+      cc: ['info', 'help', 'support', 'admin', 'security'].map(
+        (str) => `${str}@${session.originalFromAddressRootDomain}`
+      ),
+      bcc: config.email.message.from
+    },
+    locals: {
+      domain: session.originalFromAddressDomain,
+      truthSource: err.truthSource,
+      mailFrom: session?.envelope?.mailFrom?.address
+        ? checkSRS(session?.envelope?.mailFrom?.address)
+        : '',
+      rcptTo: session.envelope.rcptTo.map((to) => to.address).join(', '),
+      messageId: getHeaders(headers, 'message-id'),
+      subject: getHeaders(headers, 'subject'),
+      date: getHeaders(headers, 'date'),
+      response: err.response || err.message,
+      dmarc: session.dmarc
+    }
+  });
+}
+
 async function sendBounce(bounce, headers, session, sealedMessage) {
   try {
     // bounces are unique by fingerprint, address, and error code
@@ -1003,7 +1072,7 @@ async function forward(recipient, headers, session, raw, body) {
       if (
         !session.rewriteFriendlyFrom &&
         session.dmarc?.status?.result === 'pass' &&
-        session.hadAlignedAndPassingDKIM &&
+        // session.hadAlignedAndPassingDKIM &&
         err.bounceInfo.category === 'dmarc'
       ) {
         // log for admins so we can see in real-time all the rewrites
@@ -1013,7 +1082,11 @@ async function forward(recipient, headers, session, raw, body) {
         // (the below logic is duplicated from elsewhere in this file)
         session.rewriteFriendlyFrom = true;
 
-        // TODO: if sender was allowlisted then we should notify them of their issue (?)
+        // notify common system administrator usernames of this issue
+        sendSysAdminEmail
+          .call(this, 'dmarc-issue', err, session, headers)
+          .then()
+          .catch((err) => logger.fatal(err));
 
         headers.update(
           'From',
@@ -1255,11 +1328,25 @@ async function updateMXHeaders(session, headers, body) {
   //
   if (
     session.dmarc?.status?.result === 'pass' &&
+    session.alignedDKIMResults.every(
+      (r) => r.signingDomain !== session.dmarc?.status?.header?.d
+    ) &&
     session.dmarc?.status?.header?.d !== session.dmarc?.alignment?.dkim?.result
   ) {
     session.rewriteFriendlyFrom = true;
 
-    // TODO: if sender was allowlisted then we should notify them of their issue (?)
+    const err = new TypeError(
+      `DMARC passing only via SPF and therefore will break when forwarded since DKIM signature is not aligned with "From" header domain of ${
+        session.dmarc?.status?.header?.d || session.originalFromAddressDomain
+      }.`
+    );
+    err.truthSource = env.WEB_HOST;
+
+    // notify common system administrator usernames of this issue
+    sendSysAdminEmail
+      .call(this, 'dmarc-issue', err, session, headers)
+      .then()
+      .catch((err) => logger.fatal(err));
 
     headers.update(
       'From',
@@ -1432,7 +1519,7 @@ async function onDataMX(raw, session, headers, body) {
 
   // additional headers to add specifically for MX
   // (this also does a friendly-from rewrite if necessary)
-  await updateMXHeaders(session, headers, body);
+  await updateMXHeaders.call(this, session, headers, body);
 
   // this is the core logic that determines where to forward and deliver emails to
   // TODO: re-enable spam scanner once v7 released

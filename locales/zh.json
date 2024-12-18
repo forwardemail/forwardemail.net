@@ -10094,5 +10094,16 @@
   "SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.": "DataPacket、Vultr 和 Digital Ocean 的 SOC 2 Type 2 兼容裸机服务器。",
   "PGP encryption will not be applied to email forwarding through our MX servers if the sender had a DMARC policy of reject.  If you require PGP encryption on": "如果发件人的 DMARC 策略为拒绝，则 PGP 加密不会应用于通过我们的 MX 服务器转发的电子邮件。如果您需要 PGP 加密",
   "mail then we suggest to use our IMAP service and configure your PGP key for your alias for inbound mail.": "邮件，那么我们建议使用我们的 IMAP 服务并为您的入站邮件别名配置 PGP 密钥。",
-  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "请注意，当且仅当发件人的 DMARC 策略未通过且没有 DKIM 签名与“发件人”标头对齐时，我们才会对电子邮件进行“Friendly-From”重写。这意味着我们将更改邮件上的“发件人”标头，设置“X-Original-From”，如果尚未设置，还将设置“回复”。更改这些标头后，我们还将在邮件上重新密封 ARC 封条。"
+  "Note that we will do a \"Friendly-From\" rewrite on the emails if and only if the DMARC policy of the sender was not passing AND no DKIM signatures were aligned with the \"From\" header.  This means that we will alter the \"From\" header on the message, set \"X-Original-From\", and also set a \"Reply-To\" if it was not already set.  We will also re-seal the ARC seal on the message after altering these headers.": "请注意，当且仅当发件人的 DMARC 策略未通过且没有 DKIM 签名与“发件人”标头对齐时，我们才会对电子邮件进行“Friendly-From”重写。这意味着我们将更改邮件上的“发件人”标头，设置“X-Original-From”，如果尚未设置，还将设置“回复”。更改这些标头后，我们还将在邮件上重新密封 ARC 封条。",
+  "Email deliverability issue discovered for <span class=\"notranslate\">%s</span>": "发现<span class=\"notranslate\">%s</span>的电子邮件传递问题",
+  "DMARC Issue Detected": "检测到 DMARC 问题",
+  "Resolve this issue to improve your deliverability.": "解决此问题可以提高您的送达率。",
+  "We are an email service provider called <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Forward Email</a> and processed an email from your domain name of <strong class=\"notranslate\">%s</strong>.": "我们是一家名为<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Forward Email 的</a>电子邮件服务提供商，并处理了一封来自您的域名<strong class=\"notranslate\">%s</strong>的电子邮件。",
+  "This email did not pass DMARC verification during processing from our trusted source of <strong class=\"notranslate\">%s</strong>.": "该电子邮件在来自我们信任的<strong class=\"notranslate\">%s</strong>来源的处理过程中未通过 DMARC 验证。",
+  "What was the email?": "电子邮件内容是什么？",
+  "DMARC Results": "DMARC 结果",
+  "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "我们使用<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">友好方式</a>重写了您的电子邮件。",
+  "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "这意味着您的电子邮件将使用不同的“发件人”标题和添加的“回复至”标题进行转发。",
+  "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "请确保您的 DKIM 签名设置正确并通过，以提高可传递性并防止这种情况发生。",
+  "This automated email is sent conditionally once a month.": "此自动电子邮件每月有条件发送一次。"
 }
