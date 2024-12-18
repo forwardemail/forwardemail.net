@@ -100,7 +100,10 @@ async function isAuthenticatedMessage(raw, session, resolver) {
         _.isObject(result.status) &&
         result.status.result === 'pass'
       ) {
-        // <https://github.com/postalsys/mailauth/issues/74>
+        //
+        // NOTE: we may want to do this:
+        //       `result.status.aligned === session.originalFromAddressDomain`
+        //        <https://github.com/postalsys/mailauth/issues/74>
         if (isSANB(result.status.aligned))
           session.alignedDKIMResults.push(result);
 

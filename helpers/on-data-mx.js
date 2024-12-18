@@ -1251,10 +1251,11 @@ async function updateMXHeaders(session, headers, body) {
   //
   // perform a friendly-from rewrite if necessary using mailauth data
   // (basically if no aligned DKIM and if strict DMARC we can assume it's relying on SPF)
+  // <https://github.com/postalsys/mailauth/issues/74>
   //
   if (
     session.dmarc?.status?.result === 'pass' &&
-    !session.hadAlignedAndPassingDKIM
+    session.dmarc?.status?.header?.d !== session.dmarc?.alignment?.dkim?.result
   ) {
     session.rewriteFriendlyFrom = true;
 
