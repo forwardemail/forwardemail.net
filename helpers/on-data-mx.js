@@ -1427,7 +1427,7 @@ async function onDataMX(raw, session, headers, body) {
   //
 
   // add X-* headers (e.g. version + report-to)
-  await updateHeaders(headers);
+  await updateHeaders(headers, session);
 
   // additional headers to add specifically for MX
   // (this also does a friendly-from rewrite if necessary)
