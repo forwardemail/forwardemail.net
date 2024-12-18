@@ -109,6 +109,8 @@ const scanner = new SpamScanner({
 // TODO: if `err.truthSource` is `outlook.com` then link to this article
 //
 // TODO: we need to be careful here because of false positives for DMARC failures
+// TODO: disabled until we use MongoDB for this
+/*
 async function sendSysAdminEmail(template, err, session, headers) {
   // safeguard in case we add more of these kinds of alerts
   if (template !== 'dmarc-issue') throw new TypeError('Invalid template');
@@ -128,13 +130,6 @@ async function sendSysAdminEmail(template, err, session, headers) {
       session.resolvedRootClientHostname !==
         session.originalFromAddressRootDomain)
   ) {
-    const _err = new TypeError(
-      `Preventing sysadmin ${template} email to ${session.originalFromAddressRootDomain}`
-    );
-    _err.isCodeBug = true;
-    _err.session = session;
-    _err.original_error = parseErr(err);
-    logger.fatal(_err);
     return;
   }
 
@@ -169,6 +164,7 @@ async function sendSysAdminEmail(template, err, session, headers) {
     }
   });
 }
+*/
 
 async function sendBounce(bounce, headers, session, sealedMessage) {
   try {
@@ -1082,11 +1078,12 @@ async function forward(recipient, headers, session, raw, body) {
         // (the below logic is duplicated from elsewhere in this file)
         session.rewriteFriendlyFrom = true;
 
+        // TODO: disabled until we use MongoDB for this
         // notify common system administrator usernames of this issue
-        sendSysAdminEmail
-          .call(this, 'dmarc-issue', err, session, headers)
-          .then()
-          .catch((err) => logger.fatal(err));
+        // sendSysAdminEmail
+        //   .call(this, 'dmarc-issue', err, session, headers)
+        //   .then()
+        //   .catch((err) => logger.fatal(err));
 
         headers.update(
           'From',
@@ -1343,11 +1340,12 @@ async function updateMXHeaders(session, headers, body) {
     );
     err.truthSource = env.WEB_HOST;
 
+    // TODO: disabled until we use MongoDB for this
     // notify common system administrator usernames of this issue
-    sendSysAdminEmail
-      .call(this, 'dmarc-issue', err, session, headers)
-      .then()
-      .catch((err) => logger.fatal(err));
+    // sendSysAdminEmail
+    //   .call(this, 'dmarc-issue', err, session, headers)
+    //   .then()
+    //   .catch((err) => logger.fatal(err));
 
     headers.update(
       'From',

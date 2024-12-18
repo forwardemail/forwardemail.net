@@ -60,10 +60,11 @@ function getBounceInfo(err) {
   ) {
     if (REGEX_VIRUS.test(response)) bounceInfo.category = 'virus';
     else if (REGEX_SPAM.test(response)) bounceInfo.category = 'spam';
-    else if (isRetryableError(err)) {
-      bounceInfo.category = 'network';
-      bounceInfo.action = 'defer';
-    }
+  }
+
+  if (isRetryableError(err)) {
+    bounceInfo.category = 'network';
+    bounceInfo.action = 'defer';
   }
 
   // <https://github.com/zone-eu/zone-mta/issues/434>

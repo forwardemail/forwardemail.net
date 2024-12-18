@@ -35,7 +35,7 @@ class RetryClient extends undici.Client {
         const t = setTimeout(() => {
           if (!abortController?.signal?.aborted)
             abortController.abort(
-              new TimeoutError(`Request took longer than ${timeout}ms}`)
+              new TimeoutError(`Request took longer than ${timeout}ms`)
             );
         }, timeout);
 
