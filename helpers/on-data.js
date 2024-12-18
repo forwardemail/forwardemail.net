@@ -156,15 +156,12 @@ async function onData(stream, _session, fn) {
     const originalToAddresses = parseAddresses(getHeaders(headers, 'to'));
     for (const obj of originalToAddresses) {
       const shouldThrow =
-        parseRootDomain(parseHostFromDomainOrAddress(obj.address)) ===
-        env.WEB_HOST;
+        parseRootDomain(parseHostFromDomainOrAddress(obj)) === env.WEB_HOST;
       // rewrite the to line
-      if (checkSRS(obj.address, shouldThrow) !== obj.address)
+      if (checkSRS(obj, shouldThrow) !== obj)
         headers.update(
           'to',
-          headers
-            .getFirst('to')
-            .replaceAll(obj.address, checkSRS(obj.address, shouldThrow))
+          headers.getFirst('to').replaceAll(obj, checkSRS(obj, shouldThrow))
         );
     }
 

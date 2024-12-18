@@ -7,7 +7,6 @@ const punycode = require('node:punycode');
 const { isIP } = require('node:net');
 
 const URLParse = require('url-parse');
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isURL } = require('@forwardemail/validator');
@@ -25,13 +24,7 @@ function parseHostFromDomainOrAddress(address) {
     domain = url.hostname;
   } else {
     const parsedAddresses = parseAddresses(address);
-    if (
-      _.isArray(parsedAddresses) &&
-      _.isObject(parsedAddresses[0]) &&
-      isSANB(parsedAddresses[0].address)
-    ) {
-      domain = parsedAddresses[0].address;
-    }
+    if (parsedAddresses[0]) domain = parsedAddresses[0];
   }
 
   const atPos = domain.indexOf('@');

@@ -405,8 +405,7 @@ Logs.pre('save', function (next) {
           //   keywords.add(obj.name);
           // }
 
-          if (isSANB(obj.address) && isEmail(checkSRS(obj.address)))
-            keywords.add(checkSRS(obj.address));
+          keywords.add(checkSRS(obj));
         }
       }
     }

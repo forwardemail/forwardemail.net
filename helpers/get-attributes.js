@@ -48,14 +48,14 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
 
   const replyTo = [
     // check the Reply-To header
-    ...replyToAddresses.map((addr) => checkSRS(addr.address).toLowerCase()),
+    ...replyToAddresses.map((addr) => checkSRS(addr).toLowerCase()),
     // check the Reply-To header domains
     ...replyToAddresses.map((addr) =>
-      parseHostFromDomainOrAddress(checkSRS(addr.address))
+      parseHostFromDomainOrAddress(checkSRS(addr))
     ),
     // check the Reply-To header root domains
     ...replyToAddresses.map((addr) =>
-      parseRootDomain(parseHostFromDomainOrAddress(checkSRS(addr.address)))
+      parseRootDomain(parseHostFromDomainOrAddress(checkSRS(addr)))
     )
   ];
 

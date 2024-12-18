@@ -927,8 +927,8 @@ Emails.statics.queue = async function (
       // rewrite from header to be without "+" symbol
       // so that users can send with "+" address filtering
       //
-      const name = parseUsername(addresses[0].address); // converts to ASCII
-      const domain = parseHostFromDomainOrAddress(addresses[0].address); // converts to ASCII
+      const name = parseUsername(addresses[0]); // converts to ASCII
+      const domain = parseHostFromDomainOrAddress(addresses[0]); // converts to ASCII
       from = `${name}@${domain}`; // ASCII formatted From address header
     }
 
@@ -944,12 +944,12 @@ Emails.statics.queue = async function (
           (isEnvelopeFromEmpty && lowercaseKey === 'from')) &&
         SENDER_KEYS.has(lowercaseKey)
       )
-        info.envelope.from = addresses[0].address;
+        info.envelope.from = addresses[0];
       // envelope to
       else if (isEnvelopeToEmpty && RCPT_TO_KEYS.has(lowercaseKey)) {
         for (const address of addresses) {
-          if (info.envelope.to.includes(address.address)) continue;
-          info.envelope.to.push(address.address);
+          if (info.envelope.to.includes(address)) continue;
+          info.envelope.to.push(address);
         }
       }
     }

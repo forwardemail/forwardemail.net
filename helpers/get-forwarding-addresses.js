@@ -32,7 +32,7 @@ const { decrypt } = require('#helpers/encrypt-decrypt');
 const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 
 function parseFilter(address) {
-  ({ address } = parseAddresses(address)[0]);
+  address = parseAddresses(address)[0];
   return address.includes('+') ? address.split('+')[1].split('@')[0] : '';
 }
 

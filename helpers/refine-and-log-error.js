@@ -5,7 +5,8 @@
 
 const _ = require('lodash');
 const splitLines = require('split-lines');
-const { convert } = require('html-to-text');
+const striptags = require('striptags');
+// const { convert } = require('html-to-text');
 
 const getErrorCode = require('./get-error-code');
 const isRetryableError = require('./is-retryable-error');
@@ -13,7 +14,7 @@ const isLockingError = require('./is-locking-error');
 const isCodeBug = require('./is-code-bug');
 const logger = require('./logger');
 
-const env = require('#config/env');
+// const env = require('#config/env');
 
 // this is sourced from FE original codebase
 function refineAndLogError(err, session, isIMAP = false, instance) {
@@ -72,6 +73,8 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   // NOTE: this was inspired from `koa-better-error-handler` response for API endpoints
   // (and it is used because some errors are translated with HTML tags, e.g. notranslate)
   //
+  err.message = striptags(err.message);
+  /*
   err.message = convert(err.message, {
     wordwrap: false,
     selectors: [
@@ -86,6 +89,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
     ],
     linkBrackets: false
   });
+  */
 
   //
   // replace linebreaks

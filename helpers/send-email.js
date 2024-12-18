@@ -187,6 +187,8 @@ async function sendEmail(
   // signed the message with our DKIM-Signature yet, which we only
   // want to do if this was an MX server (since `#helpers/process-email` already applies it for SMTP)
   //
+  // TODO: this breaks ARC
+  /*
   if (!pgp && !email && !domain) {
     const signResult = await dkimSign(raw, {
       canonicalization: 'relaxed/relaxed',
@@ -208,6 +210,7 @@ async function sendEmail(
     const signatures = Buffer.from(signResult.signatures, 'utf8');
     raw = Buffer.concat([signatures, raw], signatures.length + raw.length);
   }
+  */
 
   //
   // if we're in development mode then use preview-email to render queue processing

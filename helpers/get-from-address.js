@@ -31,9 +31,7 @@ function getFromAddress(originalFrom) {
     );
 
   // set original from address that was parsed
-  return checkSRS(
-    punycode.toASCII(originalFromAddresses[0].address)
-  ).toLowerCase();
+  return checkSRS(punycode.toASCII(originalFromAddresses[0])).toLowerCase();
 }
 
 module.exports = getFromAddress;

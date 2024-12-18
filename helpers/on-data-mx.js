@@ -139,6 +139,7 @@ async function sendSysAdminEmail(template, err, session, headers) {
   const cache = await this.client.get(key);
   if (boolean(cache)) return;
   await this.client.set(key, true, 'PX', ms('30d'));
+  // TODO: use Emails.queue or something
   await emailHelper({
     template,
     message: {
@@ -1190,6 +1191,7 @@ async function forward(recipient, headers, session, raw, body) {
                 const locals = { locale };
                 if (user) locals.user = user;
 
+                // TODO: use Emails.queue or something
                 await emailHelper({
                   template: 'self-test',
                   message: { to: normal },
@@ -1603,6 +1605,7 @@ async function onDataMX(raw, session, headers, body) {
         const cache = await this.client.get(key);
         if (cache) return;
         await this.client.set(key, true, 'PX', ms('30d'));
+        // TODO: use Emails.queue or something
         await emailHelper({
           template: 'phishing',
           message: { to, bcc: config.email.message.from },
