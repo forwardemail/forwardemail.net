@@ -720,8 +720,8 @@ async function checkBounceForSpam(bounce, headers, session) {
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
-// eslint-disable-next-line complexity
-async function forward(recipient, headers, session, raw) {
+// eslint-disable-next-line complexity, max-params
+async function forward(recipient, headers, session, raw, body) {
   //
   // NOTE: we send emails in series therefore we can check
   //       if the sender was denylisted since sending started
@@ -972,20 +972,98 @@ async function forward(recipient, headers, session, raw) {
     //       and abuse/spam complaint automation
 
     // NOTE: sendEmail function will handle DKIM signing and PGP encryption for bounces
-    const info = await sendEmail({
-      session,
-      cache: this.cache,
-      target: recipient.host,
-      port: recipient.port,
-      envelope: {
-        from,
-        to: recipient.to[0]
-      },
-      raw,
-      resolver: this.resolver,
-      client: this.client,
-      publicKey: recipient.aliasPublicKey
-    });
+    let info;
+    try {
+      info = await sendEmail({
+        session,
+        cache: this.cache,
+        target: recipient.host,
+        port: recipient.port,
+        envelope: {
+          from,
+          to: recipient.to[0]
+        },
+        raw,
+        resolver: this.resolver,
+        client: this.client,
+        publicKey: recipient.aliasPublicKey
+      });
+    } catch (err) {
+      //
+      // TODO: until we figure out how best to resolve this issue
+      //       we've implemented this logic which will retry sending
+      //       with a friendly-from rewrite as per our FAQ
+      //       <https://github.com/postalsys/mailauth/issues/74>
+      //
+      // NOTE: this would need rewritten if we keep this and
+      //       if we change the `recipient.to[0]` stuff above
+      //       because we'd have to support `rejectedErrors` with this
+      //
+      err.bounceInfo = getBounceInfo(err);
+      if (
+        !session.rewriteFriendlyFrom &&
+        session.dmarc?.status?.result === 'pass' &&
+        session.hadAlignedAndPassingDKIM &&
+        err.bounceInfo.category === 'dmarc'
+      ) {
+        // log for admins so we can see in real-time all the rewrites
+        err.isCodeBug = true;
+        logger.fatal(err);
+
+        // (the below logic is duplicated from elsewhere in this file)
+        session.rewriteFriendlyFrom = true;
+
+        // TODO: if sender was allowlisted then we should notify them of their issue (?)
+
+        headers.update(
+          'From',
+          `"${session.originalFromAddress}" <${config.friendlyFromEmail}>`
+        );
+        headers.add('X-Original-From', session.originalFromAddress);
+        //
+        // if there was an original reply-to on the email
+        // then we don't want to modify it of course
+        //
+        // <https://github.com/andris9/mailsplit/issues/21>
+        if (!getHeaders(headers, 'reply-to'))
+          headers.update('Reply-To', session.originalFromAddress);
+
+        // rewrite ARC sealed headers with updated headers object value
+        session.arcSealedHeaders = await sealMessage(
+          Buffer.concat([headers.build(), body]),
+          {
+            ...config.signatureData,
+            // values from the authentication step
+            authResults: session.arc.authResults,
+            cv: session.arc.status.result
+          }
+        );
+
+        const sealedMessage = Buffer.concat([
+          Buffer.from(session.arcSealedHeaders),
+          headers.build(),
+          body
+        ]);
+
+        // retry sending the email
+        info = await sendEmail({
+          session,
+          cache: this.cache,
+          target: recipient.host,
+          port: recipient.port,
+          envelope: {
+            from,
+            to: recipient.to[0]
+          },
+          raw: sealedMessage,
+          resolver: this.resolver,
+          client: this.client,
+          publicKey: recipient.aliasPublicKey
+        });
+      } else {
+        throw err;
+      }
+    }
 
     logger.info('sent email', {
       info,
@@ -1394,7 +1472,7 @@ async function onDataMX(raw, session, headers, body) {
     data.normalized.length === 0
       ? Promise.resolve()
       : pMapSeries(data.normalized, (recipient) =>
-          forward.call(this, recipient, headers, session, sealedMessage)
+          forward.call(this, recipient, headers, session, sealedMessage, body)
         )
   ]);
 
