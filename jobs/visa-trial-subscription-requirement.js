@@ -22,6 +22,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
+const safeStringify = require('fast-safe-stringify');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -146,7 +147,7 @@ async function mapper(user) {
             subject: 'VISA Trial Subscription Requirement Error'
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -361,7 +362,7 @@ async function mapper(user) {
         subject: 'VISA Trial Subscription Requirement Error'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

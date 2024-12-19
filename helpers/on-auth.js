@@ -76,8 +76,10 @@ async function onAuth(auth, session, fn) {
       }
     }
 
+    // NOTE: this is only required for WildDuck servers (IMAP/POP3)
     // override session.getQueryResponse (safeguard)
-    session.getQueryResponse = getQueryResponse;
+    if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
+      session.getQueryResponse = getQueryResponse;
 
     // username must be a valid email address
     if (

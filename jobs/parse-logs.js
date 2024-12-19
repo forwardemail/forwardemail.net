@@ -15,6 +15,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
+const safeStringify = require('fast-safe-stringify');
 
 const config = require('#config');
 const Logs = require('#models/logs');
@@ -143,7 +144,7 @@ graceful.listen();
         subject: 'Parse Logs Issue'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

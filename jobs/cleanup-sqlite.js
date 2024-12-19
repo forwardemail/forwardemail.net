@@ -25,6 +25,7 @@ const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
+const safeStringify = require('fast-safe-stringify');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -343,7 +344,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         subject: 'SQLite cleanup had an error'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

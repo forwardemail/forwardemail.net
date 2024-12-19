@@ -8,6 +8,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const emailHelper = require('./email');
 const logger = require('./logger');
@@ -244,7 +245,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
                 subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
               },
               locals: {
-                message: `<pre><code>${JSON.stringify(
+                message: `<pre><code>${safeStringify(
                   parseErr(err),
                   null,
                   2
@@ -303,7 +304,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
               subject: `${customer.email} has an issue syncing all payments from paypal subscription ${subscriptionId} that were not synced by the sync-payment-histories job`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -330,7 +331,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
             subject: `Sync PayPal payment histories hit ${config.paypalErrorThreshold} errors during the script`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2

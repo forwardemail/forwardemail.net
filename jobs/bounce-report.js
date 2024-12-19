@@ -18,6 +18,7 @@ const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -88,7 +89,7 @@ graceful.listen();
         subject: 'Email Deliverability Report Issue'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

@@ -10,6 +10,7 @@ const dedent = require('dedent');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const logger = require('./logger');
 const ThresholdError = require('./threshold-error');
@@ -439,7 +440,7 @@ function syncStripePaymentIntent(user) {
           subject: `Problem syncing billing history for ${user.email} - payment_intent ${paymentIntent.id}`
         },
         locals: {
-          message: `<pre><code>${JSON.stringify(
+          message: `<pre><code>${safeStringify(
             parseErr(err),
             null,
             2

@@ -16,6 +16,7 @@ const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const striptags = require('striptags');
 
 const config = require('#config');
@@ -674,7 +675,7 @@ async function retrieveDomainBilling(ctx) {
               : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -723,7 +724,7 @@ async function retrieveDomainBilling(ctx) {
                 } for ${ctx.state.user.email}`
               },
               locals: {
-                message: `<pre><code>${JSON.stringify(
+                message: `<pre><code>${safeStringify(
                   parseErr(err),
                   null,
                   2
@@ -810,7 +811,7 @@ async function retrieveDomainBilling(ctx) {
               subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -835,7 +836,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -906,7 +907,7 @@ async function retrieveDomainBilling(ctx) {
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -1009,7 +1010,7 @@ async function retrieveDomainBilling(ctx) {
               subject: `Error while capturing PayPal order payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -1073,7 +1074,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -1097,7 +1098,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -1154,7 +1155,7 @@ async function retrieveDomainBilling(ctx) {
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -1302,7 +1303,7 @@ async function retrieveDomainBilling(ctx) {
               subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -1327,7 +1328,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -1392,7 +1393,7 @@ async function retrieveDomainBilling(ctx) {
               } for ${ctx.state.user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -1483,7 +1484,7 @@ async function retrieveDomainBilling(ctx) {
                     } for ${ctx.state.user.email}`
                   },
                   locals: {
-                    message: `<pre><code>${JSON.stringify(
+                    message: `<pre><code>${safeStringify(
                       parseErr(err),
                       null,
                       2
@@ -1517,7 +1518,7 @@ async function retrieveDomainBilling(ctx) {
                     } for ${ctx.state.user.email}`
                   },
                   locals: {
-                    message: `<pre><code>${JSON.stringify(
+                    message: `<pre><code>${safeStringify(
                       parseErr(err),
                       null,
                       2
@@ -1604,7 +1605,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2
@@ -1671,7 +1672,7 @@ async function retrieveDomainBilling(ctx) {
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
-            message: `<pre><code>${JSON.stringify(
+            message: `<pre><code>${safeStringify(
               parseErr(err),
               null,
               2

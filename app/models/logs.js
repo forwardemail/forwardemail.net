@@ -949,7 +949,7 @@ Logs.postCreate(async (doc, next) => {
         subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(doc, null, 2)}</code></pre>`
+        message: `<pre><code>${safeStringify(doc, null, 2)}</code></pre>`
       }
     });
     next();

@@ -8,17 +8,18 @@ require('#config/env');
 
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
+const { setTimeout } = require('node:timers/promises');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const mongoose = require('mongoose');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const { default: PQueue } = require('p-queue');
 
@@ -259,7 +260,7 @@ async function sendEmails() {
           subject: 'Send emails had an error'
         },
         locals: {
-          message: `<pre><code>${JSON.stringify(
+          message: `<pre><code>${safeStringify(
             parseErr(err),
             null,
             2

@@ -14,6 +14,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pRetry = require('p-retry');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 
@@ -1058,11 +1059,11 @@ function retryGetDatabase(...args) {
             locals: {
               message: `<p>${
                 error.dbFilePath
-              }</p><hr /><pre><code>${JSON.stringify(
+              }</p><hr /><pre><code>${safeStringify(
                 error.stats,
                 null,
                 2
-              )}</code></pre><pre><code>${JSON.stringify(
+              )}</code></pre><pre><code>${safeStringify(
                 parseErr(error),
                 null,
                 2

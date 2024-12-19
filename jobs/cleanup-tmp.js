@@ -21,6 +21,7 @@ const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const { getDirSize } = require('fast-dir-size');
 
 const config = require('#config');
@@ -121,7 +122,7 @@ graceful.listen();
         subject: 'Cleanup tmp had an error'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

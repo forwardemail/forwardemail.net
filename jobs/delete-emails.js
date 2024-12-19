@@ -15,6 +15,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const mongoose = require('mongoose');
 const emailHelper = require('#helpers/email');
@@ -134,7 +135,7 @@ graceful.listen();
         subject: 'Delete Emails Issue'
       },
       locals: {
-        message: `<pre><code>${JSON.stringify(
+        message: `<pre><code>${safeStringify(
           parseErr(err),
           null,
           2

@@ -258,7 +258,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
                   },
                   locals: {
                     message: `<strong>${session.user.username}</strong> &ndash; ${err.message}`,
-                    // message: `<pre><code>${JSON.stringify(
+                    // message: `<pre><code>${safeStringify(
                     //   parseErr(err),
                     //   null,
                     //   2

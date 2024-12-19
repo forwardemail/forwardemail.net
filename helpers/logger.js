@@ -283,12 +283,7 @@ for (const level of logger.config.levels) {
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
       try {
-        message = global.structuredClone(message, {
-          // avoid throwing
-          lossy: true,
-          // avoid throwing *and* looks for toJSON
-          json: true
-        });
+        message = global.structuredClone(message);
       } catch (err) {
         console.error({ message, err });
         message = JSON.parse(safeStringify(message));
@@ -300,12 +295,20 @@ for (const level of logger.config.levels) {
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
       try {
-        meta = global.structuredClone(meta, {
-          // avoid throwing
-          lossy: true,
-          // avoid throwing *and* looks for toJSON
-          json: true
-        });
+        //
+        // NOTE: we need to take into account that most instances of logger
+        // for IMAP/POP3 have `logger.fatal(err, { session })`
+        // and this causes unnecessary cloning of `session.getQueryResponse`
+        // and would cause `DOMException [DataCloneError]` from `structuredClone`
+        // and the alternative would be `logger.fatal(err, { session: _.omit(session, 'getQueryResponse') })`
+        // which is a lot to type everywhere and to remember so this is a safeguard
+        //
+        if (
+          typeof meta.session === 'object' &&
+          typeof meta.session.getQueryResponse === 'function'
+        )
+          meta.session = _.omit(meta.session, ['getQueryResponse']);
+        meta = global.structuredClone(meta);
       } catch (err) {
         console.error({ meta, err });
         message = JSON.parse(safeStringify(message));

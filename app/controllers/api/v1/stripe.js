@@ -14,6 +14,7 @@ const ms = require('ms');
 const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
 const titleize = require('titleize');
+const safeStringify = require('fast-safe-stringify');
 
 const { Users, Domains } = require('#models');
 const config = require('#config');
@@ -597,7 +598,7 @@ async function webhook(ctx) {
           subject: `Error with Stripe Webhook (Event ID ${event.id})`
         },
         locals: {
-          message: `<pre><code>${JSON.stringify(
+          message: `<pre><code>${safeStringify(
             parseErr(err),
             null,
             2

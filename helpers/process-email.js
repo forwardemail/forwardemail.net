@@ -20,6 +20,7 @@ const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const prettyMilliseconds = require('pretty-ms');
+const safeStringify = require('fast-safe-stringify');
 const { SRS } = require('sender-rewriting-scheme');
 const { Splitter, Joiner } = require('mailsplit');
 const { authenticate } = require('mailauth');
@@ -1236,7 +1237,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                   domain.name,
                   domain.bounce_webhook
                 ) +
-                `<pre><code>${JSON.stringify(
+                `<pre><code>${safeStringify(
                   _.omit(parseErr(err), 'stack'),
                   null,
                   2

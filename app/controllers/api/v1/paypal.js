@@ -10,6 +10,7 @@ const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -416,7 +417,7 @@ async function processEvent(ctx) {
               subject: `Error while capturing PayPal order payment for ${user.email}`
             },
             locals: {
-              message: `<pre><code>${JSON.stringify(
+              message: `<pre><code>${safeStringify(
                 parseErr(err),
                 null,
                 2
@@ -522,7 +523,7 @@ async function webhook(ctx) {
           subject: `Error with PayPal Webhook (Event ID ${ctx.request.body.id})`
         },
         locals: {
-          message: `<pre><code>${JSON.stringify(
+          message: `<pre><code>${safeStringify(
             parseErr(err),
             null,
             2
