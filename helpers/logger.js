@@ -86,7 +86,15 @@ const REDACTED_FIELDS = new Set([
   'dhparam',
   'private_key',
   'dkim_private_key',
-  'raw'
+  'raw',
+
+  // IMAP/POP3 specific
+  'writeStream',
+  'formatResponse',
+  'getQueryResponse',
+  'matchSearchQuery',
+  'isUTF8Enabled',
+  'db'
 ]);
 
 //
@@ -282,7 +290,11 @@ for (const level of logger.config.levels) {
     if (err && err.httpStatusCode) delete err.response;
 
     // clone the data so that we don't mutate it
-    if (typeof err === 'object') err = JSON.parse(safeStringify(parseErr(err)));
+    if (typeof err === 'object') {
+      err = JSON.parse(safeStringify(parseErr(err)));
+      // add `isCodeBug` parsing here to `err` (safeguard)
+      err.isCodeBug = isCodeBug(err);
+    }
 
     //
     // NOTE: we can't use `superjson` because they don't export CJS right now
@@ -293,29 +305,7 @@ for (const level of logger.config.levels) {
       message = JSON.parse(safeStringify(message));
 
     // clone the data so that we don't mutate it
-    if (typeof meta === 'object') {
-      //
-      // NOTE: we need to take into account that most instances of logger
-      // for IMAP/POP3 have `logger.fatal(err, { session })`
-      // and this causes unnecessary cloning of `session.getQueryResponse`
-      // and the alternative would be `logger.fatal(err, { session: _.omit(session, 'getQueryResponse') })`
-      // which is a lot to type everywhere and to remember so this is a safeguard
-      // (this stuff only really applies for IMAP/POP3 server)
-      //
-      if (typeof meta.session === 'object')
-        meta.session = _.omit(meta.session, [
-          'writeStream',
-          'formatResponse',
-          'getQueryResponse',
-          'matchSearchQuery',
-          'isUTF8Enabled',
-          'db'
-        ]);
-      meta = JSON.parse(safeStringify(meta));
-    }
-
-    // add `isCodeBug` parsing here to `err` (safeguard)
-    if (typeof err === 'object') err.isCodeBug = isCodeBug(err);
+    if (typeof meta === 'object') meta = JSON.parse(safeStringify(meta));
 
     //
     // TODO: merge this into axe
