@@ -283,20 +283,12 @@ for (const level of logger.config.levels) {
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
       try {
-        //
-        // structuredClone cannot clone functions and hterefore this would throw something like:
-        //
-        // DOMException [DataCloneError]: function getQueryResponse(query, message, options = {}, instance, session) {
-        //      options = options || {};
-        //
-        //      if (...<omitted>...
-        //    } could not be cloned.
-        //
-        // as far as we know this is the only function bound here
-        message =
-          typeof message.getQueryResponse === 'function' && _
-            ? global.structuredClone(_.omit(message, ['getQueryResponse']))
-            : global.structuredClone(message);
+        message = global.structuredClone(message, {
+          // avoid throwing
+          lossy: true,
+          // avoid throwing *and* looks for toJSON
+          json: true
+        });
       } catch (err) {
         console.error({ message, err });
         message = JSON.parse(safeStringify(message));
@@ -308,11 +300,12 @@ for (const level of logger.config.levels) {
       // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
       // <https://github.com/ungap/structured-clone>
       try {
-        // see note above regarding functions
-        meta =
-          typeof meta.getQueryResponse === 'function' && _
-            ? global.structuredClone(_.omit(meta, ['getQueryResponse']))
-            : global.structuredClone(meta);
+        meta = global.structuredClone(meta, {
+          // avoid throwing
+          lossy: true,
+          // avoid throwing *and* looks for toJSON
+          json: true
+        });
       } catch (err) {
         console.error({ meta, err });
         message = JSON.parse(safeStringify(message));
