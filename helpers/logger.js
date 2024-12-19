@@ -303,11 +303,15 @@ for (const level of logger.config.levels) {
         // and the alternative would be `logger.fatal(err, { session: _.omit(session, 'getQueryResponse') })`
         // which is a lot to type everywhere and to remember so this is a safeguard
         //
-        if (
-          typeof meta.session === 'object' &&
-          typeof meta.session.getQueryResponse === 'function'
-        )
-          meta.session = _.omit(meta.session, ['getQueryResponse']);
+        if (typeof meta.session === 'object')
+          meta.session = _.omit(meta.session, [
+            'writeStream',
+            'socket',
+            'formatResponse',
+            'getQueryResponse',
+            'matchSearchQuery',
+            'isUTF8Enabled'
+          ]);
         meta = global.structuredClone(meta);
       } catch (err) {
         console.error({ meta, err });
