@@ -10,6 +10,14 @@ const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const superagent = require('superagent');
 
+//
+// NOTE: we can't use `rfdc` because it's really not much faster than what we're doing
+//       <https://github.com/davidmarkclements/rfdc/issues/50>
+//
+//
+// NOTE: we can't use `structuredClone` or `@ungap/structured-clone` since they throw `DataCloneError`
+//
+
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
 const _ = require('lodash');
@@ -25,7 +33,8 @@ const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
 // wrapper for browser condition
-const hasMixin = _ && typeof _ === 'object' && typeof _.mixin === 'function';
+const hasMixin = _ && _.mixin;
+
 if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
   _.mixin({
@@ -189,17 +198,20 @@ async function hook(err, message, meta) {
       //       typically only happens on `log.err` e.g. `log.err.bounces`
       //       therefore we use this as a way to convert to [Circular] if needed
       //
-      if (log.err) log.err = JSON.parse(safeStringify(log.err));
+      // this should never happen but it's a conditional safeguard
+      if (_.isError(log.err)) log.err = JSON.parse(safeStringify(log.err));
 
       return conn.models.Logs.create(log)
         .then()
         .catch((err) => {
+          // return early if it was a duplicate log being created
+          if (err.is_duplicate_log) return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //
           // we should try to create and log the error that occurred
           // but we should indicate that we should ignore the next log hook
-          if (!err.is_duplicate_log) console.error(err);
+          console.error(err);
           if (meta.ignore_next_hook) logger.error(err, { ignore_hook: true });
           else logger.error(err, { ignore_next_hook: true });
         });
@@ -270,53 +282,36 @@ for (const level of logger.config.levels) {
     if (err && err.httpStatusCode) delete err.response;
 
     // clone the data so that we don't mutate it
-    // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
-    // <https://github.com/ungap/structured-clone>
-    if (typeof err === 'object') err = parseErr(err);
+    if (typeof err === 'object') err = JSON.parse(safeStringify(parseErr(err)));
 
     //
     // NOTE: we can't use `superjson` because they don't export CJS right now
     //       <https://github.com/blitz-js/superjson/issues/268#issuecomment-1863659516>
     //
-    if (typeof message === 'object' && global.structuredClone) {
-      // clone the data so that we don't mutate it
-      // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
-      // <https://github.com/ungap/structured-clone>
-      try {
-        message = global.structuredClone(message);
-      } catch (err) {
-        console.error({ message, err });
-        message = JSON.parse(safeStringify(message));
-      }
-    }
+    // clone the data so that we don't mutate it
+    if (typeof message === 'object')
+      message = JSON.parse(safeStringify(message));
 
-    if (typeof meta === 'object' && global.structuredClone) {
-      // clone the data so that we don't mutate it
-      // <https://nodejs.org/api/globals.html#structuredclonevalue-options>
-      // <https://github.com/ungap/structured-clone>
-      try {
-        //
-        // NOTE: we need to take into account that most instances of logger
-        // for IMAP/POP3 have `logger.fatal(err, { session })`
-        // and this causes unnecessary cloning of `session.getQueryResponse`
-        // and would cause `DOMException [DataCloneError]` from `structuredClone`
-        // and the alternative would be `logger.fatal(err, { session: _.omit(session, 'getQueryResponse') })`
-        // which is a lot to type everywhere and to remember so this is a safeguard
-        //
-        if (typeof meta.session === 'object')
-          meta.session = _.omit(meta.session, [
-            'writeStream',
-            'socket',
-            'formatResponse',
-            'getQueryResponse',
-            'matchSearchQuery',
-            'isUTF8Enabled'
-          ]);
-        meta = global.structuredClone(meta);
-      } catch (err) {
-        console.error({ meta, err });
-        message = JSON.parse(safeStringify(message));
-      }
+    // clone the data so that we don't mutate it
+    if (typeof meta === 'object') {
+      //
+      // NOTE: we need to take into account that most instances of logger
+      // for IMAP/POP3 have `logger.fatal(err, { session })`
+      // and this causes unnecessary cloning of `session.getQueryResponse`
+      // and the alternative would be `logger.fatal(err, { session: _.omit(session, 'getQueryResponse') })`
+      // which is a lot to type everywhere and to remember so this is a safeguard
+      // (this stuff only really applies for IMAP/POP3 server)
+      //
+      if (typeof meta.session === 'object')
+        meta.session = _.omit(meta.session, [
+          'writeStream',
+          'formatResponse',
+          'getQueryResponse',
+          'matchSearchQuery',
+          'isUTF8Enabled',
+          'db'
+        ]);
+      meta = JSON.parse(safeStringify(meta));
     }
 
     // add `isCodeBug` parsing here to `err` (safeguard)
@@ -398,6 +393,7 @@ for (const level of logger.config.levels) {
     //   NODEMAILER_LOGGER_COMPONENTS.has(meta.component)
     // )
     //   meta[silentSymbol] = true;
+
     return [err, message, meta];
   });
 

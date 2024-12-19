@@ -31,7 +31,7 @@
     "@forwardemail/highlight-pug": "1.0.1",
     "@forwardemail/passport-fido2-webauthn": "0.1.0",
     "@forwardemail/uuid-by-string": "5.0.0",
-    "@forwardemail/validator": "^14.0.0",
+    "@forwardemail/validator": "14.0.0",
     "@hapi/boom": "10.0.1",
     "@ioredis/commands": "1.2.0",
     "@koa/multer": "3.0.2",
