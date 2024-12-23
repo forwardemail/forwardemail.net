@@ -192,6 +192,7 @@ const instance = {
     }
   }
 
+  archive.finalize();
   archive.on('warning', (err) => {
     logger.warn(err);
   });
@@ -199,7 +200,6 @@ const instance = {
     archive.on('error', reject);
     archive.on('end', resolve);
   });
-  archive.finalize();
 
   console.log('tmp', tmp);
 })();

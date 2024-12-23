@@ -716,6 +716,7 @@ async function backup(payload) {
           stream.end();
         }
 
+        archive.finalize();
         archive.on('warning', (err) => {
           logger.warn(err);
         });
@@ -723,7 +724,6 @@ async function backup(payload) {
           archive.once('error', reject);
           archive.once('end', resolve);
         });
-        archive.finalize();
         break;
       }
 
@@ -786,6 +786,7 @@ async function backup(payload) {
           }
         }
 
+        archive.finalize();
         archive.on('warning', (err) => {
           logger.warn(err);
         });
@@ -793,7 +794,6 @@ async function backup(payload) {
           archive.on('error', reject);
           archive.on('end', resolve);
         });
-        archive.finalize();
         break;
       }
       // No default
