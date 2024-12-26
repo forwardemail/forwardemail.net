@@ -28,6 +28,8 @@ const hasha = require('hasha');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
+const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const {
@@ -951,7 +953,6 @@ async function backup(payload) {
         template: 'alert',
         message: {
           to: payload.email,
-          cc: config.email.message.from,
           subject: i18n.translate(
             'ALIAS_BACKUP_FAILED_SUBJECT',
             payload.session.user.locale,
@@ -970,6 +971,26 @@ async function backup(payload) {
           locale: payload.session.user.locale
         }
       });
+
+    // email admins with the full error output
+    await email({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: i18n.translate(
+          'ALIAS_BACKUP_FAILED_SUBJECT',
+          payload.session.user.locale,
+          payload.session.user.username
+        )
+      },
+      locals: {
+        message: `<pre><code>${safeStringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
 
     throw err;
   }

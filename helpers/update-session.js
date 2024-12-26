@@ -11,7 +11,7 @@ const isAllowlisted = require('#helpers/is-allowlisted');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
-async function updateSession(raw, headers, session) {
+async function updateSession(body, headers, session) {
   //
   // NOTE: we set `session.headers` and `session.originalFromAddress`
   //       so that if an error is thrown, then the error log
@@ -67,7 +67,7 @@ async function updateSession(raw, headers, session) {
   session.attributes = await getAttributes(headers, session, this.resolver);
 
   // get message fingerprint
-  session.fingerprint = getFingerprint(session, headers, raw);
+  session.fingerprint = getFingerprint(session, headers, body);
 
   return session;
 }

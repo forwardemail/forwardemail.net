@@ -27,18 +27,18 @@ function updateHeaders(headers, session) {
   }
 
   if (!keys.has('x-report-abuse-to'))
-    headers.add('X-Report-Abuse-To', config.abuseEmail, headers.lines.length);
+    headers.add('X-Report-Abuse-To', config.abuseEmail); // , headers.lines.length);
 
   if (!keys.has('x-report-abuse'))
-    headers.add('X-Report-Abuse', config.abuseEmail, headers.lines.length);
+    headers.add('X-Report-Abuse', config.abuseEmail); // , headers.lines.length);
 
   if (!keys.has('x-complaints-to'))
-    headers.add('X-Complaints-To', config.abuseEmail, headers.lines.length);
+    headers.add('X-Complaints-To', config.abuseEmail); // , headers.lines.length);
 
   headers.add(
     'X-ForwardEmail-Version',
-    config.pkg.version,
-    headers.lines.length
+    config.pkg.version
+    // headers.lines.length
   );
 }
 

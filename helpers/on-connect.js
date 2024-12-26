@@ -162,13 +162,13 @@ async function onConnect(session, fn) {
     await this.client.pexpire(key, config.socketTimeout);
 
     // NOTE if more than 50 connections open in 3m then alert admins
-    if (count >= 50) {
+    if (count >= 50 && session.isAllowlisted) {
       const err = new TypeError(
         `${HOSTNAME} detected 50+ connections from ${
           session.resolvedRootClientHostname ||
           session.resolvedClientHostname ||
           session.remoteAddress
-        } (${session.allowlistValue || 'not allowlisted'})`
+        } (${session.allowlistValue})`
       );
       err.isCodeBug = true;
       err.session = session;

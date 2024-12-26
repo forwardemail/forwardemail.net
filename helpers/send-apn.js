@@ -117,16 +117,17 @@ async function sendApn(client, id, mailboxPath = 'INBOX') {
 
       // NOTE: if device returns 410 then unsubscribe on our side too
       if (Array.isArray(result.failed) && result.failed.length > 0) {
-        const err = new TypeError(`APS failed (device unsubscribed?)`);
-        err.isCodeBug = true;
-        err.result = result;
-        logger.fatal(err);
-
         const unregisteredDeviceTokens = result.failed
           .filter((r) => Number.parseInt(r.status, 10) === 410)
           .map((r) => r.device);
 
-        if (unregisteredDeviceTokens.length === 0) return;
+        if (unregisteredDeviceTokens.length === 0) {
+          const err = new TypeError('APS failed');
+          err.isCodeBug = true;
+          err.result = result;
+          logger.fatal(err);
+          return;
+        }
 
         // since there's only one device token
         if (

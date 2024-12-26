@@ -4,7 +4,6 @@
  */
 
 const Axe = require('axe');
-const Cabin = require('cabin');
 const cuid = require('cuid');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -89,6 +88,7 @@ const REDACTED_FIELDS = new Set([
   'raw',
 
   // IMAP/POP3 specific
+  'socket',
   'writeStream',
   'formatResponse',
   'getQueryResponse',
@@ -214,6 +214,13 @@ async function hook(err, message, meta) {
         .catch((err) => {
           // return early if it was a duplicate log being created
           if (err.is_duplicate_log) return;
+          // when tests close the connection closes so logs don't write
+          if (
+            err.name === 'MongoNotConnectedError' &&
+            // eslint-disable-next-line n/prefer-global/process
+            process.env.NODE_ENV === 'test'
+          )
+            return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //
@@ -390,13 +397,4 @@ for (const level of logger.config.levels) {
   logger.post(level, hook);
 }
 
-// setup our Cabin instance
-const cabin = new Cabin({ logger });
-
-// set the user if we're logged in
-// eslint-disable-next-line no-undef
-if (typeof window === 'object' && typeof window.USER === 'object')
-  // eslint-disable-next-line no-undef
-  cabin.setUser(window.USER);
-
-module.exports = cabin;
+module.exports = logger;

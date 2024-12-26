@@ -18,6 +18,10 @@ const REGEX_DENYLIST = new RE2(/denylist|deny\s+list/im);
 const REGEX_BLACKLIST = new RE2(/blacklist|black\s+list/im);
 const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
 
+// TODO: add these to bounces.txt
+// <https://github.com/zone-eu/zone-mta/issues/435>
+// <https://postmaster-earthlink.vadesecure.com/inbound_error_codes/>
+
 //
 // NOTE: we have access to `err.truthSource` if needed here
 //       (e.g. google.com, qq.com, is the value)

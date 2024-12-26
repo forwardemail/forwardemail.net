@@ -333,6 +333,11 @@ Logs.pre('save', function (next) {
   try {
     // convert ansi (chalk) colors to html (mainly for HTTP request logging)
     this.text_message = ansiHTML(this.message);
+    //
+    // TODO: we should conditionally not do this if MX server where
+    //       we already are using `striptags()` on the message
+    //
+    // only do this if on server where `err.message` is not `striptags()`
     // tokenization and search will be more accurate without HTML in messages
     this.text_message = convert(this.text_message, {
       wordwrap: false,

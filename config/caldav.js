@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Cabin = require('cabin');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const sharedConfig = require('@ladjs/shared-config');
@@ -59,6 +60,9 @@ const RATELIMIT_ALLOWLIST =
 // TODO: move this to `caldav-server.js` similar to `imap-server.js` (?)
 // <https://github.com/sedenardi/node-caldav-adapter/issues/14>
 
+// setup our Cabin instance
+const cabin = new Cabin({ logger });
+
 module.exports = {
   ...sharedCalDAVConfig,
   ...config,
@@ -70,7 +74,7 @@ module.exports = {
   passport: false,
   auth: false,
   routes: routes.caldav,
-  logger,
+  logger: cabin,
   i18n,
   hookBeforeSetup(app) {
     app.context.resolver = createTangerine(

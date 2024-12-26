@@ -74,5 +74,5 @@ test('GET /:locale/help', async (t) => {
   const { web } = t.context;
   const res = await web.get('/en/help');
   t.is(res.status, 302);
-  t.is(res.header.location, '/en/login');
+  t.is(res.header.location, '/en/login?return_to=%2Fen%2Fhelp');
 });

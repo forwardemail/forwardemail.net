@@ -36,9 +36,8 @@ const status = require('statuses');
 const { Iconv } = require('iconv');
 const { SRS } = require('sender-rewriting-scheme');
 const { boolean } = require('boolean');
-const { sealMessage } = require('mailauth');
+// const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
-const isEmail = require('#helpers/is-email');
 
 const DenylistError = require('#helpers/denylist-error');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
@@ -63,6 +62,7 @@ const isAuthenticatedMessage = require('#helpers/is-authenticated-message');
 const isBackscatterer = require('#helpers/is-backscatterer');
 const isCodeBug = require('#helpers/is-code-bug');
 const isDenylisted = require('#helpers/is-denylisted');
+const isEmail = require('#helpers/is-email');
 const isGreylisted = require('#helpers/is-greylisted');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
@@ -108,7 +108,6 @@ const scanner = new SpamScanner({
 //
 // TODO: if `err.truthSource` is `outlook.com` then link to this article
 //
-// TODO: we need to be careful here because of false positives for DMARC failures
 // TODO: disabled until we use MongoDB for this
 /*
 async function sendSysAdminEmail(template, err, session, headers) {
@@ -167,7 +166,7 @@ async function sendSysAdminEmail(template, err, session, headers) {
 }
 */
 
-async function sendBounce(bounce, headers, session, sealedMessage) {
+async function sendBounce(bounce, headers, session, body) {
   try {
     // bounces are unique by fingerprint, address, and error code
     const key = getFingerprintKey(
@@ -188,7 +187,11 @@ async function sendBounce(bounce, headers, session, sealedMessage) {
         date: session.arrivalDate
       },
       bounce.err,
-      sealedMessage
+      Buffer.concat([
+        Buffer.from(session.arcSealedHeaders),
+        headers.build(),
+        body
+      ])
     );
 
     const raw = await getStream.buffer(stream);
@@ -268,7 +271,7 @@ async function sendBounce(bounce, headers, session, sealedMessage) {
 }
 
 // eslint-disable-next-line complexity
-async function processBounces(headers, bounces, session, sealedMessage) {
+async function processBounces(headers, bounces, session, body) {
   //
   // instead of returning an error if it bounced
   // which would in turn cause the message to get retried
@@ -405,7 +408,7 @@ async function processBounces(headers, bounces, session, sealedMessage) {
     // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
     //
     await pMapSeries(uniqueBounces, (bounce) =>
-      sendBounce.call(this, bounce, headers, session, sealedMessage)
+      sendBounce.call(this, bounce, headers, session, body)
     );
   } catch (err) {
     logger.warn(err, { session });
@@ -423,7 +426,7 @@ function getFingerprintKey(session, value) {
   return `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(value)}`;
 }
 
-async function imap(aliases, session, raw) {
+async function imap(aliases, headers, session, body) {
   const accepted = [];
   const bounces = [];
 
@@ -465,7 +468,11 @@ async function imap(aliases, session, raw) {
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate
           : session.arrivalDate.toISOString(),
-      raw,
+      raw: Buffer.concat([
+        Buffer.from(session.arcSealedHeaders),
+        headers.build(),
+        body
+      ]),
       timeout: ms('1m')
     });
 
@@ -630,7 +637,10 @@ async function checkBounceForSpam(bounce, headers, session) {
       // increase counter for category:attribute:date key
       const key = `counter_${bounce.err.bounceInfo.category}:${attr}:${session.arrivalDateFormatted}`;
       const count = await this.client.incr(key);
-      await this.client.pexpire(key, ms('1d'));
+      await this.client.pexpire(
+        key,
+        isAttributeAllowlisted || session.isAllowlisted ? ms('1d') : ms('5d')
+      );
 
       //
       // NOTE: this is an arbitrary counting system that will need refined over time
@@ -690,27 +700,27 @@ async function checkBounceForSpam(bounce, headers, session) {
 
       // attributes that are email addresses sending viruses get denylisted immediately
       if (bounce.err.bounceInfo.category === 'virus' && isEmail(attr)) {
-        if (isAttributeAllowlisted) {
+        if (isAttributeAllowlisted && count >= 10) {
           const err = new TypeError(
             `${config.views.locals.emoji(
               'microbe'
             )} ${config.views.locals.emoji(
               'rotating_light'
-            )} ${attr} was allowlisted and sent virus`
+            )} ${attr} was allowlisted and sent 10+ virus`
           );
           err.headers = headers;
           err.bounce = bounce;
           err.session = session;
           err.isCodeBug = true;
           logger.fatal(err);
-        } else {
+        } else if (!isAttributeAllowlisted && count >= 3) {
           if (session.isAllowlisted) {
             const err = new TypeError(
               `${config.views.locals.emoji(
                 'microbe'
               )} ${config.views.locals.emoji(
                 'warning'
-              )} ${attr} had allowlisted session and sent virus`
+              )} ${attr} was denylisted for sending 3+ virus`
             );
             err.bounce = bounce;
             err.session = session;
@@ -737,20 +747,20 @@ async function checkBounceForSpam(bounce, headers, session) {
       // return early if it was not a spam bounce
       if (bounce.err.bounceInfo.category !== 'spam') return;
 
-      if (isAttributeAllowlisted) {
+      if (isAttributeAllowlisted && count >= 10) {
         const err = new TypeError(
           `${config.views.locals.emoji(
             'canned_food'
           )} ${config.views.locals.emoji(
             'rotating_light'
-          )} ${attr} was allowlisted and sent spam`
+          )} ${attr} was allowlisted and sent 10+ spam`
         );
         err.bounce = bounce;
         err.session = session;
         err.isCodeBug = true;
         err.headers = headers;
         logger.fatal(err);
-      } else {
+      } else if (!isAttributeAllowlisted) {
         let shouldDenylist = false;
         if (isEmail(attr) && count >= 5) {
           shouldDenylist = true;
@@ -765,7 +775,7 @@ async function checkBounceForSpam(bounce, headers, session) {
                 'canned_food'
               )} ${config.views.locals.emoji(
                 'warning'
-              )} ${attr} had allowlisted session and sent spam`
+              )} ${attr} was denylisted for spam`
             );
             err.bounce = bounce;
             err.session = session;
@@ -787,8 +797,8 @@ async function checkBounceForSpam(bounce, headers, session) {
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
-// eslint-disable-next-line complexity, max-params
-async function forward(recipient, headers, session, raw, body) {
+// eslint-disable-next-line complexity
+async function forward(recipient, headers, session, body) {
   //
   // NOTE: we send emails in series therefore we can check
   //       if the sender was denylisted since sending started
@@ -830,6 +840,12 @@ async function forward(recipient, headers, session, raw, body) {
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks
   if (recipient.webhook) {
     try {
+      const raw = Buffer.concat([
+        Buffer.from(session.arcSealedHeaders),
+        headers.build(),
+        body
+      ]);
+
       const mail = await simpleParser(raw, {
         Iconv,
         skipHtmlToText: true,
@@ -839,7 +855,7 @@ async function forward(recipient, headers, session, raw, body) {
         maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
       });
 
-      const body = JSON.stringify({
+      const webhookBody = JSON.stringify({
         ...mail,
         raw: raw.toString(),
         dkim: session.dkim,
@@ -896,12 +912,12 @@ async function forward(recipient, headers, session, raw, body) {
               ? {
                   'X-Webhook-Signature': crypto
                     .createHmac('sha256', decrypt(recipient.webhookKey))
-                    .update(body)
+                    .update(webhookBody)
                     .digest('hex')
                 }
               : {})
           },
-          body,
+          body: webhookBody,
           resolver: this.resolver
         }
       );
@@ -1034,11 +1050,6 @@ async function forward(recipient, headers, session, raw, body) {
     throw new TypeError('Invalid array of recipients');
 
   try {
-    // TODO: add Feedback-ID header if not exists for Google recipients to `sendEmail` function
-    //       and add automated job to scrape Google Postmaster API (they have an API) for detection
-    //       and abuse/spam complaint automation
-
-    // NOTE: sendEmail function will handle DKIM signing and PGP encryption for bounces
     let info;
     try {
       info = await sendEmail({
@@ -1050,7 +1061,11 @@ async function forward(recipient, headers, session, raw, body) {
           from,
           to: recipient.to[0]
         },
-        raw,
+        raw: Buffer.concat([
+          Buffer.from(session.arcSealedHeaders),
+          headers.build(),
+          body
+        ]),
         resolver: this.resolver,
         client: this.client,
         publicKey: recipient.aliasPublicKey
@@ -1067,16 +1082,22 @@ async function forward(recipient, headers, session, raw, body) {
       //       because we'd have to support `rejectedErrors` with this
       //
       err.bounceInfo = getBounceInfo(err);
+
+      // alert admins of the issue
+      if (err.bounceInfo.category === 'dmarc') {
+        if (!session.isAllowlisted && !session.hasSameHostnameAsFrom)
+          err.message = `No Friendly-From Rewrite: ${err.message}`;
+        err.isCodeBug = true;
+        err.session = session;
+        logger.fatal(err);
+      }
+
       if (
         !session.rewriteFriendlyFrom &&
         session.dmarc?.status?.result === 'pass' &&
-        err.bounceInfo.category === 'dmarc'
+        err.bounceInfo.category === 'dmarc' &&
+        (session.isAllowlisted || session.hasSameHostnameAsFrom)
       ) {
-        // log for admins so we can see in real-time all the rewrites
-        err.isCodeBug = true;
-        logger.fatal(err, { session });
-
-        // (the below logic is duplicated from elsewhere in this file)
         session.rewriteFriendlyFrom = true;
 
         // TODO: disabled until we use MongoDB for this
@@ -1099,6 +1120,7 @@ async function forward(recipient, headers, session, raw, body) {
         if (!getHeaders(headers, 'reply-to'))
           headers.update('Reply-To', session.originalFromAddress);
 
+        /*
         // rewrite ARC sealed headers with updated headers object value
         session.arcSealedHeaders = await sealMessage(
           Buffer.concat([headers.build(), body]),
@@ -1109,6 +1131,7 @@ async function forward(recipient, headers, session, raw, body) {
             cv: session.arc.status.result
           }
         );
+        */
 
         const sealedMessage = Buffer.concat([
           Buffer.from(session.arcSealedHeaders),
@@ -1299,7 +1322,7 @@ async function forward(recipient, headers, session, raw, body) {
 // TODO: all counters should be reflected in new deliverability dashboard for users
 //
 
-async function updateMXHeaders(session, headers, body) {
+async function updateMXHeaders(session, headers) {
   headers.remove('x-forwardemail-sender');
   const senderHeader = [];
   if (
@@ -1312,14 +1335,18 @@ async function updateMXHeaders(session, headers, body) {
   senderHeader.push(session.remoteAddress);
   headers.add(
     'X-ForwardEmail-Sender',
-    `rfc822; ${senderHeader.join(', ')}`,
-    headers.lines.length
+    `rfc822; ${senderHeader.join(', ')}`
+    // headers.lines.length
   );
   if (config.env !== 'production') {
     headers.remove('x-forwardemail-session-id');
-    headers.add('X-ForwardEmail-Session-ID', session.id, headers.lines.length);
+    headers.add('X-ForwardEmail-Session-ID', session.id); // , headers.lines.length);
   }
 
+  //
+  // NOTE: as a test of ARC with truth sources we're disabling this as we have a catch in sendEmail forn ow
+  //
+  /*
   //
   // perform a friendly-from rewrite if necessary using mailauth data
   // (basically if no aligned DKIM and if strict DMARC we can assume it's relying on SPF)
@@ -1327,22 +1354,17 @@ async function updateMXHeaders(session, headers, body) {
   //
   if (
     session.dmarc?.status?.result === 'pass' &&
-    !session.hadAlignedAndPassingDKIM
-    // session.alignedDKIMResults.every(
-    //   (r) => r.signingDomain !== session.dmarc?.status?.header?.d
-    // ) &&
-    // session.dmarc?.status?.header?.d !== session.dmarc?.alignment?.dkim?.result
+    !session.hadAlignedAndPassingDKIM &&
+    (session.isAllowlisted || session.hasSameHostnameAsFrom)
   ) {
     session.rewriteFriendlyFrom = true;
-
-    const err = new TypeError(
-      `DMARC passing only via SPF and therefore will break when forwarded since DKIM signature is not aligned with "From" header domain of ${
-        session.dmarc?.status?.header?.d || session.originalFromAddressDomain
-      }.`
-    );
-    err.truthSource = env.WEB_HOST;
-
     // TODO: disabled until we use MongoDB for this
+    // const err = new TypeError(
+    //   `DMARC passing only via SPF and therefore will break when forwarded since DKIM signature is not aligned with "From" header domain of ${
+    //     session.dmarc?.status?.header?.d || session.originalFromAddressDomain
+    //   }.`
+    // );
+    // err.truthSource = env.WEB_HOST;
     // notify common system administrator usernames of this issue
     // sendSysAdminEmail
     //   .call(this, 'dmarc-issue', err, session, headers)
@@ -1363,20 +1385,21 @@ async function updateMXHeaders(session, headers, body) {
       headers.update('Reply-To', session.originalFromAddress);
 
     // rewrite ARC sealed headers with updated headers object value
-    session.arcSealedHeaders = await sealMessage(
-      Buffer.concat([headers.build(), body]),
-      {
-        ...config.signatureData,
-        // values from the authentication step
-        authResults: session.arc.authResults,
-        cv: session.arc.status.result
-      }
-    );
+    // session.arcSealedHeaders = await sealMessage(
+    //   Buffer.concat([headers.build(), body]),
+    //   {
+    //     ...config.signatureData,
+    //     // values from the authentication step
+    //     authResults: session.arc.authResults,
+    //     cv: session.arc.status.result
+    //   }
+    // );
   }
+  */
 }
 
 // eslint-disable-next-line complexity
-async function onDataMX(raw, session, headers, body) {
+async function onDataMX(session, headers, body) {
   //
   // determine if we should check against backscatterer list
   // (only if blank, mailer-daemon@, postmaster@, or another standard)
@@ -1457,13 +1480,13 @@ async function onDataMX(raw, session, headers, body) {
   // (this populates `session.spf`, `session.dmarc`, etc)
   // (it also throws an error if it was found to be unauthenticated)
   //
-  await isAuthenticatedMessage(raw, session, this.resolver);
+  await isAuthenticatedMessage(headers, body, session, this.resolver);
 
   // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)
   // (this relies on `isAuthenticatedMessage` to populate `session.spf` etc)
-  await isArbitrary(session, headers, body.toString());
+  await isArbitrary(session, headers); // , body.toString());
 
   // if there were DKIM signing domains then check them
   // against the silent ban and denylists
@@ -1520,7 +1543,7 @@ async function onDataMX(raw, session, headers, body) {
 
   // additional headers to add specifically for MX
   // (this also does a friendly-from rewrite if necessary)
-  await updateMXHeaders.call(this, session, headers, body);
+  await updateMXHeaders.call(this, session, headers);
 
   // this is the core logic that determines where to forward and deliver emails to
   // TODO: re-enable spam scanner once v7 released
@@ -1538,30 +1561,17 @@ async function onDataMX(raw, session, headers, body) {
     return;
   }
 
-  //
-  // TODO: we need to set x-original-to, and add received headers
-  // TODO: add X-Original-To and Received headers to outbound SMTP (to top of message)
-  //       and to `sealedMessage` and also on a per-recipient MX basis for accuracy
-  //       (x-original-to should be comma separated list based off RCPT TO command)
-  // TODO: ensure `session.headers` is updated as well
-  //
-  const sealedMessage = Buffer.concat([
-    Buffer.from(session.arcSealedHeaders),
-    headers.build(),
-    body
-  ]);
-
   // deliver to IMAP and forward messages in parallel
   const [imapResults, forwardResults] = await Promise.all([
     // imap
     data.imap.length === 0
       ? Promise.resolve()
-      : imap.call(this, data.imap, session, sealedMessage),
+      : imap.call(this, data.imap, headers, session, body),
     // forwarding
     data.normalized.length === 0
       ? Promise.resolve()
       : pMapSeries(data.normalized, (recipient) =>
-          forward.call(this, recipient, headers, session, sealedMessage, body)
+          forward.call(this, recipient, headers, session, body)
         )
   ]);
 
@@ -1674,7 +1684,7 @@ async function onDataMX(raw, session, headers, body) {
 
   // process (and then send) bounces if any in the background
   processBounces
-    .call(this, headers, bounces, session, sealedMessage)
+    .call(this, headers, bounces, session, body)
     .then()
     .catch((err) => logger.fatal(err));
 

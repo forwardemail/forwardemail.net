@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
@@ -17,11 +15,11 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
-const getHeaders = require('#helpers/get-headers');
+const getRcptToWithoutBcc = require('#helpers/get-rcpt-to-without-bcc');
+const getReceivedHeader = require('#helpers/get-received-header');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
-const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
@@ -32,6 +30,7 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
 // TODO: check for `this.isClosing` before heavy/slow operations in onDataMX
 
+// eslint-disable-next-line complexity
 async function onData(stream, _session, fn) {
   if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
@@ -57,11 +56,9 @@ async function onData(stream, _session, fn) {
 
     const { headers } = messageSplitter;
 
-    const raw = Buffer.concat([headers.build(), body]);
-
     // update session object with useful debug info for error logs
     // (also subsequently throws an error if "From" header was not valid per RFC 5322)
-    await updateSession.call(this, raw, headers, session);
+    await updateSession.call(this, body, headers, session);
 
     // prevent messages from being stuck in a redirect loop
     // <https://github.com/zone-eu/zone-mta/blob/2557a975ee35ed86e4d95d6cfe78d1b249dec1a0/plugins/core/email-bounce.js#L97>
@@ -153,6 +150,8 @@ async function onData(stream, _session, fn) {
     // in addition to RCPT TO being incorrect due to improperly configured server sending to SRS forwarded address
     // we also need to rewrite the "To" header an rewrite any SRS forwarded addresses with their actual ones
     //
+    // TODO: rewrite this later (needs DKIM/DMARC check)
+    /*
     const originalToAddresses = parseAddresses(getHeaders(headers, 'to'));
     for (const obj of originalToAddresses) {
       const shouldThrow =
@@ -163,6 +162,49 @@ async function onData(stream, _session, fn) {
           'to',
           headers.getFirst('to').replaceAll(obj, checkSRS(obj, shouldThrow))
         );
+    }
+    */
+
+    //
+    // TODO: add Feedback-ID header if not exists for Google recipients to `sendEmail` function
+    //       and add automated job to scrape Google Postmaster API (they have an API) for detection
+    //       and abuse/spam complaint automation
+    //
+
+    // add "Received" and "X-Original-To" headers to the message
+    const rcptToWithoutBcc = getRcptToWithoutBcc(session, headers);
+    headers.add(
+      'Received',
+      getReceivedHeader({
+        origin: session.remoteAddress,
+        originhost: session.resolvedClientHostname,
+        transhost: session.hostNameAppearsAs,
+        user: false,
+        transtype: session.transmissionType,
+        // id: session.id,
+        // seq: 'some-seq-id',
+        recipient: rcptToWithoutBcc.length === 1 ? rcptToWithoutBcc[0] : false, // foo@example.com
+        // session.tlsOptions {
+        //   name: 'ECDHE-RSA-AES128-GCM-SHA256',
+        //   standardName: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256',
+        //   version: 'TLSv1.2'
+        // }
+        tls:
+          session.secure &&
+          session?.tlsOptions?.name &&
+          session?.tlsOptions?.version
+            ? {
+                name: session.tlsOptions.name,
+                version: session.tlsOptions.version
+              }
+            : false,
+        time: new Date(session.arrivalDate)
+      })
+    );
+
+    if (rcptToWithoutBcc.length > 0 && !headers.hasHeader('x-original-to')) {
+      headers.remove('x-original-to');
+      headers.add('X-Original-To', rcptToWithoutBcc.join(', '));
     }
 
     if (this.constructor.name === 'SMTP') {
@@ -177,12 +219,12 @@ async function onData(stream, _session, fn) {
         date = new Date(session.arrivalDate);
       }
 
-      await onDataSMTP.call(this, raw, session, date);
+      await onDataSMTP.call(this, session, date, headers, body);
       return setImmediate(fn);
     }
 
     if (this.constructor.name === 'MX') {
-      await onDataMX.call(this, raw, session, headers, body);
+      await onDataMX.call(this, session, headers, body);
       return setImmediate(fn);
     }
 

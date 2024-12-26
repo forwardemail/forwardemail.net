@@ -22,7 +22,7 @@ const punycode = require('node:punycode');
 const { randomUUID } = require('node:crypto');
 
 const Graceful = require('@ladjs/graceful');
-const Redis = require('@ladjs/redis');
+const Redis = require('ioredis-mock');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
 const ms = require('ms');

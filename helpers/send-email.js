@@ -12,25 +12,20 @@ const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const WKD = require('./wkd');
+const combineErrors = require('./combine-errors');
+const createSession = require('./create-session');
 const encryptMessage = require('./encrypt-message');
 const getTransporter = require('./get-transporter');
+const isEmail = require('./is-email');
 const isMessageEncrypted = require('./is-message-encrypted');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
 const shouldThrow = require('./should-throw');
-const combineErrors = require('./combine-errors');
 const { decrypt } = require('./encrypt-decrypt');
-const createSession = require('./create-session');
-const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
-
-//
-// TODO: when emails are sent we need to store the `raw` (w/DKIM-Signature) per `accepted`
-// TODO: similarly we need to store this for rejectedErrors so we can see details of error raw message (and end users can too)
-//
 
 // eslint-disable-next-line complexity
 async function sendEmail(
@@ -70,25 +65,6 @@ async function sendEmail(
   //
   let pgp = false;
 
-  //
-  // NOTE: if we already didn't do a friendly-from rewrite
-  //       and if the message had passing DMARC, then
-  //       obviously it's going to fail here because
-  //       Content-Type and the message's body hash will change
-  //       so we would need to do another friendly-from rewrite here
-  //
-  //       however we would also want to conditionally encrypt bounces as well
-  //       (see `sendBounce` in `helpers/on-data-mx.js`)
-  //       and we would also have to pass around `headers` and `body` here
-  //
-  //       therefore to keep things simple
-  //       (and also get users to use our IMAP service which encrypts with PGP upon storage)
-  //       we only will do PGP forwarding if DMARC was not passing on the domain altogether
-  //
-  // NOTE: this only happens for the MX server which is
-  //       why we do a conditional check for !email; but a better way
-  //       might be do to a server instanceof check as similar elsewhere
-  //
   if (
     !isEncrypted &&
     (email || (!email && session?.dmarc?.policy !== 'reject'))
@@ -118,6 +94,7 @@ async function sendEmail(
             raw,
             false
           );
+
           const signResult = await dkimSign(encryptedUnsignedMessage, {
             canonicalization: 'relaxed/relaxed',
             algorithm: 'rsa-sha256',
@@ -182,19 +159,23 @@ async function sendEmail(
     }
   }
 
-  //
-  // if we did not apply a PGP signature that also means we haven't
-  // signed the message with our DKIM-Signature yet, which we only
-  // want to do if this was an MX server (since `#helpers/process-email` already applies it for SMTP)
-  //
-  // TODO: this breaks ARC
-  /*
-  if (!pgp && !email && !domain) {
+  // if no PGP then we need to still sign with DKIM
+  if (!pgp) {
     const signResult = await dkimSign(raw, {
       canonicalization: 'relaxed/relaxed',
       algorithm: 'rsa-sha256',
       signTime: new Date(),
-      signatureData: [config.signatureData]
+      signatureData: domain
+        ? [
+            {
+              signingDomain: domain.name,
+              selector: domain.dkim_key_selector,
+              privateKey: decrypt(domain.dkim_private_key),
+              algorithm: 'rsa-sha256',
+              canonicalization: 'relaxed/relaxed'
+            }
+          ]
+        : [config.signatureData]
     });
 
     if (signResult.errors.length > 0) {
@@ -210,7 +191,6 @@ async function sendEmail(
     const signatures = Buffer.from(signResult.signatures, 'utf8');
     raw = Buffer.concat([signatures, raw], signatures.length + raw.length);
   }
-  */
 
   //
   // if we're in development mode then use preview-email to render queue processing

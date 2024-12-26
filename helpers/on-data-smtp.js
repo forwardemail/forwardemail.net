@@ -4,6 +4,7 @@
  */
 
 const punycode = require('node:punycode');
+const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
@@ -64,7 +65,7 @@ async function sendRateLimitEmail(user) {
 }
 
 // eslint-disable-next-line complexity
-async function onDataSMTP(raw, session, date) {
+async function onDataSMTP(session, date, headers, body) {
   //
   // NOTE: we don't share the full alias and domain object
   //       in between onAuth and onData because there could
@@ -400,7 +401,7 @@ async function onDataSMTP(raw, session, date) {
   const email = await Emails.queue({
     message: {
       envelope,
-      raw
+      raw: Buffer.concat([headers.build(), body])
     },
     alias,
     domain,

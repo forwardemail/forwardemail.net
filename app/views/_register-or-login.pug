@@ -53,7 +53,7 @@ mixin registerOrLogin(verb, isModal = false)
         //- <https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple>
         if passport && passport.apple
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
-            href="/auth/apple",
+            href=`/auth/apple?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
             role="button"
           )
             span.btn-auth-icon.btn-auth-icon-fill.btn-auth-apple-logo
@@ -61,7 +61,7 @@ mixin registerOrLogin(verb, isModal = false)
         //- <https://developers.google.com/identity/branding-guidelines>
         if passport && passport.google
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
-            href="/auth/google",
+            href=`/auth/google?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
             role="button"
           )
             span.btn-auth-icon.btn-auth-google-logo
@@ -69,7 +69,7 @@ mixin registerOrLogin(verb, isModal = false)
         //- <https://github.com/logos>
         if passport && passport.github
           a.btn-auth.text-center.mb-3.text-decoration-none.rounded-lg(
-            href="/auth/github",
+            href=`/auth/github?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
             role="button"
           )
             span.btn-auth-icon.btn-auth-icon-fill.btn-auth-github-logo
@@ -78,7 +78,10 @@ mixin registerOrLogin(verb, isModal = false)
         if passport && (passport.apple || passport.google || passport.github || (verb === 'sign in' && passport.webauthn))
           .hr-text.d-flex.text-secondary.align-items-center= t("or")
         - const action = verb === "sign up" ? "/register" : config.loginRoute;
-        form.ajax-form(action=l(action), method="POST")
+        form.ajax-form(
+          action=`${l(action)}?return_to=${encodeURIComponent(ctx.query.return_to || ctx.url)}`,
+          method="POST"
+        )
           .form-group.floating-label
             input.form-control(
               id=`input-email-${dashify(verb)}`,

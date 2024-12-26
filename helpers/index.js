@@ -129,6 +129,8 @@ const sendPaginationCheck = require('./send-pagination-check');
 const populateDomainStorage = require('./populate-domain-storage');
 const parseAddresses = require('./parse-addresses');
 const isEmail = require('./is-email');
+const getReceivedHeader = require('./get-received-header');
+const getRcptToWithoutBcc = require('./get-rcpt-to-without-bcc');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -261,5 +263,7 @@ module.exports = {
   populateDomainStorage,
   parseAddresses,
   REGEX_LOCALHOST,
-  isEmail
+  isEmail,
+  getReceivedHeader,
+  getRcptToWithoutBcc
 };

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Cabin = require('cabin');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
 const sharedConfig = require('@ladjs/shared-config');
@@ -19,6 +20,9 @@ const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const sharedAPIConfig = sharedConfig('API');
+
+// setup our Cabin instance
+const cabin = new Cabin({ logger });
 
 const RATELIMIT_ALLOWLIST =
   typeof env.RATELIMIT_ALLOWLIST === 'string'
@@ -45,7 +49,7 @@ module.exports = {
   ...config,
   rateLimit,
   routes: routes.api,
-  logger,
+  logger: cabin,
   i18n,
   hookBeforeSetup(app) {
     app.context.resolver = createTangerine(

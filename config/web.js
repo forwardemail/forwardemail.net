@@ -9,6 +9,7 @@ const path = require('node:path');
 const process = require('node:process');
 
 const Boom = require('@hapi/boom');
+const Cabin = require('cabin');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const ipaddr = require('ipaddr.js');
@@ -165,6 +166,9 @@ const reportUri = isSANB(process.env.WEB_URL)
 
 const sharedWebConfig = sharedConfig('WEB');
 
+// setup our Cabin instance
+const cabin = new Cabin({ logger });
+
 module.exports = (redis) => ({
   ...sharedWebConfig,
   ...config,
@@ -173,7 +177,7 @@ module.exports = (redis) => ({
     ...config.rateLimit
   },
   routes: routes.web,
-  logger,
+  logger: cabin,
   i18n,
   cookies: cookieOptions,
   meta: config.meta,

@@ -65,7 +65,7 @@ async function isDenylisted(value, client, resolver) {
     // if allowlisted return early
     // (note this does a reverse lookup on IP address to check hostname of IP against allowlist too)
     // eslint-disable-next-line no-await-in-loop
-    if (await isAllowlisted(v, client, resolver)) return false;
+    if (await isAllowlisted(v, client, resolver)) continue;
 
     // TODO: if it was a FQDN then lookup A records for domain and root domain (?)
 
@@ -100,7 +100,7 @@ async function isDenylisted(value, client, resolver) {
             if (boolean(result)) throw createDenylistError(v);
           }
 
-          return false;
+          continue;
         }
 
         // check redis denylist on root domain

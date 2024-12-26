@@ -376,7 +376,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
     let feedbackId;
 
     // <https://github.com/andris9/mailsplit#events>
-
     splitter.on('data', (data) => {
       if (data.type !== 'node' || data.root !== true) return;
       // - data.headers.get
@@ -904,13 +903,14 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 from: envelope.from,
                 to
               },
-              raw,
+              raw: unsigned,
               localAddress: IP_ADDRESS,
               localHostname: HOSTNAME,
               resolver,
               client
             };
 
+            // NOTE: sendEmail will PGP/DKIM sign the message
             const info = await sendEmail(options, email, domain);
             logger.debug('sent email', {
               info,
