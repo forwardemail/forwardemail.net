@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "We hebben uw e-mail herschreven met een <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">vriendelijke-van</a> -benadering.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Dit betekent dat uw e-mails worden doorgestuurd met een andere 'Van'-header en een toegevoegde 'Beantwoorden aan'-header.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Zorg ervoor dat uw DKIM-handtekening correct is ingesteld en werkt om de afleverbaarheid te verbeteren en dit probleem te voorkomen.",
-  "This automated email is sent conditionally once a month.": "Deze geautomatiseerde e-mail wordt eenmaal per maand onder voorwaarden verzonden."
+  "This automated email is sent conditionally once a month.": "Deze geautomatiseerde e-mail wordt eenmaal per maand onder voorwaarden verzonden.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- we voegen deze standaard Received-header toe met het oorspronkelijke IP-adres en de host, het transmissietype, TLS-verbindingsinformatie, datum/tijd en de ontvanger.",
+  "- the original recipient for the message:": "- de oorspronkelijke ontvanger van het bericht:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Dit is handig om te bepalen waar een e-mail oorspronkelijk is afgeleverd (naast de kop 'Ontvangen').",
+  "BCC header addresses are removed from": "BCC-headeradressen worden verwijderd uit",
+  "values in order to preserve privacy.": "waarden om de privacy te beschermen."
 }

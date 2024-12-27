@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Przepisaliśmy Twoją wiadomość e-mail, stosując <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">przyjazne</a> podejście.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Oznacza to, że Twoje wiadomości e-mail będą przesyłane z innym nagłówkiem „Od” i dodanym nagłówkiem „Odpowiedz do”.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Upewnij się, że Twój podpis DKIM jest ustawiony prawidłowo i zaliczony, aby zwiększyć skuteczność dostarczania i zapobiec wystąpieniu takiej sytuacji.",
-  "This automated email is sent conditionally once a month.": "Ten automatyczny e-mail jest wysyłany warunkowo raz w miesiącu."
+  "This automated email is sent conditionally once a month.": "Ten automatyczny e-mail jest wysyłany warunkowo raz w miesiącu.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- dodajemy standardowy nagłówek Received zawierający adres IP nadawcy i hosta, typ transmisji, informacje o połączeniu TLS, datę/godzinę i odbiorcę.",
+  "- the original recipient for the message:": "- pierwotny odbiorca wiadomości:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Jest to przydatne do ustalenia, gdzie wiadomość e-mail została pierwotnie dostarczona (oprócz nagłówka „Otrzymano”).",
+  "BCC header addresses are removed from": "Adresy nagłówka BCC są usuwane z",
+  "values in order to preserve privacy.": "wartości w celu ochrony prywatności."
 }

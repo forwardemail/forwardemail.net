@@ -9451,5 +9451,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Wir haben Ihre E-Mail mit einem <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Friendly-From</a> -Ansatz neu geschrieben.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Dies bedeutet, dass Ihre E-Mails mit einem anderen „Von“-Header und einem zusätzlichen „Antwort an“-Header weitergeleitet werden.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Bitte stellen Sie sicher, dass Ihre DKIM-Signatur richtig eingestellt und erfolgreich ist, um die Zustellbarkeit zu verbessern und dies zu verhindern.",
-  "This automated email is sent conditionally once a month.": "Diese automatisierte E-Mail wird bedingt einmal im Monat versendet."
+  "This automated email is sent conditionally once a month.": "Diese automatisierte E-Mail wird bedingt einmal im Monat versendet.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- wir fügen diesen standardmäßigen „Received“-Header mit Ursprungs-IP und Host, Übertragungstyp, TLS-Verbindungsinformationen, Datum/Uhrzeit und Empfänger hinzu.",
+  "- the original recipient for the message:": "- der ursprüngliche Empfänger der Nachricht:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Dies ist nützlich, um zu bestimmen, wohin eine E-Mail ursprünglich zugestellt wurde (zusätzlich zum Header „Received“).",
+  "BCC header addresses are removed from": "BCC-Headeradressen werden entfernt aus",
+  "values in order to preserve privacy.": "Werte, um die Privatsphäre zu schützen."
 }

@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Reescrevemos seu e-mail usando uma abordagem <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">amigável</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Isso significa que seus e-mails serão encaminhados com um cabeçalho \"De\" diferente e um cabeçalho \"Responder para\" adicionado.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Certifique-se de que sua assinatura DKIM esteja definida corretamente e seja aprovada para melhorar a entrega e evitar que isso ocorra.",
-  "This automated email is sent conditionally once a month.": "Este e-mail automatizado é enviado condicionalmente uma vez por mês."
+  "This automated email is sent conditionally once a month.": "Este e-mail automatizado é enviado condicionalmente uma vez por mês.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- adicionamos este cabeçalho padrão Received com IP de origem e host, tipo de transmissão, informações de conexão TLS, data/hora e destinatário.",
+  "- the original recipient for the message:": "- o destinatário original da mensagem:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Isso é útil para determinar onde um e-mail foi originalmente entregue (além do cabeçalho \"Recebido\").",
+  "BCC header addresses are removed from": "Os endereços de cabeçalho BCC são removidos de",
+  "values in order to preserve privacy.": "valores para preservar a privacidade."
 }

@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Přepsali jsme váš e-mail pomocí <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">přátelského</a> přístupu.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "To znamená, že vaše e-maily budou přeposlány s jinou hlavičkou „Od“ a přidanou hlavičkou „Odpovědět“.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Ujistěte se, že je váš podpis DKIM správně nastaven a předává se, aby se zlepšila doručitelnost a předešlo se tomu.",
-  "This automated email is sent conditionally once a month.": "Tento automatický e-mail je zasílán podmíněně jednou měsíčně."
+  "This automated email is sent conditionally once a month.": "Tento automatický e-mail je zasílán podmíněně jednou měsíčně.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- přidáme tuto standardní hlavičku Received s původní IP a hostitelem, typem přenosu, informacemi o TLS připojení, datem/časem a příjemcem.",
+  "- the original recipient for the message:": "- původní příjemce zprávy:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "To je užitečné pro určení, kam byl e-mail původně doručen (kromě hlavičky „Received“).",
+  "BCC header addresses are removed from": "Adresy záhlaví BCC jsou odstraněny z",
+  "values in order to preserve privacy.": "hodnoty, aby bylo zachováno soukromí."
 }

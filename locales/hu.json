@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">Barátságos</a> megközelítéssel átírtuk e-mailjét.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Ez azt jelenti, hogy e-mailjeit egy másik „Feladó” és egy „Válasz” fejléccel továbbítjuk.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Kérjük, győződjön meg arról, hogy a DKIM-aláírás megfelelően van beállítva, és sikeres, a kézbesítés javítása és ennek elkerülése érdekében.",
-  "This automated email is sent conditionally once a month.": "Ezt az automatikus e-mailt feltételesen havonta egyszer küldjük el."
+  "This automated email is sent conditionally once a month.": "Ezt az automatikus e-mailt feltételesen havonta egyszer küldjük el.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- hozzáadjuk ezt a szabványos Received fejlécet az eredet IP-címével és gazdagépével, átviteli típusával, TLS kapcsolati információival, dátummal/idővel és címzettel.",
+  "- the original recipient for the message:": "- az üzenet eredeti címzettje:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Ez hasznos annak meghatározásához, hogy az e-mail eredetileg hová lett kézbesítve (a „Fogadott” fejléc mellett).",
+  "BCC header addresses are removed from": "A BCC-fejléccímek eltávolításra kerülnek",
+  "values in order to preserve privacy.": "értékeket a magánélet megőrzése érdekében."
 }

@@ -10259,5 +10259,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Olemme kirjoittaneet sähköpostisi uudelleen käyttämällä <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">ystävällistä</a> lähestymistapaa.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Tämä tarkoittaa, että sähköpostisi lähetetään edelleen eri \"Lähettäjä\"-otsikoilla ja lisätyllä \"Reply-To\"-otsikolla.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Varmista, että DKIM-allekirjoituksesi on asetettu oikein ja läpäisee toimitusten parantamiseksi ja tämän estämiseksi.",
-  "This automated email is sent conditionally once a month.": "Tämä automaattinen sähköposti lähetetään ehdollisesti kerran kuukaudessa."
+  "This automated email is sent conditionally once a month.": "Tämä automaattinen sähköposti lähetetään ehdollisesti kerran kuukaudessa.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- lisäämme tämän standardin vastaanotetun otsikon, jossa on alkuperä-IP ja isäntä, lähetystyyppi, TLS-yhteystiedot, päivämäärä/aika ja vastaanottaja.",
+  "- the original recipient for the message:": "- viestin alkuperäinen vastaanottaja:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Tästä on hyötyä määritettäessä, mihin sähköposti alun perin toimitettiin (vastaanotettu-otsikon lisäksi).",
+  "BCC header addresses are removed from": "Piilokopio-otsikkoosoitteet poistetaan",
+  "values in order to preserve privacy.": "arvot yksityisyyden säilyttämiseksi."
 }

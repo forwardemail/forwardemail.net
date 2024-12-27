@@ -8438,5 +8438,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "שכתבנו את האימייל שלך בגישה <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">ידידותית</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "המשמעות היא שהודעות הדוא\"ל שלך יועברו עם כותרת \"מאת\" אחרת וכותרת \"השב אל\" נוספת.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "אנא ודא שחתימת ה-DKIM שלך מוגדרת כהלכה ועוברת על מנת לשפר את יכולת המסירה ולמנוע זאת.",
-  "This automated email is sent conditionally once a month.": "דוא\"ל אוטומטי זה נשלח על תנאי פעם בחודש."
+  "This automated email is sent conditionally once a month.": "דוא\"ל אוטומטי זה נשלח על תנאי פעם בחודש.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- אנו מוסיפים את הכותרת הסטנדרטית שקיבלה עם מקור IP ומארח, סוג שידור, מידע חיבור TLS, תאריך/שעה ונמען.",
+  "- the original recipient for the message:": "- הנמען המקורי של ההודעה:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "זה שימושי לקביעת היכן נשלח דוא\"ל במקור (בנוסף לכותרת \"התקבלה\").",
+  "BCC header addresses are removed from": "כתובות כותרות BCC מוסרות מ",
+  "values in order to preserve privacy.": "ערכים על מנת לשמור על הפרטיות."
 }

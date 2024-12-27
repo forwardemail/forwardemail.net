@@ -7942,5 +7942,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Nous avons réécrit votre e-mail en utilisant une approche <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">conviviale</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Cela signifie que vos e-mails seront transférés avec un en-tête « De » différent et un en-tête « Répondre à » ajouté.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Veuillez vous assurer que votre signature DKIM est correctement définie et réussie afin d'améliorer la délivrabilité et d'éviter que cela ne se produise.",
-  "This automated email is sent conditionally once a month.": "Cet e-mail automatisé est envoyé sous condition une fois par mois."
+  "This automated email is sent conditionally once a month.": "Cet e-mail automatisé est envoyé sous condition une fois par mois.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- nous ajoutons cet en-tête standard reçu avec l'IP d'origine et l'hôte, le type de transmission, les informations de connexion TLS, la date/heure et le destinataire.",
+  "- the original recipient for the message:": "- le destinataire d'origine du message :",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Ceci est utile pour déterminer où un e-mail a été initialement livré (en plus de l'en-tête « Reçu »).",
+  "BCC header addresses are removed from": "Les adresses d'en-tête BCC sont supprimées de",
+  "values in order to preserve privacy.": "valeurs afin de préserver la vie privée."
 }

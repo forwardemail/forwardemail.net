@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Мы переписали ваше письмо, используя <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">дружественный</a> подход.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Это означает, что ваши письма будут пересылаться с другим заголовком «От» и добавленным заголовком «Ответить».",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Пожалуйста, убедитесь, что ваша подпись DKIM настроена правильно и проходит успешно, чтобы улучшить доставку и предотвратить возникновение подобных ситуаций.",
-  "This automated email is sent conditionally once a month.": "Это автоматическое письмо отправляется условно один раз в месяц."
+  "This automated email is sent conditionally once a month.": "Это автоматическое письмо отправляется условно один раз в месяц.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- мы добавляем этот стандартный заголовок Received с исходным IP-адресом и хостом, типом передачи, информацией о подключении TLS, датой/временем и получателем.",
+  "- the original recipient for the message:": "- первоначальный получатель сообщения:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Это полезно для определения того, куда изначально было доставлено электронное письмо (в дополнение к заголовку «Получено»).",
+  "BCC header addresses are removed from": "Адреса заголовков BCC удаляются из",
+  "values in order to preserve privacy.": "ценности в целях сохранения конфиденциальности."
 }

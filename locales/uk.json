@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Ми переписали вашу електронну пошту, використовуючи <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">дружній</a> підхід.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Це означає, що ваші електронні листи пересилатимуться з іншим заголовком «Від» і доданим заголовком «Відповісти».",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Будь ласка, переконайтеся, що ваш підпис DKIM налаштовано правильно та проходить, щоб покращити доставку та запобігти цьому.",
-  "This automated email is sent conditionally once a month.": "Цей автоматичний електронний лист надсилається умовно раз на місяць."
+  "This automated email is sent conditionally once a month.": "Цей автоматичний електронний лист надсилається умовно раз на місяць.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- ми додаємо цей стандартний заголовок Received із початковою IP-адресою та хостом, типом передачі, інформацією про підключення TLS, датою/часом та одержувачем.",
+  "- the original recipient for the message:": "- оригінальний одержувач повідомлення:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Це корисно для визначення того, куди спочатку було доставлено електронний лист (на додаток до заголовка «Отримано»).",
+  "BCC header addresses are removed from": "Адреси заголовків BCC видалено з",
+  "values in order to preserve privacy.": "цінності, щоб зберегти конфіденційність."
 }

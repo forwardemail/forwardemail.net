@@ -7947,5 +7947,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Chúng tôi đã viết lại email của bạn theo cách <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">thân thiện</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Điều này có nghĩa là email của bạn sẽ được chuyển tiếp với tiêu đề \"Từ\" khác và thêm tiêu đề \"Trả lời tới\".",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Hãy đảm bảo chữ ký DKIM của bạn được thiết lập chính xác và đạt yêu cầu để cải thiện khả năng gửi thư và ngăn chặn tình trạng này xảy ra.",
-  "This automated email is sent conditionally once a month.": "Email tự động này được gửi có điều kiện mỗi tháng một lần."
+  "This automated email is sent conditionally once a month.": "Email tự động này được gửi có điều kiện mỗi tháng một lần.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- chúng tôi thêm tiêu đề Nhận chuẩn này với IP gốc và máy chủ, loại truyền, thông tin kết nối TLS, ngày/giờ và người nhận.",
+  "- the original recipient for the message:": "- người nhận ban đầu của tin nhắn:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Điều này hữu ích để xác định email ban đầu được gửi đến đâu (ngoài tiêu đề \"Đã nhận\").",
+  "BCC header addresses are removed from": "Địa chỉ tiêu đề BCC được xóa khỏi",
+  "values in order to preserve privacy.": "giá trị để bảo vệ sự riêng tư."
 }

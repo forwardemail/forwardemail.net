@@ -10417,5 +10417,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Vi har skrevet om e-posten din med en <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">vennlig-fra</a> -tilnærming.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Dette betyr at e-postene dine videresendes med en annen \"Fra\"-overskrift og en ekstra \"Svar-til\"-overskrift.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Sørg for at DKIM-signaturen din er riktig innstilt og godkjent for å forbedre leveringsevnen og forhindre at dette skjer.",
-  "This automated email is sent conditionally once a month.": "Denne automatiske e-posten sendes betinget en gang i måneden."
+  "This automated email is sent conditionally once a month.": "Denne automatiske e-posten sendes betinget en gang i måneden.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- vi legger til denne standard Mottatt-headeren med opprinnelses-IP og vert, overføringstype, TLS-tilkoblingsinformasjon, dato/klokkeslett og mottaker.",
+  "- the original recipient for the message:": "- den opprinnelige mottakeren av meldingen:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Dette er nyttig for å finne ut hvor en e-post opprinnelig ble levert til (i tillegg til \"Mottatt\"-overskriften).",
+  "BCC header addresses are removed from": "BCC-hodeadresser fjernes fra",
+  "values in order to preserve privacy.": "verdier for å bevare personvernet."
 }

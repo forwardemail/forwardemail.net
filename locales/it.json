@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Abbiamo riscritto la tua e-mail utilizzando un approccio <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">amichevole</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Ciò significa che le tue email verranno inoltrate con un'intestazione \"Da\" diversa e con un'intestazione \"Rispondi a\" aggiunta.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Per migliorare la recapitabilità ed evitare che ciò accada, assicurati che la tua firma DKIM sia impostata correttamente e che funzioni correttamente.",
-  "This automated email is sent conditionally once a month.": "Questa e-mail automatica viene inviata una volta al mese in modo condizionale."
+  "This automated email is sent conditionally once a month.": "Questa e-mail automatica viene inviata una volta al mese in modo condizionale.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- aggiungiamo questa intestazione standard Received con IP e host di origine, tipo di trasmissione, informazioni sulla connessione TLS, data/ora e destinatario.",
+  "- the original recipient for the message:": "- il destinatario originale del messaggio:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Questa funzione è utile per determinare dove è stata originariamente recapitata un'e-mail (oltre all'intestazione \"Ricevuto\").",
+  "BCC header addresses are removed from": "Gli indirizzi dell'intestazione BCC vengono rimossi da",
+  "values in order to preserve privacy.": "valori al fine di preservare la privacy."
 }

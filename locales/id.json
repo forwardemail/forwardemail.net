@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "Kami telah menulis ulang email Anda menggunakan pendekatan <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">yang ramah</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Artinya email Anda akan diteruskan dengan header \"Dari\" yang berbeda dan header \"Balas-Ke\" yang ditambahkan.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Pastikan tanda tangan DKIM Anda diatur dengan benar dan lolos guna meningkatkan pengiriman dan mencegah hal ini terjadi.",
-  "This automated email is sent conditionally once a month.": "Email otomatis ini dikirim secara bersyarat sebulan sekali."
+  "This automated email is sent conditionally once a month.": "Email otomatis ini dikirim secara bersyarat sebulan sekali.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- kami menambahkan header Diterima standar ini dengan IP asal dan host, jenis transmisi, informasi koneksi TLS, tanggal/waktu, dan penerima.",
+  "- the original recipient for the message:": "- penerima asli pesan:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Hal ini berguna untuk menentukan ke mana email awalnya dikirimkan (selain header \"Diterima\").",
+  "BCC header addresses are removed from": "Alamat header BCC dihapus dari",
+  "values in order to preserve privacy.": "nilai-nilai untuk menjaga privasi."
 }

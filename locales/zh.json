@@ -10105,5 +10105,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "我们使用<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">友好方式</a>重写了您的电子邮件。",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "这意味着您的电子邮件将使用不同的“发件人”标题和添加的“回复至”标题进行转发。",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "请确保您的 DKIM 签名设置正确并通过，以提高可传递性并防止这种情况发生。",
-  "This automated email is sent conditionally once a month.": "此自动电子邮件每月有条件发送一次。"
+  "This automated email is sent conditionally once a month.": "此自动电子邮件每月有条件发送一次。",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- 我们添加了这个标准的接收标头，其中包含原始 IP 和主机、传输类型、TLS 连接信息、日期/时间和收件人。",
+  "- the original recipient for the message:": "- 邮件的原始收件人：",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "这对于确定电子邮件最初传送到的位置很有用（除了“已接收”标题）。",
+  "BCC header addresses are removed from": "BCC 标头地址已从中删除",
+  "values in order to preserve privacy.": "价值观以保护隐私。"
 }

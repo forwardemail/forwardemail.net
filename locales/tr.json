@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "E-postanızı <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">dostça</a> bir yaklaşımla yeniden yazdık.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "Bu, e-postalarınızın farklı bir \"Kimden\" başlığı ve eklenmiş bir \"Yanıtla\" başlığıyla iletileceği anlamına gelir.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Lütfen teslimatı iyileştirmek ve bunun gerçekleşmesini önlemek için DKIM imzanızın doğru şekilde ayarlandığından ve geçer durumda olduğundan emin olun.",
-  "This automated email is sent conditionally once a month.": "Bu otomatik e-posta koşullu olarak ayda bir gönderilir."
+  "This automated email is sent conditionally once a month.": "Bu otomatik e-posta koşullu olarak ayda bir gönderilir.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- Kaynak IP ve ana bilgisayar, iletim türü, TLS bağlantı bilgileri, tarih/saat ve alıcının yer aldığı bu standart Alınan başlığını ekliyoruz.",
+  "- the original recipient for the message:": "- Mesajın orijinal alıcısı:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "Bu, bir e-postanın başlangıçta nereye teslim edildiğini (Alındı başlığına ek olarak) belirlemek için yararlıdır.",
+  "BCC header addresses are removed from": "BCC başlık adresleri şu adreslerden kaldırılır:",
+  "values in order to preserve privacy.": "gizliliğin korunması amacıyla değerler."
 }

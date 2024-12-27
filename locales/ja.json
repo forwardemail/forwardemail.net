@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "<a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">フレンドリーな送信元</a>アプローチを使用してメールを書き直しました。",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "つまり、メールは別の「From」ヘッダーと追加された「Reply-To」ヘッダーで転送されることになります。",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "配信性を向上させ、このような事態を防ぐために、DKIM 署名が正しく設定され、通過していることを確認してください。",
-  "This automated email is sent conditionally once a month.": "この自動メールは条件付きで月に 1 回送信されます。"
+  "This automated email is sent conditionally once a month.": "この自動メールは条件付きで月に 1 回送信されます。",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- 送信元 IP とホスト、送信タイプ、TLS 接続情報、日付/時刻、受信者を含むこの標準の Received ヘッダーを追加します。",
+  "- the original recipient for the message:": "- メッセージの元の受信者:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "これは、電子メールが元々どこに配信されたかを判断するのに役立ちます (「Received」ヘッダーに加えて)。",
+  "BCC header addresses are removed from": "BCCヘッダーアドレスは削除される",
+  "values in order to preserve privacy.": "プライバシーを保護するために価値観を尊重します。"
 }

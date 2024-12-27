@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "لقد قمنا بإعادة كتابة بريدك الإلكتروني باستخدام نهج <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">ودي</a> .",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "يعني هذا أن رسائل البريد الإلكتروني الخاصة بك سيتم إعادة توجيهها برأس \"من\" مختلف ورأس \"الرد إلى\" مضاف.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "يرجى التأكد من تعيين توقيع DKIM الخاص بك بشكل صحيح وتمريره لتحسين إمكانية التسليم ومنع حدوث ذلك.",
-  "This automated email is sent conditionally once a month.": "يتم إرسال هذا البريد الإلكتروني التلقائي بشروط مرة واحدة شهريًا."
+  "This automated email is sent conditionally once a month.": "يتم إرسال هذا البريد الإلكتروني التلقائي بشروط مرة واحدة شهريًا.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- نضيف رأس الاستلام القياسي هذا مع عنوان IP الأصلي والمضيف ونوع الإرسال ومعلومات اتصال TLS والتاريخ/الوقت والمستلم.",
+  "- the original recipient for the message:": "- المستلم الأصلي للرسالة:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "يعد هذا مفيدًا لتحديد المكان الذي تم تسليم البريد الإلكتروني إليه في الأصل (بالإضافة إلى عنوان \"تم الاستلام\").",
+  "BCC header addresses are removed from": "تمت إزالة عناوين رأس BCC من",
+  "values in order to preserve privacy.": "القيم من أجل الحفاظ على الخصوصية."
 }

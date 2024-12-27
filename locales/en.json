@@ -6809,5 +6809,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.",
-  "This automated email is sent conditionally once a month.": "This automated email is sent conditionally once a month."
+  "This automated email is sent conditionally once a month.": "This automated email is sent conditionally once a month.",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.",
+  "- the original recipient for the message:": "- the original recipient for the message:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).",
+  "BCC header addresses are removed from": "BCC header addresses are removed from",
+  "values in order to preserve privacy.": "values in order to preserve privacy."
 }

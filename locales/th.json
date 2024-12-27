@@ -10412,5 +10412,10 @@
   "We have rewritten your email using a <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">friendly-from</a> approach.": "เราได้เขียนอีเมล์ของคุณใหม่โดยใช้วิธีส่ง <a href=\"%s\" class=\"font-weight-bold\" target=\"_blank\" rel=\"noopener noreferrer\">ข้อความเป็นมิตร</a>",
   "This means that your emails will get forwarded with a different \"From\" header and an added \"Reply-To\" header.": "ซึ่งหมายความว่าอีเมลของคุณจะถูกส่งต่อด้วยส่วนหัว \"จาก\" ที่แตกต่างกัน และมีส่วนหัว \"ตอบกลับถึง\" เพิ่มเข้ามา",
   "Please ensure your DKIM signature is set correctly and passing in order to improve deliverability and prevent this from occurring.": "โปรดตรวจสอบให้แน่ใจว่าลายเซ็น DKIM ของคุณได้รับการตั้งค่าอย่างถูกต้องและผ่านไปได้เพื่อปรับปรุงการส่งมอบและป้องกันไม่ให้สิ่งนี้เกิดขึ้น",
-  "This automated email is sent conditionally once a month.": "อีเมลอัตโนมัตินี้จะถูกส่งตามเงื่อนไขเดือนละครั้ง"
+  "This automated email is sent conditionally once a month.": "อีเมลอัตโนมัตินี้จะถูกส่งตามเงื่อนไขเดือนละครั้ง",
+  "- we add this standard Received header with origin IP and host, transmission type, TLS connection information, date/time, and recipient.": "- เราเพิ่มส่วนหัวที่ได้รับมาตรฐานนี้พร้อมด้วย IP ต้นทางและโฮสต์ ประเภทการส่ง ข้อมูลการเชื่อมต่อ TLS วันที่/เวลา และผู้รับ",
+  "- the original recipient for the message:": "- ผู้รับข้อความดั้งเดิม:",
+  "This is useful for determining where an email was originally delivered to (in addition to the \"Received\" header).": "ซึ่งมีประโยชน์ในการพิจารณาว่าอีเมลถูกส่งไปที่ใดในตอนแรก (นอกเหนือจากส่วนหัว \"ได้รับแล้ว\")",
+  "BCC header addresses are removed from": "ที่อยู่ส่วนหัว BCC จะถูกลบออกจาก",
+  "values in order to preserve privacy.": "คุณค่าเพื่อรักษาความเป็นส่วนตัว"
 }

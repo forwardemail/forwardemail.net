@@ -293,8 +293,8 @@ const purgeCssOptions = {
 // (but only for development and testing environments)
 //
 if (!PROD) {
-  for (const level of logger.config.logger.config.levels) {
-    logger.config.logger.pre(level, function (err, message, meta) {
+  for (const level of logger.config.levels) {
+    logger.pre(level, function (err, message, meta) {
       meta.ignore_hook = true;
       return [err, message, meta];
     });
