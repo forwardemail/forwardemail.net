@@ -18,6 +18,8 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 
 const REGEX_WARMUP = new RE2(/ \|(?: [a-zA-Z\d]{7,}){2}$/);
 
+const REGEX_WARMUP_ALT = new RE2(/ \| [a-zA-Z\d]{8,}-[a-zA-Z\d]{8,}$/);
+
 const REGEX_BLOCKED_PHRASES = new RE2(
   /recorded you|you've been hacked|account is hacked|personal data has leaked/im
 );
@@ -280,7 +282,10 @@ function isArbitrary(session, headers) {
   //       `Subject: Some Phrase Here | 72X8FMN 2MAX439`
   //                                    72X8FMN 9RR6V1T
   //                                    ^ 7 chars ^ 7 chars (A-Z 0-9)
-  if (subject && REGEX_WARMUP.test(subject)) {
+  if (
+    subject &&
+    (REGEX_WARMUP.test(subject) || REGEX_WARMUP_ALT.test(subject))
+  ) {
     throw new SMTPError('Spam', { responseCode: 421 });
   }
 }
