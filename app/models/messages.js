@@ -59,11 +59,13 @@ const Messages = new mongoose.Schema(
     // expires and retention date
     exp: {
       type: Boolean,
-      required: true
+      required: true,
+      index: true
     },
     rdate: {
       type: Date,
-      required: true
+      required: true,
+      index: true
     },
 
     // internal date

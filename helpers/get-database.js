@@ -730,6 +730,14 @@ async function getDatabase(
                     $in: mailboxes.map((m) => m._id.toString())
                   },
                   undeleted: 0
+                },
+                {
+                  mailbox: {
+                    $in: mailboxes.map((m) => m._id.toString())
+                  },
+                  created_at: {
+                    $lte: dayjs().subtract(days, 'days').toDate().toISOString()
+                  }
                 }
               ]
             }
@@ -784,6 +792,23 @@ async function getDatabase(
 
           const existingHashes = db.prepare(sql.query).pluck().all(sql.values);
 
+          for (const hash of existingHashes) {
+            if (hashSet.has(hash)) continue;
+
+            const sql = builder.build({
+              type: 'remove',
+              table: 'Attachments',
+              condition: {
+                created_at: { $lte: now },
+                counterUpdated: { $lte: now },
+                hash
+              }
+            });
+
+            db.prepare(sql.query).run(sql.values);
+          }
+
+          /*
           // TODO: this is too slow, it took 1 hour in production
           db.transaction((hashes) => {
             for (const hash of hashes) {
@@ -801,6 +826,7 @@ async function getDatabase(
               db.prepare(sql.query).run(sql.values);
             }
           }).immediate(existingHashes);
+          */
         }
       } catch (err) {
         logger.fatal(err, { session });
