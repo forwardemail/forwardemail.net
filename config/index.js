@@ -1519,6 +1519,8 @@ const config = {
 // arbitrarily add domains to the denylist
 for (const tld of tlds) {
   if (config.restrictedDomains.includes(tld)) continue;
+  // amikalpop.* (e.g. "amikalpop.mom")
+  config.denylist.add(`amikalpop.${tld}`);
   // postline.* (e.g. "postline.ml")
   config.denylist.add(`postline.${tld}`);
 }
