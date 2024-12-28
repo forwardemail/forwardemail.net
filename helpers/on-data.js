@@ -92,6 +92,14 @@ async function onData(stream, _session, fn) {
               const shouldThrow =
                 parseRootDomain(parseHostFromDomainOrAddress(to.address)) ===
                 env.WEB_HOST;
+              //
+              // TODO: we may want to take into account that MAIL FROM is rewritten to lowercase
+              //       and therefore the reverse of an address like this wouldn't work (it'd return `null`)
+              //       (e.g. `srs0=34cf=tv=example.com=foo@fe-bounces.example.com`)
+              //       as it should get rewritten to foo@fe-bounces.example.com
+              //       however because srs0 was rewritten from SRS0
+              //       and because tv was rewritten from TV it is not being delivered correctly
+              //
               to.address = checkSRS(to.address, shouldThrow);
               return to;
             }),
