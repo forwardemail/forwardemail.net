@@ -678,9 +678,16 @@ async function checkBounceForSpam(bounce, headers, session) {
       if (
         session.isAllowlisted &&
         sendCountEmail &&
-        !['capacity', 'envelope', 'network', 'greylist', 'blocklist'].includes(
-          bounce.err.bounceInfo.category
-        )
+        ![
+          'capacity',
+          'other',
+          'recipient',
+          'block',
+          'envelope',
+          'network',
+          'greylist',
+          'blocklist'
+        ].includes(bounce.err.bounceInfo.category)
       ) {
         const err = new TypeError(
           `${config.views.locals.emoji(
@@ -1083,15 +1090,6 @@ async function forward(recipient, headers, session, body) {
       //
       err.bounceInfo = getBounceInfo(err);
 
-      // alert admins of the issue
-      if (err.bounceInfo.category === 'dmarc') {
-        if (!session.isAllowlisted && !session.hasSameHostnameAsFrom)
-          err.message = `No Friendly-From Rewrite: ${err.message}`;
-        err.isCodeBug = true;
-        err.session = session;
-        logger.fatal(err);
-      }
-
       if (
         !session.rewriteFriendlyFrom &&
         session.dmarc?.status?.result === 'pass' &&
@@ -1140,20 +1138,35 @@ async function forward(recipient, headers, session, body) {
         ]);
 
         // retry sending the email
-        info = await sendEmail({
-          session,
-          cache: this.cache,
-          target: recipient.host,
-          port: recipient.port,
-          envelope: {
-            from,
-            to: recipient.to[0]
-          },
-          raw: sealedMessage,
-          resolver: this.resolver,
-          client: this.client,
-          publicKey: recipient.aliasPublicKey
-        });
+        try {
+          info = await sendEmail({
+            session,
+            cache: this.cache,
+            target: recipient.host,
+            port: recipient.port,
+            envelope: {
+              from,
+              to: recipient.to[0]
+            },
+            raw: sealedMessage,
+            resolver: this.resolver,
+            client: this.client,
+            publicKey: recipient.aliasPublicKey
+          });
+        } catch (err) {
+          err.bounceInfo = getBounceInfo(err);
+          // alert admins of the issue
+          if (err.bounceInfo.category === 'dmarc') {
+            if (!session.isAllowlisted && !session.hasSameHostnameAsFrom)
+              err.message = `No Friendly-From Rewrite: ${err.message}`;
+            err.isCodeBug = true;
+            err.session = session;
+            logger.fatal(err);
+          }
+
+          // throw original error
+          throw err;
+        }
       } else {
         throw err;
       }
