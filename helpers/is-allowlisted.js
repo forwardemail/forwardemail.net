@@ -74,6 +74,12 @@ async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
   } else if (isFQDN(lc)) {
     const root = parseRootDomain(lc);
     if (root === env.WEB_HOST) return true;
+    // check if root domain was allowlisted
+    if (
+      root !== lc &&
+      (await isAllowlisted(root, client, resolver, ignoreRedis))
+    )
+      return true;
   } else if (isIP(val)) {
     try {
       // reverse lookup IP and if it was allowlisted then return early

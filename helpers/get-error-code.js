@@ -37,14 +37,9 @@ function getErrorCode(err) {
   if (
     (typeof err.responseCode !== 'number' || err.responseCode > 500) &&
     (['defer', 'slowdown'].includes(err.bounceInfo.action) ||
-      [
-        'block',
-        'blocklist',
-        'capacity',
-        'network',
-        'protocol',
-        'policy'
-      ].includes(err.bounceInfo.category))
+      ['block', 'blocklist', 'network', 'protocol', 'policy'].includes(
+        err.bounceInfo.category
+      ))
   )
     return 421;
 

@@ -27,29 +27,48 @@ const { decrypt } = require('./encrypt-decrypt');
 
 const config = require('#config');
 
-// eslint-disable-next-line complexity
-async function sendEmail(
-  {
-    session,
-    cache,
-    target,
-    port = 25,
-    envelope,
-    raw,
-    resolver,
-    client,
-    publicKey
-  },
+async function signMessage(raw, domain) {
+  const signResult = await dkimSign(raw, {
+    canonicalization: 'relaxed/relaxed',
+    algorithm: 'rsa-sha256',
+    signTime: new Date(),
+    signatureData: domain
+      ? [
+          {
+            signingDomain: domain.name,
+            selector: domain.dkim_key_selector,
+            privateKey: decrypt(domain.dkim_private_key),
+            algorithm: 'rsa-sha256',
+            canonicalization: 'relaxed/relaxed'
+          }
+        ]
+      : [config.signatureData]
+  });
+
+  if (signResult.errors.length > 0) {
+    const err = combineErrors(signResult.errors.map((error) => error.err));
+    // we may want to remove cyclical reference
+    // for (const error of signResult.errors) {
+    //   delete error.err;
+    // }
+    err.signResult = signResult;
+    throw err;
+  }
+
+  const signatures = Buffer.from(signResult.signatures, 'utf8');
+  return Buffer.concat([signatures, raw], signatures.length + raw.length);
+}
+
+async function getPGPResults({
+  session,
+  envelope,
+  raw,
+  publicKey,
+  resolver,
+  client,
   email,
   domain
-) {
-  if (
-    !_.isObject(envelope) ||
-    typeof envelope.to !== 'string' ||
-    !isEmail(envelope.to)
-  )
-    throw new TypeError('Envelope to missing or not a single email');
-
+}) {
   // check if the message was encrypted already
   let isEncrypted = false;
   try {
@@ -63,6 +82,7 @@ async function sendEmail(
   // NOTE: This is basically a fallback in case the message was not encrypted already to the recipient(s))
   //       (e.g. when it arrives at the destination mail server, it is already encrypted)
   //
+  let finalRaw;
   let pgp = false;
 
   if (
@@ -95,40 +115,7 @@ async function sendEmail(
             false
           );
 
-          const signResult = await dkimSign(encryptedUnsignedMessage, {
-            canonicalization: 'relaxed/relaxed',
-            algorithm: 'rsa-sha256',
-            signTime: new Date(),
-            signatureData: domain
-              ? [
-                  {
-                    signingDomain: domain.name,
-                    selector: domain.dkim_key_selector,
-                    privateKey: decrypt(domain.dkim_private_key),
-                    algorithm: 'rsa-sha256',
-                    canonicalization: 'relaxed/relaxed'
-                  }
-                ]
-              : [config.signatureData]
-          });
-
-          if (signResult.errors.length > 0) {
-            const err = combineErrors(
-              signResult.errors.map((error) => error.err)
-            );
-            // we may want to remove cyclical reference
-            // for (const error of signResult.errors) {
-            //   delete error.err;
-            // }
-            err.signResult = signResult;
-            throw err;
-          }
-
-          const signatures = Buffer.from(signResult.signatures, 'utf8');
-          raw = Buffer.concat(
-            [signatures, encryptedUnsignedMessage],
-            signatures.length + encryptedUnsignedMessage.length
-          );
+          finalRaw = await signMessage(encryptedUnsignedMessage, domain);
           pgp = true;
         } catch (err) {
           logger.fatal(
@@ -160,37 +147,32 @@ async function sendEmail(
   }
 
   // if no PGP then we need to still sign with DKIM
-  if (!pgp) {
-    const signResult = await dkimSign(raw, {
-      canonicalization: 'relaxed/relaxed',
-      algorithm: 'rsa-sha256',
-      signTime: new Date(),
-      signatureData: domain
-        ? [
-            {
-              signingDomain: domain.name,
-              selector: domain.dkim_key_selector,
-              privateKey: decrypt(domain.dkim_private_key),
-              algorithm: 'rsa-sha256',
-              canonicalization: 'relaxed/relaxed'
-            }
-          ]
-        : [config.signatureData]
-    });
+  if (!pgp || !finalRaw) finalRaw = await signMessage(raw, domain);
 
-    if (signResult.errors.length > 0) {
-      const err = combineErrors(signResult.errors.map((error) => error.err));
-      // we may want to remove cyclical reference
-      // for (const error of signResult.errors) {
-      //   delete error.err;
-      // }
-      err.signResult = signResult;
-      throw err;
-    }
+  return { finalRaw, pgp };
+}
 
-    const signatures = Buffer.from(signResult.signatures, 'utf8');
-    raw = Buffer.concat([signatures, raw], signatures.length + raw.length);
-  }
+async function sendEmail(
+  {
+    session,
+    cache,
+    target,
+    port = 25,
+    envelope,
+    raw,
+    resolver,
+    client,
+    publicKey
+  },
+  email,
+  domain
+) {
+  if (
+    !_.isObject(envelope) ||
+    typeof envelope.to !== 'string' ||
+    !isEmail(envelope.to)
+  )
+    throw new TypeError('Envelope to missing or not a single email');
 
   //
   // if we're in development mode then use preview-email to render queue processing
@@ -208,44 +190,76 @@ async function sendEmail(
     };
   }
 
-  const ignoreMXHosts = [];
-  let mxLastError;
-
-  try {
-    const {
-      truthSource,
-      mx,
-      requireTLS,
-      ignoreTLS,
-      opportunisticTLS,
-      tls,
-      transporter
-    } = await getTransporter({
+  const [pgpResults, transporterResults] = await Promise.all([
+    getPGPResults({
+      session,
+      envelope,
+      raw,
+      publicKey,
+      resolver,
+      client,
+      email,
+      domain
+    }),
+    getTransporter({
       target,
       port,
       resolver,
       logger,
       cache,
       client
-    });
+    })
+  ]);
 
-    session.truthSource = truthSource;
-    session.mx = _.omit(mx, ['socket']);
-    session.requireTLS = requireTLS;
-    session.ignoreTLS = ignoreTLS;
-    session.opportunisticTLS = opportunisticTLS;
-    session.tls = tls;
+  const {
+    truthSource,
+    mx,
+    requireTLS,
+    ignoreTLS,
+    opportunisticTLS,
+    tls,
+    transporter
+  } = transporterResults;
 
+  //
+  // NOTE: Proton Mail rewrites messages, so we shouldn't use PGP for them
+  //       and should email the users separately regarding this
+  //
+  // https://github.com/ProtonMail/proton-bridge/issues/26
+  // https://github.com/ProtonMail/proton-bridge/issues/216
+  // https://proton.me/support/email-has-failed-its-domains-authentication-requirements-warning
+  // https://news.ycombinator.com/item?id=36639530
+  // https://proton.me/support/what-is-difference-between-proton-domains
+  // - proton.me
+  // - protonmail.ch
+  // - protonmail.com
+  // - pm.me
+  // - + supports custom domains since we use truthSource (resolved MX server)
+  //
+  if (truthSource === 'protonmail.ch') {
+    pgpResults.finalRaw = await signMessage(raw, domain);
+    pgpResults.pgp = false;
+    // TODO: email users one-time per month regarding this issue
+  }
+
+  const ignoreMXHosts = [];
+  let mxLastError;
+
+  session.truthSource = truthSource;
+  session.mx = _.omit(mx, ['socket']);
+  session.requireTLS = requireTLS;
+  session.ignoreTLS = ignoreTLS;
+  session.opportunisticTLS = opportunisticTLS;
+  session.tls = tls;
+
+  try {
     // TODO: handle transporter cleanup
     // TODO: handle mx socket close
-
     const info = await transporter.sendMail({
       envelope,
-      raw
+      raw: pgpResults.finalRaw
     });
-
-    info.pgp = pgp;
-
+    info.pgp = pgpResults.pgp;
     return info;
   } catch (err) {
     // delete `err.cert` for security
@@ -336,11 +350,9 @@ async function sendEmail(
       try {
         const info = await transporter.sendMail({
           envelope,
-          raw
+          raw: pgpResults.finalRaw
         });
-
-        info.pgp = pgp;
-
+        info.pgp = pgpResults.pgp;
         return info;
       } catch (err) {
         // delete `err.cert` for security
