@@ -152,6 +152,7 @@ async function getPGPResults({
   return { finalRaw, pgp };
 }
 
+// eslint-disable-next-line complexity
 async function sendEmail(
   {
     session,
@@ -236,7 +237,7 @@ async function sendEmail(
   // - pm.me
   // - + supports custom domains since we use truthSource (resolved MX server)
   //
-  if (truthSource === 'protonmail.ch') {
+  if (pgpResults.pgp && truthSource === 'protonmail.ch') {
     pgpResults.finalRaw = await signMessage(raw, domain);
     pgpResults.pgp = false;
     // TODO: email users one-time per month regarding this issue
