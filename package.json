@@ -60,6 +60,7 @@
     "@ngneat/falso": "7.2.0",
     "@octokit/core": "4.2.4",
     "@openpgp/wkd-client": "0.0.4",
+    "@opensumi/reconnecting-websocket": "4.4.0",
     "@parse/node-apn": "6.2.1",
     "@peculiar/x509": "1.12.3",
     "@shopify/semaphore": "3.1.0",
