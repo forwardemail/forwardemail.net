@@ -1679,7 +1679,7 @@ async function onDataMX(session, headers, body) {
   ]);
 
   const accepted = [];
-  const bounces = [];
+  const bounces = [...data.bounces];
   const vacationResponders = [];
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
