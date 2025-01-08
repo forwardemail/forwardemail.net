@@ -645,7 +645,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // rewrite envelope From with SRS using CNAME
     // (custom Return-Path but we don't add this header since IMAP does)
     const envelope = {
-      from: srs.forward(email.envelope.from, srsDomain),
+      from: email.envelope.from.toLowerCase().endsWith(`@${env.WEB_HOST}`)
+        ? email.envelope.from
+        : srs.forward(email.envelope.from, srsDomain),
       to: [...email.envelope.to]
     };
 

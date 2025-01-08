@@ -1100,12 +1100,33 @@ async function forward(recipient, headers, session, body) {
     };
   }
 
+  //
+  // TODO: check DSN issues (e.g. specify `recipient` field)
+  //       <https://www.nodemailer.com/smtp/dsn/>
+  //
+  // > The DSN MUST be addressed (in both the message header and the
+  //   transport envelope) to the return address from the transport envelope
+  //   which accompanied the original message for which the DSN was
+  //   generated.  (For a message that arrived via SMTP, the envelope return
+  //   address appears in the MAIL FROM command.)
+  //
+  // <https://datatracker.ietf.org/doc/html/rfc3464#:~:text=The%20DSN%20MUST%20be,the%20MAIL%20FROM%20command.)>
+  //
   let from;
-  if (isSANB(session.envelope.mailFrom.address))
-    from = srs.forward(
-      checkSRS(session.envelope.mailFrom.address),
-      env.WEB_HOST
-    );
+  if (isSANB(session.envelope.mailFrom.address)) {
+    if (
+      session.envelope.mailFrom.address
+        .toLowerCase()
+        .endsWith(`@${env.WEB_HOST}`)
+    ) {
+      from = session.envelope.mailFrom.address;
+    } else {
+      from = srs.forward(
+        checkSRS(session.envelope.mailFrom.address),
+        env.WEB_HOST
+      );
+    }
+  }
 
   // NOTE: only webhooks use array for `to`, send email uses a string (we convert it)
   if (!_.isArray(recipient.to) || recipient.to.length > 1)
