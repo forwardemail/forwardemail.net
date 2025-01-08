@@ -507,7 +507,8 @@ p.text-center.d-lg-none
                   else
                     != " &ndash; "
                     = t("Forever")
-                    = ")"
+                    if _.isDate(alias.vacation_responder.start_date)
+                      = ")"
               //- on mobile we need to render this different
               .d-lg-none.p-2
                 if !isUbuntuRelatedAlias || domain.group === 'admin'
