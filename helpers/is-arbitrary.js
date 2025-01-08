@@ -95,6 +95,15 @@ function isArbitrary(session, headers) {
       `Blocked phrase, please forward this to ${config.abuseEmail}`
     );
 
+  // until adobe responds
+  if (
+    subject &&
+    subject.includes(
+      'Signature requested on "the agreement for your new checking account with us"'
+    )
+  )
+    throw new SMTPError('Spam from Adobe');
+
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
   // (seems to only come from "outlook.com" and "paypal.com" hosts)
