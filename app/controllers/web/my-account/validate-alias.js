@@ -213,7 +213,7 @@ function validateAlias(ctx, next) {
       );
 
     // extend existing if alias being updated (e.g. if we only want to change one field via API)
-    body.vacation_responder = ctx.state.alias.vacation_responder || {};
+    body.vacation_responder = ctx?.state?.alias?.vacation_responder || {};
 
     // is_enabled
     if (typeof ctx.request.body.vacation_responder_is_enabled !== 'undefined')
