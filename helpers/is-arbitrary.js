@@ -153,7 +153,11 @@ function isArbitrary(session, headers) {
   // if from postmaster@outlook.com and message is "Undeliverable: "
   //
   if (
-    session.originalFromAddress === 'postmaster@outlook.com' &&
+    (session.originalFromAddress === 'postmaster@outlook.com' ||
+      (session.resolvedClientHostname &&
+        session.resolvedClientHostname.endsWith(
+          '.outbound.protection.outlook.com'
+        ))) &&
     subject &&
     subject.startsWith('Undeliverable: ')
   )
