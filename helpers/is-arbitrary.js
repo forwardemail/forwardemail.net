@@ -157,7 +157,9 @@ function isArbitrary(session, headers) {
       (session.resolvedClientHostname &&
         session.resolvedClientHostname.endsWith(
           '.outbound.protection.outlook.com'
-        ))) &&
+        )) ||
+      (session.originalFromAddress.startsWith('postmaster@') &&
+        session.originalFromAddress.endsWith('.onmicrosoft.com'))) &&
     subject &&
     subject.startsWith('Undeliverable: ')
   )
