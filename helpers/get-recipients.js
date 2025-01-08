@@ -117,12 +117,10 @@ async function getRecipients(session, scan) {
           try {
             body = await getSettings(domain, this.resolver);
 
-            await this.client.set(
-              `v1_settings:${domain}`,
-              safeStringify(body),
-              'PX',
-              ms('1h')
-            );
+            this.client
+              .set(`v1_settings:${domain}`, safeStringify(body), 'PX', ms('1h'))
+              .then()
+              .catch((err) => logger.fatal(err));
           } catch (err) {
             err.isCodeBug = true;
             logger.error(err);
@@ -389,12 +387,29 @@ async function getRecipients(session, scan) {
         recipient.addresses,
         async (address) => {
           try {
-            // check if the recipient was silent banned
-            const silentBanned = await isSilentBanned(
-              address,
-              this.client,
-              this.resolver
-            );
+            let denylistErr;
+
+            const [silentBanned] = await Promise.all([
+              // check if the recipient was silent banned
+              isSilentBanned(address, this.client, this.resolver),
+              // check if the address was denylisted
+              (async () => {
+                try {
+                  await isDenylisted(address, this.client, this.resolver);
+                } catch (err) {
+                  err.message = `The address ${
+                    recipient.address
+                  } is denylisted by ${
+                    config.urls.web
+                  } ; To request removal, you must visit ${
+                    config.urls.web
+                  }/denylist?q=${encrypt(address.toLowerCase())} ;`;
+                  err.address = address;
+                  denylistErr = err;
+                }
+              })()
+            ]);
+
             if (silentBanned) {
               hasSilentBannedRecipients = true;
               // logger.debug('silent banned', {
@@ -404,20 +419,7 @@ async function getRecipients(session, scan) {
               return;
             }
 
-            // check if the address was denylisted
-            try {
-              await isDenylisted(address, this.client, this.resolver);
-            } catch (err) {
-              err.message = `The address ${
-                recipient.address
-              } is denylisted by ${
-                config.urls.web
-              } ; To request removal, you must visit ${
-                config.urls.web
-              }/denylist?q=${encrypt(address.toLowerCase())} ;`;
-              err.address = address;
-              throw err;
-            }
+            if (denylistErr) throw denylistErr;
 
             // if it was a URL webhook then return early
             if (isURL(address, config.isURLOptions)) {

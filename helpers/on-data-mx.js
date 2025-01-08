@@ -839,34 +839,38 @@ async function checkBounceForSpam(bounce, headers, session) {
 
 // eslint-disable-next-line complexity
 async function forward(recipient, headers, session, body) {
-  //
-  // NOTE: we send emails in series therefore we can check
-  //       if the sender was denylisted since sending started
-  //       so that we can stop the spam right away rather
-  //       then wait until we're done iterating over RCPT TO values
-  //
-  try {
-    await isDenylisted(
-      [recipient.webhook || recipient.to[0], ...session.attributes],
-      this.client,
-      this.resolver
-    );
-  } catch (err) {
-    // store a counter
-    if (err instanceof DenylistError)
-      await this.client.incr(
-        `denylist_prevented:${session.arrivalDateFormatted}`
-      );
-    throw err;
-  }
-
-  const accepted = [];
-  const bounces = [];
-
   // prevent sending to the same webhook or email twice
   const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
 
-  const count = await this.client.incrby(key, 0);
+  const [count] = await Promise.all([
+    this.client.incrby(key, 0),
+    (async () => {
+      //
+      // NOTE: we send emails in series therefore we can check
+      //       if the sender was denylisted since sending started
+      //       so that we can stop the spam right away rather
+      //       then wait until we're done iterating over RCPT TO values
+      //
+      try {
+        await isDenylisted(
+          [recipient.webhook || recipient.to[0], ...session.attributes],
+          this.client,
+          this.resolver
+        );
+      } catch (err) {
+        // store a counter
+        if (err instanceof DenylistError)
+          this.client
+            .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
+            .then()
+            .catch((err) => logger.fatal(err));
+        throw err;
+      }
+    })()
+  ]);
+
+  const accepted = [];
+  const bounces = [];
 
   if (count > 0) {
     // NOTE: we group together recipients based off endpoint
@@ -1390,7 +1394,7 @@ async function forward(recipient, headers, session, body) {
 // TODO: all counters should be reflected in new deliverability dashboard for users
 //
 
-async function updateMXHeaders(session, headers) {
+function updateMXHeaders(headers, session) {
   headers.remove('x-forward-email-sender');
   const senderHeader = [];
   if (
@@ -1468,123 +1472,133 @@ async function updateMXHeaders(session, headers) {
 
 // eslint-disable-next-line complexity
 async function onDataMX(session, headers, body) {
-  //
-  // determine if we should check against backscatterer list
-  // (only if blank, mailer-daemon@, postmaster@, or another standard)
-  // (and if not allowlisted)
-  // <https://unix.stackexchange.com/q/65013>
-  // <http://www.backscatterer.org/?target=usage>
-  //
-  if (!session.isAllowlisted) {
-    let checkBackscatterer = false;
-    // check against MAIL FROM
-    if (
-      isSANB(session.envelope.mailFrom.address) &&
-      isEmail(session.envelope.mailFrom.address)
-    ) {
-      const username = parseUsername(
-        checkSRS(session.envelope.mailFrom.address)
-      );
-      if (config.POSTMASTER_USERNAMES.has(username)) checkBackscatterer = true;
-    } else {
-      // MAIL FROM was <> (empty)
-      checkBackscatterer = true;
-    }
-
-    // check against From header
-    if (!checkBackscatterer) {
-      const username = parseUsername(checkSRS(session.originalFromAddress));
-      if (config.POSTMASTER_USERNAMES.has(username)) checkBackscatterer = true;
-    }
-
-    // check against backscatterer list
-    // (it will throw a DenylistError if so)
-    if (checkBackscatterer) {
-      try {
-        await isBackscatterer(
-          session.remoteAddress,
-          this.client,
-          this.resolver
-        );
-      } catch (err) {
-        // store a counter
-        if (err instanceof DenylistError)
-          await this.client.incr(
-            `backscatter_prevented:${session.arrivalDateFormatted}`
-          );
-        throw err;
-      }
-    }
-  }
-
-  //
-  // NOTE: here is where we check against denylist
-  //       (we simply check if any of the `session.attributes` were denylisted)
-  //       (this includes added RCPT TO values as parsed in `helpers/on-data.js`)
-  //       (it will throw a DenylistError if so)
-  //
-  try {
-    await isDenylisted(session.attributes, this.client, this.resolver);
-  } catch (err) {
-    // store a counter
-    if (err instanceof DenylistError)
-      await this.client.incr(
-        `denylist_prevented:${session.arrivalDateFormatted}`
-      );
-    throw err;
-  }
-
-  // only let this message retry for up to 5 days
-  // (this throws an error if it exceeds duration)
-  await hasFingerprintExpired(session, this.client);
-
-  // TODO: possibly store a counter here too for greylisting by day
-  // check if the message needs to be greylisted
-  // (this throws an error if so)
-  await isGreylisted(session, this.client);
-
-  //
-  // check message against DKIM, SPF, DMARC
-  // (this populates `session.spf`, `session.dmarc`, etc)
-  // (it also throws an error if it was found to be unauthenticated)
-  //
-  await isAuthenticatedMessage(headers, body, session, this.resolver);
-
   // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)
   // (this relies on `isAuthenticatedMessage` to populate `session.spf` etc)
-  await isArbitrary(session, headers); // , body.toString());
+  const [silentBanned] = await Promise.all([
+    (async () => {
+      //
+      // check message against DKIM, SPF, DMARC
+      // (this populates `session.spf`, `session.dmarc`, etc)
+      // (it also throws an error if it was found to be unauthenticated)
+      //
+      await isAuthenticatedMessage(headers, body, session, this.resolver);
 
-  // if there were DKIM signing domains then check them
-  // against the silent ban and denylists
-  if (session.signingDomains.size > 0) {
-    let silentBanned = false;
-    for (const signingDomain of session.signingDomains) {
-      // eslint-disable-next-line no-await-in-loop
-      silentBanned = await isSilentBanned(
-        signingDomain,
-        this.client,
-        this.resolver
-      );
-      if (silentBanned) break; // break early
+      isArbitrary(session, headers); // , body.toString());
+
+      // if there were DKIM signing domains then check them
+      // against the silent ban and denylists
+      let silentBanned = false;
+      if (session.signingDomains.size > 0) {
+        for (const signingDomain of session.signingDomains) {
+          // eslint-disable-next-line no-await-in-loop
+          silentBanned = await isSilentBanned(
+            signingDomain,
+            this.client,
+            this.resolver
+          );
+          if (silentBanned) break; // break early
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            await isDenylisted(signingDomain, this.client, this.resolver);
+          } catch (err) {
+            // store a counter
+            if (err instanceof DenylistError)
+              this.client
+                .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
+                .then()
+                .catch((err) => logger.fatal(err));
+            throw err;
+          }
+        }
+      }
+
+      return silentBanned;
+    })(),
+    //
+    // determine if we should check against backscatterer list
+    // (only if blank, mailer-daemon@, postmaster@, or another standard)
+    // (and if not allowlisted)
+    // <https://unix.stackexchange.com/q/65013>
+    // <http://www.backscatterer.org/?target=usage>
+    //
+    (async () => {
+      if (!session.isAllowlisted) {
+        let checkBackscatterer = false;
+        // check against MAIL FROM
+        if (
+          isSANB(session.envelope.mailFrom.address) &&
+          isEmail(session.envelope.mailFrom.address)
+        ) {
+          const username = parseUsername(
+            checkSRS(session.envelope.mailFrom.address)
+          );
+          if (config.POSTMASTER_USERNAMES.has(username))
+            checkBackscatterer = true;
+        } else {
+          // MAIL FROM was <> (empty)
+          checkBackscatterer = true;
+        }
+
+        // check against From header
+        if (!checkBackscatterer) {
+          const username = parseUsername(checkSRS(session.originalFromAddress));
+          if (config.POSTMASTER_USERNAMES.has(username))
+            checkBackscatterer = true;
+        }
+
+        // check against backscatterer list
+        // (it will throw a DenylistError if so)
+        if (checkBackscatterer) {
+          try {
+            await isBackscatterer(
+              session.remoteAddress,
+              this.client,
+              this.resolver
+            );
+          } catch (err) {
+            // store a counter
+            if (err instanceof DenylistError)
+              this.client
+                .incr(`backscatter_prevented:${session.arrivalDateFormatted}`)
+                .then()
+                .catch((err) => logger.fatal(err));
+            throw err;
+          }
+        }
+      }
+    })(),
+    //
+    // NOTE: here is where we check against denylist
+    //       (we simply check if any of the `session.attributes` were denylisted)
+    //       (this includes added RCPT TO values as parsed in `helpers/on-data.js`)
+    //       (it will throw a DenylistError if so)
+    //
+    (async () => {
       try {
-        // eslint-disable-next-line no-await-in-loop
-        await isDenylisted(signingDomain, this.client, this.resolver);
+        await isDenylisted(session.attributes, this.client, this.resolver);
       } catch (err) {
         // store a counter
         if (err instanceof DenylistError)
-          // eslint-disable-next-line no-await-in-loop
-          await this.client.incr(
-            `denylist_prevented:${session.arrivalDateFormatted}`
-          );
+          this.client
+            .incr(`denylist_prevented:${session.arrivalDateFormatted}`)
+            .then()
+            .catch((err) => logger.fatal(err));
         throw err;
       }
-    }
+    })(),
+    // only let this message retry for up to 5 days
+    // (this throws an error if it exceeds duration)
+    hasFingerprintExpired(session, this.client),
+    // TODO: possibly store a counter here too for greylisting by day
+    // check if the message needs to be greylisted
+    // (this throws an error if so)
+    isGreylisted(session, this.client)
+  ]);
 
-    // return early if it was silent banned
-    if (silentBanned) return;
-  }
+  // return early if it was silent banned
+  if (silentBanned) return;
 
   /*
   // TODO: re-enable spam scanner once v7 released
@@ -1607,11 +1621,11 @@ async function onDataMX(session, headers, body) {
   //
 
   // add X-* headers (e.g. version + report-to)
-  await updateHeaders(headers, session);
+  updateHeaders(headers, session);
 
   // additional headers to add specifically for MX
   // (this also does a friendly-from rewrite if necessary)
-  await updateMXHeaders.call(this, session, headers);
+  updateMXHeaders(headers, session);
 
   // this is the core logic that determines where to forward and deliver emails to
   // TODO: re-enable spam scanner once v7 released

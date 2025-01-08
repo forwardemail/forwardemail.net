@@ -33,29 +33,6 @@ async function updateSession(body, headers, session) {
     session.originalFromAddressDomain
   );
 
-  session.isOriginalFromAddressAllowlisted = await isAllowlisted(
-    session.originalFromAddress,
-    this.client,
-    this.resolver
-  );
-
-  if (!session.isOriginalFromAddressAllowlisted)
-    session.isOriginalFromAddressAllowlisted = await isAllowlisted(
-      session.originalFromAddressDomain,
-      this.client,
-      this.resolver
-    );
-
-  if (
-    !session.isOriginalFromAddressAllowlisted &&
-    session.originalFromAddressDomain !== session.originalFromAddressRootDomain
-  )
-    session.isOriginalFromAddressAllowlisted = await isAllowlisted(
-      session.originalFromAddressRootDomain,
-      this.client,
-      this.resolver
-    );
-
   // store if the From had same sender hostname (used for spam prevention)
   session.hasSameHostnameAsFrom = Boolean(
     session.resolvedClientHostname === session.originalFromAddressDomain ||
@@ -63,11 +40,40 @@ async function updateSession(body, headers, session) {
         session.originalFromAddressRootDomain
   );
 
-  // get all sender attributes (e.g. email, domain, root domain)
-  session.attributes = await getAttributes(headers, session, this.resolver);
-
   // get message fingerprint
   session.fingerprint = getFingerprint(session, headers, body);
+
+  await Promise.all([
+    (async () => {
+      session.isOriginalFromAddressAllowlisted = await isAllowlisted(
+        session.originalFromAddress,
+        this.client,
+        this.resolver
+      );
+
+      if (!session.isOriginalFromAddressAllowlisted)
+        session.isOriginalFromAddressAllowlisted = await isAllowlisted(
+          session.originalFromAddressDomain,
+          this.client,
+          this.resolver
+        );
+
+      if (
+        !session.isOriginalFromAddressAllowlisted &&
+        session.originalFromAddressDomain !==
+          session.originalFromAddressRootDomain
+      )
+        session.isOriginalFromAddressAllowlisted = await isAllowlisted(
+          session.originalFromAddressRootDomain,
+          this.client,
+          this.resolver
+        );
+    })(),
+    (async () => {
+      // get all sender attributes (e.g. email, domain, root domain)
+      session.attributes = await getAttributes(headers, session, this.resolver);
+    })()
+  ]);
 
   return session;
 }
