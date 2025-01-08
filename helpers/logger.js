@@ -36,7 +36,7 @@ const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
 // wrapper for browser condition
-const hasMixin = _ && _.mixin;
+const hasMixin = mongoose && _ && _.mixin;
 
 if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
@@ -332,7 +332,7 @@ for (const level of logger.config.levels) {
     // safeguard to redact sensitive fields
     //
     // wrapper for browser condition
-    if (hasMixin) {
+    if (mongoose && hasMixin) {
       err = _.deeply(_.mapValues)(err, function (val, key) {
         if (REDACTED_FIELDS.has(key)) {
           return 'REDACTED';
@@ -344,7 +344,7 @@ for (const level of logger.config.levels) {
 
     const hash = meta && meta.app && meta.app.hash;
     // wrapper for browser condition
-    if (hasMixin) {
+    if (mongoose && hasMixin) {
       meta = _.deeply(_.mapValues)(meta, function (val, key) {
         if (REDACTED_FIELDS.has(key)) {
           return 'REDACTED';
