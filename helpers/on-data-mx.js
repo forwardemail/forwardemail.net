@@ -1690,9 +1690,6 @@ async function onDataMX(session, headers, body) {
     }
   }
 
-  // TODO: fix the SRS0 thing (not rewriting properly. e.g. RCD)
-  // TODO: if it was SRS rewritten then it shouldn't 421 it should deliver to the address still
-
   //
   // send vacation responders if necessary in series
   //

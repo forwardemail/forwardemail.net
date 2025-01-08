@@ -18,6 +18,7 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
+const { SRS } = require('sender-rewriting-scheme');
 
 const utils = require('../utils');
 
@@ -40,6 +41,7 @@ import('@ava/get-port').then((obj) => {
 const asyncMxConnect = pify(mxConnect);
 const IP_ADDRESS = ip.address();
 const tls = { rejectUnauthorized: false };
+const srs = new SRS(config.srs);
 
 test.before(utils.setupMongoose);
 test.before(utils.setupRedisClient);
@@ -333,7 +335,14 @@ test('imap/forward/webhook', async (t) => {
       transporter.sendMail({
         envelope: {
           from: 'test@test.com',
-          to: `test@${domain.name}`
+          to: [
+            `test@${domain.name}`,
+            //
+            // NOTE: this is purposely formatted incorrectly
+            //       to test when mail servers send to lowercase version of MAIL FROM
+            //       (we have logic that accounts for this, see `#helpers/check-srs`)
+            srs.forward(`test@${domain.name}`, env.WEB_HOST).toLowerCase()
+          ]
         },
         raw: `
 To: test@${domain.name}

@@ -332,6 +332,19 @@ async function getRecipients(session, scan) {
           webhookKey
         };
       } catch (err) {
+        if (err.notConfigured && to.srs) {
+          return {
+            address: to.address,
+            addresses: [to.address],
+            port: 25,
+            hasIMAP: false,
+            aliasPublicKey: false,
+            vacationResponder: false,
+            // TODO: only do this if MX server of sender used our service
+            srs: true
+          };
+        }
+
         logger.warn(err, { session });
         err.responseCode = getErrorCode(err);
         bounces.push({
@@ -609,7 +622,8 @@ async function getRecipients(session, scan) {
         port: recipient.port,
         recipient: recipient.address,
         to: [address.to],
-        replacements
+        replacements,
+        ...(recipient.srs ? { srs: true } : {})
       });
     }
   }

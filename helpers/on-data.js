@@ -100,7 +100,9 @@ async function onData(stream, _session, fn) {
               //       however because srs0 was rewritten from SRS0
               //       and because tv was rewritten from TV it is not being delivered correctly
               //
+              const original = to.address;
               to.address = checkSRS(to.address, shouldThrow);
+              if (original !== to.address) to.srs = true;
               return to;
             }),
             async (to) => {

@@ -21,7 +21,26 @@ function checkSRS(address, shouldThrow = false, ignoreHook = false) {
   if (!REGEX_SRS0.test(address) && !REGEX_SRS1.test(address)) return address;
 
   try {
-    const reversed = srs.reverse(address);
+    //
+    // sometimes senders send to a lowercase version of the MAIL FROM
+    // which is going to mess things up here because case sensitivity is needed
+    // therefore we will do a rewrite here if necessary
+    //
+    const index = address.indexOf('@');
+    const local = address.slice(0, index).split('=');
+    const domain = address.slice(index + 1);
+
+    //
+    // > local.split('=')
+    // [ 'srs0', '4f4d', 't7', 'example.com', 'john' ]
+    // and we need
+    // SRS0=4f4d=T7=example.com=john
+    // therefore keys 0 and 2 need capitalized
+    //
+    if (local[0]) local[0] = local[0].toUpperCase(); // SRS0
+    if (local[2]) local[2] = local[2].toUpperCase(); // T7
+    const srsAddress = `${local.join('=')}@${domain}`;
+    const reversed = srs.reverse(srsAddress);
     if (_.isNull(reversed)) throw new Error('Bad signature');
     return reversed;
   } catch (_err) {

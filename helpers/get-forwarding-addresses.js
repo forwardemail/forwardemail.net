@@ -229,7 +229,7 @@ async function getForwardingAddresses(
   if (!isSANB(record) && !hasIMAP)
     throw new SMTPError(
       `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 421, ignore_hook: true }
+      { responseCode: 421, ignore_hook: true, notConfigured: true }
     );
 
   // e.g. user@example.com => user@gmail.com
@@ -557,7 +557,7 @@ async function getForwardingAddresses(
   if (forwardingAddresses.length === 0 && !hasIMAP) {
     throw new SMTPError(
       `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 421, ignore_hook: true }
+      { responseCode: 421, ignore_hook: true, notConfigured: true }
     );
   }
 
