@@ -20,6 +20,16 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  VACATION_RESPONDER_NAME_SPECIFIC:
+    'Vacation responder can only be enabled for specific alias names (catchall/wildcard and regular expressions are not supported).',
+  VACATION_RESPONDER_SMTP_REQUIRED:
+    'You need to <a href="%s" target="_blank" rel="noopener noreferrer">configure Outbound SMTP</a> (and be approved) for <span class="notranslate">%s</span> in order to use a vacation responder.',
+  VACATION_RESPONDER_NOT_SUPPORTED_ON_GLOBAL:
+    'Vacation responder is not supported on global domains at this time.',
+  VACATION_RESPONDER_DATE_INVALID:
+    'Vacation responder start and/or end dates must be in MM/DD/YYYY format.',
+  VACATION_RESPONDER_DATE_ISSUE:
+    'Vacation responder start date must be before its end date.',
   MULTIPLE_PGP_SUBJECT:
     'Multiple PGP key conflict detected for <span class="notranslate">%s</span>',
   MULTIPLE_PGP_MESSAGE:

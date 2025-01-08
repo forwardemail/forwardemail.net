@@ -252,6 +252,7 @@ async function create(ctx) {
     message.disableUrlAccess = true;
 
     // TODO: rate limiting emails per day by domain id and alias user id
+    // TODO: implement credit system
 
     // queue the email
     const email = await Emails.queue(

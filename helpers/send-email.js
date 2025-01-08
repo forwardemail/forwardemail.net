@@ -257,8 +257,30 @@ async function sendEmail(
     // TODO: handle transporter cleanup
     // TODO: handle mx socket close
     const info = await transporter.sendMail({
-      envelope,
-      raw: pgpResults.finalRaw
+      // if auto response then MAIL FROM should be <> (empty)
+      envelope:
+        email && email.is_bounce
+          ? {
+              ...envelope,
+              from: ''
+            }
+          : envelope,
+      raw: pgpResults.finalRaw,
+      //
+      //       > It is RECOMMENDED that the NOTIFY=NEVER
+      //         parameter of the RCPT command be specified if the SMTP server
+      //         supports the DSN option
+      //
+      //       <https://www.nodemailer.com/smtp/dsn/>
+      //       <https://github.com/nodemailer/nodemailer/issues/1708>
+      //
+      ...(email && email.is_bounce
+        ? {
+            dsn: {
+              notify: 'never'
+            }
+          }
+        : {})
     });
     info.pgp = pgpResults.pgp;
     return info;
@@ -350,8 +372,30 @@ async function sendEmail(
       // TODO: handle mx socket close
       try {
         const info = await transporter.sendMail({
-          envelope,
-          raw: pgpResults.finalRaw
+          // if auto response then MAIL FROM should be <> (empty)
+          envelope:
+            email && email.is_bounce
+              ? {
+                  ...envelope,
+                  from: ''
+                }
+              : envelope,
+          raw: pgpResults.finalRaw,
+          //
+          //       > It is RECOMMENDED that the NOTIFY=NEVER
+          //         parameter of the RCPT command be specified if the SMTP server
+          //         supports the DSN option
+          //
+          //       <https://www.nodemailer.com/smtp/dsn/>
+          //       <https://github.com/nodemailer/nodemailer/issues/1708>
+          //
+          ...(email && email.is_bounce
+            ? {
+                dsn: {
+                  notify: 'never'
+                }
+              }
+            : {})
         });
         info.pgp = pgpResults.pgp;
         return info;

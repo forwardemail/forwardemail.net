@@ -35,8 +35,10 @@ function updateHeaders(headers, session) {
   if (!keys.has('x-complaints-to'))
     headers.add('X-Complaints-To', config.abuseEmail); // , headers.lines.length);
 
+  headers.add('X-Forward-Email-Website', config.urls.web);
+
   headers.add(
-    'X-ForwardEmail-Version',
+    'X-Forward-Email-Version',
     config.pkg.version
     // headers.lines.length
   );

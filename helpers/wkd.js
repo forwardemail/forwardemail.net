@@ -21,7 +21,7 @@ const { encoder, decoder } = require('./encoder-decoder');
 
 const config = require('#config');
 
-const DURATION = config.env === 'test' ? '5s' : '2s';
+const DURATION = config.env === 'test' ? '3s' : '2s';
 
 //
 // NOTE: this uses `fetch` which is OK because

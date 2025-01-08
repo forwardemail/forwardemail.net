@@ -30,10 +30,10 @@ function createBounce(email, error, message) {
   // TODO: in the future reserve mailer-daemon@ alias for the domain (hidden alias)
   rootNode.setHeader('From', email.envelope.from);
   rootNode.setHeader('To', email.envelope.from);
-  rootNode.setHeader('X-Failed-Recipients', error.recipient);
-  rootNode.setHeader('Auto-Submitted', 'auto-replied');
-  rootNode.setHeader('X-Auto-Response-Suppress', 'All');
   rootNode.setHeader('Precedence', 'auto_reply');
+  rootNode.setHeader('Auto-Submitted', 'auto-replied');
+  rootNode.setHeader('X-Failed-Recipients', error.recipient);
+  rootNode.setHeader('X-Auto-Response-Suppress', 'All');
   if (isDelayed) {
     if (_.isDate(error.date) || _.isDate(new Date(error.date)))
       rootNode.setHeader(
@@ -121,17 +121,18 @@ function createBounce(email, error, message) {
     `X-Report-Abuse-To: ${config.abuseEmail}`,
     `X-Report-Abuse: ${config.abuseEmail}`,
     `X-Complaints-To: ${config.abuseEmail}`,
-    `X-ForwardEmail-Version: ${config.pkg.version}`,
-    `X-ForwardEmail-Sender: rfc822; ${[
+    `X-Forward-Email-Website: ${config.urls.web}`,
+    `X-Forward-Email-Version: ${config.pkg.version}`,
+    `X-Forward-Email-Sender: rfc822; ${[
       email.envelope.from,
       HOSTNAME,
       IP_ADDRESS
     ].join(', ')}`
   );
 
-  if (email.id) arr.push(`X-ForwardEmail-ID: ${email.id}`);
+  if (email.id) arr.push(`X-Forward-Email-ID: ${email.id}`);
 
-  // TODO: add X-ForwardEmail-Session-ID here (?)
+  // TODO: add X-Forward-Email-Session-ID here (?)
 
   rootNode
     .createChild('message/delivery-status')

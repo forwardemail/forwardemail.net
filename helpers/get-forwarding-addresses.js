@@ -22,14 +22,14 @@ const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
 const getKeyInfo = require('#helpers/get-key-info');
+const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
+const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-
-const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 
 function parseFilter(address) {
   address = parseAddresses(address)[0];
@@ -48,6 +48,7 @@ async function getForwardingAddresses(
 ) {
   let hasIMAP = false;
   let aliasPublicKey = false;
+  let vacationResponder = false;
   let aliasIds;
   const domain = parseHostFromDomainOrAddress(address);
 
@@ -145,7 +146,7 @@ async function getForwardingAddresses(
   // check if we have a specific redirect and store global redirects (if any)
   // get username from recipient email address
   // (e.g. user@example.com => hello)
-  const username = isEmail(address) ? parseUsername(address) : null;
+  const username = isEmail(address) ? parseUsername(address) : false;
 
   //
   // store if the domain was bad and not on paid plan (required for bad domains)
@@ -178,24 +179,13 @@ async function getForwardingAddresses(
     // TODO: cache responses in redis and purge on web-side changes
 
     // if there was a verification record then perform lookup
-    const response = await this.apiClient.request({
-      path: '/v1/lookup',
-      method: 'GET',
-      headers: {
-        'User-Agent': USER_AGENT,
-        Accept: 'application/json',
-        Authorization:
-          'Basic ' + Buffer.from(env.API_SECRETS[0] + ':').toString('base64')
-      },
-      query: {
-        username,
-        ignore_billing: ignoreBilling,
-        verification_record: verifications[0]
-      },
-      resolver: this.resolver
+    const body = await getForwardingConfiguration({
+      verificationRecord: verifications[0],
+      username,
+      ignoreBilling,
+      client: this.client
     });
 
-    const body = await response.body.json();
     // body = {
     //   has_imap: boolean,
     //   mapping: array
@@ -210,6 +200,9 @@ async function getForwardingAddresses(
         logger.fatal(err);
       }
     }
+
+    if (_.isObject(body.vacation_responder))
+      vacationResponder = body.vacation_responder;
 
     if (
       body.alias_ids &&
@@ -236,7 +229,7 @@ async function getForwardingAddresses(
   if (!isSANB(record) && !hasIMAP)
     throw new SMTPError(
       `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 421 }
+      { responseCode: 421, ignore_hook: true }
     );
 
   // e.g. user@example.com => user@gmail.com
@@ -400,7 +393,10 @@ async function getForwardingAddresses(
         // NOTE: catches errors like "Invalid regular expression":
         regex = new RE2(regexParser(parsedRegex));
       } catch (err) {
-        logger.fatal(err, { address });
+        // TODO: possibly email the owner/admin for things like negative lookhead or perl operator issues
+        err.address = address;
+        err.parsedRegex = parsedRegex;
+        logger.fatal(err, { session });
       }
 
       if (username && regex && regex.test(username.toLowerCase())) {
@@ -553,14 +549,15 @@ async function getForwardingAddresses(
   //
   if (badDomainExtension && forwardingAddresses.length > 0)
     throw new SMTPError(
-      `${address} requires an upgrade to Enhanced Protection at ${config.urls.web} ;  Please read ${config.urls.web}/faq#what-domain-name-extensions-can-be-used-for-free for more information`
+      `${address} requires an upgrade to Enhanced Protection at ${config.urls.web} ;  Please read ${config.urls.web}/faq#what-domain-name-extensions-can-be-used-for-free for more information`,
+      { ignore_hook: true }
     );
 
   // if we don't have a forwarding address then throw an error
   if (forwardingAddresses.length === 0 && !hasIMAP) {
     throw new SMTPError(
       `${address} is not yet configured with its email service provider ${config.urls.web} ;`,
-      { responseCode: 421 }
+      { responseCode: 421, ignore_hook: true }
     );
   }
 
@@ -665,22 +662,11 @@ async function getForwardingAddresses(
     maxForwardedAddresses = value;
   } else {
     try {
-      const response = await this.apiClient.request({
-        path: '/v1/max-forwarded-addresses',
-        method: 'GET',
-        headers: {
-          'User-Agent': USER_AGENT,
-          Accept: 'application/json',
-          Authorization:
-            'Basic ' + Buffer.from(env.API_SECRETS[0] + ':').toString('base64')
-        },
-        query: {
-          domain
-        },
-        resolver: this.resolver
-      });
+      const body = await getMaxForwardedAddresses(
+        domain, // domain
+        this.resolver // resolver
+      );
 
-      const body = await response.body.json();
       // body is an Object with `max_forwarded_addresses` Number
       if (
         _.isObject(body) &&
@@ -688,6 +674,7 @@ async function getForwardingAddresses(
         body.max_forwarded_addresses > 0
       )
         maxForwardedAddresses = body.max_forwarded_addresses;
+
       await this.client.set(
         `v1_max_forwarded:${domain}`,
         maxForwardedAddresses,
@@ -715,6 +702,7 @@ async function getForwardingAddresses(
       aliasIds,
       hasIMAP,
       aliasPublicKey,
+      vacationResponder,
       addresses: forwardingAddresses
     };
 
@@ -722,6 +710,7 @@ async function getForwardingAddresses(
     aliasIds,
     hasIMAP,
     aliasPublicKey,
+    vacationResponder,
     addresses: forwardingAddresses.map((forwardingAddress) => {
       if (
         isFQDN(forwardingAddress) ||

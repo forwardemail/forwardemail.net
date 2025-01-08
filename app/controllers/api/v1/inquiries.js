@@ -8,10 +8,12 @@ const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const _ = require('lodash');
 const { Headers } = require('mailsplit');
-const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
 const env = require('#config/env');
+const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
+const isEmail = require('#helpers/is-email');
+const parseUsername = require('#helpers/parse-username');
 const { Inquiries, Users } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
@@ -84,29 +86,15 @@ async function create(ctx) {
       Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
     );
 
-  if (
-    (headers.hasHeader('auto-submitted') &&
-      headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no') ||
-    (headers.hasHeader('x-auto-response-suppress') &&
-      ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-        headers.getFirst('x-auto-response-suppress').toLowerCase().trim()
-      )) ||
-    headers.hasHeader('list-id') ||
-    headers.hasHeader('list-unsubscribe') ||
-    headers.hasHeader('feedback-id') ||
-    headers.hasHeader('x-autoreply') ||
-    headers.hasHeader('x-autorespond') ||
-    headers.hasHeader('x-auto-respond') ||
-    (headers.hasHeader('precedence') &&
-      ['bulk', 'autoreply', 'auto-reply', 'auto_reply', 'list'].includes(
-        headers.getFirst('precedence').toLowerCase().trim()
-      ))
-  )
-    return;
+  if (isAutoReplyOrMailingList(headers)) {
+    const err = new TypeError(`Support inquiry suppressed from ${sender}`);
+    err.body = body;
+    ctx.logger.fatal(err);
+  }
 
   const { recipient, sender } = session;
 
-  if (!recipient.includes('support@'))
+  if (parseUsername(recipient) !== parseUsername(config.supportEmail))
     return ctx.throw(
       Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_EMAIL'))
     );

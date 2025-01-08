@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const pMap = require('p-map');
 const _ = require('lodash');
 const safeStringify = require('fast-safe-stringify');
@@ -18,6 +16,7 @@ const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
+const getSettings = require('#helpers/get-settings');
 const getForwardingAddresses = require('#helpers/get-forwarding-addresses');
 const isDenylisted = require('#helpers/is-denylisted');
 const isSilentBanned = require('#helpers/is-silent-banned');
@@ -26,8 +25,6 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { encrypt } = require('#helpers/encrypt-decrypt');
-
-const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 
 // eslint-disable-next-line complexity
 async function getRecipients(session, scan) {
@@ -56,6 +53,7 @@ async function getRecipients(session, scan) {
           addresses,
           hasIMAP,
           aliasPublicKey,
+          vacationResponder,
           ignored,
           softRejected,
           hardRejected
@@ -73,7 +71,8 @@ async function getRecipients(session, scan) {
             addresses: [],
             ignored: true,
             hasIMAP: false,
-            aliasPublicKey: false
+            aliasPublicKey: false,
+            vacationResponder: false
           };
 
         if (softRejected)
@@ -83,6 +82,7 @@ async function getRecipients(session, scan) {
             ignored: false,
             hasIMAP: false,
             aliasPublicKey: false,
+            vacationResponder: false,
             softRejected: true
           };
 
@@ -93,6 +93,7 @@ async function getRecipients(session, scan) {
             ignored: false,
             hasIMAP: false,
             aliasPublicKey: false,
+            vacationResponder: false,
             hardRejected: true
           };
 
@@ -114,21 +115,7 @@ async function getRecipients(session, scan) {
           body = value;
         } else {
           try {
-            const response = await this.apiClient.request({
-              path: '/v1/settings',
-              method: 'GET',
-              headers: {
-                'User-Agent': USER_AGENT,
-                Accept: 'application/json',
-                Authorization:
-                  'Basic ' +
-                  Buffer.from(env.API_SECRETS[0] + ':').toString('base64')
-              },
-              query: { domain },
-              resolver: this.resolver
-            });
-
-            body = await response.body.json();
+            body = await getSettings(domain, this.resolver);
 
             await this.client.set(
               `v1_settings:${domain}`,
@@ -298,7 +285,8 @@ async function getRecipients(session, scan) {
 
           if (!pass)
             throw new SMTPError(
-              `Your IP address, client hostname, or From header is not yet allowlisted by admins of ${domain}`
+              `Your IP address, client hostname, or From header is not yet allowlisted by admins of ${domain}`,
+              { ignore_hook: true }
             );
         }
 
@@ -330,7 +318,8 @@ async function getRecipients(session, scan) {
 
           if (!pass)
             throw new SMTPError(
-              `Your IP address, client hostname, or From header was denylisted by admins of ${domain}`
+              `Your IP address, client hostname, or From header was denylisted by admins of ${domain}`,
+              { ignore_hook: true }
             );
         }
 
@@ -340,6 +329,7 @@ async function getRecipients(session, scan) {
           port,
           hasIMAP,
           aliasPublicKey,
+          vacationResponder,
           aliasIds,
           webhookKey
         };
@@ -498,7 +488,7 @@ async function getRecipients(session, scan) {
     if (_.isEmpty(bounces)) {
       // return early if silent banned recipients
       if (hasSilentBannedRecipients) return;
-      throw new SMTPError('Invalid recipients');
+      throw new SMTPError('Invalid recipients', { ignore_hook: true });
     }
 
     // if there was only one bounce then throw it by itself
@@ -545,7 +535,8 @@ async function getRecipients(session, scan) {
       bounces.push({
         address: recipient.address,
         err: new SMTPError('Mailbox is disabled, try again later', {
-          responseCode: 421
+          responseCode: 421,
+          ignore_hook: true
         })
       });
       continue;
@@ -554,7 +545,7 @@ async function getRecipients(session, scan) {
     if (recipient.hardRejected) {
       bounces.push({
         address: recipient.address,
-        err: new SMTPError('Mailbox is disabled')
+        err: new SMTPError('Mailbox is disabled', { ignore_hook: true })
       });
       continue;
     }
@@ -568,7 +559,11 @@ async function getRecipients(session, scan) {
           )
         )
           continue;
-        imap.push({ address: recipient.address, id: aliasId });
+        imap.push({
+          address: recipient.address,
+          id: aliasId,
+          vacationResponder: recipient.vacationResponder
+        });
       }
     }
 
@@ -591,6 +586,7 @@ async function getRecipients(session, scan) {
           replacements[recipient.address] = address.to; // normal;
           normalized.push({
             aliasPublicKey: recipient.aliasPublicKey,
+            vacationResponder: recipient.vacationResponder,
             webhookKey: recipient.webhookKey,
             webhook: address.to,
             to: [address.to],
@@ -606,6 +602,7 @@ async function getRecipients(session, scan) {
       replacements[recipient.address] = address.to;
       normalized.push({
         aliasPublicKey: recipient.aliasPublicKey,
+        vacationResponder: recipient.vacationResponder,
         host: address.host,
         port: recipient.port,
         recipient: recipient.address,

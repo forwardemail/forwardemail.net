@@ -253,3 +253,52 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
           href="/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt",
           target="_blank"
         )= t("View Example")
+
+//-
+//- vacation responder support
+//-
+if !domain || (domain && !domain.is_global)
+  //- is_enabled
+  .form-group.form-check
+    input#input-vacation-responder-is-enabled.form-check-input(
+      type="checkbox",
+      name="vacation_responder_is_enabled",
+      value="true",
+      checked=alias && alias.vacation_responder && alias.vacation_responder.is_enabled
+    )
+    label.form-check-label(for="input-vacation-responder-is-enabled")
+      = t("Vacation Responder Enabled")
+  //- start_at and end_at
+  .form-row
+    .col.form-group.floating-label
+      input#input-start-date.form-control(
+        type="date",
+        value=alias && alias.vacation_responder && _.isDate(alias.vacation_responder.start_date) ? dayjs(alias.vacation_responder.start_date).format("YYYY-MM-DD") : "",
+        name="vacation_responder_start_date",
+        placeholder=" "
+      )
+      label(for="input-start-date")= t("Vacation Responder Start Date")
+    .col.form-group.floating-label
+      input#input-end-date.form-control(
+        type="date",
+        value=alias && alias.vacation_responder && _.isDate(alias.vacation_responder.end_date) ? dayjs(alias.vacation_responder.end_date).format("YYYY-MM-DD") : "",
+        name="vacation_responder_end_date",
+        placeholder=" "
+      )
+      label(for="input-vacation-responder-end-date")= t("Vacation Responder End Date")
+  //- subject
+  .form-group
+    label(for="input-vacation-responder-subject")= t("Vacation Responder Subject")
+    input#input-vacation-responder-subject.form-control(
+      value=alias && alias.vacation_responder && isSANB(alias.vacation_responder.subject) ? alias.vacation_responder.subject : "",
+      name="vacation_responder_subject",
+      placeholder="",
+      type="text"
+    )
+  //- message
+  .form-group
+    label(for="textarea-vacation-responder-message")= t("Vacation Responder Message")
+    textarea#textarea-vacation-responder-message.form-control(
+      name="vacation_responder_message",
+      rows=3
+    )= alias && alias.vacation_responder && isSANB(alias.vacation_responder.message) ? alias.vacation_responder.message : ""

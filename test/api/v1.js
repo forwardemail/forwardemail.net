@@ -201,6 +201,7 @@ test('creates alias with global catch-all', async (t) => {
       'labels',
       'pending_recipients',
       'verified_recipients',
+      'vacation_responder',
 
       'user',
       'domain'
@@ -309,6 +310,7 @@ test('creates alias with global catch-all', async (t) => {
         'object',
         'created_at',
         'updated_at',
+        'vacation_responder',
 
         'user',
         'domain'
@@ -1623,6 +1625,34 @@ test('retrieves email', async (t) => {
   }
 });
 
+test('404 instead of 500', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+  const res = await t.context.api
+    .get(`/v1/emails/512312312`)
+    .auth(user[config.userFields.apiToken])
+    .set('Accept', 'application/json');
+  t.is(res.status, 404);
+});
+
 test('removes email', async (t) => {
   const user = await t.context.userFactory
     .withState({
@@ -2025,7 +2055,8 @@ test('error_code_if_disabled', async (t) => {
     alias_ids: [],
     alias_public_key: false,
     has_imap: false,
-    mapping: [user.email, '!foo', '!!bar', '!!!baz']
+    mapping: [user.email, '!foo', '!!bar', '!!!baz'],
+    vacation_responder: false
   });
 });
 

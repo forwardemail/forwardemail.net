@@ -12,7 +12,11 @@
     "#models": false,
     "#models/logs": false,
     "#config/mongoose": false,
-    "#config/env": false
+    "#config/env": false,
+    "#helpers/is-code-bug": false,
+    "#helpers/is-tls-error": false,
+    "#helpers/is-ssl-error": false,
+    "#helpers/is-socket-error": false
   },
   "bugs": {
     "url": "https://github.com/forwardemail/forwardemail.net/issues"
@@ -40,7 +44,7 @@
     "@ladjs/assets": "2.1.29",
     "@ladjs/consolidate": "1.0.4",
     "@ladjs/env": "4.0.0",
-    "@ladjs/graceful": "4.1.0",
+    "@ladjs/graceful": "4.2.0",
     "@ladjs/i18n": "8.0.3",
     "@ladjs/koa-simple-ratelimit": "4.1.1",
     "@ladjs/mongoose": "7.0.0",
@@ -56,7 +60,6 @@
     "@ngneat/falso": "7.2.0",
     "@octokit/core": "4.2.4",
     "@openpgp/wkd-client": "0.0.4",
-    "@opensumi/reconnecting-websocket": "4.4.0",
     "@parse/node-apn": "6.2.1",
     "@peculiar/x509": "1.12.3",
     "@shopify/semaphore": "3.1.0",
@@ -102,7 +105,6 @@
     "cabin": "14.0.0",
     "caldav-adapter": "7.2.0",
     "capitalize": "2.0.4",
-    "captain-hook": "0.0.3",
     "check-disk-space": "3.4.0",
     "chnl": "1.2.0",
     "clipboard": "2.0.11",

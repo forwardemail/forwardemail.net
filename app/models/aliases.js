@@ -7,7 +7,6 @@ const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
-const captainHook = require('captain-hook');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
@@ -107,6 +106,31 @@ const Aliases = new mongoose.Schema({
     // NOTE: hard-coded max of 100 GB (safeguard)
     //
     max: bytes('100GB')
+  },
+
+  //
+  // vacation responder support
+  // (uses SMTP credits and requires SMTP to be setup/approved)
+  //
+  vacation_responder: {
+    is_enabled: {
+      type: Boolean,
+      default: false
+    },
+    start_date: Date,
+    end_date: Date,
+    subject: {
+      type: String,
+      trim: true,
+      maxlength: 100
+    },
+    message: {
+      type: String,
+      trim: true,
+      maxlength: 1000
+    }
+    // TODO: for CardDAV in future (but would require some plaintext non-encrypted access or hash approach)
+    // respond_to_contacts_only: true | false
   },
 
   // apple push notification support
@@ -280,7 +304,45 @@ const Aliases = new mongoose.Schema({
 Aliases.index({ user: 1, domain: 1 });
 Aliases.index({ _id: 1, domain: 1 });
 Aliases.index({ name: 1, domain: 1 });
-Aliases.plugin(captainHook);
+
+// vacation responder support
+Aliases.pre('validate', function (next) {
+  //
+  // vacation responder cannot be enabled
+  // on regular expressions nor wildcard matches
+  //
+  if (
+    this?.vacation_responder?.is_enabled &&
+    (this.name === '*' || this.name.startsWith('/'))
+  )
+    return next(
+      Boom.badRequest(i18n.translateError('VACATION_RESPONDER_NAME_SPECIFIC'))
+    );
+
+  // strip tags/html from subject
+  if (isSANB(this?.vacation_responder?.subject))
+    this.vacation_responder.subject = striptags(
+      this.vacation_responder.subject
+    );
+  // strip tags/html from message
+  if (isSANB(this?.vacation_responder?.message))
+    this.vacation_responder.message = striptags(
+      this.vacation_responder.message
+    );
+  // if start_date AND end_date both set, ensure start_date is before
+  if (
+    _.isDate(this?.vacation_responder?.start_date) &&
+    _.isDate(this?.vacation_responder?.end_date) &&
+    new Date(this.vacation_responder.start_date).getTime() >=
+      new Date(this.vacation_responder.end_date)
+  )
+    return next(
+      Boom.badRequest(
+        i18n.translateError('VACATION_RESPONDER_DATE_ISSUE', this.locale)
+      )
+    );
+  next();
+});
 
 // validate PGP key if any
 Aliases.pre('save', async function (next) {
@@ -531,6 +593,9 @@ Aliases.pre('save', async function (next) {
       throw Boom.badRequest(
         i18n.translateError('CANNOT_CREATE_REGEX_ON_DOMAIN', alias.locale)
       );
+
+    // if domain is global we prevent vacation responder
+    if (domain.is_global) alias.vacation_responder = {};
 
     // if it starts with a forward slash then it must be a regex
     if (!alias.name.startsWith('/') && !isEmail(`${alias.name}@${domain.name}`))

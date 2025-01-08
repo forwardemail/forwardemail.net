@@ -119,8 +119,6 @@ async function getDeliverabilityChart(ctx) {
       [
         'mail_accepted',
         'mail_rejected',
-        'mail_error',
-        'bounce_prevented_empty',
         'bounce_prevented_restricted',
         'bounce_sent',
         'backscatter_prevented',

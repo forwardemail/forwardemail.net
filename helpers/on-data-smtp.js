@@ -161,6 +161,8 @@ async function onDataSMTP(session, date, headers, body) {
     );
 
   //
+  // TODO: should we use `is_smtp_suspended` here instead (it's not consistent everywhere right now)
+  //
   // NOTE: if the domain is suspended then the state is "pending" not queued
   //
   if (_.isDate(domain.smtp_suspended_sent_at))
@@ -363,6 +365,9 @@ async function onDataSMTP(session, date, headers, body) {
   //
   // TODO: this should probably be moved to after `queue()` is invoked
   //       (we could use `zcard(key)` like we do in list emails controller)
+  //
+  // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
+  //       (this will change with a new credit system; so we will change this later)
   //
   const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
   if (!adminExists) {

@@ -131,6 +131,10 @@ const parseAddresses = require('./parse-addresses');
 const isEmail = require('./is-email');
 const getReceivedHeader = require('./get-received-header');
 const getRcptToWithoutBcc = require('./get-rcpt-to-without-bcc');
+const getForwardingConfiguration = require('./get-forwarding-configuration');
+const getMaxForwardedAddresses = require('./get-max-forwarded-addresses');
+const getSettings = require('./get-settings');
+const isAutoReplyOrMailingList = require('./is-auto-reply-or-mailing-list');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -265,5 +269,9 @@ module.exports = {
   REGEX_LOCALHOST,
   isEmail,
   getReceivedHeader,
-  getRcptToWithoutBcc
+  getRcptToWithoutBcc,
+  getForwardingConfiguration,
+  getMaxForwardedAddresses,
+  getSettings,
+  isAutoReplyOrMailingList
 };

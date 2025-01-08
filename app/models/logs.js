@@ -13,7 +13,6 @@ const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('@forwardemail/bytes');
-const captainHook = require('captain-hook');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -229,8 +228,6 @@ Logs.virtual('skip_duplicate_check')
   .set(function (skipDuplicateCheck) {
     this.__skip_duplicate_check = boolean(skipDuplicateCheck);
   });
-
-Logs.plugin(captainHook);
 
 Logs.plugin(mongooseCommonPlugin, {
   object: 'log',
@@ -918,7 +915,13 @@ Logs.pre('save', function (next) {
 // NOTE: we want instant notifications of code bugs
 // (typically this would belong in a job but we're putting in here for speed)
 //
-Logs.postCreate(async (doc, next) => {
+Logs.pre('save', function (next) {
+  this._isNew = this.isNew;
+  next();
+});
+Logs.post('save', async (doc, next) => {
+  if (!doc._isNew) return next();
+
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
 

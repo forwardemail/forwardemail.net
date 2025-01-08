@@ -20,12 +20,14 @@ const { isIP } = require('node:net');
 // TODO: mullvad dns blocklist (Extended)
 // <https://github.com/mullvad/dns-blocklists/blob/main/inventory/group_vars/all.yml>
 
+const MimeNode = require('nodemailer/lib/mime-node');
 const RE2 = require('re2');
 const _ = require('lodash');
 const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
 const escapeStringRegexp = require('escape-string-regexp');
 const getStream = require('get-stream');
+const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -46,6 +48,7 @@ const checkSRS = require('#helpers/check-srs');
 const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const createBounce = require('#helpers/create-bounce');
+const createSession = require('#helpers/create-session');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
 const getAttributes = require('#helpers/get-attributes');
@@ -59,6 +62,7 @@ const i18n = require('#helpers/i18n');
 const isAllowlisted = require('#helpers/is-allowlisted');
 const isArbitrary = require('#helpers/is-arbitrary');
 const isAuthenticatedMessage = require('#helpers/is-authenticated-message');
+const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
 const isBackscatterer = require('#helpers/is-backscatterer');
 const isCodeBug = require('#helpers/is-code-bug');
 const isDenylisted = require('#helpers/is-denylisted');
@@ -73,12 +77,13 @@ const parseUsername = require('#helpers/parse-username');
 const retryRequest = require('#helpers/retry-request');
 const sendEmail = require('#helpers/send-email');
 const updateHeaders = require('#helpers/update-headers');
-const { Users, SelfTests } = require('#models');
+const { Emails, Users, SelfTests } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 const { encoder } = require('#helpers/encoder-decoder');
 
 const USER_AGENT = `${config.pkg.name}/${config.pkg.version}`;
 const HOSTNAME = os.hostname();
+const IP_ADDRESS = ip.address();
 
 const srs = new SRS(config.srs);
 
@@ -165,6 +170,137 @@ async function sendSysAdminEmail(template, err, session, headers) {
   });
 }
 */
+
+//
+// NOTE: we check against both MAIL FROM and From header for some arbitrary checks
+//       <https://github.com/zone-eu/zone-mta/issues/432>
+//
+function isMailerDaemonEmail(address) {
+  const username = parseUsername(address); // portion before "+" symbol
+  const fullUsername = parseUsername(address, true);
+  // TODO: owner-*", "*-request
+  // <https://www.rfc-editor.org/rfc/rfc3834#:~:text=Responders%20MUST%20NOT,to%20be%20useful.>
+  return (
+    config.POSTMASTER_USERNAMES.has(username) ||
+    // google groups
+    fullUsername.endsWith('+donotreply') ||
+    fullUsername.endsWith('-donotreply') ||
+    // mssecurity-noreply@microsoft.com
+    fullUsername.endsWith('+noreply') ||
+    fullUsername.endsWith('-noreply')
+  );
+}
+
+// this logic determines if we should we send a vacation responder or bounce
+function shouldSendVacationOrBounce(headers, session) {
+  // NOTE: we return the inverse here so the code is more readable
+  return !(
+    //
+    // prevent sending a bounce message if missing MAIL FROM or From
+    // (if the MAIL FROM wasn't set or blank then it's likely spam or misconfigured message)
+    //
+    (
+      !isSANB(session.envelope.mailFrom.address) ||
+      !isSANB(session.originalFromAddress) ||
+      // don't send to mailing lists, group messages, or mailer daemons
+      isAutoReplyOrMailingList(headers) ||
+      isMailerDaemonEmail(checkSRS(session.envelope.mailFrom.address)) ||
+      isMailerDaemonEmail(checkSRS(session.originalFromAddress)) ||
+      // don't send if it was "MDaemon" with "X-MDDSN-Message" header
+      (headers.hasHeader('x-mddsn-message') &&
+        parseUsername(checkSRS(session.originalFromAddress)) === 'mdaemon')
+    )
+  );
+}
+
+async function sendVacationResponder(vacationResponder, headers, session) {
+  // check cache if we've already sent this
+  const key = `${config.fingerprintPrefix}:${revHash(
+    encoder.pack([
+      vacationResponder.alias_id,
+      session.isAllowlisted
+        ? session.originalFromAddress
+        : session.originalFromAddressRootDomain
+    ])
+  )}`;
+
+  const cache = await this.client.get(key);
+  if (cache) return;
+
+  await this.client.set(key, true, 'PX', ms('4d'));
+
+  // message is a stream
+  const message = createVacationResponder(vacationResponder, headers, session);
+
+  // TODO: implement credit system
+
+  //
+  // TODO: we should use this queue method instead of email helper
+  //       and also for bounces in MX codebase
+  //
+  // queue the email
+  const email = await Emails.queue({
+    info: {
+      message,
+      envelope: {
+        from: vacationResponder.from,
+        to: [checkSRS(session.envelope.mailFrom.address)]
+      }
+    },
+    user: { id: vacationResponder.user },
+    is_bounce: true
+  });
+
+  logger.debug('email created', {
+    session: createSession(email),
+    user: email.user,
+    email: email._id,
+    domains: [email.domain],
+    ignore_hook: false
+  });
+}
+
+function createVacationResponder(vacationResponder, headers, session) {
+  // NOTE: "Date" and "Message-ID" header will be automatically set
+  const rootNode = new MimeNode('text/plain; charset=utf-8');
+  rootNode.setHeader('To', session.originalFromAddress);
+  rootNode.setHeader('From', vacationResponder.from);
+  //
+  // Gmail sets Precedence to "bulk" and X-Autoreply to "yes"
+  // (though they go against sieve/vacation RFC and don't set In-Reply-To)
+  // (and they set "$vacationSubject Re: $originalSubject" as Subject)
+  //
+  const subject = getHeaders(headers, 'subject');
+  rootNode.setHeader(
+    'Subject',
+    isSANB(subject)
+      ? `${vacationResponder.subject} Re: ${subject}`
+      : vacationResponder.subject
+  );
+  rootNode.setHeader('Precedence', 'bulk');
+  rootNode.setHeader('X-Autoreply', 'yes');
+  rootNode.setHeader('Auto-Submitted', 'auto-replied');
+
+  if (headers.hasHeader('message-id')) {
+    rootNode.setHeader('In-Reply-To', headers.getFirst('message-id'));
+    rootNode.setHeader('References', headers.getFirst('message-id'));
+    rootNode.setHeader('X-Original-Message-ID', headers.getFirst('message-id'));
+  }
+
+  rootNode.setHeader('X-Report-Abuse-To', config.abuseEmail);
+  rootNode.setHeader('X-Report-Abuse', config.abuseEmail);
+  rootNode.setHeader('X-Complaints-To', config.abuseEmail);
+  rootNode.setHeader('X-Forward-Email-Website', config.urls.web);
+  rootNode.setHeader('X-Forward-Email-Version', config.pkg.version);
+  rootNode.setHeader(
+    'X-Forward-Email-Sender',
+    `rfc822; ${[vacationResponder.from, HOSTNAME, IP_ADDRESS].join(', ')}`
+  );
+
+  rootNode.setContent(vacationResponder.message);
+
+  return rootNode.createReadStream();
+}
 
 async function sendBounce(bounce, headers, session, body) {
   try {
@@ -270,7 +406,6 @@ async function sendBounce(bounce, headers, session, body) {
   }
 }
 
-// eslint-disable-next-line complexity
 async function processBounces(headers, bounces, session, body) {
   //
   // instead of returning an error if it bounced
@@ -295,123 +430,7 @@ async function processBounces(headers, bounces, session, body) {
   // if all the bounces were retries, defer, slowdown, etc then return early
   if (uniqueBounces.length === 0) return;
 
-  //
-  // prevent sending a bounce message if missing MAIL FROM
-  // (if the MAIL FROM wasn't set or blank then it's likely spam or misconfigured message)
-  //
-  if (!isSANB(session.envelope.mailFrom.address)) {
-    this.client
-      .incrby(
-        `bounce_prevented_empty:${session.arrivalDateFormatted}`,
-        bounces.length
-      )
-      .then()
-      .catch((err) => logger.fatal(err));
-    return;
-  }
-
-  try {
-    //
-    // don't send bounces for content type with multipart/report
-    //
-    // NOTE: we might want to improve this accuracy in future
-    //       <https://github.com/zone-eu/zone-mta/issues/432#:~:text=You%20only%20check%20Content%2DType%20for%20multipart/report%20right%20now%2C%20but%20you%20might%20want%20to%20specifically%20check%20against%20report%2Dtype%20of%20delivery%2Dstatus%20or%20delivery%2Dnotification%20for%20accuracy.>
-    // https://github.com/zone-eu/zone-mta/blob/49cc03a6dba473f4e6e585ca6f0b2b956a0fa77f/lib/bounces.js#L170-L183
-    if (
-      headers.hasHeader('content-type') &&
-      /^multipart\/report\b/i.test(headers.getFirst('content-type'))
-    )
-      throw new Error('Bounce prevented due to Content-Type header');
-
-    //
-    // if the message had any of these headers then don't send bounce
-    // <https://www.jitbit.com/maxblog/18-detecting-outlook-autoreplyout-of-office-emails-and-x-auto-response-suppress-header/>
-    // <https://github.com/nodemailer/smtp-server/issues/129>
-    // <https://www.arp242.net/autoreply.html>
-    //
-    // NOTE: hasHeader from mailsplit library is case-insensitive and trimmed
-    //
-    if (
-      (headers.hasHeader('auto-submitted') &&
-        headers.getFirst('auto-submitted').toLowerCase().trim() !== 'no') ||
-      (headers.hasHeader('x-auto-response-suppress') &&
-        ['dr', 'autoreply', 'auto-reply', 'auto_reply', 'all'].includes(
-          headers.getFirst('x-auto-response-suppress').toLowerCase().trim()
-        )) ||
-      headers.hasHeader('x-autoreply') ||
-      headers.hasHeader('x-auto-reply') ||
-      headers.hasHeader('x-autorespond') ||
-      headers.hasHeader('x-auto-respond') ||
-      (headers.hasHeader('precedence') &&
-        //
-        // NOTE: we don't include "bulk" and "list" as part of precedence check
-        //       (similarly to how we don't check for "list-id" nor "list-unsubscribe" headers
-        //
-        ['autoreply', 'auto-reply', 'auto_reply'].includes(
-          headers.getFirst('precedence').toLowerCase().trim()
-        ))
-    )
-      throw new Error('Bounce prevented due to auto-response header');
-
-    //
-    // NOTE: we check against both MAIL FROM and From header for some arbitrary checks
-    //       <https://github.com/zone-eu/zone-mta/issues/432>
-    //
-    const username = parseUsername(checkSRS(session.envelope.mailFrom.address));
-    const fromUsername = parseUsername(checkSRS(session.originalFromAddress));
-    // <https://github.com/andris9/mailsplit/issues/21>
-    const fromLc = getHeaders(headers, 'from').toLowerCase();
-
-    if (
-      config.POSTMASTER_USERNAMES.has(username) ||
-      config.POSTMASTER_USERNAMES.has(fromUsername) ||
-      // google groups
-      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
-        '+donotreply'
-      ) ||
-      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
-        '-donotreply'
-      ) ||
-      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
-        '+donotreply'
-      ) ||
-      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
-        '-donotreply'
-      ) ||
-      // mssecurity-noreply@microsoft.com
-      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
-        '+noreply'
-      ) ||
-      parseUsername(checkSRS(session.envelope.mailFrom.address), true).endsWith(
-        '-noreply'
-      ) ||
-      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
-        '+noneply'
-      ) ||
-      parseUsername(checkSRS(session.originalFromAddress), true).endsWith(
-        '-noneply'
-      )
-    )
-      throw new Error('Bounce prevented due to mailer-daemon username');
-
-    // MDaemon X-MDDSN-Message
-    if (
-      (username === 'mdaemon' ||
-        fromUsername === 'mdaemon' ||
-        fromLc.includes('mdaemon')) &&
-      headers.hasHeader('x-mddsn-message')
-    )
-      throw new Error('Bounce prevented due to X-MDDSN-Message header');
-
-    //
-    // iterate over each unique bounces and send if we already haven't
-    // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
-    //
-    await pMapSeries(uniqueBounces, (bounce) =>
-      sendBounce.call(this, bounce, headers, session, body)
-    );
-  } catch (err) {
-    logger.warn(err, { session });
+  if (!shouldSendVacationOrBounce(headers, session)) {
     this.client
       .incrby(
         `bounce_prevented_restricted:${session.arrivalDateFormatted}`,
@@ -419,7 +438,15 @@ async function processBounces(headers, bounces, session, body) {
       )
       .then()
       .catch((err) => logger.fatal(err));
+    return;
   }
+
+  // iterate over each unique bounces and send if we already haven't
+  // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
+  //
+  await pMapSeries(uniqueBounces, (bounce) =>
+    sendBounce.call(this, bounce, headers, session, body)
+  );
 }
 
 function getFingerprintKey(session, value) {
@@ -429,6 +456,7 @@ function getFingerprintKey(session, value) {
 async function imap(aliases, headers, session, body) {
   const accepted = [];
   const bounces = [];
+  const vacationResponders = [];
 
   //
   // NOTE: we filter out already accepted aliases here
@@ -447,13 +475,16 @@ async function imap(aliases, headers, session, body) {
   for (const [i, value] of values.entries()) {
     if (boolean(value)) {
       accepted.push(aliases[i].address);
+      if (aliases[i].vacationResponder)
+        vacationResponders.push(aliases[i].vacationResponder);
       continue;
     }
 
     unsentAliases.push(aliases[i]);
   }
 
-  if (unsentAliases.length === 0) return { accepted, bounces };
+  if (unsentAliases.length === 0)
+    return { accepted, bounces, vacationResponders };
 
   try {
     // <https://github.com/websockets/ws/issues/1959>
@@ -498,6 +529,8 @@ async function imap(aliases, headers, session, body) {
           .catch((err) => logger.fatal(err));
         // push to accepted array
         accepted.push(alias.address);
+        if (alias.vacationResponder)
+          vacationResponders.push(alias.vacationResponder);
       }
     }
   } catch (_err) {
@@ -518,7 +551,7 @@ async function imap(aliases, headers, session, body) {
     }
   }
 
-  return { accepted, bounces };
+  return { accepted, bounces, vacationResponders };
 }
 
 async function checkBounceForSpam(bounce, headers, session) {
@@ -841,7 +874,12 @@ async function forward(recipient, headers, session, body) {
       if (!accepted.includes(replacement)) accepted.push(replacement);
     }
 
-    return { accepted, bounces };
+    return {
+      accepted,
+      bounces,
+      vacationResponder:
+        accepted.length > 0 ? recipient.vacationResponder : false
+    };
   }
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks
@@ -898,7 +936,10 @@ async function forward(recipient, headers, session, body) {
         isIP(parseRootDomain(recipient.webhook)) &&
         REGEX_LOCALHOST.test(parseRootDomain(recipient.webhook))
       )
-        throw new SMTPError(i18n.translateError('INVALID_LOCALHOST_URL', 'en'));
+        throw new SMTPError(
+          i18n.translateError('INVALID_LOCALHOST_URL', 'en'),
+          { ignore_hook: true }
+        );
 
       const response = await retryRequest(
         // dummyproofing
@@ -949,7 +990,12 @@ async function forward(recipient, headers, session, body) {
         if (!accepted.includes(replacement)) accepted.push(replacement);
       }
 
-      return { accepted, bounces };
+      return {
+        accepted,
+        bounces,
+        vacationResponder:
+          accepted.length > 0 ? recipient.vacationResponder : false
+      };
     } catch (err_) {
       // delete undici's `body` prop in err object
       // in order to prevent huge payloads in-memory
@@ -1042,7 +1088,12 @@ async function forward(recipient, headers, session, body) {
       }
     }
 
-    return { accepted, bounces };
+    return {
+      accepted,
+      bounces,
+      vacationResponder:
+        accepted.length > 0 ? recipient.vacationResponder : false
+    };
   }
 
   let from;
@@ -1328,7 +1379,11 @@ async function forward(recipient, headers, session, body) {
     }
   );
 
-  return { accepted, bounces };
+  return {
+    accepted,
+    bounces,
+    vacationResponder: accepted.length > 0 ? recipient.vacationResponder : false
+  };
 }
 
 //
@@ -1336,7 +1391,7 @@ async function forward(recipient, headers, session, body) {
 //
 
 async function updateMXHeaders(session, headers) {
-  headers.remove('x-forwardemail-sender');
+  headers.remove('x-forward-email-sender');
   const senderHeader = [];
   if (
     isSANB(session.envelope.mailFrom.address) &&
@@ -1347,13 +1402,13 @@ async function updateMXHeaders(session, headers) {
     senderHeader.push(session.resolvedClientHostname);
   senderHeader.push(session.remoteAddress);
   headers.add(
-    'X-ForwardEmail-Sender',
+    'X-Forward-Email-Sender',
     `rfc822; ${senderHeader.join(', ')}`
     // headers.lines.length
   );
   if (config.env !== 'production') {
-    headers.remove('x-forwardemail-session-id');
-    headers.add('X-ForwardEmail-Session-ID', session.id); // , headers.lines.length);
+    headers.remove('x-forward-email-session-id');
+    headers.add('X-Forward-Email-Session-ID', session.id); // , headers.lines.length);
   }
 
   //
@@ -1590,6 +1645,7 @@ async function onDataMX(session, headers, body) {
 
   const accepted = [];
   const bounces = [];
+  const vacationResponders = [];
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
   if (imapResults) {
@@ -1600,6 +1656,9 @@ async function onDataMX(session, headers, body) {
     }
 
     if (imapResults.bounces.length > 0) bounces.push(...imapResults.bounces);
+
+    if (imapResults.vacationResponders.length > 0)
+      vacationResponders.push(...imapResults.vacationResponders);
   }
 
   if (forwardResults) {
@@ -1610,10 +1669,41 @@ async function onDataMX(session, headers, body) {
         }
       }
 
-      if (result.bounces.length > 0) {
-        bounces.push(...result.bounces);
-      }
+      if (result.bounces.length > 0) bounces.push(...result.bounces);
+
+      if (result.vacationResponder)
+        vacationResponders.push(result.vacationResponder);
     }
+  }
+
+  // TODO: fix the SRS0 thing (not rewriting properly. e.g. RCD)
+  // TODO: if it was SRS rewritten then it shouldn't 421 it should deliver to the address still
+
+  //
+  // send vacation responders if necessary in series
+  //
+  if (
+    shouldSendVacationOrBounce(headers, session) &&
+    vacationResponders.length > 0
+  ) {
+    await pMapSeries(
+      // ensure they are unique by alias_id otherwise we'd do unnecessary calls
+      _.uniqBy(vacationResponders, (obj) => obj.alias_id),
+      async (vacationResponder) => {
+        try {
+          await sendVacationResponder.call(
+            this,
+            vacationResponder,
+            headers,
+            session
+          );
+        } catch (err) {
+          logger.fatal(err);
+        }
+      }
+    )
+      .then()
+      .catch((err) => logger.fatal(err));
   }
 
   // if at least one was accepted and potential phishing

@@ -29,7 +29,7 @@ include ../../_pagination
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(colspan=passport && passport.otp ? "10" : "9")= t("No users exist for that search.")
+        td.alert.alert-info(colspan=passport && passport.otp ? "11" : "10")= t("No users exist for that search.")
       else
         each user in users
           tr

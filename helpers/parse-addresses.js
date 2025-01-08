@@ -48,9 +48,19 @@ function parseAddresses(input) {
   // safeguard
   if (addresses.length === 0) addresses = addressParser(input);
 
-  return addresses
+  addresses = addresses
     .filter((addr) => isEmail(addr?.address))
     .map((addr) => addr.address);
+
+  // support `foo @ beep <foo@beep.com>`
+  // <https://github.com/nodemailer/nodemailer/issues/1707>
+  if (addresses.length === 0 && input.includes('<') && input.includes('>')) {
+    const str = input.slice(input.indexOf('<') + 1);
+    const addr = str.slice(0, str.indexOf('>'));
+    if (isEmail(addr)) return [addr];
+  }
+
+  return addresses;
 }
 
 module.exports = parseAddresses;

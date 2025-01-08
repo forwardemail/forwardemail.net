@@ -619,6 +619,7 @@ const STRIPE_LOCALES = new Set([
 ]);
 
 const POSTMASTER_USERNAMES = new Set([
+  // <https://datatracker.ietf.org/doc/html/rfc5230#:~:text=Implementations%20are%20encouraged,are%20also%20suggested.>
   'automailer',
   'autoresponder',
   'bounce',
@@ -626,16 +627,15 @@ const POSTMASTER_USERNAMES = new Set([
   'bounce-notifications',
   'bounces',
   'hostmaster',
+  'listserv',
   'localhost',
   'mail-daemon',
   'mail.daemon',
   'maildaemon',
-  'mailer',
   'mailer-daemon',
   'mailer.daemon',
   'mailerdaemon',
-  'post-master',
-  'post.master',
+  'majordomo',
   'postmaster',
   ...noReplyList
 ]);

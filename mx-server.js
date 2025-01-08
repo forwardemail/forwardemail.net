@@ -10,7 +10,6 @@ const ms = require('ms');
 const pify = require('pify');
 const { SMTPServer } = require('smtp-server');
 
-const RetryClient = require('#helpers/retry-client');
 const config = require('#config');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
 const createTangerine = require('#helpers/create-tangerine');
@@ -34,10 +33,6 @@ class MX {
     this.wsp = options.wsp;
     this.resolver = createTangerine(this.client, logger);
     this.cache = createMtaStsCache(this.client);
-
-    // NOTE: this is useful for tests since we can pass `apiEndpoint` in test options
-    // TODO: remove API and replace with MongoDB calls (and then we can remove API from MX tests)
-    this.apiClient = new RetryClient(options.apiEndpoint || config.urls.api);
 
     // TODO: rate limiting (?)
 

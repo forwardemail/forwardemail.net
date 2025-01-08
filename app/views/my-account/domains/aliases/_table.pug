@@ -478,6 +478,36 @@ p.text-center.d-lg-none
                   code.text-break= `${alias.name}@${domain.name}`
                 else
                   code= `${alias.name}@${domain.name}`
+              //- vacation responder support
+              if alias.vacation_responder && alias.vacation_responder.is_enabled
+                span.badge.badge-warning
+                  i.fa.fa-calendar-day
+                  = " "
+                  = t("Vacation Responder")
+                  if _.isDate(alias.vacation_responder.start_date)
+                    = " "
+                    = "("
+                    span.dayjs(
+                      data-time=new Date(alias.vacation_responder.start_date).getTime(),
+                      data-time-style="false"
+                    )= dayjs(alias.vacation_responder.start_date).format("M/D/YY")
+                  if _.isDate(alias.vacation_responder.end_date)
+                    if _.isDate(alias.vacation_responder.start_date)
+                      != " &ndash; "
+                    else
+                      = " "
+                      = "("
+                      = t("Now")
+                      != " &ndash; "
+                    span.dayjs(
+                      data-time=new Date(alias.vacation_responder.end_date).getTime(),
+                      data-time-style="false"
+                    )= dayjs(alias.vacation_responder.end_date).format("M/D/YY")
+                    = ")"
+                  else
+                    != " &ndash; "
+                    = t("Forever")
+                    = ")"
               //- on mobile we need to render this different
               .d-lg-none.p-2
                 if !isUbuntuRelatedAlias || domain.group === 'admin'

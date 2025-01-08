@@ -6,7 +6,6 @@
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
-const captainHook = require('captain-hook');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
@@ -648,8 +647,6 @@ Users.pre('save', function (next) {
   next();
 });
 
-Users.plugin(captainHook);
-
 Users.virtual(config.userFields.addressHTML).get(function () {
   const companyName = this[config.userFields.companyName];
   const name = [
@@ -939,7 +936,14 @@ Users.pre('save', async function (next) {
   next();
 });
 
-Users.postCreate(async (user, next) => {
+Users.pre('save', function (next) {
+  this._isNew = this.isNew;
+  next();
+});
+
+Users.post('save', async (user, next) => {
+  if (!user._isNew) return next();
+
   logger.info('user created', {
     user: user.toObject()
   });

@@ -376,6 +376,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     let feedbackId;
 
     // <https://github.com/andris9/mailsplit#events>
+    // eslint-disable-next-line complexity
     splitter.on('data', (data) => {
       if (data.type !== 'node' || data.root !== true) return;
       // - data.headers.get
@@ -403,9 +404,24 @@ async function processEmail({ email, port = 25, resolver, client }) {
       //
       // NOTE: hasHeader from mailsplit library is case-insensitive and trimmed
       //
+      // <https://datatracker.ietf.org/doc/html/rfc5230#:~:text=Implementations%20SHOULD%20NOT,in%20%5BRFC3834%5D.>
       if (
-        data.headers.hasHeader('list-id') ||
-        data.headers.hasHeader('list-unsubscribe')
+        //
+        // NOTE: vacation responders are bounces (aka auto responses) and have "precedence" header
+        //       (in future we may want to rewrite for readability `is_bounce` to `is_auto_response`)
+        //
+        !email.is_bounce &&
+        (data.headers.hasHeader('list-id') ||
+          data.headers.hasHeader('list-subscribe') ||
+          data.headers.hasHeader('list-unsubscribe') ||
+          data.headers.hasHeader('list-help') ||
+          data.headers.hasHeader('list-post') ||
+          data.headers.hasHeader('list-owner') ||
+          data.headers.hasHeader('list-archive') ||
+          (data.headers.hasHeader('precedence') &&
+            ['bulk', 'list'].includes(
+              data.headers.getFirst('precedence').toLowerCase().trim()
+            )))
       )
         hasNewsletter = true;
 
@@ -449,17 +465,17 @@ async function processEmail({ email, port = 25, resolver, client }) {
       updateHeaders(data.headers);
 
       // additional headers to add specifically for outbound smtp
-      data.headers.remove('x-forwardemail-sender');
+      data.headers.remove('x-forward-email-sender');
       data.headers.add(
-        'X-ForwardEmail-Sender',
-        `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`,
-        data.headers.lines.length
+        'X-Forward-Email-Sender',
+        `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`
+        // data.headers.lines.length
       );
-      data.headers.remove('x-forwardemail-id');
+      data.headers.remove('x-forward-email-id');
       data.headers.add(
-        'X-ForwardEmail-ID',
-        email.id,
-        data.headers.lines.length
+        'X-Forward-Email-ID',
+        email.id
+        // data.headers.lines.length
       );
     });
 

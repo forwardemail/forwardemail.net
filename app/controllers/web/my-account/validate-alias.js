@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const RE2 = require('re2');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
+const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const slug = require('speakingurl');
 const splitLines = require('split-lines');
@@ -191,6 +192,100 @@ function validateAlias(ctx, next) {
         Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))
       );
     */
+  }
+
+  // vacation responder
+  if (
+    [
+      'vacation_responder_is_enabled',
+      'vacation_responder_start_date',
+      'vacation_responder_end_date',
+      'vacation_responder_subject',
+      'vacation_responder_message'
+    ].some((field) => typeof ctx.request.body[field] !== 'undefined')
+  ) {
+    // if domain was global then throw error
+    if (ctx?.state?.domain?.is_global)
+      return ctx.throw(
+        Boom.badRequest(
+          ctx.translateError('VACATION_RESPONDER_NOT_SUPPORTED_ON_GLOBAL')
+        )
+      );
+
+    // extend existing if alias being updated (e.g. if we only want to change one field via API)
+    body.vacation_responder = ctx.state.alias.vacation_responder || {};
+
+    // is_enabled
+    if (typeof ctx.request.body.vacation_responder_is_enabled !== 'undefined')
+      body.vacation_responder.is_enabled = boolean(
+        ctx.request.body.vacation_responder_is_enabled
+      );
+    else if (!ctx.api) body.vacation_responder.is_enabled = false;
+
+    //
+    // NOTE: do not let the user enable vacation responder
+    //       if the domain does not have SMTP set up yet
+    //
+    if (
+      body.vacation_responder.is_enabled &&
+      (!ctx?.state?.domain?.smtp_verified_at ||
+        ctx?.state?.domain?.is_smtp_suspended)
+    )
+      return ctx.throw(
+        Boom.badRequest(
+          ctx.translateError(
+            'VACATION_RESPONDER_SMTP_REQUIRED',
+            ctx.state.l(
+              `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+            ),
+            ctx.state.domain.name
+          )
+        )
+      );
+
+    // start_date
+    // end_date
+    for (const field of ['start_date', 'end_date']) {
+      if (ctx.request.body[`vacation_responder_${field}`] === '') {
+        body.vacation_responder[field] = undefined;
+      } else if (
+        typeof ctx.request.body[`vacation_responder_${field}`] === 'string'
+      ) {
+        if (!dayjs(ctx.request.body[`vacation_responder_${field}`]).isValid())
+          return ctx.throw(
+            Boom.badRequest(
+              ctx.translateError('VACATION_RESPONDER_DATE_INVALID')
+            )
+          );
+        body.vacation_responder[field] = dayjs(
+          ctx.request.body[`vacation_responder_${field}`]
+        ).toDate();
+      }
+    }
+
+    // if start_date AND end_date both set, ensure start_date is before
+    // (this logic is mirrored in alias model pre validate hook)
+    if (
+      _.isDate(body?.vacation_responder?.start_date) &&
+      _.isDate(body?.vacation_responder?.end_date) &&
+      new Date(body.vacation_responder.start_date).getTime() >=
+        new Date(body.vacation_responder.end_date)
+    )
+      return ctx.throw(
+        Boom.badRequest(ctx.translateError('VACATION_RESPONDER_DATE_ISSUE'))
+      );
+
+    // subject
+    if (typeof ctx.request.body.vacation_responder_subject === 'string')
+      body.vacation_responder.subject = striptags(
+        ctx.request.body.vacation_responder_subject
+      );
+
+    // message
+    if (typeof ctx.request.body.vacation_responder_message === 'string')
+      body.vacation_responder.message = striptags(
+        ctx.request.body.vacation_responder_message
+      );
   }
 
   ctx.state.body = body;

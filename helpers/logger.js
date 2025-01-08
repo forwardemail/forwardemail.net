@@ -26,7 +26,11 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
-const isCodeBug = require('./is-code-bug');
+
+const isCodeBug = require('#helpers/is-code-bug');
+const isTLSError = require('#helpers/is-tls-error');
+const isSSLError = require('#helpers/is-ssl-error');
+const isSocketError = require('#helpers/is-socket-error');
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
@@ -148,8 +152,16 @@ async function hook(err, message, meta) {
   //
   if (err && err.is_duplicate_log) return;
 
-  // wrapper for browser condition
+  // write ECONNRESET
+  // read ECONNRESET
+  if (err && err.message === 'write ECONNRESET') return;
+  if (err && err.message === 'read ECONNRESET') return;
+
+  // wrapper for non-browser condition
   if (mongoose) {
+    // if it was SSL/TLS/socket error then ignore it
+    if (isTLSError(err) || isSSLError(err) || isSocketError(err)) return;
+
     try {
       const conn = mongoose.connections.find(
         (conn) => conn[connectionNameSymbol] === 'LOGS_MONGO_URI'

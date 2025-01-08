@@ -7,7 +7,6 @@ const util = require('node:util');
 // const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
-const API = require('@ladjs/api');
 const Koa = require('koa');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -19,19 +18,18 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
-const { listen } = require('async-listen');
 
 const utils = require('../utils');
 
 const MX = require('../../mx-server');
 const SQLite = require('../../sqlite-server');
 
-const Users = require('#models/users');
-const apiConfig = require('#config/api');
+const Emails = require('#models/emails');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
+const processEmail = require('#helpers/process-email');
 
 // dynamically import @ava/get-port
 let getPort;
@@ -51,19 +49,7 @@ test.beforeEach(utils.setupFactories);
 // setup API server so we can configure MX with it
 // (similar to `utils.setupApiServer`)
 test.beforeEach(async (t) => {
-  const api = new API(
-    {
-      ...apiConfig,
-      redis: t.context.client
-    },
-    Users
-  );
   if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
-  const port = await getPort();
-  // remove trailing slash from API URL
-  t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
-  t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
-
   const sqlitePort = await getPort();
   const sqlite = new SQLite({
     client: t.context.client,
@@ -81,7 +67,6 @@ test.beforeEach(async (t) => {
 test('imap/forward/webhook', async (t) => {
   const smtp = new MX({
     client: t.context.client,
-    apiEndpoint: t.context.apiURL,
     wsp: t.context.wsp
   });
   const { resolver } = smtp;
@@ -174,7 +159,13 @@ test('imap/forward/webhook', async (t) => {
       public_key: publicKey,
       user: user._id,
       domain: domain._id,
-      recipients: [IP_ADDRESS, `http://${domain.name}:${webhookPort}`]
+      recipients: [IP_ADDRESS, `http://${domain.name}:${webhookPort}`],
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Vacation Responder Test Subject #1',
+        message: 'Vacation Responder Test Message #1'
+      }
     })
     .create();
 
@@ -183,7 +174,13 @@ test('imap/forward/webhook', async (t) => {
       name: 'foo',
       user: user._id,
       domain: domain._id,
-      recipients: ['foo@beep.com'] // we spoof this MX server
+      recipients: ['foo@beep.com'], // we spoof this MX server
+      vacation_responder: {
+        is_enabled: true,
+        start_date: new Date(),
+        subject: 'Vacation Responder Test Subject #2',
+        message: 'Vacation Responder Test Message #2'
+      }
     })
     .create();
 
@@ -391,6 +388,67 @@ Test`.trim()
   }
 
   await smtp.close();
+
+  await pWaitFor(async () => {
+    const exists = await Emails.exists({
+      user: user._id,
+      is_bounce: true
+    });
+    return Boolean(exists?._id);
+  });
+
+  let email = await Emails.findOne({
+    user: user._id,
+    is_bounce: true
+  });
+
+  const dummyPort = await getPort();
+  const dummyServer = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onMailFrom(address, session, fn) {
+      // this should be MAIL FROM <> (blank/empty)
+      t.is(address.address, '');
+      if (address.address !== '')
+        return fn(new Error('MAIL FROM must be blank'));
+      fn();
+    },
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(dummyServer.listen.bind(dummyServer))(dummyPort);
+
+  await processEmail({
+    email,
+    port: dummyPort,
+    resolver,
+    client: t.context.client
+  });
+
+  email = await Emails.findById(email._id);
+
+  t.is(email.status, 'sent');
+  t.deepEqual(email.accepted, ['test@test.com']);
 });
 
 // TODO: checkBounceForSpam logic
@@ -448,7 +506,7 @@ Test`.trim()
 // - X-Report-Abuse-To
 // - X-Report-Abuse
 // - X-Complaints-To
-// - X-ForwardEmail-Version
-// - X-ForwardEmail-Sender
+// - X-Forward-Email-Version
+// - X-Forward-Email-Sender
 
 // friendly-from rewrite if necessary

@@ -7,6 +7,7 @@
 * [How fast is this service](#how-fast-is-this-service)
 * [How do I get started and set up email forwarding](#how-do-i-get-started-and-set-up-email-forwarding)
 * [Can I use multiple MX exchanges and servers for advanced forwarding](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+* [How do I set up a vacation responder (out of office auto-responder)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
 * [How do I set up SPF for Forward Email](#how-do-i-set-up-spf-for-forward-email)
 * [How do I set up DKIM for Forward Email](#how-do-i-set-up-dkim-for-forward-email)
 * [How do I set up DMARC for Forward Email](#how-do-i-set-up-dmarc-for-forward-email)
@@ -34,6 +35,7 @@
 * [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding)
 * [How do you handle email delivery issues](#how-do-you-handle-email-delivery-issues)
 * [How do you handle your IP addresses becoming blocked](#how-do-you-handle-your-ip-addresses-becoming-blocked)
+* [What are postmaster addresses](#what-are-postmaster-addresses)
 * [What are no-reply addresses](#what-are-no-reply-addresses)
 * [What are your server's IP addresses](#what-are-your-servers-ip-addresses)
 * [Do you have an allowlist](#do-you-have-an-allowlist)
@@ -758,6 +760,49 @@ Instead, you need to configure your existing MX exchange to forward mail for all
 If you are using Google Workspace and you want to forward all non-matching aliases to our service, then see <https://support.google.com/a/answer/6297084>.
 
 If you are using Microsoft 365 (Outlook) and you want to forward all non-matching aliases to our service, then see <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> and <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+
+
+## How do I set up a vacation responder (out of office auto-responder)
+
+Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Aliases and either create or edit the alias you would like to configure a vacation autoresponder for.
+
+You have the ability to configure a start date, end date, subject, and message, and enable or disable it at anytime:
+
+* Plaintext subject and message are currently supported (we use `striptags` package internally to remove any HTML).
+* Subject is limited to 100 characters.
+* Message is limited to 1000 characters.
+* Setup requires Outbound SMTP configuration (e.g. you will need to setup DKIM, DMARC, and Return-Path DNS records).
+  * Go to <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> <i class="fa fa-angle-right"></i> Settings <i class="fa fa-angle-right"></i> Outbound SMTP Configuration and follow setup instructions.
+* Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
+* Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
+
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+
+<!--
+* In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.
+  * All paid accounts include 300 credits per day by default.  If you need a larger amount, then please contact us.
+-->
+
+1. We only send once per [allowlisted](#do-you-have-an-allowlist) sender every 4 days (which is similar to Gmail's behavior).
+
+   * Our Redis cache uses a fingerprint of `alias_id` and `sender`, whereas `alias_id` is the alias MongoDB ID and `sender` is either the From address (if allowlisted) or root domain in the From address (if not allowlisted).  For simplicity the expiry of this fingerprint in cache is set to 4 days.
+
+   * Our approach of using the root domain parsed in the From address for non-allowlisted senders prevents abuse from relatively unknown senders (e.g. malicious actors) from flooding vacation responder messages.
+
+2. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
+
+3. We don't send if the original message had any of the following headers (case-insensitive):
+
+   * Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
+
+4. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+
+5. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+
+6. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
 
 ## How do I set up SPF for Forward Email
@@ -1617,10 +1662,11 @@ This section describes our process related to the SMTP protocol command `DATA` i
    * `X-Original-To` - the original recipient for the message:
      * This is useful for determining where an email was originally delivered to (in addition to the "Received" header).
      * BCC header addresses are removed from `RCPT TO` values in order to preserve privacy.
-   * `X-ForwardEmail-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
-   * `X-ForwardEmail-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
-   * `X-ForwardEmail-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
-   * `X-ForwardEmail-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
+   * `X-Forward-Email-Website` - contains a link to our website of <https://forwardemail.net>
+   * `X-Forward-Email-Version` - the current [SemVer](https://semver.org/) version from `package.json` of our codebase.
+   * `X-Forward-Email-Session-ID` - a session ID value used for debug purposes (only applies in non-production environments).
+   * `X-Forward-Email-Sender` - a comma separated list containing the original envelope MAIL FROM address (if it was not blank), the reverse PTR client FQDN (if it exists), and the sender's IP address.
+   * `X-Forward-Email-ID` - this is only applicable for outbound SMTP and correlates to the email ID stored in My Account → Emails
    * `X-Report-Abuse` - with a value of `abuse@forwardemail.net`.
    * `X-Report-Abuse-To` - with a value of `abuse@forwardemail.net`.
    * `X-Complaints-To` - with a value of `abuse@forwardemail.net`.
@@ -1686,6 +1732,32 @@ We routinely monitor all major DNS denylists and if any of our mail exchange ("M
 At the time of this writing, we are listed in several DNS allowlists as well, and we take monitoring denylists seriously.  If you see any issues before we have a chance to resolve them, please notify us in writing at <support@forwardemail.net>.
 
 Our IP addresses are publicly available, [see this section below for more insight](#what-are-your-servers-ip-addresses).
+
+
+## What are postmaster addresses
+
+In order to prevent misdirected bounces and sending vacation responder messages to unmonitored or nonexistent mailboxes, we maintain a list of mailer-daemon like usernames:
+
+* `automailer`
+* `autoresponder`
+* `bounce`
+* `bounce-notification`
+* `bounce-notifications`
+* `bounces`
+* `hostmaster`
+* `listserv`
+* `localhost`
+* `mail-daemon`
+* `mail.daemon`
+* `maildaemon`
+* `mailer-daemon`
+* `mailer.daemon`
+* `mailerdaemon`
+* `majordomo`
+* `postmaster`
+* [and any no-reply address](#what-are-no-reply-addresses)
+
+See [RFC 5320 Section 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) for more insight into how lists such as these are used to create efficient email systems.
 
 
 ## What are no-reply addresses
@@ -2580,30 +2652,7 @@ We take two steps to protect against backscatter, which is detailed in the follo
 
 We pull the list from [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) at <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> every hour and feed it into our Redis database (we also compare the difference in advance; in case any IP's were removed that need to be honored).
 
-If the MAIL FROM is blank OR is equal to (case-insensitive) any of the following usernames (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
-
-* `automailer`
-* `autoresponder`
-* `bounce`
-* `bounce-notification`
-* `bounce-notifications`
-* `bounces`
-* `e-bounce`
-* `ebounce`
-* `host-master`
-* `host.master`
-* `hostmaster`
-* `localhost`
-* `mail-daemon`
-* `mail.daemon`
-* `maildaemon`
-* `mailer`
-* `mailer-daemon`
-* `mailer.daemon`
-* `mailerdaemon`
-* `post-master`
-* `post.master`
-* `postmaster`
+If the MAIL FROM is blank OR is equal to (case-insensitive) any of the [postmaster addresses](#what-are-postmaster-addresses) (the portion before the @ in an email), then we check to see if the sender IP matches one from this list.
 
 If the sender's IP is listed (and not in our [allowlist](#do-you-have-an-allowlist)), then we send a 554 error with the message `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`.  We will be alerted if a sender is on both the Backscatterer list and in our allowlist so we can resolve the issue if necessary.
 
@@ -2615,29 +2664,24 @@ Bounces are emails that indicate email forwarding completely failed to the recip
 
 A common reason for getting listed on the Backscatterer list is misdirected bounces or bounce spam, so we must protect against this in a few ways:
 
-1. We only send bounces when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
+1. We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).
 
-2. We only send bounces once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
+2. We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on [Fingerprinting](#how-do-you-determine-an-email-fingerprint) for more insight into how the message fingerprint is calculated.  Successfully sent bounce fingerprints will expire after 7 days in our Redis cache.
 
-3. We only send bounces when the MAIL FROM is not blank and does not contain (case-insensitive) one of the following usernames (the portion before the @ in an email).  Note that this list is a little bit shorter than the one above in the MAIL FROM check because we don't want to have false positives (e.g. security@ is a valid address that you might want to get a bounce for; a lot of folks use security@ for their bug bounty programs).
+3. We only send when the MAIL FROM and/or From is not blank and does not contain (case-insensitive) a [postmaster username](#what-are-postmaster-addresses) (the portion before the @ in an email).
 
-   * `abuse@`
-   * `mailer-daemon@`
-   * `mailer_daemon@`
-   * `mailerdaemon@`
+4. We don't send if the original message had any of the following headers (case-insensitive):
 
-4. We don't send bounces if the original message had any of the following headers (case-insensitive):
+   * Header of `auto-submitted` with a value not equal to `no`.
+   * Header of `x-auto-response-suppress` with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`
+   * Header of `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, or `x-auto-respond` (regardless of value).
+   * Header of `precedence` with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`.
 
-   * `Auto-Submitted` (with a value of `no`)
-   * `X-Auto-Response-Suppress` (with a value of `dr`, `autoreply`, `auto-reply`, `auto_reply`, or `all`)
-   * `List-Id`
-   * `List-Unsubscribe`
-   * `Feedback-ID`
-   * `X-Auto-Reply`
-   * `X-Autoreply`
-   * `X-Auto-Respond`
-   * `X-Autorespond`
-   * `Precedence` (with a value of `bulk`, `autoreply`, `auto-reply`, `auto_reply`, or `list`)
+5. We don't send if the MAIL FROM or From email address ends with `+donotreply`, `-donotreply`, `+noreply`, or `-noreply`.
+
+6. We don't send if the From email address username portion was `mdaemon` and it had a case-insensitive header of `X-MDDSN-Message`.
+
+7. We don't send if there was a case-insensitive `content-type` header of `multipart/report`.
 
 
 ## How do you determine an email fingerprint
@@ -3006,16 +3050,16 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
       "line": "Authentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)"
     },
     {
-      "key": "x-forwardemail-sender",
-      "line": "X-ForwardEmail-Sender: rfc822; test@example.net"
+      "key": "x-forward-email-sender",
+      "line": "X-Forward-Email-Sender: rfc822; test@example.net"
     },
     {
-      "key": "x-forwardemail-session-id",
-      "line": "X-ForwardEmail-Session-ID: w2czxgznghn5ryyw"
+      "key": "x-forward-email-session-id",
+      "line": "X-Forward-Email-Session-ID: w2czxgznghn5ryyw"
     },
     {
-      "key": "x-forwardemail-version",
-      "line": "X-ForwardEmail-Version: 9.0.0"
+      "key": "x-forward-email-version",
+      "line": "X-Forward-Email-Version: 9.0.0"
     },
     {
       "key": "content-type",
@@ -3053,7 +3097,7 @@ Or perhaps you want all emails that go to `example.com` to forward to this endpo
     "text": "some <random@example.com>"
   },
   "messageId": "<69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>",
-  "raw": "ARC-Seal: i=1; a=rsa-sha256; t=1653506802; cv=none; d=forwardemail.net;\r\n s=default;\r\n b=R6QJ0tGwwjg2VPxiAlVIKxsg3jEPtRGKPTIOdZNWuhWrbssttFdOYzRRqvacDyN5SLoyDhVye\r\n DUA/64IxANXdHVFlpR258Yp7WxLDv2gtJD5vNSKYmUJZOWk1TynmlqTYrp0Vuqg2xIUjIlPBWAJ\r\n PPNx4JvOLjJuWYynU2qIWz0=\r\nARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;\r\n d=forwardemail.net; h=MIME-Version: Date: Message-ID: From: Content-Type;\r\n q=dns/txt; s=default; t=1653506802;\r\n bh=cEYDoyTy+Ub29XZt/zXR+sprfUE6BW0y5cHfah01PT4=;\r\n b=F/t56AAXr2Kv3G6VsbdT5OKDVJf2ulhwLiTM18Ra4tDPUKPSGSLKrWvxiXEg5NMWwdWnsOYrL\r\n r3YSm4uMxVMhHZbHm/sUu4QZq5/18hQsAkCv6fI9ifTjDwBrN5zpLOhPoZFFo+TyvHxiII3Xv3L\r\n UEzmUIIaJRX6tboQ160tino=\r\nARC-Authentication-Results: i=1; mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nReceived-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;\r\nAuthentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nX-ForwardEmail-Sender: rfc822; test@example.net\r\nX-ForwardEmail-Session-ID: w2czxgznghn5ryyw\r\nX-ForwardEmail-Version: 9.0.0\r\nContent-Type: multipart/mixed; boundary=\"--_NmP-179a735428ca7575-Part_1\"\r\nFrom: some <random@example.com>\r\nMessage-ID: <69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>\r\nDate: Wed, 25 May 2022 19:26:41 +0000\r\nMIME-Version: 1.0\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: multipart/alternative;\r\n boundary=\"--_NmP-179a735428ca7575-Part_2\"\r\n\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\nsome random text\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\n<strong>some random text</strong>\r\n----_NmP-179a735428ca7575-Part_2--\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: text/plain; name=text1.txt\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=text1.txt\r\n\r\naGVsbG8gd29ybGQh\r\n----_NmP-179a735428ca7575-Part_1--\r\n",
+  "raw": "ARC-Seal: i=1; a=rsa-sha256; t=1653506802; cv=none; d=forwardemail.net;\r\n s=default;\r\n b=R6QJ0tGwwjg2VPxiAlVIKxsg3jEPtRGKPTIOdZNWuhWrbssttFdOYzRRqvacDyN5SLoyDhVye\r\n DUA/64IxANXdHVFlpR258Yp7WxLDv2gtJD5vNSKYmUJZOWk1TynmlqTYrp0Vuqg2xIUjIlPBWAJ\r\n PPNx4JvOLjJuWYynU2qIWz0=\r\nARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;\r\n d=forwardemail.net; h=MIME-Version: Date: Message-ID: From: Content-Type;\r\n q=dns/txt; s=default; t=1653506802;\r\n bh=cEYDoyTy+Ub29XZt/zXR+sprfUE6BW0y5cHfah01PT4=;\r\n b=F/t56AAXr2Kv3G6VsbdT5OKDVJf2ulhwLiTM18Ra4tDPUKPSGSLKrWvxiXEg5NMWwdWnsOYrL\r\n r3YSm4uMxVMhHZbHm/sUu4QZq5/18hQsAkCv6fI9ifTjDwBrN5zpLOhPoZFFo+TyvHxiII3Xv3L\r\n UEzmUIIaJRX6tboQ160tino=\r\nARC-Authentication-Results: i=1; mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nReceived-SPF: none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) client-ip=127.0.0.1;\r\nAuthentication-Results: mx1.forwardemail.net;\r\n dkim=none (message not signed);\r\n spf=none (mx1.forwardemail.net: example.net does not designate permitted sender hosts) smtp.mailfrom=test@example.net smtp.helo=user.oem.local;\r\n dmarc=none header.from=example.com;\r\n bimi=skipped (DMARC not enabled)\r\nX-Forward-Email-Sender: rfc822; test@example.net\r\nX-Forward-Email-Session-ID: w2czxgznghn5ryyw\r\nX-Forward-Email-Version: 9.0.0\r\nContent-Type: multipart/mixed; boundary=\"--_NmP-179a735428ca7575-Part_1\"\r\nFrom: some <random@example.com>\r\nMessage-ID: <69ad5fc2-91cb-728f-ae5c-eeedc5f267b6@example.net>\r\nDate: Wed, 25 May 2022 19:26:41 +0000\r\nMIME-Version: 1.0\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: multipart/alternative;\r\n boundary=\"--_NmP-179a735428ca7575-Part_2\"\r\n\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\nsome random text\r\n----_NmP-179a735428ca7575-Part_2\r\nContent-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: 7bit\r\n\r\n<strong>some random text</strong>\r\n----_NmP-179a735428ca7575-Part_2--\r\n\r\n----_NmP-179a735428ca7575-Part_1\r\nContent-Type: text/plain; name=text1.txt\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=text1.txt\r\n\r\naGVsbG8gd29ybGQh\r\n----_NmP-179a735428ca7575-Part_1--\r\n",
   "dkim": {
     "headerFrom": [
       "random@example.com"
