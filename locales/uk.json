@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") ні регулярні вирази.",
   "Unlike mail systems such as": "На відміну від поштових систем, таких як",
   "(e.g. that use the": "(наприклад, які використовують",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "vacation filter extension) – Forawrd Email автоматично додає ваш підпис DKIM, перевіряє проблеми з підключенням під час надсилання відповідей про відпустку (наприклад, через поширені проблеми з підключенням SSL/TLS і застарілими серверами), і навіть підтримує шифрування Open WKD і PGP для відповідей про відпустку.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "vacation filter extension) – Forward Email автоматично додає ваш підпис DKIM, перевіряє проблеми з підключенням під час надсилання відповідей про відпустку (наприклад, через поширені проблеми з підключенням SSL/TLS і застарілими серверами), і навіть підтримує шифрування Open WKD і PGP для відповідей про відпустку.",
   "We only send once per": "Ми надсилаємо лише один раз",
   "sender every 4 days (which is similar to Gmail's behavior).": "відправник кожні 4 дні (що схоже на поведінку Gmail).",
   "Our Redis cache uses a fingerprint of": "Наш кеш Redis використовує відбиток пальця",

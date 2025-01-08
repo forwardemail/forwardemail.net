@@ -10345,7 +10345,7 @@
   ") nor regular expressions.": "）也不是正则表达式。",
   "Unlike mail systems such as": "与以下邮件系统不同",
   "(e.g. that use the": "（例如使用",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "休假过滤器扩展）——Forawrd Email 会自动添加您的 DKIM 签名，在发送休假回复时防止连接问题（例如由于常见的 SSL/TLS 连接问题和遗留维护的服务器），甚至支持对休假回复进行 Open WKD 和 PGP 加密。",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "休假过滤器扩展）——Forward Email 会自动添加您的 DKIM 签名，在发送休假回复时防止连接问题（例如由于常见的 SSL/TLS 连接问题和遗留维护的服务器），甚至支持对休假回复进行 Open WKD 和 PGP 加密。",
   "We only send once per": "我们每次只发送一次",
   "sender every 4 days (which is similar to Gmail's behavior).": "每 4 天发送一次（与 Gmail 的行为类似）。",
   "Our Redis cache uses a fingerprint of": "我们的 Redis 缓存使用",

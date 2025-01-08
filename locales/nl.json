@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") noch reguliere expressies.",
   "Unlike mail systems such as": "In tegenstelling tot mailsystemen zoals",
   "(e.g. that use the": "(bijvoorbeeld die de",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "extensie voor vakantiefilter) – Forawrd Email voegt automatisch uw DKIM-handtekening toe, biedt dummy-proof verbindingsproblemen bij het verzenden van vakantiereacties (bijvoorbeeld vanwege veelvoorkomende SSL/TLS-verbindingsproblemen en verouderde servers) en ondersteunt zelfs Open WKD- en PGP-codering voor vakantiereacties.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "extensie voor vakantiefilter) – Forward Email voegt automatisch uw DKIM-handtekening toe, biedt dummy-proof verbindingsproblemen bij het verzenden van vakantiereacties (bijvoorbeeld vanwege veelvoorkomende SSL/TLS-verbindingsproblemen en verouderde servers) en ondersteunt zelfs Open WKD- en PGP-codering voor vakantiereacties.",
   "We only send once per": "Wij versturen slechts één keer per",
   "sender every 4 days (which is similar to Gmail's behavior).": "afzender elke 4 dagen (vergelijkbaar met het gedrag van Gmail).",
   "Our Redis cache uses a fingerprint of": "Onze Redis-cache gebruikt een vingerafdruk van",

@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ")도 아니고 정규 표현식도 아닙니다.",
   "Unlike mail systems such as": "다음과 같은 메일 시스템과 달리",
   "(e.g. that use the": "(예를 들어, 사용하는",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "휴가 필터 확장) – Forawrd Email은 자동으로 DKIM 서명을 추가하고, 휴가 응답을 보낼 때 연결 문제를 더미 검증하고(예: 일반적인 SSL/TLS 연결 문제 및 레거시 유지 관리 서버로 인해), 휴가 응답에 대한 Open WKD 및 PGP 암호화도 지원합니다.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "휴가 필터 확장) – Forward Email은 자동으로 DKIM 서명을 추가하고, 휴가 응답을 보낼 때 연결 문제를 더미 검증하고(예: 일반적인 SSL/TLS 연결 문제 및 레거시 유지 관리 서버로 인해), 휴가 응답에 대한 Open WKD 및 PGP 암호화도 지원합니다.",
   "We only send once per": "우리는 한 번만 보냅니다",
   "sender every 4 days (which is similar to Gmail's behavior).": "발신자에게 4일마다 알림을 보냅니다(Gmail의 동작과 유사).",
   "Our Redis cache uses a fingerprint of": "우리의 Redis 캐시는 지문을 사용합니다",

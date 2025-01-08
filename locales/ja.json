@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") や正規表現は使用できません。",
   "Unlike mail systems such as": "次のようなメールシステムとは異なり、",
   "(e.g. that use the": "（例えば、",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "不在通知フィルター拡張機能 – Forawrd Email は、DKIM 署名を自動的に追加し、不在通知を送信する際の接続の問題 (一般的な SSL/TLS 接続の問題や従来の保守サーバーによるものなど) を防止し、不在通知の Open WKD および PGP 暗号化もサポートします。",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "不在通知フィルター拡張機能 – Forward Email は、DKIM 署名を自動的に追加し、不在通知を送信する際の接続の問題 (一般的な SSL/TLS 接続の問題や従来の保守サーバーによるものなど) を防止し、不在通知の Open WKD および PGP 暗号化もサポートします。",
   "We only send once per": "1回のみ送信します",
   "sender every 4 days (which is similar to Gmail's behavior).": "送信者に 4 日ごとに返信します (Gmail の動作と同様です)。",
   "Our Redis cache uses a fingerprint of": "Redisキャッシュは、",

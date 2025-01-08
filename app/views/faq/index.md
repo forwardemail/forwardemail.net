@@ -776,7 +776,7 @@ You have the ability to configure a start date, end date, subject, and message, 
 * Vacation responder cannot be enabled on global vanity domain names (e.g. [disposable addresses](/disposable-addresses) are not supported).
 * Vacation responder cannot be enabled for aliases with wildcard/catch-all (`*`) nor regular expressions.
 
-Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
+Unlike mail systems such as `postfix` (e.g. that use the `sieve` vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.
 
 <!--
 * In order to prevent abuse, 1 outbound SMTP credit will be deducted for each vacation responder message sent.

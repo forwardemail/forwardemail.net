@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") veya düzenli ifadeler.",
   "Unlike mail systems such as": "Gibi posta sistemlerinin aksine",
   "(e.g. that use the": "(örneğin, şunu kullananlar",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "tatil filtresi uzantısı) – Forawrd Email otomatik olarak DKIM imzanızı ekler, tatil yanıtları gönderirken bağlantı sorunlarını (örneğin, yaygın SSL/TLS bağlantı sorunları ve eski bakımlı sunucular nedeniyle) önler ve hatta tatil yanıtları için Open WKD ve PGP şifrelemesini destekler.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "tatil filtresi uzantısı) – Forward Email otomatik olarak DKIM imzanızı ekler, tatil yanıtları gönderirken bağlantı sorunlarını (örneğin, yaygın SSL/TLS bağlantı sorunları ve eski bakımlı sunucular nedeniyle) önler ve hatta tatil yanıtları için Open WKD ve PGP şifrelemesini destekler.",
   "We only send once per": "Biz sadece bir kez gönderiyoruz",
   "sender every 4 days (which is similar to Gmail's behavior).": "göndericiye her 4 günde bir (Gmail'in davranışına benzer).",
   "Our Redis cache uses a fingerprint of": "Redis önbelleğimiz bir parmak izi kullanır",

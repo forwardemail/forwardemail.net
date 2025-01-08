@@ -9691,7 +9691,7 @@
   ") nor regular expressions.": ") noch reguläre Ausdrücke.",
   "Unlike mail systems such as": "Im Gegensatz zu Mailsystemen wie",
   "(e.g. that use the": "(z. B. die den",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "Urlaubsfilter-Erweiterung) – Forawrd Email fügt automatisch Ihre DKIM-Signatur hinzu, macht Verbindungsprobleme beim Senden von Urlaubsantworten narrensicher (z. B. aufgrund allgemeiner SSL/TLS-Verbindungsprobleme und veralteter Server) und unterstützt sogar Open WKD- und PGP-Verschlüsselung für Urlaubsantworten.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "Urlaubsfilter-Erweiterung) – Forward Email fügt automatisch Ihre DKIM-Signatur hinzu, macht Verbindungsprobleme beim Senden von Urlaubsantworten narrensicher (z. B. aufgrund allgemeiner SSL/TLS-Verbindungsprobleme und veralteter Server) und unterstützt sogar Open WKD- und PGP-Verschlüsselung für Urlaubsantworten.",
   "We only send once per": "Wir versenden nur einmal pro",
   "sender every 4 days (which is similar to Gmail's behavior).": "Absender alle 4 Tage (was dem Verhalten von Gmail ähnelt).",
   "Our Redis cache uses a fingerprint of": "Unser Redis-Cache verwendet einen Fingerabdruck von",

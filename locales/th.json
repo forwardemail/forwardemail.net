@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") หรือนิพจน์ทั่วไป",
   "Unlike mail systems such as": "ต่างจากระบบไปรษณีย์เช่น",
   "(e.g. that use the": "(เช่น การใช้",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "ส่วนขยายตัวกรองวันหยุด) – อีเมลล่วงหน้าจะเพิ่มลายเซ็น DKIM ของคุณโดยอัตโนมัติ ป้องกันปัญหาการเชื่อมต่อหลอกเมื่อส่งการตอบกลับวันหยุด (เช่น เนื่องมาจากปัญหาการเชื่อมต่อ SSL/TLS ทั่วไปและเซิร์ฟเวอร์ที่บำรุงรักษาแบบเดิม) และยังรองรับการเข้ารหัส Open WKD และ PGP สำหรับการตอบกลับวันหยุดอีกด้วย",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "ส่วนขยายตัวกรองวันหยุด) – อีเมลล่วงหน้าจะเพิ่มลายเซ็น DKIM ของคุณโดยอัตโนมัติ ป้องกันปัญหาการเชื่อมต่อหลอกเมื่อส่งการตอบกลับวันหยุด (เช่น เนื่องมาจากปัญหาการเชื่อมต่อ SSL/TLS ทั่วไปและเซิร์ฟเวอร์ที่บำรุงรักษาแบบเดิม) และยังรองรับการเข้ารหัส Open WKD และ PGP สำหรับการตอบกลับวันหยุดอีกด้วย",
   "We only send once per": "เราจะส่งเพียงครั้งเดียวต่อครั้ง",
   "sender every 4 days (which is similar to Gmail's behavior).": "ผู้ส่งทุก ๆ 4 วัน (ซึ่งคล้ายกับพฤติกรรมของ Gmail)",
   "Our Redis cache uses a fingerprint of": "แคช Redis ของเราใช้ลายนิ้วมือของ",

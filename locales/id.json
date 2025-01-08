@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") maupun ekspresi reguler.",
   "Unlike mail systems such as": "Tidak seperti sistem surat seperti",
   "(e.g. that use the": "(misalnya yang menggunakan",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "ekstensi filter liburan) – Forawrd Email secara otomatis menambahkan tanda tangan DKIM Anda, mengatasi masalah koneksi saat mengirim respons liburan (misalnya karena masalah koneksi SSL/TLS umum dan server lama yang dipelihara), dan bahkan mendukung enkripsi Open WKD dan PGP untuk respons liburan.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "ekstensi filter liburan) – Forward Email secara otomatis menambahkan tanda tangan DKIM Anda, mengatasi masalah koneksi saat mengirim respons liburan (misalnya karena masalah koneksi SSL/TLS umum dan server lama yang dipelihara), dan bahkan mendukung enkripsi Open WKD dan PGP untuk respons liburan.",
   "We only send once per": "Kami hanya mengirim sekali per",
   "sender every 4 days (which is similar to Gmail's behavior).": "pengirim setiap 4 hari (yang mirip dengan perilaku Gmail).",
   "Our Redis cache uses a fingerprint of": "Cache Redis kami menggunakan sidik jari",

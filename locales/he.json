@@ -8678,7 +8678,7 @@
   ") nor regular expressions.": ") ולא ביטויים רגולריים.",
   "Unlike mail systems such as": "בניגוד למערכות דואר כגון",
   "(e.g. that use the": "(למשל שמשתמשים ב",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "הרחבת מסנן חופשה) – Forawrd Email מוסיף אוטומטית את חתימת ה-DKIM שלך, מוכיח בעיות חיבור בעת שליחת תגובות חופשה (למשל עקב בעיות נפוצות בחיבור SSL/TLS ושרתים מתוחזקים מדור קודם), ואפילו תומך בהצפנת Open WKD ו-PGP עבור תגובות חופשה.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "הרחבת מסנן חופשה) – Forward Email מוסיף אוטומטית את חתימת ה-DKIM שלך, מוכיח בעיות חיבור בעת שליחת תגובות חופשה (למשל עקב בעיות נפוצות בחיבור SSL/TLS ושרתים מתוחזקים מדור קודם), ואפילו תומך בהצפנת Open WKD ו-PGP עבור תגובות חופשה.",
   "We only send once per": "אנו שולחים רק פעם אחת לכל",
   "sender every 4 days (which is similar to Gmail's behavior).": "שולח כל 4 ימים (מה שדומה להתנהגות של Gmail).",
   "Our Redis cache uses a fingerprint of": "מטמון Redis שלנו משתמש בטביעת אצבע של",

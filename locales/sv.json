@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") eller reguljära uttryck.",
   "Unlike mail systems such as": "Till skillnad från mailsystem som t.ex",
   "(e.g. that use the": "(t.ex. som använder",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "semesterfiltertillägg) – Forawrd Email lägger automatiskt till din DKIM-signatur, dummysäkrar anslutningsproblem när du skickar semestersvar (t.ex. på grund av vanliga SSL/TLS-anslutningsproblem och äldre underhållna servrar), och stöder till och med Open WKD- och PGP-kryptering för semestersvar.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "semesterfiltertillägg) – Forward Email lägger automatiskt till din DKIM-signatur, dummysäkrar anslutningsproblem när du skickar semestersvar (t.ex. på grund av vanliga SSL/TLS-anslutningsproblem och äldre underhållna servrar), och stöder till och med Open WKD- och PGP-kryptering för semestersvar.",
   "We only send once per": "Vi skickar endast en gång per",
   "sender every 4 days (which is similar to Gmail's behavior).": "avsändare var fjärde dag (vilket liknar Gmails beteende).",
   "Our Redis cache uses a fingerprint of": "Vår Redis-cache använder ett fingeravtryck av",

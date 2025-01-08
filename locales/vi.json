@@ -8187,7 +8187,7 @@
   ") nor regular expressions.": ") cũng không phải biểu thức chính quy.",
   "Unlike mail systems such as": "Không giống như các hệ thống thư như",
   "(e.g. that use the": "(ví dụ sử dụng",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "tiện ích mở rộng bộ lọc kỳ nghỉ) – Forawrd Email tự động thêm chữ ký DKIM của bạn, loại bỏ các sự cố kết nối khi gửi phản hồi kỳ nghỉ (ví dụ: do các sự cố kết nối SSL/TLS phổ biến và máy chủ được duy trì cũ) và thậm chí hỗ trợ mã hóa Open WKD và PGP cho các phản hồi kỳ nghỉ.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "tiện ích mở rộng bộ lọc kỳ nghỉ) – Forward Email tự động thêm chữ ký DKIM của bạn, loại bỏ các sự cố kết nối khi gửi phản hồi kỳ nghỉ (ví dụ: do các sự cố kết nối SSL/TLS phổ biến và máy chủ được duy trì cũ) và thậm chí hỗ trợ mã hóa Open WKD và PGP cho các phản hồi kỳ nghỉ.",
   "We only send once per": "Chúng tôi chỉ gửi một lần mỗi",
   "sender every 4 days (which is similar to Gmail's behavior).": "người gửi cứ sau 4 ngày (tương tự như hành vi của Gmail).",
   "Our Redis cache uses a fingerprint of": "Bộ nhớ đệm Redis của chúng tôi sử dụng dấu vân tay của",

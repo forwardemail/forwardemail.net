@@ -10499,7 +10499,7 @@
   ") nor regular expressions.": ") eikä säännöllisiä lausekkeita.",
   "Unlike mail systems such as": "Toisin kuin sähköpostijärjestelmät, kuten",
   "(e.g. that use the": "(jotka käyttävät esim",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "lomasuodatinlaajennus) – Forawrd Email lisää automaattisesti DKIM-allekirjoituksesi, suojaa yhteysongelmat lomavastauksia lähetettäessä (esim. yleisten SSL/TLS-yhteysongelmien ja vanhojen ylläpidettyjen palvelimien vuoksi) ja tukee jopa Open WKD- ja PGP-salausta lomavastauksille.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "lomasuodatinlaajennus) – Forward Email lisää automaattisesti DKIM-allekirjoituksesi, suojaa yhteysongelmat lomavastauksia lähetettäessä (esim. yleisten SSL/TLS-yhteysongelmien ja vanhojen ylläpidettyjen palvelimien vuoksi) ja tukee jopa Open WKD- ja PGP-salausta lomavastauksille.",
   "We only send once per": "Lähetämme vain kerran per",
   "sender every 4 days (which is similar to Gmail's behavior).": "lähettäjä 4 päivän välein (mikä on samanlainen kuin Gmailin toiminta).",
   "Our Redis cache uses a fingerprint of": "Redis-välimuistimme käyttää sormenjälkeä",

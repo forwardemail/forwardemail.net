@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") ani regulární výrazy.",
   "Unlike mail systems such as": "Na rozdíl od poštovních systémů jako např",
   "(e.g. that use the": "(např. které používají",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "rozšíření prázdninového filtru) – Forawrd Email automaticky přidá váš podpis DKIM, fiktivní důkazy o problémech s připojením při odesílání odpovědí o dovolené (např. kvůli běžným problémům s připojením SSL/TLS a starším spravovaným serverům) a dokonce podporuje šifrování Open WKD a PGP pro odpovědi na dovolenou.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "rozšíření prázdninového filtru) – Forward Email automaticky přidá váš podpis DKIM, fiktivní důkazy o problémech s připojením při odesílání odpovědí o dovolené (např. kvůli běžným problémům s připojením SSL/TLS a starším spravovaným serverům) a dokonce podporuje šifrování Open WKD a PGP pro odpovědi na dovolenou.",
   "We only send once per": "Posíláme pouze jednou za",
   "sender every 4 days (which is similar to Gmail's behavior).": "odesílatele každé 4 dny (což je podobné chování Gmailu).",
   "Our Redis cache uses a fingerprint of": "Naše mezipaměť Redis používá otisk prstu",

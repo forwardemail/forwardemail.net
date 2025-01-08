@@ -6839,7 +6839,7 @@
   ") nor regular expressions.": ") nor regular expressions.",
   "Unlike mail systems such as": "Unlike mail systems such as",
   "(e.g. that use the": "(e.g. that use the",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.",
   "We only send once per": "We only send once per",
   "sender every 4 days (which is similar to Gmail's behavior).": "sender every 4 days (which is similar to Gmail's behavior).",
   "Our Redis cache uses a fingerprint of": "Our Redis cache uses a fingerprint of",

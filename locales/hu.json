@@ -10652,7 +10652,7 @@
   ") nor regular expressions.": ") sem reguláris kifejezéseket.",
   "Unlike mail systems such as": "Ellentétben a levelezőrendszerekkel, mint pl",
   "(e.g. that use the": "(például amelyek a",
-  "vacation filter extension) – Forawrd Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "szabadságszűrő bővítmény) – A Forawrd Email automatikusan hozzáadja a DKIM-aláírást, ál-ellenőrzi a kapcsolódási problémákat a nyaralási válaszok küldésekor (például a gyakori SSL/TLS-kapcsolati problémák és a régebbi karbantartott kiszolgálók miatt), és még az Open WKD és PGP titkosítást is támogatja a nyaralási válaszokhoz.",
+  "vacation filter extension) – Forward Email automatically adds your DKIM signature, dummy-proofs connection issues when sending vacation responses (e.g. due to common SSL/TLS connection issues and legacy maintained servers), and even supports Open WKD and PGP encryption for vacation responses.": "szabadságszűrő bővítmény) – A Forward Email automatikusan hozzáadja a DKIM-aláírást, ál-ellenőrzi a kapcsolódási problémákat a nyaralási válaszok küldésekor (például a gyakori SSL/TLS-kapcsolati problémák és a régebbi karbantartott kiszolgálók miatt), és még az Open WKD és PGP titkosítást is támogatja a nyaralási válaszokhoz.",
   "We only send once per": "Egyszer csak egyszer küldünk",
   "sender every 4 days (which is similar to Gmail's behavior).": "feladó 4 naponta (ami hasonló a Gmail viselkedéséhez).",
   "Our Redis cache uses a fingerprint of": "A Redis gyorsítótárunk ujjlenyomatát használja",
