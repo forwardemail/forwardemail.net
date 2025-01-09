@@ -1679,6 +1679,7 @@ async function onDataMX(session, headers, body) {
   ]);
 
   const accepted = [];
+  // TODO: figure out why hard reject not working
   const bounces = [...data.bounces];
   const vacationResponders = [];
 
@@ -1718,7 +1719,7 @@ async function onDataMX(session, headers, body) {
     shouldSendVacationOrBounce(headers, session) &&
     vacationResponders.length > 0
   ) {
-    await pMapSeries(
+    pMapSeries(
       // ensure they are unique by alias_id otherwise we'd do unnecessary calls
       _.uniqBy(vacationResponders, (obj) => obj.alias_id),
       async (vacationResponder) => {
