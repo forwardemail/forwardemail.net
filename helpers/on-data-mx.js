@@ -1812,11 +1812,6 @@ async function onDataMX(session, headers, body) {
   // if lowest error code was >= 500 then don't send a bounce email notification
   if (err.responseCode >= 500) throw err;
 
-  //
-  // NOTE: we might not even want to send bounces here altogether
-  //       and rely on the existing users SMTP queue to send a bounce to them
-  //
-
   // process (and then send) bounces if any in the background
   processBounces
     .call(this, headers, bounces, session, body)
