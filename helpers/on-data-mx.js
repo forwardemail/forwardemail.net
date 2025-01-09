@@ -1679,7 +1679,6 @@ async function onDataMX(session, headers, body) {
   ]);
 
   const accepted = [];
-  // TODO: figure out why hard reject not working
   const bounces = [...data.bounces];
   const vacationResponders = [];
 
@@ -1811,7 +1810,7 @@ async function onDataMX(session, headers, body) {
   err.bounces = bounces;
 
   // if lowest error code was >= 500 then don't send a bounce email notification
-  if (err.responseCode >= 500) return;
+  if (err.responseCode >= 500) throw err;
 
   //
   // NOTE: we might not even want to send bounces here altogether
