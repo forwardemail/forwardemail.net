@@ -71,8 +71,7 @@ async function getRecipients(session, scan) {
               .then()
               .catch((err) => logger.fatal(err));
           } catch (err) {
-            err.isCodeBug = true;
-            logger.error(err);
+            logger.debug(err);
           }
         }
 
