@@ -61,8 +61,6 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
 
   session.arc = results.arc;
   session.dmarc = results.dmarc;
-  // NOTE: `arcSealedHeaders` does not include our DKIM signature
-  session.arcSealedHeaders = results.headers;
   session.bimi = results.bimi;
   session.receivedChain = results.receivedChain;
 

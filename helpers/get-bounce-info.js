@@ -71,11 +71,7 @@ function getBounceInfo(err) {
     bounceInfo.action = 'defer';
   }
 
-  // <https://github.com/zone-eu/zone-mta/issues/434>
-  if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
-    bounceInfo.category = 'dmarc';
-    bounceInfo.action = 'defer';
-  } else if (
+  if (
     // WHM/cPanel generic country error
     response.includes('Your country is not allowed to connect to this server')
   ) {
@@ -315,6 +311,12 @@ function getBounceInfo(err) {
     response.includes('misdirected bounce')
   )
     bounceInfo.category = 'spam';
+
+  // <https://github.com/zone-eu/zone-mta/issues/434>
+  if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
+    bounceInfo.category = 'dmarc';
+    bounceInfo.action = 'defer';
+  }
 
   return bounceInfo;
 }

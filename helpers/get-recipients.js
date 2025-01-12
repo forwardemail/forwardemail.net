@@ -46,57 +46,6 @@ async function getRecipients(session, scan) {
         let customAllowlist = [];
         let customDenylist = [];
         let webhookKey;
-
-        // get all forwarding addresses for individual address
-        const {
-          aliasIds,
-          addresses,
-          hasIMAP,
-          aliasPublicKey,
-          vacationResponder,
-          ignored,
-          softRejected,
-          hardRejected
-        } = await getForwardingAddresses.call(
-          this,
-          to.address,
-          [],
-          session.originalFromAddressRootDomain === env.WEB_HOST,
-          session
-        );
-
-        if (ignored)
-          return {
-            address: to.address,
-            addresses: [],
-            ignored: true,
-            hasIMAP: false,
-            aliasPublicKey: false,
-            vacationResponder: false
-          };
-
-        if (softRejected)
-          return {
-            address: to.address,
-            addresses: [],
-            ignored: false,
-            hasIMAP: false,
-            aliasPublicKey: false,
-            vacationResponder: false,
-            softRejected: true
-          };
-
-        if (hardRejected)
-          return {
-            address: to.address,
-            addresses: [],
-            ignored: false,
-            hasIMAP: false,
-            aliasPublicKey: false,
-            vacationResponder: false,
-            hardRejected: true
-          };
-
         // lookup the port (e.g. if `forward-email-port=` or custom set on the domain)
         const domain = parseHostFromDomainOrAddress(to.address);
 
@@ -320,6 +269,56 @@ async function getRecipients(session, scan) {
               { ignore_hook: true }
             );
         }
+
+        // get all forwarding addresses for individual address
+        const {
+          aliasIds,
+          addresses,
+          hasIMAP,
+          aliasPublicKey,
+          vacationResponder,
+          ignored,
+          softRejected,
+          hardRejected
+        } = await getForwardingAddresses.call(
+          this,
+          to.address,
+          [],
+          session.originalFromAddressRootDomain === env.WEB_HOST,
+          session
+        );
+
+        if (ignored)
+          return {
+            address: to.address,
+            addresses: [],
+            ignored: true,
+            hasIMAP: false,
+            aliasPublicKey: false,
+            vacationResponder: false
+          };
+
+        if (softRejected)
+          return {
+            address: to.address,
+            addresses: [],
+            ignored: false,
+            hasIMAP: false,
+            aliasPublicKey: false,
+            vacationResponder: false,
+            softRejected: true
+          };
+
+        if (hardRejected)
+          return {
+            address: to.address,
+            addresses: [],
+            ignored: false,
+            hasIMAP: false,
+            aliasPublicKey: false,
+            vacationResponder: false,
+            hardRejected: true
+          };
 
         return {
           address: to.address,

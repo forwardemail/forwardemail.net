@@ -26,22 +26,24 @@ function updateHeaders(headers, session) {
     }
   }
 
-  if (!keys.has('x-report-abuse-to'))
+  if (!keys.has('x-report-abuse-to') && !headers.hasHeader('x-report-abuse-to'))
     headers.add('X-Report-Abuse-To', config.abuseEmail); // , headers.lines.length);
 
-  if (!keys.has('x-report-abuse'))
+  if (!keys.has('x-report-abuse') && !headers.hasHeader('x-report-abuse'))
     headers.add('X-Report-Abuse', config.abuseEmail); // , headers.lines.length);
 
-  if (!keys.has('x-complaints-to'))
+  if (!keys.has('x-complaints-to') && !headers.hasHeader('x-complaints-to'))
     headers.add('X-Complaints-To', config.abuseEmail); // , headers.lines.length);
 
-  headers.add('X-Forward-Email-Website', config.urls.web);
+  if (!headers.hasHeader('x-forward-email-website'))
+    headers.add('X-Forward-Email-Website', config.urls.web);
 
-  headers.add(
-    'X-Forward-Email-Version',
-    config.pkg.version
-    // headers.lines.length
-  );
+  if (!headers.hasHeader('x-forward-email-version'))
+    headers.add(
+      'X-Forward-Email-Version',
+      config.pkg.version
+      // headers.lines.length
+    );
 }
 
 module.exports = updateHeaders;

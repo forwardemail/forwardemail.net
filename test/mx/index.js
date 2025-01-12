@@ -4,10 +4,10 @@
  */
 
 const util = require('node:util');
-// const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
 const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
@@ -95,6 +95,7 @@ test('imap/forward/webhook', async (t) => {
       });
       stream.pipe(writer);
       stream.on('end', () => {
+        // TODO: assertions
         // const buffer = Buffer.concat(chunks);
         // console.log(buffer.toString());
         fn();
@@ -140,8 +141,12 @@ test('imap/forward/webhook', async (t) => {
   // spoof webhook server
   const webhookPort = await getPort();
   const app = new Koa();
+  app.use(bodyParser());
   app.use((ctx) => {
     ctx.body = 'OK';
+    // TODO: assertions
+    // console.log('ctx.request.body');
+    // console.log('ctx.request.body.raw');
   });
   app.listen(webhookPort);
 
@@ -168,6 +173,24 @@ test('imap/forward/webhook', async (t) => {
         subject: 'Vacation Responder Test Subject #1',
         message: 'Vacation Responder Test Message #1'
       }
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'foobar',
+      has_imap: true,
+      user: user._id,
+      domain: domain._id
+    })
+    .create();
+
+  await t.context.aliasFactory
+    .withState({
+      name: 'foobarforward',
+      user: user._id,
+      domain: domain._id,
+      recipients: [`foobar@${domain.name}`]
     })
     .create();
 
@@ -337,6 +360,7 @@ test('imap/forward/webhook', async (t) => {
           from: 'test@test.com',
           to: [
             `test@${domain.name}`,
+            `foobarforward@${domain.name}`,
             //
             // NOTE: this is purposely formatted incorrectly
             //       to test when mail servers send to lowercase version of MAIL FROM
@@ -437,6 +461,9 @@ Test`.trim()
       });
       stream.pipe(writer);
       stream.on('end', () => {
+        // TODO: assertions
+        // const buffer = Buffer.concat(chunks);
+        // console.log(buffer.toString());
         fn();
       });
     },

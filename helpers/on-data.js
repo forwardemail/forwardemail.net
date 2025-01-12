@@ -15,8 +15,6 @@ const ServerShutdownError = require('#helpers/server-shutdown-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const env = require('#config/env');
-const getRcptToWithoutBcc = require('#helpers/get-rcpt-to-without-bcc');
-const getReceivedHeader = require('#helpers/get-received-header');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const onDataMX = require('#helpers/on-data-mx');
 const onDataSMTP = require('#helpers/on-data-smtp');
@@ -30,7 +28,6 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
 // TODO: check for `this.isClosing` before heavy/slow operations in onDataMX
 
-// eslint-disable-next-line complexity
 async function onData(stream, _session, fn) {
   if (this.isClosing) return setImmediate(() => fn(new ServerShutdownError()));
 
@@ -180,42 +177,6 @@ async function onData(stream, _session, fn) {
     //       and add automated job to scrape Google Postmaster API (they have an API) for detection
     //       and abuse/spam complaint automation
     //
-
-    // add "Received" and "X-Original-To" headers to the message
-    const rcptToWithoutBcc = getRcptToWithoutBcc(session, headers);
-    headers.add(
-      'Received',
-      getReceivedHeader({
-        origin: session.remoteAddress,
-        originhost: session.resolvedClientHostname,
-        transhost: session.hostNameAppearsAs,
-        user: false,
-        transtype: session.transmissionType,
-        // id: session.id,
-        // seq: 'some-seq-id',
-        recipient: rcptToWithoutBcc.length === 1 ? rcptToWithoutBcc[0] : false, // foo@example.com
-        // session.tlsOptions {
-        //   name: 'ECDHE-RSA-AES128-GCM-SHA256',
-        //   standardName: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256',
-        //   version: 'TLSv1.2'
-        // }
-        tls:
-          session.secure &&
-          session?.tlsOptions?.name &&
-          session?.tlsOptions?.version
-            ? {
-                name: session.tlsOptions.name,
-                version: session.tlsOptions.version
-              }
-            : false,
-        time: new Date(session.arrivalDate)
-      })
-    );
-
-    if (rcptToWithoutBcc.length > 0 && !headers.hasHeader('x-original-to')) {
-      headers.remove('x-original-to');
-      headers.add('X-Original-To', rcptToWithoutBcc.join(', '));
-    }
 
     if (this.constructor.name === 'SMTP') {
       // parse the date for SMTP queuing

@@ -13,7 +13,6 @@ const config = require('#config');
 const env = require('#config/env');
 const getHeaders = require('#helpers/get-headers');
 const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
-const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -96,13 +95,12 @@ function isArbitrary(session, headers) {
     );
 
   // until adobe responds
-  if (
-    subject &&
-    subject.includes(
-      'Signature requested on "the agreement for your new checking account with us"'
-    )
-  )
-    throw new SMTPError('Spam from Adobe');
+  // if (
+  //   subject &&
+  //   subject.includes('Signature requested on') &&
+  //   session.originalFromAddress === 'adobesign@adobesign.com'
+  // )
+  //   throw new SMTPError('Due to spam from Adobe this message is blocked');
 
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
@@ -270,19 +268,8 @@ function isArbitrary(session, headers) {
       ) &&
       !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))
     ) {
-      // TODO: until we're certain this is properly working we're going to monitor it with code bug to admins
-      const err = new TypeError(
-        `Spoofing detected and was soft blocked from ${
-          session.resolvedRootClientHostname || session.remoteAddress
-        }`
-      );
-      err.isCodeBug = true;
-      err.session = session;
-      logger.fatal(err);
-
       throw new SMTPError(
-        'Message likely to be spoofing attack and was rejected due to lack of SPF alignment with From header',
-        { responseCode: 421 }
+        'Message likely to be spoofing attack and was rejected due to lack of SPF alignment with From header'
       );
     }
   }

@@ -35,11 +35,14 @@ const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const revHash = require('rev-hash');
 const status = require('statuses');
+const { Headers } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { SRS } = require('sender-rewriting-scheme');
 const { boolean } = require('boolean');
-// const { sealMessage } = require('mailauth');
+const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
+
+const getReceivedHeader = require('#helpers/get-received-header');
 
 const DenylistError = require('#helpers/denylist-error');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
@@ -76,6 +79,7 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const retryRequest = require('#helpers/retry-request');
 const sendEmail = require('#helpers/send-email');
+const signMessage = require('#helpers/sign-message');
 const updateHeaders = require('#helpers/update-headers');
 const { Emails, Users, SelfTests } = require('#models');
 const { decrypt } = require('#helpers/encrypt-decrypt');
@@ -284,7 +288,6 @@ function createVacationResponder(vacationResponder, headers, session) {
   if (headers.hasHeader('message-id')) {
     rootNode.setHeader('In-Reply-To', headers.getFirst('message-id'));
     rootNode.setHeader('References', headers.getFirst('message-id'));
-    rootNode.setHeader('X-Original-Message-ID', headers.getFirst('message-id'));
   }
 
   rootNode.setHeader('X-Report-Abuse-To', config.abuseEmail);
@@ -314,6 +317,13 @@ async function sendBounce(bounce, headers, session, body) {
     const count = await this.client.incrby(key, 0);
     if (count > 0) return;
 
+    const unsealed = Buffer.concat([headers.build(), body]);
+    const sealHeaders = await sealMessage(unsealed, {
+      ...config.signatureData,
+      authResults: session.arc.authResults,
+      cv: session.arc.status.result
+    });
+
     const stream = createBounce(
       {
         envelope: {
@@ -323,15 +333,10 @@ async function sendBounce(bounce, headers, session, body) {
         date: session.arrivalDate
       },
       bounce.err,
-      Buffer.concat([
-        Buffer.from(session.arcSealedHeaders),
-        headers.build(),
-        body
-      ])
+      Buffer.concat([sealHeaders, unsealed])
     );
 
     const raw = await getStream.buffer(stream);
-
     try {
       // NOTE: sendEmail function will handle DKIM signing and PGP encryption for bounces
       const info = await sendEmail({
@@ -453,10 +458,12 @@ function getFingerprintKey(session, value) {
   return `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(value)}`;
 }
 
-async function imap(aliases, headers, session, body) {
+async function imap(alias, headers, session, body) {
   const accepted = [];
   const bounces = [];
   const vacationResponders = [];
+
+  // NOTE: we don't check for denylist in between like forwarding
 
   //
   // NOTE: we filter out already accepted aliases here
@@ -468,29 +475,65 @@ async function imap(aliases, headers, session, body) {
   //   },
   //   ...
   // ]
-  const values = await this.client.mget(
-    aliases.map((a) => getFingerprintKey(session, a.id))
-  );
-  const unsentAliases = [];
-  for (const [i, value] of values.entries()) {
-    if (boolean(value)) {
-      accepted.push(aliases[i].address);
-      if (aliases[i].vacationResponder)
-        vacationResponders.push(aliases[i].vacationResponder);
-      continue;
-    }
-
-    unsentAliases.push(aliases[i]);
+  const value = await this.client.get(getFingerprintKey(session, alias.id));
+  if (boolean(value)) {
+    accepted.push(alias.address);
+    if (alias.vacationResponder)
+      vacationResponders.push(alias.vacationResponder);
+    return {
+      accepted,
+      bounces,
+      vacationResponders
+    };
   }
 
-  if (unsentAliases.length === 0)
-    return { accepted, bounces, vacationResponders };
-
   try {
+    // add "Received" and "X-Original-To" headers to the message
+    if (!headers.hasHeader('x-original-to')) {
+      headers.remove('x-original-to');
+      headers.add('X-Original-To', alias.address);
+    }
+
+    headers.add(
+      'Received',
+      getReceivedHeader({
+        origin: session.remoteAddress,
+        originhost: session.resolvedClientHostname,
+        transhost: session.hostNameAppearsAs,
+        user: false,
+        transtype: session.transmissionType,
+        // id: session.id,
+        // seq: 'some-seq-id',
+        recipient: alias.address,
+        // session.tlsOptions {
+        //   name: 'ECDHE-RSA-AES128-GCM-SHA256',
+        //   standardName: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256',
+        //   version: 'TLSv1.2'
+        // }
+        tls:
+          session.secure &&
+          session?.tlsOptions?.name &&
+          session?.tlsOptions?.version
+            ? {
+                name: session.tlsOptions.name,
+                version: session.tlsOptions.version
+              }
+            : false,
+        time: new Date(session.arrivalDate)
+      })
+    );
+
+    const unsealed = Buffer.concat([headers.build(), body]);
+    const sealHeaders = await sealMessage(unsealed, {
+      ...config.signatureData,
+      authResults: session.arc.authResults,
+      cv: session.arc.status.result
+    });
+
     // <https://github.com/websockets/ws/issues/1959>
     const response = await this.wsp.request({
       action: 'tmp',
-      aliases: unsentAliases,
+      aliases: [alias],
       remoteAddress: session.remoteAddress,
       resolvedRootClientHostname: session.resolvedRootClientHostname,
       resolvedClientHostname: session.resolvedClientHostname,
@@ -499,56 +542,44 @@ async function imap(aliases, headers, session, body) {
         typeof session.arrivalDate === 'string'
           ? session.arrivalDate
           : session.arrivalDate.toISOString(),
-      raw: Buffer.concat([
-        Buffer.from(session.arcSealedHeaders),
-        headers.build(),
-        body
-      ]),
+      raw: Buffer.concat([sealHeaders, unsealed]),
       timeout: ms('1m')
     });
 
-    for (const alias of unsentAliases) {
-      if (response[alias.address]) {
-        // convert response object error into an Error
-        const err = parseError(response[alias.address]);
-        err.target = env.IMAP_HOST;
-        bounces.push({
-          address: alias.address,
-          err,
-          host: env.SQLITE_HOST
-        });
-      } else {
-        // store that we sent this message so we don't again
-        const key = getFingerprintKey(session, alias.id);
-        this.client
-          .pipeline()
-          .incr(key)
-          .pexpire(key, config.fingerprintTTL)
-          .exec()
-          .then()
-          .catch((err) => logger.fatal(err));
-        // push to accepted array
-        accepted.push(alias.address);
-        if (alias.vacationResponder)
-          vacationResponders.push(alias.vacationResponder);
-      }
-    }
-  } catch (_err) {
-    // an error occurred here with websockets so we bounce all IMAP recipients
-    logger.fatal(_err, { session });
-    // unsentAliases = [
-    //   { address: 'some@address.com', id: 'some-alias-id-in-our-db' },
-    //   ...
-    // ]
-    for (const alias of unsentAliases) {
-      const err = parseError(_err);
+    if (response[alias.address]) {
+      // convert response object error into an Error
+      const err = parseError(response[alias.address]);
       err.target = env.IMAP_HOST;
       bounces.push({
         address: alias.address,
         err,
-        host: HOSTNAME
+        host: env.SQLITE_HOST
       });
+    } else {
+      // store that we sent this message so we don't again
+      const key = getFingerprintKey(session, alias.id);
+      this.client
+        .pipeline()
+        .incr(key)
+        .pexpire(key, config.fingerprintTTL)
+        .exec()
+        .then()
+        .catch((err) => logger.fatal(err));
+      // push to accepted array
+      accepted.push(alias.address);
+      if (alias.vacationResponder)
+        vacationResponders.push(alias.vacationResponder);
     }
+  } catch (_err) {
+    // an error occurred here with websockets so we bounce all IMAP recipients
+    logger.fatal(_err, { session });
+    const err = parseError(_err);
+    err.target = env.IMAP_HOST;
+    bounces.push({
+      address: alias.address,
+      err,
+      host: HOSTNAME
+    });
   }
 
   return { accepted, bounces, vacationResponders };
@@ -886,14 +917,56 @@ async function forward(recipient, headers, session, body) {
     };
   }
 
+  // add "Received" and "X-Original-To" headers to the message
+  if (!headers.hasHeader('x-original-to')) {
+    headers.remove('x-original-to');
+    headers.add('X-Original-To', recipient.recipient);
+  }
+
+  headers.add(
+    'Received',
+    getReceivedHeader({
+      origin: session.remoteAddress,
+      originhost: session.resolvedClientHostname,
+      transhost: session.hostNameAppearsAs,
+      user: false,
+      transtype: session.transmissionType,
+      // id: session.id,
+      // seq: 'some-seq-id',
+      recipient: recipient.recipient,
+      // session.tlsOptions {
+      //   name: 'ECDHE-RSA-AES128-GCM-SHA256',
+      //   standardName: 'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256',
+      //   version: 'TLSv1.2'
+      // }
+      tls:
+        session.secure &&
+        session?.tlsOptions?.name &&
+        session?.tlsOptions?.version
+          ? {
+              name: session.tlsOptions.name,
+              version: session.tlsOptions.version
+            }
+          : false,
+      time: new Date(session.arrivalDate)
+    })
+  );
+
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for webhooks
   if (recipient.webhook) {
     try {
-      const raw = Buffer.concat([
-        Buffer.from(session.arcSealedHeaders),
-        headers.build(),
-        body
-      ]);
+      // dkim sign the message
+      const unsealed = await signMessage(
+        Buffer.concat([headers.build(), body])
+      );
+
+      const sealHeaders = await sealMessage(unsealed, {
+        ...config.signatureData,
+        authResults: session.arc.authResults,
+        cv: session.arc.status.result
+      });
+
+      const raw = Buffer.concat([sealHeaders, unsealed]);
 
       const mail = await simpleParser(raw, {
         Iconv,
@@ -1132,6 +1205,13 @@ async function forward(recipient, headers, session, body) {
   if (!_.isArray(recipient.to) || recipient.to.length > 1)
     throw new TypeError('Invalid array of recipients');
 
+  const unsealed = Buffer.concat([headers.build(), body]);
+  const sealHeaders = await sealMessage(unsealed, {
+    ...config.signatureData,
+    authResults: session.arc.authResults,
+    cv: session.arc.status.result
+  });
+
   try {
     let info;
     try {
@@ -1144,11 +1224,7 @@ async function forward(recipient, headers, session, body) {
           from,
           to: recipient.to[0]
         },
-        raw: Buffer.concat([
-          Buffer.from(session.arcSealedHeaders),
-          headers.build(),
-          body
-        ]),
+        raw: Buffer.concat([sealHeaders, unsealed]),
         resolver: this.resolver,
         client: this.client,
         publicKey: recipient.aliasPublicKey
@@ -1194,24 +1270,12 @@ async function forward(recipient, headers, session, body) {
         if (!getHeaders(headers, 'reply-to'))
           headers.update('Reply-To', session.originalFromAddress);
 
-        /*
-        // rewrite ARC sealed headers with updated headers object value
-        session.arcSealedHeaders = await sealMessage(
-          Buffer.concat([headers.build(), body]),
-          {
-            ...config.signatureData,
-            // values from the authentication step
-            authResults: session.arc.authResults,
-            cv: session.arc.status.result
-          }
-        );
-        */
-
-        const sealedMessage = Buffer.concat([
-          Buffer.from(session.arcSealedHeaders),
-          headers.build(),
-          body
-        ]);
+        const unsealed = Buffer.concat([headers.build(), body]);
+        const sealHeaders = await sealMessage(unsealed, {
+          ...config.signatureData,
+          authResults: session.arc.authResults,
+          cv: session.arc.status.result
+        });
 
         // retry sending the email
         try {
@@ -1224,7 +1288,7 @@ async function forward(recipient, headers, session, body) {
               from,
               to: recipient.to[0]
             },
-            raw: sealedMessage,
+            raw: Buffer.concat([sealHeaders, unsealed]),
             resolver: this.resolver,
             client: this.client,
             publicKey: recipient.aliasPublicKey
@@ -1476,17 +1540,6 @@ function updateMXHeaders(headers, session) {
     // <https://github.com/andris9/mailsplit/issues/21>
     if (!getHeaders(headers, 'reply-to'))
       headers.update('Reply-To', session.originalFromAddress);
-
-    // rewrite ARC sealed headers with updated headers object value
-    // session.arcSealedHeaders = await sealMessage(
-    //   Buffer.concat([headers.build(), body]),
-    //   {
-    //     ...config.signatureData,
-    //     // values from the authentication step
-    //     authResults: session.arc.authResults,
-    //     cv: session.arc.status.result
-    //   }
-    // );
   }
   */
 }
@@ -1669,12 +1722,31 @@ async function onDataMX(session, headers, body) {
     // imap
     data.imap.length === 0
       ? Promise.resolve()
-      : imap.call(this, data.imap, headers, session, body),
+      : pMap(
+          data.imap,
+          (alias) =>
+            imap.call(
+              this,
+              alias,
+              // clone headers to prevent mutations
+              new Headers(headers.build(), { Iconv }),
+              session,
+              body
+            ),
+          { concurrency: config.concurrency }
+        ),
     // forwarding
     data.normalized.length === 0
       ? Promise.resolve()
       : pMapSeries(data.normalized, (recipient) =>
-          forward.call(this, recipient, headers, session, body)
+          forward.call(
+            this,
+            recipient,
+            // clone headers to prevent mutations
+            new Headers(headers.build(), { Iconv }),
+            session,
+            body
+          )
         )
   ]);
 
@@ -1684,16 +1756,18 @@ async function onDataMX(session, headers, body) {
 
   // NOTE: we don't add to mail_accepted nor mail_rejected counters for IMAP
   if (imapResults) {
-    if (imapResults.accepted.length > 0) {
-      for (const a of imapResults.accepted) {
-        if (!accepted.includes(a)) accepted.push(a);
+    for (const result of imapResults) {
+      if (result.accepted.length > 0) {
+        for (const a of result.accepted) {
+          if (!accepted.includes(a)) accepted.push(a);
+        }
       }
+
+      if (result.bounces.length > 0) bounces.push(...result.bounces);
+
+      if (result.vacationResponders.length > 0)
+        vacationResponders.push(...result.vacationResponders);
     }
-
-    if (imapResults.bounces.length > 0) bounces.push(...imapResults.bounces);
-
-    if (imapResults.vacationResponders.length > 0)
-      vacationResponders.push(...imapResults.vacationResponders);
   }
 
   if (forwardResults) {

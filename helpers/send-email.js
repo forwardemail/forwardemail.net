@@ -3,16 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const { Buffer } = require('node:buffer');
-
 const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
-const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const WKD = require('./wkd');
-const combineErrors = require('./combine-errors');
 const createSession = require('./create-session');
 const encryptMessage = require('./encrypt-message');
 const getTransporter = require('./get-transporter');
@@ -23,41 +19,9 @@ const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
 const shouldThrow = require('./should-throw');
-const { decrypt } = require('./encrypt-decrypt');
+const signMessage = require('./sign-message');
 
 const config = require('#config');
-
-async function signMessage(raw, domain) {
-  const signResult = await dkimSign(raw, {
-    canonicalization: 'relaxed/relaxed',
-    algorithm: 'rsa-sha256',
-    signTime: new Date(),
-    signatureData: domain
-      ? [
-          {
-            signingDomain: domain.name,
-            selector: domain.dkim_key_selector,
-            privateKey: decrypt(domain.dkim_private_key),
-            algorithm: 'rsa-sha256',
-            canonicalization: 'relaxed/relaxed'
-          }
-        ]
-      : [config.signatureData]
-  });
-
-  if (signResult.errors.length > 0) {
-    const err = combineErrors(signResult.errors.map((error) => error.err));
-    // we may want to remove cyclical reference
-    // for (const error of signResult.errors) {
-    //   delete error.err;
-    // }
-    err.signResult = signResult;
-    throw err;
-  }
-
-  const signatures = Buffer.from(signResult.signatures, 'utf8');
-  return Buffer.concat([signatures, raw], signatures.length + raw.length);
-}
 
 async function getPGPResults({
   session,

@@ -369,15 +369,20 @@ Aliases.pre('validate', function (next) {
     });
   }
 
+  // trim and convert to lowercase
+  this.name = this.name.trim().toLowerCase();
+
   // require alias name
   if (
-    !quotedEmailUserUtf8.test(this.name.trim().toLowerCase()) ||
-    (!this.name.trim().startsWith('/') && this.name.includes('+'))
+    !quotedEmailUserUtf8.test(this.name) ||
+    (!this.name.startsWith('/') && this.name.includes('+'))
   )
     return next(Boom.badRequest('Alias name was invalid.'));
 
-  // trim and convert to lowercase
-  this.name = this.name.trim().toLowerCase();
+  //
+  // TODO: allow + symbol if the domain is not global
+  //       and if the owner of the alias also owns the non + version or if the non + version does not exist yet
+  //
 
   // if it consists of wildcards only then convert to wildcard "*" single asterisk
   if (

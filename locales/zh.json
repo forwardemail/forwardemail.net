@@ -10375,5 +10375,7 @@
   "postmaster addresses": "邮政局长地址",
   "(the portion before the @ in an email), then we check to see if the sender IP matches one from this list.": "（电子邮件中 @ 之前的部分），然后我们检查发件人 IP 是否与此列表中的 IP 匹配。",
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "仅当发生 >= 500 状态代码错误时（当尝试转发的电子邮件失败时，例如 Gmail 以 500 级错误响应）我们才会发送。",
-  "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "我们只发送一次（我们使用计算出的反弹指纹密钥并将其存储在缓存中以防止发送重复）。反弹指纹是一个密钥，它是消息的指纹与反弹地址及其错误代码的哈希值相结合。请参阅"
+  "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "我们只发送一次（我们使用计算出的反弹指纹密钥并将其存储在缓存中以防止发送重复）。反弹指纹是一个密钥，它是消息的指纹与反弹地址及其错误代码的哈希值相结合。请参阅",
+  "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "这是在 IMAP 和/或屏蔽转发时根据每个收件人添加的（为了保护隐私）。",
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "是我们添加到邮件中的标题，用于与邮件的原始收件人（屏蔽转发之前）进行调试。"
 }
