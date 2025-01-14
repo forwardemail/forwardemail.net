@@ -6871,5 +6871,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message."
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.",
+  "Vacation responder is not supported on global domains at this time.": "Vacation responder is not supported on global domains at this time.",
+  "Vacation Responder Enabled": "Vacation Responder Enabled",
+  "Vacation Responder Start Date": "Vacation Responder Start Date",
+  "Vacation Responder End Date": "Vacation Responder End Date",
+  "Vacation Responder Subject": "Vacation Responder Subject",
+  "Vacation Responder Message": "Vacation Responder Message"
 }

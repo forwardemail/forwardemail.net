@@ -10684,5 +10684,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "ステータス コード エラーが 500 以上発生した場合にのみ送信します (メールの転送が失敗した場合、たとえば Gmail が 500 レベルのエラーで応答した場合など)。",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "送信は1回のみ（重複送信を防ぐため、計算されたバウンスフィンガープリントキーを使用し、キャッシュに保存します）。バウンスフィンガープリントとは、メッセージのフィンガープリントとバウンスアドレスのハッシュ値とエラーコードを組み合わせたキーです。",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "これは、IMAP および/またはマスク転送時に受信者ごとに追加されます (プライバシーを保護するため)。",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "メッセージの元の受信者（マスク転送前）とのデバッグのためにメッセージに追加するヘッダーです。"
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "メッセージの元の受信者（マスク転送前）とのデバッグのためにメッセージに追加するヘッダーです。",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.": "弊社では、Visa、Mastercard、American Express、Discover、Diners Club、JCB、China UnionPay、Alipay、Apple Pay、Google Pay、Amazon Pay、Cash App、Link、Bancontact、EPS、giropay、iDEAL、Przelewy24、Sofort、Affirm、Afterpay / Clearpay、Klarna、SEPA 口座振替、カナダ事前承認口座振替、ACH 口座振替、銀行振込をご利用いただけます。",
+  "Vacation Responder Enabled": "休暇応答が有効",
+  "Vacation Responder Start Date": "休暇対応開始日",
+  "Vacation Responder End Date": "休暇対応終了日",
+  "Vacation Responder Subject": "休暇応答件名",
+  "Vacation Responder Message": "休暇応答メッセージ"
 }

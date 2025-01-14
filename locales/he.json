@@ -8710,5 +8710,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "אנו שולחים רק כאשר מתרחשות >= 500 שגיאות קוד סטטוס (כאשר הודעות דוא\"ל שניסו להעבירן נכשלו, למשל Gmail מגיב בשגיאה ברמה של 500).",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "אנו שולחים רק פעם אחת ופעם אחת בלבד (אנו משתמשים במפתח טביעת אצבע יציאה מחושב ומאחסנים אותו במטמון כדי למנוע שליחת כפילויות).  טביעת האצבע המקפצת היא מפתח שהוא טביעת האצבע של ההודעה בשילוב עם hash של כתובת ההקפצה וקוד השגיאה שלה).  עיין בסעיף בנושא",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "זה מתווסף על בסיס נמען בזמן IMAP ו/או העברת מסיכה (על מנת להגן על הפרטיות).",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "היא כותרת שאנו מוסיפים להודעות לצורך ניפוי באגים עם הנמען המקורי (לפני העברת מסיכה) עבור ההודעה."
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "היא כותרת שאנו מוסיפים להודעות לצורך ניפוי באגים עם הנמען המקורי (לפני העברת מסיכה) עבור ההודעה.",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.": "אנו מקבלים ויזה, מאסטרקארד, אמריקן אקספרס, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA הוראת קבע, חיובים מורשים מראש בקנדה, הוראת קבע של ACH והעברה בנקאית.",
+  "Vacation Responder Enabled": "משיב חופשה מופעל",
+  "Vacation Responder Start Date": "תאריך התחלה של משיב חופשה",
+  "Vacation Responder End Date": "תאריך סיום משיב חופשה",
+  "Vacation Responder Subject": "נושא משיב חופשות",
+  "Vacation Responder Message": "הודעת מענה לחופשה"
 }

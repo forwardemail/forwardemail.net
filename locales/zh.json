@@ -10377,5 +10377,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "仅当发生 >= 500 状态代码错误时（当尝试转发的电子邮件失败时，例如 Gmail 以 500 级错误响应）我们才会发送。",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "我们只发送一次（我们使用计算出的反弹指纹密钥并将其存储在缓存中以防止发送重复）。反弹指纹是一个密钥，它是消息的指纹与反弹地址及其错误代码的哈希值相结合。请参阅",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "这是在 IMAP 和/或屏蔽转发时根据每个收件人添加的（为了保护隐私）。",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "是我们添加到邮件中的标题，用于与邮件的原始收件人（屏蔽转发之前）进行调试。"
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "是我们添加到邮件中的标题，用于与邮件的原始收件人（屏蔽转发之前）进行调试。",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.": "我们接受 Visa、万事达卡、美国运通卡、Discover、大来卡、JCB、中国银联、支付宝、Apple Pay、Google Pay、亚马逊支付、Cash App、Link、Bancontact、EPS、giropay、iDEAL、Przelewy24、Sofort、Affirm、Afterpay / Clearpay、Klarna、SEPA 直接借记、加拿大预授权借记、ACH 直接借记和银行转账。",
+  "Vacation Responder Enabled": "休假响应程序已启用",
+  "Vacation Responder Start Date": "休假响应开始日期",
+  "Vacation Responder End Date": "休假响应结束日期",
+  "Vacation Responder Subject": "休假回复主题",
+  "Vacation Responder Message": "休假回复消息"
 }

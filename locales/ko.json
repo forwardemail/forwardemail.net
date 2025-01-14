@@ -10684,5 +10684,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "500개 이상의 상태 코드 오류가 발생하는 경우에만 이메일을 전송합니다(이메일 전달이 실패한 경우, 예: Gmail이 500 수준 오류로 응답하는 경우).",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "우리는 단 한 번만 보냅니다(계산된 반송 지문 키를 사용하고 중복을 보내는 것을 방지하기 위해 캐시에 저장합니다). 반송 지문은 메시지의 지문과 반송 주소의 해시 및 오류 코드를 결합한 키입니다. 섹션을 참조하세요.",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "이 설정은 IMAP 및/또는 마스크 전달 시 수신자별로 추가됩니다(개인 정보 보호를 위해).",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "메시지의 원래 수신자(마스크 전달 전)와의 디버깅을 위해 메시지에 추가하는 헤더입니다."
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "메시지의 원래 수신자(마스크 전달 전)와의 디버깅을 위해 메시지에 추가하는 헤더입니다.",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.": "Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay/Clearpay, Klarna, SEPA Direct Debit, 캐나다 사전 승인 직불 카드, ACH Direct Debit 및 은행 송금을 수락합니다.",
+  "Vacation Responder Enabled": "휴가 응답 기능 활성화",
+  "Vacation Responder Start Date": "휴가 응답 시작 날짜",
+  "Vacation Responder End Date": "휴가 응답 종료 날짜",
+  "Vacation Responder Subject": "휴가 응답자 제목",
+  "Vacation Responder Message": "휴가 응답 메시지"
 }

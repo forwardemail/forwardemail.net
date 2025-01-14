@@ -10684,5 +10684,11 @@
   "We only send when >= 500 status code errors occur (when emails attempted to be forwarded have failed, e.g. Gmail responds with a 500 level error).": "เราจะส่งอีเมลก็ต่อเมื่อเกิดข้อผิดพลาดรหัสสถานะมากกว่าหรือเท่ากับ 500 (เมื่ออีเมลที่พยายามส่งต่อล้มเหลว เช่น Gmail ตอบกลับด้วยข้อผิดพลาดระดับ 500)",
   "We only send once and once only (we use a calculated bounce fingerprint key and store it in cache to prevent sending duplicates).  The bounce fingerprint is a key that is the message's fingerprint combined with a hash of the bounce address and its error code).  See the section on": "เราจะส่งเพียงครั้งเดียวเท่านั้น (เราใช้คีย์ลายนิ้วมือเด้งที่คำนวณแล้วและเก็บไว้ในแคชเพื่อป้องกันการส่งข้อความซ้ำ) ลายนิ้วมือเด้งคือคีย์ที่เป็นลายนิ้วมือของข้อความรวมกับแฮชของที่อยู่เด้งและรหัสข้อผิดพลาด ดูส่วนนี้",
   "This is added on a per recipient basis at the time of IMAP and/or masked forwarding (in order to protect privacy).": "สิ่งนี้จะถูกเพิ่มตามผู้รับแต่ละคนในเวลา IMAP และ/หรือการส่งต่อแบบปิดบัง (เพื่อปกป้องความเป็นส่วนตัว)",
-  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "เป็นส่วนหัวที่เราเพิ่มเข้าไปในข้อความเพื่อแก้ไขข้อบกพร่องกับผู้รับเดิม (ก่อนการส่งต่อแบบปิดบัง) สำหรับข้อความ"
+  "is a header we add to messages for debugging with the original recipient (before masked forwarding) for the message.": "เป็นส่วนหัวที่เราเพิ่มเข้าไปในข้อความเพื่อแก้ไขข้อบกพร่องกับผู้รับเดิม (ก่อนการส่งต่อแบบปิดบัง) สำหรับข้อความ",
+  "We accept Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.": "เรายอมรับ Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debit, ACH Direct Debit และการโอนเงินผ่านธนาคาร",
+  "Vacation Responder Enabled": "เปิดใช้งานการตอบกลับช่วงวันหยุดแล้ว",
+  "Vacation Responder Start Date": "วันที่เริ่มต้นการตอบกลับในช่วงวันหยุด",
+  "Vacation Responder End Date": "วันสิ้นสุดการตอบกลับในช่วงวันหยุด",
+  "Vacation Responder Subject": "หัวข้อการตอบกลับในช่วงวันหยุด",
+  "Vacation Responder Message": "ข้อความตอบกลับวันหยุด"
 }

@@ -25,6 +25,14 @@ const config = require('#config');
 //
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
+const VACATION_FIELDS = [
+  'vacation_responder_is_enabled',
+  'vacation_responder_start_date',
+  'vacation_responder_end_date',
+  'vacation_responder_subject',
+  'vacation_responder_message'
+];
+
 // eslint-disable-next-line complexity
 function validateAlias(ctx, next) {
   const body = _.pick(ctx.request.body, [
@@ -196,16 +204,20 @@ function validateAlias(ctx, next) {
 
   // vacation responder
   if (
-    [
-      'vacation_responder_is_enabled',
-      'vacation_responder_start_date',
-      'vacation_responder_end_date',
-      'vacation_responder_subject',
-      'vacation_responder_message'
-    ].some((field) => typeof ctx.request.body[field] !== 'undefined')
+    VACATION_FIELDS.some(
+      (field) => typeof ctx.request.body[field] !== 'undefined'
+    )
   ) {
     // if domain was global then throw error
-    if (ctx?.state?.domain?.is_global)
+    if (
+      ctx?.state?.domain?.is_global &&
+      (boolean(ctx?.request?.body?.vacation_responder_is_enabled) ||
+        VACATION_FIELDS.some(
+          (field) =>
+            typeof ctx.request.body[field] === 'string' &&
+            ctx.request.body[field] !== ''
+        ))
+    )
       return ctx.throw(
         Boom.badRequest(
           ctx.translateError('VACATION_RESPONDER_NOT_SUPPORTED_ON_GLOBAL')
