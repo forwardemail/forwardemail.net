@@ -8220,5 +8220,11 @@
   "Vacation Responder Start Date": "Date de début du répondant de vacances",
   "Vacation Responder End Date": "Date de fin du répondant de vacances",
   "Vacation Responder Subject": "Sujet de réponse aux vacances",
-  "Vacation Responder Message": "Message de réponse de vacances"
+  "Vacation Responder Message": "Message de réponse de vacances",
+  "The University of Cambridge": "L'Université de Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(« SRS ») adresse ici pour protéger contre l'usurpation d'identité avec notre nom de domaine SRS.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Ajoutez une clé pour l'adresse e-mail de l'enveloppe « MAIL FROM » si elle avait un SPF passant ou pas de SPF, et ce n'était pas le cas",
+  "a postmaster username": "un nom d'utilisateur de postmaster",
+  "a no-reply username": "un nom d'utilisateur sans réponse"
 }

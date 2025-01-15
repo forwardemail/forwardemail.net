@@ -10695,5 +10695,11 @@
   "Vacation Responder Start Date": "Startdato for feriesvar",
   "Vacation Responder End Date": "Sluttdato for feriesvar",
   "Vacation Responder Subject": "Emne for feriesvar",
-  "Vacation Responder Message": "Feriesvarsmelding"
+  "Vacation Responder Message": "Feriesvarsmelding",
+  "The University of Cambridge": "Universitetet i Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adresse her for å beskytte mot forfalskning med vårt SRS-domenenavn.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Legg til en nøkkel for konvolutten «MAIL FROM»-e-postadressen hvis den hadde bestått SPF eller ingen SPF, og den ikke var",
+  "a postmaster username": "et postmaster brukernavn",
+  "a no-reply username": "et brukernavn uten svar"
 }

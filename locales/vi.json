@@ -8225,5 +8225,11 @@
   "Vacation Responder Start Date": "Ngày bắt đầu trả lời kỳ nghỉ",
   "Vacation Responder End Date": "Ngày kết thúc trả lời kỳ nghỉ",
   "Vacation Responder Subject": "Chủ đề trả lời kỳ nghỉ",
-  "Vacation Responder Message": "Tin nhắn trả lời kỳ nghỉ"
+  "Vacation Responder Message": "Tin nhắn trả lời kỳ nghỉ",
+  "The University of Cambridge": "Đại học Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") tại đây để bảo vệ chống lại việc giả mạo bằng tên miền SRS của chúng tôi.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Thêm khóa cho địa chỉ email \"MAIL FROM\" của phong bì nếu nó có SPF đạt hoặc không có SPF và nó không đạt",
+  "a postmaster username": "tên người dùng của bưu điện",
+  "a no-reply username": "tên người dùng không trả lời"
 }

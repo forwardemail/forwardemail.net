@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "วันที่เริ่มต้นการตอบกลับในช่วงวันหยุด",
   "Vacation Responder End Date": "วันสิ้นสุดการตอบกลับในช่วงวันหยุด",
   "Vacation Responder Subject": "หัวข้อการตอบกลับในช่วงวันหยุด",
-  "Vacation Responder Message": "ข้อความตอบกลับวันหยุด"
+  "Vacation Responder Message": "ข้อความตอบกลับวันหยุด",
+  "The University of Cambridge": "มหาวิทยาลัยเคมบริดจ์",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(“SRS”) ที่นี่เพื่อป้องกันการปลอมแปลงด้วยชื่อโดเมน SRS ของเรา",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "เพิ่มคีย์สำหรับที่อยู่อีเมลซองจดหมาย \"MAIL FOR\" หากมีการผ่าน SPF หรือไม่มี SPF และไม่มี",
+  "a postmaster username": "ชื่อผู้ใช้ผู้ดูแลโพสต์",
+  "a no-reply username": "ชื่อผู้ใช้ที่ไม่ต้องตอบกลับ"
 }

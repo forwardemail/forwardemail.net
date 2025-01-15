@@ -9729,5 +9729,11 @@
   "Vacation Responder Start Date": "Startdatum der Urlaubsantwort",
   "Vacation Responder End Date": "Enddatum der Abwesenheitsnotiz",
   "Vacation Responder Subject": "Betreff der Abwesenheitsnotiz",
-  "Vacation Responder Message": "Abwesenheitsnotiz"
+  "Vacation Responder Message": "Abwesenheitsnotiz",
+  "The University of Cambridge": "Die Universität von Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(„SRS“)-Adresse hier, um sich mit unserem SRS-Domänennamen vor Spoofing zu schützen.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Fügen Sie einen Schlüssel für die E-Mail-Adresse \"MAIL FROM\" hinzu, wenn diese SPF bestanden hat oder nicht und nicht",
+  "a postmaster username": "ein Postmaster-Benutzername",
+  "a no-reply username": "ein No-Reply-Benutzername"
 }

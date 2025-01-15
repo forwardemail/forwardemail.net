@@ -10537,5 +10537,11 @@
   "Vacation Responder Start Date": "Lomavastaajan alkamispäivä",
   "Vacation Responder End Date": "Lomavastaajan päättymispäivä",
   "Vacation Responder Subject": "Lomavastaajan aihe",
-  "Vacation Responder Message": "Lomavastaajan viesti"
+  "Vacation Responder Message": "Lomavastaajan viesti",
+  "The University of Cambridge": "Cambridgen yliopisto",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") -osoite suojataksesi SRS-verkkotunnuksemme huijauksilta.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Lisää avain kirjekuoren \"MAIL FROM\" -sähköpostiosoitteelle, jos siinä oli läpäistävä SPF tai ei SPF:ää, mutta se ei ollut",
+  "a postmaster username": "postmasterin käyttäjätunnus",
+  "a no-reply username": "käyttäjätunnus, joka ei vastaa"
 }

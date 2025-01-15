@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "Datum zahájení prázdninového odpovídače",
   "Vacation Responder End Date": "Datum ukončení prázdninové odpovědi",
   "Vacation Responder Subject": "Předmět prázdninového odpovídače",
-  "Vacation Responder Message": "Zpráva odpovídače na dovolenou"
+  "Vacation Responder Message": "Zpráva odpovídače na dovolenou",
+  "The University of Cambridge": "University of Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adresa zde pro ochranu proti spoofingu s názvem naší domény SRS.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Přidejte klíč pro e-mailovou adresu obálky „MAIL FROM“, pokud prošla SPF nebo bez SPF a nebyla",
+  "a postmaster username": "uživatelské jméno správce pošty",
+  "a no-reply username": "uživatelské jméno bez odpovědi"
 }

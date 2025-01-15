@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "Data di inizio del risponditore automatico",
   "Vacation Responder End Date": "Data di fine del risponditore automatico",
   "Vacation Responder Subject": "Oggetto del risponditore automatico",
-  "Vacation Responder Message": "Messaggio di risposta automatica"
+  "Vacation Responder Message": "Messaggio di risposta automatica",
+  "The University of Cambridge": "L'Università di Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") qui per proteggerci dallo spoofing con il nostro nome di dominio SRS.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Aggiungere una chiave per l'indirizzo email della busta \"MAIL FROM\" se aveva SPF passante o nessun SPF e non era",
+  "a postmaster username": "un nome utente del direttore delle poste",
+  "a no-reply username": "un nome utente che non accetta risposte"
 }

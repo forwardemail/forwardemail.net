@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "Startdatum vakantiehulp",
   "Vacation Responder End Date": "Einddatum vakantieresponder",
   "Vacation Responder Subject": "Vakantie-responder onderwerp",
-  "Vacation Responder Message": "Bericht van de vakantie-responder"
+  "Vacation Responder Message": "Bericht van de vakantie-responder",
+  "The University of Cambridge": "De Universiteit van Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\")-adres hier ter bescherming tegen spoofing met onze SRS-domeinnaam.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Voeg een sleutel toe voor het envelop \"MAIL FROM\" e-mailadres als het SPF had of niet, en het was niet",
+  "a postmaster username": "een postmaster-gebruikersnaam",
+  "a no-reply username": "een gebruikersnaam zonder antwoord"
 }

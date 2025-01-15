@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "休暇対応開始日",
   "Vacation Responder End Date": "休暇対応終了日",
   "Vacation Responder Subject": "休暇応答件名",
-  "Vacation Responder Message": "休暇応答メッセージ"
+  "Vacation Responder Message": "休暇応答メッセージ",
+  "The University of Cambridge": "ケンブリッジ大学",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "（「SRS」）アドレスをここに入力して、SRS ドメイン名によるなりすましを防止してください。",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "SPFに合格したか、SPFに合格しなかったかにかかわらず、エンベロープ「MAIL FROM」メールアドレスのキーを追加します。",
+  "a postmaster username": "ポストマスターのユーザー名",
+  "a no-reply username": "返信不可のユーザー名"
 }

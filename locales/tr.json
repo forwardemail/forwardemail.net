@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "Tatil Müdahale Görevlisi Başlangıç Tarihi",
   "Vacation Responder End Date": "Tatil Müdahale Görevlisi Bitiş Tarihi",
   "Vacation Responder Subject": "Tatil Cevaplayıcı Konusu",
-  "Vacation Responder Message": "Tatil Yanıtlayıcı Mesajı"
+  "Vacation Responder Message": "Tatil Yanıtlayıcı Mesajı",
+  "The University of Cambridge": "Cambridge Üniversitesi",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adresimizi SRS alan adımızla yapılan sahteciliğe karşı korumak için buraya tıklayın.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "\"MAIL FROM\" e-posta adresinin SPF'si varsa veya yoksa zarf için bir anahtar ekleyin ve",
+  "a postmaster username": "bir postacı kullanıcı adı",
+  "a no-reply username": "cevap verilmeyen kullanıcı adı"
 }

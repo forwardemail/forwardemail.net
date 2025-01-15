@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "휴가 응답 시작 날짜",
   "Vacation Responder End Date": "휴가 응답 종료 날짜",
   "Vacation Responder Subject": "휴가 응답자 제목",
-  "Vacation Responder Message": "휴가 응답 메시지"
+  "Vacation Responder Message": "휴가 응답 메시지",
+  "The University of Cambridge": "케임브리지 대학교",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") 주소를 여기에 입력하여 SRS 도메인 이름을 통한 스푸핑을 방지하세요.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "SPF가 통과했거나 SPF가 없는 경우 봉투 \"MAIL FROM\" 이메일 주소에 대한 키를 추가합니다.",
+  "a postmaster username": "포스트마스터 사용자 이름",
+  "a no-reply username": "답변 불가 사용자 이름"
 }

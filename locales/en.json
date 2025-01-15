@@ -6877,5 +6877,11 @@
   "Vacation Responder Start Date": "Vacation Responder Start Date",
   "Vacation Responder End Date": "Vacation Responder End Date",
   "Vacation Responder Subject": "Vacation Responder Subject",
-  "Vacation Responder Message": "Vacation Responder Message"
+  "Vacation Responder Message": "Vacation Responder Message",
+  "The University of Cambridge": "The University of Cambridge",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") address here to protect against spoofing with our SRS domain name.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not",
+  "a postmaster username": "a postmaster username",
+  "a no-reply username": "a no-reply username"
 }

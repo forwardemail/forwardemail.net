@@ -10690,5 +10690,11 @@
   "Vacation Responder Start Date": "Vacation Responder kezdési dátuma",
   "Vacation Responder End Date": "Nyaralás válaszadó befejezési dátuma",
   "Vacation Responder Subject": "Vacation Responder Subject",
-  "Vacation Responder Message": "Vacation Responder üzenete"
+  "Vacation Responder Message": "Vacation Responder üzenete",
+  "The University of Cambridge": "A Cambridge-i Egyetem",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") címe itt, hogy megvédje magát az SRS-domainnevünkkel való hamisítástól.",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Adjon meg egy kulcsot a „MAIL FROM” boríték e-mail címéhez, ha áthaladó SPF vagy nincs SPF, és nem",
+  "a postmaster username": "postmaster felhasználónév",
+  "a no-reply username": "egy nem válaszoló felhasználónév"
 }

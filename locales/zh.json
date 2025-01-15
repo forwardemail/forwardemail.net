@@ -10383,5 +10383,11 @@
   "Vacation Responder Start Date": "休假响应开始日期",
   "Vacation Responder End Date": "休假响应结束日期",
   "Vacation Responder Subject": "休假回复主题",
-  "Vacation Responder Message": "休假回复消息"
+  "Vacation Responder Message": "休假回复消息",
+  "The University of Cambridge": "剑桥大学",
+  "Fly.io": "Fly.io",
+  "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "（“SRS”）地址，以防止使用我们的 SRS 域名进行欺骗。",
+  "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "如果信封“MAIL FROM”电子邮件地址通过了 SPF 或没有通过 SPF，则添加密钥，并且它不是",
+  "a postmaster username": "邮政局长用户名",
+  "a no-reply username": "无回复用户名"
 }
