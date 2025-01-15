@@ -37,15 +37,16 @@ const emailHelper = require('./email');
 const getBlockedHashes = require('./get-blocked-hashes');
 const getBounceInfo = require('./get-bounce-info');
 const getErrorCode = require('./get-error-code');
-const retryRequest = require('./retry-request');
-const isCodeBug = require('./is-code-bug');
 const i18n = require('./i18n');
+const isCodeBug = require('./is-code-bug');
+const isEmail = require('./is-email');
 const logger = require('./logger');
 const parseRootDomain = require('./parse-root-domain');
+const retryRequest = require('./retry-request');
 const sendEmail = require('./send-email');
+const updateHeaders = require('./update-headers');
+const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
-const isEmail = require('#helpers/is-email');
-const updateHeaders = require('#helpers/update-headers');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -264,6 +265,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
           filteredErrors,
           async (error) => {
             try {
+              // bounces are unique by email id, recipient, and error code
+              const key = `${config.fingerprintPrefix}:${
+                email.id
+              }:${encoder.pack([error.recipient, getErrorCode(error)])}`;
+
+              // prevent sending a duplicate bounce to this address
+              const count = await client.incrby(key, 0);
+              if (count > 0) return;
+
               const stream = createBounce(email, error, message);
               const raw = await getStream.buffer(stream);
               const bounceEmail = await Emails.queue({
@@ -280,6 +290,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 date: new Date(),
                 is_bounce: true
               });
+
+              // store that we sent this so we don't again
+              client
+                .pipeline()
+                .incr(key)
+                .pexpire(key, config.fingerprintTTL)
+                .exec()
+                .then()
+                .catch((err) => logger.fatal(err));
 
               hardBounces.push(error.recipient);
 

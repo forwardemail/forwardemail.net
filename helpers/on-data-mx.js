@@ -117,7 +117,6 @@ const scanner = new SpamScanner({
 //
 // TODO: if `err.truthSource` is `outlook.com` then link to this article
 //
-// TODO: disabled until we use MongoDB for this
 /*
 async function sendSysAdminEmail(template, err, session, headers) {
   // safeguard in case we add more of these kinds of alerts
@@ -147,7 +146,6 @@ async function sendSysAdminEmail(template, err, session, headers) {
   const cache = await this.client.get(key);
   if (boolean(cache)) return;
   await this.client.set(key, true, 'PX', ms('30d'));
-  // TODO: use Emails.queue or something
   await emailHelper({
     template,
     message: {
@@ -455,6 +453,8 @@ async function processBounces(headers, bounces, session, body) {
 }
 
 function getFingerprintKey(session, value) {
+  if (!session?.fingerprint) throw new TypeError('Fingerprint missing');
+  if (!value) throw new TypeError('Value missing');
   return `${config.fingerprintPrefix}:${session.fingerprint}:${revHash(value)}`;
 }
 

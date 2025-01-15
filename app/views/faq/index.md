@@ -116,12 +116,14 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Ubuntu
 * Kubuntu
 * Lubuntu
+* The University of Cambridge
 * The University of Maryland
 * The University of Washington
 * Tufts University
 * Swarthmore College
 * Government of South Australia
 * Government of Dominican Republic
+* Fly.io
 * RCD Hotels
 * International Correspondence Chess Federation
 * John Graham-Cumming (Cloudflare)
@@ -1631,7 +1633,7 @@ Email relies on the [SMTP protocol](https://en.wikipedia.org/wiki/Simple_Mail_Tr
 
 * `MAIL FROM` - This indicates the envelope mail from address of the email.  If a value is entered, it must be a valid RFC 5322 email address.  Empty values are permitted.  We [check for backscatter](#how-do-you-protect-against-backscatter) here, and we also check the MAIL FROM against our [denylist](#do-you-have-a-denylist).  We finally check senders that are not on the allowlist for rate limiting (see the section on [Rate Limiting](#do-you-have-rate-limiting) and [allowlist](#do-you-have-an-allowlist) for more information).
 
-* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.  We also check the recipient against our [denylist](#do-you-have-a-denylist).
+* `RCPT TO` - This indicates the recipient(s) of the email.  These must be valid RFC 5322 email addresses.  We only permit up to 50 envelope recipients per message (this is different than the "To" header from an email).  We also check for a valid [Sender Rewriting Scheme](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") address here to protect against spoofing with our SRS domain name.
 
 * `DATA` - This is the core part of our service which processes an email.  See the section [How do you process an email for forwarding](#how-do-you-process-an-email-for-forwarding) below for more insight.
 
@@ -2592,7 +2594,7 @@ Senders that are detected to be sending spam or virus content will be added to t
    * If the sender is not allowlisted, the message is greylisted for 6 hours.
 2. We parse denylist keys from information from the sender and message, and for each of these keys we create (if one does not already exist) a counter, increment it by 1, and cache it for 24 hours.
    * For allowlisted senders:
-     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not an admin username or no-reply username.
+     * Add a key for the envelope "MAIL FROM" email address if it had passing SPF or no SPF, and it was not [a postmaster username](#what-are-postmaster-addresses) or [a no-reply username](#what-are-no-reply-addresses).
      * If "From" header was allowlisted, then add a key for the "From" header email address if it had passing SPF or passing and aligned DKIM.
      * If "From" header was not allowlisted, then add a key for the "From" header email address and its root parsed domain name.
    * For non-allowlisted senders:

@@ -691,6 +691,20 @@ Emails.post('save', async function (email) {
       i18n.translateError('DOMAIN_DOES_NOT_EXIST', i18n.config.defaultLocale)
     );
 
+  // return early if domain is suspended or if email was marked as spam
+  // (this way we can investigate spam detected content/links to help users)
+  if (
+    domain.is_smtp_suspended ||
+    (Array.isArray(email.rejectedErrors) &&
+      email.rejectedErrors.some(
+        (err) =>
+          _.isObject(err) &&
+          err?.truthSource &&
+          err?.bounceInfo?.category === 'spam'
+      ))
+  )
+    return;
+
   // return early if it hasn't passed the user's retention days yet
   if (
     typeof domain.retention_days === 'number' &&

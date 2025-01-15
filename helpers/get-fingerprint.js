@@ -18,6 +18,12 @@ function getFingerprint(session, headers, body) {
   const arr = [];
 
   //
+  // TODO: root resolved client hostname or IP (?)
+  //       or update FAQ to remove that bullet point
+  //       <https://forwardemail.net/en/faq#how-do-you-determine-an-email-fingerprint:~:text=Client%20resolved%20FQDN%20hostname%20or%20IP%20address>
+  //
+
+  //
   // NOTE: `headers` can either be Headers instance
   //       or an array that looks like this:
   //       headers [

@@ -5,7 +5,7 @@
 
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
+// const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const isEmail = require('#helpers/is-email');
 
 const SMTPError = require('#helpers/smtp-error');
@@ -15,10 +15,10 @@ const config = require('#config');
 const env = require('#config/env');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
-const parseUsername = require('#helpers/parse-username');
+// const parseUsername = require('#helpers/parse-username');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
-const NO_REPLY_USERNAMES = new Set(noReplyList);
+// const NO_REPLY_USERNAMES = new Set(noReplyList);
 
 async function onRcptTo(address, session, fn) {
   this.logger.debug('RCPT TO', { address, session });
@@ -46,6 +46,7 @@ async function onRcptTo(address, session, fn) {
 
   // validate email address
   if (typeof address === 'object' && isSANB(address.address)) {
+    // eslint-disable-next-line unicorn/no-lonely-if
     if (!isEmail(address.address))
       return setImmediate(() =>
         fn(
@@ -61,6 +62,7 @@ async function onRcptTo(address, session, fn) {
         )
       );
 
+    /*
     // prevent emails to no-reply@forwardemail.net
     // and other no-reply usernames
     // and also ending with +donotreply and -donotreply
@@ -87,6 +89,7 @@ async function onRcptTo(address, session, fn) {
           )
         )
       );
+    */
   }
 
   try {
