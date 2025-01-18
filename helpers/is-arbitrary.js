@@ -21,7 +21,7 @@ const REGEX_WARMUP = new RE2(/ \|(?: [a-zA-Z\d]{7,}){2}$/);
 const REGEX_WARMUP_ALT = new RE2(/ \| [a-zA-Z\d]{8,}-[a-zA-Z\d]{8,}$/);
 
 const REGEX_BLOCKED_PHRASES = new RE2(
-  /recorded you|you've been hacked|account is hacked|personal data has leaked/im
+  /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked/im
 );
 
 // const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
@@ -90,9 +90,7 @@ function isArbitrary(session, headers) {
 
   // rudimentary blocking
   if (subject && REGEX_BLOCKED_PHRASES.test(subject))
-    throw new SMTPError(
-      `Blocked phrase, please forward this to ${config.abuseEmail}`
-    );
+    throw new SMTPError('Spam', { responseCode: 421 });
 
   // until adobe responds
   // if (
