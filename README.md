@@ -1,3 +1,5 @@
+<!-- 🐾 Rest in Peace, Jack (2014-2025) -->
+
 <h1 align="center">
   <a href="https://forwardemail.net"><img src="https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/media/header.png" alt="ForwardEmail" /></a>
 </h1>
