@@ -356,7 +356,6 @@ Aliases.pre('save', async function (next) {
   }
 });
 
-// eslint-disable-next-line complexity
 Aliases.pre('validate', function (next) {
   // if storage used was below zero then set to zero
   if (this.storage_used < 0) this.storage_used = 0;
@@ -439,15 +438,6 @@ Aliases.pre('validate', function (next) {
   // description must be plain text
   if (isSANB(this.description)) this.description = striptags(this.description);
   if (!isSANB(this.description)) this.description = undefined;
-
-  // alias must have at least one recipient
-  if (
-    !this.has_imap &&
-    (!_.isArray(this.recipients) || _.isEmpty(this.recipients))
-  )
-    return next(
-      Boom.badRequest('Alias must have at least one recipient or IMAP enabled.')
-    );
 
   next();
 });

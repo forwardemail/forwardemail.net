@@ -422,7 +422,7 @@ async function getForwardingConfiguration({
     // then filter out recipients that haven't yet clicked
     // the verification link required and sent
     // (but if and only if the domain was not on free plan)
-    if (alias.name === '*') {
+    if (alias.name === '*' && alias.recipients.length > 0) {
       body.mapping.push(alias.recipients.join(','));
       return;
     }
@@ -470,7 +470,7 @@ async function getForwardingConfiguration({
     if (bannedUserIdSet.has(alias.user.toString())) continue;
     // rewrite `alias.recipients` to verified recipients only
     // if and only if user has recipient verification enabled
-    if (alias.has_recipient_verification) {
+    if (alias.has_recipient_verification && alias.recipients.length > 0) {
       const recipients = [];
       for (const recipient of alias.recipients) {
         if (alias.verified_recipients.includes(recipient))
