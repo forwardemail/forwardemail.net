@@ -16,10 +16,6 @@ const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
-const REGEX_WARMUP = new RE2(/ \|(?: [a-zA-Z\d]{7,}){2}$/);
-
-const REGEX_WARMUP_ALT = new RE2(/ \| [a-zA-Z\d]{8,}-[a-zA-Z\d]{8,}$/);
-
 const REGEX_BLOCKED_PHRASES = new RE2(
   /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked/im
 );
@@ -279,18 +275,6 @@ function isArbitrary(session, headers) {
   //       (and the From is you@yourdomain.com and the To is you@yourdomain.com, but the Reply-To needs to be different)
   //       (otherwise the spammer/attacker would never get the response to the email)
   //
-
-  //
-  // NOTE: it appears that IP warmup or spoofing is occurring where the pattern is:
-  //       `Subject: Some Phrase Here | 72X8FMN 2MAX439`
-  //                                    72X8FMN 9RR6V1T
-  //                                    ^ 7 chars ^ 7 chars (A-Z 0-9)
-  if (
-    subject &&
-    (REGEX_WARMUP.test(subject) || REGEX_WARMUP_ALT.test(subject))
-  ) {
-    throw new SMTPError('Spam', { responseCode: 421 });
-  }
 }
 
 module.exports = isArbitrary;

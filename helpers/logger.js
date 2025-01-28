@@ -36,7 +36,7 @@ const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
 // wrapper for browser condition
-const hasMixin = mongoose && mongoose.connections && _ && _.mixin;
+const hasMixin = !_.isEmpty(mongoose) && _ && _.mixin;
 
 if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
@@ -158,7 +158,7 @@ async function hook(err, message, meta) {
   if (err && err.message === 'read ECONNRESET') return;
 
   // wrapper for non-browser condition
-  if (mongoose && mongoose.connections) {
+  if (!_.isEmpty(mongoose)) {
     // if it was SSL/TLS/socket error then ignore it
     if (isTLSError(err) || isSSLError(err) || isSocketError(err)) return;
 
