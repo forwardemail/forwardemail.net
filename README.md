@@ -661,6 +661,8 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
 
    > Replace `IPV4_GOES_HERE` with IPv4 address, `IPV6_GOES_HERE` with IPv6 address, `IPV6_GATEWAY` with IPv6 gateway, and `IPV4_GATEWAY` with IPV4 gateway:
 
+   > For a comparison of `802.3ad` and other parameter mode values such as `balance-rr`, [please see this article on ServerFault](https://serverfault.com/a/481271).
+
    ```sh
    # This is the network config written by 'subiquity'
    network:
@@ -680,7 +682,7 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
            - 2606:4700:4700::1001
            search: []
          parameters:
-           mode: balance-rr
+           mode: 802.3ad
          routes:
          - to: ::/0
            via: IPV6_GATEWAY
