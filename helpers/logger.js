@@ -158,7 +158,7 @@ async function hook(err, message, meta) {
   if (err && err.message === 'read ECONNRESET') return;
 
   // wrapper for non-browser condition
-  if (mongoose) {
+  if (mongoose && hasMixin) {
     // if it was SSL/TLS/socket error then ignore it
     if (isTLSError(err) || isSSLError(err) || isSocketError(err)) return;
 
