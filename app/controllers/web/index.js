@@ -85,9 +85,7 @@ if (config.env !== 'test') {
 }
 
 const SVG_STR = fs.readFileSync(
-  config.env === 'development'
-    ? path.join(__dirname, '..', '..', '..', 'assets', 'img', 'template.svg')
-    : path.join(config.buildDir, 'img', 'template.svg'),
+  path.join(__dirname, '..', '..', '..', 'assets', 'img', 'template.svg'),
   'utf8'
 );
 
