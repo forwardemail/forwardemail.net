@@ -21,15 +21,15 @@ include ../../_pagination
           +sortHeader('created_at', 'Created', '#table-users')
         th(scope="col")
           +sortHeader('updated_at', 'Updated', '#table-users')
-        th(scope="col")
-          +sortHeader('last_login_at', 'Last Login', '#table-users')
+        //- th(scope="col")
+        //-   +sortHeader('last_login_at', 'Last Login', '#table-users')
         if passport && passport.otp
           th(scope="col")
             +sortHeader(config.passport.fields.otpEnabled, 'OTP Enabled', '#table-users')
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(colspan=passport && passport.otp ? "11" : "10")= t("No users exist for that search.")
+        td.alert.alert-info(colspan=passport && passport.otp ? "10" : "9")= t("No users exist for that search.")
       else
         each user in users
           tr
@@ -54,9 +54,9 @@ include ../../_pagination
             td.align-middle.dayjs(
               data-time=new Date(user.updated_at).getTime()
             )= dayjs(user.updated_at).format("M/D/YY h:mm A z")
-            td.align-middle.dayjs(
-              data-time=new Date(user.last_login_at).getTime()
-            )= dayjs(user.last_login_at).format("M/D/YY h:mm A z")
+            //- td.align-middle.dayjs(
+            //-   data-time=new Date(user.last_login_at).getTime()
+            //- )= dayjs(user.last_login_at).format("M/D/YY h:mm A z")
             if passport && passport.otp
               td.align-middle= user[config.passport.fields.otpEnabled]
             td.align-middle

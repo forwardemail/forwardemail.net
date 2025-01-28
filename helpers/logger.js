@@ -27,16 +27,16 @@ const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
 
-const isCodeBug = require('#helpers/is-code-bug');
-const isTLSError = require('#helpers/is-tls-error');
-const isSSLError = require('#helpers/is-ssl-error');
-const isSocketError = require('#helpers/is-socket-error');
+const isCodeBug = require('./is-code-bug');
+const isTLSError = require('./is-tls-error');
+const isSSLError = require('./is-ssl-error');
+const isSocketError = require('./is-socket-error');
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
 
 // wrapper for browser condition
-const hasMixin = mongoose && _ && _.mixin;
+const hasMixin = mongoose && mongoose.connections && _ && _.mixin;
 
 if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
@@ -158,7 +158,7 @@ async function hook(err, message, meta) {
   if (err && err.message === 'read ECONNRESET') return;
 
   // wrapper for non-browser condition
-  if (mongoose) {
+  if (mongoose && mongoose.connections) {
     // if it was SSL/TLS/socket error then ignore it
     if (isTLSError(err) || isSSLError(err) || isSocketError(err)) return;
 
@@ -309,7 +309,7 @@ for (const level of logger.config.levels) {
     if (err && err.httpStatusCode) delete err.response;
 
     // clone the data so that we don't mutate it
-    if (typeof err === 'object') {
+    if (typeof isCodeBug === 'function' && typeof err === 'object') {
       err = JSON.parse(safeStringify(parseErr(err)));
       // add `isCodeBug` parsing here to `err` (safeguard)
       err.isCodeBug = isCodeBug(err);

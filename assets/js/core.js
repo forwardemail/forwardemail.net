@@ -438,7 +438,7 @@ function domainKeyup() {
   const $input = $(this);
 
   // trim and convert to lowercase
-  let val = $(this).val().trim().toLowerCase();
+  let val = $input.val().trim().toLowerCase();
 
   // remove anything before the @ symbol in case the user entered an email
   const atSymbolIndex = val.indexOf('@');

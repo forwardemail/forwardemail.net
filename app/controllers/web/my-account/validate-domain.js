@@ -13,6 +13,7 @@ const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
 
+const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -57,17 +58,24 @@ async function validateDomain(ctx, next) {
   }
 
   //
+  // prevent users from adding "www." prefix (e.g. foo@www.example.com is never intended; unless via API perhaps)
+  //
+  if (!ctx.api && ctx.request.body.domain.startsWith('www.')) {
+    const err = Boom.badRequest(
+      ctx
+        .translate('WWW_WARNING')
+        .replace(/example.com/g, ctx.request.body.domain.replace('www.', ''))
+    );
+    err.no_translate = true;
+    return ctx.throw(err);
+  }
+
+  //
   // check if domain is on the allowlist or denylist
   //
   const rootDomain = parseRootDomain(ctx.request.body.domain);
 
-  let isDenylist = false;
-  try {
-    isDenylist = await ctx.client.get(`denylist:${rootDomain}`);
-    isDenylist = boolean(isDenylist);
-  } catch (err) {
-    ctx.logger.fatal(err);
-  }
+  const isDenylist = await isDenylisted(rootDomain, ctx.client, ctx.resolver);
 
   // if it was allowlisted then notify them to contact help
   // (we would manually create)

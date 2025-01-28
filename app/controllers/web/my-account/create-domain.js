@@ -95,26 +95,15 @@ async function createDomain(ctx, next) {
 
     if (ctx.api) return next();
 
-    // TODO: flash messages logic in @ladjs/assets doesn't support both
-    // custom and regular flash message yet
-    if (ctx.state.domain.name.startsWith('www.') && !ctx.api) {
-      ctx.flash(
-        'error',
-        ctx
-          .translate('WWW_WARNING')
-          .replace(/example.com/g, ctx.state.domain.name.replace('www.', ''))
-      );
-    } else if (!ctx.api) {
-      ctx.flash('custom', {
-        title: ctx.request.t('Success'),
-        text: ctx.translate('REQUEST_OK'),
-        type: 'success',
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000,
-        position: 'top'
-      });
-    }
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.translate('REQUEST_OK'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
 
     if (ctx.accepts('html')) ctx.redirect(ctx.state.redirectTo);
     else ctx.body = { redirectTo: ctx.state.redirectTo };
