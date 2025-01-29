@@ -135,13 +135,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
     session.dmarc &&
     session.dmarc.status &&
     session.dmarc.status.result === 'fail' &&
-    (!session.isAllowlisted ||
-      session.dmarc.policy === 'reject' ||
-      (session.hostNameAppearsAs &&
-        session.hostNameAppearsAs !== session.originalFromAddressRootDomain &&
-        session.hostNameAppearsAs !== session.originalFromAddressDomain &&
-        session.hostNameAppearsAs !== session.resolvedClientHostname &&
-        session.hostNameAppearsAs !== session.resolvedRootClientHostname))
+    session.dmarc.policy === 'reject'
   ) {
     throw new SMTPError(
       "The email sent has failed DMARC validation and is rejected due to the domain's DMARC policy",
