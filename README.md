@@ -663,6 +663,8 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
 
    > For a comparison of `802.3ad` and other parameter mode values such as `balance-rr`, [please see this article on ServerFault](https://serverfault.com/a/481271).
 
+   > You may need to remove or change the `transmit-hash-policy` as well for your configuration.
+
    ```sh
    # This is the network config written by 'subiquity'
    network:
@@ -683,6 +685,7 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
            search: []
          parameters:
            mode: 802.3ad
+           transmit-hash-policy: layer3+4
          routes:
          - to: ::/0
            via: IPV6_GATEWAY
