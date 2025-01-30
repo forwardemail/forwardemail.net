@@ -39,11 +39,13 @@ router
     async (ctx, next) => {
       try {
         // check if we provided an API secret (e.g. from bree)
-        await api.v1.restricted(ctx, next);
+        await api.v1.restricted(ctx);
       } catch {
         // check the API token of the logged in user
-        await api.v1.log.checkToken(ctx, next);
+        await api.v1.log.checkToken(ctx);
       }
+
+      return next();
     },
     //
     // rate limit logs sent from users
