@@ -118,7 +118,7 @@ router
         ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
         // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
         ctx.set('Content-Encoding', 'gzip');
-        ctx.res.removeHeader('Content-Length');
+        if (!ctx.res.headersSent) ctx.res.removeHeader('Content-Length');
         ctx.body = global.mermaid[hash];
         return;
       }
@@ -136,7 +136,7 @@ router
           ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
           // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
           ctx.set('Content-Encoding', 'gzip');
-          ctx.res.removeHeader('Content-Length');
+          if (!ctx.res.headersSent) ctx.res.removeHeader('Content-Length');
           ctx.body = buffer;
           return;
         }
@@ -171,7 +171,7 @@ router
       ctx.set('Cache-Control', `public, max-age=${MAX_AGE}`);
       // <https://github.com/koajs/compress/blob/41d501bd5db02d810572cfe154088c5fa6fcb957/lib/index.js#L89-L90>
       ctx.set('Content-Encoding', 'gzip');
-      ctx.res.removeHeader('Content-Length');
+      if (!ctx.res.headersSent) ctx.res.removeHeader('Content-Length');
       ctx.body = svg;
       // store buffer in cache
       try {

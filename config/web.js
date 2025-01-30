@@ -20,7 +20,6 @@ const ms = require('ms');
 const openpgp = require('openpgp/dist/node/openpgp.js');
 const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');
-
 const routes = require('../routes');
 
 const cookieOptions = require('./cookies');
@@ -444,18 +443,13 @@ module.exports = (redis) => ({
       ) {
         if (ctx.session.otp) {
           if (ctx.session.otp_remember_me) {
-            ctx.cookies.set('otp_remember_me', ctx.state.user.id, {
-              // Disable signed cookies in NODE_ENV=test
-              signed: env.NODE_ENV !== 'test',
-              expires: new Date(Date.now() + 31556952000) // one year in ms
-            });
+            ctx.cookies.set(
+              'otp_remember_me',
+              ctx.state.user.id,
+              cookieOptions
+            );
           } else {
-            // unset cookie
-            ctx.cookies.set('otp_remember_me', ctx.state.user.id, {
-              // Disable signed cookies in NODE_ENV=test
-              signed: env.NODE_ENV !== 'test',
-              expires: new Date()
-            });
+            ctx.cookies.set('otp_remember_me', null);
           }
         } else if (ctx.cookies.get('otp_remember_me') === ctx.state.user.id) {
           ctx.session.otp = 'remember_me';
