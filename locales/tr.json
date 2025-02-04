@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adresimizi SRS alan adımızla yapılan sahteciliğe karşı korumak için buraya tıklayın.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "\"MAIL FROM\" e-posta adresinin SPF'si varsa veya yoksa zarf için bir anahtar ekleyin ve",
   "a postmaster username": "bir postacı kullanıcı adı",
-  "a no-reply username": "cevap verilmeyen kullanıcı adı"
+  "a no-reply username": "cevap verilmeyen kullanıcı adı",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Aynı Mesaj Kimliği, Tarih ve Zarf ile e-posta zaten mevcut."
 }

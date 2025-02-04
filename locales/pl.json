@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(„SRS”), aby zabezpieczyć się przed podszywaniem się pod naszą nazwę domeny SRS.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Dodaj klucz do adresu e-mail „MAIL FROM” w kopercie, jeśli miał on lub nie miał SPF i nie był",
   "a postmaster username": "nazwa użytkownika postmastera",
-  "a no-reply username": "nazwa użytkownika bez odpowiedzi"
+  "a no-reply username": "nazwa użytkownika bez odpowiedzi",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Wiadomość e-mail z tym samym identyfikatorem wiadomości, datą i kopertą już istnieje."
 }

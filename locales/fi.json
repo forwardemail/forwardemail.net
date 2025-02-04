@@ -10543,5 +10543,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") -osoite suojataksesi SRS-verkkotunnuksemme huijauksilta.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Lisää avain kirjekuoren \"MAIL FROM\" -sähköpostiosoitteelle, jos siinä oli läpäistävä SPF tai ei SPF:ää, mutta se ei ollut",
   "a postmaster username": "postmasterin käyttäjätunnus",
-  "a no-reply username": "käyttäjätunnus, joka ei vastaa"
+  "a no-reply username": "käyttäjätunnus, joka ei vastaa",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Sähköpostilla on jo sama viestitunnus, päivämäärä ja kirjekuori."
 }

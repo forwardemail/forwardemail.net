@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(«SRS») здесь для защиты от подмены с использованием нашего доменного имени SRS.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Добавьте ключ для адреса электронной почты конверта «ПИСЬМО ОТ», если он прошел SPF или не прошел SPF, и он не был",
   "a postmaster username": "имя пользователя почтмейстера",
-  "a no-reply username": "имя пользователя без ответа"
+  "a no-reply username": "имя пользователя без ответа",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Электронное письмо с таким же идентификатором сообщения, датой и конвертом уже существует."
 }

@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") di sini untuk melindungi dari pemalsuan dengan nama domain SRS kami.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Tambahkan kunci untuk alamat email amplop “MAIL FROM” jika memiliki SPF yang lulus atau tidak memiliki SPF, dan tidak",
   "a postmaster username": "nama pengguna kepala kantor pos",
-  "a no-reply username": "nama pengguna tanpa balasan"
+  "a no-reply username": "nama pengguna tanpa balasan",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Email sudah ada dengan ID Pesan, Tanggal, dan Amplop yang sama."
 }

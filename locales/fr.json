@@ -8226,5 +8226,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(« SRS ») adresse ici pour protéger contre l'usurpation d'identité avec notre nom de domaine SRS.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Ajoutez une clé pour l'adresse e-mail de l'enveloppe « MAIL FROM » si elle avait un SPF passant ou pas de SPF, et ce n'était pas le cas",
   "a postmaster username": "un nom d'utilisateur de postmaster",
-  "a no-reply username": "un nom d'utilisateur sans réponse"
+  "a no-reply username": "un nom d'utilisateur sans réponse",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "L'e-mail existe déjà avec le même ID de message, la même date et la même enveloppe."
 }

@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\")-adres hier ter bescherming tegen spoofing met onze SRS-domeinnaam.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Voeg een sleutel toe voor het envelop \"MAIL FROM\" e-mailadres als het SPF had of niet, en het was niet",
   "a postmaster username": "een postmaster-gebruikersnaam",
-  "a no-reply username": "een gebruikersnaam zonder antwoord"
+  "a no-reply username": "een gebruikersnaam zonder antwoord",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Er bestaat al een e-mail met dezelfde bericht-ID, datum en envelop."
 }

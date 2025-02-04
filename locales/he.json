@@ -8722,5 +8722,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "כתובת (\"SRS\") כאן כדי להגן מפני זיוף עם שם הדומיין SRS שלנו.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "הוסף מפתח עבור כתובת הדואר האלקטרוני של המעטפה \"MAIL FROM\" אם היה לה SPF עובר או ללא SPF, וזה לא היה",
   "a postmaster username": "שם משתמש של postmaster",
-  "a no-reply username": "שם משתמש ללא תשובה"
+  "a no-reply username": "שם משתמש ללא תשובה",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "דוא\"ל כבר קיים עם אותו מזהה הודעה, תאריך ואותה מעטפה."
 }

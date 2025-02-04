@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") 주소를 여기에 입력하여 SRS 도메인 이름을 통한 스푸핑을 방지하세요.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "SPF가 통과했거나 SPF가 없는 경우 봉투 \"MAIL FROM\" 이메일 주소에 대한 키를 추가합니다.",
   "a postmaster username": "포스트마스터 사용자 이름",
-  "a no-reply username": "답변 불가 사용자 이름"
+  "a no-reply username": "답변 불가 사용자 이름",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "동일한 메시지 ID, 날짜, 봉투를 가진 이메일이 이미 존재합니다."
 }

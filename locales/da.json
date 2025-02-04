@@ -7699,5 +7699,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adresse her for at beskytte mod spoofing med vores SRS-domænenavn.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Tilføj en nøgle til kuverten \"MAIL FROM\" e-mailadresse, hvis den havde bestået SPF eller ingen SPF, og det var ikke",
   "a postmaster username": "et postmaster brugernavn",
-  "a no-reply username": "et ikke-svar brugernavn"
+  "a no-reply username": "et ikke-svar brugernavn",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "E-mail findes allerede med samme meddelelses-id, dato og konvolut."
 }

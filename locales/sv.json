@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") adress här för att skydda mot spoofing med vårt SRS-domännamn.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Lägg till en nyckel för kuvertets \"MAIL FROM\"-e-postadress om den hade godkänt SPF eller ingen SPF, och det inte",
   "a postmaster username": "ett postmaster användarnamn",
-  "a no-reply username": "ett användarnamn utan svar"
+  "a no-reply username": "ett användarnamn utan svar",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "E-post finns redan med samma meddelande-ID, datum och kuvert."
 }

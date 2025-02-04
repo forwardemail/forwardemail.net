@@ -203,6 +203,8 @@ module.exports = {
   LOG_DOWNLOAD_IN_PROGRESS: 'Your report will be emailed to you shortly.',
   EMAIL_REMOVED: 'Email was removed from the queue by an admin.',
   INVALID_EMAIL_STATUS: 'Email status must be pending, queued, or deferred.',
+  EMAIL_ALREADY_EXISTS:
+    'Email already exists with the same Message-ID, Date, and Envelope.',
   NO_REPLY_USERNAME_NO_SMTP:
     'You cannot use a "no-reply" username for outbound SMTP.',
   NO_REPLY_USERNAME_DISALLOWED:

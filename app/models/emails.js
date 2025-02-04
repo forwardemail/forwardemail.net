@@ -580,6 +580,33 @@ Emails.pre('save', async function (next) {
   }
 });
 
+//
+// NOTE: some clients like emClient will retry multiple times
+//       therefore we should check for duplicate `messageId`, `date`, and `envelope`
+//
+Emails.pre('save', async function (next) {
+  if (!this.isNew) return next();
+
+  try {
+    const exists = await this.constructor.exists({
+      messageId: this.messageId,
+      date: this.date,
+      domain: this.domain,
+      user: this.user,
+      envelope: this.envelope
+    });
+
+    if (exists)
+      throw Boom.badRequest(
+        i18n.translateError('EMAIL_ALREADY_EXISTS', i18n.config.defaultLocale)
+      );
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 // NOTE: this must come BEFORE the next pre save hook
 Emails.pre('save', async function (next) {
   if (!this.isNew) return next();

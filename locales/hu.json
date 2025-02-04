@@ -10696,5 +10696,6 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") címe itt, hogy megvédje magát az SRS-domainnevünkkel való hamisítástól.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Adjon meg egy kulcsot a „MAIL FROM” boríték e-mail címéhez, ha áthaladó SPF vagy nincs SPF, és nem",
   "a postmaster username": "postmaster felhasználónév",
-  "a no-reply username": "egy nem válaszoló felhasználónév"
+  "a no-reply username": "egy nem válaszoló felhasználónév",
+  "Email already exists with the same Message-ID, Date, and Envelope.": "Már létezik e-mail ugyanazzal az üzenetazonosítóval, dátummal és borítékkal."
 }
