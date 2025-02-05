@@ -79,13 +79,23 @@ async function onMove(mailboxId, update, session, fn) {
       );
 
     // check that destination and source are not the same
-    if (targetMailbox._id.toString() === mailboxId.toString())
+    if (targetMailbox._id.toString() === mailboxId.toString()) {
+      // verbose for admins to investigate
+      const err = new TypeError('IMAP MOVE target and source equal');
+      err.isCodeBug = true;
+      err.mailboxId = mailboxId;
+      err.update = update;
+      err.session = session;
+      err.targetMailbox = targetMailbox;
+      this.logger.fatal(err);
+
       throw new IMAPError(
         i18n.translate('IMAP_TARGET_AND_SOURCE_SAME', session.user.locale),
         {
           imapResponse: 'CANNOT'
         }
       );
+    }
 
     //
     // TODO: we should revert if errors occur (?)
@@ -128,11 +138,19 @@ async function onMove(mailboxId, update, session, fn) {
       session?.selected?.mailbox &&
       session.selected.mailbox.toString() !== mailbox._id.toString()
     ) {
+      // verbose for admins to investigate
       const err = new IMAPError(
         i18n.translate('IMAP_MAILBOX_SESSION_OUTDATED', session.user.locale),
         { imapResponse: 'CANNOT' }
       );
       err.isCodeBug = true;
+      err.mailboxId = mailboxId;
+      err.update = update;
+      err.session = session;
+      err.targetMailbox = targetMailbox;
+      err.mailbox = mailbox;
+      this.logger.fatal(err);
+
       throw err;
     }
 
@@ -147,6 +165,15 @@ async function onMove(mailboxId, update, session, fn) {
         // condition.uid = tools.checkRangeQuery(update.messages);
         condition.uid = { $in: update.messages };
       } else {
+        // verbose for admins to investigate
+        const err = new TypeError('IMAP MOVE no messages selected');
+        err.isCodeBug = true;
+        err.mailboxId = mailboxId;
+        err.update = update;
+        err.session = session;
+        err.targetMailbox = targetMailbox;
+        this.logger.fatal(err);
+
         // no messages were selected
         throw new IMAPError(
           i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
