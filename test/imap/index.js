@@ -13,6 +13,8 @@
  *   https://github.com/nodemailer/wildduck
  */
 
+const fs = require('node:fs');
+const path = require('node:path');
 const { Buffer } = require('node:buffer');
 const { createHash, randomUUID } = require('node:crypto');
 
@@ -36,6 +38,7 @@ const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
 
 const Aliases = require('#models/aliases');
+const Attachments = require('#models/attachments');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
 const config = require('#config');
@@ -1753,4 +1756,56 @@ ${i}`.trim()
     // eslint-disable-next-line no-await-in-loop
     await getStream(stream.content);
   }
+});
+
+test('jpeg', async (t) => {
+  await t.context.imapFlow.mailboxCreate('jpg');
+  await t.context.imapFlow.mailboxOpen('jpg');
+  const base64image = fs
+    .readFileSync(path.join(__dirname, 'test.jpeg'))
+    .toString('base64');
+  t.is(base64image.length, 169996);
+  const raw = `
+Content-Type: multipart/mixed; boundary="------------CCi27vuUgvvY8z40K2vKMsFm"
+Message-ID: <85c6ad5f-915a-47ab-b32b-2dd4a7ca4602@forwardemail.net>
+Date: Wed, 5 Feb 2025 15:44:07 -0600
+MIME-Version: 1.0
+Content-Language: en-US
+To: jpg@forwardemail.dev
+From: Forward Email <support@forwardemail.net>
+Subject: test
+
+This is a multi-part message in MIME format.
+--------------CCi27vuUgvvY8z40K2vKMsFm
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+test
+
+--------------CCi27vuUgvvY8z40K2vKMsFm
+Content-Type: image/jpeg; name="test.jpeg"
+Content-Disposition: attachment; filename="test.jpeg"
+Content-Transfer-Encoding: base64
+
+${base64image}
+--------------CCi27vuUgvvY8z40K2vKMsFm--
+`.trim();
+
+  await t.context.imapFlow.append('jpg', Buffer.from(raw), [], new Date());
+
+  // ensure that the attachment is stored properly
+  const attachments = await Attachments.find(
+    t.context.imap,
+    t.context.session,
+    { size: base64image.length }
+  );
+  t.is(attachments.length, 1);
+  const base64 = Buffer.from(attachments[0].body, 'hex');
+  t.is(base64.length, base64image.length);
+  t.is(base64.toString(), base64image);
+
+  await t.context.imapFlow.mailboxOpen('jpg');
+  const download = await t.context.imapFlow.download('*');
+  const content = await getStream(download.content);
+  t.true(splitLines(raw).join('') === splitLines(content).join(''));
 });

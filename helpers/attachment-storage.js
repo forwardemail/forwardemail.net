@@ -227,7 +227,7 @@ class AttachmentStorage {
     // since we don't use streams (e.g. gridfs)
     // (see notes in `helpers/indexer.js`)
     return {
-      body: attachmentData.body,
+      body: attachmentData.body, // Buffer.from(attachmentData.body, 'hex'),
       contentType: attachmentData.contentType,
       transferEncoding: attachmentData.transferEncoding, // (instead of `.metadata.transferEncoding`)
       length: attachmentData.size, // (instead of `.length`)
@@ -245,23 +245,51 @@ class AttachmentStorage {
   // we could also use `to-readable-stream` instead if desired
   // <https://github.com/sindresorhus/to-readable-stream>
   //
-  createReadStream(id, attachment) {
-    // NOTE: we don't use any `metadata` or `streamOptions` like wildduck does
+  createReadStream(id, attachmentData, options = {}) {
     try {
       //
-      // NOTE: `attachment.body` can be undefined if FileNotFound error occurs
+      // NOTE: `attachmentData.body` can be undefined if FileNotFound error occurs
       //       so in order to prevent an error being thrown per below GH issue
       //       we allocate a new Buffer with size of 0 bytes
       //       <https://github.com/sindresorhus/into-stream/issues/23>
       //
-      const stream = intoStream(attachment.body || Buffer.alloc(0));
-      return stream;
+      const streamOptions = {};
+
+      if (attachmentData && attachmentData.metadata) {
+        if (options && !attachmentData.metadata.decoded) {
+          streamOptions.start = options.startFrom || 0;
+          if (options.maxLength) {
+            streamOptions.end = streamOptions.start + options.maxLength;
+          }
+        }
+
+        if (
+          streamOptions.start &&
+          streamOptions.start > attachmentData.length
+        ) {
+          streamOptions.start = attachmentData.length;
+        }
+
+        if (streamOptions.end && streamOptions.end > attachmentData.length) {
+          streamOptions.end = attachmentData.length;
+        }
+      }
+
+      let buffer = attachmentData.body || Buffer.alloc(0);
+
+      if (streamOptions && streamOptions.start) {
+        buffer = streamOptions.end
+          ? buffer.slice(streamOptions.start, streamOptions.end)
+          : buffer.slice(streamOptions.start);
+      }
+
+      return intoStream(buffer);
     } catch (err) {
       // errors most likely won't get thrown anymore since we have `Buffer.alloc(0)` now
       // but in the event they do, we at least have this to help debug the issue
       err.isCodeBug = true;
-      if (typeof attachment === 'object')
-        err.attachment = _.omit(attachment, ['body']);
+      if (typeof attachmentData === 'object')
+        err.attachmentData = _.omit(attachmentData, ['body']);
       throw err;
     }
   }
