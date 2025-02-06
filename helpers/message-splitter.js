@@ -20,7 +20,7 @@ const { Iconv } = require('iconv');
  * body is passed on as the resulting stream.
  */
 class MessageSplitter extends Transform {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     this.lastBytes = Buffer.alloc(4);
     this.headersParsed = false;
