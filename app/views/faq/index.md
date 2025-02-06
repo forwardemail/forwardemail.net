@@ -2336,7 +2336,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">sap</code></li>
   <li class="list-inline-item"><code class="notranslate">saxo</code></li>
   <li class="list-inline-item"><code class="notranslate">sbi</code></li>
-  <li class="list-inline-item"><code class="notranslate">sbs</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">sbs</code></li>-->
   <li class="list-inline-item"><code class="notranslate">sca</code></li>
   <li class="list-inline-item"><code class="notranslate">scb</code></li>
   <li class="list-inline-item"><code class="notranslate">schaeffler</code></li>
