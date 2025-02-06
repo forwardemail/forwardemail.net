@@ -326,7 +326,7 @@ const brandAndCorporateDomains = [
   'oracle',
   'orange',
   'otsuka',
-  'ovh',
+  // 'ovh',
   'panasonic',
   'pccw',
   'pfizer',
@@ -345,7 +345,7 @@ const brandAndCorporateDomains = [
   'pru',
   'prudential',
   'pwc',
-  'quest',
+  // 'quest',
   'qvc',
   'redstone',
   'reliance',
@@ -1527,8 +1527,9 @@ for (const tld of tlds) {
     !brandAndCorporateDomains.includes(tld)
   )
     continue;
-  // amikalpop.* (e.g. "amikalpop.mom")
+  // cash app scammers
   config.denylist.add(`amikalpop.${punycode.toASCII(tld)}`);
+  config.denylist.add(`klokpmaol.${punycode.toASCII(tld)}`);
   // postline.* (e.g. "postline.ml")
   config.denylist.add(`postline.${punycode.toASCII(tld)}`);
 }

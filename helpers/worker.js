@@ -972,7 +972,16 @@ async function backup(payload) {
         }
       });
 
+    //
     // email admins with the full error output
+    //
+
+    // prevent duplicate emails every 24 hours
+    const key = `alias_backup_failed_check:${payload.session.user.username}`;
+    const cache = await client.get(key);
+    if (cache) throw err;
+    await client.set(key, true, 'PX', ms('1d'));
+
     await email({
       template: 'alert',
       message: {

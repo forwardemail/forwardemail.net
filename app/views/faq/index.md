@@ -2298,7 +2298,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">oracle</code></li>
   <li class="list-inline-item"><code class="notranslate">orange</code></li>
   <li class="list-inline-item"><code class="notranslate">otsuka</code></li>
-  <li class="list-inline-item"><code class="notranslate">ovh</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">ovh</code></li>-->
   <li class="list-inline-item"><code class="notranslate">panasonic</code></li>
   <li class="list-inline-item"><code class="notranslate">pccw</code></li>
   <li class="list-inline-item"><code class="notranslate">pfizer</code></li>
@@ -2317,7 +2317,7 @@ Additionally these [brand and corporate top-level domains](https://en.wikipedia.
   <li class="list-inline-item"><code class="notranslate">pru</code></li>
   <li class="list-inline-item"><code class="notranslate">prudential</code></li>
   <li class="list-inline-item"><code class="notranslate">pwc</code></li>
-  <li class="list-inline-item"><code class="notranslate">quest</code></li>
+  <!--<li class="list-inline-item"><code class="notranslate">quest</code></li>-->
   <li class="list-inline-item"><code class="notranslate">qvc</code></li>
   <li class="list-inline-item"><code class="notranslate">redstone</code></li>
   <li class="list-inline-item"><code class="notranslate">reliance</code></li>
