@@ -364,7 +364,7 @@ const brandAndCorporateDomains = [
   'sap',
   'saxo',
   'sbi',
-  'sbs',
+  // 'sbs',
   'sca',
   'scb',
   'schaeffler',
