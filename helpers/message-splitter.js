@@ -105,7 +105,9 @@ class MessageSplitter extends Transform {
       this.headerChunks = null;
       this.headers = new Headers(this.rawHeaders, { Iconv });
       // this.emit('headers', this.headers);
-      if (data.length - 1 > headerPos) {
+
+      // <https://github.com/nodemailer/wildduck/issues/781>
+      if (data.length - 1 >= headerPos) {
         const chunk = data.slice(headerPos);
         // this.bodySize += chunk.length;
 
