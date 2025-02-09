@@ -72,7 +72,7 @@ async function fraudCheck() {
   const customers = await getAllStripeCustomers();
   logger.info(`Started checking ${customers.length} Stripe customers`);
   await pMap(customers, mapper, {
-    concurrency: Math.floor(config.concurrency / 2)
+    concurrency: Math.floor(config.concurrency / 3)
   });
   logger.info(`Finished checking ${customers.length} Stripe customers`);
 }
