@@ -1528,6 +1528,7 @@ for (const tld of tlds) {
   )
     continue;
   // cash app scammers
+  config.denylist.add(`kosomar.${punycode.toASCII(tld)}`);
   config.denylist.add(`amikalpop.${punycode.toASCII(tld)}`);
   config.denylist.add(`klokpmaol.${punycode.toASCII(tld)}`);
   // postline.* (e.g. "postline.ml")
