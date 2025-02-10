@@ -728,6 +728,18 @@ const config = {
       ? 1
       : os.cpus().length,
 
+  //
+  // since PayPal doesn't help and there's no way to block unverified PayPal accounts
+  // (e.g. in the PayPal UI you can't block a contact that doesn't have a verified account; e.g. by email)
+  //
+  paypalPayerIdsBlocked: new Set(
+    _.isArray(env.PAYPAL_PAYER_IDS_BLOCKED)
+      ? env.PAYPAL_PAYER_IDS_BLOCKED.map((key) => key.trim())
+      : isSANB(env.PAYPAL_PAYER_IDS_BLOCKED)
+      ? env.PAYPAL_PAYER_IDS_BLOCKED.split(',').map((key) => key.trim())
+      : []
+  ),
+
   allowlist: new Set(
     _.isArray(env.ALLOWLIST)
       ? env.ALLOWLIST.map((key) => key.toLowerCase().trim())

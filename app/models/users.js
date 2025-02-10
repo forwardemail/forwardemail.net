@@ -1017,6 +1017,41 @@ Users.post('save', async (user, next) => {
   next();
 });
 
+//
+// since PayPal refuses to respond and help us block paypal cashapp email/phishing scammers
+// and postmark refuses to do any sort of KYC process to prevent these spammers
+//
+Users.post('save', async (user, next) => {
+  try {
+    if (!isSANB(user[config.userFields.paypalPayerID])) return next();
+    if (user[config.userFields.isBanned]) return next();
+    if (
+      !config.paypalPayerIdsBlocked.has(user[config.userFields.paypalPayerID])
+    )
+      return next();
+    await user.constructor.findByIdAndUpdate(user._id, {
+      $set: {
+        [config.userFields.isBanned]: true
+      }
+    });
+    const message = `${user.email} with PayPal Payer ID ${
+      user[config.userFields.paypalPayerID]
+    } banned`;
+    await email({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: message
+      },
+      locals: { message }
+    });
+  } catch (err) {
+    logger.fatal(err);
+  }
+
+  next();
+});
+
 Users.index(
   { [config.userFields.paymentReminderFollowUpSentAt]: 1 },
   {
