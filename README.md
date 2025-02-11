@@ -356,6 +356,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     gh repo deploy-key add deployment-keys/pop3-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/pop3-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/sqlite-do-sf-ca.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/sqlite-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/caldav-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/caldav-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/mx1-do-sf-ca.pub -R forwardemail/forwardemail.net
@@ -432,13 +433,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 21. (Optional) Create a Google application credentials profile file and store it locally.  You only need this if you want to support automatic translation.  The following command will prompt you for the absolute file path (e.g. `/path/to/client-profile.json`).  See the [mandarin][] docs for more information.
 
     ```sh
-    node ansible-playbook ansible/playbooks/gapp-creds.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
+    node ansible-playbook ansible/playbooks/gapp-creds.yml --user deploy
     ```
 
 22. (Optional) Copy over custom TTF or OTF fonts to be installed on the server (e.g. used for PDF rendering, rendering with Sharp, open-graph images, etc):
 
     ```sh
-    node ansible-playbook ansible/playbooks/fonts.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
+    node ansible-playbook ansible/playbooks/fonts.yml --user deploy
     ```
 
     Note that at the time of this writing we copy these files:
@@ -453,13 +454,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     > **NOTE:** This assumes that you have also set in `.env` file the keys of `GPG_SECURITY_KEY` with the full file path to the key *and* `GPG_SECURITY_PASSPHRASE` with the GPG passphrase. You can export via `gpg --armor --export-secret-key YOURKEYIDHERE > .gpg-security-key`. You can get `YOURKEYIDHERE` via `gpg --list-keys`.  You can generate a key with `gpg --full-generate-key` (e.g. for `support@yourdomain.com` or `security@yourdomain.com`).  Note you should also update the path in `config/index.js` for `openPGPKey` value.
 
     ```sh
-    node ansible-playbook ansible/playbooks/gpg-security-key.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
+    node ansible-playbook ansible/playbooks/gpg-security-key.yml --user deploy
     ```
 
 24. Copy the `.env.production` to the servers:
 
     ```sh
-    node ansible-playbook ansible/playbooks/env.yml -l 'imap:pop3:smtp:http:bree:sqlite:mx1:mx2' --user deploy
+    node ansible-playbook ansible/playbooks/env.yml --user deploy
     ```
 
 25. Run an initial deploy to all the servers:
