@@ -702,6 +702,89 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
      version: 2
    ```
 
+5. If you need to encrypt and auto-mount a disk, e.g. NVMe SSD drive at `/mnt/storage_do_1` for SQLite (`SQLITE_STORAGE_PATH`; see `helpers/get-path-to-database.js`):
+
+   1. Get partition name:
+
+      ```sh
+      lsblk
+      ```
+
+   2. Encrypt partition with LUKS:
+
+      > **NOTE:** Do not use `aes-xts-plain` – instead you should use `aes-xts-plain64` as shown below – this is because `aes-xts-plain` has limitations on larger containers over 2 TiB and does not offer the same protection as `aes-xts-plain64`.
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      ```sh
+      mkdir -p /etc/luks-keys
+      sudo touch /etc/luks-keys/key.key
+      sudo chmod 400 /etc/luks-keys/key.key
+      sudo dd if=/dev/urandom of=/etc/luks-keys/key.key bs=4096 count=1
+      sudo cryptsetup --cipher aes-xts-plain64 --key-file=/etc/luks-keys/key.key --key-size 512 --hash sha512 -v luksFormat /dev/nvme1n1 --batch-mode
+      ```
+
+   3. Open the partition:
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      ```sh
+      sudo cryptsetup -v --key-file=/etc/luks-keys/key.key luksOpen /dev/nvme1n1 nvme1n1
+      ```
+
+   4. Get UUID of storage device:
+
+      ```sh
+      sudo cryptsetup luksDump /dev/nvme1n1 | grep UUID | sed -e "s/UUID: //" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+      ```
+
+      > **NOTE:** This will output a UUID value such as the following, which you need to use later:
+
+      ```sh
+      f0f59f79-f8f8-4a39-8dd7-a04ccc5e50a3
+      ```
+
+   5. Add to `/etc/crypttab`:
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      > **NOTE:** Replace the `UUID` value with the value output from above.
+
+      ```sh
+      echo "nvme1n1 UUID=f0f59f79-f8f8-4a39-8dd7-a04ccc5e50a3 /etc/luks-keys/key.key luks" | sudo tee -a /etc/crypttab
+      ```
+
+   6. Initialize mapper:
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      ```sh
+      sudo cryptdisks_start nvme1n1
+      ```
+
+   7. Create partition:
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      ```sh
+      sudo mkfs -t ext4 -L nvme1n1 /dev/mapper/nvme1n1
+      ```
+
+   8. Add to `/etc/fstab`:
+
+      > **NOTE:** Replace `nvme1n1` with the name of the unencrypted partition shown in step 1:
+
+      ```sh
+      echo "/dev/mapper/nvme1n1 /mnt/storage_do_1 ext4 defaults 0 2" | sudo tee -a /etc/fstab
+      ```
+
+   9. Mount it:
+
+      ```sh
+      sudo mkdir -p /mnt/storage_do_1
+      sudo mount -a
+      ```
+
 
 ## License
 
