@@ -778,11 +778,12 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
       echo "/dev/mapper/nvme1n1 /mnt/storage_do_1 ext4 defaults 0 2" | sudo tee -a /etc/fstab
       ```
 
-   9. Mount it:
+   9. Mount it and adjust permissions to `deploy` user:
 
       ```sh
       sudo mkdir -p /mnt/storage_do_1
       sudo mount -a
+      sudo chown -R deploy:deploy /mnt/storage_do_1
       ```
 
 
