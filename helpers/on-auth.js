@@ -205,7 +205,7 @@ async function onAuth(auth, session, fn) {
       this.server instanceof IMAPServer ||
       this.server instanceof POP3Server
     )
-      validateAlias(alias, domain, name);
+      validateAlias(alias, domain.name, name);
 
     //
     // validate the `auth.password` provided
