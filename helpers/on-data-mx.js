@@ -556,19 +556,6 @@ async function imap(alias, headers, session, body) {
         host: env.SQLITE_HOST
       });
     } else {
-      // NOTE: UNTIL WE'RE CERTAIN SQLITE NEW SETUP IS WORKING, DO NOT RESPOND 200 FOR IMAP STORAGE
-      // NOTE: UNTIL WE'RE CERTAIN SQLITE NEW SETUP IS WORKING, DO NOT RESPOND 200 FOR IMAP STORAGE
-      // NOTE: UNTIL WE'RE CERTAIN SQLITE NEW SETUP IS WORKING, DO NOT RESPOND 200 FOR IMAP STORAGE
-      // NOTE: UNTIL WE'RE CERTAIN SQLITE NEW SETUP IS WORKING, DO NOT RESPOND 200 FOR IMAP STORAGE
-      const err = new SMTPError('Temporary, try again later');
-      err.target = env.IMAP_HOST;
-      bounces.push({
-        address: alias.address,
-        err,
-        host: env.SQLITE_HOST
-      });
-
-      /*
       // store that we sent this message so we don't again
       const key = getFingerprintKey(session, alias.id);
       this.client
@@ -582,7 +569,6 @@ async function imap(alias, headers, session, body) {
       accepted.push(alias.address);
       if (alias.vacationResponder)
         vacationResponders.push(alias.vacationResponder);
-      */
     }
   } catch (_err) {
     // an error occurred here with websockets so we bounce all IMAP recipients
