@@ -45,11 +45,11 @@
         rule: allow
         port: 22
         proto: tcp
-    - name: Allow websocket port
-      ufw:
-        rule: allow
-        port: "{{ lookup('env', 'SQLITE_PORT') }}"
-        proto: tcp
+    #- name: Allow websocket port
+    #  ufw:
+    #    rule: allow
+    #    port: "{{ lookup('env', 'SQLITE_PORT') }}"
+    #    proto: tcp
     #
     # modify ufw setup
     # https://github.com/Oefenweb/ansible-ufw/issues/21
