@@ -701,7 +701,7 @@ async function checkBounceForSpam(bounce, headers, session) {
       const count = await this.client.incr(key);
       await this.client.pexpire(
         key,
-        isAttributeAllowlisted || session.isAllowlisted ? ms('3d') : ms('5d')
+        isAttributeAllowlisted || session.isAllowlisted ? ms('1d') : ms('5d')
       );
 
       //
@@ -818,9 +818,9 @@ async function checkBounceForSpam(bounce, headers, session) {
         logger.fatal(err);
       } else if (!isAttributeAllowlisted) {
         let shouldDenylist = false;
-        if (isEmail(attr) && count >= 3) {
+        if (isEmail(attr) && count >= 5) {
           shouldDenylist = true;
-        } else if (count >= 6) {
+        } else if (count >= 10) {
           shouldDenylist = true;
         }
 
