@@ -76,8 +76,8 @@ async function onConnect(session, fn) {
     // we only want to block colocrossing on our MX server
     if (
       this?.constructor?.name === 'MX' &&
-      session.resolvedClientHostname &&
-      session.resolvedClientHostname === 'colocrossing.com'
+      session.resolvedRootClientHostname &&
+      session.resolvedRootClientHostname === 'colocrossing.com'
     )
       isDenylisted = 'colocrossing.com';
     if (
