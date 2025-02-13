@@ -72,6 +72,14 @@ async function onConnect(session, fn) {
 
     // check against hard-coded denylist
     let isDenylisted = false;
+
+    // we only want to block colocrossing on our MX server
+    if (
+      this?.constructor?.name === 'MX' &&
+      session.resolvedClientHostname &&
+      session.resolvedClientHostname === 'colocrossing.com'
+    )
+      isDenylisted = 'colocrossing.com';
     if (
       session.resolvedClientHostname &&
       config.denylist.has(session.resolvedClientHostname)
