@@ -406,7 +406,9 @@ async function checkDate(date) {
     const allowlistKeys = new Set();
     const domains = new Set();
     const stream = client.scanStream({
-      match: 'allowlist:*'
+      match: 'allowlist:*',
+      count: 10000,
+      type: 'string'
     });
     stream.on('data', (keys) => {
       for (const key of keys) {

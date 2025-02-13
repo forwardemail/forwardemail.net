@@ -171,6 +171,7 @@ function isArbitrary(session, headers) {
       'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
     );
 
+  /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers
   if (
     session.resolvedRootClientHostname &&
@@ -179,6 +180,7 @@ function isArbitrary(session, headers) {
     throw new SMTPError(
       'Postmark has been blocked due to their lack of KYC process in preventing Cash App phishing email scams. If they resolve this issue and contact us, we will unblock them.'
     );
+  */
 
   //
   // due to high spam from 163.com we are blocking their bounces

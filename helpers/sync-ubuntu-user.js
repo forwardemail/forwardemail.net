@@ -417,7 +417,9 @@ async function syncUbuntuUser(user, map) {
           // reset purge_cache of any sync_ubuntu_error errors for this user + domain id
           //
           const stream = client.scanStream({
-            match: `${keyPrefix}:*`
+            match: `${keyPrefix}:*`,
+            count: 10000,
+            type: 'string'
           });
           const keysToClear = [];
           stream.on('data', (keys) => {

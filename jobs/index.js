@@ -255,4 +255,11 @@ if (boolean(process.env.AUTH_OTP_ENABLED))
     timeout: 0
   });
 
+if (boolean(process.env.CACHE_RESPONSES))
+  jobs.push({
+    name: 'check-cache-mime-types',
+    interval: '1h',
+    timeout: 0
+  });
+
 module.exports = jobs;
