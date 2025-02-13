@@ -18,6 +18,7 @@
 
 ## Table of Contents
 
+* [Stargazers over time](#stargazers-over-time)
 * [How do I get started](#how-do-i-get-started)
   * [For Consumers](#for-consumers)
   * [For Developers](#for-developers)
@@ -33,6 +34,11 @@
 * [Deployment Advice](#deployment-advice)
 * [Bare Metal Advice](#bare-metal-advice)
 * [License](#license)
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/forwardemail/forwardemail.net.svg?variant=adaptive)](https://starchart.cc/forwardemail/forwardemail.net)
 
 
 ## How do I get started

@@ -3,12 +3,18 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const process = require('node:process');
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
+const RateLimiter = require('async-ratelimiter');
+const Redis =
+  process.env.NODE_ENV === 'test'
+    ? require('ioredis-mock')
+    : require('@ladjs/redis');
 const SpamScanner = require('spamscanner');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
@@ -25,6 +31,7 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 const nodemailer = require('nodemailer');
 const pEvent = require('p-event');
 const parseErr = require('parse-err');
+const sharedConfig = require('@ladjs/shared-config');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 const { Iconv } = require('iconv');
 const { boolean } = require('boolean');
@@ -36,6 +43,7 @@ const Users = require('./users');
 const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
+const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -81,6 +89,22 @@ const transporter = nodemailer.createTransport({
 const scanner = new SpamScanner({
   logger,
   clamscan: env.NODE_ENV === 'test'
+});
+
+const webSharedConfig = sharedConfig('WEB');
+
+// TODO: we should find a way to share the existing redis connection
+const redis = new Redis(
+  webSharedConfig.redis,
+  logger,
+  webSharedConfig.redisMonitor
+);
+
+const rateLimiter = new RateLimiter({
+  db: redis,
+  max: config.smtpLimitMessages,
+  duration: config.smtpLimitDuration,
+  namespace: config.smtpLimitNamespace
 });
 
 const Emails = new mongoose.Schema(
@@ -807,6 +831,195 @@ Emails.post('save', async function (email) {
       err.email = email;
       logger.error(err);
     }
+  }
+});
+
+Emails.pre('save', async function (next) {
+  this._isNew = this.isNew;
+  next();
+});
+
+async function sendRateLimitEmail(user) {
+  // if the user received rate limit email in past 30d
+  if (
+    _.isDate(user.smtp_rate_limit_sent_at) &&
+    dayjs().isBefore(dayjs(user.smtp_rate_limit_sent_at).add(30, 'days'))
+  ) {
+    logger.info('user was already rate limited');
+    return;
+  }
+
+  await emailHelper({
+    template: 'alert',
+    message: {
+      to: user[config.userFields.fullEmail],
+      bcc: config.email.message.from,
+      locale: user[config.lastLocaleField],
+      subject: i18n.translate(
+        'SMTP_RATE_LIMIT_EXCEEDED',
+        user[config.lastLocaleField]
+      )
+    },
+    locals: {
+      locale: user[config.lastLocaleField],
+      message: i18n.translate(
+        'SMTP_RATE_LIMIT_EXCEEDED',
+        user[config.lastLocaleField]
+      )
+    }
+  });
+
+  // otherwise send the user an email and update the user record
+  await Users.findByIdAndUpdate(user._id, {
+    $set: {
+      smtp_rate_limit_sent_at: new Date()
+    }
+  });
+}
+
+Emails.pre('save', async function (next) {
+  // if it's not a new email then no need to check for credits
+  if (!this._isNew) return next();
+
+  try {
+    const [user, domain] = await Promise.all([
+      // TODO: limit fields returned
+      Users.findById(this.user).lean().exec(),
+      // TODO: limit fields returned
+      Domains.findById(this.domain).lean().exec()
+    ]);
+    if (!user) throw new SMTPError('User does not exist', { ignoreHook: true });
+    if (!domain)
+      throw new SMTPError('Domain does not exist', { ignoreHook: true });
+
+    //
+    // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
+    //       (this will change with a new credit system; so we will change this later)
+    //
+    const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+    // if any of the domain admins are admins then don't rate limit
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin' && typeof m.user === 'object')
+          .map((m) =>
+            typeof m.user === 'object' && typeof m?.user?._id === 'object'
+              ? m.user._id
+              : m.user
+          )
+      },
+      group: 'admin'
+    });
+
+    if (!adminExists) {
+      // rate limit to X emails per day by domain id then denylist
+      {
+        const count = await redis.zcard(
+          `${config.smtpLimitNamespace}:${domain.id}`
+        );
+        // return 550 error code
+        if (count >= max) {
+          // send one-time email alert to admin + user
+          sendRateLimitEmail(user)
+            .then()
+            .catch((err) => logger.fatal(err));
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
+      }
+
+      // rate limit to X emails per day by alias user id then denylist
+      {
+        const count = await redis.zcard(
+          `${config.smtpLimitNamespace}:${user.id}`
+        );
+        // return 550 error code
+        if (count >= max) {
+          // send one-time email alert to admin + user
+          sendRateLimitEmail(user)
+            .then()
+            .catch((err) => logger.fatal(err));
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
+      }
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+Emails.post('save', async function (email, next) {
+  // if it's not a new email then no need to deduct credits
+  if (!email._isNew) return next();
+
+  try {
+    const [user, domain] = await Promise.all([
+      // TODO: limit fields returned
+      Users.findById(this.user).lean().exec(),
+      // TODO: limit fields returned
+      Domains.findById(this.domain).lean().exec()
+    ]);
+    if (!user) throw new SMTPError('User does not exist', { ignoreHook: true });
+    if (!domain)
+      throw new SMTPError('Domain does not exist', { ignoreHook: true });
+
+    //
+    // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
+    //       (this will change with a new credit system; so we will change this later)
+    //
+    const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
+
+    // if any of the domain admins are admins then don't rate limit
+    const adminExists = await Users.exists({
+      _id: {
+        $in: domain.members
+          .filter((m) => m.group === 'admin' && typeof m.user === 'object')
+          .map((m) =>
+            typeof m.user === 'object' && typeof m?.user?._id === 'object'
+              ? m.user._id
+              : m.user
+          )
+      },
+      group: 'admin'
+    });
+
+    if (!adminExists) {
+      try {
+        // rate limit to X emails per day by domain id then denylist
+        {
+          const limit = await rateLimiter.get({
+            id: domain.id,
+            max
+          });
+
+          // return 550 error code
+          if (!limit.remaining)
+            throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+        }
+
+        // rate limit to X emails per day by alias user id then denylist
+        const limit = await rateLimiter.get({
+          id: user.id,
+          max
+        });
+
+        // return 550 error code
+        if (!limit.remaining)
+          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
+      } catch (err) {
+        // remove the job from the queue
+        Emails.findByIdAndRemove(email._id)
+          .then()
+          .catch((err) => logger.fatal(err));
+        throw err;
+      }
+    }
+
+    next();
+  } catch (err) {
+    next(err);
   }
 });
 

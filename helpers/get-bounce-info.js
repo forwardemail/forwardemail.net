@@ -270,6 +270,12 @@ function getBounceInfo(err) {
       // optimum-specific error message
       response.includes('4.7.1 Resources restricted') ||
       // CenturyLink/Cloudfilter rejection (421 mwd-ibgw-6004a.ext.cloudfilter.net cmsmtp 138.197.213.185 blocked AUP#CNCT:)
+      // cloudfilter.net
+      // tmomail.net
+      // <https://postmaster.t-online.de/index.en.html>
+      // <https://postmaster.t-online.de/kontakt.en.php>
+      // postmaster@t-online.de
+      // postmaster@rx.t-online.de
       response.includes('#CNCT') ||
       response.includes('#CXCNCT') ||
       response.includes('#CXMXRT') ||

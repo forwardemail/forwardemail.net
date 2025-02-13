@@ -7,7 +7,6 @@ const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
 const _ = require('lodash');
-const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const isEmail = require('#helpers/is-email');
 
@@ -18,51 +17,11 @@ const SMTPError = require('#helpers/smtp-error');
 const Users = require('#models/users');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
-const emailHelper = require('#helpers/email');
-const i18n = require('#helpers/i18n');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 const { decrypt } = require('#helpers/encrypt-decrypt');
-
-async function sendRateLimitEmail(user) {
-  // if the user received rate limit email in past 30d
-  if (
-    _.isDate(user.smtp_rate_limit_sent_at) &&
-    dayjs().isBefore(dayjs(user.smtp_rate_limit_sent_at).add(30, 'days'))
-  ) {
-    logger.info('user was already rate limited');
-    return;
-  }
-
-  await emailHelper({
-    template: 'alert',
-    message: {
-      to: user[config.userFields.fullEmail],
-      bcc: config.email.message.from,
-      locale: user[config.lastLocaleField],
-      subject: i18n.translate(
-        'SMTP_RATE_LIMIT_EXCEEDED',
-        user[config.lastLocaleField]
-      )
-    },
-    locals: {
-      locale: user[config.lastLocaleField],
-      message: i18n.translate(
-        'SMTP_RATE_LIMIT_EXCEEDED',
-        user[config.lastLocaleField]
-      )
-    }
-  });
-
-  // otherwise send the user an email and update the user record
-  await Users.findByIdAndUpdate(user._id, {
-    $set: {
-      smtp_rate_limit_sent_at: new Date()
-    }
-  });
-}
 
 // eslint-disable-next-line complexity
 async function onDataSMTP(session, date, headers, body) {
@@ -217,20 +176,6 @@ async function onDataSMTP(session, date, headers, body) {
     if (to.length > 0) envelope.to = to;
   }
 
-  // if any of the domain admins are admins then don't rate limit
-  const adminExists = await Users.exists({
-    _id: {
-      $in: domain.members
-        .filter((m) => m.group === 'admin' && typeof m.user === 'object')
-        .map((m) =>
-          typeof m.user === 'object' && typeof m?.user?._id === 'object'
-            ? m.user._id
-            : m.user
-        )
-    },
-    group: 'admin'
-  });
-
   let user;
   if (alias) {
     if (!alias.user) throw new TypeError('Alias user does not exist');
@@ -362,46 +307,6 @@ async function onDataSMTP(session, date, headers, body) {
   // if for any reason there isn't a user then throw an error
   if (!user) throw new TypeError('User does not exist');
 
-  //
-  // TODO: this should probably be moved to after `queue()` is invoked
-  //       (we could use `zcard(key)` like we do in list emails controller)
-  //
-  // TODO: it's not using the largest SMTP limit from the domain-wide admins here (?)
-  //       (this will change with a new credit system; so we will change this later)
-  //
-  const max = user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-  if (!adminExists) {
-    // rate limit to X emails per day by domain id then denylist
-    {
-      const count = await this.client.zcard(
-        `${config.smtpLimitNamespace}:${domain.id}`
-      );
-      // return 550 error code
-      if (count >= max) {
-        // send one-time email alert to admin + user
-        sendRateLimitEmail(user)
-          .then()
-          .catch((err) => logger.fatal(err, { session }));
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
-      }
-    }
-
-    // rate limit to X emails per day by alias user id then denylist
-    {
-      const count = await this.client.zcard(
-        `${config.smtpLimitNamespace}:${user.id}`
-      );
-      // return 550 error code
-      if (count >= max) {
-        // send one-time email alert to admin + user
-        sendRateLimitEmail(user)
-          .then()
-          .catch((err) => logger.fatal(err, { session }));
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
-      }
-    }
-  }
-
   // queue the email
   const email = await Emails.queue({
     message: {
@@ -416,44 +321,10 @@ async function onDataSMTP(session, date, headers, body) {
     isPending: true
   });
 
-  if (!adminExists) {
-    try {
-      // rate limit to X emails per day by domain id then denylist
-      {
-        const limit = await this.rateLimiter.get({
-          id: domain.id,
-          max
-        });
-
-        // return 550 error code
-        if (!limit.remaining)
-          throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
-      }
-
-      // rate limit to X emails per day by alias user id then denylist
-      const limit = await this.rateLimiter.get({
-        id: user.id,
-        max
-      });
-
-      // return 550 error code
-      if (!limit.remaining)
-        throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
-    } catch (err) {
-      // remove the job from the queue
-      Emails.findByIdAndRemove(email._id)
-        .then()
-        .catch((err) => logger.fatal(err));
-      throw err;
-    }
-  }
-
   if (!_.isDate(domain.smtp_suspended_sent_at)) {
     email.status = 'queued';
     await email.save();
   }
-
-  // TODO: implement credit system
 
   logger.debug('email created', {
     session: {

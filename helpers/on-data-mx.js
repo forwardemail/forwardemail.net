@@ -234,8 +234,6 @@ async function sendVacationResponder(vacationResponder, headers, session) {
   // message is a stream
   const message = createVacationResponder(vacationResponder, headers, session);
 
-  // TODO: implement credit system
-
   //
   // TODO: we should use this queue method instead of email helper
   //       and also for bounces in MX codebase
@@ -703,7 +701,7 @@ async function checkBounceForSpam(bounce, headers, session) {
       const count = await this.client.incr(key);
       await this.client.pexpire(
         key,
-        isAttributeAllowlisted || session.isAllowlisted ? ms('1d') : ms('5d')
+        isAttributeAllowlisted || session.isAllowlisted ? ms('3d') : ms('5d')
       );
 
       //
@@ -770,38 +768,25 @@ async function checkBounceForSpam(bounce, headers, session) {
       if (!bounce?.err?.truthSource) return;
 
       // attributes that are email addresses sending viruses get denylisted immediately
-      if (bounce.err.bounceInfo.category === 'virus' && isEmail(attr)) {
-        if (isAttributeAllowlisted && count >= 10) {
-          const err = new TypeError(
-            `${config.views.locals.emoji(
-              'microbe'
-            )} ${config.views.locals.emoji(
-              'rotating_light'
-            )} ${attr} was allowlisted and sent 10+ virus`
-          );
-          err.headers = headers;
-          err.bounce = bounce;
-          err.session = session;
-          err.isCodeBug = true;
-          logger.fatal(err);
-        } else if (!isAttributeAllowlisted && count >= 3) {
-          if (session.isAllowlisted) {
-            const err = new TypeError(
-              `${config.views.locals.emoji(
-                'microbe'
-              )} ${config.views.locals.emoji(
-                'warning'
-              )} ${attr} was denylisted for sending 3+ virus`
-            );
-            err.bounce = bounce;
-            err.session = session;
-            err.isCodeBug = true;
-            err.headers = headers;
-            logger.fatal(err);
-          }
+      if (
+        bounce.err.bounceInfo.category === 'virus' &&
+        isEmail(attr) &&
+        count >= 3
+      ) {
+        const err = new TypeError(
+          `${config.views.locals.emoji('microbe')} ${config.views.locals.emoji(
+            'rotating_light'
+          )} ${attr} was denylisted for sending 3+ virus (${
+            isAttributeAllowlisted ? 'allowlisted' : 'not allowlisted'
+          })`
+        );
+        err.headers = headers;
+        err.bounce = bounce;
+        err.session = session;
+        err.isCodeBug = true;
+        logger.fatal(err);
 
-          await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
-        }
+        await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
 
         return;
       }
@@ -833,9 +818,9 @@ async function checkBounceForSpam(bounce, headers, session) {
         logger.fatal(err);
       } else if (!isAttributeAllowlisted) {
         let shouldDenylist = false;
-        if (isEmail(attr) && count >= 5) {
+        if (isEmail(attr) && count >= 3) {
           shouldDenylist = true;
-        } else if (count >= 10) {
+        } else if (count >= 6) {
           shouldDenylist = true;
         }
 

@@ -16,8 +16,6 @@ const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
-const config = require('#config');
-
 const upload = multer();
 
 const router = new Router({
@@ -137,17 +135,11 @@ router
   .get('/emails/limit', rateLimit(100, 'get email limit'), api.v1.emails.limit)
   .get(
     '/emails/:id',
-    rateLimit(100, 'retrieve emails'),
     web.myAccount.retrieveEmail,
     api.v1.emails.retrieve
   )
   .post(
     '/emails',
-    // TODO: rate limiting needs to be handled by Emails.queue
-    rateLimit(config.smtpLimitMessages, 'create emails'),
-    // NOTE: we can uncomment this later:
-    // otherwise it encounters the default limit of 1000
-    // rateLimit(100000, 'create emails'), // allow up to 100K max (safeguard)
     bodyParser({
       jsonLimit: '51mb'
     }),

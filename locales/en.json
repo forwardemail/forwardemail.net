@@ -6883,5 +6883,7 @@
   "(\"SRS\") address here to protect against spoofing with our SRS domain name.": "(\"SRS\") address here to protect against spoofing with our SRS domain name.",
   "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not": "Add a key for the envelope \"MAIL FROM\" email address if it had passing SPF or no SPF, and it was not",
   "a postmaster username": "a postmaster username",
-  "a no-reply username": "a no-reply username"
+  "a no-reply username": "a no-reply username",
+  "<span class=\"notranslate\">%s</span> needs outbound SMTP configured or re-verified": "<span class=\"notranslate\">%s</span> needs outbound SMTP configured or re-verified",
+  "<p>The domain <strong class=\"notranslate\">%s</strong> had an issue with its outbound SMTP configuration:</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Resolve Issues</a></p>": "<p>The domain <strong class=\"notranslate\">%s</strong> had an issue with its outbound SMTP configuration:</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Resolve Issues</a></p>"
 }

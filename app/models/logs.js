@@ -5,11 +5,15 @@
 
 const dns = require('node:dns');
 const os = require('node:os');
+const process = require('node:process');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Graceful = require('@ladjs/graceful');
-const Redis = require('@ladjs/redis');
+const Redis =
+  process.env.NODE_ENV === 'test'
+    ? require('ioredis-mock')
+    : require('@ladjs/redis');
 const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('@forwardemail/bytes');

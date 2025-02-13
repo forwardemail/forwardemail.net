@@ -13,7 +13,7 @@ module.exports = {
   verbose: true,
   failFast: true,
   // serial: true,
-  concurrency: isCI ? 2 : Math.floor(os.cpus().length / 2),
+  concurrency: isCI ? 2 : Math.floor(os.cpus().length / 3),
   files: ['test/*.js', 'test/**/*.js', 'test/**/**/*.js', '!test/utils.js'],
   // <https://github.com/lovell/sharp/issues/3164#issuecomment-1168328811>
   // workerThreads: familySync() !== GLIBC,
