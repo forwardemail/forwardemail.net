@@ -98,7 +98,13 @@ const REDACTED_FIELDS = new Set([
   'getQueryResponse',
   'matchSearchQuery',
   'isUTF8Enabled',
-  'db'
+  'db',
+
+  // application specific
+  'otp_recovery_keys',
+  'api_token',
+  'otp_token',
+  'verification_pin'
 ]);
 
 //

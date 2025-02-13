@@ -8,6 +8,7 @@
   become_user: root
   vars:
     copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+    copy_local_key_2: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_2.pub') }}"
   handlers:
     - name: Restart SSH
       service:
@@ -239,6 +240,12 @@
         state: present
         key: "{{ copy_local_key }}"
 
+    - name: Set authorized key 2 for devops user
+      authorized_key:
+        user: devops
+        state: present
+        key: "{{ copy_local_key_2 }}"
+
     # create deploy user
     - name: Create a deploy user
       user:
@@ -256,6 +263,12 @@
         user: deploy
         state: present
         key: "{{ copy_local_key }}"
+
+    - name: Set authorized key 2 for deploy user
+      authorized_key:
+        user: deploy
+        state: present
+        key: "{{ copy_local_key_2 }}"
 
     - name: Remove non-interactive from deploy bashrc
       ansible.builtin.replace:
