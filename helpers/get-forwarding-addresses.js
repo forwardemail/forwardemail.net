@@ -290,6 +290,11 @@ async function getForwardingAddresses(
     );
 
   //
+  // TODO: we also need to maintain a counter for the # of unique domains per email on free plan being used
+  // some bad actors forward email from like thousands of domains on free plan to a gmail
+  //
+
+  //
   // if the domain on free plan and was expired or newly created in the background
   // and alert admins if we need to mitigate and shadow ban the user
   //
@@ -303,7 +308,12 @@ async function getForwardingAddresses(
         //     // ... whois data stuff
         //   }
         // }
-        // console.log('domain', domain, 'obj', obj, 'addresses', addresses);
+        // const emails = addresses.filter((addr) => isEmail(addr));
+        // if (emails.length > 0 && emails.length <= 3) {
+        //   for (const email of emails) {
+        //     console.log(domain, '>', email);
+        //   }
+        // }
       })
       .catch((err) => logger.fatal(err));
 
