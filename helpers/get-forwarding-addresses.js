@@ -293,9 +293,10 @@ async function getForwardingAddresses(
   // if the domain on free plan and was expired or newly created in the background
   // and alert admins if we need to mitigate and shadow ban the user
   //
-  if (shouldCheckExpiredOrNewlyCreated)
+  if (addresses.length > 0 && shouldCheckExpiredOrNewlyCreated)
     isExpiredOrNewlyCreated(domain, this.client)
-      .then(() => {
+      // eslint-disable-next-line no-unused-vars
+      .then((obj) => {
         // obj = {
         //   result: true, // true or false if it met criteria (see `helpers/is-recently-expired.js`)
         //   response: {
