@@ -136,7 +136,7 @@ const getMaxForwardedAddresses = require('./get-max-forwarded-addresses');
 const getSettings = require('./get-settings');
 const isAutoReplyOrMailingList = require('./is-auto-reply-or-mailing-list');
 const signMessage = require('./sign-message');
-const isRecentlyExpired = require('./is-recently-expired');
+const isExpiredOrNewlyCreated = require('./is-expired-or-newly-created');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -277,5 +277,5 @@ module.exports = {
   getSettings,
   isAutoReplyOrMailingList,
   signMessage,
-  isRecentlyExpired
+  isExpiredOrNewlyCreated
 };

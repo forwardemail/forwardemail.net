@@ -16,14 +16,15 @@ const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
 
-const isEmail = require('#helpers/is-email');
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
-const getKeyInfo = require('#helpers/get-key-info');
 const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
+const getKeyInfo = require('#helpers/get-key-info');
 const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
+const isEmail = require('#helpers/is-email');
+const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -168,6 +169,8 @@ async function getForwardingAddresses(
     }
   }
 
+  let shouldCheckExpiredOrNewlyCreated = false;
+
   if (verifications.length > 0 && username) {
     if (verifications.length > 1)
       throw new SMTPError(
@@ -219,6 +222,8 @@ async function getForwardingAddresses(
       for (const element of body.mapping) {
         validRecords.push(element);
       }
+    } else {
+      shouldCheckExpiredOrNewlyCreated = true;
     }
   }
 
@@ -283,6 +288,23 @@ async function getForwardingAddresses(
       `${address} domain of ${domain} has zero forwarded addresses configured in the TXT record with "${config.recordPrefix}"`,
       { responseCode: 421 }
     );
+
+  //
+  // if the domain on free plan and was expired or newly created in the background
+  // and alert admins if we need to mitigate and shadow ban the user
+  //
+  if (shouldCheckExpiredOrNewlyCreated)
+    isExpiredOrNewlyCreated(domain, this.client)
+      .then(() => {
+        // obj = {
+        //   result: true, // true or false if it met criteria (see `helpers/is-recently-expired.js`)
+        //   response: {
+        //     // ... whois data stuff
+        //   }
+        // }
+        // console.log('domain', domain, 'obj', obj, 'addresses', addresses);
+      })
+      .catch((err) => logger.fatal(err));
 
   // store if address is ignored or not
   let ignored = false; // 250
