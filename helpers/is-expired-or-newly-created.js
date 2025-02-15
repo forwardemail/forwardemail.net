@@ -109,13 +109,6 @@ async function isExpiredOrNewlyCreated(input, client) {
   )
     result = true;
 
-  //
-  // TODO: store counter for the user
-  // (e.g. one bad actor might be doing this for massive amounts of domains and we can shadow ban them)
-  // (e.g.if the count is >= 5 then we can assume this user is doing this on a massive scale)
-  // (and don't send email if we've already sent it to admins)
-  //
-
   return { result, response };
 }
 

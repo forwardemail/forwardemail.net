@@ -321,6 +321,7 @@ async function getForwardingAddresses(
 
         if (!json) json = { domains: [], sent: false };
         if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
+        json.email = email;
 
         // rudimentary email alert to admins if we detect the count was >= 10
         if (!json.sent && json.domains.length >= 10) {
@@ -328,7 +329,7 @@ async function getForwardingAddresses(
 
           // log fatal error email alert to admins
           const err = new TypeError(
-            `${email} being forwarded to from ${json.domains} domains on free plan`
+            `${email} being forwarded to from ${json.domains.length} domains on free plan`
           );
           err.isCodeBug = true;
           err.domains = json.domains;
@@ -380,6 +381,7 @@ async function getForwardingAddresses(
 
           if (!json) json = { domains: [], sent: false };
           if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
+          json.email = email;
 
           // rudimentary email alert to admins if we detect the count was >= 3
           if (!json.sent && json.domains.length >= 3) {
@@ -387,7 +389,7 @@ async function getForwardingAddresses(
 
             // log fatal error email alert to admins
             const err = new TypeError(
-              `${email} being forwarded to from ${json.domains} recently expired or newly created domains`
+              `${email} being forwarded to from ${json.domains.length} recently expired or newly created domains`
             );
             err.isCodeBug = true;
             err.domains = json.domains;
