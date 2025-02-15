@@ -80,7 +80,11 @@ function getBounceInfo(err) {
     // <https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror>
   }
 
-  if (response.includes('Comcast block for spam')) {
+  // Comcast removal requests submitted at:
+  // https://spa.xfinity.com/report
+  if (response.includes('#BL000000') || response.includes('#RL000010')) {
+    bounceInfo.category = 'blocklist';
+  } else if (response.includes('Comcast block for spam')) {
     bounceInfo.category = 'blocklist';
   } else if (response.includes('Connection dropped due to SocketError')) {
     // modify message to include URL for debugging

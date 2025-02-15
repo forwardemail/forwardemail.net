@@ -12,7 +12,10 @@ const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const pMapSeries = require('p-map-series');
 const regexParser = require('regex-parser');
+const revHash = require('rev-hash');
+const safeStringify = require('fast-safe-stringify');
 const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
 
@@ -169,7 +172,7 @@ async function getForwardingAddresses(
     }
   }
 
-  let shouldCheckExpiredOrNewlyCreated = false;
+  let isFreePlanDomain = false;
 
   if (verifications.length > 0 && username) {
     if (verifications.length > 1)
@@ -223,7 +226,7 @@ async function getForwardingAddresses(
         validRecords.push(element);
       }
     } else {
-      shouldCheckExpiredOrNewlyCreated = true;
+      isFreePlanDomain = true;
     }
   }
 
@@ -290,17 +293,61 @@ async function getForwardingAddresses(
     );
 
   //
-  // TODO: we also need to maintain a counter for the # of unique domains per email on free plan being used
-  // some bad actors forward email from like thousands of domains on free plan to a gmail
+  // we also need to maintain a counter for the # of unique domains per email on free plan being used
+  // (e.g. in an attempt to mitigate spam/fraud and shadowban/silent ban users)
   //
+  if (addresses.length > 0 && isFreePlanDomain) {
+    const emails = addresses.filter((addr) => isEmail(addr));
+    if (emails.length > 0) {
+      pMapSeries(emails, async (email) => {
+        const key = `free_plan:${revHash(email.toLowerCase())}`;
+        const cache = await this.client.get(key);
+        let json;
+        if (cache) {
+          try {
+            json = JSON.parse(cache);
+            if (
+              typeof json !== 'object' ||
+              typeof json.domains !== 'object' ||
+              !Array.isArray(json.domains) ||
+              typeof json.sent !== 'boolean'
+            )
+              throw new TypeError('JSON invalid');
+          } catch (err) {
+            logger.fatal(err);
+            json = null;
+          }
+        }
+
+        if (!json) json = { domains: [], sent: false };
+        if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
+
+        // rudimentary email alert to admins if we detect the count was >= 10
+        if (!json.sent && json.domains.length >= 10) {
+          json.sent = true;
+
+          // log fatal error email alert to admins
+          const err = new TypeError(
+            `${email} being forwarded to from ${json.domains} domains on free plan`
+          );
+          err.isCodeBug = true;
+          err.domains = json.domains;
+          logger.fatal(err);
+        }
+
+        await this.client.set(key, safeStringify(json), 'PX', ms('90d'));
+      })
+        .then()
+        .catch((err) => logger.fatal(err));
+    }
+  }
 
   //
   // if the domain on free plan and was expired or newly created in the background
   // and alert admins if we need to mitigate and shadow ban the user
   //
-  if (addresses.length > 0 && shouldCheckExpiredOrNewlyCreated)
-    isExpiredOrNewlyCreated(domain, this.client)
-      // eslint-disable-next-line no-unused-vars
+  if (addresses.length > 0 && isFreePlanDomain)
+    isExpiredOrNewlyCreated(rootDomain, this.client)
       .then((obj) => {
         // obj = {
         //   result: true, // true or false if it met criteria (see `helpers/is-recently-expired.js`)
@@ -308,12 +355,49 @@ async function getForwardingAddresses(
         //     // ... whois data stuff
         //   }
         // }
-        // const emails = addresses.filter((addr) => isEmail(addr));
-        // if (emails.length > 0 && emails.length <= 3) {
-        //   for (const email of emails) {
-        //     console.log(domain, '>', email);
-        //   }
-        // }
+        if (!obj.result) return;
+        const emails = addresses.filter((addr) => isEmail(addr));
+        if (emails.length === 0) return;
+        pMapSeries(emails, async (email) => {
+          const key = `expired:${revHash(email.toLowerCase())}`;
+          const cache = await this.client.get(key);
+          let json;
+          if (cache) {
+            try {
+              json = JSON.parse(cache);
+              if (
+                typeof json !== 'object' ||
+                typeof json.domains !== 'object' ||
+                !Array.isArray(json.domains) ||
+                typeof json.sent !== 'boolean'
+              )
+                throw new TypeError('JSON invalid');
+            } catch (err) {
+              logger.fatal(err);
+              json = null;
+            }
+          }
+
+          if (!json) json = { domains: [], sent: false };
+          if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
+
+          // rudimentary email alert to admins if we detect the count was >= 3
+          if (!json.sent && json.domains.length >= 3) {
+            json.sent = true;
+
+            // log fatal error email alert to admins
+            const err = new TypeError(
+              `${email} being forwarded to from ${json.domains} recently expired or newly created domains`
+            );
+            err.isCodeBug = true;
+            err.domains = json.domains;
+            logger.fatal(err);
+          }
+
+          await this.client.set(key, safeStringify(json), 'PX', ms('90d'));
+        })
+          .then()
+          .catch((err) => logger.fatal(err));
       })
       .catch((err) => logger.fatal(err));
 

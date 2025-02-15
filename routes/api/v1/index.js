@@ -133,11 +133,7 @@ router
     api.v1.emails.list
   )
   .get('/emails/limit', rateLimit(100, 'get email limit'), api.v1.emails.limit)
-  .get(
-    '/emails/:id',
-    web.myAccount.retrieveEmail,
-    api.v1.emails.retrieve
-  )
+  .get('/emails/:id', web.myAccount.retrieveEmail, api.v1.emails.retrieve)
   .post(
     '/emails',
     bodyParser({
