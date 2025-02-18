@@ -30,9 +30,7 @@ function ensureDomainAdmin(ctx, next) {
     }
   }
 
-  const err = Boom.badRequest(ctx.translateError('IS_NOT_ADMIN'));
-  if (typeof next !== 'function') throw err;
-  ctx.throw(err);
+  throw Boom.badRequest(ctx.translateError('IS_NOT_ADMIN'));
 }
 
 module.exports = ensureDomainAdmin;

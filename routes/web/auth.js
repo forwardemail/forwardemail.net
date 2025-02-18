@@ -69,7 +69,7 @@ router
       !ctx.passport.config.providers ||
       !ctx.passport.config.providers[provider.toLowerCase()]
     )
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PROVIDER')));
+      throw Boom.badRequest(ctx.translateError('INVALID_PROVIDER'));
     return next();
   })
   .get(
@@ -108,9 +108,7 @@ router
     rateLimit(50, 'webauthn challenge'),
     async (ctx) => {
       if (!ctx.passport.config.providers.webauthn)
-        return ctx.throw(
-          Boom.badRequest(ctx.translateError('INVALID_PROVIDER'))
-        );
+        throw Boom.badRequest(ctx.translateError('INVALID_PROVIDER'));
       const challenge = await storeChallenge(ctx);
       await ctx.saveSession();
       // this should be XHR/json request (not HTML)

@@ -18,7 +18,7 @@ const config = require('#config');
 // eslint-disable-next-line complexity
 async function importAliases(ctx) {
   if (ctx.state.domain.is_global)
-    return ctx.throw(Boom.badRequest(ctx.translateError('IS_NOT_ADMIN')));
+    throw Boom.badRequest(ctx.translateError('IS_NOT_ADMIN'));
 
   let forwardingAddresses;
   let globalForwardingAddresses;

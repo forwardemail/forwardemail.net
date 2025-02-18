@@ -135,9 +135,7 @@ function validateAlias(ctx, next) {
     (!Number.isFinite(body.error_code_if_disabled) ||
       ![250, 421, 550].includes(body.error_code_if_disabled))
   )
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_ERROR_CODE_IF_DISABLED'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_ERROR_CODE_IF_DISABLED'));
 
   if (typeof ctx.request.body.is_enabled !== 'undefined' || !ctx.api)
     body.is_enabled = boolean(ctx.request.body.is_enabled);
@@ -183,11 +181,10 @@ function validateAlias(ctx, next) {
       (member) => member.user && member.user.id === ctx.state.user.id
     );
 
-    if (!member)
-      return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    if (!member) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
     if (member.group === 'user' && body.has_imap)
-      return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
+      throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
 
     /*
     if (
@@ -196,9 +193,7 @@ function validateAlias(ctx, next) {
         (r) => isEmail(r) && r.endsWith(`@${ctx.state.domain.name}`)
       )
     )
-      return ctx.throw(
-        Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))
-      );
+      throw Boom.notFound(ctx.translateError('UBUNTU_NOT_ALLOWED_EMAIL'))
     */
   }
 
@@ -218,10 +213,8 @@ function validateAlias(ctx, next) {
             ctx.request.body[field] !== ''
         ))
     )
-      return ctx.throw(
-        Boom.badRequest(
-          ctx.translateError('VACATION_RESPONDER_NOT_SUPPORTED_ON_GLOBAL')
-        )
+      throw Boom.badRequest(
+        ctx.translateError('VACATION_RESPONDER_NOT_SUPPORTED_ON_GLOBAL')
       );
 
     // extend existing if alias being updated (e.g. if we only want to change one field via API)
@@ -243,15 +236,13 @@ function validateAlias(ctx, next) {
       (!ctx?.state?.domain?.smtp_verified_at ||
         ctx?.state?.domain?.is_smtp_suspended)
     )
-      return ctx.throw(
-        Boom.badRequest(
-          ctx.translateError(
-            'VACATION_RESPONDER_SMTP_REQUIRED',
-            ctx.state.l(
-              `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
-            ),
-            ctx.state.domain.name
-          )
+      throw Boom.badRequest(
+        ctx.translateError(
+          'VACATION_RESPONDER_SMTP_REQUIRED',
+          ctx.state.l(
+            `/my-account/domains/${ctx.state.domain.name}/advanced-settings`
+          ),
+          ctx.state.domain.name
         )
       );
 
@@ -264,10 +255,8 @@ function validateAlias(ctx, next) {
         typeof ctx.request.body[`vacation_responder_${field}`] === 'string'
       ) {
         if (!dayjs(ctx.request.body[`vacation_responder_${field}`]).isValid())
-          return ctx.throw(
-            Boom.badRequest(
-              ctx.translateError('VACATION_RESPONDER_DATE_INVALID')
-            )
+          throw Boom.badRequest(
+            ctx.translateError('VACATION_RESPONDER_DATE_INVALID')
           );
         body.vacation_responder[field] = dayjs(
           ctx.request.body[`vacation_responder_${field}`]
@@ -283,8 +272,8 @@ function validateAlias(ctx, next) {
       new Date(body.vacation_responder.start_date).getTime() >=
         new Date(body.vacation_responder.end_date)
     )
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('VACATION_RESPONDER_DATE_ISSUE'))
+      throw Boom.badRequest(
+        ctx.translateError('VACATION_RESPONDER_DATE_ISSUE')
       );
 
     // subject

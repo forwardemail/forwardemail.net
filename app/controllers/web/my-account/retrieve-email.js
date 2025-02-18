@@ -12,7 +12,7 @@ const { Domains, Emails, Aliases } = require('#models');
 
 async function retrieveEmail(ctx, next) {
   if (!isSANB(ctx.params.id))
-    return ctx.throw(Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST')));
+    throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
 
   // user must be domain admin or alias owner of the email
   const [domains, aliases, goodDomains] = await Promise.all([
@@ -50,7 +50,7 @@ async function retrieveEmail(ctx, next) {
   });
 
   if (!ctx.state.email)
-    return ctx.throw(Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST')));
+    throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
 
   if (!ctx.api) {
     // eml download

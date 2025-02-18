@@ -41,18 +41,14 @@ async function create(ctx) {
     !ctx.allowlistValue ||
     ![env.MX1_HOST, env.MX2_HOST, env.WEB_HOST].includes(ctx.allowlistValue)
   )
-    return ctx.throw(
-      Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'))
-    );
+    throw Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_REQUEST'));
 
   if (
     !_.isObject(requestHeaders) ||
     !isSANB(requestHeaders[WEBHOOK_SIGNATURE_HEADER])
   )
-    return ctx.throw(
-      Boom.badRequest(
-        ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
-      )
+    throw Boom.badRequest(
+      ctx.translateError('MISSING_INQUIRY_WEBHOOK_SIGNATURE_HEADER')
     );
 
   if (isSANB(webhookSignatureKey)) {
@@ -60,11 +56,10 @@ async function create(ctx) {
       .update(body)
       .digest('hex');
 
-    if (requestHeaders[WEBHOOK_SIGNATURE_HEADER] !== webhookSignature) {
-      return ctx.throw(
-        Boom.forbidden(ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE'))
+    if (requestHeaders[WEBHOOK_SIGNATURE_HEADER] !== webhookSignature)
+      throw Boom.forbidden(
+        ctx.translateError('INVALID_INQUIRY_WEBHOOK_SIGNATURE')
       );
-    }
   } else {
     const err = new TypeError(
       'Webhook signature key missing, did you forget to add it to .env?'
@@ -77,13 +72,13 @@ async function create(ctx) {
   const headers = new Headers(headerLines);
 
   if (!session)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
+    throw Boom.badRequest(
+      ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD')
     );
 
   if (!isSANB(text))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD'))
+    throw Boom.badRequest(
+      ctx.translateError('INVALID_INQUIRY_WEBHOOK_PAYLOAD')
     );
 
   if (isAutoReplyOrMailingList(headers)) {
@@ -95,9 +90,7 @@ async function create(ctx) {
   const { recipient, sender } = session;
 
   if (parseUsername(recipient) !== parseUsername(config.supportEmail))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_EMAIL'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_INQUIRY_WEBHOOK_EMAIL'));
 
   if (
     !Array.isArray(body?.from?.value) ||
@@ -158,7 +151,7 @@ async function create(ctx) {
     });
   } catch (err) {
     ctx.logger.error(err);
-    return ctx.throw(err);
+    throw err;
   }
 
   ctx.body = inquiry;

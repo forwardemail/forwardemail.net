@@ -473,8 +473,8 @@ async function mobileConfig(ctx, next) {
     return next();
   } catch (err) {
     ctx.logger.error(err);
-    if (err.isBoom) return ctx.throw(err);
-    ctx.throw(Boom.clientTimeout(ctx.translate('WEBSITE_OUTAGE')));
+    if (err.isBoom) throw err;
+    throw Boom.clientTimeout(ctx.translate('WEBSITE_OUTAGE'));
   }
 }
 

@@ -12,9 +12,7 @@ const config = require('#config');
 async function removeDomain(ctx, next) {
   // we have the same logic in a pre('remove') hook in domains model
   if (ctx.state.domain.is_global)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'))
-    );
+    throw Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'));
   // remove all aliases
   await Aliases.deleteMany({
     domain: ctx.state.domain._id

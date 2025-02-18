@@ -23,7 +23,7 @@ async function validateDomain(ctx, next) {
     !isSANB(ctx.request.body.domain) ||
     (!isFQDN(ctx.request.body.domain) && !isIP(ctx.request.body.domain))
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
+    throw Boom.badRequest(ctx.translateError('INVALID_DOMAIN'));
 
   // trim and convert to lowercase the domain name
   ctx.request.body.domain = ctx.request.body.domain.trim().toLowerCase();
@@ -37,9 +37,7 @@ async function validateDomain(ctx, next) {
 
   if (match) {
     if (ctx.api)
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
-      );
+      throw Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'));
 
     const message = ctx.translate('DOMAIN_ALREADY_EXISTS');
     ctx.flash('warning', message);
@@ -67,7 +65,7 @@ async function validateDomain(ctx, next) {
         .replace(/example.com/g, ctx.request.body.domain.replace('www.', ''))
     );
     err.no_translate = true;
-    return ctx.throw(err);
+    throw err;
   }
 
   //
@@ -89,26 +87,22 @@ async function validateDomain(ctx, next) {
         `Account approval required for: ${ctx.request.body.domain} (${rootDomain})`
       )
     );
-    return ctx.throw(
-      Boom.badRequest(
+      throw Boom.badRequest(
         ctx.translateError(
           'ALLOWLIST_DOMAIN_NOT_ALLOWED',
           rootDomain,
           ctx.state.l('/help')
         )
       )
-    );
   }
   */
 
   if (isDenylist)
-    return ctx.throw(
-      Boom.badRequest(
-        ctx.translateError(
-          'DENYLIST_DOMAIN_NOT_ALLOWED',
-          rootDomain,
-          ctx.state.l(`/denylist?q=${rootDomain}`)
-        )
+    throw Boom.badRequest(
+      ctx.translateError(
+        'DENYLIST_DOMAIN_NOT_ALLOWED',
+        rootDomain,
+        ctx.state.l(`/denylist?q=${rootDomain}`)
       )
     );
 
@@ -116,7 +110,7 @@ async function validateDomain(ctx, next) {
     if (
       !['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
     )
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PLAN')));
+      throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
   } else {
     ctx.request.body.plan = ctx.state.user.plan || 'free';
   }
@@ -145,8 +139,8 @@ async function validateDomain(ctx, next) {
         ).filter((val) => isEmail(val));
         // if no recipients parsed then throw error
         if (rcpts.length === 0)
-          return ctx.throw(
-            Boom.badRequest(ctx.translateError('ALIAS_MUST_HAVE_ONE_RECIPIENT'))
+          throw Boom.badRequest(
+            ctx.translateError('ALIAS_MUST_HAVE_ONE_RECIPIENT')
           );
 
         ctx.state.recipients.push(...rcpts);

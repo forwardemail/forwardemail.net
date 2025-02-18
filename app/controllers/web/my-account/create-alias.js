@@ -21,9 +21,7 @@ async function createAlias(ctx, next) {
       !ctx.state.body.name.startsWith('/') &&
       ctx.state.body.name.includes('+')
     )
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'))
-      );
+      throw Boom.badRequest(ctx.translateError('ALIAS_WITH_PLUS_UNSUPPORTED'));
 
     //
     // if the domain is ubuntu.com and the user is in the user group
@@ -38,13 +36,10 @@ async function createAlias(ctx, next) {
         (member) => member.user && member.user.id === ctx.state.user.id
       );
 
-      if (!member)
-        return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+      if (!member) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
       if (member.group === 'user')
-        return ctx.throw(
-          Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'))
-        );
+        throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
     }
 
     try {
@@ -113,7 +108,7 @@ async function createAlias(ctx, next) {
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(err);
+    throw err;
   }
 }
 

@@ -43,8 +43,8 @@ async function createDomain(ctx, next) {
       logger.fatal(err);
 
       if (ctx.api)
-        return ctx.throw(
-          Boom.unauthorized(ctx.translateError('EMAIL_VERIFICATION_REQUIRED'))
+        throw Boom.unauthorized(
+          ctx.translateError('EMAIL_VERIFICATION_REQUIRED')
         );
 
       ctx.flash('warning', ctx.translate('EMAIL_VERIFICATION_REQUIRED'));
@@ -128,7 +128,7 @@ async function createDomain(ctx, next) {
       return;
     }
 
-    ctx.throw(Boom.badRequest(err));
+    throw Boom.badRequest(err);
   }
 }
 

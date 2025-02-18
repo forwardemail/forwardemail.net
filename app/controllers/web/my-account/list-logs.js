@@ -32,7 +32,7 @@ async function listLogs(ctx) {
   // NOTE: this is a safeguard since logs are sensitive
   //
   if (!ctx.isAuthenticated())
-    return ctx.throw(Boom.badRequest(ctx.translateError('LOGIN_REQUIRED')));
+    throw Boom.badRequest(ctx.translateError('LOGIN_REQUIRED'));
 
   const domains = new Set();
 
@@ -134,7 +134,7 @@ async function listLogs(ctx) {
 
   // safeguard
   if (_.isEmpty(query))
-    return ctx.throw(Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND')));
+    throw Boom.badRequest(ctx.translateError('NO_RESULTS_FOUND'));
 
   let subject;
   let date;

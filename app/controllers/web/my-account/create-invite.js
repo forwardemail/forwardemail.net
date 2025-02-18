@@ -15,24 +15,21 @@ async function createInvite(ctx, next) {
   // ctx.query.email
   const email = ctx.request.body.email || ctx.query.email;
   if (!isSANB(email) || !isEmail(email))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   // ctx.request.body.group
   if (
     !isSANB(ctx.request.body.group) ||
     !['admin', 'user'].includes(ctx.request.body.group)
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
+    throw Boom.badRequest(ctx.translateError('INVALID_GROUP'));
 
   // ensure invite does not already exist
   const invite = ctx.state.domain.invites.find(
     (invite) => invite.email.toLowerCase() === email.toLowerCase()
   );
 
-  if (invite)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVITE_ALREADY_SENT'))
-    );
+  if (invite) throw Boom.badRequest(ctx.translateError('INVITE_ALREADY_SENT'));
 
   // ensure user is not already a member
   const user = await Users.findOne({ email }).lean().exec();
@@ -41,17 +38,13 @@ async function createInvite(ctx, next) {
       (member) => member.user && member.user.id === user.id
     );
     if (member)
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('USER_ALREADY_MEMBER'))
-      );
+      throw Boom.badRequest(ctx.translateError('USER_ALREADY_MEMBER'));
   }
 
   // create the invite
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
   ctx.state.domain.invites.push({
     email: email.toLowerCase(),
     group: ctx.request.body.group

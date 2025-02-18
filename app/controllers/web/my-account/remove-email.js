@@ -11,9 +11,7 @@ const createSession = require('#helpers/create-session');
 
 async function removeEmail(ctx, next) {
   if (!['pending', 'queued', 'deferred'].includes(ctx.state.email.status))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'));
 
   // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
   const err = Boom.notFound(i18n.translateError('EMAIL_REMOVED'));

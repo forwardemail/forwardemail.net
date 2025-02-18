@@ -47,9 +47,7 @@ async function verifyRecords(ctx) {
   try {
     const domain = await Domains.findById(ctx.state.domain._id);
     if (!domain)
-      return ctx.throw(
-        Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-      );
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
     //
     // attempt to validate the domain
@@ -76,8 +74,7 @@ async function verifyRecords(ctx) {
         else ctx.body = { redirectTo };
       }
 
-      ctx.throw(Boom.badRequest(err));
-      return;
+      throw Boom.badRequest(err);
     }
 
     // reset redis cache for web and smtp
@@ -196,7 +193,7 @@ async function verifyRecords(ctx) {
       err = Boom.badRequest(message);
     }
 
-    ctx.throw(err);
+    throw err;
   }
 }
 

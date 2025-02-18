@@ -62,7 +62,7 @@ async function list(ctx) {
         throw new Error('Query was not parsed propery');
     } catch (err) {
       ctx.logger.warn(err);
-      return ctx.throw(Boom.badRequest(err.message));
+      throw Boom.badRequest(err.message);
     }
   }
 

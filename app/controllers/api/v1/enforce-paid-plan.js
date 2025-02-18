@@ -7,7 +7,7 @@ const Boom = require('@hapi/boom');
 
 async function enforcePaidPlan(ctx, next) {
   if (!ctx.isAuthenticated())
-    return ctx.throw(Boom.unauthorized(ctx.translateError('LOGIN_REQUIRED')));
+    throw Boom.unauthorized(ctx.translateError('LOGIN_REQUIRED'));
 
   // if the user is a member of a team plan and in the admin group, continue
   if (
@@ -17,12 +17,10 @@ async function enforcePaidPlan(ctx, next) {
     return next();
 
   if (ctx.state.user.plan === 'free')
-    return ctx.throw(
-      Boom.paymentRequired(
-        ctx.translateError(
-          'PLAN_UPGRADE_REQUIRED',
-          ctx.state.l('/my-account/billing/upgrade?plan=enhanced_protection')
-        )
+    throw Boom.paymentRequired(
+      ctx.translateError(
+        'PLAN_UPGRADE_REQUIRED',
+        ctx.state.l('/my-account/billing/upgrade?plan=enhanced_protection')
       )
     );
 

@@ -15,9 +15,7 @@ const { Aliases, Domains } = require('#models');
 async function updateRestrictedAliasNames(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.badRequest(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   if (isSANB(ctx.request.body.restricted_alias_names)) {
     ctx.state.domain.restricted_alias_names = _.compact(

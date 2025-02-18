@@ -558,32 +558,26 @@ async function processEvent(ctx, event) {
 // <https://stripe.com/docs/webhooks/signatures>
 
 async function webhook(ctx) {
-  let event;
-  try {
-    const sig = ctx.request.get('stripe-signature');
+  const sig = ctx.request.get('stripe-signature');
 
-    // throw an error if something was wrong
-    if (!isSANB(sig))
-      throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
+  // throw an error if something was wrong
+  if (!isSANB(sig))
+    throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
 
-    event = stripe.webhooks.constructEvent(
-      ctx.request.rawBody,
-      sig,
-      env.STRIPE_ENDPOINT_SECRET
-    );
+  const event = stripe.webhooks.constructEvent(
+    ctx.request.rawBody,
+    sig,
+    env.STRIPE_ENDPOINT_SECRET
+  );
 
-    // throw an error if something was wrong
-    if (!event)
-      throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
+  // throw an error if something was wrong
+  if (!event)
+    throw Boom.badRequest(ctx.translateError('INVALID_STRIPE_SIGNATURE'));
 
-    ctx.logger.info('stripe webhook', { event });
+  ctx.logger.info('stripe webhook', { event });
 
-    // return a response to acknowledge receipt of the event
-    ctx.body = { received: true };
-  } catch (err) {
-    ctx.throw(err);
-    return;
-  }
+  // return a response to acknowledge receipt of the event
+  ctx.body = { received: true };
 
   // run in background
   processEvent(ctx, event)

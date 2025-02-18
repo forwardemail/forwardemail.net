@@ -493,22 +493,17 @@ async function processEvent(ctx) {
 // <https://developer.paypal.com/docs/api-basics/notifications/webhooks/>
 
 async function webhook(ctx) {
-  try {
-    const response = await promisify(
-      paypal.notification.webhookEvent.verify,
-      paypal.notification.webhookEvent
-    )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
+  const response = await promisify(
+    paypal.notification.webhookEvent.verify,
+    paypal.notification.webhookEvent
+  )(ctx.request.headers, ctx.request.body, env.PAYPAL_WEBHOOK_ID);
 
-    // throw an error if something was wrong
-    if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
-      throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
+  // throw an error if something was wrong
+  if (!_.isObject(response) || response.verification_status !== 'SUCCESS')
+    throw Boom.badRequest(ctx.translateError('INVALID_PAYPAL_SIGNATURE'));
 
-    // return a response to acknowledge receipt of the event
-    ctx.body = { received: true };
-  } catch (err) {
-    ctx.throw(err);
-    return;
-  }
+  // return a response to acknowledge receipt of the event
+  ctx.body = { received: true };
 
   // run in background
   processEvent(ctx)

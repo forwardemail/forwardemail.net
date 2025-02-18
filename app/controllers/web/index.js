@@ -175,9 +175,7 @@ async function recipientVerification(ctx) {
     }
   } catch (err) {
     logger.warn(err);
-    ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_RECIPIENT_VERIFICATION'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_RECIPIENT_VERIFICATION'));
   }
 }
 
@@ -414,7 +412,7 @@ async function generateOpenGraphImage(ctx, next) {
     }
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(Boom.clientTimeout(ctx.translateError('UNKNOWN_ERROR')));
+    throw Boom.clientTimeout(ctx.translateError('UNKNOWN_ERROR'));
   }
 }
 
@@ -627,7 +625,7 @@ async function regenerateAliasPassword(ctx) {
       });
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID')));
+    throw Boom.badRequest(ctx.translateError('LINK_EXPIRED_OR_INVALID'));
   }
 }
 

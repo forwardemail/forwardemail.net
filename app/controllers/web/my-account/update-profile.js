@@ -70,9 +70,7 @@ async function updateProfile(ctx) {
     if (_.isString(body[config.userFields.receiptEmail])) {
       if (body[config.userFields.receiptEmail]) {
         if (!isEmail(body[config.userFields.receiptEmail]))
-          return ctx.throw(
-            Boom.badRequest(ctx.translateError('INVALID_EMAIL'))
-          );
+          throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
         ctx.state.user[config.userFields.receiptEmail] =
           body[config.userFields.receiptEmail];
       } else ctx.state.user[config.userFields.receiptEmail] = undefined;
@@ -105,13 +103,11 @@ async function updateProfile(ctx) {
     // ensure that a password has been set first
     // (this is a safety guard even though the email is read only if so)
     if (!ctx.state.user[config.userFields.hasSetPassword])
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('PASSWORD_REQUIRED'))
-      );
+      throw Boom.badRequest(ctx.translateError('PASSWORD_REQUIRED'));
 
     // validate it (so it doesn't have to use mongoose for this)
     if (!isEmail(body.email))
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
+      throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
     // if we've already sent a change email request in the past half hour
     if (

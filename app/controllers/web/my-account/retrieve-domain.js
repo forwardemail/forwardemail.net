@@ -28,11 +28,8 @@ const EXCHANGES = config.exchanges;
 
 // eslint-disable-next-line complexity
 async function retrieveDomain(ctx, next) {
-  if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain)) {
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
-  }
+  if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain))
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   const id = isSANB(ctx.params.domain_id)
     ? ctx.params.domain_id
@@ -44,11 +41,8 @@ async function retrieveDomain(ctx, next) {
 
   // check if domain exists, and if it doesn't then check
   // if we have a pending invite
-  if (!ctx.state.domain) {
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
-  }
+  if (!ctx.state.domain)
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   const member = ctx.state.domain.members.find((m) =>
     m?.user?.id
@@ -56,9 +50,7 @@ async function retrieveDomain(ctx, next) {
       : m.user.toString() === ctx.state.user.id
   );
 
-  if (!member) {
-    throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
-  }
+  if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
 
   // set a `group` virtual helper alias to the member's group
   ctx.state.domain.group = member.group;
@@ -415,9 +407,7 @@ async function retrieveDomain(ctx, next) {
         (m) => m.user.toString() === ctx.state.user.id
       );
 
-      if (!member) {
-        throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
-      }
+      if (!member) throw Boom.notFound(ctx.translateError('INVALID_MEMBER'));
 
       // set a `group` virtual helper alias to the member's group
       ctx.state.domain.group = member.group;

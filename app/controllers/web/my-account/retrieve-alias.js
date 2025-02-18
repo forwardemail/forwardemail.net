@@ -13,7 +13,7 @@ const config = require('#config');
 
 async function retrieveAlias(ctx, next) {
   if (!isSANB(ctx.params.alias_id))
-    return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
+    throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
 
   const query =
     ctx.state.domain.group === 'admin'
@@ -59,7 +59,7 @@ async function retrieveAlias(ctx, next) {
     !ctx.state.alias.domain ||
     ctx.state.alias.user[config.userFields.isBanned]
   )
-    return ctx.throw(Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
+    throw Boom.notFound(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
 
   // set virtual alias.group helper
   ctx.state.alias.group =

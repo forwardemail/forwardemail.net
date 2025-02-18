@@ -15,25 +15,25 @@ const { Aliases, Domains } = require('#models');
 async function updateMember(ctx, next) {
   // ctx.params.member_id
   if (!isSANB(ctx.params.member_id))
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
   // ctx.request.body.group
   if (
     !isSANB(ctx.request.body.group) ||
     !['admin', 'user'].includes(ctx.request.body.group)
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_GROUP')));
+    throw Boom.badRequest(ctx.translateError('INVALID_GROUP'));
 
   const member = ctx.state.domain.members.find(
     (member) => member.user && member.user.id === ctx.params.member_id
   );
 
   if (!member || !member.user)
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
   // don't update if the domain only has one member
   if (ctx.state.domain.members.length === 1)
-    return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+    throw Boom.notFound(ctx.translateError('UNKNOWN_ERROR'));
 
   const isCurrentUserBeingUpdated = member.user.id === ctx.state.user.id;
 
@@ -47,9 +47,7 @@ async function updateMember(ctx, next) {
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   // swap the user group based off ctx.request.body.group
   // <https://github.com/Automattic/mongoose/issues/11522>
@@ -92,7 +90,7 @@ async function updateMember(ctx, next) {
             member.user.toString() !== ctx.state.user.id
         );
         if (!otherAdminMember)
-          return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+          throw Boom.notFound(ctx.translateError('UNKNOWN_ERROR'));
         await Aliases.updateMany(
           {
             id: {

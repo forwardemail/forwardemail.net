@@ -26,9 +26,7 @@ async function validate(ctx, next) {
   // check against redis to ensure it's listed in denylist
   //
   if (!isSANB(ctx.request.body.q))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'));
 
   // safeguard in case we render email links wrong for admins in future
   if (
@@ -36,7 +34,7 @@ async function validate(ctx, next) {
     isSANB(ctx.request.body.email) &&
     !isEmail(ctx.request.body.email)
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   let { q } = ctx.request.body;
 
@@ -52,15 +50,11 @@ async function validate(ctx, next) {
       ctx.state.isEncrypted = true;
     } catch (err) {
       ctx.logger.warn(err);
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'));
     }
 
     if (!isFQDN(q) && !isIP(q) && !isEmail(q))
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_DENYLIST_VALUE'));
   }
 
   // if the value was an IP address then check against backscatter
@@ -68,9 +62,7 @@ async function validate(ctx, next) {
   if (isIP(q)) {
     const isBackscatter = await ctx.client.get(`backscatter:${q}`);
     if (boolean(isBackscatter))
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('BACKSCATTER', q, q, q))
-      );
+      throw Boom.badRequest(ctx.translateError('BACKSCATTER', q, q, q));
   }
 
   // set the root domain value in state for validate fn
@@ -177,13 +169,11 @@ async function validate(ctx, next) {
   } catch (err) {
     ctx.logger.fatal(err);
     // we don't want to expose redis errors to client
-    return ctx.throw(Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE')));
+    throw Boom.clientTimeout(ctx.translateError('WEBSITE_OUTAGE'));
   }
 
   if (!result)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_DENYLIST_REQUEST'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_DENYLIST_REQUEST'));
 
   // set this in ctx state for next route middleware
   ctx.state.q = q;

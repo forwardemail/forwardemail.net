@@ -55,9 +55,7 @@ async function verifySMTP(ctx) {
     );
     const domain = await Domains.findById(ctx.state.domain._id);
     if (!domain)
-      return ctx.throw(
-        Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-      );
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
     // get recipients and the majority favored locale
     const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
@@ -261,7 +259,7 @@ async function verifySMTP(ctx) {
       err = Boom.badRequest(message);
     }
 
-    ctx.throw(err);
+    throw err;
   }
 }
 

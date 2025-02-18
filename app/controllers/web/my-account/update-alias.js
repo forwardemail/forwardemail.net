@@ -13,9 +13,7 @@ const Aliases = require('#models/aliases');
 async function updateAlias(ctx, next) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
   if (!ctx.state.alias)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'))
-    );
+    throw Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
   ctx.state.alias = _.extend(ctx.state.alias, ctx.state.body);
   try {
     ctx.state.alias.locale = ctx.locale;
@@ -48,7 +46,7 @@ async function updateAlias(ctx, next) {
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(err);
+    throw err;
   }
 }
 

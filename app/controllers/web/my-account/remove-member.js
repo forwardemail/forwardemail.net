@@ -13,18 +13,18 @@ const { Aliases, Domains } = require('#models');
 async function removeMember(ctx, next) {
   // ctx.params.member_id
   if (!isSANB(ctx.params.member_id))
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
   const member = ctx.state.domain.members.find(
     (member) => member.user && member.user.id === ctx.params.member_id
   );
 
   if (!member || !member.user)
-    return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
   // don't remove if the domain only has one member
   if (ctx.state.domain.members.length === 1)
-    return ctx.throw(Boom.notFound(ctx.translateError('UNKNOWN_ERROR')));
+    throw Boom.notFound(ctx.translateError('UNKNOWN_ERROR'));
 
   // re-assign aliases that belong to this user before removing them
   const aliases = ctx.state.domain.aliases.filter(
@@ -94,9 +94,7 @@ async function removeMember(ctx, next) {
 
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
   ctx.state.domain.members = ctx.state.domain.members.filter(
     (member) => member.user.toString() !== ctx.params.member_id
   );

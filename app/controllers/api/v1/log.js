@@ -50,7 +50,7 @@ async function parseLog(ctx) {
     // TODO: but we should modify it so that it uses `ctx.status` too if non-200)
     //
     err.status = 400;
-    ctx.throw(err);
+    throw err;
   }
 }
 

@@ -178,13 +178,13 @@ async function onboard(ctx, next) {
   }
 
   if (!isSANB(ctx.request.body.email) || !isEmail(ctx.request.body.email))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_EMAIL')));
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL'));
 
   if (
     !isSANB(ctx.request.body.domain) ||
     (!isFQDN(ctx.request.body.domain) && !isIP(ctx.request.body.domain))
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_DOMAIN')));
+    throw Boom.badRequest(ctx.translateError('INVALID_DOMAIN'));
 
   if (ctx.isAuthenticated()) {
     const match = ctx.state.domains.find(

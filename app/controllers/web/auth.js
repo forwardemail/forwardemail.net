@@ -279,9 +279,7 @@ async function recoveryKey(ctx) {
     recoveryKeys.length === 0 ||
     !recoveryKeys.includes(ctx.request.body.recovery_key)
   )
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_RECOVERY_KEY'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_RECOVERY_KEY'));
 
   // remove used key from recovery key list
   recoveryKeys = recoveryKeys.filter(
@@ -560,36 +558,30 @@ async function changeEmail(ctx) {
   query[config.userFields.isBanned] = false;
   const user = await Users.findOne(query);
 
-  try {
-    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
+  if (!user) throw Boom.badRequest(ctx.translateError('INVALID_SET_EMAIL'));
 
-    const auth = await user.authenticate(body.password);
-    if (!auth.user)
-      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+  const auth = await user.authenticate(body.password);
+  if (!auth.user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
 
-    const newEmail = user[config.userFields.changeEmailNewAddress];
-    user[config.passportLocalMongoose.usernameField] = newEmail;
-    await user.save();
+  const newEmail = user[config.userFields.changeEmailNewAddress];
+  user[config.passportLocalMongoose.usernameField] = newEmail;
+  await user.save();
 
-    if (isSANB(user[config.userFields.stripeCustomerID])) {
-      try {
-        await stripe.customers.update(
-          user[config.userFields.stripeCustomerID],
-          { email: user.email }
-        );
-      } catch (err) {
-        ctx.logger.fatal(err);
-      }
+  if (isSANB(user[config.userFields.stripeCustomerID])) {
+    try {
+      await stripe.customers.update(user[config.userFields.stripeCustomerID], {
+        email: user.email
+      });
+    } catch (err) {
+      ctx.logger.fatal(err);
     }
-
-    // reset change email info
-    user[config.userFields.changeEmailToken] = undefined;
-    user[config.userFields.changeEmailTokenExpiresAt] = undefined;
-    user[config.userFields.changeEmailNewAddress] = undefined;
-    await user.save();
-  } catch (err) {
-    ctx.throw(err);
   }
+
+  // reset change email info
+  user[config.userFields.changeEmailToken] = undefined;
+  user[config.userFields.changeEmailTokenExpiresAt] = undefined;
+  user[config.userFields.changeEmailNewAddress] = undefined;
+  await user.save();
 
   const message = ctx.translate('CHANGE_EMAIL');
   const redirectTo = ctx.state.l();
@@ -704,7 +696,7 @@ async function verify(ctx) {
 
       // wrap with try/catch to prevent redirect looping
       // (even though the koa redirect loop package will help here)
-      if (!err.isBoom) return ctx.throw(err);
+      if (!err.isBoom) throw err;
       ctx.logger.error(err);
       if (ctx.accepts('html')) {
         ctx.flash('warning', err.message);
@@ -756,9 +748,7 @@ async function verify(ctx) {
     !ctx.state.user[config.userFields.verificationPin] ||
     pin !== ctx.state.user[config.userFields.verificationPin]
   )
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_VERIFICATION_PIN'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_VERIFICATION_PIN'));
 
   // set has verified to true
   ctx.state.user[config.userFields.hasVerifiedEmail] = true;

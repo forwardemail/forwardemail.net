@@ -92,9 +92,7 @@ async function update(ctx) {
       (_.isDate(ctx.state.email.locked_at) || ctx.state.email.locked_by)
     )
   )
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'));
 
   // set status to queued
   await Emails.findByIdAndUpdate(ctx.state.email._id, {
@@ -137,9 +135,7 @@ async function remove(ctx) {
     throw Boom.notFound(ctx.translateError('EMAIL_DOES_NOT_EXIST'));
 
   if (!['pending', 'queued', 'deferred'].includes(ctx.state.email.status))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'))
-    );
+    throw Boom.badRequest(ctx.translateError('INVALID_EMAIL_STATUS'));
 
   // NOTE: save() will automatically remove from `rejectedErrors` any already `accepted`
   const err = Boom.notFound(ctx.translateError('EMAIL_REMOVED'));

@@ -16,7 +16,7 @@ async function retrieveLog(ctx, next) {
   // NOTE: this is a safeguard since logs are sensitive
   //
   if (!ctx.isAuthenticated())
-    return ctx.throw(Boom.badRequest(ctx.translateError('LOGIN_REQUIRED')));
+    throw Boom.badRequest(ctx.translateError('LOGIN_REQUIRED'));
 
   if (!isSANB(ctx.params.id))
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));

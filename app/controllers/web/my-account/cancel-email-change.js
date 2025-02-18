@@ -10,9 +10,7 @@ const config = require('#config');
 async function cancelEmailChange(ctx) {
   // if no email change request exists throw an error
   if (!ctx.state.user[config.userFields.changeEmailToken])
-    throw ctx.throw(
-      Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'))
-    );
+    throw Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'));
 
   ctx.state.user[config.userFields.changeEmailToken] = undefined;
   ctx.state.user[config.userFields.changeEmailNewAddress] = undefined;

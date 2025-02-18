@@ -71,14 +71,14 @@ async function validate(ctx, next) {
   // "ip:email"
   //
   if (!isSANB(ctx.request.body.value))
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE')));
+    throw Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE'));
 
   if (
     ctx.request.body.value
       .split(':')
       .some((val) => !isFQDN(val) && !isEmail(val) && !isIP(val))
   )
-    return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE')));
+    throw Boom.badRequest(ctx.translateError('INVALID_KEY_VALUE'));
 
   return next();
 }

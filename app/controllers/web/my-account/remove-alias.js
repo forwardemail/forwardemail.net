@@ -25,11 +25,10 @@ async function removeAlias(ctx, next) {
       (member) => member.user && member.user.id === ctx.state.user.id
     );
 
-    if (!member)
-      return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+    if (!member) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
     if (member.group === 'user')
-      return ctx.throw(Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS')));
+      throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
   }
 
   await Aliases.findByIdAndRemove(ctx.state.alias._id);

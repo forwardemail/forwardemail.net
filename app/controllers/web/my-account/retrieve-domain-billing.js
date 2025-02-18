@@ -1789,7 +1789,7 @@ async function retrieveDomainBilling(ctx) {
       return ctx.redirect(redirectTo);
     }
 
-    ctx.throw(err);
+    throw err;
   }
 }
 

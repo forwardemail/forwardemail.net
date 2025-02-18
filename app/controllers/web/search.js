@@ -10,7 +10,7 @@ const SearchResults = require('#models/search-results');
 
 async function search(ctx) {
   if (isSANB(ctx.query.q) && ctx.query.q.length > 50)
-    return ctx.throw(Boom.badRequest(ctx.translate('NO_RESULTS_FOUND')));
+    throw Boom.badRequest(ctx.translate('NO_RESULTS_FOUND'));
 
   //
   // search string should be A-Z, 0-9, _ only

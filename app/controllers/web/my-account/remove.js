@@ -31,15 +31,11 @@ async function remove(ctx) {
       )
   );
   if (domainsWithOtherAdmins.length > 0)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'))
-    );
+    throw Boom.badRequest(ctx.translateError('ACCOUNT_DELETE_HAS_DOMAINS'));
 
   // safeguard in case admins were of global
   if (ctx.state.domains.some((d) => d.is_global && d.group === 'admin'))
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'))
-    );
+    throw Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'));
 
   // filter domain ids for admin owned domains
   const domainIds = ctx.state.domains

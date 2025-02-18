@@ -330,13 +330,10 @@ router
           (member) => member.user && member.user.id === ctx.state.user.id
         );
 
-        if (!member)
-          return ctx.throw(Boom.notFound(ctx.translateError('INVALID_USER')));
+        if (!member) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
         if (member.group === 'user')
-          return ctx.throw(
-            Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'))
-          );
+          throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
       }
 
       return next();
@@ -579,10 +576,7 @@ router
     // const [ok, obj] = await storeVerify(ctx, challenge);
     const [ok] = await storeVerify(ctx, challenge);
     // [ false, { message: 'Invalid challenge.' } ]
-    if (!ok)
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_CHALLENGE'))
-      );
+    if (!ok) throw Boom.badRequest(ctx.translateError('INVALID_CHALLENGE'));
 
     // Verify that the origin contained in client data matches the origin of this
     // app (which is the relying party).
@@ -596,16 +590,12 @@ router
     // const origin = utils.originalOrigin(ctx);
     // delete ctx.connection;
     // if (origin !== clientData.origin)
-    //   return ctx.throw(
-    //     Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
-    //   );
+    //   throw Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
     if (ctx.origin !== clientData.origin) {
       ctx.logger.fatal(
         new TypeError(`Origin mismatch ${ctx.origin} ${clientData.origin}`)
       );
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_ORIGIN_MISMATCH'));
     }
 
     // TODO: Verify the state of Token Binding for the TLS connection over which
@@ -626,26 +616,20 @@ router
     // Verify that the RP ID hash contained in authenticator data matches the
     // hash of this app's (which is the relying party) RP ID.
     if (!rpIdHash.equals(authenticatorData.rpIdHash))
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_RP_ID_HASH_MISMATCH'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_RP_ID_HASH_MISMATCH'));
 
     // Verify that the user present bit is set in authenticator data flags.
     // eslint-disable-next-line no-bitwise
     if (!(authenticatorData.flags & USER_PRESENT))
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_USER_NOT_PRESENT'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_USER_NOT_PRESENT'));
 
     // TODO: Verify alg is allowed
     // TODO: Verify that extensions are as expected.
 
     const format = attestationFormats[attestation.fmt];
     if (!format)
-      return ctx.throw(
-        Boom.badRequest(
-          ctx.translateError('INVALID_ATTESTATION_FORMAT', attestation.fmt)
-        )
+      throw Boom.badRequest(
+        ctx.translateError('INVALID_ATTESTATION_FORMAT', attestation.fmt)
       );
 
     // Verify that the attestation statement conveys a valid attestation signature.
@@ -660,9 +644,7 @@ router
       ctx.logger.debug('vAttestation', { vAttestation });
     } catch (err) {
       ctx.logger.fatal(err);
-      return ctx.throw(
-        Boom.badRequest(ctx.translateError('INVALID_ATTESTATION_DATA'))
-      );
+      throw Boom.badRequest(ctx.translateError('INVALID_ATTESTATION_DATA'));
     }
 
     const credentialId = base64url.encode(
@@ -737,13 +719,12 @@ router
   })
   .put('/passkeys/:id', async (ctx) => {
     if (!isSANB(ctx?.request?.body?.nickname))
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_NICKNAME')));
+      throw Boom.badRequest(ctx.translateError('INVALID_NICKNAME'));
 
     const user = await Users.findById(ctx.state.user._id);
     if (!user) throw new TypeError('User does not exist');
     const passkey = user.passkeys.id(ctx.params.id);
-    if (!passkey)
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSKEY')));
+    if (!passkey) throw Boom.badRequest(ctx.translateError('INVALID_PASSKEY'));
     passkey.nickname = ctx.request.body.nickname;
     await user.save();
     const redirectTo = ctx.state.l('/my-account/security');
@@ -758,8 +739,7 @@ router
     const user = await Users.findById(ctx.state.user._id);
     if (!user) throw new TypeError('User does not exist');
     const passkey = user.passkeys.id(ctx.params.id);
-    if (!passkey)
-      return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PASSKEY')));
+    if (!passkey) throw Boom.badRequest(ctx.translateError('INVALID_PASSKEY'));
 
     passkey.remove();
     await user.save();

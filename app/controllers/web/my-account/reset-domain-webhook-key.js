@@ -10,9 +10,7 @@ const { Domains } = require('#models');
 async function resetDomainWebhookKey(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   // reset key (gets reset under pre validate domain hook in model)
   ctx.state.domain.webhook_key = undefined;

@@ -89,50 +89,38 @@ async function ensurePaidToDate(ctx, next) {
         Date.now() - ms('30d')
     ) {
       // if they were already sent the email then return early
-      if (_.isDate(ctx.state.user[config.userFields.apiRestrictedSentAt])) {
-        ctx.throw(
-          Boom.paymentRequired(
-            ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
-          )
+      if (_.isDate(ctx.state.user[config.userFields.apiRestrictedSentAt]))
+        throw Boom.paymentRequired(
+          ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
         );
-        return;
-      }
 
-      // send them an email notifying them that access is restricted
-      // and only restrict access if this email was able to be sent successfully
-      try {
-        // mark that we sent this email
-        ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
-        await ctx.state.user.save();
+      // mark that we sent this email
+      ctx.state.user[config.userFields.apiRestrictedSentAt] = new Date();
+      await ctx.state.user.save();
 
-        // send the email after
-        await emailHelper({
-          template: 'alert',
-          message: {
-            to:
-              ctx.state.user[config.userFields.receiptEmail] ||
-              ctx.state.user[config.userFields.fullEmail],
-            ...(ctx.state.user[config.userFields.receiptEmail]
-              ? {
-                  cc: [
-                    ctx.state.user[config.userFields.fullEmail],
-                    config.email.message.from
-                  ]
-                }
-              : { cc: config.email.message.from }),
-            subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
-          },
-          locals: { message, user: ctx.state.user.toObject() }
-        });
-        ctx.throw(
-          Boom.paymentRequired(
-            ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
-          )
-        );
-        return;
-      } catch (err) {
-        ctx.logger.fatal(err);
-      }
+      // send the email after
+      await emailHelper({
+        template: 'alert',
+        message: {
+          to:
+            ctx.state.user[config.userFields.receiptEmail] ||
+            ctx.state.user[config.userFields.fullEmail],
+          ...(ctx.state.user[config.userFields.receiptEmail]
+            ? {
+                cc: [
+                  ctx.state.user[config.userFields.fullEmail],
+                  config.email.message.from
+                ]
+              }
+            : { cc: config.email.message.from }),
+          subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
+        },
+        locals: { message, user: ctx.state.user.toObject() }
+      });
+
+      throw Boom.paymentRequired(
+        ctx.translateError('PAYMENT_PAST_DUE_API_RESTRICTED')
+      );
     }
 
     // send a one-time email if the user was late on payments

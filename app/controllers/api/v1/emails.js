@@ -271,7 +271,7 @@ async function create(ctx) {
     ctx.body = body;
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(err);
+    throw err;
   }
 }
 

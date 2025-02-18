@@ -14,9 +14,7 @@ const config = require('#config');
 async function resendEmailChange(ctx) {
   // if no email change request exists throw an error
   if (!ctx.state.user[config.userFields.changeEmailNewAddress])
-    throw ctx.throw(
-      Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'))
-    );
+    throw Boom.badRequest(ctx.translateError('EMAIL_CHANGE_DOES_NOT_EXIST'));
 
   // reset the reset token and expiry
   ctx.state.user[config.userFields.changeEmailTokenExpiresAt] = dayjs()

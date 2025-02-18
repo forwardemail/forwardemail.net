@@ -81,10 +81,8 @@ function ensureUpgradedPlan(ctx, next) {
   }
 
   if (ctx.api)
-    return ctx.throw(
-      Boom.paymentRequired(
-        ctx.translateError('PLAN_UPGRADE_REQUIRED', redirectTo)
-      )
+    throw Boom.paymentRequired(
+      ctx.translateError('PLAN_UPGRADE_REQUIRED', redirectTo)
     );
 
   if (ctx.method === 'GET' || ctx.accepts('html')) {

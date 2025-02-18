@@ -25,15 +25,13 @@ const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   // Custom SMTP Port Forwarding
   if (isSANB(ctx.request.body.smtp_port)) {
     if (isPort(ctx.request.body.smtp_port))
       ctx.state.domain.smtp_port = ctx.request.body.smtp_port;
-    else return ctx.throw(Boom.badRequest(ctx.translateError('INVALID_PORT')));
+    else throw Boom.badRequest(ctx.translateError('INVALID_PORT'));
   }
 
   // Domain message retention period for outbound SMTP emails
@@ -118,15 +116,13 @@ async function updateDomain(ctx, next) {
       case 'spam_scanner_settings': {
         // require paid plan
         if (ctx.state.domain.plan === 'free')
-          return ctx.throw(
-            Boom.paymentRequired(
-              ctx.translateError(
-                'PLAN_UPGRADE_REQUIRED',
-                ctx.state.l(
-                  `/my-account/domains/${punycode.toASCII(
-                    ctx.state.domain.name
-                  )}/billing?plan=enhanced_protection`
-                )
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
               )
             )
           );
@@ -145,15 +141,13 @@ async function updateDomain(ctx, next) {
       case 'recipient_verification': {
         // require paid plan
         if (ctx.state.domain.plan === 'free')
-          return ctx.throw(
-            Boom.paymentRequired(
-              ctx.translateError(
-                'PLAN_UPGRADE_REQUIRED',
-                ctx.state.l(
-                  `/my-account/domains/${punycode.toASCII(
-                    ctx.state.domain.name
-                  )}/billing?plan=enhanced_protection`
-                )
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
               )
             )
           );
@@ -167,15 +161,13 @@ async function updateDomain(ctx, next) {
       case 'ignore_mx_check': {
         // require paid plan
         if (ctx.state.domain.plan === 'free')
-          return ctx.throw(
-            Boom.paymentRequired(
-              ctx.translateError(
-                'PLAN_UPGRADE_REQUIRED',
-                ctx.state.l(
-                  `/my-account/domains/${punycode.toASCII(
-                    ctx.state.domain.name
-                  )}/billing?plan=enhanced_protection`
-                )
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
               )
             )
           );
@@ -198,15 +190,13 @@ async function updateDomain(ctx, next) {
       ctx.state.domain.plan === 'free' ||
       !ctx.state.domain.has_custom_verification
     )
-      return ctx.throw(
-        Boom.paymentRequired(
-          ctx.translateError(
-            'PLAN_UPGRADE_REQUIRED',
-            ctx.state.l(
-              `/my-account/domains/${punycode.toASCII(
-                ctx.state.domain.name
-              )}/billing?plan=enhanced_protection`
-            )
+      throw Boom.paymentRequired(
+        ctx.translateError(
+          'PLAN_UPGRADE_REQUIRED',
+          ctx.state.l(
+            `/my-account/domains/${punycode.toASCII(
+              ctx.state.domain.name
+            )}/billing?plan=enhanced_protection`
           )
         )
       );

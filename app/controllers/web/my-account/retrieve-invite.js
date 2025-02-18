@@ -12,9 +12,7 @@ const { Domains } = require('#models');
 
 async function retrieveInvite(ctx) {
   if (!isSANB(ctx.params.domain_id))
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+    throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   const domain = await Domains.findOne({
     $or: [
@@ -29,10 +27,7 @@ async function retrieveInvite(ctx) {
     ]
   });
 
-  if (!domain)
-    return ctx.throw(
-      Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'))
-    );
+  if (!domain) throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
 
   // if the user already is an admin or member of domain with same name
   const match = ctx.state.domains.find(
@@ -40,10 +35,7 @@ async function retrieveInvite(ctx) {
       d.name === domain.name ||
       punycode.toASCII(d.name) === punycode.toASCII(domain.name)
   );
-  if (match)
-    return ctx.throw(
-      Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'))
-    );
+  if (match) throw Boom.badRequest(ctx.translateError('DOMAIN_ALREADY_EXISTS'));
 
   // convert invitee to a member with the same group as invite had
   const invite = domain.invites.find(

@@ -14,10 +14,8 @@ const Aliases = require('#models/aliases');
 async function resendVerification(ctx) {
   ctx.state.alias = await Aliases.findById(ctx.state.alias._id);
 
-  if (!isSANB(ctx.request.body.recipient)) {
-    ctx.throw(Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST')));
-    return;
-  }
+  if (!isSANB(ctx.request.body.recipient))
+    throw Boom.badRequest(ctx.translateError('ALIAS_DOES_NOT_EXIST'));
 
   //
   // NOTE: no validation is currently done for existence of `recipient` in `recipients`
@@ -48,7 +46,7 @@ async function resendVerification(ctx) {
     else ctx.body = { redirectTo };
   } catch (err) {
     ctx.logger.error(err);
-    ctx.throw(err);
+    throw err;
   }
 }
 

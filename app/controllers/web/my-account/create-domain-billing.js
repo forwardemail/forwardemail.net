@@ -479,7 +479,7 @@ async function createDomainBilling(ctx) {
       );
     }
 
-    ctx.throw(err);
+    throw err;
   }
 }
 
