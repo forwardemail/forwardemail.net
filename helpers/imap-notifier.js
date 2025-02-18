@@ -222,7 +222,7 @@ class IMAPNotifier extends EventEmitter {
       const modseq = mailbox.modifyIndex;
       const created = new Date();
 
-      const bulk = Journals.collection.initializeUnorderedBulkOp();
+      const docs = [];
 
       for (const entry of entries) {
         entry.modseq = entry.modseq || modseq;
@@ -243,7 +243,7 @@ class IMAPNotifier extends EventEmitter {
         const now = new Date();
         doc.created_at = now;
         doc.updated_at = now;
-        bulk.insert(doc);
+        docs.push(doc);
       }
 
       if (updated.length > 0) {
@@ -297,14 +297,20 @@ class IMAPNotifier extends EventEmitter {
         entries
       });
 
-      const bulkResults = await bulk.execute();
-      if (
-        bulkResults?.result?.ok !== 1 ||
-        bulkResults?.writeErrors?.length > 0 ||
-        bulkResults?.writeConcernErrors?.length > 0
-      ) {
+      // <https://mongodb.github.io/node-mongodb-native/4.9/interfaces/BulkResult.html>
+      const bulkResult = await Journals.bulkWrite(
+        docs.map((doc) => ({
+          insertOne: {
+            document: doc
+          }
+        })),
+        { ordered: false, skipValidation: true }
+      );
+      if (bulkResult?.result?.ok !== 1) {
         const err = new TypeError('Bulk write errors');
-        err.bulkResults = bulkResults;
+        err.isCodeBug = true;
+        err.bulkResult = bulkResult;
+        err.docs = docs;
         throw err;
       }
     } catch (_err) {

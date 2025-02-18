@@ -1136,47 +1136,17 @@ Emails.statics.queue = async function (
   //
   let from;
 
-  //
-  // NOTE: we should only decode these headers, but we're going to decode all anyways for now
-  //       <https://github.com/nodemailer/mailparser/blob/ac11f78429cf13da42162e996a05b875030ae1c1/lib/mail-parser.js#L329>
-  //
-  // NOTE: we decode header values because
-  //       want them to be easily searchable
-  //       (e.g. an emoji in a header line gets encoded as:
-  //       > '=?UTF-8?Q?=F0=9F=8E=89_beep?='
-  //       and we want output that looks like
-  //       > 🎉 beep
-  //       (e.g. so a user could search for 🎉)
-  //
-  //       we can't use mailsplit b/c unicode characters get rewritten
-  //       <https://github.com/andris9/mailsplit/issues/21>
-  //
-  let lines = headers.headers.toString();
-  try {
-    lines = headers.libmime.decodeWords(lines);
-  } catch {
-    // ignore, keep as is
-  }
+  const obj = getHeaders(headers);
 
-  lines = lines
-    // <https://github.com/andris9/mailsplit/issues/22>
-    .replace(/\r?\n?\t/g, ' ')
-    .replace(/[\r\n]+$/, '')
-    .split(/\r?\n/);
+  for (const key of Object.keys(obj)) {
+    const lc = key.toLowerCase();
+    if (!ADDRESS_KEYS.has(lc)) continue;
 
-  for (const line of lines) {
-    const index = line.indexOf(':');
-    const key = line.slice(0, index);
-    const value = line.slice(index + 1).trim();
-
-    const lowercaseKey = key.toLowerCase();
-    if (!ADDRESS_KEYS.has(lowercaseKey)) continue;
-
-    const addresses = parseAddresses(value);
+    const addresses = parseAddresses(obj[key]);
     if (!_.isArray(addresses) || _.isEmpty(addresses)) continue;
 
     // there should only be one value in From header
-    if (lowercaseKey === 'from' && addresses.length === 1) {
+    if (lc === 'from' && addresses.length === 1) {
       //
       // rewrite from header to be without "+" symbol
       // so that users can send with "+" address filtering
@@ -1194,13 +1164,12 @@ Emails.statics.queue = async function (
     if (options?.message?.raw) {
       // envelope from
       if (
-        (!info.envelope.from ||
-          (isEnvelopeFromEmpty && lowercaseKey === 'from')) &&
-        SENDER_KEYS.has(lowercaseKey)
+        (!info.envelope.from || (isEnvelopeFromEmpty && lc === 'from')) &&
+        SENDER_KEYS.has(lc)
       )
         info.envelope.from = addresses[0];
       // envelope to
-      else if (isEnvelopeToEmpty && RCPT_TO_KEYS.has(lowercaseKey)) {
+      else if (isEnvelopeToEmpty && RCPT_TO_KEYS.has(lc)) {
         for (const address of addresses) {
           if (info.envelope.to.includes(address)) continue;
           info.envelope.to.push(address);

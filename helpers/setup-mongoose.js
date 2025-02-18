@@ -6,6 +6,8 @@
 const pRetry = require('p-retry');
 const mongoose = require('mongoose');
 
+const isRetryableError = require('./is-retryable-error');
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
@@ -44,10 +46,24 @@ function setupMongoose(logger = console) {
       // <https://github.com/tim-kos/node-retry/issues/84>
       // forever: true,
       // retries: Infinity,
-      onFailedAttempt(err) {
+      async onFailedAttempt(err) {
+        err.isCodeBug = true;
         logger.error(err);
-        if (!(err instanceof mongoose.Error.MongooseServerSelectionError))
+        // > Uncaught Error: querySrv EREFUSED _mongodb._tcp.something.mongo.something.com
+        //     at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+        //     at __node_internal_ (node:internal/errors:715:10)
+        //     at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:275:17)
+        //     at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:128:17) {
+        //   errno: undefined,
+        //   code: 'EREFUSED',
+        //   syscall: 'querySrv',
+        //   hostname: '_mongodb._tcp.something.mongo.something.com'
+        // }
+        // if (!(err instanceof mongoose.Error.MongooseServerSelectionError)) {
+        if (!isRetryableError(err)) {
+          console.error(err);
           throw err;
+        }
       }
     }
   );
