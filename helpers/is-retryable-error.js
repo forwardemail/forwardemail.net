@@ -118,6 +118,15 @@ function isRetryableError(err) {
   if (typeof err.status === 'number' && HTTP_RETRY_STATUS_CODES.has(err.status))
     return true;
 
+  if (err.responseCode === 421) return true;
+
+  if (
+    err.isBoom &&
+    err?.output?.statusCode &&
+    HTTP_RETRY_STATUS_CODES.has(err.output.statusCode)
+  )
+    return true;
+
   return false;
 }
 
