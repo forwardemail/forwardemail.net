@@ -380,12 +380,7 @@ function createWebSocketAsPromised(options = {}) {
               maxTimeout: config.busyTimeout,
               factor: 1,
               onFailedAttempt(error) {
-                error.isCodeBug = true;
-                logger.error(error);
-
-                if (isRetryableError(error)) {
-                  return;
-                }
+                if (isRetryableError(error)) return;
 
                 throw error;
               }
@@ -408,6 +403,7 @@ function createWebSocketAsPromised(options = {}) {
       return recursivelyParse(response.data, true);
     } catch (err) {
       err.isCodeBug = true;
+      logger.fatal(err);
       throw refineAndLogError(err);
     }
   };

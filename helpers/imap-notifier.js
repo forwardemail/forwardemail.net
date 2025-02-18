@@ -298,18 +298,26 @@ class IMAPNotifier extends EventEmitter {
       });
 
       // <https://mongodb.github.io/node-mongodb-native/4.9/interfaces/BulkResult.html>
-      const bulkResult = await Journals.bulkWrite(
-        docs.map((doc) => ({
-          insertOne: {
-            document: doc
+      try {
+        if (docs.length <= 500) {
+          await Journals.create(docs);
+        } else {
+          const bulkResult = await Journals.bulkWrite(
+            docs.map((doc) => ({
+              insertOne: {
+                document: doc
+              }
+            })),
+            { ordered: false, skipValidation: true }
+          );
+          if (bulkResult?.result?.ok !== 1) {
+            const err = new TypeError('Bulk write errors');
+            err.bulkResult = bulkResult;
+            throw err;
           }
-        })),
-        { ordered: false, skipValidation: true }
-      );
-      if (bulkResult?.result?.ok !== 1) {
-        const err = new TypeError('Bulk write errors');
+        }
+      } catch (err) {
         err.isCodeBug = true;
-        err.bulkResult = bulkResult;
         err.docs = docs;
         throw err;
       }
