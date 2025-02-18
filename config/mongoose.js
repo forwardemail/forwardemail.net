@@ -29,7 +29,7 @@ if (initialConnection) initialConnection.destroy();
 // <https://github.com/Automattic/mongoose/issues/12970>
 for (const name of [
   'MONGO_URI',
-  'JOURNALS_MONGO_URI',
+  'LOGS_MONGO_URI',
   'JOURNALS_MONGO_URI',
   'EMAILS_MONGO_URI'
 ]) {
