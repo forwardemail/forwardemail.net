@@ -271,7 +271,12 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           const subject =
             config.views.locals.emoji('warning') +
             ' ' +
-            i18n.translate('STORAGE_THRESHOLD_SUBJECT', locale, percentageUsed);
+            i18n.translate(
+              'STORAGE_THRESHOLD_SUBJECT',
+              locale,
+              percentageUsed,
+              `${alias.name}@${domain.name}`
+            );
 
           const message = i18n.translate(
             'STORAGE_THRESHOLD_MESSAGE',
@@ -279,6 +284,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             percentageUsed,
             bytes(storageUsed),
             bytes(maxQuotaPerAlias),
+            `${alias.name}@${domain.name}`,
             `${config.urls.web}/${locale}/my-account/billing`
           );
 
@@ -286,7 +292,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             template: 'alert',
             message: {
               to,
-              bcc: config.email.message.from,
+              // bcc: config.email.message.from,
               subject
             },
             locals: {
