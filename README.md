@@ -208,10 +208,10 @@ Our server alias naming convention consists of the following fields, joined toge
 
 1. App name (e.g. "web", "api", "bree", "smtp", "imap", "pop3", "sqlite", or "caldav")
 2. (Optional) App count (starting with 1) of the application (relative to the same provider and region).  Only applicable for apps with potential count > 1.
-3. Provider name (abbreviated to 2 characters, e.g. "do" for "Digital Ocean", but you can optionally use more verbose for providers such as "Vultr" as "vultr")
+3. Provider name (abbreviated to 2 characters, e.g. "do" for "Digital Ocean", but you can optionally use more verbose for providers such as "DataPacket" as "dp")
 4. Region name (this is the region name given by the provider, e.g. "sfo3" for DO's SFO3 region)
 
-For example, one of our web servers is named `web-do-sfo3` and another is `web-vultr-dallas`.
+For example, one of our web servers is named `web-dp-dv-co` (for Web > DataPacket > Denver > Colorado).
 
 ### Load Balancing
 

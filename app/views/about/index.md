@@ -58,4 +58,10 @@ In July 2024, [we added iOS Push support](https://github.com/nodemailer/wildduck
 
 In August 2024, we added support for exporting mailboxes as [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) and [Mbox](https://en.wikipedia.org/wiki/Mbox) formats (in addition to the [SQLite](https://en.wikipedia.org/wiki/SQLite) export format already supported).  [Webhook signature support](https://forwardemail.net/faq#do-you-support-webhooks:\~:text=If%20you%27re%20on%20a%20paid%20plan%2C%20then%20go%20to%20My%20Account%20%E2%86%92%20Domains%20%E2%86%92%20Settings%20%E2%86%92%20Webhook%20Signature%20Payload%20Verification%20Key%20to%20obtain%20your%20webhook%20key.) via `X-Webhook-Signature` header was added.  [Bounce webhook support was added](/faq#do-you-support-bounce-webhooks) and we now allow users to send newsletters, announcements, and email marketing through our outbound SMTP service.  We also added the ability to set domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV.
 
+Through September 2024 to January 2025, [we added a highly-requested vacation responder feature and OpenPGP/WKD encryption for email forwarding](https://discuss.privacyguides.net/t/forward-email-new-features/24845/45) (in addition to IMAP that already was implemented).
+
+<!--On January 21, 2025, our founder's best friend "Jack", whom was his loyal canine companion, peacefully passed away at the age of nearly 11 – may he rest in peace and [always be remembered](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) :paw\_prints:.-->
+
+In February 2025, we switched to [DataPacket](https://www.datapacket.com) as our new primary new data center provider, complete with our [own custom, performance-focused, bare-metal hardware](https://x.com/fwdemail/status/1889440529647280580).  We also removed Vultr as a data center provider and migrated all servers except mail exchange servers ("MX") from Digital Ocean.
+
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

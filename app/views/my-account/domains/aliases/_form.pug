@@ -225,7 +225,7 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       checked=alias ? alias.has_pgp : false
     )
     label.form-check-label(for="input-has-pgp")
-      = t("OpenPGP for Storage")
+      = t("OpenPGP Encryption")
       = " "
       span.text-muted= t("(optional)")
     .alert.alert-warning.small.mt-3

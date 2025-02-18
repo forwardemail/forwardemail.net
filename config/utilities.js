@@ -602,6 +602,20 @@ const emailClients = _.sortBy(
       linux: true
     },
     {
+      name: 'Thunderbird Mobile',
+      link: 'https://www.thunderbird.net/en-US/mobile/',
+      description:
+        'Meet the leading open-source email app for Android. Enjoy complete freedom anywhere you take your smartphone.',
+      img: 'img/email-clients/thunderbird-mobile.png',
+      attribution: 'Screenshot by Thunderbird Mobile',
+      screenshot:
+        'https://f-droid.org/repo/net.thunderbird.android/en-US/phoneScreenshots/1.png',
+      wikipedia: 'https://en.wikipedia.org/wiki/Mozilla_Thunderbird',
+      language: 'Java &amp; Kotlin',
+      android: true,
+      starred: true
+    },
+    {
       name: 'K-9 Mail',
       link: 'https://k9mail.app/',
       description:
@@ -612,8 +626,7 @@ const emailClients = _.sortBy(
         'https://docs.k9mail.app/en/6.400/reading/img/reading_folder_view.png',
       wikipedia: 'https://en.wikipedia.org/wiki/K-9_Mail',
       language: 'Java &amp; Kotlin',
-      android: true,
-      starred: true
+      android: true
     },
     {
       name: 'Sylpheed',
