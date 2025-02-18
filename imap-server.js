@@ -47,7 +47,6 @@ const refreshSession = require('#helpers/refresh-session');
 // TODO: search filters like has:attachment
 // TODO: run validate() on all docs before 'update' and 'insert'
 // TODO: mx server forwarding (e.g. can forward to another mailserver such as gmail)
-// TODO: auto-reply/vacation responder
 // TODO: enforce maxDownload and maxUpload
 // TODO: each R2 bucket seems like it's 18 TB max?
 // TODO: use error.cause instead of `original_error` or some other stuff
@@ -55,7 +54,6 @@ const refreshSession = require('#helpers/refresh-session');
 
 // TODO: future items
 // - [ ] contacts
-// - [ ] calendar
 // - [ ] remove setImmediate from SMTP server
 // - [ ] remove or enforce maxTimeMS for all imap handlers
 // - [ ] projection on all handlers (instead of returning entire document)

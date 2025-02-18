@@ -99,6 +99,7 @@ const REDACTED_FIELDS = new Set([
   'matchSearchQuery',
   'isUTF8Enabled',
   'db',
+  'stream',
 
   // application specific
   'otp_recovery_keys',

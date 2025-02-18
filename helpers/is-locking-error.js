@@ -8,8 +8,9 @@ const config = require('#config');
 function isLockingError(err) {
   if (typeof err !== 'object') return false;
 
-  // if already set to INUSE then it's already been checked against config.LOCK_ERRORS
-  if (err.imapResponse === 'INUSE') return true;
+  // if already set to INUSE or UNAVAILABLE then it's already been checked against config.LOCK_ERRORS
+  if (err.imapResponse === 'INUSE' || err.imapResponse === 'UNAVAILABLE')
+    return true;
 
   if (err.message === 'The database connection is not open') return true;
 

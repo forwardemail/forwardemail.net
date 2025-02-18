@@ -226,7 +226,7 @@ async function sendRequest(wsp, requestId, data) {
     );
   }
 
-  return wsp.sendRequest(data, {
+  const result = await wsp.sendRequest(data, {
     timeout:
       typeof data.timeout === 'number' &&
       Number.isFinite(data.timeout) &&
@@ -244,6 +244,10 @@ async function sendRequest(wsp, requestId, data) {
         : ms('10s'),
     requestId
   });
+
+  if (result?.err) throw parseError(result.err);
+
+  return result;
 }
 
 function createWebSocketAsPromised(options = {}) {

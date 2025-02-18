@@ -955,9 +955,8 @@ async function parsePayload(data, ws) {
 
                   const err = Array.isArray(_err) ? _err[0] : _err;
                   if (isRetryableError(err)) {
-                    err.isCodeBug = true;
                     err.payload = _.omit(payload, 'raw');
-                    logger.error(err);
+                    logger.warn(err);
                   } else {
                     err.isCodeBug = true;
                     err.payload = _.omit(payload, 'raw');
