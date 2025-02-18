@@ -59,7 +59,7 @@
     "@ladjs/web": "21.0.21",
     "@mermaid-js/mermaid-cli": "10.9.1",
     "@ngneat/falso": "7.3.0",
-    "@octokit/core": "4.2.4",
+    "@octokit/core": "6.1.4",
     "@openpgp/wkd-client": "0.0.4",
     "@opensumi/reconnecting-websocket": "4.4.0",
     "@parse/node-apn": "6.2.1",
