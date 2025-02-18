@@ -146,7 +146,7 @@ async function onExpunge(mailboxId, update, session, fn) {
         // NOTE: we have autovacuum on so we don't need to do a checkpoint nor vacuum
         //
         // run a checkpoint to copy over wal to db
-        // session.db.pragma('wal_checkpoint(PASSIVE)');
+        // try { session.db.pragma('wal_checkpoint(PASSIVE)'); } catch (err) { ... }
         //
         // vacuum database
         // session.db.prepare('VACUUM').run();

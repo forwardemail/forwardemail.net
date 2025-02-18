@@ -420,9 +420,14 @@ async function onStore(mailboxId, update, session, fn) {
     // if there was an error during cursor then throw
     if (err) throw err;
 
-    // update storage
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');
+    } catch (err) {
+      this.logger.fatal(err, { mailboxId, update, session });
+    }
+
+    // update storage
+    try {
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
       this.logger.fatal(err, { mailboxId, update, session });

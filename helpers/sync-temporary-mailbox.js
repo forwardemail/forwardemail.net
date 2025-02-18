@@ -43,7 +43,11 @@ async function syncTemporaryMailbox(session) {
     const tmpDb = await getTemporaryDatabase.call(this, session);
 
     // sync entire db from WAL over to get all messages
-    tmpDb.pragma('wal_checkpoint(FULL)');
+    try {
+      tmpDb.pragma('wal_checkpoint(FULL)');
+    } catch (err) {
+      logger.fatal(err, { session });
+    }
 
     const sql = builder.build({
       table: 'TemporaryMessages',

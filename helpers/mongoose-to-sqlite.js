@@ -224,7 +224,11 @@ async function updateMany(
         );
       } else {
         docs = session.db.prepare(sql.query).all(sql.values);
-        session.db.pragma('wal_checkpoint(PASSIVE)');
+        try {
+          session.db.pragma('wal_checkpoint(PASSIVE)');
+        } catch (err) {
+          logger.fatal(err);
+        }
       }
     }
   } catch (_err) {
@@ -332,7 +336,11 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
       );
     } else {
       result = session.db.prepare(sql.query).run(sql.values);
-      session.db.pragma('wal_checkpoint(PASSIVE)');
+      try {
+        session.db.pragma('wal_checkpoint(PASSIVE)');
+      } catch (err) {
+        logger.fatal(err);
+      }
     }
   } catch (_err) {
     err = _err;
@@ -399,7 +407,11 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
       );
     } else {
       result = session.db.prepare(sql.query).run(sql.values);
-      session.db.pragma('wal_checkpoint(PASSIVE)');
+      try {
+        session.db.pragma('wal_checkpoint(PASSIVE)');
+      } catch (err) {
+        logger.fatal(err);
+      }
     }
   } catch (_err) {
     err = _err;
@@ -569,6 +581,7 @@ async function findOne(
   return doc;
 }
 
+// eslint-disable-next-line complexity
 async function $__handleSave(options = {}, fn) {
   try {
     const table =
@@ -625,7 +638,11 @@ async function $__handleSave(options = {}, fn) {
           );
         } else {
           doc = this.session.db.prepare(sql.query).get(sql.values);
-          this.session.db.pragma('wal_checkpoint(PASSIVE)');
+          try {
+            this.session.db.pragma('wal_checkpoint(PASSIVE)');
+          } catch (err) {
+            logger.fatal(err);
+          }
         }
       } else {
         const sql = builder.build({
@@ -653,7 +670,11 @@ async function $__handleSave(options = {}, fn) {
           );
         } else {
           doc = this.session.db.prepare(sql.query).get(sql.values);
-          this.session.db.pragma('wal_checkpoint(PASSIVE)');
+          try {
+            this.session.db.pragma('wal_checkpoint(PASSIVE)');
+          } catch (err) {
+            logger.fatal(err);
+          }
         }
       }
     } catch (_err) {
@@ -832,7 +853,11 @@ async function findOneAndUpdate(
         );
       } else {
         doc = session.db.prepare(sql.query).get(sql.values);
-        session.db.pragma('wal_checkpoint(PASSIVE)');
+        try {
+          session.db.pragma('wal_checkpoint(PASSIVE)');
+        } catch (err) {
+          logger.fatal(err);
+        }
       }
     }
   } catch (_err) {

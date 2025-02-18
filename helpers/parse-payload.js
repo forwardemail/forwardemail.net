@@ -1220,7 +1220,11 @@ async function parsePayload(data, ws) {
                   });
 
                   // run a checkpoint to copy over wal to db
-                  tmpDb.pragma('wal_checkpoint(PASSIVE)');
+                  try {
+                    tmpDb.pragma('wal_checkpoint(PASSIVE)');
+                  } catch (err) {
+                    logger.fatal(err, { payload });
+                  }
 
                   // update storage after temporary message created
                   try {
@@ -1330,9 +1334,14 @@ async function parsePayload(data, ws) {
           data: true
         };
 
-        // update storage
         try {
           db.pragma('wal_checkpoint(PASSIVE)');
+        } catch (err) {
+          logger.fatal(err, { payload });
+        }
+
+        // update storage
+        try {
           await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
           logger.fatal(err, { payload });
@@ -1391,7 +1400,11 @@ async function parsePayload(data, ws) {
           );
 
           // run a checkpoint to copy over wal to db
-          db.pragma('wal_checkpoint(PASSIVE)');
+          try {
+            db.pragma('wal_checkpoint(PASSIVE)');
+          } catch (err) {
+            logger.fatal(err, { payload });
+          }
 
           // TODO: vacuum into instead (same for elsewhere)
           // vacuum database
@@ -1724,9 +1737,14 @@ async function parsePayload(data, ws) {
           payload.session
         );
 
-        // update storage
         try {
           db.pragma('wal_checkpoint(PASSIVE)');
+        } catch (err) {
+          logger.fatal(err, { payload });
+        }
+
+        // update storage
+        try {
           await updateStorageUsed(payload.session.user.alias_id, this.client);
         } catch (err) {
           logger.fatal(err, { payload });
@@ -1828,8 +1846,13 @@ async function parsePayload(data, ws) {
       }
     }
 
-    if (db && payload.checkpoint)
-      db.pragma(`wal_checkpoint(${payload.checkpoint})`);
+    if (db && payload.checkpoint) {
+      try {
+        db.pragma(`wal_checkpoint(${payload.checkpoint})`);
+      } catch (err) {
+        logger.fatal(err, { payload });
+      }
+    }
 
     if (db && !this?.databaseMap) await closeDatabase(db);
 

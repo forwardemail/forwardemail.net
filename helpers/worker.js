@@ -230,7 +230,11 @@ async function rekey(payload) {
     );
 
     // run a checkpoint to copy over wal to db
-    db.pragma('wal_checkpoint(FULL)');
+    try {
+      db.pragma('wal_checkpoint(FULL)');
+    } catch (err) {
+      await logger.fatal(err, { payload });
+    }
 
     // create backup
     db.exec(`VACUUM INTO '${tmp}'`);
@@ -252,7 +256,11 @@ async function rekey(payload) {
     );
 
     // rekey the database with new password
-    backupDb.pragma('wal_checkpoint(PASSIVE)');
+    try {
+      backupDb.pragma('wal_checkpoint(PASSIVE)');
+    } catch (err) {
+      await logger.fatal(err, { payload });
+    }
 
     // ensure journal mode changed to delete so we can rekey database
     const journalModeResult = backupDb.pragma('journal_mode=DELETE', {
@@ -589,7 +597,11 @@ async function backup(payload) {
     //
 
     // run a checkpoint to copy over wal to db (and block others from writing)
-    db.pragma('wal_checkpoint(PASSIVE)');
+    try {
+      db.pragma('wal_checkpoint(PASSIVE)');
+    } catch (err) {
+      await logger.fatal(err, { payload });
+    }
 
     // cleanup tmp if it already exists
     // otherwise you get an error like:
@@ -633,7 +645,12 @@ async function backup(payload) {
           tmp
         );
 
-        backupDb.pragma('wal_checkpoint(PASSIVE)');
+        try {
+          backupDb.pragma('wal_checkpoint(PASSIVE)');
+        } catch (err) {
+          await logger.fatal(err, { payload });
+        }
+
         await closeDatabase(backupDb);
 
         break;
