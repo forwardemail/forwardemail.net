@@ -200,6 +200,7 @@ const purgeCssOptions = {
       'fa-sort-down',
       'fa-sort-up',
       'fa-times',
+      'fa-bell',
       'fade',
       'fixed-bottom',
       'flex-grow-1',

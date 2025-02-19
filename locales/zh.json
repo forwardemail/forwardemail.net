@@ -10446,5 +10446,16 @@
   "3 Top Open Source Email Clients for <span class=\"notranslate\">Xiaomi Phone</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>年<span class=\"notranslate\">Xiaomi Phone</span>的 3 大开源电子邮件客户端",
   "as our new primary data center provider – complete with our": "作为我们新的主要数据中心提供商——配备我们的",
   "<span class=\"notranslate\">%d</span>% storage quota reached for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>存储配额已达到<span class=\"notranslate\">%d</span>",
-  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">已达到<span class=\"notranslate\">%d</span> % 的存储配额（ <span class=\"notranslate\">%s</span>共<span class=\"notranslate\">%s</span> ），占<span class=\"notranslate text-monospace font-weight-bold\">%s</span>的 %s 。</div><p class=\"text-center\">如果超出配额，则不会发送消息。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">升级存储</a></p>"
+  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\">已达到<span class=\"notranslate\">%d</span> % 的存储配额（ <span class=\"notranslate\">%s</span>共<span class=\"notranslate\">%s</span> ），占<span class=\"notranslate text-monospace font-weight-bold\">%s</span>的 %s 。</div><p class=\"text-center\">如果超出配额，则不会发送消息。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">升级存储</a></p>",
+  "Newsletter": "通讯",
+  "Communication Preferences": "沟通偏好",
+  "Account Updates": "帐户更新",
+  "New Features and Product Updates": "新功能和产品更新",
+  "You have successfully subscribed to our newsletter (new features and product updates).": "您已成功订阅我们的新闻通讯（新功能和产品更新）。",
+  "Need service and <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">status page</a> updates?": "需要服务和<a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">状态页面</a>更新吗？",
+  "Click \"Notifications\" &rarr; \"All Activity\"": "点击“通知”→“所有活动”",
+  "Need <a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">status page</a> updates?": "需要<a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">状态页面</a>更新吗？",
+  "Click <i class=\"fa fa-regular fa-bell\"></i> \"Notifications\" &rarr; \"All Activity\"": "点击<i class=\"fa fa-regular fa-bell\"></i>“通知”→“所有活动”",
+  "You have successfully unsubscribed from our newsletter.": "您已成功取消订阅我们的新闻通讯。",
+  "You are already subscribed to our newsletter.": "您已订阅我们的新闻通讯。"
 }

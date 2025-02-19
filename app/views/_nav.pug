@@ -453,6 +453,12 @@ nav.navbar(class=navbarClasses.join(" "))
                   hr.dropdown-divider
                   h6.dropdown-header= t("Community")
                   a.dropdown-item(
+                    href=l("/my-account/profile?newsletter=true")
+                  )
+                    i.fa.fa-fw.fas.fa-newspaper
+                    = " "
+                    = t("Newsletter")
+                  a.dropdown-item(
                     href="https://github.com/forwardemail",
                     target="_blank",
                     rel="noopener noreferrer"
@@ -461,13 +467,13 @@ nav.navbar(class=navbarClasses.join(" "))
                     = " "
                     = "GitHub"
                   a.dropdown-item(
-                    href="https://youtube.com/forwardemail",
+                    href="https://x.com/fwdemail",
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fab.fa-fw.fa-youtube.text-danger
+                    i.fa.fa-fw.fa-twitter-x
                     = " "
-                    = "YouTube"
+                    = "@fwdemail"
                   a.dropdown-item(
                     href="https://matrix.to/#/#forwardemail:matrix.org",
                     target="_blank",
@@ -476,6 +482,22 @@ nav.navbar(class=navbarClasses.join(" "))
                     i.fa-fw.fa.fa-comments
                     = " "
                     = "Matrix"
+                  a.dropdown-item(
+                    href="https://youtube.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fab.fa-fw.fa-youtube
+                    = " "
+                    = "YouTube"
+                  a.dropdown-item(
+                    href=`${config.urls.web}/blog/feed/atom`,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa-fw.fas.fa-rss
+                    = " "
+                    = "RSS Feed"
                   hr.dropdown-divider
                   h6.dropdown-header= t("Company")
                   each companyPage in companyPages

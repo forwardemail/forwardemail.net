@@ -502,6 +502,29 @@ router
   .get(
     '/profile',
     web.myAccount.checkVerifiedEmail,
+    async (ctx, next) => {
+      if (ctx.query.newsletter === 'true') {
+        try {
+          if (ctx.state.user.has_newsletter === true) {
+            ctx.flash(
+              'success',
+              ctx.translate('NEWSLETTER_ALREADY_SUBSCRIBED')
+            );
+          } else {
+            ctx.state.user.has_newsletter = true;
+            await ctx.state.user.save();
+            ctx.flash('success', ctx.translate('NEWSLETTER_SUBSCRIBED'));
+          }
+
+          ctx.redirect(ctx.state.l('/my-account/profile'));
+          return;
+        } catch (err) {
+          ctx.logger.fatal(err);
+        }
+      }
+
+      return next();
+    },
     web.myAccount.retrieveProfile
   )
   .put('/profile', web.myAccount.updateProfile)

@@ -113,6 +113,13 @@ Passkey.plugin(mongooseCommonPlugin, {
 });
 
 const Users = new mongoose.Schema({
+  // Newsletter opt-in
+  has_newsletter: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+
   // Timezone
   // (automatically updated client-side via POST /my-account/timezone)
   timezone: String,

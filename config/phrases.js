@@ -20,6 +20,12 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  NEWSLETTER_ALREADY_SUBSCRIBED:
+    'You are already subscribed to our newsletter.',
+  NEWSLETTER_SUBSCRIBED:
+    'You have successfully subscribed to our newsletter (new features and product updates).',
+  NEWSLETTER_UNSUBSCRIBED:
+    'You have successfully unsubscribed from our newsletter.',
   VACATION_RESPONDER_NAME_SPECIFIC:
     'Vacation responder can only be enabled for specific alias names (catchall/wildcard and regular expressions are not supported).',
   VACATION_RESPONDER_SMTP_REQUIRED:

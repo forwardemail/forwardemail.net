@@ -6928,5 +6928,16 @@
   "K-9 Mail is an open source email client focused on making it easy to chew through large volumes of email.": "K-9 Mail is an open source email client focused on making it easy to chew through large volumes of email.",
   "Screenshot by K-9 Mail": "Screenshot by K-9 Mail",
   "3 Top Open Source Email Clients for <span class=\"notranslate\">Android</span> in <span class=\"notranslate\">2025</span>": "3 Top Open Source Email Clients for <span class=\"notranslate\">Android</span> in <span class=\"notranslate\">2025</span>",
-  "as our new primary data center provider – complete with our": "as our new primary data center provider – complete with our"
+  "as our new primary data center provider – complete with our": "as our new primary data center provider – complete with our",
+  "Newsletter": "Newsletter",
+  "Communication Preferences": "Communication Preferences",
+  "Account Updates": "Account Updates",
+  "New Features and Product Updates": "New Features and Product Updates",
+  "You have successfully subscribed to our newsletter (new features and product updates).": "You have successfully subscribed to our newsletter (new features and product updates).",
+  "Need service and <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">status page</a> updates?": "Need service and <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">status page</a> updates?",
+  "Click \"Notifications\" &rarr; \"All Activity\"": "Click \"Notifications\" &rarr; \"All Activity\"",
+  "Need <a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">status page</a> updates?": "Need <a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">status page</a> updates?",
+  "Click <i class=\"fa fa-regular fa-bell\"></i> \"Notifications\" &rarr; \"All Activity\"": "Click <i class=\"fa fa-regular fa-bell\"></i> \"Notifications\" &rarr; \"All Activity\"",
+  "You have successfully unsubscribed from our newsletter.": "You have successfully unsubscribed from our newsletter.",
+  "You are already subscribed to our newsletter.": "You are already subscribed to our newsletter."
 }

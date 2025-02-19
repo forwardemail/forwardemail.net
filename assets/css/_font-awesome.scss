@@ -5,3 +5,12 @@
 
 @import 'node_modules/@fortawesome/fontawesome-free/scss/solid';
 @import 'node_modules/@fortawesome/fontawesome-free/scss/brands';
+
+// <https://www.briancoords.com/twitter-icon-font-awesome-4/>
+.fa.fa-twitter-x {
+	font-family: sans-serif;
+}
+.fa.fa-twitter-x::before {
+	content: "𝕏";
+	font-size: 1.2em;
+}

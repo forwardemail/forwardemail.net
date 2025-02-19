@@ -389,6 +389,13 @@ footer.mt-auto(aria-label=t("Footer"))
             ul.list-unstyled.mb-0.mb-lg-3
               li
                 a.d-block.text-white.py-2.py-md-0(
+                  href=l("/my-account/profile?newsletter=true")
+                )
+                  i.fa.fa-fw.fas.fa-newspaper
+                  = " "
+                  = t("Newsletter")
+              li
+                a.d-block.text-white.py-2.py-md-0(
                   href="https://github.com/forwardemail",
                   target="_blank",
                   rel="noopener noreferrer"
@@ -398,13 +405,13 @@ footer.mt-auto(aria-label=t("Footer"))
                   = "GitHub"
               li
                 a.d-block.text-white.py-2.py-md-0(
-                  href="https://youtube.com/forwardemail",
+                  href="https://x.com/fwdemail",
                   target="_blank",
                   rel="noopener noreferrer"
                 )
-                  i.fab.fa-fw.fa-youtube.text-danger
+                  i.fa.fa-fw.fa-twitter-x
                   = " "
-                  = "YouTube"
+                  = "@fwdemail"
               li
                 a.d-block.text-white.py-2.py-md-0(
                   href="https://matrix.to/#/#forwardemail:matrix.org",
@@ -414,6 +421,15 @@ footer.mt-auto(aria-label=t("Footer"))
                   i.fa-fw.fa.fa-comments
                   = " "
                   = "Matrix"
+              li
+                a.d-block.text-white.py-2.py-md-0(
+                  href="https://youtube.com/forwardemail",
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fab.fa-fw.fa-youtube
+                  = " "
+                  = "YouTube"
               li
                 a.d-block.text-white.py-2.py-md-0(
                   href=`${config.urls.web}/blog/feed/atom`,

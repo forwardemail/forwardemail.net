@@ -10753,5 +10753,16 @@
   "3 Top Open Source Email Clients for <span class=\"notranslate\">Xiaomi Phone</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> 년 <span class=\"notranslate\">Xiaomi Phone</span> 위한 3대 오픈소스 이메일 클라이언트",
   "as our new primary data center provider – complete with our": "새로운 주요 데이터 센터 공급자로서 –",
   "<span class=\"notranslate\">%d</span>% storage quota reached for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%d</span> % 저장소 할당량에 도달했습니다 <span class=\"notranslate\">%s</span>",
-  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span> % 저장 할당량에 도달했습니다( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> )( <span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대해).</div><p class=\"text-center\"> 할당량을 초과하면 메시지가 전달되지 않습니다.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">스토리지 업그레이드</a></p>"
+  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span> % 저장 할당량에 도달했습니다( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> )( <span class=\"notranslate text-monospace font-weight-bold\">%s</span> 에 대해).</div><p class=\"text-center\"> 할당량을 초과하면 메시지가 전달되지 않습니다.</p><p class=\"text-center mb-0\"> <a href=\"%s\" class=\"btn btn-lg btn-danger\">스토리지 업그레이드</a></p>",
+  "Newsletter": "회람 신문",
+  "Communication Preferences": "커뮤니케이션 선호사항",
+  "Account Updates": "계정 업데이트",
+  "New Features and Product Updates": "새로운 기능 및 제품 업데이트",
+  "You have successfully subscribed to our newsletter (new features and product updates).": "귀하께서는 성공적으로 뉴스레터(새로운 기능 및 제품 업데이트)를 구독하셨습니다.",
+  "Need service and <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">status page</a> updates?": "서비스 및 <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">상태 페이지</a> 업데이트가 필요하신가요?",
+  "Click \"Notifications\" &rarr; \"All Activity\"": "\"알림\" &rarr; \"모든 활동\"을 클릭하세요.",
+  "Need <a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">status page</a> updates?": "<a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">상태 페이지를</a> 업데이트해야 하나요?",
+  "Click <i class=\"fa fa-regular fa-bell\"></i> \"Notifications\" &rarr; \"All Activity\"": "딸깍 하는 소리<i class=\"fa fa-regular fa-bell\"></i> &quot;알림&quot; → &quot;모든 활동&quot;",
+  "You have successfully unsubscribed from our newsletter.": "뉴스레터 구독이 성공적으로 취소되었습니다.",
+  "You are already subscribed to our newsletter.": "귀하께서는 이미 뉴스레터를 구독하고 계십니다."
 }

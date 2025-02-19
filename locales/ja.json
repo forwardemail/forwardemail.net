@@ -10753,5 +10753,16 @@
   "3 Top Open Source Email Clients for <span class=\"notranslate\">Xiaomi Phone</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>の<span class=\"notranslate\">Xiaomi Phone</span>向けトップ 3 のオープンソース メール クライアント",
   "as our new primary data center provider – complete with our": "当社の新たな主要データセンタープロバイダーとして、",
   "<span class=\"notranslate\">%d</span>% storage quota reached for <span class=\"notranslate\">%s</span>": "<span class=\"notranslate\">%s</span>の<span class=\"notranslate\">%d</span> % ストレージ クォータに達しました",
-  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate text-monospace font-weight-bold\">%s</span>の<span class=\"notranslate\">%d</span> % ストレージ クォータ ( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> ) に達しました。</div><p class=\"text-center\">割り当て量を超えると、メッセージは配信されません。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">ストレージのアップグレード</a></p>"
+  "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate\">%d</span>% storage quota reached (<span class=\"notranslate\">%s</span> of <span class=\"notranslate\">%s</span>) for <span class=\"notranslate text-monospace font-weight-bold\">%s</span>.</div><p class=\"text-center\">If you exceed your quota, then messages will not be delivered.</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Upgrade Storage</a></p>": "<div class=\"alert alert-danger small text-center\"><span class=\"notranslate text-monospace font-weight-bold\">%s</span>の<span class=\"notranslate\">%d</span> % ストレージ クォータ ( <span class=\"notranslate\">%s</span> / <span class=\"notranslate\">%s</span> ) に達しました。</div><p class=\"text-center\">割り当て量を超えると、メッセージは配信されません。</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">ストレージのアップグレード</a></p>",
+  "Newsletter": "ニュースレター",
+  "Communication Preferences": "コミュニケーションの設定",
+  "Account Updates": "アカウントの更新",
+  "New Features and Product Updates": "新機能と製品のアップデート",
+  "You have successfully subscribed to our newsletter (new features and product updates).": "ニュースレター（新機能と製品の更新）の購読が完了しました。",
+  "Need service and <a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">status page</a> updates?": "サービスと<a href=\"%s\" rel=\"noopener noreferrer\" target=\"_blank\">ステータス ページの</a>更新が必要ですか?",
+  "Click \"Notifications\" &rarr; \"All Activity\"": "「通知」と「すべてのアクティビティ」をクリックします",
+  "Need <a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">status page</a> updates?": "<a href=\"%s\" rel=\"noopener noreferrer\" class=\"alert-link\" target=\"_blank\">ステータス ページの</a>更新が必要ですか?",
+  "Click <i class=\"fa fa-regular fa-bell\"></i> \"Notifications\" &rarr; \"All Activity\"": "クリック<i class=\"fa fa-regular fa-bell\"></i>「通知」→「すべてのアクティビティ」",
+  "You have successfully unsubscribed from our newsletter.": "ニュースレターの購読解除が完了しました。",
+  "You are already subscribed to our newsletter.": "あなたはすでに当社のニュースレターを購読しています。"
 }

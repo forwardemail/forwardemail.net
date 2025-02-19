@@ -9,15 +9,37 @@ const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const isEmail = require('#helpers/is-email');
+const { boolean } = require('boolean');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const isEmail = require('#helpers/is-email');
 const { Users } = require('#models');
 
 // eslint-disable-next-line complexity
 async function updateProfile(ctx) {
   const { body } = ctx.request;
+
+  // newsletter updates
+  if (boolean(body.is_newsletter)) {
+    ctx.state.user.has_newsletter = boolean(body.newsletter);
+    ctx.state.user = await ctx.state.user.save();
+    if (!ctx.api) {
+      ctx.flash(
+        'success',
+        ctx.translate(
+          boolean(body.newsletter)
+            ? 'NEWSLETTER_SUBSCRIBED'
+            : 'NEWSLETTER_UNSUBSCRIBED'
+        )
+      );
+    }
+
+    if (ctx.accepts('html')) ctx.redirect('back');
+    else ctx.body = { reloadPage: true };
+    return;
+  }
+
   const hasSetPassword = ctx.state.user[config.userFields.hasSetPassword];
 
   const requiredFields = ['password', 'confirm_password'];
