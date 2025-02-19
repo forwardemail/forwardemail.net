@@ -122,7 +122,8 @@ async function processEvent(ctx, event) {
           await pMapSeries(charges.data, async (charge) => {
             if (charge.status !== 'succeeded' || charge.paid !== true) return;
             await stripe.refunds.create({
-              charge: charge.id
+              charge: charge.id,
+              reason: 'fraudulent'
             });
           });
 
@@ -512,19 +513,85 @@ async function processEvent(ctx, event) {
       const filtered = subscriptions.data.filter(
         (s) => s.status !== 'canceled'
       );
+
+      // lookup user in our system
+      const user = await Users.findOne({
+        [config.userFields.stripeCustomerID]: event.data.object.customer
+      });
+
+      if (!user) throw new Error('User did not exist for customer');
+
       if (filtered.length > 1) {
-        emailHelper({
-          template: 'alert',
-          message: {
-            to: config.email.message.from,
-            subject: `Multiple Subscriptions Detected: ${event.data.object.customer}`
+        // if user had verified domains then alert admins
+        // otherwise ban the user and refund all their payments
+        const count = await Domains.countDocuments({
+          members: {
+            $elemMatch: {
+              user: user._id,
+              group: 'admin'
+            }
           },
-          locals: {
-            message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+          plan: { $in: ['enhanced_protection', 'team'] },
+          has_txt_record: true
+        });
+
+        if (count === 0) {
+          if (!user.is_banned) {
+            user.is_banned = true;
+            await user.save();
+            emailHelper({
+              template: 'alert',
+              message: {
+                to: config.email.message.from,
+                subject: 'Banned User for Fraud Alert'
+              },
+              locals: {
+                message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+              }
+            })
+              .then()
+              .catch((err) => logger.fatal(err));
           }
-        })
-          .then()
-          .catch((err) => logger.fatal(err));
+
+          const [charges, subscriptions] = await Promise.all([
+            stripe.charges.list({
+              customer: event.data.object.customer
+            }),
+            stripe.subscriptions.list({
+              customer: event.data.object.customer
+            })
+          ]);
+
+          // refund all payments as fraudulent
+          if (charges?.data?.length > 0)
+            await pMapSeries(charges.data, async (charge) => {
+              if (charge.status !== 'succeeded' || charge.paid !== true) return;
+              await stripe.refunds.create({
+                charge: charge.id,
+                reason: 'fraudulent'
+              });
+            });
+
+          // cancel all subscriptions
+          if (subscriptions?.data?.length > 0)
+            await pMapSeries(subscriptions.data, async (subscription) => {
+              if (subscription.status !== 'canceled') return;
+              await stripe.subscriptions.cancel(subscription.id);
+            });
+        } else {
+          emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              subject: `Multiple Subscriptions Detected: ${event.data.object.customer}`
+            },
+            locals: {
+              message: `<p><a href="https://dashboard.stripe.com/customers/${event.data.object.customer}" class="btn btn-dark btn-lg" target="_blank" rel="noopener noreferrer">Review Stripe Customer</a></p>`
+            }
+          })
+            .then()
+            .catch((err) => logger.fatal(err));
+        }
       }
 
       break;
