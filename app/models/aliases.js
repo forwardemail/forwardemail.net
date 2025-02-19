@@ -259,7 +259,8 @@ const Aliases = new mongoose.Schema({
   },
   has_recipient_verification: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   // recipients that are verified (ones that have clicked email link)
   // the API endpoint for lookups uses this as well as the UI on FE front-end side
@@ -829,6 +830,13 @@ Aliases.pre('save', async function (next) {
 
 async function updateDomainCatchallRegexBooleans(alias) {
   try {
+    const domain = await conn.models.Domains.findById(alias.domain)
+      .lean()
+      .exec()
+      .select('is_catchall_regex_disabled');
+    if (!domain) throw new Error('Domain does not exist');
+    if (domain.is_catchall_regex_disabled) return;
+
     const arr = await alias.constructor
       .aggregate([
         {

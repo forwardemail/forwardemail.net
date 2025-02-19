@@ -416,4 +416,24 @@ for (const level of logger.config.levels) {
   logger.post(level, hook);
 }
 
+logger.post('info', function (err, message, meta) {
+  if (
+    meta &&
+    meta.is_http &&
+    meta.response &&
+    meta.response.duration &&
+    meta.request &&
+    meta.request.method &&
+    meta.request.url &&
+    meta.response.duration >= 5000
+  ) {
+    const err = new TypeError(
+      `${meta.request.method} ${meta.request.url} took longer than 5s`
+    );
+    err.isCodeBug = true;
+    err.meta = meta;
+    logger.fatal(err);
+  }
+});
+
 module.exports = logger;

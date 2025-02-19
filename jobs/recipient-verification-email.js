@@ -186,21 +186,17 @@ async function mapper(alias) {
       has_txt_record: true
     });
 
-    const aliases = await Aliases.aggregate([
+    let aliases = await Aliases.aggregate([
       {
         $match: {
           has_recipient_verification: true,
-          user: {
-            $nin: [...bannedUserIdSet].map(
-              (id) => new mongoose.Types.ObjectId(id)
-            )
-          },
           domain: { $in: paidDomainIds }
         }
       },
       {
         $project: {
           id: 1,
+          user: 1,
           domain: 1,
           name: 1,
           recipients: 1,
@@ -233,6 +229,7 @@ async function mapper(alias) {
       {
         $project: {
           id: 1,
+          user: 1,
           name: 1,
           domain: 1,
           emails: { $setDifference: ['$recipients', '$verified_and_pending'] }
@@ -242,16 +239,23 @@ async function mapper(alias) {
         $match: { $expr: { $gt: [{ $size: '$emails' }, 0] } }
       }
     ]).option({
-      maxTimeMS: 30000
+      maxTimeMS: 60000
     });
 
     if (aliases.length > 0) {
-      const pendingRecipients = await pMap(aliases, mapper, { concurrency });
-      logger.info('finished recipient verification emails', {
-        pendingRecipients: pendingRecipients.flat()
+      aliases = aliases.filter((alias) => {
+        return alias.user && !bannedUserIdSet.has(alias.user.toString());
       });
+
+      if (aliases.length > 0) {
+        const pendingRecipients = await pMap(aliases, mapper, { concurrency });
+        logger.info('finished recipient verification emails', {
+          pendingRecipients: pendingRecipients.flat()
+        });
+      }
     }
   } catch (err) {
+    err.isCodeBug = true;
     await logger.error(err);
   }
 
