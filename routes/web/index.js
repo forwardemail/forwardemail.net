@@ -92,6 +92,10 @@ router
   .get('/ips/v6.json', web.ips)
   // sitemap
   .get('/sitemap.xml', web.sitemap)
+  // feed
+  .get('/blog/feed/atom', web.feed)
+  .get('/blog/feed/rss', web.feed)
+  .get('/blog/feed/json', web.feed)
   // report URI support (not locale specific)
   .post('/report', web.report)
 
@@ -409,6 +413,10 @@ localeRouter
   )
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))
+  // feed
+  .get('/blog/feed/atom', web.feed)
+  .get('/blog/feed/rss', web.feed)
+  .get('/blog/feed/json', web.feed)
   .get('/blog/docs', render('docs'))
   .get('/guides/send-mail-as-using-gmail', (ctx) => {
     ctx.status = 301;

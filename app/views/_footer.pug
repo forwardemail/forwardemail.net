@@ -414,6 +414,15 @@ footer.mt-auto(aria-label=t("Footer"))
                   i.fa-fw.fa.fa-comments
                   = " "
                   = "Matrix"
+              li
+                a.d-block.text-white.py-2.py-md-0(
+                  href=`${config.urls.web}/blog/feed/atom`,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )
+                  i.fa-fw.fas.fa-rss
+                  = " "
+                  = "RSS Feed"
             hr.d-lg-none.w-100
             h2.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3

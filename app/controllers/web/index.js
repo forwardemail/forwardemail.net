@@ -43,6 +43,8 @@ const sitemap = require('./sitemap');
 const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
+const feed = require('./feed');
+
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
@@ -650,5 +652,6 @@ module.exports = {
   regenerateAliasPassword,
   search,
   ips,
-  mobileConfig
+  mobileConfig,
+  feed
 };

@@ -32,6 +32,26 @@ html.h-100.no-js(
         href=canonical ? canonical : `${config.urls.web}${ctx.path}`
       )
 
+      //- feeds
+      link(
+        rel="alternate",
+        href=`${config.urls.web}/blog/feed/atom`,
+        type="application/atom+xml",
+        title="Atom 1.0"
+      )
+      link(
+        rel="alternate",
+        href=`${config.urls.web}/blog/feed/rss`,
+        type="application/rss+xml",
+        title="RSS 2.0"
+      )
+      link(
+        rel="alternate",
+        href=`${config.urls.web}/blog/feed/json`,
+        type="application/json",
+        title="JSON Feed 1.0"
+      )
+
       //- languages supported
       //- <https://support.google.com/webmasters/answer/189077?hl=en>
       //- <https://support.google.com/webmasters/answer/182192?hl=en>

@@ -417,6 +417,9 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
     continue;
   }
 
+  // get mtime for post date
+  const stats = fs.statSync(path.join(dirPath, 'index.pug'));
+
   try {
     const c = require(path.join(dirPath, 'config.js'));
     c.slug = `/blog/docs/${dir.name}`;
@@ -435,6 +438,9 @@ for (const dir of fs.readdirSync(pathToDocs, { withFileTypes: true })) {
       console.error('%s is not yet published', dirPath);
       continue;
     }
+
+    c.mtime = stats.mtime; // published/last updated
+    c.ctime = stats.ctime; // initially created
 
     developerDocs.push(c);
   } catch {
