@@ -831,9 +831,9 @@ Aliases.pre('save', async function (next) {
 async function updateDomainCatchallRegexBooleans(alias) {
   try {
     const domain = await conn.models.Domains.findById(alias.domain)
+      .select('is_catchall_regex_disabled')
       .lean()
-      .exec()
-      .select('is_catchall_regex_disabled');
+      .exec();
     if (!domain) throw new Error('Domain does not exist');
     if (domain.is_catchall_regex_disabled) return;
 
