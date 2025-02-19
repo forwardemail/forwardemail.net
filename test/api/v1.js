@@ -211,6 +211,7 @@ test('creates alias with global catch-all', async (t) => {
   t.deepEqual(
     _.sortBy(Object.keys(res.body.user)),
     _.sortBy([
+      'has_newsletter',
       'max_quota_per_alias',
       'address_country',
       'address_html',
