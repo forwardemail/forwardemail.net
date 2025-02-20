@@ -17,6 +17,7 @@ const SMTPError = require('#helpers/smtp-error');
 const Users = require('#models/users');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
+const emailHelper = require('#helpers/email');
 const isValidPassword = require('#helpers/is-valid-password');
 const logger = require('#helpers/logger');
 const validateAlias = require('#helpers/validate-alias');
@@ -263,7 +264,7 @@ async function onDataSMTP(session, date, headers, body) {
           domain
         );
         // email the admins of the domain
-        email({
+        emailHelper({
           template: 'alert',
           message: {
             to,
@@ -308,34 +309,41 @@ async function onDataSMTP(session, date, headers, body) {
   if (!user) throw new TypeError('User does not exist');
 
   // queue the email
-  const email = await Emails.queue({
-    message: {
-      envelope,
-      raw: Buffer.concat([headers.build(), body])
-    },
-    alias,
-    domain,
-    user,
-    date,
-    catchall: typeof session?.user?.alias_id !== 'string',
-    isPending: true
-  });
+  let email;
+  try {
+    email = await Emails.queue({
+      message: {
+        envelope,
+        raw: Buffer.concat([headers.build(), body])
+      },
+      alias,
+      domain,
+      user,
+      date,
+      catchall: typeof session?.user?.alias_id !== 'string',
+      isPending: true
+    });
 
-  if (!_.isDate(domain.smtp_suspended_sent_at)) {
-    email.status = 'queued';
-    await email.save();
+    if (!_.isDate(domain.smtp_suspended_sent_at)) {
+      email.status = 'queued';
+      await email.save();
+    }
+  } catch (err) {
+    logger.fatal(err, { session });
+    if (!err.emailAlreadyExists) throw err;
   }
 
-  logger.debug('email created', {
-    session: {
-      ...session,
-      ...createSession(email)
-    },
-    user: email.user,
-    email: email._id,
-    domains: [email.domain],
-    ignore_hook: false
-  });
+  if (email)
+    logger.debug('email created', {
+      session: {
+        ...session,
+        ...createSession(email)
+      },
+      user: email.user,
+      email: email._id,
+      domains: [email.domain],
+      ignore_hook: false
+    });
 }
 
 module.exports = onDataSMTP;

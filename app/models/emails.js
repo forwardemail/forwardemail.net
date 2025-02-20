@@ -620,10 +620,18 @@ Emails.pre('save', async function (next) {
       envelope: this.envelope
     });
 
-    if (exists)
-      throw Boom.badRequest(
+    if (exists) {
+      const err = Boom.badRequest(
         i18n.translateError('EMAIL_ALREADY_EXISTS', i18n.config.defaultLocale)
       );
+      //
+      // NOTE: we could use `email = ` instead of `exists =` in future
+      //       if we want more debug info on the emails that are duplicates
+      //       (and then we'd set `err.email = email;` here instead)
+      //
+      err.emailAlreadyExists = true;
+      throw err;
+    }
 
     next();
   } catch (err) {
