@@ -120,11 +120,14 @@ async function processEvent(ctx, event) {
         // refund all payments as fraudulent
         if (charges?.data?.length > 0)
           await pMapSeries(charges.data, async (charge) => {
-            if (charge.status !== 'succeeded' || charge.paid !== true) return;
-            await stripe.refunds.create({
-              charge: charge.id,
-              reason: 'fraudulent'
-            });
+            try {
+              await stripe.refunds.create({
+                charge: charge.id,
+                reason: 'fraudulent'
+              });
+            } catch (err) {
+              logger.fatal(err, { charge });
+            }
           });
 
         // cancel all subscriptions
@@ -565,11 +568,14 @@ async function processEvent(ctx, event) {
           // refund all payments as fraudulent
           if (charges?.data?.length > 0)
             await pMapSeries(charges.data, async (charge) => {
-              if (charge.status !== 'succeeded' || charge.paid !== true) return;
-              await stripe.refunds.create({
-                charge: charge.id,
-                reason: 'fraudulent'
-              });
+              try {
+                await stripe.refunds.create({
+                  charge: charge.id,
+                  reason: 'fraudulent'
+                });
+              } catch (err) {
+                logger.fatal(err, { charge });
+              }
             });
 
           // cancel all subscriptions
