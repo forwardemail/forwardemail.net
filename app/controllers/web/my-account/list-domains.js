@@ -24,7 +24,17 @@ async function getCharts(ctx) {
   const query = { $or: [] };
   const logQuery = { $or: [] };
 
-  for (const domain of ctx.state.domains) {
+  // filter out vanity domains if they don't have aliases
+  const filteredDomains = ctx.state.domains.filter((domain) => {
+    if (!domain.is_global) return true;
+    const member = domain.members.find((m) => m.user.id === ctx.state.user.id);
+    if (!member) return false;
+    if (member.group === 'admin') return true;
+    if (domain.has_global_aliases) return true;
+    return false;
+  });
+
+  for (const domain of filteredDomains) {
     if (domain.group === 'admin') {
       query.$or.push({
         domain: { $in: [domain._id] }
@@ -45,16 +55,16 @@ async function getCharts(ctx) {
   }
 
   const [domains, aliases, emails, logs] = await Promise.all([
-    Promise.resolve(ctx.state.domains.length),
+    Promise.resolve(filteredDomains.length),
 
-    ctx.state.domains.length === 0
+    filteredDomains.length === 0
       ? Promise.resolve([])
       : Aliases.aggregate([
           { $match: query },
           { $group: { _id: null, total: { $sum: 1 } } }
         ]),
 
-    ctx.state.domains.length === 0
+    filteredDomains.length === 0
       ? Promise.resolve([])
       : Emails.aggregate([
           { $match: query },
@@ -62,7 +72,7 @@ async function getCharts(ctx) {
         ]),
 
     // TODO: accuracy needs checked
-    ctx.state.domains.length === 0
+    filteredDomains.length === 0
       ? Promise.resolve([])
       : Logs.aggregate([
           {
