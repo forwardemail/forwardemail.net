@@ -47,23 +47,29 @@ async function getCharts(ctx) {
   const [domains, aliases, emails, logs] = await Promise.all([
     Promise.resolve(ctx.state.domains.length),
 
-    Aliases.aggregate([
-      { $match: query },
-      { $group: { _id: null, total: { $sum: 1 } } }
-    ]),
+    ctx.state.domains.length === 0
+      ? Promise.resolve([])
+      : Aliases.aggregate([
+          { $match: query },
+          { $group: { _id: null, total: { $sum: 1 } } }
+        ]),
 
-    Emails.aggregate([
-      { $match: query },
-      { $group: { _id: null, total: { $sum: 1 } } }
-    ]),
+    ctx.state.domains.length === 0
+      ? Promise.resolve([])
+      : Emails.aggregate([
+          { $match: query },
+          { $group: { _id: null, total: { $sum: 1 } } }
+        ]),
 
     // TODO: accuracy needs checked
-    Logs.aggregate([
-      {
-        $match: logQuery
-      },
-      { $group: { _id: null, total: { $sum: 1 } } }
-    ])
+    ctx.state.domains.length === 0
+      ? Promise.resolve([])
+      : Logs.aggregate([
+          {
+            $match: logQuery
+          },
+          { $group: { _id: null, total: { $sum: 1 } } }
+        ])
   ]);
 
   return {
