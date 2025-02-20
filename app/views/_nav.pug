@@ -94,7 +94,7 @@ if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.loc
 
 nav.navbar(class=navbarClasses.join(" "))
   div(
-    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
+    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith('/my-account/analytics') || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
     a.navbar-brand.d-inline-block.m-0.font-weight-bold(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l(),
@@ -194,6 +194,13 @@ nav.navbar(class=navbarClasses.join(" "))
                 class=ctx.pathWithoutLocale.startsWith("/private-business-email") ? "text-decoration-underline" : ""
               )
                 != t("Features &amp; Pricing")
+            //-.
+              li.list-inline-item
+                a.btn.btn-link.text-themed.btn-sm(
+                  href=l("/email-analytics"),
+                  class=ctx.pathWithoutLocale.startsWith("/email-analytics") ? "text-decoration-underline" : ""
+                )
+                  != t("Email Analytics")
             li.list-inline-item
               a.btn.btn-link.text-themed.btn-sm(
                 href=l("/faq"),
@@ -398,6 +405,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Resources
           if !isBot(ctx.get('User-Agent'))
+            //- - const resourcePages = ["/private-business-email", "/email-analytics", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const resourcePages = ["/private-business-email", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
             - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && !boolean(ctx.query.pricing)) || companyPages.includes(ctx.pathWithoutLocale));
@@ -746,6 +754,10 @@ nav.navbar(class=navbarClasses.join(" "))
                     class=ctx.pathWithoutLocale.startsWith("/my-account/emails") ? "active" : "",
                     href=l("/my-account/emails")
                   )= t("Emails")
+                  a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/my-account/analytics") ? "active" : "",
+                    href=l("/my-account/analytics")
+                  )= t("Analytics")
                   a.dropdown-item(
                     class=ctx.pathWithoutLocale.startsWith("/my-account/logs") ? "active" : "",
                     href=l("/my-account/logs")

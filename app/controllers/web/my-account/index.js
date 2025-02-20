@@ -67,6 +67,7 @@ const updateRestrictedAliasNames = require('./update-restricted-alias-names');
 const updateTimezone = require('./update-timezone');
 const resetDomainWebhookKey = require('./reset-domain-webhook-key');
 const retrieveQRCode = require('./retrieve-qrcode');
+const listAnalytics = require('./list-analytics');
 
 module.exports = {
   cancelEmailChange,
@@ -132,5 +133,6 @@ module.exports = {
   updateTimezone,
   updateRestrictedAliasNames,
   resetDomainWebhookKey,
-  retrieveQRCode
+  retrieveQRCode,
+  listAnalytics
 };

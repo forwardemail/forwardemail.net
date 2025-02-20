@@ -70,6 +70,7 @@ router
     web.myAccount.setConversionAndRefundStateHelpers,
     web.myAccount.remove
   )
+  .get('/analytics', web.myAccount.listAnalytics)
   .get(
     '/billing',
     web.myAccount.retrieveBilling,

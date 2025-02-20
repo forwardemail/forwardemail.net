@@ -191,10 +191,10 @@ p.text-center.d-lg-none
                 +renderProgressBar(domain)
             td.align-middle
               ul.list-inline.mb-0.text-nowrap
-                li.list-inline-item.d-block.d-sm-inline-block
+                li.list-inline-item.d-block.d-lg-inline-block
                   if domain.plan === 'free'
                     if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      button.btn.btn-sm.btn-link.text-themed(
                         type="button",
                         data-target="#modal-upgrade",
                         data-toggle="modal"
@@ -215,7 +215,7 @@ p.text-center.d-lg-none
                           = " "
                           = t("Aliases")
                   else
-                    a.btn.btn-sm.btn-link.text-themed.btn-block(
+                    a.btn.btn-sm.btn-link.text-themed(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                     )
                       i.fa.fa-fw.fa-users
@@ -223,10 +223,10 @@ p.text-center.d-lg-none
                       = t("Aliases")
                 //- Emails
                 if !domain.is_global
-                  li.list-inline-item.d-block.d-sm-inline-block
+                  li.list-inline-item.d-block.d-lg-inline-block
                     if domain.plan === 'free'
                       if user.plan === 'free'
-                        button.btn.btn-sm.btn-link.text-themed.btn-block(
+                        button.btn.btn-sm.btn-link.text-themed(
                           type="button",
                           data-target="#modal-upgrade-logs",
                           data-toggle="modal"
@@ -247,17 +247,50 @@ p.text-center.d-lg-none
                             = " "
                             = t("Emails")
                     else
-                      a.btn.btn-sm.btn-link.text-themed.btn-block(
+                      a.btn.btn-sm.btn-link.text-themed(
                         href=l(`/my-account/emails?domain=${domain.name}`)
                       )
                         i.fa.fa-fw.fa-envelope
                         = " "
                         = t("Emails")
-                //- Logs
-                li.list-inline-item.d-block.d-sm-inline-block
+
+                //- Analytics
+                li.list-inline-item.d-block.d-lg-inline-block
                   if domain.plan === 'free'
                     if user.plan === 'free'
-                      button.btn.btn-sm.btn-link.text-themed.btn-block(
+                      button.btn.btn-sm.btn-link.text-themed(
+                        type="button",
+                        data-target="#modal-upgrade-analytics",
+                        data-toggle="modal"
+                      )
+                        i.fa.fa-fw.fas.fa-chart-area
+                        = " "
+                        = t("Analytics")
+                    else
+                      form.confirm-prompt(
+                        action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing`),
+                        data-confirm-prompt-title=t("Switch domain plan?"),
+                        data-confirm-prompt-html=t("To unlock analytics for this domain, you need to switch its plan. Don't worry &ndash; there is no extra cost."),
+                        method="GET"
+                      )
+                        input(type="hidden", name="plan", value=user.plan)
+                        button.btn.btn-sm.btn-link.text-themed(type="submit")
+                          i.fa.fa-fw.fas.fa-chart-area
+                          = " "
+                          = t("Analytics")
+                  else
+                    a.btn.btn-sm.btn-link.text-themed(
+                      href=l(`/my-account/analytics?domains=${domain.name}`)
+                    )
+                      i.fa.fa-fw.fa-chart-area
+                      = " "
+                      = t("Analytics")
+
+                //- Logs
+                li.list-inline-item.d-block.d-lg-inline-block
+                  if domain.plan === 'free'
+                    if user.plan === 'free'
+                      button.btn.btn-sm.btn-link.text-themed(
                         type="button",
                         data-target="#modal-upgrade-logs",
                         data-toggle="modal"
@@ -278,23 +311,23 @@ p.text-center.d-lg-none
                           = " "
                           = t("Logs")
                   else
-                    a.btn.btn-sm.btn-link.text-themed.btn-block(
+                    a.btn.btn-sm.btn-link.text-themed(
                       href=l(`/my-account/logs?domains=${domain.name}`)
                     )
                       i.fa.fa-fw.fa-stream
                       = " "
                       = t("Logs")
                 if domain.group === 'admin'
-                  li.list-inline-item.d-block.d-sm-inline-block
-                    a.btn.btn-sm.btn-block.btn-link(
+                  li.list-inline-item.d-block.d-lg-inline-block
+                    a.btn.btn-sm.btn-link(
                       class=domain.has_mx_record && domain.has_txt_record ? "text-themed" : "text-danger font-weight-bold",
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}`)
                     )
                       i.fa.fa-fw.fa-cog
                       = " "
                       = t("Setup")
-                  li.list-inline-item.d-block.d-sm-inline-block
-                    a.btn.btn-sm.btn-link.text-themed.btn-block(
+                  li.list-inline-item.d-block.d-lg-inline-block
+                    a.btn.btn-sm.btn-link.text-themed(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/advanced-settings`)
                     )
                       i.fa.fa-fw.fa-tools
@@ -302,9 +335,9 @@ p.text-center.d-lg-none
                       = t("Settings")
                   //- we hide the change plan button if the plan was team
                   if domain.plan !== 'team'
-                    li.list-inline-item.d-block.d-sm-inline-block
-                      .btn-group.btn-block.btn-group-sm
-                        button.btn.btn-sm.btn-link.btn-block.dropdown-toggle(
+                    li.list-inline-item.d-block.d-lg-inline-block
+                      .btn-group.btn-link.btn-group-sm
+                        button.btn.btn-sm.btn-link.dropdown-toggle(
                           class=user.plan !== "free" && domain.plan !== user.plan && domain.plan !== "team" ? "text-warning font-weight-bold" : "text-themed",
                           type="button",
                           data-toggle="dropdown",

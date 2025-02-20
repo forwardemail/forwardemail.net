@@ -326,6 +326,70 @@ async function listLogs(ctx) {
     }
   }
 
+  // response_code -> 'err.responseCode'
+  if (
+    isSANB(ctx.query.response_code) &&
+    Number.parseInt(ctx.query.response_code, 10) >= 200 &&
+    Number.parseInt(ctx.query.response_code, 10) < 600
+  ) {
+    const code = Number.parseInt(ctx.query.response_code, 10);
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          {
+            'err.responseCode': code
+          }
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push({
+        'err.responseCode': code
+      });
+    } else {
+      query = {
+        $and: [
+          query,
+          {
+            'err.responseCode': code
+          }
+        ]
+      };
+    }
+  }
+
+  // bounce_category -> 'bounce_category'
+  if (isSANB(ctx.query.bounce_category)) {
+    const bounceCategory = ctx.query.bounce_category.trim().toLowerCase();
+    if (query.$or) {
+      query = {
+        $and: [
+          {
+            $or: query.$or
+          },
+          {
+            bounce_category: bounceCategory
+          }
+        ]
+      };
+    } else if (query.$and) {
+      query.$and.push({
+        bounce_category: bounceCategory
+      });
+    } else {
+      query = {
+        $and: [
+          query,
+          {
+            bounce_category: bounceCategory
+          }
+        ]
+      };
+    }
+  }
+
   // in the future we can move this to a background job
   if (
     ctx.pathWithoutLocale === '/my-account/logs/download' ||
@@ -391,7 +455,7 @@ async function listLogs(ctx) {
     return;
   }
 
-  const [logs, itemCount] = await Promise.all([
+  const [logs, itemCount, responseCodes, bounceCategories] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(query)
       .limit(ctx.query.limit)
@@ -406,10 +470,14 @@ async function listLogs(ctx) {
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
       .exec(),
-    Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS)
+    Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS),
+    Logs.distinct('err.responseCode', query),
+    Logs.distinct('bounce_category', query)
   ]);
   ctx.state.logs = logs;
   ctx.state.itemCount = itemCount;
+  ctx.state.responseCodes = responseCodes;
+  ctx.state.bounceCategories = bounceCategories;
   ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);
   ctx.state.pages = paginate.getArrayPages(ctx)(
     6,

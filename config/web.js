@@ -203,71 +203,72 @@ module.exports = (redis) => ({
   },
   helmet: {
     // TODO: eventually make the CSP only set on PayPal required pages
-    contentSecurityPolicy: defaultSrc
-      ? {
-          useDefaults: false,
-          directives: {
-            'default-src': _.without(defaultSrc, 'data:'),
-            'connect-src': [
-              ...defaultSrc,
-              'https://www.paypal.com',
-              'https://noembed.com',
-              ...(env.NODE_ENV === 'production'
-                ? []
-                : ['https://www.sandbox.paypal.com'])
-            ],
-            'font-src': [...defaultSrc],
-            'img-src': [
-              ...defaultSrc,
-              'https://badge.hardenize.com',
-              'https://tracking.qa.paypal.com',
-              'https://www.paypalobjects.com',
-              'https://github.com',
-              'https://*.github.com',
-              'https://githubusercontent.com',
-              'https://*.githubusercontent.com',
-              'https://shields.io',
-              'https://*.shields.io',
-              'https://ytimg.com',
-              'https://*.ytimg.com'
-            ],
-            'style-src': [
-              ...defaultSrc,
-              "'unsafe-inline'",
-              'https://www.paypal.com',
-              'https://challenges.cloudflare.com'
-            ],
-            'script-src': [
-              ..._.without(defaultSrc, 'data:'),
-              "'unsafe-inline'",
-              'https://challenges.cloudflare.com',
-              'https://www.paypal.com',
-              ...(env.NODE_ENV === 'production'
-                ? []
-                : ['https://www.sandbox.paypal.com'])
-            ],
-            'object-src': ["'none'"],
-            'frame-ancestors': ["'self'"],
-            'frame-src': [
-              ...defaultSrc,
-              'https://www.youtube.com',
-              'https://*.youtube-nocookie.com',
-              'https://challenges.cloudflare.com',
-              'https://www.paypal.com',
-              ...(env.NODE_ENV === 'production'
-                ? []
-                : ['https://www.sandbox.paypal.com'])
-            ],
-            'report-uri': reportUri || null,
-            'base-uri': ["'self'"],
-            'form-action': [
-              "'self'",
-              'https://www.namecheap.com',
-              'https://login.ubuntu.com'
-            ]
+    contentSecurityPolicy:
+      defaultSrc && config.env !== 'development'
+        ? {
+            useDefaults: false,
+            directives: {
+              'default-src': _.without(defaultSrc, 'data:'),
+              'connect-src': [
+                ...defaultSrc,
+                'https://www.paypal.com',
+                'https://noembed.com',
+                ...(env.NODE_ENV === 'production'
+                  ? []
+                  : ['https://www.sandbox.paypal.com'])
+              ],
+              'font-src': [...defaultSrc],
+              'img-src': [
+                ...defaultSrc,
+                'https://badge.hardenize.com',
+                'https://tracking.qa.paypal.com',
+                'https://www.paypalobjects.com',
+                'https://github.com',
+                'https://*.github.com',
+                'https://githubusercontent.com',
+                'https://*.githubusercontent.com',
+                'https://shields.io',
+                'https://*.shields.io',
+                'https://ytimg.com',
+                'https://*.ytimg.com'
+              ],
+              'style-src': [
+                ...defaultSrc,
+                "'unsafe-inline'",
+                'https://www.paypal.com',
+                'https://challenges.cloudflare.com'
+              ],
+              'script-src': [
+                ..._.without(defaultSrc, 'data:'),
+                "'unsafe-inline'",
+                'https://challenges.cloudflare.com',
+                'https://www.paypal.com',
+                ...(env.NODE_ENV === 'production'
+                  ? []
+                  : ['https://www.sandbox.paypal.com'])
+              ],
+              'object-src': ["'none'"],
+              'frame-ancestors': ["'self'"],
+              'frame-src': [
+                ...defaultSrc,
+                'https://www.youtube.com',
+                'https://*.youtube-nocookie.com',
+                'https://challenges.cloudflare.com',
+                'https://www.paypal.com',
+                ...(env.NODE_ENV === 'production'
+                  ? []
+                  : ['https://www.sandbox.paypal.com'])
+              ],
+              'report-uri': reportUri || null,
+              'base-uri': ["'self'"],
+              'form-action': [
+                "'self'",
+                'https://www.namecheap.com',
+                'https://login.ubuntu.com'
+              ]
+            }
           }
-        }
-      : null,
+        : null,
     // <https://hstspreload.org/>
     // <https://helmetjs.github.io/docs/hsts/#preloading-hsts-in-chrome>
     hsts: {

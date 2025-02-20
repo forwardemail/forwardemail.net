@@ -25,7 +25,7 @@ function omit(obj, ...keys) {
 
 async function getData() {
   const res = await superagent
-    .get(window.location.pathname)
+    .get(window.location.pathname + window.location.search)
     .set({
       Accept: 'application/json',
       'X-Requested-With': 'XMLHttpRequest'
@@ -41,9 +41,9 @@ async function loadCharts(reset = false) {
   const { body } = await getData();
 
   // return early if no data changed
-  if (hash === body.hash) return;
+  if (body.hash && hash === body.hash) return;
 
-  hash = body.hash;
+  if (body.hash) hash = body.hash;
 
   for (const metric of body.metrics) {
     const $element = $(metric.selector);

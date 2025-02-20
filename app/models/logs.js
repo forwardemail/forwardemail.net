@@ -286,6 +286,9 @@ const PARTIAL_INDICES = [
   // meta.session.headers
 ];
 
+Logs.index({ bounce_category: 1, domain: 1 });
+Logs.index({ bounce_category: 1, domain: 1, 'meta.app.hostname': 1 });
+
 for (const index of PARTIAL_INDICES) {
   Logs.index(
     { [index]: 1 },

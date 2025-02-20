@@ -4,6 +4,7 @@
       "name": "caldav",
       "script": "caldav.js",
       "max_restarts": 999,
+      "max_memory_restart": "8G",
       "exec_mode": "cluster",
       "wait_ready": true,
       "instances": "max",

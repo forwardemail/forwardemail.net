@@ -169,6 +169,10 @@ module.exports = function (config) {
       'My Account',
       `Manage your ${config.appName} account, domains, and email forwarding aliases.`
     ],
+    '/my-account/analytics': [
+      'My Analytics',
+      `View your ${config.appName} analytics.`
+    ],
     '/my-account/domains': [
       'My Domains',
       `Manage your ${config.appName} domains.`

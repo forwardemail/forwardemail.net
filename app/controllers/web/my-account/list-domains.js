@@ -6,19 +6,100 @@
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
-const paginate = require('koa-ctx-paginate');
+const numeral = require('numeral');
 const pMap = require('p-map');
+const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const Emails = require('#models/emails');
+const Logs = require('#models/logs');
 const config = require('#config');
 const populateDomainStorage = require('#helpers/populate-domain-storage');
 const sendPaginationCheck = require('#helpers/send-pagination-check');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
+async function getCharts(ctx) {
+  const query = { $or: [] };
+  const logQuery = { $or: [] };
+
+  for (const domain of ctx.state.domains) {
+    if (domain.group === 'admin') {
+      query.$or.push({
+        domain: { $in: [domain._id] }
+      });
+      logQuery.$or.push({
+        domains: { $in: [domain._id] }
+      });
+    } else {
+      query.$or.push({
+        domain: { $in: [domain._id] },
+        user: ctx.state.user._id
+      });
+      logQuery.$or.push({
+        domains: { $in: [domain._id] },
+        user: ctx.state.user._id
+      });
+    }
+  }
+
+  const [domains, aliases, emails, logs] = await Promise.all([
+    Promise.resolve(ctx.state.domains.length),
+
+    Aliases.aggregate([
+      { $match: query },
+      { $group: { _id: null, total: { $sum: 1 } } }
+    ]),
+
+    Emails.aggregate([
+      { $match: query },
+      { $group: { _id: null, total: { $sum: 1 } } }
+    ]),
+
+    // TODO: accuracy needs checked
+    Logs.aggregate([
+      {
+        $match: logQuery
+      },
+      { $group: { _id: null, total: { $sum: 1 } } }
+    ])
+  ]);
+
+  return {
+    metrics: [
+      {
+        selector: '#metrics-total-domains',
+        value: numeral(domains).format('0,0')
+      },
+      {
+        selector: '#metrics-total-aliases',
+        value: aliases[0] ? numeral(aliases[0].total).format('0,0') : '-'
+      },
+      {
+        selector: '#metrics-total-emails',
+        value: emails[0] ? numeral(emails[0].total).format('0,0') : '-'
+      },
+      {
+        selector: '#metrics-total-logs',
+        value: logs[0] ? numeral(logs[0].total).format('0,0') : '-'
+      }
+    ]
+  };
+}
+
 // eslint-disable-next-line complexity
 async function listDomains(ctx, next) {
+  // render charts for XHR request
+  if (
+    !ctx.accepts('html') &&
+    ctx.pathWithoutLocale === '/my-account/domains' &&
+    !ctx.api
+  ) {
+    ctx.body = await getCharts(ctx);
+    return;
+  }
+
   let { domains } = ctx.state;
 
   //

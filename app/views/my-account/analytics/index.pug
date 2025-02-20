@@ -1,0 +1,61 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/open-startup.js"),
+    integrity=manifest("js/open-startup.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.py-3
+      .row
+        .col
+          include ../../_breadcrumbs
+          if domainList && domainList.length > 0
+            if domainList.length === 1
+              strong= t("Filtered for domain:")
+            else
+              strong= t("Filtered for domains:")
+            ul.list-inline
+              each domainName in domainList
+                li.list-inline-item= domainName
+      .row.mb-3
+        .col
+          .d-flex.flex-wrap.rounded.border.bg-white.bg-themed.text-center
+            .p-3.p-md-3.d-flex.flex-column.flex-grow-1.justify-content-center
+              h2.h5.text-center= t("Successful")
+              .lead.text-sans-serif.mb-0: i= t("Coming soon")
+              //- #metrics-accepted.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+            .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+              h2.h5.text-center= t("Hard Bounce")
+              #metrics-hard-bounce.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+            .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+              h2.h5.text-center= t("Soft Bounce")
+              #metrics-soft-bounce.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+            .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+              h2.h5.text-center= t("Spam Blocked")
+              #metrics-spam.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+            .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+              h2.h5.text-center!= t("Viruses Blocked")
+              #metrics-virus.h1.text-sans-serif.font-weight-bold.mb-0: i.fa.fa-spin.fa-spinner.small.text-muted
+      .row.mb-3
+        .col
+          .card
+            .card-body
+              h2.h4.text-center.mb-0= t("Inbound Deliverability")
+              #inbound-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+      .row.mb-3
+        .col
+          .card
+            .card-body
+              h2.h4.text-center.mb-0= t("Outbound Deliverability")
+              #outbound-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted
+      .row.mb-3
+        .col
+          .card
+            .card-body
+              h2.h4.text-center.mb-0= t("Bounces by Category")
+              #bounces-by-category-chart: .text-center.mt-3.text-primary: i.fa.fa-2x.fa-spin.fa-spinner.small.text-muted

@@ -40,6 +40,16 @@ if breadcrumbs.length > 1
             if domain.group === 'admin'
               li.list-inline-item.mb-1
                 a.btn.btn-sm.btn-outline-dark(
+                  href=domain.plan === "free" ? "#" : l(`/my-account/analytics?domains=${domain.name}`),
+                  role=domain.plan === "free" ? "button" : false,
+                  data-target=domain.plan === "free" ? "#modal-upgrade-analytics" : false,
+                  data-toggle=domain.plan === "free" ? "modal" : false
+                )
+                  i.fa.fa-fw.fas.fa-chart-area
+                  = " "
+                  = t("Analytics")
+              li.list-inline-item.mb-1
+                a.btn.btn-sm.btn-outline-dark(
                   href=domain.plan === "free" ? "#" : l(`/my-account/logs?domains=${domain.name}`),
                   role=domain.plan === "free" ? "button" : false,
                   data-target=domain.plan === "free" ? "#modal-upgrade-logs" : false,
@@ -116,13 +126,51 @@ if breadcrumbs.length > 1
                   data-toggle="modal-anchor",
                   data-target="#modal-alias"
                 )
-                  = t("Add Alias")
+                  = t("Alias")
                   = " "
-                  i.fa.fa-angle-double-right.align-middle
+                  i.fa.fas.fa-plus-circle
         else
           case ctx.pathWithoutLocale
             when '/my-account/logs'
               ul.list-inline.mb-0
+                if !_.isEmpty(ctx.query)
+                  li.list-inline-item.mb-1
+                    a.btn.btn-dark(href=l("/my-account/logs"))
+                      i.fa.fa-filter
+                      = " "
+                      = t("Clear filters")
+                if responseCodes && responseCodes.length > 0
+                  li.list-inline-item.mb-1
+                    .btn-group
+                      button.btn.btn-dark.dropdown-toggle(
+                        type="button",
+                        data-toggle="dropdown",
+                        data-boundary="window",
+                        aria-haspopup="true",
+                        aria-expanded="false"
+                      )
+                        = t("Filter by code")
+                      .dropdown-menu
+                        h6.dropdown-header= t("Filter by code:")
+                        each code in responseCodes
+                          a.dropdown-item(href=l(`/my-account/logs?response_code=${code}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ''}`))
+                            = code
+                if bounceCategories && bounceCategories.length > 0
+                  li.list-inline-item.mb-1
+                    .btn-group
+                      button.btn.btn-dark.dropdown-toggle(
+                        type="button",
+                        data-toggle="dropdown",
+                        data-boundary="window",
+                        aria-haspopup="true",
+                        aria-expanded="false"
+                      )
+                        = t("Filter by category")
+                      .dropdown-menu
+                        h6.dropdown-header= t("Filter by category:")
+                        each category in bounceCategories
+                          a.dropdown-item(href=l(`/my-account/logs?bounce_category=${category}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ''}`))
+                            = category === 'dmarc' ? 'DMARC': titleize(humanize(category))
                 li.list-inline-item.mb-1
                   a.btn.btn-dark(href=l("/email-api#logs"), target="_blank")
                     i.fa.fa-fw.fa-code.text-themed
@@ -148,6 +196,23 @@ if breadcrumbs.length > 1
                         i.fa.fa-file-csv
                         = " "
                         = t("Download Log Report")
+            when '/my-account/analytics'
+              ul.list-inline.mb-0
+                li.list-inline-item.mb-1
+                  if user.plan === 'free'
+                    button.btn.btn-dark(
+                      type="button",
+                      data-target="#modal-upgrade-logs",
+                      data-toggle="modal"
+                    )
+                      i.fa.fa-fw.fa-stream
+                      = " "
+                      = t("Logs")
+                  else
+                    a.btn.btn-dark(href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ''}`))
+                      i.fa.fa-fw.fa-stream
+                      = " "
+                      = t("Logs")
             when '/my-account/domains'
               ul.list-inline.mb-0
                 li.list-inline-item.mb-1
@@ -157,9 +222,9 @@ if breadcrumbs.length > 1
                     data-toggle="modal-anchor",
                     data-target="#modal-domain"
                   )
-                    = t("Add Domain")
+                    = t("Domain")
                     = " "
-                    i.fa.fa-angle-double-right.align-middle
+                    i.fa.fas.fa-plus-circle
                 if domains.length > 0 || isSANB(ctx.query.q)
                   li.list-inline-item.mb-1
                     a.btn.btn-dark(
@@ -168,10 +233,25 @@ if breadcrumbs.length > 1
                       data-toggle="modal-anchor",
                       data-target="#modal-alias"
                     )
-                      = t("Add Alias")
+                      = t("Alias")
                       = " "
-                      i.fa.fa-angle-double-right.align-middle
+                      i.fa.fas.fa-plus-circle
                 if domains.length > 0 || isSANB(ctx.query.q)
+                  li.list-inline-item.mb-1
+                    if user.plan === 'free'
+                      button.btn.btn-dark(
+                        type="button",
+                        data-target="#modal-upgrade-analytics",
+                        data-toggle="modal"
+                      )
+                        i.fa.fa-fw.fas.fa-chart-area
+                        = " "
+                        = t("Analytics")
+                    else
+                      a.btn.btn-dark(href=l("/my-account/analytics"))
+                        i.fa.fa-fw.fas.fa-chart-area
+                        = " "
+                        = t("Analytics")
                   li.list-inline-item.mb-1
                     if user.plan === 'free'
                       button.btn.btn-dark(

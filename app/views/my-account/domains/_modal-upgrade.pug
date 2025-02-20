@@ -76,6 +76,58 @@
         else
           button.btn-dark.btn-lg.btn-block(type="button", data-dismiss="modal")= t("Continue")
 
+#modal-upgrade-analytics.modal.fade(
+  tabindex="-1",
+  role="dialog",
+  aria-labelledby="modal-upgrade-analytics-title",
+  aria-hidden="true"
+)
+  .modal-dialog(role="document")
+    .modal-content
+      .modal-header.text-center.d-block
+        h4#modal-upgrade-analytics-title.d-inline-block.ml-4
+          if user.plan === 'free'
+            = t("Unlock this feature")
+          else
+            = t("Important step required")
+        button.close(type="button", data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body.text-center
+        p.lead.mb-3
+          if user.plan === 'free'
+            strong= t("You are currently on the free plan, which requires your aliases to be managed in DNS records.")
+            br
+            br
+            = t("If you upgrade to a paid plan, then you will unlock our analytics feature.")
+            br
+            br
+            != t('If you do not wish to upgrade, then please see <a href="%s" class="text-decoration-underline text-primary font-weight-bold" target="_blank">Options A to G in our FAQ</a> in order to view analytics.', domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"))
+            = " "
+            != t('<a href="https://www.youtube.com/watch?v=N6zjv40zuIY" rel="noopener noreferrer" target="_blank" class="text-decoration-underline text-danger font-weight-bold">Click to watch our product tour</a>.', l("/private-business-email"))
+          else
+            = t("Your current plan includes this feature at no extra cost.")
+            = " "
+            != t('To access it for this domain, you need to click "Change Plan" &rarr; "<span class="notranslate">%s</span>", and then follow setup instructions.', titleize(humanize(user.plan)))
+        if domain && domain.plan === 'free'
+          a.btn.btn-dark.btn-lg.btn-block(
+            href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/billing?plan=enhanced_protection`)
+          )
+            if user.plan === 'free'
+              = t("Upgrade Now")
+            else
+              = t("Enable Feature")
+            = " "
+            i.fa.fa-angle-double-right.align-middle
+        else if user.plan === 'free'
+          a.btn.btn-dark.btn-lg.btn-block(
+            href=l("/my-account/billing/upgrade?plan=enhanced_protection")
+          )
+            = t("Upgrade Now")
+            = " "
+            i.fa.fa-angle-double-right.align-middle
+        else
+          button.btn-dark.btn-lg.btn-block(type="button", data-dismiss="modal")= t("Continue")
+
 #modal-upgrade-logs.modal.fade(
   tabindex="-1",
   role="dialog",
@@ -98,10 +150,10 @@
             strong= t("You are currently on the free plan, which requires your aliases to be managed in DNS records.")
             br
             br
-            = t("If you upgrade to a paid plan, then you will unlock our alias manager feature.")
+            = t("If you upgrade to a paid plan, then you will unlock our logs feature.")
             br
             br
-            != t('If you do not wish to upgrade, then please see <a href="%s" class="text-decoration-underline text-primary font-weight-bold" target="_blank">Options A to G in our FAQ</a> in order to manage your aliases.', domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"))
+            != t('If you do not wish to upgrade, then please see <a href="%s" class="text-decoration-underline text-primary font-weight-bold" target="_blank">Options A to G in our FAQ</a> in order to view logs.', domain ? l(`/faq?domain=${domain.name}#dns-configuration-options`) : l("/faq#dns-configuration-options"))
             = " "
             != t('<a href="https://www.youtube.com/watch?v=N6zjv40zuIY" rel="noopener noreferrer" target="_blank" class="text-decoration-underline text-danger font-weight-bold">Click to watch our product tour</a>.', l("/private-business-email"))
           else

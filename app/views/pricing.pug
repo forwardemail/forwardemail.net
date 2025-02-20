@@ -534,6 +534,16 @@ block body
                   = "("
                   = t("instant refunds")
                   = ")"
+              li.list-group-item.d-flex.align-items-center.font-weight-bold
+                i.fa.fa-fw.fas.fa-chart-area.text-themed.mr-3
+                = " "
+                != t("Email analytics &amp; insights")
+                //-.
+                  a.font-weight-bold.text-decoration-underline.text-themed(
+                    href=l("/email-analytics"),
+                    target="_blank"
+                  )
+                    != t("Email analytics &amp; insights")
               li.list-group-item.d-flex.align-items-center
                 i.fa.fa-fw.fa-plus.text-themed.mr-3
                 a.font-weight-bold.text-themed.text-decoration-underline(

@@ -182,6 +182,8 @@ The attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-
 | --------------------- | -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `domain`              | No       | String (FQDN) | Filter logs by fully qualified domain ("FQDN").  If you do not provide this then all logs across all domains will be retrieved. |
 | `q`                   | No       | String        | Search for logs by email, domain, alias name, IP address, or date (`M/Y`, `M/D/YY`, `M-D`, `M-D-YY`, or `M.D.YY` format).       |
+| `bounce_category`     | No       | String        | Search for logs by a specific bounce category (e.g. `blocklist`).                                                               |
+| `response_code`       | No       | Number        | Search for logs by a specific error response code (e.g. `421` or `550`).                                                        |
 
 > Example Request:
 
