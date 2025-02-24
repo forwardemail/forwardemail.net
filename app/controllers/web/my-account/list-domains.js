@@ -110,7 +110,8 @@ async function listDomains(ctx, next) {
   if (
     !ctx.accepts('html') &&
     ctx.pathWithoutLocale === '/my-account/domains' &&
-    !ctx.api
+    !ctx.api &&
+    (!ctx.query || _.isEmpty(ctx.query))
   ) {
     ctx.body = await getCharts(ctx);
     return;
