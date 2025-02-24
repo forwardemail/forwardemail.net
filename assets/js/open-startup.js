@@ -28,7 +28,8 @@ async function getData() {
     .get(window.location.pathname + window.location.search)
     .set({
       Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-Open-Startup': 'true'
     })
     .timeout(ms('30s'))
     .retry(3)

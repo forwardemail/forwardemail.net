@@ -111,7 +111,7 @@ async function listDomains(ctx, next) {
     !ctx.accepts('html') &&
     ctx.pathWithoutLocale === '/my-account/domains' &&
     !ctx.api &&
-    (!ctx.query || _.isEmpty(ctx.query))
+    ctx.get('X-Open-Startup')
   ) {
     ctx.body = await getCharts(ctx);
     return;
