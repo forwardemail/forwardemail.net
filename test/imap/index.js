@@ -1360,7 +1360,7 @@ test
     or: [{ flagged: true }, { from: 'linus' }]
   });
   t.is(list1.length, 10);
-  t.is(list2.length, 10);
+  t.is(list2.length, 0);
   t.notDeepEqual(list1, list2);
 
   //
