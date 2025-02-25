@@ -57,10 +57,10 @@ function getBounceInfo(err) {
   //
   if (
     bounceInfo.message === 'Unknown' ||
-    (bounceInfo.action === 'reject' &&
-      ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
-        bounceInfo.category
-      ))
+    // bounceInfo.action === 'reject' && // <-- we should include defer so this is commented out
+    ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
+      bounceInfo.category
+    )
   ) {
     if (REGEX_VIRUS.test(response)) bounceInfo.category = 'virus';
     else if (REGEX_SPAM.test(response)) bounceInfo.category = 'spam';
@@ -299,9 +299,10 @@ function getBounceInfo(err) {
     //
   } else if (bounceInfo.category === 'dmarc') bounceInfo.action = 'defer';
   else if (
-    REGEX_DENYLIST.test(response) ||
-    REGEX_BLACKLIST.test(response) ||
-    REGEX_BLOCKLIST.test(response)
+    !response.includes(`${IP_ADDRESS} listed `) &&
+    (REGEX_DENYLIST.test(response) ||
+      REGEX_BLACKLIST.test(response) ||
+      REGEX_BLOCKLIST.test(response))
   )
     bounceInfo.category = 'blocklist';
 
@@ -325,7 +326,7 @@ function getBounceInfo(err) {
   // <https://github.com/zone-eu/zone-mta/issues/434>
   if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
     bounceInfo.category = 'dmarc';
-    bounceInfo.action = 'defer';
+    // bounceInfo.action = 'defer';
   }
 
   return bounceInfo;

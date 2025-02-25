@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "특정 반송 카테고리로 로그를 검색합니다(예:",
   "Search for logs by a specific error response code (e.g.": "특정 오류 응답 코드로 로그를 검색합니다(예:",
   "Filtered for domains:": "도메인에 대해 필터링됨:",
-  "Filtered for domain:": "도메인에 대해 필터링됨:"
+  "Filtered for domain:": "도메인에 대해 필터링됨:",
+  "Chat with us": "우리와 채팅하세요",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

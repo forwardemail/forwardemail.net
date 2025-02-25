@@ -93,6 +93,7 @@ async function onSearch(mailboxId, options, session, fn) {
     let returned;
 
     const set = new Set();
+    let mustIncludeIds = false;
 
     // eslint-disable-next-line complexity, no-inner-declarations
     async function walkQuery(parent, ne, node) {
@@ -177,13 +178,7 @@ async function onSearch(mailboxId, options, session, fn) {
               set.add(id);
             }
 
-            // old approach:
-            // parent.push({
-            //   _id: { $in: ids }
-            // });
-            parent.push({
-              _id: { $ne: '' }
-            });
+            mustIncludeIds = true;
 
             // NOTE: this is the wildduck reference (which does not support NOT matches)
             // search over email body
@@ -343,9 +338,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     set.add(id);
                   }
 
-                  // old approach:
-                  // entry._id = { $in: ids };
-                  entry._id = { $ne: '' };
+                  mustIncludeIds = true;
                 } else {
                   const sql = {
                     // NOTE: for array lookups:
@@ -364,9 +357,7 @@ async function onSearch(mailboxId, options, session, fn) {
                     set.add(id);
                   }
 
-                  // old approach:
-                  // entry._id = { $in: ids };
-                  entry._id = { $ne: '' };
+                  mustIncludeIds = true;
                 }
               } else if (ne) {
                 const sql = {
@@ -384,9 +375,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   set.add(id);
                 }
 
-                // old approach
-                // entry._id = { $in: ids };
-                entry._id = { $ne: '' };
+                mustIncludeIds = true;
               } else {
                 const sql = {
                   query: `select _id from Messages, json_each(Messages.headers) where key = $p1;`,
@@ -403,9 +392,7 @@ async function onSearch(mailboxId, options, session, fn) {
                   set.add(id);
                 }
 
-                // old approach
-                // entry._id = { $in: ids };
-                entry._id = { $ne: '' };
+                mustIncludeIds = true;
               }
 
               // wildduck/mongodb version
@@ -669,7 +656,7 @@ async function onSearch(mailboxId, options, session, fn) {
       // less memory consumption
       for (const message of session.db.prepare(sql.query).iterate(sql.values)) {
         // SQLITE_MAX_VARIABLE_NUMBER which defaults to 999
-        if (set.size > 0 && !set.has(message._id)) continue;
+        if ((set.size > 0 || mustIncludeIds) && !set.has(message._id)) continue;
 
         if (highestModseq < message.modseq) highestModseq = message.modseq;
         uidList.add(message.uid);

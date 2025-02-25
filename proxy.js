@@ -11,10 +11,14 @@ const process = require('node:process');
 const Graceful = require('@ladjs/graceful');
 const ProxyServer = require('@ladjs/proxy');
 const ip = require('ip');
+const sharedConfig = require('@ladjs/shared-config');
 
 const logger = require('#helpers/logger');
 
+const proxySharedConfig = sharedConfig('PROXY');
+
 const proxy = new ProxyServer({
+  ...proxySharedConfig,
   logger
 });
 

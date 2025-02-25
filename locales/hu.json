@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Keressen naplókat egy adott visszafordulási kategória alapján (pl.",
   "Search for logs by a specific error response code (e.g.": "A naplók keresése egy adott hibakód alapján (pl.",
   "Filtered for domains:": "Domainekre szűrve:",
-  "Filtered for domain:": "Domainre szűrve:"
+  "Filtered for domain:": "Domainre szűrve:",
+  "Chat with us": "Csevegés velünk",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

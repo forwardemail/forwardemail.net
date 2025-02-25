@@ -19,13 +19,12 @@ const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const isHTML = require('is-html');
 const mongoose = require('mongoose');
-const splitLines = require('split-lines');
+// const splitLines = require('split-lines');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
-const { convert } = require('html-to-text');
+// const { convert } = require('html-to-text');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const Aliases = require('#models/aliases');
-const Domains = require('#models/domains');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -74,7 +73,16 @@ async function onAppend(path, flags, date, raw, session, fn) {
         date,
         raw
       });
-      this.server.notifier.fire(session.user.alias_id);
+
+      if (
+        session.selected &&
+        session.selected.mailbox &&
+        session.selected.mailbox.toString() === response.mailbox.toString()
+      ) {
+        session.writeStream.write(
+          formatResponse.call(session, 'EXISTS', response.uid)
+        );
+      }
 
       fn(null, bool, response);
     } catch (err) {
@@ -99,15 +107,17 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //       (then it'd be 100xY, e.g. 10000 messages = 16 minutes)
     //
     // check if over quota
-    const { storageUsed, isOverQuota } = await Aliases.isOverQuota(
-      {
-        id: session.user.alias_id,
-        domain: session.user.domain_id,
-        locale: session.user.locale
-      },
-      0,
-      this.client
-    );
+    const { storageUsed, isOverQuota, maxQuotaPerAlias } =
+      await Aliases.isOverQuota(
+        {
+          id: session.user.alias_id,
+          domain: session.user.domain_id,
+          locale: session.user.locale
+        },
+        0,
+        this.client
+      );
+
     if (isOverQuota)
       throw new IMAPError(
         i18n.translate('IMAP_MAILBOX_OVER_QUOTA', session.user.locale),
@@ -372,10 +382,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // store reference for cleanup
     mimeTreeData = mimeTree;
 
-    const maxQuotaPerAlias = await Domains.getMaxQuota(
-      session.user.domain_id,
-      session.user.alias_id
-    );
+    // const maxQuotaPerAlias = await Domains.getMaxQuota(
+    //   session.user.domain_id,
+    //   session.user.alias_id
+    // );
 
     const exceedsQuota = storageUsed + size > maxQuotaPerAlias;
     if (exceedsQuota)
@@ -392,13 +402,37 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     maildata = this.indexer.getMaildata(mimeTree);
 
-    // store node bodies
-    hasNodeBodies = await this.indexer.storeNodeBodies(
-      this,
-      session,
-      maildata,
-      mimeTree
-    );
+    [hasNodeBodies, mailbox, thread] = await Promise.all([
+      // store node bodies
+      this.indexer.storeNodeBodies(this, session, maildata, mimeTree),
+
+      // get new uid and modsec and return original values
+      Mailboxes.findByIdAndUpdate(
+        this,
+        session,
+        mailbox._id,
+        {
+          $inc: {
+            uidNext: 1,
+            modifyIndex: 1
+          }
+        },
+        {
+          returnDocument: 'before'
+        }
+      ),
+
+      // get thread ID
+      Threads.getThreadId(this, session, subject, mimeTree)
+    ]);
+
+    if (!mailbox)
+      throw new IMAPError(
+        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
+        {
+          imapResponse: 'TRYCREATE'
+        }
+      );
 
     // TODO: we should instead tokenize this with spamscanner
     // if (maildata.text) {
@@ -408,15 +442,38 @@ async function onAppend(path, flags, date, raw, session, fn) {
     //     data.text = data.text.slice(0, Math.max(0, config.maxPlaintextIndexed));
     // }
     // prepare text for indexing
-    let text = '';
+    // parsedContentType {
+    //   value: 'multipart/encrypted',
+    //   type: 'multipart',
+    //   subtype: 'encrypted',
+    //   params: {
+    //     protocol: 'application/pgp-encrypted',
+    //     boundary: 'nm_8dada939f2a140915e5555f58744'
+    //   },
+    //   hasParams: true
+    // }
+    const parsedHeader = mimeTree?.parsedHeader || {};
+    const parsedContentType = parsedHeader['content-type'];
+
+    //
+    // NOTE: encrypted messages should not have text searchable
+    //
+    const text =
+      parsedContentType?.subtype === 'encrypted'
+        ? ''
+        : (maildata.text || '').slice(0, 1024);
+
+    /*
+    console.time(`maildata.text portion ${session.id}`);
     if (maildata.text) {
+      console.log('maildata.text', maildata.text);
       //
       // NOTE: without `slice(0, 1MB)` it would output following and cause max callstack exceeded error
       //
       //       > Input length 49999999 is above allowed limit of 16777216. Truncating without ellipsis.
       //
       // replace line breaks for consistency
-      text = splitLines(maildata.text).join(' ').trim().slice(0, 1048576); // 1 MB
+      text = splitLines(maildata.text.slice(0, 1024)).join(' '); // .trim().slice(0, 1048576); // 1 MB
       // convert and remove unnecessary HTML
       text = convert(text, {
         wordwrap: false,
@@ -434,6 +491,9 @@ async function onAppend(path, flags, date, raw, session, fn) {
       // trim it up
       text = text.trim();
     }
+
+    console.timeEnd(`maildata.text portion ${session.id}`);
+    */
 
     //
     // prepare message for creation
@@ -477,30 +537,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
     // TODO: explore modseq usage (for journal sorting by modseq uids in ascending order)
     //
 
-    // get new uid and modsec and return original values
-    mailbox = await Mailboxes.findByIdAndUpdate(
-      this,
-      session,
-      mailbox._id,
-      {
-        $inc: {
-          uidNext: 1,
-          modifyIndex: 1
-        }
-      },
-      {
-        returnDocument: 'before'
-      }
-    );
-
-    if (!mailbox)
-      throw new IMAPError(
-        i18n.translate('IMAP_MAILBOX_DOES_NOT_EXIST', session.user.locale),
-        {
-          imapResponse: 'TRYCREATE'
-        }
-      );
-
     // update message object with mailbox values
     data.uid = mailbox.uidNext;
     data.modseq = mailbox.modifyIndex + 1;
@@ -515,9 +551,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     // store whether junk or not
     data.junk = mailbox.specialUse === '\\Junk';
-
-    // get thread ID
-    thread = await Threads.getThreadId(this, session, subject, mimeTree);
 
     data.thread = thread._id;
 
@@ -535,12 +568,12 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session
     });
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { message, path, flags, date, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { message, path, flags, date, session })
+      );
 
     const response = {
       uidValidity: mailbox.uidValidity,
@@ -554,25 +587,18 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     this.logger.debug('command response', { response });
 
-    if (
-      session.selected &&
-      session.selected.mailbox &&
-      session.selected.mailbox.toString() === response.mailbox.toString()
-    )
-      await this.wss.broadcast(
-        session,
-        formatResponse.call(session, 'EXISTS', response.uid)
-      );
-
-    await this.server.notifier.addEntries(this, session, mailbox._id, {
-      ignore:
-        session?.selected?.mailbox &&
-        session.selected.mailbox.toString() === message.mailbox.toString(),
-      command: 'EXISTS',
-      uid: message.uid,
-      mailbox: mailbox._id,
-      message: message._id
-    });
+    this.server.notifier
+      .addEntries(this, session, mailbox._id, {
+        ignore:
+          session?.selected?.mailbox &&
+          session.selected.mailbox.toString() === message.mailbox.toString(),
+        command: 'EXISTS',
+        uid: message.uid,
+        mailbox: mailbox._id,
+        message: message._id
+      })
+      .then(() => this.server.notifier.fire(session.user.alias_id))
+      .catch((err) => this.logger.fatal(err, { session }));
 
     // send apple push notification
     sendApn(this.client, session.user.alias_id, path)

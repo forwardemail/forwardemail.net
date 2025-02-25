@@ -29,12 +29,13 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
+// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
   if (this.wsp) {
     try {
-      const [bool] = await this.wsp.request({
+      const [bool, payloads] = await this.wsp.request({
         action: 'expunge',
         session: {
           id: session.id,
@@ -46,7 +47,11 @@ async function onExpunge(mailboxId, update, session, fn) {
         update
       });
 
-      this.server.notifier.fire(session.user.alias_id);
+      if (Array.isArray(payloads) && payloads.length > 0) {
+        for (const payload of payloads) {
+          session.writeStream.write(payload);
+        }
+      }
 
       fn(null, bool);
     } catch (err) {
@@ -58,6 +63,8 @@ async function onExpunge(mailboxId, update, session, fn) {
   }
 
   try {
+    const payloads = [];
+
     await this.refreshSession(session, 'EXPUNGE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -138,7 +145,7 @@ async function onExpunge(mailboxId, update, session, fn) {
       } catch (err) {
         err.message = `Error while deleting attachments: ${err.message}`;
         err.isCodeBug = true;
-        this.logger.fatal(err);
+        this.logger.fatal(err, { mailboxId, update, session });
       }
 
       if (messages.length > 0) {
@@ -159,16 +166,15 @@ async function onExpunge(mailboxId, update, session, fn) {
             session.selected.mailbox &&
             session.selected.mailbox.toString() === mailbox._id.toString())
         ) {
-          await this.wss.broadcast(
-            session,
-            messages.map((message) =>
+          payloads.push(
+            ...messages.map((message) =>
               formatResponse.call(session, 'EXPUNGE', message.uid)
             )
           );
         }
 
         if (!update.silent && session?.selected?.uidList) {
-          await this.wss.broadcast(session, {
+          payloads.push({
             tag: '*',
             command: String(session.selected.uidList.length),
             attributes: [
@@ -180,38 +186,41 @@ async function onExpunge(mailboxId, update, session, fn) {
           });
         }
 
-        await this.server.notifier.addEntries(
-          this,
-          session,
-          mailbox,
-          messages.map((message) => ({
-            ignore: session.id,
-            command: 'EXPUNGE',
-            uid: message.uid,
-            mailbox: mailbox._id,
-            message: message._id,
-            modseq: message.modseq
-            // thread: message.thread,
-            // unseen: message.unseen,
-            // idate: message.idate
-          }))
-        );
+        this.server.notifier
+          .addEntries(
+            this,
+            session,
+            mailbox,
+            messages.map((message) => ({
+              ignore: session.id,
+              command: 'EXPUNGE',
+              uid: message.uid,
+              mailbox: mailbox._id,
+              message: message._id,
+              modseq: message.modseq
+              // thread: message.thread,
+              // unseen: message.unseen,
+              // idate: message.idate
+            }))
+          )
+          .then(() => this.server.notifier.fire(session.user.alias_id))
+          .catch((err) =>
+            this.logger.fatal(err, { mailboxId, update, session })
+          );
       }
     } catch (_err) {
       err = _err;
     }
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
 
     // throw error
     if (err) throw err;
 
-    fn(null, true);
+    fn(null, true, payloads);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

@@ -35,7 +35,6 @@ async function onCreate(path, session, fn) {
         },
         path
       });
-      this.server.notifier.fire(session.user.alias_id);
       fn(null, ...data);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -104,18 +103,19 @@ async function onCreate(path, session, fn) {
       retention: 0
     });
 
-    await this.server.notifier.addEntries(this, session, mailbox, {
-      command: 'CREATE',
-      mailbox: mailbox._id,
-      path
-    });
+    this.server.notifier
+      .addEntries(this, session, mailbox, {
+        command: 'CREATE',
+        mailbox: mailbox._id,
+        path
+      })
+      .then(() => this.server.notifier.fire(session.user.alias_id))
+      .catch((err) => this.logger.fatal(err, { path, session }));
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { path, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { path, session }));
 
     fn(null, true, mailbox._id);
   } catch (err) {

@@ -8351,5 +8351,11 @@
   "Search for logs by a specific error response code (e.g.": "Rechercher des journaux par un code de réponse d'erreur spécifique (par exemple,",
   "Filtered for domains:": "Filtré pour les domaines :",
   "Filtered for domain:": "Filtré pour le domaine :",
-  "Request Removal": "Demande de suppression"
+  "Request Removal": "Demande de suppression",
+  "Chat with us": "Discutez avec nous",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
+  "Auto-renew enabled": "Auto-renew enabled",
+  "Update Payment Method": "Update Payment Method",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

@@ -79,6 +79,16 @@
         rule: allow
         port: 2465
         proto: tcp
+    - name: Allow http
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'PROXY_PORT') }}"
+        proto: tcp
+    - name: Allow https
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'HTTP_PORT') }}"
+        proto: tcp
     #
     # modify ufw setup
     # https://github.com/Oefenweb/ansible-ufw/issues/21

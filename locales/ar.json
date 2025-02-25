@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "ابحث عن السجلات حسب فئة الارتداد المحددة (على سبيل المثال",
   "Search for logs by a specific error response code (e.g.": "البحث عن السجلات بواسطة رمز استجابة خطأ محدد (على سبيل المثال",
   "Filtered for domains:": "تم تصفيته للمجالات:",
-  "Filtered for domain:": "تم التصفية حسب النطاق:"
+  "Filtered for domain:": "تم التصفية حسب النطاق:",
+  "Chat with us": "الدردشة معنا",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

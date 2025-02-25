@@ -123,21 +123,23 @@ async function onUpdate(update, session, fn) {
         }
       }
 
-      await this.server.notifier.addEntries(
-        this,
-        session,
-        updatedMailbox,
-        update.seen
-          .filter((message) => mongoose.isObjectIdOrHexString(message.id))
-          .map((message) => ({
-            command: 'FETCH',
-            uid: message.uid,
-            flags: [...message.flags, '\\Seen'],
-            message: new mongoose.Types.ObjectId(message.id),
-            modseq: updatedMailbox.modifyIndex
-          }))
-      );
-      this.server.notifier.fire(session.user.alias_id);
+      this.server.notifier
+        .addEntries(
+          this,
+          session,
+          updatedMailbox,
+          update.seen
+            .filter((message) => mongoose.isObjectIdOrHexString(message.id))
+            .map((message) => ({
+              command: 'FETCH',
+              uid: message.uid,
+              flags: [...message.flags, '\\Seen'],
+              message: new mongoose.Types.ObjectId(message.id),
+              modseq: updatedMailbox.modifyIndex
+            }))
+        )
+        .then(() => this.server.notifier.fire(session.user.alias_id))
+        .catch((err) => this.logger.fatal(err, { update, session }));
     }
 
     // handle deleted

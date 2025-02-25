@@ -10811,5 +10811,7 @@
   "Search for logs by a specific bounce category (e.g.": "Søk etter logger etter en bestemt avvisningskategori (f.eks.",
   "Search for logs by a specific error response code (e.g.": "Søk etter logger med en spesifikk feilsvarkode (f.eks.",
   "Filtered for domains:": "Filtrert for domener:",
-  "Filtered for domain:": "Filtrert for domene:"
+  "Filtered for domain:": "Filtrert for domene:",
+  "Chat with us": "Chat med oss",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

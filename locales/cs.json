@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Vyhledávání protokolů podle konkrétní kategorie okamžitého opuštění (např.",
   "Search for logs by a specific error response code (e.g.": "Vyhledávejte protokoly podle konkrétního kódu odezvy na chybu (např.",
   "Filtered for domains:": "Filtrováno pro domény:",
-  "Filtered for domain:": "Filtrováno pro doménu:"
+  "Filtered for domain:": "Filtrováno pro doménu:",
+  "Chat with us": "Chatujte s námi",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Belirli bir sıçrama kategorisine göre günlükleri arayın (örn.",
   "Search for logs by a specific error response code (e.g.": "Belirli bir hata yanıt koduna göre günlükleri arayın (örn.",
   "Filtered for domains:": "Alan adlarına göre filtrelendi:",
-  "Filtered for domain:": "Alan adına göre filtrelendi:"
+  "Filtered for domain:": "Alan adına göre filtrelendi:",
+  "Chat with us": "Bizimle sohbet edin",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

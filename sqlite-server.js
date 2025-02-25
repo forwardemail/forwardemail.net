@@ -140,9 +140,16 @@ class SQLite {
           if (this.uuidsReceived.has(uuid)) return true;
 
           for (const client of this.wss.clients) {
+            if (!client.isAlive) continue;
             if (this.uuidsReceived.has(uuid)) break;
 
-            client.send(packed);
+            try {
+              client.send(packed);
+            } catch (err) {
+              err.client = client;
+              err.payload = payload;
+              logger.fatal(err);
+            }
           }
 
           try {

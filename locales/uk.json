@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Пошук журналів за певною категорією відмов (наприклад,",
   "Search for logs by a specific error response code (e.g.": "Пошук журналів за певним кодом відповіді на помилку (наприклад,",
   "Filtered for domains:": "Відфільтровано для доменів:",
-  "Filtered for domain:": "Відфільтровано для домену:"
+  "Filtered for domain:": "Відфільтровано для домену:",
+  "Chat with us": "Спілкуйтеся з нами",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

@@ -8355,5 +8355,11 @@
   "Search for logs by a specific error response code (e.g.": "Tìm kiếm nhật ký theo mã phản hồi lỗi cụ thể (ví dụ:",
   "Filtered for domains:": "Đã lọc theo tên miền:",
   "Filtered for domain:": "Lọc theo tên miền:",
-  "Request Removal": "Yêu cầu xóa"
+  "Request Removal": "Yêu cầu xóa",
+  "Chat with us": "Trò chuyện với chúng tôi",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
+  "Auto-renew enabled": "Auto-renew enabled",
+  "Update Payment Method": "Update Payment Method",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

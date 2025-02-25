@@ -78,19 +78,19 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
-    await this.server.notifier.addEntries(this, session, mailbox, {
-      command: 'RENAME',
-      mailbox: mailbox._id,
-      path: renamedMailbox.path
-    });
-    this.server.notifier.fire(session.user.alias_id);
+    this.server.notifier
+      .addEntries(this, session, mailbox, {
+        command: 'RENAME',
+        mailbox: mailbox._id,
+        path: renamedMailbox.path
+      })
+      .then(() => this.server.notifier.fire(session.user.alias_id))
+      .catch((err) => this.logger.fatal(err, { path, session }));
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { path, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { path, session }));
 
     // send response
     fn(null, true, renamedMailbox._id);

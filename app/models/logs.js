@@ -656,8 +656,14 @@ function getQueryHash(log) {
     else if (isSANB(log?.meta?.err?.name)) set.add(log.meta.err.name);
 
     // if it is not a non-unique error
+    // TODO: should we remove this (?)
     if (!hasErrorWithUniqueMessage && isSANB(log?.message))
       set.add(log.message);
+
+    // TODO: log.err.envelope.from log.err.envelope.to
+    // TODO: log.err.webhook
+    // TODO: log.err.bounces[x]
+    // TODO: log.meta.session.fingerprint <-- use this instead of hash
 
     if (isSANB(log?.err?.address)) set.add(log.err.address);
 
@@ -726,6 +732,14 @@ function getQueryHash(log) {
 Logs.pre('validate', function (next) {
   try {
     // get query hash
+    // TODO: hash should be log.meta.session.fingerprint
+    //       if log.meta.session.isAllowlisted
+    //       otherwise it should be rev hash of safe-guarded
+    //       log.meta.session.attributes
+    //       so we need to add that as a prop like trustedAttributes
+    //
+    // TODO: logs should live for 30d not 7d
+    //
     this.hash = getQueryHash(this);
     next();
   } catch (err) {

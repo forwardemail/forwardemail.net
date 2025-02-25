@@ -709,11 +709,8 @@ async function parsePayload(data, ws) {
               };
 
               // check quota
-              const { isOverQuota, storageUsed } = await Aliases.isOverQuota(
-                alias,
-                0,
-                this.client
-              );
+              const { isOverQuota, storageUsed, maxQuotaPerAlias } =
+                await Aliases.isOverQuota(alias, 0, this.client);
 
               if (isOverQuota) {
                 const err = new TypeError(
@@ -735,10 +732,6 @@ async function parsePayload(data, ws) {
                 );
               }
 
-              const maxQuotaPerAlias = await Domains.getMaxQuota(
-                alias.domain.id,
-                alias
-              );
               const exceedsQuota = storageUsed + byteLength > maxQuotaPerAlias;
 
               if (exceedsQuota) {

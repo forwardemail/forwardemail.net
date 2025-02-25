@@ -935,21 +935,19 @@ Aliases.statics.isOverQuota = async function (
     }
   }
 
-  //
-  // TODO: this gets the storage used across the entire domain
-  // so we need to check this + `size` against either
-  // the larger value of either user.storage_quota
-  // or the sum of all admins's storage quota on team plan if domain is on team plan
-  //
-  if (!storageUsed) storageUsed = await getStorageUsed.call(this, alias);
-
-  // TODO: allow users to purchase more storage (tied to their user.storage_quota)
-  //       but this is only relative here if the user is an admin of their aliases domain
-
-  if (!maxQuotaPerAlias)
-    maxQuotaPerAlias = await conn.models.Domains.getMaxQuota(
-      alias?.domain?._id || alias.domain
-    );
+  [storageUsed, maxQuotaPerAlias] = await Promise.all([
+    //
+    // TODO: this gets the storage used across the entire domain
+    // so we need to check this + `size` against either
+    // the larger value of either user.storage_quota
+    // or the sum of all admins's storage quota on team plan if domain is on team plan
+    //
+    storageUsed || getStorageUsed.call(this, alias),
+    // TODO: allow users to purchase more storage (tied to their user.storage_quota)
+    //       but this is only relative here if the user is an admin of their aliases domain
+    maxQuotaPerAlias ||
+      conn.models.Domains.getMaxQuota(alias?.domain?._id || alias.domain)
+  ]);
 
   // TODO: if user is on team plan then check if any other user is on team plan
   //       and multiply that user count by the max quota (pooling concept for teams)
@@ -967,15 +965,18 @@ Aliases.statics.isOverQuota = async function (
 
   // cache the values of storageUsed and isOverQuota for 1d
   if (size === 0)
-    await client.set(
-      `alias_quota:${alias.id}`,
-      JSON.stringify({
-        storageUsed,
-        maxQuotaPerAlias
-      }),
-      'PX',
-      ms('1d')
-    );
+    client
+      .set(
+        `alias_quota:${alias.id}`,
+        JSON.stringify({
+          storageUsed,
+          maxQuotaPerAlias
+        }),
+        'PX',
+        ms('1d')
+      )
+      .then()
+      .catch((err) => logger.fatal(err));
 
   return { storageUsed, isOverQuota, maxQuotaPerAlias };
 };

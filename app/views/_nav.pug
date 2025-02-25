@@ -94,7 +94,7 @@ if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.loc
 
 nav.navbar(class=navbarClasses.join(" "))
   div(
-    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith('/my-account/analytics') || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
+    class=ctx.pathWithoutLocale.startsWith("/admin/") || ctx.pathWithoutLocale.startsWith("/my-account/analytics") || ctx.pathWithoutLocale.startsWith("/my-account/logs") || ctx.pathWithoutLocale.startsWith("/my-account/emails") || (typeof isContainerFluid === "boolean" && isContainerFluid === true) ? "container-fluid" : "container"
   )
     a.navbar-brand.d-inline-block.m-0.font-weight-bold(
       href=user ? l(config.passportCallbackOptions.successReturnToOrRedirect) : l(),
@@ -487,7 +487,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     target="_blank",
                     rel="noopener noreferrer"
                   )
-                    i.fa-fw.fa.fa-comments
+                    i.fa-fw.fa.fa-comment
                     = " "
                     = "Matrix"
                   a.dropdown-item(

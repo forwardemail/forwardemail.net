@@ -56,7 +56,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         mailboxId,
         update
       });
-      this.server.notifier.fire(session.user.alias_id, update.destination);
       clearTimeout(timeout);
       fn(null, bool, response);
     } catch (err) {
@@ -361,20 +360,22 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       this.logger.fatal(err, { connection, mailboxId, update, session });
     }
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { connection, mailboxId, update, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { connection, mailboxId, update, session })
+      );
 
     if (entries.length > 0) {
-      await this.server.notifier.addEntries(
-        this,
-        session,
-        targetMailbox._id,
-        entries
-      );
+      this.server.notifier
+        .addEntries(this, session, targetMailbox._id, entries)
+        .then(() =>
+          this.server.notifier.fire(session.user.alias_id, update.destination)
+        )
+        .catch((err) =>
+          this.logger.fatal(err, { connection, mailboxId, update, session })
+        );
     }
 
     fn(null, true, {

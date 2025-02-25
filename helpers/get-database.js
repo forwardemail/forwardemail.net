@@ -645,16 +645,17 @@ async function getDatabase(
                 });
 
                 if (instance?.server?.notifier?.addEntries)
-                  await instance.server.notifier.addEntries(
-                    instance,
-                    session,
-                    mailbox,
-                    {
+                  instance.server.notifier
+                    .addEntries(instance, session, mailbox, {
                       command: 'CREATE',
                       mailbox: mailbox._id,
                       path
-                    }
-                  );
+                    })
+                    .then(() => {
+                      if (instance?.server?.notifier?.fire)
+                        instance.server.notifier.fire(session.user.alias_id);
+                    })
+                    .catch((err) => logger.fatal(err, { session }));
               } catch (err) {
                 logger.fatal(err, { session });
               }

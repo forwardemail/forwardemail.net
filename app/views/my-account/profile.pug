@@ -102,12 +102,16 @@ block body
               .card-footer
                 button.btn.btn-success.btn-lg.btn-block(type="submit")= t("Save Changes")
           .alert.alert-secondary.small.mt-3.mb-0.text-center
-            != t('Need <a href="%s" rel="noopener noreferrer" class="alert-link" target="_blank">status page</a> updates?', 'https://status.forwardemail.net')
+            != t('Need <a href="%s" rel="noopener noreferrer" class="alert-link" target="_blank">status page</a> updates?', "https://status.forwardemail.net")
             = " "
-            a.alert-link(href='https://github.com/forwardemail/status.forwardemail.net', target='_blank', rel='noopener noreferrer')
+            a.alert-link(
+              href="https://github.com/forwardemail/status.forwardemail.net",
+              target="_blank",
+              rel="noopener noreferrer"
+            )
               != t('Click <i class="fa fa-regular fa-bell"></i> "Notifications" &rarr; "All Activity"')
 
-          form.ajax-form.confirm-prompt(action=ctx.path, method="POST").mt-3
+          form.ajax-form.confirm-prompt.mt-3(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
             .card.border-themed
               h2.h6.card-header= t("Personal Information")

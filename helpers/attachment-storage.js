@@ -134,8 +134,9 @@ async function retryCreateAttachment(...args) {
 }
 
 async function createAttachment(instance, session, node) {
-  const hex = await this.calculateHashPromise(node.body);
-  node.hash = revHash(Buffer.from(hex, 'hex'));
+  // const hex = await this.calculateHashPromise(node.body);
+  // node.hash = revHash(Buffer.from(hex, 'hex'));
+  node.hash = revHash(node.body);
   node.counter = 1;
   node.counterUpdated = new Date();
   node.size = node.body.length;
@@ -194,8 +195,7 @@ async function createAttachment(instance, session, node) {
   node.instance = instance;
   node.session = session;
 
-  const attachment = Attachments.create(node);
-  return attachment;
+  return Attachments.create(node);
 }
 
 class AttachmentStorage {

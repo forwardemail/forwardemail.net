@@ -340,6 +340,20 @@ html.h-100.no-js(
     block footer
       include _footer
 
+    //- chat
+    if !isBot(ctx.get('User-Agent'))
+      a.fixed-bottom.mb-2.mr-2.btn.btn-primary.rounded-lg.text-center.is-bot.no-js.d-print-none(
+        href="https://matrix.to/#/#forwardemail:matrix.org",
+        target="_blank",
+        title=t("Chat with us"),
+        rel="noopener noreferrer",
+        data-toggle="tooltip",
+        data-title=t("Chat with us"),
+        data-placement="top",
+        style="left: auto"
+      )
+        i.fa.fa-comment
+
     //- scripts
     //- prettier-ignore
     block scripts

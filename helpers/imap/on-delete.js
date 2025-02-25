@@ -32,7 +32,7 @@ async function onDelete(path, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, mailboxId, hasDeleted] = await this.wsp.request({
+      const [bool, mailboxId] = await this.wsp.request({
         action: 'delete',
         session: {
           id: session.id,
@@ -41,8 +41,6 @@ async function onDelete(path, session, fn) {
         },
         path
       });
-
-      if (hasDeleted) this.server.notifier.fire(session.user.alias_id);
 
       fn(null, bool, mailboxId);
     } catch (err) {
@@ -136,10 +134,13 @@ async function onDelete(path, session, fn) {
 
     // results.deletedCount is mainly for publish/notifier
     if (results.deletedCount > 0) {
-      await this.server.notifier.addEntries(this, session, mailbox, {
-        command: 'DELETE',
-        mailbox: mailbox._id
-      });
+      this.server.notifier
+        .addEntries(this, session, mailbox, {
+          command: 'DELETE',
+          mailbox: mailbox._id
+        })
+        .then(() => this.server.notifier.fire(session.user.alias_id))
+        .catch((err) => this.logger.fatal(err, { path, session }));
     }
 
     //
@@ -161,14 +162,12 @@ async function onDelete(path, session, fn) {
     //   }
     // );
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { path, session });
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { path, session }));
 
-    fn(null, true, mailbox._id, results.deletedCount > 0);
+    fn(null, true, mailbox._id);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

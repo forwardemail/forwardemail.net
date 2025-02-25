@@ -41,7 +41,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response] = await this.wsp.request({
+      const [bool, response, compiledPayloads] = await this.wsp.request({
         action: 'fetch',
         session: {
           id: session.id,
@@ -53,7 +53,12 @@ async function onFetch(mailboxId, options, session, fn) {
         mailboxId,
         options
       });
-      this.server.notifier.fire(session.user.alias_id);
+
+      if (Array.isArray(compiledPayloads)) {
+        for (const compiled of compiledPayloads) {
+          session.writeStream.write(compiled);
+        }
+      }
 
       fn(null, bool, response);
     } catch (err) {
@@ -65,6 +70,7 @@ async function onFetch(mailboxId, options, session, fn) {
   }
 
   try {
+    const compiledPayloads = [];
     await this.refreshSession(session, 'FETCH');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -142,12 +148,13 @@ async function onFetch(mailboxId, options, session, fn) {
     //   }
     // }
 
-    // TODO: this query could become too large and slow for 1000's of messages
     // TODO: `condition` may need further refined for accuracy (e.g. see `prepareQuery`)
     const fields = [];
     for (const key of Object.keys(projection)) {
       if (projection[key] === true) fields.push(key);
     }
+
+    const count = await Messages.countDocuments(this, session, condition);
 
     const sql = builder.build({
       type: 'select',
@@ -187,7 +194,11 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
     const stmt = session.db.prepare(sql.query);
-    for (const result of stmt.iterate(sql.values)) {
+    const isBatchMode = count > 1000;
+
+    for (const result of isBatchMode
+      ? stmt.all(sql.values)
+      : stmt.iterate(sql.values)) {
       const message = syncConvertResult(Messages, result, projection);
 
       // don't process messages that are new since query started
@@ -237,10 +248,16 @@ async function onFetch(mailboxId, options, session, fn) {
 
         // `compiled` is a 'binary' string
         totalBytes += compiled.length;
-
-        // eslint-disable-next-line no-await-in-loop
-        await this.wss.broadcast(session, { compiled });
         rowCount++;
+
+        compiledPayloads.push({ compiled });
+
+        // flush compiled payloads after every 500 written
+        if (isBatchMode && compiledPayloads.length >= 500) {
+          // eslint-disable-next-line no-await-in-loop
+          await this.wss.broadcast(session, compiledPayloads);
+          _.pullAll(compiledPayloads, compiledPayloads);
+        }
 
         //
         // NOTE: we may need to pass indexer options here as similar to wildduck (through the use of `eachAsync`)
@@ -290,8 +307,14 @@ async function onFetch(mailboxId, options, session, fn) {
       });
       totalBytes += compiled.length;
 
-      // eslint-disable-next-line no-await-in-loop
-      await this.wss.broadcast(session, { compiled });
+      compiledPayloads.push({ compiled });
+
+      // flush compiled payloads after every 500 written
+      if (isBatchMode && compiledPayloads.length >= 500) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.wss.broadcast(session, compiledPayloads);
+        _.pullAll(compiledPayloads, compiledPayloads);
+      }
 
       rowCount++;
 
@@ -333,18 +356,21 @@ async function onFetch(mailboxId, options, session, fn) {
     }
 
     if (entries.length > 0) {
-      await this.server.notifier.addEntries(
-        this,
-        session,
-        mailbox._id,
-        entries
-      );
+      this.server.notifier
+        .addEntries(this, session, mailbox._id, entries)
+        .then(() => this.server.notifier.fire(session.user.alias_id))
+        .catch((err) => this.logger.fatal(err, { session }));
     }
 
-    fn(null, true, {
-      rowCount,
-      totalBytes
-    });
+    fn(
+      null,
+      true,
+      {
+        rowCount,
+        totalBytes
+      },
+      compiledPayloads
+    );
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

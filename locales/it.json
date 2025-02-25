@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Cerca i log in base a una categoria di bounce specifica (ad esempio",
   "Search for logs by a specific error response code (e.g.": "Cerca i registri in base a un codice di risposta di errore specifico (ad esempio",
   "Filtered for domains:": "Filtrato per domini:",
-  "Filtered for domain:": "Filtrato per dominio:"
+  "Filtered for domain:": "Filtrato per dominio:",
+  "Chat with us": "Chatta con noi",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

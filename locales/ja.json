@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "特定のバウンス カテゴリ (例:",
   "Search for logs by a specific error response code (e.g.": "特定のエラー応答コードでログを検索します (例:",
   "Filtered for domains:": "ドメインでフィルタリング:",
-  "Filtered for domain:": "ドメインでフィルタリング:"
+  "Filtered for domain:": "ドメインでフィルタリング:",
+  "Chat with us": "チャットでお問い合わせください",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

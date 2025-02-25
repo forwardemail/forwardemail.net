@@ -7828,5 +7828,12 @@
   "Search for logs by a specific error response code (e.g.": "Søg efter logfiler ved hjælp af en specifik fejlsvarkode (f.eks.",
   "Filtered for domains:": "Filtreret for domæner:",
   "Filtered for domain:": "Filtreret for domæne:",
-  "Request Removal": "Anmod om fjernelse"
+  "Request Removal": "Anmod om fjernelse",
+  "Chat with us": "Chat med os",
+  "Upgrade to Team": "Upgrade to Team",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
+  "Auto-renew enabled": "Auto-renew enabled",
+  "Update Payment Method": "Update Payment Method",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

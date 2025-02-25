@@ -153,7 +153,9 @@ if breadcrumbs.length > 1
                       .dropdown-menu
                         h6.dropdown-header= t("Filter by code:")
                         each code in responseCodes
-                          a.dropdown-item(href=l(`/my-account/logs?response_code=${code}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ''}`))
+                          a.dropdown-item(
+                            href=l(`/my-account/logs?response_code=${code}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ""}`)
+                          )
                             = code
                 if bounceCategories && bounceCategories.length > 0
                   li.list-inline-item.mb-1
@@ -169,8 +171,10 @@ if breadcrumbs.length > 1
                       .dropdown-menu
                         h6.dropdown-header= t("Filter by category:")
                         each category in bounceCategories
-                          a.dropdown-item(href=l(`/my-account/logs?bounce_category=${category}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ''}`))
-                            = category === 'dmarc' ? 'DMARC': titleize(humanize(category))
+                          a.dropdown-item(
+                            href=l(`/my-account/logs?bounce_category=${category}${ctx.query.domains ? `&domains=${ctx.query.domains}` : ""}`)
+                          )
+                            = category === "dmarc" ? "DMARC" : titleize(humanize(category))
                 li.list-inline-item.mb-1
                   a.btn.btn-dark(href=l("/email-api#logs"), target="_blank")
                     i.fa.fa-fw.fa-code.text-themed
@@ -209,7 +213,9 @@ if breadcrumbs.length > 1
                       = " "
                       = t("Logs")
                   else
-                    a.btn.btn-dark(href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ''}`))
+                    a.btn.btn-dark(
+                      href=l(`/my-account/logs${ctx.query.domains ? `?domains=${ctx.query.domains}` : ""}`)
+                    )
                       i.fa.fa-fw.fa-stream
                       = " "
                       = t("Logs")

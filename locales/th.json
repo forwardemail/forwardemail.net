@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "ค้นหาบันทึกตามหมวดหมู่การตีกลับที่เฉพาะเจาะจง (เช่น",
   "Search for logs by a specific error response code (e.g.": "ค้นหาบันทึกโดยใช้รหัสการตอบสนองข้อผิดพลาดที่เฉพาะเจาะจง (เช่น",
   "Filtered for domains:": "กรองตามโดเมน:",
-  "Filtered for domain:": "กรองตามโดเมน:"
+  "Filtered for domain:": "กรองตามโดเมน:",
+  "Chat with us": "พูดคุยกับเรา",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

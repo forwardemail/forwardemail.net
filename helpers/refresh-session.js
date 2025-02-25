@@ -172,6 +172,7 @@ async function refreshSession(session, command) {
   //       (e.g. if there are any issues such as IMAP access being locked due to r/w issues)
 
   // connect to the database (sets `session.db` for us automatically)
+
   await getDatabase(
     this,
     {

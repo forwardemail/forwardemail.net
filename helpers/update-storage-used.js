@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const Aliases = require('#models/aliases');
 const config = require('#config');
 const getPathToDatabase = require('#helpers/get-path-to-database');
+const logger = require('#helpers/logger');
 
 async function updateStorageUsed(id, client) {
   if (!mongoose.isObjectIdOrHexString(id))
@@ -66,25 +67,29 @@ async function updateStorageUsed(id, client) {
       }
     }
 
-    // save storage_used on the given alias
-    await Aliases.findByIdAndUpdate(alias._id, {
-      $set: {
-        storage_used: size
-      }
-    });
-
-    // reset cache for alias
-    await client.del(`alias_quota:${alias.id}`);
-
-    await Aliases.isOverQuota(
-      {
-        id: alias.id,
-        domain: alias.domain
-      },
-      0,
-      client,
-      true // indicates reset occurred
-    );
+    // NOTE: calling `await` here causes 40ms+ delays
+    Promise.all([
+      // save storage_used on the given alias
+      Aliases.findByIdAndUpdate(alias._id, {
+        $set: {
+          storage_used: size
+        }
+      }),
+      // reset cache for alias
+      // client.del(`alias_quota:${alias.id}`),
+      // TODO: may want to rewrite this part here (?)
+      Aliases.isOverQuota(
+        {
+          id: alias.id,
+          domain: alias.domain
+        },
+        0,
+        client,
+        true // indicates reset occurred
+      )
+    ])
+      .then()
+      .catch((err) => logger.fatal(err));
 
     return size;
   }

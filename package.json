@@ -53,7 +53,7 @@
     "@ladjs/passport": "5.1.4",
     "@ladjs/pick-original": "2.0.0",
     "@ladjs/policies": "12.2.1",
-    "@ladjs/proxy": "4.0.2",
+    "@ladjs/proxy": "5.0.0",
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "9.1.4",
     "@ladjs/web": "21.0.21",

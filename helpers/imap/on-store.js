@@ -42,7 +42,7 @@ async function onStore(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response] = await this.wsp.request({
+      const [bool, modified, payloads] = await this.wsp.request({
         action: 'store',
         session: {
           id: session.id,
@@ -54,9 +54,14 @@ async function onStore(mailboxId, update, session, fn) {
         update
       });
 
-      this.server.notifier.fire(session.user.alias_id);
+      if (Array.isArray(payloads)) {
+        for (const payload of payloads) {
+          session.writeStream.write(payload);
+        }
+      }
 
-      fn(null, bool, response);
+      // <https://github.com/nodemailer/wildduck/blob/08c5804798e7ffe1b281859c4edcec2465d058c2/imap-core/lib/commands/store.js#L145>
+      fn(null, bool, modified);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -82,7 +87,7 @@ async function onStore(mailboxId, update, session, fn) {
 
     const modified = [];
     const entries = [];
-    const broadcast = [];
+    const payloads = [];
     const condstoreEnabled = Boolean(session.selected.condstoreEnabled);
     const query = {
       mailbox: mailbox._id
@@ -308,7 +313,7 @@ async function onStore(mailboxId, update, session, fn) {
 
               if (!update.silent || condstoreEnabled) {
                 // write to socket the response
-                broadcast.push(
+                payloads.push(
                   formatResponse.call(session, 'FETCH', message.uid, {
                     uid: update.isUid ? message.uid : false,
                     flags: message.flags,
@@ -426,23 +431,20 @@ async function onStore(mailboxId, update, session, fn) {
       this.logger.fatal(err, { mailboxId, update, session });
     }
 
-    // update storage
-    try {
-      await updateStorageUsed(session.user.alias_id, this.client);
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
-    }
-
-    if (broadcast.length > 0) {
-      await this.wss.broadcast(session, broadcast);
-    }
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
 
     if (entries.length > 0) {
-      await this.server.notifier.addEntries(this, session, mailboxId, entries);
+      this.server.notifier
+        .addEntries(this, session, mailboxId, entries)
+        .then(() => this.server.notifier.fire(session.user.alias_id))
+        .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
     }
 
     // send response
-    fn(null, true, modified);
+    fn(null, true, modified, payloads);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

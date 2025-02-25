@@ -10499,5 +10499,7 @@
   "Search for logs by a specific bounce category (e.g.": "按特定退回类别搜索日志（例如",
   "Search for logs by a specific error response code (e.g.": "通过特定的错误响应代码搜索日志（例如",
   "Filtered for domains:": "已过滤域：",
-  "Filtered for domain:": "按域过滤："
+  "Filtered for domain:": "按域过滤：",
+  "Chat with us": "与我们聊天",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

@@ -8845,5 +8845,11 @@
   "Search for logs by a specific error response code (e.g.": "חפש יומנים לפי קוד תגובת שגיאה ספציפי (למשל.",
   "Filtered for domains:": "מסונן עבור דומיינים:",
   "Filtered for domain:": "מסונן עבור דומיין:",
-  "Request Removal": "בקש הסרה"
+  "Request Removal": "בקש הסרה",
+  "Chat with us": "צ'אט איתנו",
+  "card, wallet, or bank": "card, wallet, or bank",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
+  "Auto-renew enabled": "Auto-renew enabled",
+  "Update Payment Method": "Update Payment Method",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

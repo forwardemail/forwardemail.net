@@ -10653,5 +10653,7 @@
   "Search for logs by a specific bounce category (e.g.": "Hae lokeja tietyn poistumisluokan mukaan (esim.",
   "Search for logs by a specific error response code (e.g.": "Etsi lokeja tietyllä virhevastauskoodilla (esim.",
   "Filtered for domains:": "Suodatettu verkkotunnuksille:",
-  "Filtered for domain:": "Suodatettu verkkotunnukselle:"
+  "Filtered for domain:": "Suodatettu verkkotunnukselle:",
+  "Chat with us": "Keskustele kanssamme",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

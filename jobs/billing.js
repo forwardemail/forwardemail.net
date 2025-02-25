@@ -157,7 +157,7 @@ async function mapper(user) {
           ...(user[config.userFields.receiptEmail]
             ? { cc: user[config.userFields.fullEmail] }
             : {}),
-          bcc: config.email.message.from,
+          // bcc: config.email.message.from,
           subject: i18n.api.t({
             phrase: config.i18n.phrases.EMAIL_FORWARDING_PAUSED,
             locale: user[config.lastLocaleField]

@@ -10806,5 +10806,7 @@
   "Search for logs by a specific bounce category (e.g.": "Zoek naar logs op basis van een specifieke bouncecategorie (bijv.",
   "Search for logs by a specific error response code (e.g.": "Zoek naar logs op basis van een specifieke foutresponscode (bijv.",
   "Filtered for domains:": "Gefilterd op domeinen:",
-  "Filtered for domain:": "Gefilterd op domein:"
+  "Filtered for domain:": "Gefilterd op domein:",
+  "Chat with us": "Chat met ons",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }

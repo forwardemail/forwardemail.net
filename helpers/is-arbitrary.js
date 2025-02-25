@@ -96,17 +96,34 @@ function isArbitrary(session, headers) {
   // )
   //   throw new SMTPError('Due to spam from Adobe this message is blocked');
 
+  // authorize.net invoice scam
+  // x-forward-email-sender: rfc822; invoice@authorize.net, tzportal8.visa.com, 198.241.206.78
+  if (
+    session.originalFromAddress === 'invoice@authorize.net' &&
+    session.resolvedRootClientHostname === 'visa.com'
+  ) {
+    const err = new SMTPError(
+      'Authorize.net and VISA have a phishing scam invoice vulnerability and this message was rejected'
+    );
+    err.isCodeBug = true; // alert admins for inspection
+    throw err;
+  }
+
   //
   // check for paypal scam (very strict until PayPal resolves phishing on their side)
   // (seems to only come from "outlook.com" and "paypal.com" hosts)
   //
   // X-Email-Type-Id = RT000238
   //                   PPC001017
+  //                   RT000542 = gift message hack
+  //                              <https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/>
   //
   if (
     session.originalFromAddressRootDomain === 'paypal.com' &&
     headers.hasHeader('x-email-type-id') &&
-    ['PPC001017', 'RT000238'].includes(headers.getFirst('x-email-type-id'))
+    ['PPC001017', 'RT000238', 'RT000542'].includes(
+      headers.getFirst('x-email-type-id')
+    )
   ) {
     const err = new SMTPError(
       'Due to ongoing PayPal invoice spam, you must manually send an invoice link'

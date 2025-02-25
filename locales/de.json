@@ -9845,5 +9845,7 @@
   "Search for logs by a specific bounce category (e.g.": "Suchen Sie nach Protokollen anhand einer bestimmten Bounce-Kategorie (z. B.",
   "Search for logs by a specific error response code (e.g.": "Suchen Sie nach Protokollen anhand eines bestimmten Fehlerantwortcodes (z. B.",
   "Filtered for domains:": "Gefiltert nach Domänen:",
-  "Filtered for domain:": "Gefiltert nach Domäne:"
+  "Filtered for domain:": "Gefiltert nach Domäne:",
+  "Chat with us": "Chatten Sie mit uns",
+  "Disable Auto-Renew": "Disable Auto-Renew"
 }
