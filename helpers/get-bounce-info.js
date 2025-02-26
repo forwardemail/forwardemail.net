@@ -71,6 +71,11 @@ function getBounceInfo(err) {
     bounceInfo.action = 'defer';
   }
 
+  if (response.includes('PTR record') && response.includes(IP_ADDRESS)) {
+    bounceInfo.action = 'defer';
+    bounceInfo.category = 'network';
+  }
+
   if (
     // WHM/cPanel generic country error
     response.includes('Your country is not allowed to connect to this server')
