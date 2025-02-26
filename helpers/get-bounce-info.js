@@ -71,7 +71,10 @@ function getBounceInfo(err) {
     bounceInfo.action = 'defer';
   }
 
-  if (response.includes('PTR record') && response.includes(IP_ADDRESS)) {
+  if (
+    response.includes('PTR record') &&
+    (response.includes('missing PTR records') || response.includes(IP_ADDRESS))
+  ) {
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
   }
