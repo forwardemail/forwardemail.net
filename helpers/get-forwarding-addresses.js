@@ -292,6 +292,7 @@ async function getForwardingAddresses(
       { responseCode: 421 }
     );
 
+  /*
   //
   // we also need to maintain a counter for the # of unique domains per email on free plan being used
   // (e.g. in an attempt to mitigate spam/fraud and shadowban/silent ban users)
@@ -342,6 +343,7 @@ async function getForwardingAddresses(
         .catch((err) => logger.fatal(err));
     }
   }
+  */
 
   //
   // if the domain on free plan and was expired or newly created in the background

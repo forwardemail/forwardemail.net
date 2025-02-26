@@ -34,6 +34,7 @@ const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const revHash = require('rev-hash');
+const safeStringify = require('fast-safe-stringify');
 const status = require('statuses');
 const { Headers } = require('mailsplit');
 const { Iconv } = require('iconv');
@@ -1200,6 +1201,51 @@ async function forward(recipient, headers, session, body) {
   try {
     let info;
     try {
+      // check for abuse (e.g. massive amount of domains forwarding to single email addresses)
+      const key = `abuse_check:${revHash(recipient.to[0].toLowerCase())}`;
+      const cache = await this.client.get(key);
+      let json;
+      if (cache) {
+        try {
+          json = JSON.parse(cache);
+          if (
+            typeof json !== 'object' ||
+            typeof json.domains !== 'object' ||
+            !Array.isArray(json.domains) ||
+            typeof json.sent !== 'boolean'
+          )
+            throw new TypeError('JSON invalid');
+        } catch (err) {
+          logger.fatal(err);
+          json = null;
+        }
+      }
+
+      if (!json) json = { domains: [], sent: false };
+      const rootDomain = parseRootDomain(
+        parseHostFromDomainOrAddress(recipient.recipient)
+      );
+      if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
+      json.email = recipient.to[0].toLowerCase();
+      // rudimentary email alert to admins if we detect the count was >= 20
+      if (!json.sent && json.domains.length >= 20) {
+        json.sent = true;
+
+        // log fatal error email alert to admins
+        const err = new TypeError(
+          `${recipient.to[0].toLowerCase()} forwarded to from ${
+            json.domains.length
+          } domains`
+        );
+        err.isCodeBug = true;
+        err.domains = json.domains;
+        err.recipient = recipient;
+        err.session = session;
+        logger.fatal(err);
+      }
+
+      await this.client.set(key, safeStringify(json), 'PX', ms('30d'));
+
       info = await sendEmail({
         session,
         cache: this.cache,
@@ -1226,6 +1272,33 @@ async function forward(recipient, headers, session, body) {
       //       because we'd have to support `rejectedErrors` with this
       //
       err.bounceInfo = getBounceInfo(err);
+
+      //
+      // if user mailbox is full or if they are receiving mail too quickly
+      // then we should back off from retrying an denylist the recipient for 1 hour
+      //
+      if (
+        isEmail(recipient.to[0]) &&
+        ((err.bounceInfo.action === 'reject' &&
+          err.bounceInfo.category === 'capacity' &&
+          err.bounceInfo.message &&
+          err.bounceInfo.message.toLowerCase() === 'mailbox is full') ||
+          (err.bounceInfo.action === 'defer' &&
+            err.bounceInfo.category === 'recipient' &&
+            err.bounceInfo.message &&
+            err.bounceInfo.message.toLowerCase() === 'recipient overloaded'))
+      ) {
+        this.client
+          .set(
+            `denylist:${recipient.to[0].toLowerCase()}`,
+            true,
+            'PX',
+            ms('1h')
+          )
+          .then()
+          .catch((err) => logger.fatal(err));
+        throw err;
+      }
 
       if (
         !session.rewriteFriendlyFrom &&
