@@ -1278,6 +1278,7 @@ async function forward(recipient, headers, session, body) {
       // then we should back off from retrying an denylist the recipient for 1 hour
       //
       if (
+        err.truthSource &&
         isEmail(recipient.to[0]) &&
         ((err.bounceInfo.action === 'reject' &&
           err.bounceInfo.category === 'capacity' &&
