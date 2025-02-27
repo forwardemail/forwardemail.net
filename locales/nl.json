@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Gefilterd op domeinen:",
   "Filtered for domain:": "Gefilterd op domein:",
   "Chat with us": "Chat met ons",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Automatisch verlengen uitschakelen",
+  "You can validate your Web Key Directory setup at": "U kunt uw Web Key Directory-instelling valideren op",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(open source) of",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(eigendom)."
 }

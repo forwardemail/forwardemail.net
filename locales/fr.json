@@ -8353,9 +8353,14 @@
   "Filtered for domain:": "Filtré pour le domaine :",
   "Request Removal": "Demande de suppression",
   "Chat with us": "Discutez avec nous",
-  "card, wallet, or bank": "card, wallet, or bank",
-  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
-  "Auto-renew enabled": "Auto-renew enabled",
-  "Update Payment Method": "Update Payment Method",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "card, wallet, or bank": "carte, portefeuille ou banque",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "Vous avez un abonnement <span class=\"notranslate\">%s</span> actif.",
+  "Auto-renew enabled": "Renouvellement automatique activé",
+  "Update Payment Method": "Mettre à jour le mode de paiement",
+  "Disable Auto-Renew": "Désactiver le renouvellement automatique",
+  "You can validate your Web Key Directory setup at": "Vous pouvez valider la configuration de votre répertoire de clés Web à l'adresse",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(open source) ou",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(propriétaire)."
 }

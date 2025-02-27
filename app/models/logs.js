@@ -740,7 +740,10 @@ Logs.pre('validate', function (next) {
     //
     // TODO: logs should live for 30d not 7d
     //
-    this.hash = getQueryHash(this);
+    this.hash =
+      this?.meta?.session?.isAllowlisted && this?.meta?.session?.fingerprint
+        ? this.meta.session.fingerprint
+        : getQueryHash(this);
     next();
   } catch (err) {
     err.is_duplicate_log = true;

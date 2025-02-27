@@ -8847,9 +8847,14 @@
   "Filtered for domain:": "מסונן עבור דומיין:",
   "Request Removal": "בקש הסרה",
   "Chat with us": "צ'אט איתנו",
-  "card, wallet, or bank": "card, wallet, or bank",
-  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
-  "Auto-renew enabled": "Auto-renew enabled",
-  "Update Payment Method": "Update Payment Method",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "card, wallet, or bank": "כרטיס, ארנק או בנק",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "יש לך מנוי <span class=\"notranslate\">%s</span> פעיל.",
+  "Auto-renew enabled": "חידוש אוטומטי מופעל",
+  "Update Payment Method": "עדכן את אמצעי התשלום",
+  "Disable Auto-Renew": "השבת את החידוש האוטומטי",
+  "You can validate your Web Key Directory setup at": "אתה יכול לאמת את ההגדרה של ספריית מפתחות האינטרנט שלך בכתובת",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(קוד פתוח) או",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(קנייני)."
 }

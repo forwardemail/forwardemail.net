@@ -10655,5 +10655,10 @@
   "Filtered for domains:": "Suodatettu verkkotunnuksille:",
   "Filtered for domain:": "Suodatettu verkkotunnukselle:",
   "Chat with us": "Keskustele kanssamme",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Poista automaattinen uusiminen käytöstä",
+  "You can validate your Web Key Directory setup at": "Voit vahvistaa Web Key Directory -asetukset osoitteessa",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(avoin lähdekoodi) tai",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(omistusoikeus)."
 }

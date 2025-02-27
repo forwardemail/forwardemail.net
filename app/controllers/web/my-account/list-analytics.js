@@ -101,10 +101,13 @@ async function listAnalytics(ctx) {
     return ctx.render('my-account/analytics');
   }
 
-  const THIRTY_DAYS_AGO = dayjs().subtract(30, 'day').startOf('day').toDate();
+  // const THIRTY_DAYS_AGO = dayjs().subtract(30, 'day').startOf('day').toDate();
+  const SEVEN_DAYS_AGO = dayjs().subtract(7, 'day').startOf('day').toDate();
 
   const dates = [dayjs().format('YYYY-MM-DD')];
-  for (let i = 0; i < 30; i++) {
+  // TODO: support 30d of logs
+  // for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 7; i++) {
     dates.unshift(
       dayjs().subtract(1, 'day').subtract(i, 'days').format('YYYY-MM-DD')
     );
@@ -266,7 +269,7 @@ async function listAnalytics(ctx) {
             $or: query.$or.map((obj) => ({
               // TODO: add an index for created_at + bounce_category + domain (?)
               created_at: {
-                $gte: THIRTY_DAYS_AGO
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
               },
               bounce_category: category,
               ...obj
@@ -310,7 +313,7 @@ async function listAnalytics(ctx) {
             $or: query.$or.map((obj) => ({
               // TODO: index here (?)
               created_at: {
-                $gte: THIRTY_DAYS_AGO
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
               },
               'err.responseCode': {
                 $exists: true,
@@ -328,7 +331,7 @@ async function listAnalytics(ctx) {
             $or: query.$or.map((obj) => ({
               // TODO: index here (?)
               created_at: {
-                $gte: THIRTY_DAYS_AGO
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
               },
               'err.responseCode': {
                 $exists: true,
@@ -391,7 +394,7 @@ async function listAnalytics(ctx) {
             $or: query.$or.map((obj) => ({
               // TODO: index here (?)
               created_at: {
-                $gte: THIRTY_DAYS_AGO
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
               },
               'err.responseCode': {
                 $exists: true,
@@ -412,7 +415,7 @@ async function listAnalytics(ctx) {
             $or: query.$or.map((obj) => ({
               // TODO: index here (?)
               created_at: {
-                $gte: THIRTY_DAYS_AGO
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
               },
               'err.responseCode': {
                 $exists: true,

@@ -10501,5 +10501,10 @@
   "Filtered for domains:": "已过滤域：",
   "Filtered for domain:": "按域过滤：",
   "Chat with us": "与我们聊天",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "禁用自动续订",
+  "You can validate your Web Key Directory setup at": "您可以在以下位置验证您的 Web 密钥目录设置",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "（开源）或",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "（所有权）。"
 }

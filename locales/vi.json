@@ -8357,9 +8357,14 @@
   "Filtered for domain:": "Lọc theo tên miền:",
   "Request Removal": "Yêu cầu xóa",
   "Chat with us": "Trò chuyện với chúng tôi",
-  "card, wallet, or bank": "card, wallet, or bank",
-  "You have an active <span class=\"notranslate\">%s</span> subscription.": "You have an active <span class=\"notranslate\">%s</span> subscription.",
-  "Auto-renew enabled": "Auto-renew enabled",
-  "Update Payment Method": "Update Payment Method",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "card, wallet, or bank": "thẻ, ví hoặc ngân hàng",
+  "You have an active <span class=\"notranslate\">%s</span> subscription.": "Bạn có đăng ký <span class=\"notranslate\">%s</span> đang hoạt động.",
+  "Auto-renew enabled": "Tự động gia hạn được kích hoạt",
+  "Update Payment Method": "Cập nhật phương thức thanh toán",
+  "Disable Auto-Renew": "Tắt tính năng tự động gia hạn",
+  "You can validate your Web Key Directory setup at": "Bạn có thể xác thực thiết lập Web Key Directory của mình tại",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(mã nguồn mở) hoặc",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(độc quyền)."
 }

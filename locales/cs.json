@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Filtrováno pro domény:",
   "Filtered for domain:": "Filtrováno pro doménu:",
   "Chat with us": "Chatujte s námi",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Zakázat automatické obnovení",
+  "You can validate your Web Key Directory setup at": "Nastavení Web Key Directory můžete ověřit na",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(open-source) popř",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(proprietární)."
 }

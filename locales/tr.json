@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Alan adlarına göre filtrelendi:",
   "Filtered for domain:": "Alan adına göre filtrelendi:",
   "Chat with us": "Bizimle sohbet edin",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Otomatik Yenilemeyi Devre Dışı Bırak",
+  "You can validate your Web Key Directory setup at": "Web Anahtar Dizini kurulumunuzu şu adreste doğrulayabilirsiniz:",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(açık kaynak) veya",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(tescilli)."
 }

@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Filtrowano według domen:",
   "Filtered for domain:": "Filtrowano według domeny:",
   "Chat with us": "Porozmawiaj z nami",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Wyłącz automatyczne odnawianie",
+  "You can validate your Web Key Directory setup at": "Możesz sprawdzić poprawność konfiguracji katalogu kluczy internetowych pod adresem",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(oprogramowanie typu open source) lub",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(prawnie zastrzeżony)."
 }

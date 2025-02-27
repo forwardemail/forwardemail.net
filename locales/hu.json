@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Domainekre szűrve:",
   "Filtered for domain:": "Domainre szűrve:",
   "Chat with us": "Csevegés velünk",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Az automatikus megújítás letiltása",
+  "You can validate your Web Key Directory setup at": "A Web Key Directory beállítását a következő címen érvényesítheti",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(nyílt forráskódú) ill",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(szabadalmazott)."
 }

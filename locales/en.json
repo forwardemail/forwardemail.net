@@ -6999,5 +6999,10 @@
   "Filtered for domain:": "Filtered for domain:",
   "Chat with us": "Chat with us",
   "No messages were selected": "No messages were selected",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Disable Auto-Renew",
+  "You can validate your Web Key Directory setup at": "You can validate your Web Key Directory setup at",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(open-source) or",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(proprietary)."
 }

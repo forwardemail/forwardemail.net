@@ -10813,5 +10813,10 @@
   "Filtered for domains:": "Filtrert for domener:",
   "Filtered for domain:": "Filtrert for domene:",
   "Chat with us": "Chat med oss",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Deaktiver automatisk fornyelse",
+  "You can validate your Web Key Directory setup at": "Du kan validere Web Key Directory-oppsettet på",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(åpen kildekode) eller",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(proprietær)."
 }

@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "تم تصفيته للمجالات:",
   "Filtered for domain:": "تم التصفية حسب النطاق:",
   "Chat with us": "الدردشة معنا",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "تعطيل التجديد التلقائي",
+  "You can validate your Web Key Directory setup at": "يمكنك التحقق من صحة إعداد دليل مفتاح الويب الخاص بك على",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(مفتوح المصدر) أو",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(ملكية)."
 }

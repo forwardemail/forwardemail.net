@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "กรองตามโดเมน:",
   "Filtered for domain:": "กรองตามโดเมน:",
   "Chat with us": "พูดคุยกับเรา",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "ปิดใช้งานการต่ออายุอัตโนมัติ",
+  "You can validate your Web Key Directory setup at": "คุณสามารถตรวจสอบการตั้งค่าไดเร็กทอรีคีย์เว็บของคุณได้ที่",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(โอเพ่นซอร์ส) หรือ",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(เป็นกรรมสิทธิ์)"
 }

@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "도메인에 대해 필터링됨:",
   "Filtered for domain:": "도메인에 대해 필터링됨:",
   "Chat with us": "우리와 채팅하세요",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "자동 갱신 비활성화",
+  "You can validate your Web Key Directory setup at": "웹 키 디렉토리 설정을 다음에서 확인할 수 있습니다.",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(오픈소스) 또는",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(소유권)."
 }

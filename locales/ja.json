@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "ドメインでフィルタリング:",
   "Filtered for domain:": "ドメインでフィルタリング:",
   "Chat with us": "チャットでお問い合わせください",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "自動更新を無効にする",
+  "You can validate your Web Key Directory setup at": "Webキーディレクトリの設定は、次の場所で確認できます。",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "（オープンソース）または",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "（独自仕様）。"
 }

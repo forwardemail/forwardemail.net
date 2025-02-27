@@ -10808,5 +10808,10 @@
   "Filtered for domains:": "Filtrerat för domäner:",
   "Filtered for domain:": "Filtrerat för domän:",
   "Chat with us": "Chatta med oss",
-  "Disable Auto-Renew": "Disable Auto-Renew"
+  "Disable Auto-Renew": "Inaktivera automatisk förnyelse",
+  "You can validate your Web Key Directory setup at": "Du kan validera din webbnyckelkatalog på",
+  "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
+  "(open-source) or": "(öppen källkod) eller",
+  "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
+  "(proprietary).": "(egendom)."
 }
