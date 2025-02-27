@@ -126,13 +126,12 @@ router
   )
   .get(
     '/emails',
-    rateLimit(100, 'list emails'),
     paginate.middleware(10, 50),
     web.myAccount.retrieveDomains,
     web.myAccount.listEmails,
     api.v1.emails.list
   )
-  .get('/emails/limit', rateLimit(100, 'get email limit'), api.v1.emails.limit)
+  .get('/emails/limit', api.v1.emails.limit)
   .get('/emails/:id', web.myAccount.retrieveEmail, api.v1.emails.retrieve)
   .post(
     '/emails',
@@ -143,7 +142,6 @@ router
   )
   .delete(
     '/emails/:id',
-    rateLimit(100, 'remove emails'),
     web.myAccount.retrieveEmail,
     web.myAccount.removeEmail,
     api.v1.emails.retrieve
@@ -348,7 +346,7 @@ router
     '/domains/:domain_id/aliases/:alias_id/generate-password',
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
-    rateLimit(50, 'generate alias password'),
+    rateLimit(300, 'generate alias password'),
     web.myAccount.generateAliasPassword
   );
 
