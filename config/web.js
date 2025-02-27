@@ -329,6 +329,16 @@ module.exports = (redis) => ({
 
       return next();
     });
+    //
+    // OpenPGP WKD lookup requires this header
+    // > The Access-Control-Allow-Origin: * header is needed to allow OpenPGP clients to fetch the policy from a different domain, bypassing CORS restrictions.
+    // https://www.webkeydirectory.com/?email=support@forwardemail.net
+    //
+    app.use(async (ctx, next) => {
+      if (ctx.path.startsWith('/.well-known/openpgpkey'))
+        ctx.set('Access-Control-Allow-Origin', '*');
+      return next();
+    });
     // dynamic security.txt with 1 yr expiry
     // `gpg --clearsign --sign --default-key support@forwardemail.net assets/.well-known/security.txt`
     // <https://github.com/js-kyle/koa-security.txt>
