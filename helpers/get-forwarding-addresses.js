@@ -744,7 +744,7 @@ async function getForwardingAddresses(
         forwardingAddresses.push(element);
       }
     } catch (err) {
-      logger.error(err, { session });
+      if (!err.notConfigured) logger.error(err, { session });
     }
   }
 
