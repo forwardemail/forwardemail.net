@@ -552,6 +552,12 @@ Logs.pre('validate', function (next) {
 });
 
 //
+// NOTE: if an email gets retried then a duplicate log won't show if it fails again
+//       this is because we use an email's `fingerprint` as the hash and we don't permit duplicate hash values
+//       (instead we could perhaps make a hash out of the `bounce_category` AND the `fingerprint` for more uniqueness in the future)
+//
+
+//
 // we don't want to pollute our db (in addition to API endpoint rate limiting we check for duplicates)
 //
 // eslint-disable-next-line complexity
@@ -714,7 +720,6 @@ function getQueryHash(log) {
     // TODO: log.err.envelope.from log.err.envelope.to
     // TODO: log.err.webhook
     // TODO: log.err.bounces[x]
-    // TODO: log.meta.session.fingerprint <-- use this instead of hash
 
     if (isSANB(log?.err?.address)) set.add(log.err.address);
 

@@ -505,6 +505,12 @@ Domains.index({
   verification_record: 1
 });
 
+Domains.index({
+  name: 1,
+  verification_record: 1,
+  plan: 1
+});
+
 // Shared tangerine resolver
 Domains.virtual('resolver')
   .get(function () {
