@@ -651,12 +651,11 @@ function getQueryHash(log) {
   //
   // log.meta.level (log level)
   //
+  const now = log.created_at || new Date();
   const $gte =
-    log.created_at &&
-    log?.meta?.level &&
-    ['error', 'fatal'].includes(log.meta.level)
-      ? dayjs(new Date(log.created_at)).startOf('hour').toDate()
-      : dayjs(new Date(log.created_at)).startOf('day').toDate();
+    log?.meta?.level && ['error', 'fatal'].includes(log.meta.level)
+      ? dayjs(new Date(now)).startOf('hour').toDate()
+      : dayjs(new Date(now)).startOf('day').toDate();
 
   if (log?.meta?.level) set.add(log.meta.level);
 
