@@ -118,20 +118,15 @@ graceful.listen();
         log.skip_duplicate_check = true;
         await log.save();
       } catch (err) {
-        if (err.is_denylist_without_domains) {
-          try {
-            await Logs.deleteOne(
-              { _id: log._id },
-              {
-                writeConcern: { w: 0, j: false }
-              }
-            );
-          } catch (err) {
-            logger.error(err);
-          }
-        } else {
-          logger.error(err);
-        }
+        if (err.is_denylist_without_domains)
+          Logs.deleteOne(
+            { _id: log._id },
+            {
+              writeConcern: { w: 0, j: false }
+            }
+          )
+            .then()
+            .catch((err) => logger.error(err));
       }
     }
   } catch (err) {

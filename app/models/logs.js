@@ -287,6 +287,14 @@ const PARTIAL_INDICES = [
   // meta.session.headers
 ];
 
+// indices for jobs/parse-logs.js
+Logs.index({
+  is_restricted: 1,
+  domains: 1,
+  domains_checked_at: 1
+});
+
+// indices for my account > logs
 Logs.index({ bounce_category: 1, domains: 1 }); // admin
 Logs.index({ bounce_category: 1, domains: 1, user: 1 }); // non-admin
 Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
