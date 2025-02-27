@@ -158,7 +158,8 @@ const Logs = new mongoose.Schema({
   hash: {
     type: String,
     index: true,
-    required: true
+    required: true,
+    unique: true
   },
   user: {
     type: mongoose.Schema.ObjectId,

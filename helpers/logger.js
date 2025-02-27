@@ -240,6 +240,8 @@ async function hook(err, message, meta) {
             process.env.NODE_ENV === 'test'
           )
             return;
+          // unique hash (already exists)
+          if (err.code === 11000) return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //
