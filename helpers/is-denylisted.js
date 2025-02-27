@@ -16,14 +16,14 @@ const isAllowlisted = require('#helpers/is-allowlisted');
 const parseRootDomain = require('#helpers/parse-root-domain');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 
-function createDenylistError(val) {
+function createDenylistError(val, code = 421) {
   let str = 'value';
   if (isEmail(val)) str = 'address';
   else if (isIP(val)) str = 'IP';
   else if (isFQDN(val)) str = 'domain';
   return new DenylistError(
     `The ${str} ${val} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${val} ;`,
-    421,
+    code,
     val
   );
 }
@@ -37,23 +37,23 @@ async function isDenylisted(value, client, resolver) {
 
   for (const v of value) {
     // if the value was in hard-coded denylist then exit early
-    if (config.denylist.has(v)) throw createDenylistError(v);
+    if (config.denylist.has(v)) throw createDenylistError(v, 550);
 
     // if it was an email address then check domain and root domain (if differs) against hard-coded denylist
     if (isEmail(v)) {
       const domain = parseHostFromDomainOrAddress(v);
-      if (config.denylist.has(domain)) throw createDenylistError(domain);
+      if (config.denylist.has(domain)) throw createDenylistError(domain, 550);
       const root = parseRootDomain(domain);
       if (domain !== root && config.denylist.has(root))
-        throw createDenylistError(root);
+        throw createDenylistError(root, 550);
     }
 
     // if it was a domain name then check root domain against hard-coded denylist if differs
     if (isFQDN(v)) {
-      if (config.denylist.has(v)) throw createDenylistError(v);
+      if (config.denylist.has(v)) throw createDenylistError(v, 550);
       const root = parseRootDomain(v);
       if (v !== root && config.denylist.has(root))
-        throw createDenylistError(root);
+        throw createDenylistError(root, 550);
       //
       // TODO: we need to ensure we're not adding this in `jobs/update-umbrella.js`
       //
@@ -79,7 +79,7 @@ async function isDenylisted(value, client, resolver) {
       );
 
       if (root !== v) {
-        if (config.denylist.has(root)) throw createDenylistError(root);
+        if (config.denylist.has(root)) throw createDenylistError(root, 550);
 
         const isRootDomainAllowlisted = client
           ? // eslint-disable-next-line no-await-in-loop

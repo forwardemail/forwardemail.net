@@ -244,6 +244,8 @@ async function hook(err, message, meta) {
           // unique hash (already exists)
           if (err.code === 11000 || err.message === 'Hash is not unique.')
             return;
+          // duplicate denylist log
+          if (err.is_denylist_without_domains) return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //

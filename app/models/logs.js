@@ -52,6 +52,7 @@ const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseRootDomain = require('#helpers/parse-root-domain');
+const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 
 // headers that we store values for
 const KEYWORD_HEADERS = new Set([
@@ -666,6 +667,23 @@ function getQueryHash(log) {
     //
     // if (log?.message) $and.push({ $text: { $search: log.message } });
 
+    //
+    // NOTE: we need to use envelope to make it unique across domains
+    //       (otherwise two domains won't see individual logs for denylisting)
+    //
+    if (
+      log?.meta?.session?.envelope?.rcptTo &&
+      Array.isArray(log.meta.session.envelope.rcptTo) &&
+      log.meta.session.envelope.rcptTo.length > 0
+    ) {
+      for (const rcptTo of log.meta.session.envelope.rcptTo) {
+        if (isEmail(rcptTo?.address))
+          set.add(
+            parseRootDomain(parseHostFromDomainOrAddress(rcptTo.address))
+          );
+      }
+    }
+
     let hasErrorWithUniqueMessage = false;
     for (const errorName of [
       'BSONObjectTooLarge',
@@ -925,7 +943,7 @@ Logs.pre('save', async function (next) {
   // if the log was newly created then we don't want to parse the DNS yet
   // (it runs in background job via bree, otherwise DNS requests would flood API)
   //
-  if (this.isNew) return next();
+  // if (this.isNew) return next();
 
   try {
     await parseLog(this);
