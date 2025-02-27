@@ -332,8 +332,8 @@ for (const index of PARTIAL_INDICES) {
 // (this helps with server-side log saving, and for client-side we parseErr in advance)
 //
 Logs.pre('validate', function (next) {
-  if (_.isError(this.err)) this.err = parseErr(this.err);
-  if (_.isError(this.meta.err)) this.meta.err = parseErr(this.meta.err);
+  if (_.isError(this?.err)) this.err = parseErr(this.err);
+  if (_.isError(this?.meta?.err)) this.meta.err = parseErr(this.meta.err);
   next();
 });
 
@@ -555,12 +555,17 @@ Logs.pre('validate', function (next) {
 //
 // eslint-disable-next-line complexity
 function getQueryHash(log) {
+  if (log.hash) return log.hash;
+
   //
   // if log.meta.ignore_hook is explicity false
   // then that means we want to definitely log the error
   // (in future we could use a different field to denote unique hash)
   //
   if (log?.meta?.ignore_hook === false) return revHash(safeStringify(log));
+
+  if (log?.meta?.session?.isAllowlisted && log?.meta?.session?.fingerprint)
+    return log.meta.session.fingerprint;
 
   const set = new Set();
   //
@@ -647,7 +652,9 @@ function getQueryHash(log) {
   // log.meta.level (log level)
   //
   const $gte =
-    log?.meta?.level && ['error', 'fatal'].includes(log.meta.level)
+    log.created_at &&
+    log?.meta?.level &&
+    ['error', 'fatal'].includes(log.meta.level)
       ? dayjs(new Date(log.created_at)).startOf('hour').toDate()
       : dayjs(new Date(log.created_at)).startOf('day').toDate();
 
@@ -699,7 +706,7 @@ function getQueryHash(log) {
 
     // if it was not an HTTP request then include date query
     // (we don't want the server itself to pollute the db on its own)
-    set.add($gte);
+    if ($gte) set.add($gte);
   }
 
   // if it was a code bug
@@ -756,6 +763,8 @@ function getQueryHash(log) {
   return revHash(safeStringify([...set]));
 }
 
+Logs.statics.getQueryHash = getQueryHash;
+
 Logs.pre('validate', function (next) {
   try {
     // get query hash
@@ -767,10 +776,7 @@ Logs.pre('validate', function (next) {
     //
     // TODO: logs should live for 30d not 7d
     //
-    this.hash =
-      this?.meta?.session?.isAllowlisted && this?.meta?.session?.fingerprint
-        ? this.meta.session.fingerprint
-        : getQueryHash(this);
+    this.hash = getQueryHash(this);
     next();
   } catch (err) {
     err.is_duplicate_log = true;

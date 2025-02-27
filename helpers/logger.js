@@ -228,6 +228,8 @@ async function hook(err, message, meta) {
       // this should never happen but it's a conditional safeguard
       if (_.isError(log.err)) log.err = JSON.parse(safeStringify(log.err));
 
+      log.hash = conn.models.Logs.getQueryHash(log);
+
       return conn.models.Logs.create(log)
         .then()
         .catch((err) => {
@@ -241,7 +243,8 @@ async function hook(err, message, meta) {
           )
             return;
           // unique hash (already exists)
-          if (err.code === 11000) return;
+          if (err.code === 11000 || err.message === 'Hash is not unique.')
+            return;
           //
           // NOTE: this allows us to log mongodb timeout issues (e.g. due to slow queries)
           //
