@@ -16,6 +16,7 @@ const mxConnect = require('mx-connect');
 const nodemailer = require('nodemailer');
 const pify = require('pify');
 
+const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
 const isTLSError = require('./is-tls-error');
@@ -180,7 +181,8 @@ async function getTransporter(options = {}, err) {
       const [host] = await resolver.resolve(mx.host);
       if (isIP(host)) mx.host = host;
     } catch (err) {
-      logger.error(err);
+      // NOTE: these are mostly ETIMEDOUT
+      if (!isRetryableError(err)) logger.error(err);
     }
   }
 
