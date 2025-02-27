@@ -108,11 +108,12 @@ async function ensurePaidToDate(ctx, next) {
           ...(ctx.state.user[config.userFields.receiptEmail]
             ? {
                 cc: [
-                  ctx.state.user[config.userFields.fullEmail],
-                  config.email.message.from
+                  ctx.state.user[config.userFields.fullEmail]
+                  // config.email.message.from
                 ]
               }
-            : { cc: config.email.message.from }),
+            : {}),
+          // : { cc: config.email.message.from }),
           subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
         },
         locals: { message, user: ctx.state.user.toObject() }
