@@ -34,6 +34,8 @@ function getErrorCode(err) {
 
   if (err.bounceInfo.category === 'virus') return 554;
   if (err.bounceInfo.category === 'spam') return 550;
+  // hard-coded denylist errors have 550 while others have 421
+  if (err.name === 'DenylistError') return err.responseCode;
   if (
     (typeof err.responseCode !== 'number' || err.responseCode > 500) &&
     (['defer', 'slowdown'].includes(err.bounceInfo.action) ||
