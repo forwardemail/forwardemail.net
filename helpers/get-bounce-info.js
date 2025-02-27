@@ -121,10 +121,12 @@ function getBounceInfo(err) {
   } else if (err.truthSource && response.includes('Too many emails')) {
     bounceInfo.category = 'greylist';
   } else if (
-    err.truthSource === 'qq.com' &&
-    response.includes('Suspected bounce attacks')
+    response.includes(`[${IP_ADDRESS}]`) &&
+    response.includes('blocked')
   ) {
-    bounceInfo.category = 'spam';
+    bounceInfo.category = 'blocklist';
+  } else if (response.includes('bounce attacks')) {
+    bounceInfo.category = response.includes(IP_ADDRESS) ? 'blocklist' : 'spam';
   } else if (
     err.truthSource === 'qq.com' &&
     response.includes('Mail is rejected by recipients')
