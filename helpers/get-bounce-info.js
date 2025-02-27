@@ -46,6 +46,7 @@ function getBounceInfo(err) {
   // set bounce info on the error object (useful for debugging)
   const response =
     typeof err.response === 'string' ? err.response : err.message;
+  const lc = response.toLowerCase();
   const bounceInfo = zoneMTABounces.check(response);
   if (typeof bounceInfo.category !== 'string') bounceInfo.category = 'other';
   if (bounceInfo.category === 'blacklist') bounceInfo.category = 'blocklist';
@@ -64,9 +65,12 @@ function getBounceInfo(err) {
   ) {
     if (REGEX_VIRUS.test(response)) bounceInfo.category = 'virus';
     else if (
+      // TODO: clean this up later or remove altogether
       REGEX_SPAM.test(response) ||
-      response.toLowerCase() === 'spam' ||
-      response.toLowerCase() === 'spam.'
+      lc === 'spam' ||
+      lc === 'spam.' ||
+      lc.endsWith(' spam') ||
+      lc.endsWith(' spam.')
     )
       bounceInfo.category = 'spam';
   }
@@ -203,10 +207,7 @@ function getBounceInfo(err) {
     } else {
       bounceInfo.category = 'spam';
     }
-  } else if (
-    response.toLowerCase().includes('access denied') &&
-    response.includes(IP_ADDRESS)
-  ) {
+  } else if (lc.includes('access denied') && response.includes(IP_ADDRESS)) {
     bounceInfo.category = 'blocklist';
   } else if (
     //
