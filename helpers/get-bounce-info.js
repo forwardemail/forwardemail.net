@@ -12,7 +12,7 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const IP_ADDRESS = ip.address();
 
 const REGEX_SPOOFING = new RE2(/spoof|impersonation|impersonate/im);
-const REGEX_SPAM = new RE2(/spam/im);
+const REGEX_SPAM = new RE2(/ spam /im);
 const REGEX_VIRUS = new RE2(/virus|phishing|malware|trojan/im);
 const REGEX_DENYLIST = new RE2(/denylist|deny\s+list/im);
 const REGEX_BLACKLIST = new RE2(/blacklist|black\s+list/im);
@@ -57,13 +57,18 @@ function getBounceInfo(err) {
   //
   if (
     bounceInfo.message === 'Unknown' ||
-    // bounceInfo.action === 'reject' && // <-- we should include defer so this is commented out
-    ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
-      bounceInfo.category
-    )
+    (bounceInfo.action === 'reject' &&
+      ['blocklist', 'envelope', 'policy', 'message', 'block', 'other'].includes(
+        bounceInfo.category
+      ))
   ) {
     if (REGEX_VIRUS.test(response)) bounceInfo.category = 'virus';
-    else if (REGEX_SPAM.test(response)) bounceInfo.category = 'spam';
+    else if (
+      REGEX_SPAM.test(response) ||
+      response.toLowerCase() === 'spam' ||
+      response.toLowerCase() === 'spam.'
+    )
+      bounceInfo.category = 'spam';
   }
 
   if (isRetryableError(err)) {
