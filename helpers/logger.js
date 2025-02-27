@@ -177,7 +177,7 @@ async function hook(err, message, meta) {
       if (!conn.models || !conn.models.Logs || !conn.models.Logs.create)
         throw new Error('Mongoose logs model not yet initialized');
 
-      const log = { err, message, meta };
+      const log = new conn.models.Logs({ err, message, meta });
 
       if (typeof log.meta === 'object') {
         // user
@@ -228,9 +228,8 @@ async function hook(err, message, meta) {
       // this should never happen but it's a conditional safeguard
       if (_.isError(log.err)) log.err = JSON.parse(safeStringify(log.err));
 
-      log.hash = conn.models.Logs.getQueryHash(log);
-
-      return conn.models.Logs.create(log)
+      return log
+        .save() // log.save() ensures pre-validate and pre-save hooks fire
         .then()
         .catch((err) => {
           // return early if it was a duplicate log being created
