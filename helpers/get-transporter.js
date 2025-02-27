@@ -182,7 +182,8 @@ async function getTransporter(options = {}, err) {
       if (isIP(host)) mx.host = host;
     } catch (err) {
       // NOTE: these are mostly ETIMEDOUT
-      if (!isRetryableError(err)) logger.error(err);
+      if (isRetryableError(err)) logger.debug(err);
+      else logger.error(err);
     }
   }
 

@@ -20,6 +20,10 @@ const onConnect = require('#helpers/on-connect');
 const onData = require('#helpers/on-data');
 const onMailFrom = require('#helpers/on-mail-from');
 const onRcptTo = require('#helpers/on-rcpt-to');
+const isRetryableError = require('#helpers/is-retryable-error');
+const isRedisError = require('#helpers/is-redis-error');
+const isMongoError = require('#helpers/is-mongo-error');
+const isLockingError = require('#helpers/is-locking-error');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
@@ -86,7 +90,15 @@ class MX {
     this.server.address = this.server.server.address.bind(this.server.server);
 
     this.server.on('error', (err) => {
-      logger.error(err);
+      err.is_server_error = true;
+      if (
+        !isRetryableError(err) ||
+        isRedisError(err) ||
+        isMongoError(err) ||
+        isLockingError(err)
+      )
+        logger.error(err);
+      else logger.debug(err);
     });
 
     this.listen = this.listen.bind(this);
