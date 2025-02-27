@@ -240,6 +240,7 @@ Logs.plugin(mongooseCommonPlugin, {
 
 // index the domains array
 Logs.index({ domains: 1 });
+Logs.index({ domains: 1, created_at: 1 });
 
 // index the keywords array
 Logs.index({ keywords: 1 });
@@ -286,8 +287,25 @@ const PARTIAL_INDICES = [
   // meta.session.headers
 ];
 
-Logs.index({ bounce_category: 1, domain: 1 });
-Logs.index({ bounce_category: 1, domain: 1, 'meta.app.hostname': 1 });
+Logs.index({ bounce_category: 1, domains: 1 }); // admin
+Logs.index({ bounce_category: 1, domains: 1, user: 1 }); // non-admin
+Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
+Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
+Logs.index({ bounce_category: 1, domains: 1, created_at: 1 }); // admin
+Logs.index({ bounce_category: 1, domains: 1, created_at: 1, user: 1 }); // non-admin
+Logs.index({
+  domains: 1,
+  created_at: 1,
+  'err.responseCode': 1,
+  'meta.app.hostname': 1
+}); // admin
+Logs.index({
+  domains: 1,
+  user: 1,
+  created_at: 1,
+  'err.responseCode': 1,
+  'meta.app.hostname': 1
+}); // non-admin
 
 for (const index of PARTIAL_INDICES) {
   Logs.index(
