@@ -867,6 +867,7 @@ const config = {
   supportRequestMaxLength: env.SUPPORT_REQUEST_MAX_LENGTH,
   abuseEmail: env.EMAIL_ABUSE,
   friendlyFromEmail: env.EMAIL_FRIENDLY_FROM,
+  securityEmail: env.EMAIL_SECURITY,
   email: {
     preview: {
       open: env.PREVIEW_EMAIL,

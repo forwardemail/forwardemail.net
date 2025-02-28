@@ -1017,7 +1017,7 @@ Logs.post('save', async (doc, next) => {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.securityEmail,
         subject: `Code Bug: ${doc?.err?.name} - ${doc?.err?.message} (${doc.id})`
       },
       locals: {
