@@ -48,6 +48,7 @@ const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const isEmail = require('#helpers/is-email');
+const isRetryableError = require('#helpers/is-retryable-error');
 // const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
@@ -742,34 +743,18 @@ function getQueryHash(log) {
   // if had a user
   if (log?.user) set.add(log.user);
 
-  //
-  // if it is not connection closed message
-  // then don't add uniqueness from the SMTP envelope
-  //
-  if (log.message !== 'Connection is closed.') {
-    // make it unique by mail from
-    if (
-      isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
-      isEmail(log.meta.session.envelope.mailFrom.address)
-    )
-      set.add(
-        `/@.*${parseRootDomain(
-          log.meta.session.envelope.mailFrom.address.split('@')[1]
-        )}$/`
-      );
-
-    // make it unique by rcpt to
-    if (
-      Array.isArray(log?.meta?.session?.envelope?.rcptTo) &&
-      log.meta.session.envelope.rcptTo.length > 0
-    ) {
-      for (const rcpt of log.meta.session.envelope.rcptTo) {
-        if (_.isObject(rcpt) && isSANB(rcpt.address) && isEmail(rcpt.address)) {
-          set.add(`/@.*${parseRootDomain(rcpt.address.split('@')[1])}$/`);
-        }
-      }
-    }
-  }
+  /*
+  // make it unique by mail from
+  if (
+    isSANB(log?.meta?.session?.envelope?.mailFrom?.address) &&
+    isEmail(log.meta.session.envelope.mailFrom.address)
+  )
+    set.add(
+      `/@.*${parseRootDomain(
+        log.meta.session.envelope.mailFrom.address.split('@')[1]
+      )}$/`
+    );
+  */
 
   // TODO: filter if it was a code bug or not
   // TODO: if err.responseCode and !err.bounces && !meta.session.resolvedClientHostname && meta.session.remoteAddress
@@ -811,31 +796,6 @@ Logs.pre('validate', function (next) {
   if (typeof this?.err?.bounceInfo?.category === 'string')
     this.bounce_category = this.err.bounceInfo.category;
   next();
-});
-
-Logs.pre('save', async function (next) {
-  // only run this if the document was new
-  // or if it was run from the parse-logs job
-  // (which sets `skip_duplicate_check = true`)
-  if (
-    !this.isNew ||
-    this.skip_duplicate_check ||
-    this?.err?.code === 'SQLITE_CORRUPT'
-  )
-    return next();
-
-  try {
-    const exists = await this.constructor.exists({
-      hash: this.hash
-    });
-
-    if (exists) throw new Error('Ignored duplicate log');
-
-    next();
-  } catch (err) {
-    err.is_duplicate_log = true;
-    next(err);
-  }
 });
 
 //
@@ -987,6 +947,26 @@ Logs.pre('save', async function (next) {
 Logs.pre('save', function (next) {
   this.is_empty_domains =
     !Array.isArray(this.domains) || this.domains.length === 0;
+
+  //
+  // NOTE: `smtp-server` instances of `SMTPServer` accept a `logger`
+  //       and if a socket error occurs, it will have `err.remote` added
+  //
+  //       ❯ rg "err.remote" -uuu
+  //       node_modules/.pnpm/smtp-server@3.13.6/node_modules/smtp-server/lib/smtp-connection.js
+  //       388:        err.remote = this.remoteAddress;
+  //
+  if (
+    typeof this?.err === 'object' &&
+    typeof this?.err?.remote === 'string' &&
+    isIP(this?.err?.remote) &&
+    isRetryableError(this?.err)
+  ) {
+    const err = new Error('Suppressing SMTP server SMTP connection output');
+    err.is_duplicate_log = true;
+    return next(err);
+  }
+
   next();
 });
 
@@ -998,6 +978,7 @@ Logs.pre('save', function (next) {
   this._isNew = this.isNew;
   next();
 });
+
 Logs.post('save', async (doc, next) => {
   if (!doc._isNew) return next();
 
@@ -1028,6 +1009,10 @@ Logs.post('save', async (doc, next) => {
   */
 
   try {
+    //
+    // TODO: put this in queue instead
+    //       otherwise it's too slow and can fail
+    //
     // send an email to admins of the error
     await emailHelper({
       template: 'alert',

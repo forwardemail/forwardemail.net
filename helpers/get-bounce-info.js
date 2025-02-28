@@ -134,7 +134,10 @@ function getBounceInfo(err) {
     response.includes('blocked')
   ) {
     bounceInfo.category = 'blocklist';
-  } else if (response.includes('bounce attacks')) {
+  } else if (
+    response.includes('bounce attack') ||
+    response.includes('misdirected bounce')
+  ) {
     bounceInfo.category = response.includes(IP_ADDRESS) ? 'blocklist' : 'spam';
   } else if (
     err.truthSource === 'qq.com' &&
@@ -328,15 +331,6 @@ function getBounceInfo(err) {
   if (bounceInfo.category === 'blocklist') bounceInfo.action = 'defer';
   else if (['virus', 'spam'].includes(bounceInfo.category))
     bounceInfo.action = 'reject';
-
-  // bounce attack
-  // >  550 Suspected bounce attacks
-  // <https://service.mail.qq.com/detail/122/57>
-  if (
-    response.includes('bounce attack') ||
-    response.includes('misdirected bounce')
-  )
-    bounceInfo.category = 'spam';
 
   // <https://github.com/zone-eu/zone-mta/issues/434>
   if (response.startsWith('DMARC ') || response.includes(' DMARC ')) {
