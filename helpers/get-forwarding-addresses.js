@@ -28,6 +28,7 @@ const getKeyInfo = require('#helpers/get-key-info');
 const getMaxForwardedAddresses = require('#helpers/get-max-forwarded-addresses');
 const isEmail = require('#helpers/is-email');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
+const isRetryableError = require('#helpers/is-retryable-error');
 const logger = require('#helpers/logger');
 const parseAddresses = require('#helpers/parse-addresses');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
@@ -74,7 +75,12 @@ async function getForwardingAddresses(
       // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
       err.responseCode = getErrorCode(err);
 
-      err.notConfigured = true;
+      if (
+        err.code === 'ENOTFOUND' ||
+        err.code === 'ENODATA' ||
+        !isRetryableError(err)
+      )
+        err.notConfigured = true;
 
       throw err;
     }
