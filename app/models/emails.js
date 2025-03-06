@@ -425,7 +425,9 @@ Emails.pre('validate', function (next) {
 
     for (const err of this.rejectedErrors) {
       if (
-        err?.bounceInfo?.category === 'blocklist' &&
+        // in case of netblocks we use "network" category (e.g. issue with groups.io)
+        (err?.bounceInfo?.category === 'blocklist' ||
+          err?.bounceInfo?.category === 'network') &&
         err?.date &&
         _.isDate(err.date) &&
         err?.mx?.localAddress &&
