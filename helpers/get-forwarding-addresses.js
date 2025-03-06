@@ -74,6 +74,8 @@ async function getForwardingAddresses(
       // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
       err.responseCode = getErrorCode(err);
 
+      err.notConfigured = true;
+
       throw err;
     }
 
