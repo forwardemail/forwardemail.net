@@ -62,6 +62,6 @@ Through September 2024 to January 2025, [we added a highly-requested vacation re
 
 <!--On January 21, 2025, our founder's best friend "Jack", whom was his loyal canine companion, peacefully passed away at the age of nearly 11 – may he rest in peace and [always be remembered](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) :paw\_prints:.-->
 
-In February 2025, we switched to [DataPacket](https://www.datapacket.com) as our new primary data center provider – complete with our [own custom, performance-focused, bare-metal hardware](https://x.com/fwdemail/status/1889440529647280580).  We also removed Vultr as a data center provider and migrated all servers except mail exchange servers ("MX") from Digital Ocean.
+In February 2025, we switched to [DataPacket](https://www.datapacket.com) as our new primary data center provider – complete with our [own custom, performance-focused, bare-metal hardware](https://x.com/fwdemail/status/1889440529647280580).
 
 [arc]: https://en.wikipedia.org/wiki/Authenticated_Received_Chain

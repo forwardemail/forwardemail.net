@@ -10813,5 +10813,6 @@
   "https://wkd.chimbosonic.com/": "https://wkd.chimbosonic.com/",
   "(open-source) or": "(açık kaynak) veya",
   "https://www.webkeydirectory.com/": "https://www.webkeydirectory.com/",
-  "(proprietary).": "(tescilli)."
+  "(proprietary).": "(tescilli).",
+  ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr.": ".  Rest assured, we don't rely upon any third-party vendors other than our SOC Type 2 complaint server providers of Cloudflare, DataPacket, Digital Ocean, and Vultr."
 }
