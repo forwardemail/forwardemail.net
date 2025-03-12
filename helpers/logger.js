@@ -429,9 +429,11 @@ logger.post('info', function (err, message, meta) {
     meta.response &&
     meta.response.duration &&
     meta.request &&
-    meta.request.method &&
     meta.request.url &&
-    meta.response.duration >= 5000
+    meta.response.duration >= 5000 &&
+    meta.request.method &&
+    // exclude CalDAV specific methods (due to SQLite locking)
+    !['PROPFIND', 'PROPPATCH', 'MKCALENDAR'].includes(meta.request.method)
   ) {
     const err = new TypeError(
       `${meta.request.method} ${meta.request.url} took longer than 5s`

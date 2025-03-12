@@ -400,6 +400,7 @@ async function onMove(mailboxId, update, session, fn) {
               }
             }
           });
+          // TODO: do we need to push op[2] and op[3] here (?)
           ops.push([sql.query, sql.values]);
         }
 
@@ -411,6 +412,7 @@ async function onMove(mailboxId, update, session, fn) {
               if (!update.silent)
                 payloads.push(
                   formatResponse.call(session, 'EXPUNGE', op[2]),
+                  // TODO: may need to remove this:
                   formatResponse.call(session, 'EXPUNGE', op[3])
                 );
             }

@@ -338,7 +338,12 @@ function createWebSocketAsPromised(options = {}) {
     'onError'
   ]) {
     wsp[event].addListener((...args) => {
-      logger[event === 'onError' ? 'error' : 'debug'](event, { args });
+      //
+      // NOTE: we can't use `args` without stripping `_req` and other props like `_ws`
+      //       to prevent leaking of sensitive data like headers with basic auth ,etc
+      //
+      // logger[event === 'onError' ? 'error' : 'debug'](event, { args });
+      logger.debug(event, { args });
     });
   }
 

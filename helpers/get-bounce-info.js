@@ -80,26 +80,28 @@ function getBounceInfo(err) {
     bounceInfo.action = 'defer';
   }
 
-  if (
+  // proton spam
+  if (response.includes('rejected by rspamd filter')) {
+    bounceInfo.category = 'spam';
+  } else if (
     response.includes('PTR record') &&
     (response.includes('missing PTR records') || response.includes(IP_ADDRESS))
   ) {
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
-  }
-
-  if (
+  } else if (
     // WHM/cPanel generic country error
     response.includes('Your country is not allowed to connect to this server')
   ) {
+    // <https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror>
     bounceInfo.action = 'defer';
     bounceInfo.category = 'network';
-    // <https://learn.microsoft.com/en-us/exchange/troubleshoot/email-delivery/send-receive-emails-socketerror>
-  }
-
-  // Comcast removal requests submitted at:
-  // https://spa.xfinity.com/report
-  if (response.includes('#BL000000') || response.includes('#RL000010')) {
+  } else if (
+    // Comcast removal requests submitted at:
+    // https://spa.xfinity.com/report
+    response.includes('#BL000000') ||
+    response.includes('#RL000010')
+  ) {
     bounceInfo.category = 'blocklist';
   } else if (response.includes('Comcast block for spam')) {
     bounceInfo.category = 'blocklist';
@@ -201,6 +203,7 @@ function getBounceInfo(err) {
   } else if (response.includes('unsolicited mail')) {
     // 421-4.7.28 Gmail has detected an unusual rate of unsolicited mail originating
     // 421-4.7.28 from your SPF domain [fe-bounces.somedomain.com]
+    // https://support.google.com/mail/contact/gmail_bulk_sender_escalation
     if (
       response.includes('IP address') ||
       response.includes('from your SPF domain') ||

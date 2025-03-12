@@ -17,7 +17,7 @@ const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const REGEX_BLOCKED_PHRASES = new RE2(
-  /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked/im
+  /cheecck y0ur acc0untt|recorded you|you've been hacked|account is hacked|personal data has leaked|private information has been stolen/im
 );
 
 // const REGEX_BITCOIN = new RE2(/bitcoin|btc/im);
@@ -105,6 +105,43 @@ function isArbitrary(session, headers) {
     const err = new SMTPError(
       'Authorize.net and VISA have a phishing scam invoice vulnerability and this message was rejected'
     );
+    err.isCodeBug = true; // alert admins for inspection
+    throw err;
+  }
+
+  // Amazon impersonation
+  if (
+    from &&
+    from.toLowerCase().includes('amazon.co.jp') &&
+    (!session.resolvedRootClientHostname ||
+      !session.resolvedRootClientHostname.startsWith('amazon.'))
+  ) {
+    const err = new SMTPError('Prevented spoofing of Amazon.co.jp');
+    err.isCodeBug = true; // alert admins for inspection
+    throw err;
+  }
+
+  // DocuSign impersonation
+  if (
+    from &&
+    from.toLowerCase().includes('DocuSign ') &&
+    (!session.resolvedRootClientHostname ||
+      !session.resolvedRootClientHostname.startsWith('docusign.'))
+  ) {
+    const err = new SMTPError('Prevented spoofing of DocuSign');
+    err.isCodeBug = true; // alert admins for inspection
+    throw err;
+  }
+
+  // pCloud impersonation
+  if (
+    subject &&
+    subject.includes('pCloud') &&
+    session.originalFromAddressRootDomain !== 'pcloud.com' &&
+    from &&
+    from.includes('pCloud')
+  ) {
+    const err = new SMTPError('Prevented spoofing of pCloud.com');
     err.isCodeBug = true; // alert admins for inspection
     throw err;
   }

@@ -159,7 +159,7 @@ async function isAuthenticatedMessage(headers, body, session, resolver) {
       !UBUNTU_DOMAINS.includes(session.resolvedRootClientHostname))
   )
     throw new SMTPError(
-      "The email sent has failed SPF validation and is rejected due to the domain's SPF hard fail policy"
+      "The email sent has failed SPF validation and is rejected due to the domain's SPF hard fail policy (ensure that your messages have a DKIM aligned signature with your From header)"
     );
 }
 

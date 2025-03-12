@@ -46,7 +46,6 @@ async function onRcptTo(address, session, fn) {
 
   // validate email address
   if (typeof address === 'object' && isSANB(address.address)) {
-    // eslint-disable-next-line unicorn/no-lonely-if
     if (!isEmail(address.address))
       return setImmediate(() =>
         fn(
@@ -90,39 +89,41 @@ async function onRcptTo(address, session, fn) {
         )
       );
     */
-  }
 
-  try {
-    //
-    // check if attempted spoofed or invalid SRS (e.g. fake bounces)
-    //
-    if (
-      parseRootDomain(parseHostFromDomainOrAddress(address.address)) ===
-      env.WEB_HOST
-    )
-      checkSRS(address.address, true, true);
+    try {
+      //
+      // check if attempted spoofed or invalid SRS (e.g. fake bounces)
+      //
+      if (
+        parseRootDomain(parseHostFromDomainOrAddress(address.address)) ===
+        env.WEB_HOST
+      )
+        checkSRS(address.address, true, true);
 
-    //
-    // if we're on the MX server then we perform a very rudimentary check
-    // on the RCPT domain name to see that it actually is set up to receive mail
-    // (they do not necessarily need to be ours, but this helps thwart spammers)
-    //
-    if (this?.constructor?.name === 'MX') {
-      const domain = parseHostFromDomainOrAddress(checkSRS(address.address));
-      // we don't want to perform a lookup if it's an IP address
-      if (isFQDN(domain)) {
-        const records = await this.resolver.resolveMx(domain);
-        if (!records || records.length === 0)
-          throw new SMTPError(
-            `${checkSRS(
-              address.address
-            )} does not have any MX records configured on its domain ${domain}`,
-            { ignoreHook: true }
-          );
+      //
+      // if we're on the MX server then we perform a very rudimentary check
+      // on the RCPT domain name to see that it actually is set up to receive mail
+      // (they do not necessarily need to be ours, but this helps thwart spammers)
+      //
+      if (this?.constructor?.name === 'MX') {
+        const domain = parseHostFromDomainOrAddress(checkSRS(address.address));
+        // we don't want to perform a lookup if it's an IP address
+        if (isFQDN(domain)) {
+          const records = await this.resolver.resolveMx(domain);
+          if (!records || records.length === 0)
+            throw new SMTPError(
+              `${checkSRS(
+                address.address
+              )} does not have any MX records configured on its domain ${domain}`,
+              { ignoreHook: true }
+            );
+        }
       }
+    } catch (err) {
+      return setImmediate(() =>
+        fn(refineAndLogError(err, session, false, this))
+      );
     }
-  } catch (err) {
-    return setImmediate(() => fn(refineAndLogError(err, session, false, this)));
   }
 
   setImmediate(fn);

@@ -165,6 +165,9 @@ async function onDataSMTP(session, date, headers, body) {
   if (isEmail(session?.envelope?.mailFrom?.address))
     envelope.from = session.envelope.mailFrom.address;
 
+  // TODO: prevent users from using "return@forwardemail.net" in FROM address
+  // TODO: envelope FROM needs to match From address of sending domain
+
   if (
     Array.isArray(session?.envelope?.rcptTo) &&
     session.envelope.rcptTo.length > 0

@@ -298,10 +298,12 @@ Logs.index({
 });
 
 // indices for my account > logs
+Logs.index({ 'meta.app.ip': 1 });
 Logs.index({ bounce_category: 1, domains: 1 }); // admin
 Logs.index({ bounce_category: 1, domains: 1, user: 1 }); // non-admin
 Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
 Logs.index({ bounce_category: 1, domains: 1, 'meta.app.hostname': 1 });
+Logs.index({ bounce_category: 1, domains: 1, 'meta.app.ip': 1 });
 Logs.index({ bounce_category: 1, domains: 1, created_at: 1 }); // admin
 Logs.index({ bounce_category: 1, domains: 1, created_at: 1, user: 1 }); // non-admin
 Logs.index({
