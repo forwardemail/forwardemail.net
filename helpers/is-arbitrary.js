@@ -124,7 +124,7 @@ function isArbitrary(session, headers) {
   // DocuSign impersonation
   if (
     from &&
-    from.toLowerCase().includes('DocuSign ') &&
+    from.toLowerCase().includes('docusign ') &&
     (!session.resolvedRootClientHostname ||
       !session.resolvedRootClientHostname.startsWith('docusign.'))
   ) {
