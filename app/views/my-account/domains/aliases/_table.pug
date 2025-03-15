@@ -321,7 +321,7 @@ p.text-center.d-lg-none
                             = " "
                             span.dayjs.font-weight-bold(
                               data-time=new Date(alias.imap_backup_at).getTime()
-                            )= dayjs(alias.imap_backup_at).format("M/D/YY h:mm A z")
+                            )= dayjs(alias.imap_backup_at).tz(user.timezone).format("M/D/YY h:mm A z")
                         if config.turnstileEnabled
                           noscript
                             .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
@@ -490,7 +490,7 @@ p.text-center.d-lg-none
                     span.dayjs(
                       data-time=new Date(alias.vacation_responder.start_date).getTime(),
                       data-time-style="false"
-                    )= dayjs(alias.vacation_responder.start_date).format("M/D/YY")
+                    )= dayjs(alias.vacation_responder.start_date).tz(user.timezone).format("M/D/YY")
                   if _.isDate(alias.vacation_responder.end_date)
                     if _.isDate(alias.vacation_responder.start_date)
                       != " &ndash; "
@@ -502,7 +502,7 @@ p.text-center.d-lg-none
                     span.dayjs(
                       data-time=new Date(alias.vacation_responder.end_date).getTime(),
                       data-time-style="false"
-                    )= dayjs(alias.vacation_responder.end_date).format("M/D/YY")
+                    )= dayjs(alias.vacation_responder.end_date).tz(user.timezone).format("M/D/YY")
                     = ")"
                   else
                     != " &ndash; "

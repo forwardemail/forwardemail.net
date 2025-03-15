@@ -46,10 +46,10 @@ include ../../_pagination
               = inquiry.reference || "none"
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
-            )= dayjs(inquiry.created_at).format("M/D/YY h:mm A z")
+            )= dayjs(inquiry.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
             td.align-middle.dayjs(
               data-time=new Date(inquiry.updated_at).getTime()
-            )= dayjs(inquiry.updated_at).format("M/D/YY h:mm A z")
+            )= dayjs(inquiry.updated_at).tz(user.timezone).format("M/D/YY h:mm A z")
             td.align-middle
               .btn-group(role="group", aria-label=t("Actions"))
                 a.btn.btn-primary(

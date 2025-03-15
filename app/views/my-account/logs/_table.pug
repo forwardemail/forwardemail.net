@@ -30,9 +30,9 @@ table.table.table-hover.table-bordered.table-sm
                     if log.meta && log.meta.session && log.meta.session.arrivalDate
                       span.dayjs(
                         data-time=new Date(log.meta.session.arrivalDate).getTime()
-                      )= dayjs(log.meta.session.arrivalDate).format("M/D/YY h:mm A z")
+                      )= dayjs(log.meta.session.arrivalDate).tz(user.timezone).format("M/D/YY h:mm A z")
                     else
-                      span.dayjs(data-time=new Date(log.created_at).getTime())= dayjs(log.created_at).format("M/D/YY h:mm A z")
+                      span.dayjs(data-time=new Date(log.created_at).getTime())= dayjs(log.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
                 //- MAIL FROM
                 if log.meta && log.meta.session && log.meta.session.envelope && log.meta.session.envelope.mailFrom && log.meta.session.envelope.mailFrom.address
                   li

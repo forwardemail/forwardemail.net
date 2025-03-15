@@ -55,7 +55,7 @@ if !returnHTML
             data-time=_.isDate(payment.invoice_at) ? payment.invoice_at.getTime() : payment.created_at.getTime(),
             data-time-style="false"
           )
-            = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).format("M/D/YY")
+            = dayjs(_.isDate(payment.invoice_at) ? payment.invoice_at : payment.created_at).tz(user.timezone).format("M/D/YY")
         td.border-0.text-right(
           class=returnHTML ? false : "d-none d-sm-block d-print-block"
         )

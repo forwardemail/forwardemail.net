@@ -49,10 +49,10 @@ block body
         table.table.table-hover.table-bordered.table-striped.table-sm
           tr
             th= "CREATED"
-            td: span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).format("M/D/YY h:mm A z")
+            td: span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
           tr
             th= "DATE"
-            td: span.dayjs(data-time=email.date.getTime())= dayjs(email.date).format("M/D/YY h:mm A z")
+            td: span.dayjs(data-time=email.date.getTime())= dayjs(email.date).tz(user.timezone).format("M/D/YY h:mm A z")
           tr
             th= "MAIL FROM"
             td= email.envelope.from
