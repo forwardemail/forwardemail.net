@@ -20,6 +20,8 @@ module.exports = {
     imap: 'IMAP_PORT=2113 nodemon imap.js',
     pop3: 'POP3_PORT=2115 nodemon pop3.js',
     sqlite: 'nodemon sqlite.js',
+    caldav: 'nodemon caldav.js',
+    mx: 'nodemon mx.js',
 
     watch: 'gulp watch',
     clean: 'gulp clean',
