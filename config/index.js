@@ -1507,7 +1507,21 @@ const config = {
     'vu',
     'ws',
     'xyz',
-    'za'
+    'za',
+
+    // french overseas territories
+    // <https://github.com/forwardemail/forwardemail.net/issues/327>
+    'bzh', // Bretagne
+    'gf', // Guyane
+    'gp', // Guadeloupe
+    'mq', // Martinique
+    'nc', // Nouvelle-Calédonie
+    'pf', // Polynésie
+    'pm', // Saint-Pierre-et-Miquelon
+    're', // La Réunion
+    'tf', // TAAF
+    'wf', // Wallis-et-Futuna
+    'yt' // Mayotte
   ],
 
   validDurations: [

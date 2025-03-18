@@ -791,6 +791,16 @@ const emailClients = _.sortBy(
       terminal: true
     },
     {
+      name: 'SnappyMail',
+      description: 'Simple, modern, lightweight & fast web-based email client.',
+      link: 'https://github.com/the-djmaze/snappymail',
+      img: 'img/email-clients/snappymail.png',
+      attribution: 'Screenshot by Forward Email',
+      screenshot: 'https://snappymail.eu/demo',
+      language: 'PHP',
+      web: true
+    },
+    {
       name: 'Cypht',
       description:
         'Lightweight Open Source webmail written in PHP and JavaScript.',

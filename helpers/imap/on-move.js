@@ -352,7 +352,7 @@ async function onMove(mailboxId, update, session, fn) {
           // > "This database connection is busy executing a query"
           // session.db.prepare(sql.query).run(sql.values);
 
-          ops.push([sql.query, sql.values, m.uid, uidNext]);
+          ops.push([sql.query, sql.values, m.uid]);
 
           expungeEntries.push({
             ignore: session.id,
@@ -400,7 +400,6 @@ async function onMove(mailboxId, update, session, fn) {
               }
             }
           });
-          // TODO: do we need to push op[2] and op[3] here (?)
           ops.push([sql.query, sql.values]);
         }
 
@@ -409,12 +408,8 @@ async function onMove(mailboxId, update, session, fn) {
           .transaction((ops) => {
             for (const op of ops) {
               session.db.prepare(op[0]).run(op[1]);
-              if (!update.silent)
-                payloads.push(
-                  formatResponse.call(session, 'EXPUNGE', op[2]),
-                  // TODO: may need to remove this:
-                  formatResponse.call(session, 'EXPUNGE', op[3])
-                );
+              if (!update.silent && op[2])
+                payloads.push(formatResponse.call(session, 'EXPUNGE', op[2]));
             }
           })
           .immediate(ops);
