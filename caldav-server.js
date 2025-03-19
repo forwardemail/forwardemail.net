@@ -918,6 +918,24 @@ class CalDAV extends API {
     }
   }
 
+  //
+  // NOTE: Apple iOS/macOS implementation of CalDAV is different than almost all others
+  //       (it has static variable calendar names that are rendered on the device)
+  //
+  //       DEFAULT_CALENDAR_NAME -> Calendar
+  //       DEFAULT_TASK_CALENDAR_NAME -> Reminders
+  //       <https://github.com/Legoless/iOS-Localization/blob/6ebb778b9e4691ec1a03cffbbe7036399936c437/7.0.4/iPhone/System/Library/Frameworks/EventKit.framework/English.lproj/Localizable.strings.xml#L37-L38>
+  //
+  //       this means that if the iOS version doesn't match to desktop macOS version
+  //       then the macOS version will render the string as "DEFAULT_TASK_CALENDAR_NAME" which is not user-friendly
+  //       (and will be that way until the user updates their macOS to the latest version that is in sync with iOS localized strings)
+  //
+  //       basically the client informs the server of a given UUID generated
+  //       and the server is responsible for storing the mapping of client UUID's to calendars stored on server
+  //       <https://stackoverflow.com/a/25605154>
+  //
+  //       iOS and macOS devices will attempt to MKCALENDAR on DEFAULT_TASK_CALENDAR_NAME on refresh
+  //
   async createCalendar(ctx, { name, description, timezone }) {
     logger.debug('createCalendar', {
       name,
@@ -929,7 +947,7 @@ class CalDAV extends API {
     // if calendar already exists with calendarId value then return 405
     // <https://github.com/sabre-io/dav/blob/da8c1f226f1c053849540a189262274ef6809d1c/tests/Sabre/CalDAV/PluginTest.php#L289>
     const calendar = await this.getCalendar(ctx, {
-      calendarId: ctx.state.params.calendarId
+      calendarId: name || ctx.state.params.calendarId
     });
 
     if (calendar)

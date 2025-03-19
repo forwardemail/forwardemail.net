@@ -31,7 +31,9 @@ graceful.listen();
     if (process.send) process.send('ready');
     const { port } = proxy.server.address();
     logger.info(
-      `Lad proxy server listening on ${port} (LAN: ${ip.address()}:${port})`,
+      `Lad proxy server listening on ${port} (LAN: ${
+        proxy.config.protocol
+      }://${ip.address()}:${port})`,
       { hide_meta: true }
     );
   } catch (err) {

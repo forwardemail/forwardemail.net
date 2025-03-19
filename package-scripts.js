@@ -20,6 +20,7 @@ module.exports = {
     imap: 'IMAP_PORT=2113 nodemon imap.js',
     pop3: 'POP3_PORT=2115 nodemon pop3.js',
     sqlite: 'nodemon sqlite.js',
+    // caldav: 'NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon caldav.js',
     caldav: 'nodemon caldav.js',
     mx: 'nodemon mx.js',
 

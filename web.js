@@ -47,7 +47,9 @@ monitorServer();
     if (process.send) process.send('ready');
     const { port } = web.server.address();
     logger.info(
-      `Lad web server listening on ${port} (LAN: ${ip.address()}:${port})`,
+      `Lad web server listening on ${port} (LAN: ${
+        web.config.protocol
+      }://${ip.address()}:${port})`,
       { hide_meta: true }
     );
     if (config.env === 'development')
