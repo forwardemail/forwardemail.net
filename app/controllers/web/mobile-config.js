@@ -21,9 +21,10 @@ const isEmail = require('#helpers/is-email');
 // https://github.com/danakt/uuid-by-string/issues/24
 
 const Aliases = require('#models/aliases');
+const config = require('#config');
 const env = require('#config/env');
-const { decrypt } = require('#helpers/encrypt-decrypt');
 const isValidPassword = require('#helpers/is-valid-password');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 
 //
 // (this punctuation stuff is borrowed from our work with `spamscanner`)
@@ -71,15 +72,17 @@ function mobileConfigTemplate(name, username, password) {
         EmailAccountType: 'EmailTypeIMAP',
         EmailAddress: username,
         IncomingMailServerAuthentication: 'EmailAuthPassword',
-        IncomingMailServerHostName: 'imap.forwardemail.net',
-        IncomingMailServerPortNumber: 993,
-        IncomingMailServerUseSSL: true,
+        IncomingMailServerHostName: env.IMAP_HOST,
+        IncomingMailServerPortNumber: env.IMAP_PORT,
+        IncomingMailServerUseSSL:
+          env.IMAP_PORT === 993 || env.IMAP_PORT === 2993,
         IncomingMailServerUsername: username,
         IncomingPassword: password,
         OutgoingMailServerAuthentication: 'EmailAuthPassword',
-        OutgoingMailServerHostName: 'smtp.forwardemail.net',
-        OutgoingMailServerPortNumber: 465,
-        OutgoingMailServerUseSSL: true,
+        OutgoingMailServerHostName: env.SMTP_HOST,
+        OutgoingMailServerPortNumber: env.SMTP_PORT,
+        OutgoingMailServerUseSSL:
+          !env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production',
         OutgoingMailServerUsername: username,
         OutgoingPassword: password,
         OutgoingPasswordSameAsIncomingPassword: true,
@@ -95,10 +98,11 @@ function mobileConfigTemplate(name, username, password) {
         CalDAVAccountDescription: `${name}${
           name.endsWith('s') ? "'" : "'s"
         } Calendars`,
-        CalDAVHostName: 'caldav.forwardemail.net',
+        CalDAVHostName: env.CALDAV_HOST,
         CalDAVUsername: username,
         CalDAVPassword: password,
-        CalDAVUseSSL: true,
+        CalDAVUseSSL: env.CALDAV_PROTOCOL === 'https',
+        CalDAVPort: env.CALDAV_PORT,
         PayloadDisplayName: `${name}${
           name.endsWith('s') ? "'" : "'s"
         } Calendars`,
@@ -113,7 +117,8 @@ function mobileConfigTemplate(name, username, password) {
       // TODO: CardDAV
       {
         CardDAVAccountDescription: `${name}${name.endsWith('s') ? "'" : "'s"} Contacts`,
-        CardDAVHostName: 'carddav.forwardemail.net',
+        CardDAVHostName: env.CARDDAV_HOST,
+        // TODO: port
         CardDAVPassword: password,
         CardDAVUseSSL: true,
         CardDAVUsername: username,
@@ -217,9 +222,13 @@ function k9s(name, username) {
     <account uuid="${getUuid(username)}">
       <name>${username}</name>
       <incoming-server type="IMAP">
-        <host>imap.forwardemail.net</host>
-        <port>993</port>
-        <connection-security>SSL_TLS_REQUIRED</connection-security>
+        <host>${env.IMAP_HOST}</host>
+        <port>${env.IMAP_PORT}</port>
+        <connection-security>${
+          env.IMAP_PORT === 993 || env.IMAP_PORT === 2993
+            ? 'SSL_TLS_REQUIRED'
+            : 'NONE'
+        }</connection-security>
         <authentication-type>PLAIN</authentication-type>
         <username>${username}</username>
         <extra>
@@ -228,9 +237,13 @@ function k9s(name, username) {
         </extra>
       </incoming-server>
       <outgoing-server type="SMTP">
-        <host>smtp.forwardemail.net</host>
-        <port>465</port>
-        <connection-security>SSL_TLS_REQUIRED</connection-security>
+        <host>${env.SMTP_HOST}</host>
+        <port>${env.SMTP_PORT}</port>
+        <connection-security>${
+          !env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production'
+            ? 'SSL_TLS_REQUIRED'
+            : 'NONE'
+        }</connection-security>
         <authentication-type>PLAIN</authentication-type>
         <username>${username}</username>
       </outgoing-server>
