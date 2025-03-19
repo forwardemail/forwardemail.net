@@ -196,8 +196,10 @@ async function onConnect(session, fn) {
     // NOTE: due to high amount of connections from AWS spammers on IMAP/POP3 we are preventing connection abuse
     //
     const isAWS =
-      session.resolvedClientHostname &&
-      session.resolvedClientHostname.endsWith('.compute.amazonaws.com');
+      session.resolvedRootClientHostname &&
+      ['amazonaws.com', 'amazonses.com'].includes(
+        session.resolvedRootClientHostname
+      );
 
     if (session.isAllowlisted && !isAWS) return fn();
 
