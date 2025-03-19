@@ -34,7 +34,7 @@ block content
                     td= email.subject
                   tr
                     th: span.badge.badge-pill.badge-primary Date
-                    td: code= dayjs(email.date).tz(user.timezone).format("M/D/YY h:mm A z")
+                    td: code= dayjs(email.date).format("M/D/YY h:mm A z")
             .p-3.text-center
               h1.h3.text-danger= t("What was the trusted source?")
               table.table.table-striped

@@ -86,19 +86,24 @@ function syncStripePaymentIntent(user) {
       if (stripeCharge.refunded) {
         amountRefunded = stripeCharge.amount_refunded;
 
+        const payment = await Payments.findOne({
+          ...q,
+          stripe_payment_intent_id: paymentIntent.id
+        });
+
         if (
           !_.isArray(stripeCharge.refunds.data) ||
           _.isEmpty(stripeCharge.refunds.data)
         )
           throw new Error(
-            `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without refunds object`
+            `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without refunds object`
           );
 
         const [stripeChargeRefund] = stripeCharge.refunds.data;
 
         if (!isSANB(stripeChargeRefund.balance_transaction))
           throw new Error(
-            `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without "balance_transaction" ID in charge refund object retrieved`
+            `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without "balance_transaction" ID in charge refund object retrieved`
           );
 
         const balanceTransaction = await stripe.balanceTransactions.retrieve(
@@ -107,7 +112,7 @@ function syncStripePaymentIntent(user) {
 
         if (!balanceTransaction)
           throw new Error(
-            `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction for refund`
+            `Payment intent ID ${payment?.stripe_payment_intent_id} is missing balance transaction for refund`
           );
 
         currencyAmountRefunded = Math.abs(balanceTransaction.amount);
