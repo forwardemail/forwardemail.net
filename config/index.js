@@ -1558,8 +1558,8 @@ for (const tld of tlds) {
   config.denylist.add(`kosomar.${punycode.toASCII(tld)}`);
   config.denylist.add(`amikalpop.${punycode.toASCII(tld)}`);
   config.denylist.add(`klokpmaol.${punycode.toASCII(tld)}`);
-  // postline.* (e.g. "postline.ml")
   config.denylist.add(`postline.${punycode.toASCII(tld)}`);
+  config.denylist.add(`andasifbymagic.${punycode.toASCII(tld)}`);
 }
 
 // sanity test against validDurations and durationMapping length
