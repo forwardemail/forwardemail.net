@@ -455,8 +455,20 @@ async function mobileConfig(ctx, next) {
 
       ctx.set(
         'Content-Disposition',
-        // `attachment; filename="${username}.mobileconfig"`
-        `attachment; filename="mail.mobileconfig"`
+        //
+        // NOTE: As of March 20, 2025 only the following iOS browsers support automatic detection and download:
+        //       <https://github.com/brave/brave-ios/issues/4358>
+        //       - Safari
+        //       - Chrome
+        //
+        //       These are NOT working:
+        //       - DuckDuckGo
+        //       - Firefox Focus
+        //       - Firefox
+        //
+        // NOTE: Firefox Focus for iOS does not support `.mobileconfig` detection like Chrome does (yet)
+        // `attachment; filename="mail.mobileconfig"`
+        `attachment; filename="${username}.mobileconfig"`
       );
 
       const plistData = mobileConfigTemplate(
