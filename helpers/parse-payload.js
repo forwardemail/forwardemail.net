@@ -265,6 +265,13 @@ async function parsePayload(data, ws) {
         throw new TypeError('Payload storage location missing');
     }
 
+    // clear migrate check cache if necessary
+    if (
+      payload.migrate_check === true &&
+      isSANB(payload?.session?.user?.alias_id)
+    )
+      await this.client.del(`migrate_check:${payload.session.user.alias_id}`);
+
     //
     // TODO: payload.storage_location should not be used as source of truth
     //       instead the latest from Aliases database should be used

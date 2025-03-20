@@ -10,8 +10,10 @@ const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
+// const getUuid = require('@forwardemail/uuid-by-string');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
 const isEmail = require('#helpers/is-email');
@@ -28,6 +30,381 @@ const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
+
+//
+// TODO: add migration script to clean up duplicate calendar names
+//
+
+//
+// TODO: add support for calendar PROPPATCH
+//       (e.g. changing name, color, etc)
+//
+
+//
+// Reminders (DEFAULT_TASK_CALENDAR_NAME)
+//
+const I18N_SET_REMINDERS = new Set([
+  ...Object.values({
+    ar: 'تذكيرات', // (tadhkīrāt) - No capitalization in Arabic script
+    cs: 'Připomínky',
+    da: 'Påmindelser',
+    de: 'Erinnerungen',
+    en: 'Reminders',
+    es: 'Recordatorios',
+    fi: 'Muistutukset',
+    fr: 'Rappels',
+    he: 'תזכורות', // (tazkorot) - No capitalization in Hebrew script
+    hu: 'Emlékeztetők',
+    id: 'Pengingat',
+    it: 'Promemoria',
+    ja: 'リマインダー', // (rimaindā) - No capitalization in Japanese script
+    ko: '리마인더', // (rimaideo) or '알림' (allim) - No capitalization in Korean script
+    nl: 'Herinneringen',
+    no: 'Påminnelser',
+    pl: 'Przypomnienia',
+    pt: 'Lembretes',
+    ru: 'Напоминания', // (Napominaniya)
+    sv: 'Påminnelser',
+    th: 'การแจ้งเตือน', // (kān jâeng dtôn) - No capitalization in Thai script
+    tr: 'Hatırlatıcılar',
+    uk: 'Нагадування', // (Nahaduvannya)
+    vi: 'Lời nhắc',
+    zh: '提醒' // (tíxǐng) - No capitalization in Chinese script
+  }),
+  //
+  // Alternates
+  //
+
+  // ko
+  '알림' // (allim) No capitalization in Korean script
+]);
+
+//
+// Tasks
+//
+const I18N_SET_TASKS = new Set([
+  ...Object.values({
+    ar: 'مهام', // (mahām) - No capitalization in Arabic script
+    cs: 'Úkoly',
+    da: 'Opgaver',
+    de: 'Aufgaben',
+    en: 'Tasks',
+    es: 'Tareas',
+    fi: 'Tehtävät',
+    fr: 'Tâches',
+    he: 'משימות', // (mesimot) - No capitalization in Hebrew script
+    hu: 'Feladatok',
+    id: 'Tugas',
+    it: 'Attività', // or 'Compiti'
+    ja: 'タスク', // (tasuku) or '任務' (ninmu) - No capitalization in Japanese script
+    ko: '작업', // (jageop) or '태스크' (taeseukeu) - No capitalization in Korean script
+    nl: 'Taken',
+    no: 'Oppgaver',
+    pl: 'Zadania',
+    pt: 'Tarefas',
+    ru: 'Задачи', // (Zadachi)
+    sv: 'Uppgifter',
+    th: 'งาน', // (ngān) - No capitalization in Thai script
+    tr: 'Görevler',
+    uk: 'Завдання', // (Zavdannya)
+    vi: 'Nhiệm vụ',
+    zh: '任务' // (rènwù) - No capitalization in Chinese script
+  }),
+
+  //
+  // Alternates
+  //
+
+  // it
+  'Compiti',
+  // ja
+  '任務', // (ninmu)
+  // ko
+  '태스크' // (taeseukeu)
+]);
+
+//
+// Appointments
+//
+const I18N_SET_APPOINTMENTS = new Set([
+  ...Object.values({
+    ar: 'مواعيد', // (mawāʿīd) - No capitalization in Arabic script
+    cs: 'Schůzky',
+    da: 'Aftaler',
+    de: 'Termine',
+    en: 'Appointments',
+    es: 'Citas',
+    fi: 'Tapaamiset',
+    fr: 'Rendez-vous',
+    he: 'פגישות', // (pgishot) - No capitalization in Hebrew script
+    hu: 'Találkozók',
+    id: 'Janji temu',
+    it: 'Appuntamenti',
+    ja: '予定', // (yotei) or 'アポイントメント' (apointomento) - No capitalization in Japanese script
+    ko: '약속', // (yaksok) or '예약' (yeyak) - No capitalization in Korean script
+    nl: 'Afspraken',
+    no: 'Avtaler',
+    pl: 'Spotkania', // or 'Terminy'
+    pt: 'Compromissos',
+    ru: 'Встречи', // (Vstrechi) or 'Назначения' (Naznacheniya)
+    sv: 'Möten', // or 'Bokningar'
+    th: 'นัดหมาย', // (nat māi) - No capitalization in Thai script
+    tr: 'Randevular',
+    uk: 'Зустрічі', // (Zustrichi) or 'Призначення' (Pryznachennya)
+    vi: 'Cuộc hẹn',
+    zh: '预约' // (yùyuē) - No capitalization in Chinese script
+  }),
+  //
+  // Alternates
+  //
+  // ja
+  'アポイントメント', // (apointomento)
+  // ko
+  '예약', // (yeyak)
+  // pl
+  'Terminy',
+  // ru
+  'Назначения', // (Naznacheniya)
+  // sv
+  'Bokningar', // Already capitalized as provided, correct as is
+  // uk
+  'Призначення' // (Pryznachennya)
+]);
+
+// Events
+const I18N_SET_EVENTS = new Set([
+  ...Object.values({
+    ar: 'أحداث', // (aḥdāth) - No capitalization in Arabic script
+    cs: 'Události',
+    da: 'Begivenheder',
+    de: 'Ereignisse', // or 'Veranstaltungen'
+    en: 'Events',
+    es: 'Eventos',
+    fi: 'Tapahtumat',
+    fr: 'Événements',
+    he: 'אירועים', // (irua’im) - No capitalization in Hebrew script
+    hu: 'Események',
+    id: 'Acara',
+    it: 'Eventi',
+    ja: 'イベント', // (ibento) or '行事' (gyōji) - No capitalization in Japanese script
+    ko: '이벤트', // (ibenteu) or '행사' (haengsa) - No capitalization in Korean script
+    nl: 'Evenementen',
+    no: 'Hendelser', // or 'Arrangementer'
+    pl: 'Wydarzenia',
+    pt: 'Eventos',
+    ru: 'События', // (Sobytiya)
+    sv: 'Evenemang',
+    th: 'เหตุการณ์', // (hētukān) or 'งาน' (ngān) - No capitalization in Thai script
+    tr: 'Etkinlikler',
+    uk: 'Події', // (Podiyi)
+    vi: 'Sự kiện',
+    zh: '活动' // (huódòng) or '事件' (shìjiàn) - No capitalization in Chinese script
+  }),
+
+  //
+  // Alternates
+  //
+
+  // de
+  'Veranstaltungen',
+  // ja
+  '行事', // (gyōji) - No capitalization in Japanese script
+  // ko
+  '행사', // (haengsa) - No capitalization in Korean script
+  // no
+  'Arrangementer',
+  // th
+  'งาน', // (ngān) - No capitalization in Thai script
+  // zh
+  '事件' // (shìjiàn) - No capitalization in Chinese script
+]);
+
+// Default
+const I18N_SET_DEFAULT = new Set(
+  Object.values({
+    ar: 'افتراضي', // (iftirāḍī) - No capitalization in Arabic script
+    cs: 'Výchozí',
+    da: 'Standard',
+    de: 'Standard',
+    en: 'Default',
+    es: 'Predeterminado',
+    fi: 'Oletus',
+    fr: 'Par défaut',
+    he: 'ברירת מחדל', // (brerat machdal) - No capitalization in Hebrew script
+    hu: 'Alapértelmezett',
+    id: 'Bawaan',
+    it: 'Predefinito',
+    ja: 'デフォルト', // (deforuto) - No capitalization in Japanese script
+    ko: '기본', // (gibon) - No capitalization in Korean script
+    nl: 'Standaard',
+    no: 'Standard',
+    pl: 'Domyślny',
+    pt: 'Padrão',
+    ru: 'По умолчанию', // (Po umolchaniyu)
+    sv: 'Standard',
+    th: 'ค่าเริ่มต้น', // (khâ rûem dtôn) - No capitalization in Thai script
+    tr: 'Varsayılan',
+    uk: 'За замовчуванням', // (Za zamovchuvannyam)
+    vi: 'Mặc định',
+    zh: '默认' // (mòrèn) - No capitalization in Chinese script
+  })
+);
+
+// Calendar
+const I18N_CALENDAR = {
+  ar: 'تقويم', // (taqwīm) - No capitalization in Arabic script
+  cs: 'Kalendář',
+  da: 'Kalender',
+  de: 'Kalender',
+  en: 'Calendar',
+  es: 'Calendario',
+  fi: 'Kalenteri',
+  fr: 'Calendrier',
+  he: 'לוח שנה', // (luach shana) - No capitalization in Hebrew script
+  hu: 'Naptár',
+  id: 'Kalender',
+  it: 'Calendario',
+  ja: 'カレンダー', // (karendā) - No capitalization in Japanese script
+  ko: '달력', // (dallyeok) - No capitalization in Korean script
+  nl: 'Kalender',
+  no: 'Kalender',
+  pl: 'Kalendarz',
+  pt: 'Calendário',
+  ru: 'Календарь', // (Kalendar)
+  sv: 'Kalender',
+  th: 'ปฏิทิน', // (patithin) - No capitalization in Thai script
+  tr: 'Takvim',
+  uk: 'Календар', // (Kalendar)
+  vi: 'Lịch',
+  zh: '日历' // (rìlì) - No capitalization in Chinese script
+};
+const I18N_SET_CALENDAR = new Set(Object.values(I18N_CALENDAR));
+
+// DEFAULT_CALENDAR_NAME
+const I18N_SET_DEFAULT_CALENDAR_NAME = new Set([
+  ...I18N_SET_CALENDAR,
+  ...I18N_SET_EVENTS,
+  ...I18N_SET_DEFAULT
+]);
+
+async function ensureDefaultCalendars(ctx) {
+  //
+  // this only gets run if there are *zero* calendars on Android/Windows/etc
+  // otherwise if on Apple this ensures that there
+  // is a "Calendar" (DEFAULT_CALENDAR_NAME) and "Reminders" (DEFAULT_TASK_CALENDAR_NAME) created
+  //
+  const calendarDefaults = {
+    // db virtual helper
+    instance: this,
+    session: ctx.state.session,
+    //
+    // calendar obj
+    //
+    description: config.urls.web,
+    prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
+    //
+    // NOTE: instead of using timezone from IP we use
+    //       their last time zone set in a browser session
+    //       (this is way more accurate and faster)
+    //
+    //       here were some alternatives though during R&D:
+    //       * <https://github.com/runk/node-maxmind>
+    //       * <https://github.com/evansiroky/node-geo-tz>
+    //       * <https://github.com/safing/mmdbmeld>
+    //       * <https://github.com/sapics/ip-location-db>
+    //
+    timezone: ctx.state.session.user.timezone,
+    url: config.urls.web,
+    readonly: false,
+    synctoken: `${config.urls.web}/ns/sync-token/1`
+  };
+
+  if (!ctx.state.isApple) {
+    const count = await Calendars.countDocuments(this, ctx.state.session, {});
+    if (count > 0) return;
+
+    await Calendars.create({
+      ...calendarDefaults,
+      calendarId: randomUUID(),
+      //
+      // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
+      //
+      // create "Calendar" in localized string
+      //
+      name: I18N_CALENDAR[ctx.locale] || ctx.translate('CALENDAR')
+    });
+
+    // return early since Apple check is up next
+    return;
+  }
+
+  //
+  // NOTE: we detect user-agent and if we're on macOS/iOS then ensure created:
+  //       - DEFAULT_CALENDAR_NAME <-> Calendar
+  //       - DEFAULT_TASK_CALENDAR_NAME <-> Reminders
+  //
+  //       (or similar variants that would be fetched via subsequent MKCALENDAR call)
+  //
+
+  let [defaultCalendar, defaultTaskCalendar] = await Promise.all([
+    Calendars.findOne(this, ctx.state.session, {
+      name: 'DEFAULT_CALENDAR_NAME'
+    }),
+    Calendars.findOne(this, ctx.state.session, {
+      name: 'DEFAULT_TASK_CALENDAR_NAME'
+    })
+  ]);
+
+  [defaultCalendar, defaultTaskCalendar] = await Promise.all([
+    defaultCalendar
+      ? Promise.resolve(defaultCalendar)
+      : Calendars.findOne(this, ctx.state.session, {
+          name: {
+            $in: [...I18N_SET_CALENDAR]
+          }
+        }),
+    defaultTaskCalendar
+      ? Promise.resolve(defaultTaskCalendar)
+      : Calendars.findOne(this, ctx.state.session, {
+          name: {
+            $in: [...I18N_SET_REMINDERS]
+          }
+        })
+  ]);
+
+  if (!defaultCalendar)
+    defaultCalendar = await Calendars.findOne(this, ctx.state.session, {
+      name: { $in: [...I18N_SET_DEFAULT_CALENDAR_NAME] }
+    });
+
+  [defaultCalendar, defaultTaskCalendar] = await Promise.all([
+    defaultCalendar
+      ? Promise.resolve(defaultCalendar)
+      : Calendars.create({
+          ...calendarDefaults,
+          calendarId: randomUUID(),
+          name: 'DEFAULT_CALENDAR_NAME' // Calendar
+        }),
+    defaultTaskCalendar
+      ? Promise.resolve(defaultTaskCalendar)
+      : Calendars.create({
+          ...calendarDefaults,
+          calendarId: randomUUID(),
+          name: 'DEFAULT_TASK_CALENDAR_NAME' // Reminders
+        })
+  ]);
+
+  logger.debug('defaultCalendar', { defaultCalendar });
+  logger.debug('defaultTaskCalendar', { defaultTaskCalendar });
+}
+
+//
+// NOTE: google's implementation is available at the following link:
+//       <https://developers.google.com/calendar/caldav/v2/guide>
+//
+// NOTE: to debug iCal on macOS see Console and run these commands
+//       <https://sabre.io/dav/clients/ical/#:~:text=Technical%20information-,Debugging,-To%20enable%20the>
+//
 
 // TODO: DNS SRV records <https://sabre.io/dav/service-discovery/#dns-srv-records>
 
@@ -864,6 +1241,21 @@ class CalDAV extends API {
       ctx.state.user = user;
       ctx.state.session.user = user;
 
+      //
+      // store boolean if we're on an Apple device
+      //
+      // ctx.headers['user-agent'] is something like:
+      // - 'macOS/12.7.4 (21H1105) CalendarAgent/961.4.2'
+      // (or)
+      // - 'iOS/18.3.2 (22D82) dataaccessd/1.0'
+      //
+      ctx.state.isApple =
+        typeof ctx.headers['user-agent'] === 'string' &&
+        (ctx.headers['user-agent'].includes('macOS') ||
+          ctx.headers['user-agent'].includes('iOS'));
+
+      logger.debug('isApple', ctx.state.isApple);
+
       // set locale for translation in ctx
       ctx.isAuthenticated = () => true;
       ctx.request.acceptsLanguages = () => false;
@@ -872,44 +1264,12 @@ class CalDAV extends API {
       // connect to db
       await refreshSession.call(this, ctx.state.session, 'CALDAV');
 
-      // ensure that the default calendar exists
-      let defaultCalendar = await this.getCalendar(ctx, {
-        calendarId: user.username,
-        principalId: user.username,
-        user
-      });
-
-      if (!defaultCalendar) {
-        defaultCalendar = await Calendars.create({
-          // db virtual helper
-          instance: this,
-          session: ctx.state.session,
-
-          // calendarId
-          calendarId: user.username,
-
-          // calendar obj
-          // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
-          name: ctx.translate('CALENDAR'),
-          description: config.urls.web,
-          prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
-          //
-          // NOTE: instead of using timezone from IP we use
-          //       their last time zone set in a browser session
-          //       (this is way more accurate and faster)
-          //
-          //       here were some alternatives though during R&D:
-          //       * <https://github.com/runk/node-maxmind>
-          //       * <https://github.com/evansiroky/node-geo-tz>
-          //       * <https://github.com/safing/mmdbmeld>
-          //       * <https://github.com/sapics/ip-location-db>
-          //
-          timezone: ctx.state.session.user.timezone,
-          url: config.urls.web,
-          readonly: false,
-          synctoken: `${config.urls.web}/ns/sync-token/1`
-        });
-      }
+      //
+      // TODO: we may want to run this in background
+      //       or alternatively only run it once every X amount of time
+      //
+      // ensure default calendar(s) exist
+      await ensureDefaultCalendars.call(this, ctx);
 
       return user;
     } catch (err) {
@@ -936,6 +1296,14 @@ class CalDAV extends API {
   //
   //       iOS and macOS devices will attempt to MKCALENDAR on DEFAULT_TASK_CALENDAR_NAME on refresh
   //
+  //       > iCal abuses MKCALENDAR since iCal 10.9.2 to create server-stored subscriptions
+  //         <https://github.com/sabre-io/dav/blob/58be83aae10a244372f113b63624c48034378094/lib/CalDAV/Plugin.php#L294-L296>
+  //
+  //       the fennel project simply does a findOrCreate
+  //       <https://github.com/LordEidi/fennel.js/blob/abfc371701fcb2581d8f1382426f0ef9e9846554/handler/calendar.js#L982>
+  //       (but note they don't do any normalization)
+  //
+  // eslint-disable-next-line complexity
   async createCalendar(ctx, { name, description, timezone }) {
     logger.debug('createCalendar', {
       name,
@@ -946,14 +1314,116 @@ class CalDAV extends API {
 
     // if calendar already exists with calendarId value then return 405
     // <https://github.com/sabre-io/dav/blob/da8c1f226f1c053849540a189262274ef6809d1c/tests/Sabre/CalDAV/PluginTest.php#L289>
-    const calendar = await this.getCalendar(ctx, {
-      calendarId: name || ctx.state.params.calendarId
+    let calendar = await this.getCalendar(ctx, {
+      calendarId: ctx.state.params.calendarId
     });
 
-    if (calendar)
-      throw Boom.methodNotAllowed(
-        ctx.translateError('CALENDAR_ALREADY_EXISTS')
-      );
+    if (calendar) return calendar; // return early
+
+    //
+    // TODO: if not MKCOL or resource detected (MKCALENDAR subscription)
+    //       then create calendar regardless (?)
+
+    //
+    // iOS string mapping for localization:
+    //
+    // DEFAULT_CALENDAR_NAME <-> Calendar (and we also added "Events" and "Default" to the list)
+    // DEFAULT_TASK_CALENDAR_NAME <-> Reminders
+    //
+    if (['DEFAULT_CALENDAR_NAME', 'DEFAULT_TASK_CALENDAR_NAME'].includes(name))
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name
+      });
+
+    if (calendar) return calendar; // return early
+
+    // "Calendar" variant (handled below in I18N_SET_DEFAULT_CALENDAR_NAME case)
+    if (I18N_SET_CALENDAR.has(name))
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name // exact match
+      });
+
+    if (calendar) return calendar; // return early
+
+    //
+    // "Calendar", "Events", "Default" variants map to "DEFAULT_CALENDAR_NAME"
+    // + localized variants
+    //
+    if (I18N_SET_DEFAULT_CALENDAR_NAME.has(name)) {
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name // exact match
+      });
+      if (calendar) return calendar; // return early
+      // fallback to look up by localized name
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: { $in: [...I18N_SET_DEFAULT_CALENDAR_NAME] }
+      });
+      if (calendar) return calendar; // return early
+      // Apple variant
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: 'DEFAULT_CALENDAR_NAME'
+      });
+      if (calendar) return calendar; // return early
+    }
+
+    // Reminders -> DEFAULT_TASK_CALENDAR_NAME + localized variants
+    if (I18N_SET_REMINDERS.has(name)) {
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name
+      });
+      if (calendar) return calendar; // return early
+      // fallback to look up by localized name
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: { $in: [...I18N_SET_REMINDERS] }
+      });
+      if (calendar) return calendar; // return early
+      // Apple variant
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: 'DEFAULT_TASK_CALENDAR_NAME'
+      });
+      if (calendar) return calendar; // return early
+    }
+
+    // "Appointments" localized variant
+    if (I18N_SET_APPOINTMENTS.has(name)) {
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name
+      });
+      if (calendar) return calendar; // return early
+      // fallback to look up by localized name
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: { $in: [...I18N_SET_APPOINTMENTS] }
+      });
+      if (calendar) return calendar; // return early
+    }
+
+    // "Tasks" localized variant
+    if (I18N_SET_TASKS.has(name)) {
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name
+      });
+      if (calendar) return calendar; // return early
+      // fallback to look up by localized name
+      calendar = await Calendars.findOne(this, ctx.state.session, {
+        name: { $in: [...I18N_SET_TASKS] }
+      });
+      if (calendar) return calendar; // return early
+    }
+
+    //
+    // > iCal abuses MKCALENDAR since iCal 10.9.2 to create server-stored subscriptions
+    //   <https://github.com/sabre-io/dav/blob/58be83aae10a244372f113b63624c48034378094/lib/CalDAV/Plugin.php#L294-L296>
+    //
+    // Basically in 10.9.2 it uses MKCALENDAR instead of MKCOL in order to get a server-stored subscription
+    // <https://sabre.io/dav/clients/ical/#:~:text=In%20OS%20X%2010.9.2%20they%20changed%20to%20using%20MKCALENDAR%20instead.%20We%20suspect%20that%20this%20is%20a%20bug%2C%20but%20we%27re%20adding%20support%20for%20it%20in%20sabre/dav%20nonetheless>
+    //
+    // Otherwise we'd do something like this above everywhere:
+    // if (calendar)
+    //   throw Boom.methodNotAllowed(
+    //     ctx.translateError('CALENDAR_ALREADY_EXISTS')
+    //   );
+    //
+    if (calendar) return calendar; // safeguard
 
     return Calendars.create({
       // db virtual helper
@@ -961,7 +1431,7 @@ class CalDAV extends API {
       session: ctx.state.session,
 
       // calendarId
-      calendarId: ctx.state.params.calendarId || name || randomUUID(),
+      calendarId: ctx.state.params.calendarId || name || randomUUID(), // TODO: "name" should be removed (?)
 
       // calendar obj
       name,
@@ -976,21 +1446,26 @@ class CalDAV extends API {
 
   // https://caldav.forwardemail.net/dav/support@forwardemail.net/default
   async getCalendar(ctx, { calendarId, principalId, user }) {
-    logger.debug('getCalendar', { calendarId, principalId, user });
+    logger.debug('getCalendar', {
+      calendarId,
+      principalId,
+      user,
+      request: ctx.request
+    });
 
     let calendar;
-    if (mongoose.isObjectIdOrHexString(calendarId))
-      calendar = await Calendars.findOne(this, ctx.state.session, {
-        _id: new mongoose.Types.ObjectId(calendarId)
-      });
-    if (!calendar)
-      calendar = await Calendars.findOne(this, ctx.state.session, {
-        calendarId
-      });
-    if (!calendar && !mongoose.isObjectIdOrHexString(calendarId))
-      calendar = await Calendars.findOne(this, ctx.state.session, {
-        name: calendarId
-      });
+
+    if (calendarId) {
+      if (mongoose.isObjectIdOrHexString(calendarId))
+        calendar = await Calendars.findOne(this, ctx.state.session, {
+          _id: new mongoose.Types.ObjectId(calendarId)
+        });
+
+      if (!calendar)
+        calendar = await Calendars.findOne(this, ctx.state.session, {
+          calendarId
+        });
+    }
 
     logger.debug('getCalendar result', { calendar });
 
@@ -1207,9 +1682,13 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    return CalendarEvents.find(this, ctx.state.session, {
+    const events = await CalendarEvents.find(this, ctx.state.session, {
       calendar: calendar._id
     });
+
+    logger.debug('events', { events });
+
+    return events;
   }
 
   // eslint-disable-next-line complexity
@@ -1741,7 +2220,10 @@ class CalDAV extends API {
       //
 
       // uid -> calendar.calendarId
-      comp.updatePropertyWithValue('uid', calendar.calendarId);
+      // (this matches `getCalendarId` logic)
+      if (uuid.validate(calendar.calendarId))
+        comp.updatePropertyWithValue('uid', calendar.calendarId);
+      else comp.updatePropertyWithValue('uid', calendar._id.toString());
 
       // name -> calendar.name
       comp.updatePropertyWithValue('name', calendar.name);
@@ -1820,8 +2302,11 @@ class CalDAV extends API {
     return events.ical;
   }
 
+  // we need to return UUID of a calendar here
   getCalendarId(ctx, calendar) {
-    return calendar._id.toString();
+    return uuid.validate(calendar.calendarId)
+      ? calendar.calendarId
+      : calendar._id.toString(); // getUuid(...)
   }
 
   getETag(ctx, event) {

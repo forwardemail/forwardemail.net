@@ -505,11 +505,10 @@ test('fetchCalendarObjects should be able to fetch calendar objects', async (t) 
     )
   );
 
-  // TODO: uncomment this
-  // await deleteObject({
-  //   url: objectUrl1,
-  //   headers: t.context.authHeaders
-  // });
+  await deleteObject({
+    url: objectUrl1,
+    headers: t.context.authHeaders
+  });
 });
 
 test('fetchCalendarObjects should be able to fetch target calendar objects when specified timeRange', async (t) => {

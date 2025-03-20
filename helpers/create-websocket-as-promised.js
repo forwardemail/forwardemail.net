@@ -407,6 +407,28 @@ function createWebSocketAsPromised(options = {}) {
 
       return recursivelyParse(response.data, true);
     } catch (err) {
+      //
+      // NOTE: we permit up to one retry on table issues
+      //       (this is mainly for local development since we use /tmp storage and it might get cleared)
+      //
+      // - no such index
+      // - no such rowid
+      // - no such column
+      // - no such module
+      // - no such table
+      // + more by running this command:
+      //
+      // `rg '"no such ' -uuu node_modules/better-sqlite3`
+      //
+      if (
+        !data.migrate_check && // <-- this causes parse payload function to clear migrate_check cache on the alias
+        err.code === 'SQLITE_ERROR' &&
+        err.message.includes('no such ')
+      ) {
+        data.migrate_check = true;
+        return wsp.request(data, 0); // no retries
+      }
+
       err.isCodeBug = true;
       logger.fatal(err);
       throw refineAndLogError(err);
