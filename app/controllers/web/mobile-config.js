@@ -446,7 +446,8 @@ async function mobileConfig(ctx, next) {
     if (ctx.path.endsWith('.mobileconfig')) {
       // .mobileconfig is normally "text/xml" but if signed
       // it is then "application/octet-stream"
-      ctx.type = 'application/octet-stream';
+      // <https://stackoverflow.com/a/20100664>
+      ctx.type = 'application/x-apple-aspen-config';
       ctx.set(
         'Content-Disposition',
         `attachment; filename="${username}.mobileconfig"`
