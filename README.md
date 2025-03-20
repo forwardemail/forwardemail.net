@@ -611,11 +611,11 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    sudo dd if=/dev/urandom of=/etc/luks/root.keyfile bs=4096 count=1
    sudo chmod 700 /etc/luks
    sudo chmod 400 /etc/luks/root.keyfile
-   sudo cryptsetup luksAddKey $(sudo blkid | grep "crypto_LUKS" | cut -d ':' -f 1) /etc/luks/root.keyfile
+   sudo cryptsetup luksAddKey $(sudo blkid | grep "crypto_LUKS" | cut -d ':' -f 1 | head -n 1) /etc/luks/root.keyfile
    echo "KEYFILE_PATTERN=/etc/luks/*.keyfile" | sudo tee -a /etc/cryptsetup-initramfs/conf-hook
    echo "UMASK=0077" | sudo tee -a /etc/initramfs-tools/initramfs.conf
    sudo sed -i '/dm_crypt-0/d' /etc/crypttab
-   echo "dm_crypt-0 UUID=$(sudo blkid | grep "crypto_LUKS" | cut -d '"' -f 2) /etc/luks/root.keyfile luks,discard" | sudo tee -a /etc/crypttab > /dev/null
+   echo "dm_crypt-0 UUID=$(sudo blkid | grep "crypto_LUKS" | cut -d '"' -f 2 | head -n 1) /etc/luks/root.keyfile luks,discard" | sudo tee -a /etc/crypttab > /dev/null
    ```
 
    ```sh
