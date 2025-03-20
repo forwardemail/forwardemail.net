@@ -423,7 +423,8 @@ function createWebSocketAsPromised(options = {}) {
       if (
         !data.migrate_check && // <-- this causes parse payload function to clear migrate_check cache on the alias
         err.code === 'SQLITE_ERROR' &&
-        err.message.includes('no such ')
+        (err.message.includes('no such ') ||
+          err.message.includes('has no column named '))
       ) {
         data.migrate_check = true;
         return wsp.request(data, 0); // no retries

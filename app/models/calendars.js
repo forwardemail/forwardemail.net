@@ -78,31 +78,24 @@ const Calendars = new mongoose.Schema(
     x: mongoose.Schema.Types.Mixed,
 
     //
-    // NOTE: color is not currently supported (namely due to lack of client implementation)
-    //       (but we could implement a workaround if we ever need this)
-    //
     // <https://github.com/sebbo2002/ical-generator/issues/516>
     // <https://github.com/sebbo2002/ical-generator/issues/153>
     //
     // const validateColor = require('validate-color');
     //
-    // color: {
-    //   type: String,
-    //   required: true,
-    //   trim: true,
-    //   default: '#0066ff',
-    //   validate: (color) =>
-    //     typeof color === 'string' && validateColor.default(color)
-    // },
-    //
-    // similarly we have not yet implemented `order` either
-    //
-    // order: {
-    //   type: Number,
-    //   required: true,
-    //   default: 0
-    // },
-    //
+    color: {
+      type: String,
+      required: true,
+      trim: true,
+      default: '#0066ff'
+      // validate: (color) =>
+      //   typeof color === 'string' && validateColor.default(color)
+    },
+    order: {
+      type: Number,
+      required: true,
+      default: 0
+    },
 
     //
     // NOTE: `readonly` and `synctoken` are arbitary non-VCALENDAR props for our implementation

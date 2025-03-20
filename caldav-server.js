@@ -5,40 +5,32 @@
 
 const { randomUUID } = require('node:crypto');
 
+// const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
 const Boom = require('@hapi/boom');
 const ICAL = require('ical.js');
 const caldavAdapter = require('caldav-adapter');
 const etag = require('etag');
-// const getUuid = require('@forwardemail/uuid-by-string');
+const falso = require('@ngneat/falso');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
-const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
-const Domains = require('#models/domains');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const Domains = require('#models/domains');
 const Emails = require('#models/emails');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const onAuth = require('#helpers/on-auth');
 const refreshSession = require('#helpers/refresh-session');
-
-//
-// TODO: add migration script to clean up duplicate calendar names
-//
-
-//
-// TODO: add support for calendar PROPPATCH
-//       (e.g. changing name, color, etc)
-//
 
 //
 // Reminders (DEFAULT_TASK_CALENDAR_NAME)
@@ -319,13 +311,14 @@ async function ensureDefaultCalendars(ctx) {
     synctoken: `${config.urls.web}/ns/sync-token/1`
   };
 
-  if (!ctx.state.isApple) {
-    const count = await Calendars.countDocuments(this, ctx.state.session, {});
-    if (count > 0) return;
+  const count = await Calendars.countDocuments(this, ctx.state.session, {});
+  if (count > 0) return;
 
+  if (!ctx.state.isApple) {
     await Calendars.create({
       ...calendarDefaults,
       calendarId: randomUUID(),
+      color: '#0000FF', // blue
       //
       // NOTE: Android uses "Events" and most others use "Calendar" as default calendar name
       //
@@ -383,6 +376,7 @@ async function ensureDefaultCalendars(ctx) {
       : Calendars.create({
           ...calendarDefaults,
           calendarId: randomUUID(),
+          color: '#0000FF', // blue
           name: 'DEFAULT_CALENDAR_NAME' // Calendar
         }),
     defaultTaskCalendar
@@ -390,6 +384,7 @@ async function ensureDefaultCalendars(ctx) {
       : Calendars.create({
           ...calendarDefaults,
           calendarId: randomUUID(),
+          color: '#FF0000', // red
           name: 'DEFAULT_TASK_CALENDAR_NAME' // Reminders
         })
   ]);
@@ -1304,7 +1299,7 @@ class CalDAV extends API {
   //       (but note they don't do any normalization)
   //
   // eslint-disable-next-line complexity
-  async createCalendar(ctx, { name, description, timezone }) {
+  async createCalendar(ctx, { name, description, timezone, color, order }) {
     logger.debug('createCalendar', {
       name,
       description,
@@ -1436,6 +1431,8 @@ class CalDAV extends API {
       // calendar obj
       name,
       description,
+      color: color || falso.randHex(),
+      order,
       prodId: `//forwardemail.net//caldav//${ctx.locale.toUpperCase()}`,
       timezone: timezone || ctx.state.session.user.timezone,
       url: config.urls.web,
@@ -1477,8 +1474,37 @@ class CalDAV extends API {
   // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/example/server.js#L33>
   // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/example/data.js#L111-L120>
   //
-  async updateCalendar(ctx, { principalId, calendarId, user }) {
-    logger.debug('updateCalendar', { principalId, calendarId, user });
+  async updateCalendar(ctx, { principalId, calendarId, user, updates }) {
+    logger.debug('updateCalendar', { principalId, calendarId, user, updates });
+
+    //
+    // if `updates` is specified then this is a PROPPATCH request with XML
+    //
+    if (updates) {
+      let calendar = await this.getCalendar(ctx, {
+        calendarId,
+        principalId,
+        user
+      });
+
+      if (!calendar)
+        throw Boom.methodNotAllowed(
+          ctx.translateError('CALENDAR_DOES_NOT_EXIST')
+        );
+
+      calendar = await Calendars.findByIdAndUpdate(
+        this,
+        ctx.state.session,
+        calendar._id,
+        {
+          $set: updates
+        }
+      );
+
+      // return early
+      return calendar;
+    }
+
     //
     // 1) parse `ctx.request.body` for VCALENDAR and all VEVENT's
     // 2) update the calendar metadata based off VCALENDAR
@@ -1535,7 +1561,8 @@ class CalDAV extends API {
         // NOTE: these are not being set yet
         // categories
         // refresh-interval -> calendar.ttl
-        // color
+        color: comp.getFirstPropertyValue('color'),
+        order: Number.parseInt(comp.getFirstPropertyValue('order'), 10) || 0,
         // image
         // conference
         x,
@@ -2267,7 +2294,6 @@ class CalDAV extends API {
       // NOTE: these are not being set yet
       // categories
       // refresh-interval -> calendar.ttl
-      // color
       // image
       // conference
 

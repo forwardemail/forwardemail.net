@@ -442,7 +442,13 @@ async function mobileConfig(ctx, next) {
     // foo_bar -> Foo Bar
     const name = titleize(humanize(alias.name.replace(PUNCTUATION_REGEX, ' ')));
 
+    //
     // macOS and iOS mobile config (signed)
+    //
+    // NOTE: see discussions:
+    //       <https://github.com/mozilla-mobile/firefox-ios/issues/25476>
+    //       <https://github.com/duckduckgo/apple-browsers/issues/297>
+    //
     if (ctx.path.endsWith('.mobileconfig')) {
       // .mobileconfig is normally "text/xml" but if signed
       // it is then "application/octet-stream"
@@ -466,7 +472,6 @@ async function mobileConfig(ctx, next) {
         //       - Firefox Focus
         //       - Firefox
         //
-        // NOTE: Firefox Focus for iOS does not support `.mobileconfig` detection like Chrome does (yet)
         // `attachment; filename="mail.mobileconfig"`
         `attachment; filename="${username}.mobileconfig"`
       );
