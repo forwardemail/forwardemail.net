@@ -447,10 +447,16 @@ async function mobileConfig(ctx, next) {
       // .mobileconfig is normally "text/xml" but if signed
       // it is then "application/octet-stream"
       // <https://stackoverflow.com/a/20100664>
-      ctx.type = 'application/x-apple-aspen-config';
+      // ctx.type = 'application/x-apple-aspen-config';
+      ctx.set(
+        'Content-Type',
+        'application/x-apple-aspen-config; charset=utf-8'
+      );
+
       ctx.set(
         'Content-Disposition',
-        `attachment; filename="${username}.mobileconfig"`
+        // `attachment; filename="${username}.mobileconfig"`
+        `attachment; filename="mail.mobileconfig"`
       );
 
       const plistData = mobileConfigTemplate(
