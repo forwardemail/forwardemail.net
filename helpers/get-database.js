@@ -12,6 +12,7 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
+const pMapSeries = require('p-map-series');
 const pRetry = require('p-retry');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
@@ -517,6 +518,7 @@ async function getDatabase(
     let trashCheck = !instance.server;
     let threadCheck = !instance.server;
     let vacuumCheck = !instance.server;
+    let calendarDuplicateCheck = !instance.server;
 
     if (instance.client && instance.server) {
       try {
@@ -525,13 +527,15 @@ async function getDatabase(
           `folder_check:${session.user.alias_id}`,
           `trash_check:${session.user.alias_id}`,
           `thread_check:${session.user.alias_id}`,
-          `vacuum_check:${session.user.alias_id}`
+          `vacuum_check:${session.user.alias_id}`,
+          `calendar_duplicate_check:${session.user.alias_id}`
         ]);
         migrateCheck = boolean(results[0]);
         folderCheck = boolean(results[1]);
         trashCheck = boolean(results[2]);
         threadCheck = boolean(results[3]);
         vacuumCheck = boolean(results[4]);
+        calendarDuplicateCheck = boolean(results[5]);
       } catch (err) {
         logger.fatal(err);
       }
@@ -854,12 +858,54 @@ async function getDatabase(
       }
     }
 
+    if (!calendarDuplicateCheck) {
+      try {
+        await instance.client.set(
+          `calendar_duplicate_check:${session.user.alias_id}`,
+          true,
+          'PX',
+          ms('30d')
+        );
+
+        //
+        // get all calendars and delete calendars that have zero events and duplicated name
+        // (rudimentary cleanup approach; since new logic will create fresh calendars)
+        //
+        const calendars = await Calendars.find(instance, session, {});
+        if (calendars.length > 0)
+          await pMapSeries(calendars, async (calendar) => {
+            const [eventCount, calendarCount] = await Promise.all([
+              CalendarEvents.countDocuments(instance, session, {
+                calendar: calendar._id
+              }),
+              Calendars.countDocuments(instance, session, {
+                name: calendar.name,
+                _id: { $ne: calendar._id.toString() }
+              })
+            ]);
+
+            //
+            // if no events and there were other calendars with the same name
+            // then we can assume this is simply a duplicate and we can remove it
+            // (eventually it will get to the last one that has the same name and not remove it)
+            //
+            if (eventCount === 0 && calendarCount > 0)
+              await Calendars.deleteOne(instance, session, {
+                _id: calendar._id
+              });
+          });
+      } catch (err) {
+        logger.fatal(err, { session });
+      }
+    }
+
     if (
       !migrateCheck ||
       !folderCheck ||
       !trashCheck ||
       !threadCheck ||
-      !vacuumCheck
+      !vacuumCheck ||
+      !calendarDuplicateCheck
     ) {
       try {
         //
