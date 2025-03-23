@@ -47,6 +47,13 @@ const CalendarEvents = new mongoose.Schema(
       index: true
     },
 
+    // for sync-collection
+    // TODO: delete after 30d if set
+    deleted_at: {
+      type: Date,
+      index: true
+    },
+
     /*
     // <https://github.com/jens-maus/node-ical/blob/228ee19ed8af5177ab5139c82c32a15d5179f228/node-ical.d.ts#L65-L94>
     dtstamp: Date,

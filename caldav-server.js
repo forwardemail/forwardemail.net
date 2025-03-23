@@ -4,6 +4,7 @@
  */
 
 const { randomUUID } = require('node:crypto');
+const _ = require('lodash');
 
 // const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
@@ -1690,7 +1691,10 @@ class CalDAV extends API {
     return Calendars.find(this, ctx.state.session, {});
   }
 
-  async getEventsForCalendar(ctx, { calendarId, principalId, user, fullData }) {
+  async getEventsForCalendar(
+    ctx,
+    { calendarId, principalId, user, fullData, showDeleted }
+  ) {
     logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
@@ -1709,9 +1713,12 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    const events = await CalendarEvents.find(this, ctx.state.session, {
+    let events = await CalendarEvents.find(this, ctx.state.session, {
       calendar: calendar._id
     });
+
+    // TODO: improve this with search directly on sql
+    if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
 
     logger.debug('events', { events });
 
@@ -2209,9 +2216,39 @@ class CalDAV extends API {
         }
       });
 
-      await CalendarEvents.deleteOne(this, ctx.state.session, {
-        _id: event._id
-      });
+      //
+      // NOTE: we can't simply delete the calendar, we need to also store changes made
+      //       <https://github.com/sabre-io/dav/blob/58be83aae10a244372f113b63624c48034378094/lib/CalDAV/Backend/PDO.php#L944-L958>
+      //       (e.g. added, modified, and deleted are the different types of changes made)
+      //
+      //       then when REPORT method is invoked, e.g. for sync-collection or sync-token
+      //       it will return with 404 for events deleted, etc
+      //       <https://github.com/sabre-io/dav/blob/58be83aae10a244372f113b63624c48034378094/lib/DAV/Sync/Plugin.php#L166-L174>
+      //
+      //       <https://www.rfc-editor.org/rfc/rfc6578.html#page-14:~:text=The%20content%20of%20each%20DAV%3Aresponse%20element%20differs%20depending%20on%20how%0A%20%20%20%20%20%20the%20member%20was%20altered%3A>
+      //
+      //       > For members that have changed (i.e., are new or have had their
+      //       mapped resource modified), the DAV:response MUST contain at
+      //       least one DAV:propstat element and MUST NOT contain any
+      //       DAV:status element.
+      //
+      //       > For members that have been removed, the DAV:response MUST
+      //       contain one DAV:status with a value set to '404 Not Found' and
+      //       MUST NOT contain any DAV:propstat element.
+      //
+      // await CalendarEvents.deleteOne(this, ctx.state.session, {
+      //   _id: event._id
+      // });
+      await CalendarEvents.findByIdAndUpdate(
+        this,
+        ctx.state.session,
+        event._id,
+        {
+          $set: {
+            deleted_at: new Date()
+          }
+        }
+      );
 
       // already wrapped with try/catch
       await this.sendEmailWithICS(ctx, calendar, event, 'CANCEL');

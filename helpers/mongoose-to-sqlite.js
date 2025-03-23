@@ -1147,6 +1147,7 @@ function parseSchema(Model, modelName = '') {
           typeof v === 'undefined' || v === null ? v : new Date(v);
         setter = (v) => {
           if (v instanceof Date) return v.toISOString();
+          if (v === null) return v;
           throw new TypeError('Must be a date');
         };
 
