@@ -17,7 +17,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
@@ -293,7 +293,7 @@ async function mapper(id) {
 
     logger.info('checking domains', { count: ids.length });
 
-    await pMapSeries(ids, mapper);
+    await pMap(ids, mapper, { concurrency: 1000 });
   } catch (err) {
     await logger.error(err);
   }

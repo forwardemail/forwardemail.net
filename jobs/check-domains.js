@@ -16,7 +16,7 @@ const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
-const pMapSeries = require('p-map-series');
+const pMap = require('p-map');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
 
@@ -259,7 +259,10 @@ async function mapper(id) {
       // we don't want to send emails to bulk API created
       !domain.is_api &&
       !_.isDate(domain.onboard_email_sent_at) &&
-      !hasDNSError
+      !hasDNSError &&
+      // ensure domain was created <= 1 month ago
+      new Date(domain.created_at).getTime() >=
+        dayjs().subtract(1, 'month').toDate().getTime()
     ) {
       // send the onboard email
       await email({
@@ -353,7 +356,7 @@ async function mapper(id) {
 
     logger.info('checking domains', { count: ids.length });
 
-    await pMapSeries(ids, mapper);
+    await pMap(ids, mapper, { concurrency: 1000 });
   } catch (err) {
     await logger.error(err);
   }
