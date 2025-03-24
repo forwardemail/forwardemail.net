@@ -284,6 +284,12 @@ object[config.userFields.domainCount] = {
   index: true
 };
 
+object[config.userFields.aliasCount] = {
+  type: Number,
+  min: 0,
+  index: true
+};
+
 // Rate limit whitelisting
 // TODO: change to allowlist
 object[config.userFields.isRateLimitWhitelisted] = {

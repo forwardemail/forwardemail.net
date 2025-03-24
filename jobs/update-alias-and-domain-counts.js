@@ -57,7 +57,7 @@ graceful.listen();
       await Users.findByIdAndUpdate(user._id, {
         $set: {
           [config.userFields.domainCount]: domainCount,
-          alias_count: aliasCount
+          [config.userFields.aliasCount]: aliasCount
         }
       });
     }
