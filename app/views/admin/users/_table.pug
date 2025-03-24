@@ -48,7 +48,7 @@ include ../../_pagination
               code.text-muted= user.id
               = ")"
             td.align-middle= user.domain_count
-            td.align-middle= alias.domain_count
+            td.align-middle= user.alias_count
             td.align-middle= titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))
             td.align-middle.dayjs(
