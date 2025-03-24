@@ -14,6 +14,8 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('domain_count', 'Domains', '#table-users')
         th(scope="col")
+          +sortHeader('alias_count', 'Aliases', '#table-users')
+        th(scope="col")
           +sortHeader('plan', null, '#table-users')
         th(scope="col")
           +sortHeader('group', null, '#table-users')
@@ -46,6 +48,7 @@ include ../../_pagination
               code.text-muted= user.id
               = ")"
             td.align-middle= user.domain_count
+            td.align-middle= alias.domain_count
             td.align-middle= titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))
             td.align-middle.dayjs(
