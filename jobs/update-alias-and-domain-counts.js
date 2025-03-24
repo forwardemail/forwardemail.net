@@ -15,11 +15,13 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
 
+const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Users = require('#models/users');
+const config = require('#config');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 monitorServer();
 
@@ -34,6 +36,48 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
+    for await (const user of Users.find({})
+      .lean()
+      .select('_id')
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      const [domainCount, aliasCount] = await Promise.all([
+        Domains.countDocuments({
+          members: {
+            $elemMatch: {
+              user: user._id,
+              group: 'admin'
+            }
+          }
+        }),
+        Aliases.countDocuments({
+          user: user._id
+        })
+      ]);
+      await Users.findByIdAndUpdate(user._id, {
+        $set: {
+          [config.userFields.domainCount]: domainCount,
+          alias_count: aliasCount
+        }
+      });
+    }
+
+    for await (const domain of Domains.find({})
+      .lean()
+      .select('_id')
+      .cursor()
+      .addCursorFlag('noCursorTimeout', true)) {
+      const count = await Aliases.countDocument({
+        domain: domain._id
+      });
+      await Domains.findByIdAndUpdate(domain._id, {
+        $set: {
+          alias_count: count
+        }
+      });
+    }
+
+    /*
     // aggregating users and calculating domain count
     const usersWithDomainCount = await Users.aggregate([
       {
@@ -130,6 +174,7 @@ graceful.listen();
 
       await Domains.bulkWrite(bulkDomainOperations);
     }
+    */
   } catch (err) {
     await logger.error(err);
   }
