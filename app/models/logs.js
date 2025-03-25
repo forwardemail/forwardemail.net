@@ -987,10 +987,6 @@ Logs.post('save', async (doc, next) => {
   const isRateLimiting = doc?.err?.output?.statusCode === 429;
   if (doc?.err?.isCodeBug !== true && !isRateLimiting) return next();
 
-  // return early on WS unknown error
-  if (doc?.err?._message === 'WebSocket closed with reason: undefined (1000).')
-    return next();
-
   /*
   // send an SMS to admins of the error
   if (twilioClient) {

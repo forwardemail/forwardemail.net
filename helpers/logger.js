@@ -154,6 +154,10 @@ async function hook(err, message, meta) {
   //
   if (meta.ignore_hook === true || (err && err.ignoreHook === true)) return;
 
+  // return early on WS unknown error
+  if (err && err._message === 'WebSocket closed with reason: undefined (1000).')
+    return;
+
   //
   // if it was a duplicate error then ignore it
   //

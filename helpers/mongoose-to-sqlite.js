@@ -227,7 +227,7 @@ async function updateMany(
         try {
           session.db.pragma('wal_checkpoint(PASSIVE)');
         } catch (err) {
-          logger.fatal(err);
+          logger.warn(err);
         }
       }
     }
@@ -339,7 +339,7 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
       try {
         session.db.pragma('wal_checkpoint(PASSIVE)');
       } catch (err) {
-        logger.fatal(err);
+        logger.warn(err);
       }
     }
   } catch (_err) {
@@ -410,7 +410,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
       try {
         session.db.pragma('wal_checkpoint(PASSIVE)');
       } catch (err) {
-        logger.fatal(err);
+        logger.warn(err);
       }
     }
   } catch (_err) {
@@ -641,7 +641,7 @@ async function $__handleSave(options = {}, fn) {
           try {
             this.session.db.pragma('wal_checkpoint(PASSIVE)');
           } catch (err) {
-            logger.fatal(err);
+            logger.warn(err);
           }
         }
       } else {
@@ -673,7 +673,7 @@ async function $__handleSave(options = {}, fn) {
           try {
             this.session.db.pragma('wal_checkpoint(PASSIVE)');
           } catch (err) {
-            logger.fatal(err);
+            logger.warn(err);
           }
         }
       }
@@ -856,7 +856,7 @@ async function findOneAndUpdate(
         try {
           session.db.pragma('wal_checkpoint(PASSIVE)');
         } catch (err) {
-          logger.fatal(err);
+          logger.warn(err);
         }
       }
     }

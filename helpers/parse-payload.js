@@ -1598,10 +1598,13 @@ async function parsePayload(data, ws) {
           `reset_check:${payload.session.user.alias_id}`
         );
 
-        if (cache)
-          throw Boom.clientTimeout(
+        if (cache) {
+          const err = Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
+          err.ignoreHook = true;
+          throw err;
+        }
 
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
@@ -1638,10 +1641,14 @@ async function parsePayload(data, ws) {
         const cache = await this.client.get(
           `reset_check:${payload.session.user.alias_id}`
         );
-        if (cache)
-          throw Boom.clientTimeout(
+        if (cache) {
+          const err = Boom.clientTimeout(
             i18n.translateError('RATE_LIMITED', payload.session.user.locale)
           );
+          err.ignoreHook = true;
+          throw err;
+        }
+
         await this.client.set(
           `reset_check:${payload.session.user.alias_id}`,
           true,
@@ -1778,13 +1785,16 @@ async function parsePayload(data, ws) {
         // only allow one backup every 30m (even if err/restart/shutdown)
         const cache = await this.client.get(key);
 
-        if (cache)
-          throw Boom.clientTimeout(
+        if (cache) {
+          const err = Boom.clientTimeout(
             i18n.translateError(
               'BACKUP_IN_PROGRESS',
               payload.session.user.locale
             )
           );
+          err.ignoreHook = true;
+          throw err;
+        }
 
         try {
           // set cache so we don't run two backups at once
@@ -1814,14 +1824,16 @@ async function parsePayload(data, ws) {
           //       (note all of these error messages are in TimeoutError checking)
           //
           // run in worker pool to offset from main thread (because of VACUUM)
-          if (!runBackup)
-            // throw Boom.clientTimeout(
-            throw Boom.tooManyRequests(
+          if (!runBackup) {
+            const err = Boom.clientTimeout(
               i18n.translateError(
                 'BACKUP_IN_PROGRESS',
                 payload.session.user.locale
               )
             );
+            err.ignoreHook = true;
+            throw err;
+          }
 
           // run this in the background
           this.piscina
