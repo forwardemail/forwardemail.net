@@ -111,8 +111,11 @@ async function syncUbuntuUser(user, map) {
       throw new TypeError('Map supplied had invalid team names');
 
     // if the user was banned then don't allow
-    if (user[config.userFields.isBanned])
-      throw new InvalidUbuntuUserError('User was banned');
+    if (user[config.userFields.isBanned]) {
+      const err = new InvalidUbuntuUserError('User was banned');
+      err.ignoreHook = true;
+      throw err;
+    }
 
     //
     // GET https://api.launchpad.net/1.0/~kotodamatest
