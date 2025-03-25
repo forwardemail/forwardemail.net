@@ -430,7 +430,7 @@
     "tlsa"
   ],
   "license": "(BUSL-1.1 AND MPL-2.0)",
-  "main": "index.js",
+  "main": "package-scripts.js",
   "os": [
     "darwin",
     "linux"
