@@ -225,6 +225,7 @@ test('creates alias with global catch-all', async (t) => {
       'object',
       'otp_enabled',
       'plan',
+      'sessions',
       'updated_at'
     ])
   );
