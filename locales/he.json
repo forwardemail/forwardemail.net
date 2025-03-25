@@ -8906,5 +8906,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "יש לך <span class=\"notranslate\">%d</span> הפעלות פעילות.",
   "Log out from other devices": "התנתק ממכשירים אחרים",
   "My Account - Invalidate Other Sessions": "החשבון שלי - בטל תוקף של הפעלות אחרות",
-  "Successfully logged out all other devices.": "התנתק בהצלחה מכל שאר המכשירים."
+  "Successfully logged out all other devices.": "התנתק בהצלחה מכל שאר המכשירים.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

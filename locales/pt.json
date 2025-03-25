@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "Você tem <span class=\"notranslate\">%d</span> sessões ativas.",
   "Log out from other devices": "Sair de outros dispositivos",
   "My Account - Invalidate Other Sessions": "Minha conta - Invalidar outras sessões",
-  "Successfully logged out all other devices.": "Todos os outros dispositivos foram desconectados com sucesso."
+  "Successfully logged out all other devices.": "Todos os outros dispositivos foram desconectados com sucesso.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

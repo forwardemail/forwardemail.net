@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "<span class=\"notranslate\">%d</span> aktív munkamenete van.",
   "Log out from other devices": "Jelentkezzen ki más eszközökről",
   "My Account - Invalidate Other Sessions": "Saját fiók – Más munkamenetek érvénytelenítése",
-  "Successfully logged out all other devices.": "Sikeresen kijelentkezett az összes többi eszközről."
+  "Successfully logged out all other devices.": "Sikeresen kijelentkezett az összes többi eszközről.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

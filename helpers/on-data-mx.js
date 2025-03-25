@@ -22,6 +22,7 @@ const { isIP } = require('node:net');
 
 const MimeNode = require('nodemailer/lib/mime-node');
 const RE2 = require('re2');
+const URLParse = require('url-parse');
 const _ = require('lodash');
 const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
@@ -33,6 +34,7 @@ const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
+const qs = require('qs');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const status = require('statuses');
@@ -963,9 +965,21 @@ async function forward(recipient, headers, session, body) {
         maxHtmlLengthToParse: bytes(env.SMTP_MESSAGE_MAX_SIZE)
       });
 
+      //
+      // delete `mail.attachments` and `mail.raw` if we detect the
+      // user did not want attachments or raw in JSON payload
+      // <https://github.com/forwardemail/forwardemail.net/issues/322#issuecomment-2752210518>
+      //
+      const url = new URLParse(recipient.webhook, (query) =>
+        qs.parse(query, { ignoreQueryPrefix: true })
+      );
+
+      if (url?.query?.attachments === 'false') delete mail.attachments;
+      if (!url?.query?.raw || url?.query?.raw !== 'false')
+        mail.raw = raw.toString();
+
       const webhookBody = JSON.stringify({
         ...mail,
-        raw: raw.toString(),
         dkim: session.dkim,
         spf: session.spf,
         arc: session.arc,

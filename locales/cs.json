@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "Máte <span class=\"notranslate\">%d</span> aktivních relací.",
   "Log out from other devices": "Odhlaste se z jiných zařízení",
   "My Account - Invalidate Other Sessions": "Můj účet – zrušit platnost dalších relací",
-  "Successfully logged out all other devices.": "Všechna ostatní zařízení byla úspěšně odhlášena."
+  "Successfully logged out all other devices.": "Všechna ostatní zařízení byla úspěšně odhlášena.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

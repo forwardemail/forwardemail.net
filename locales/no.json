@@ -10868,5 +10868,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "Du har <span class=\"notranslate\">%d</span> aktive økter.",
   "Log out from other devices": "Logg ut fra andre enheter",
   "My Account - Invalidate Other Sessions": "Min konto - ugyldiggjøre andre økter",
-  "Successfully logged out all other devices.": "Logget ut alle andre enheter."
+  "Successfully logged out all other devices.": "Logget ut alle andre enheter.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

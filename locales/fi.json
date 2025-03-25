@@ -10710,5 +10710,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "Sinulla on <span class=\"notranslate\">%d</span> aktiivista istuntoa.",
   "Log out from other devices": "Kirjaudu ulos muista laitteista",
   "My Account - Invalidate Other Sessions": "Oma tili - mitätöi muut istunnot",
-  "Successfully logged out all other devices.": "Kaikkien muiden laitteiden uloskirjautuminen onnistui."
+  "Successfully logged out all other devices.": "Kaikkien muiden laitteiden uloskirjautuminen onnistui.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

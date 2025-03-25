@@ -10556,5 +10556,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "您有<span class=\"notranslate\">%d</span>活动会话。",
   "Log out from other devices": "从其他设备注销",
   "My Account - Invalidate Other Sessions": "我的帐户 - 使其他会话无效",
-  "Successfully logged out all other devices.": "已成功注销所有其他设备。"
+  "Successfully logged out all other devices.": "已成功注销所有其他设备。",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

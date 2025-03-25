@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "У вас <span class=\"notranslate\">%d</span> активних сеансів.",
   "Log out from other devices": "Вийти з інших пристроїв",
   "My Account - Invalidate Other Sessions": "Мій обліковий запис - анулювати інші сеанси",
-  "Successfully logged out all other devices.": "Ви успішно вийшли з усіх інших пристроїв."
+  "Successfully logged out all other devices.": "Ви успішно вийшли з усіх інших пристроїв.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

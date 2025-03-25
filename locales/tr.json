@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "<span class=\"notranslate\">%d</span> aktif oturumunuz var.",
   "Log out from other devices": "Diğer cihazlardan çıkış yapın",
   "My Account - Invalidate Other Sessions": "Hesabım - Diğer Oturumları Geçersiz Kıl",
-  "Successfully logged out all other devices.": "Diğer tüm cihazlardan başarıyla çıkış yapıldı."
+  "Successfully logged out all other devices.": "Diğer tüm cihazlardan başarıyla çıkış yapıldı.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

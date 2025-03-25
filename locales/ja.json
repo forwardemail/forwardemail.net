@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "アクティブなセッションが<span class=\"notranslate\">%d</span>あります。",
   "Log out from other devices": "他のデバイスからログアウトする",
   "My Account - Invalidate Other Sessions": "マイアカウント - 他のセッションを無効にする",
-  "Successfully logged out all other devices.": "他のすべてのデバイスから正常にログアウトしました。"
+  "Successfully logged out all other devices.": "他のすべてのデバイスから正常にログアウトしました。",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

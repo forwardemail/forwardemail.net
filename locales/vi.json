@@ -8416,5 +8416,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "Bạn có <span class=\"notranslate\">%d</span> phiên hoạt động.",
   "Log out from other devices": "Đăng xuất khỏi các thiết bị khác",
   "My Account - Invalidate Other Sessions": "Tài khoản của tôi - Làm mất hiệu lực các phiên khác",
-  "Successfully logged out all other devices.": "Đã đăng xuất thành công tất cả các thiết bị khác."
+  "Successfully logged out all other devices.": "Đã đăng xuất thành công tất cả các thiết bị khác.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

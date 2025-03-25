@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "활성 세션이 <span class=\"notranslate\">%d</span> 개 있습니다.",
   "Log out from other devices": "다른 기기에서 로그아웃",
   "My Account - Invalidate Other Sessions": "내 계정 - 다른 세션 무효화",
-  "Successfully logged out all other devices.": "다른 모든 장치에서 성공적으로 로그아웃되었습니다."
+  "Successfully logged out all other devices.": "다른 모든 장치에서 성공적으로 로그아웃되었습니다.",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }

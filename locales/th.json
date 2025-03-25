@@ -10863,5 +10863,8 @@
   "You have <span class=\"notranslate\">%d</span> active sessions.": "คุณมีเซสชันที่ใช้งานอยู่ <span class=\"notranslate\">%d</span>",
   "Log out from other devices": "ออกจากระบบจากอุปกรณ์อื่น",
   "My Account - Invalidate Other Sessions": "บัญชีของฉัน - ยกเลิกเซสชันอื่น ๆ",
-  "Successfully logged out all other devices.": "ออกจากระบบอุปกรณ์อื่น ๆ ทั้งหมดสำเร็จแล้ว"
+  "Successfully logged out all other devices.": "ออกจากระบบอุปกรณ์อื่น ๆ ทั้งหมดสำเร็จแล้ว",
+  "If you need to remove": "If you need to remove",
+  "properties from the payload body, simply add": "properties from the payload body, simply add",
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
 }
