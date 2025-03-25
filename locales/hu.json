@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "Az 5 legnépszerűbb nyílt forráskódú <span class=\"notranslate\">Web</span> e-mail kliens <span class=\"notranslate\">2025</span> ben",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "Az 5 legnépszerűbb nyílt forráskódú e-mail kliens <span class=\"notranslate\">Webmail</span> <span class=\"notranslate\">2025</span> ben",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "2025. március 18-tól ezeket a francia tengerentúli területeket is hozzáadtuk ehhez a listához (",
-  "per this GitHub request": "ennek a GitHub-kérésnek megfelelően"
+  "per this GitHub request": "ennek a GitHub-kérésnek megfelelően",
+  "Family name was invalid; please contact us if necessary.": "A családi név érvénytelen; kérjük, vegye fel velünk a kapcsolatot, ha szükséges.",
+  "Given name was invalid; please contact us if necessary.": "A megadott név érvénytelen; kérjük, vegye fel velünk a kapcsolatot, ha szükséges.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Ha fizetős csomagra frissít, akkor feloldja az analitikai funkciót.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Ha nem kíván frissíteni, kérjük, tekintse meg <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">az A-tól G-ig terjedő opciókat a GYIK-ben</a> az elemzések megtekintéséhez.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Ha fizetős csomagra frissít, akkor feloldja a naplózási funkciót.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Ha nem kíván frissíteni, kérjük, tekintse meg <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">az A-tól G-ig terjedő opciókat a GYIK-ben</a> a naplók megtekintéséhez.",
+  "Session Management": "Munkamenet menedzsment",
+  "Your session management information is being automatically updated, please check back later.": "A munkamenet-kezelési információk automatikusan frissülnek, kérjük, nézzen vissza később.",
+  "You are logged in with the only active and current session on your account.": "Ön a fiókja egyetlen aktív és aktuális munkamenetével van bejelentkezve.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "<span class=\"notranslate\">%d</span> aktív munkamenete van.",
+  "Log out from other devices": "Jelentkezzen ki más eszközökről",
+  "My Account - Invalidate Other Sessions": "Saját fiók – Más munkamenetek érvénytelenítése",
+  "Successfully logged out all other devices.": "Sikeresen kijelentkezett az összes többi eszközről."
 }

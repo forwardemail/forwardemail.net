@@ -22,6 +22,7 @@ const {
 const config = require('#config');
 const email = require('#helpers/email');
 const env = require('#config/env');
+const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const parseLoginSuccessRedirect = require('#helpers/parse-login-success-redirect');
 const sendVerificationEmail = require('#helpers/send-verification-email');
 const { Users } = require('#models');
@@ -32,6 +33,11 @@ const store = new SessionChallengeStore();
 
 async function logout(ctx) {
   if (!ctx.isAuthenticated()) return ctx.redirect(ctx.state.l());
+
+  // store a reference to the session ID so we can clean it up on user model
+  const { sessionId } = ctx;
+  const userId = ctx.state.user._id;
+
   if (ctx.session) {
     delete ctx.session.otp;
     delete ctx.session.otp_remember_me;
@@ -57,6 +63,15 @@ async function logout(ctx) {
     position: 'top'
   });
   ctx.redirect(ctx.state.l());
+
+  // remove from the user session array the matching value
+  Users.findByIdAndUpdate(userId, {
+    $pullAll: {
+      sessions: [sessionId]
+    }
+  })
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
 }
 
 function parseReturnOrRedirectTo(ctx, next) {
@@ -528,6 +543,10 @@ async function resetPassword(ctx) {
   await user.setPassword(body.password);
   user = await user.save();
   await ctx.login(user);
+  // if user changed password then invalidate all other sessions
+  invalidateOtherSessions(ctx)
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
   const message = ctx.translate('RESET_PASSWORD');
   const redirectTo = ctx.state.l();
   if (ctx.accepts('html')) {

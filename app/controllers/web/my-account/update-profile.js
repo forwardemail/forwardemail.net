@@ -13,6 +13,7 @@ const { boolean } = require('boolean');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
+const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const isEmail = require('#helpers/is-email');
 const { Users } = require('#models');
 
@@ -41,12 +42,13 @@ async function updateProfile(ctx) {
   }
 
   const hasSetPassword = ctx.state.user[config.userFields.hasSetPassword];
+  const changePassword = body.change_password === 'true';
 
   const requiredFields = ['password', 'confirm_password'];
 
   if (hasSetPassword) requiredFields.push('old_password');
 
-  if (body.change_password === 'true') {
+  if (changePassword) {
     for (const prop of requiredFields) {
       if (!isSANB(body[prop]))
         throw Boom.badRequest(
@@ -172,6 +174,13 @@ async function updateProfile(ctx) {
 
   // save the user
   ctx.state.user = await ctx.state.user.save();
+
+  // if user changed password then invalidate all other sessions
+  if (changePassword) {
+    invalidateOtherSessions(ctx)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+  }
 
   // send the email
   if (hasNewEmail) {

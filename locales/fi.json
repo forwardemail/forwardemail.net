@@ -10697,5 +10697,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 suosituinta avoimen lähdekoodin sähköpostiohjelmaa <span class=\"notranslate\">Web</span> vuonna <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 suosituinta avoimen lähdekoodin sähköpostiohjelmaa <span class=\"notranslate\">Webmail</span> vuonna <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "18. maaliskuuta 2025 alkaen olemme lisänneet myös nämä Ranskan merentakaiset alueet tähän luetteloon (",
-  "per this GitHub request": "tämän GitHub-pyynnön mukaisesti"
+  "per this GitHub request": "tämän GitHub-pyynnön mukaisesti",
+  "Family name was invalid; please contact us if necessary.": "Sukunimi oli virheellinen; ota meihin yhteyttä tarvittaessa.",
+  "Given name was invalid; please contact us if necessary.": "Etunimi oli virheellinen; ota meihin yhteyttä tarvittaessa.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Jos päivität maksulliseen sopimukseen, avaat analytiikkaominaisuuden.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Jos et halua päivittää, katso <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">vaihtoehdot A–G usein kysytyissä kysymyksissämme</a> nähdäksesi analytiikan.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Jos päivität maksulliseen sopimukseen, avaat lokiominaisuuden.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Jos et halua päivittää, katso <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">vaihtoehdot A–G usein kysytyissä kysymyksissämme</a> nähdäksesi lokit.",
+  "Session Management": "Istunnon hallinta",
+  "Your session management information is being automatically updated, please check back later.": "Istuntohallintatietojasi päivitetään automaattisesti, tarkista myöhemmin uudelleen.",
+  "You are logged in with the only active and current session on your account.": "Olet kirjautunut sisään tilisi ainoalla aktiivisella ja nykyisellä istunnolla.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Sinulla on <span class=\"notranslate\">%d</span> aktiivista istuntoa.",
+  "Log out from other devices": "Kirjaudu ulos muista laitteista",
+  "My Account - Invalidate Other Sessions": "Oma tili - mitätöi muut istunnot",
+  "Successfully logged out all other devices.": "Kaikkien muiden laitteiden uloskirjautuminen onnistui."
 }

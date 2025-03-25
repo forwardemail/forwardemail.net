@@ -21,6 +21,16 @@ const { paypalAgent } = require('#helpers/paypal');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function remove(ctx) {
+  if (ctx.state.user[config.userFields.hasSetPassword]) {
+    if (!isSANB(ctx.request?.body?.password))
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+    const { user } = await ctx.state.user.authenticate(
+      ctx.request.body.password
+    );
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+  }
+
   // check that we're not an admin of any team domains
   const domainsWithOtherAdmins = ctx.state.domains.some(
     (d) =>

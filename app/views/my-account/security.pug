@@ -122,6 +122,35 @@ block body
                                 = " "
                                 = t("Remove")
 
+  #modal-delete-account.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-delete-account-title",
+    aria-hidden="true"
+  )
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header.d-block.text-center
+          h4#modal-delete-account-title.d-inline-block.ml-4= t("Delete Account")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body.text-center
+          form.ajax-form.confirm-prompt.mb-0(
+            action=l("/my-account"),
+            method="POST"
+          )
+            input(type="hidden", name="_method", value="DELETE")
+            if user[config.userFields.hasSetPassword]
+              .form-group.floating-label
+                input#input-password.form-control.form-control-lg(
+                  type="password",
+                  autocomplete=config.env === "test" ? "off" : randomstring(),
+                  name="password",
+                  required
+                )
+                label(for="input-password")= t("Confirm Password")
+            button.btn.btn-danger.btn-lg.btn-block(type="submit")= t("Delete Account")
+
   #modal-disable-otp.modal.fade(
     tabindex="-1",
     role="dialog",
@@ -171,13 +200,11 @@ block body
               .card-body
                 .alert.alert-danger.small.mb-0= t("Deleting your account is irreversible.  Please take extreme caution when deleting your account.")
               .card-footer.text-right
-                form.ajax-form.confirm-prompt(
-                  action=l("/my-account"),
-                  method="POST"
-                )
-                  input(type="hidden", name="_method", value="DELETE")
-                  button.btn.btn-sm.btn-danger(type="submit")= t("Delete Account")
-
+                button.btn.btn-danger(
+                  data-toggle="modal",
+                  data-target="#modal-delete-account",
+                  type="button"
+                )= t("Delete Account")
           if passport && passport.webauthn
             .card.border-themed.mb-3
               h2.h6.card-header= t("Passkey Authentication")
@@ -226,10 +253,7 @@ block body
                   h5= t("Configure One-time Password")
                   p= t('One-time passwords ("OTP") allow you to add a layer of Two-Factor Authentication to your account using a device or authenticator app.  If you lose access to your device or authenticator app, then you can use a recovery key provided to you during configuration.')
                   a.btn.btn-primary.btn-lg(
-                    href=l(`${config.otpRoutePrefix}/setup`),
-                    role="button",
-                    data-toggle="modal-anchor",
-                    data-target="#modal-sign-up"
+                    href=l(`${config.otpRoutePrefix}/setup`)
                   )= t("Enable OTP")
               .card-footer.text-right
                 a.btn.btn-dark(
@@ -237,6 +261,24 @@ block body
                   rel="noopener noreferrer",
                   target="_blank"
                 )= t("Learn more")
+
+          .card.border-themed.mb-3
+            h2.h6.card-header= t("Session Management")
+            .card-body
+              if user.sessions.length === 0
+                p.mb-0= t("Your session management information is being automatically updated, please check back later.")
+              else if user.sessions.length === 1
+                p.mb-0!= t("You are logged in with the only active and current session on your account.")
+              else
+                p.mb-0!= t('You have <span class="notranslate">%d</span> active sessions.', user.sessions.length)
+            if user.sessions.length > 1
+              .card-footer.text-right
+                form.ajax-form.confirm-prompt(
+                  action=l("/my-account/invalidate-other-sessions"),
+                  method="POST"
+                )
+                  button.btn.btn-sm.btn-danger(type="submit")= t("Log out from other devices")
+
           .card.border-themed
             h2.h6.card-header= t("Developer Access")
             .card-body

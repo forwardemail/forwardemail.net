@@ -8893,5 +8893,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 לקוחות דוא&quot;ל מובילים בקוד פתוח עבור <span class=\"notranslate\">Web</span> בשנת <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 לקוחות דוא&quot;ל מובילים בקוד פתוח עבור <span class=\"notranslate\">Webmail</span> בשנת <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "החל מה-18 במרץ 2025 הוספנו גם את הטריטוריות הצרפתיות שמעבר לים לרשימה זו (",
-  "per this GitHub request": "לפי בקשת GitHub זו"
+  "per this GitHub request": "לפי בקשת GitHub זו",
+  "Family name was invalid; please contact us if necessary.": "שם המשפחה היה לא חוקי; אנא פנה אלינו במידת הצורך.",
+  "Given name was invalid; please contact us if necessary.": "שם פרטי לא חוקי; אנא פנה אלינו במידת הצורך.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "אם תשדרג לתוכנית בתשלום, תבטל את הנעילה של תכונת הניתוח שלנו.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "אם אינך מעוניין לשדרג, אנא עיין <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">באפשרויות A עד G בשאלות הנפוצות שלנו</a> על מנת לצפות בניתוח.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "אם תשדרג לתוכנית בתשלום, תבטל את הנעילה של תכונת היומנים שלנו.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "אם אינך מעוניין לשדרג, אנא עיין <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">באפשרויות A עד G בשאלות הנפוצות שלנו</a> כדי להציג יומנים.",
+  "Session Management": "ניהול מפגשים",
+  "Your session management information is being automatically updated, please check back later.": "מידע ניהול הפגישה שלך מתעדכן אוטומטית, אנא בדוק שוב מאוחר יותר.",
+  "You are logged in with the only active and current session on your account.": "אתה מחובר עם ההפעלה הפעילה והנוכחית היחידה בחשבון שלך.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "יש לך <span class=\"notranslate\">%d</span> הפעלות פעילות.",
+  "Log out from other devices": "התנתק ממכשירים אחרים",
+  "My Account - Invalidate Other Sessions": "החשבון שלי - בטל תוקף של הפעלות אחרות",
+  "Successfully logged out all other devices.": "התנתק בהצלחה מכל שאר המכשירים."
 }

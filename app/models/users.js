@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { isIP } = require('node:net');
+
 const Boom = require('@hapi/boom');
 const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
@@ -22,16 +24,18 @@ const striptags = require('striptags');
 const validator = require('@forwardemail/validator');
 const { authenticator } = require('otplib');
 const { boolean } = require('boolean');
+const { isURL } = require('@forwardemail/validator');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Payments = require('./payments');
 
-const email = require('#helpers/email');
-const logger = require('#helpers/logger');
 const config = require('#config');
+const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const isEmail = require('#helpers/is-email');
+const logger = require('#helpers/logger');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
 
 if (config.passportLocalMongoose.usernameField !== 'email') {
@@ -86,6 +90,15 @@ const omitExtraFields = [
   config.userFields.apiRestrictedSentAt
 ];
 
+function isNameValue(value) {
+  // allow null values and empty strings
+  if (!value || (typeof value === 'string' && !isSANB(value))) return true;
+  // it should not be an email, url, fqdn, or IP
+  if (isFQDN(value) || isIP(value) || isURL(value) || isEmail(value))
+    return false;
+  return true;
+}
+
 const Passkey = new mongoose.Schema({
   nickname: {
     type: String,
@@ -113,6 +126,9 @@ Passkey.plugin(mongooseCommonPlugin, {
 });
 
 const Users = new mongoose.Schema({
+  // Session Management (rudimentary)
+  sessions: [String], // simple Array of session ID's currently signed in
+
   // Newsletter opt-in
   has_newsletter: {
     type: Boolean,
@@ -389,17 +405,22 @@ object[fields.displayName] = {
   type: String,
   required: true,
   trim: true,
-  maxlength: 70
+  maxlength: 70,
+  validate(value) {
+    return isNameValue(value) || isEmail(value);
+  }
 };
 object[fields.givenName] = {
   type: String,
   trim: true,
-  maxlength: 35
+  maxlength: 35,
+  validate: isNameValue
 };
 object[fields.familyName] = {
   type: String,
   trim: true,
-  maxlength: 35
+  maxlength: 35,
+  validate: isNameValue
 };
 object[fields.avatarURL] = {
   type: String,
@@ -464,7 +485,8 @@ for (const prop of [
   object[prop] = {
     type: String,
     trim: true,
-    maxlength: 255
+    maxlength: 255,
+    validate: isNameValue
   };
 }
 

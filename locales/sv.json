@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 bästa e-postklienter med öppen källkod för <span class=\"notranslate\">Web</span> <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 bästa e-postklienter med öppen källkod för <span class=\"notranslate\">Webmail</span> <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Från och med den 18 mars 2025 har vi även lagt till dessa franska utomeuropeiska territorier till denna lista (",
-  "per this GitHub request": "enligt denna GitHub-förfrågan"
+  "per this GitHub request": "enligt denna GitHub-förfrågan",
+  "Family name was invalid; please contact us if necessary.": "Efternamnet var ogiltigt; kontakta oss vid behov.",
+  "Given name was invalid; please contact us if necessary.": "Förnamnet var ogiltigt; kontakta oss vid behov.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Om du uppgraderar till en betald plan kommer du att låsa upp vår analysfunktion.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Om du inte vill uppgradera, se <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">alternativ A till G i vår FAQ</a> för att se analyser.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Om du uppgraderar till en betalplan låser du upp vår loggarfunktion.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Om du inte vill uppgradera, se <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">alternativ A till G i vår FAQ</a> för att se loggar.",
+  "Session Management": "Sessionshantering",
+  "Your session management information is being automatically updated, please check back later.": "Din sessionshanteringsinformation uppdateras automatiskt, kom tillbaka senare.",
+  "You are logged in with the only active and current session on your account.": "Du är inloggad med den enda aktiva och aktuella sessionen på ditt konto.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Du har <span class=\"notranslate\">%d</span> aktiva sessioner.",
+  "Log out from other devices": "Logga ut från andra enheter",
+  "My Account - Invalidate Other Sessions": "Mitt konto - ogiltigförklara andra sessioner",
+  "Successfully logged out all other devices.": "Loggade ut alla andra enheter."
 }

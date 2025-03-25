@@ -10543,5 +10543,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> 5 大顶级开源<span class=\"notranslate\">Web</span>电子邮件客户端",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>年 5 大顶级开源<span class=\"notranslate\">Webmail</span>电子邮件客户端",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "自 2025 年 3 月 18 日起，我们还将以下法国海外领土添加到此列表中（",
-  "per this GitHub request": "根据此 GitHub 请求"
+  "per this GitHub request": "根据此 GitHub 请求",
+  "Family name was invalid; please contact us if necessary.": "姓氏无效；如有必要，请联系我们。",
+  "Given name was invalid; please contact us if necessary.": "给出的名称无效；如有必要，请联系我们。",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "如果您升级到付费计划，那么您将解锁我们的分析功能。",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "如果您不想升级，请参阅<a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">常见问题解答中的选项 A 到 G</a>以查看分析。",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "如果您升级到付费计划，那么您将解锁我们的日志功能。",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "如果您不想升级，请参阅<a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">常见问题解答中的选项 A 到 G</a>以查看日志。",
+  "Session Management": "会话管理",
+  "Your session management information is being automatically updated, please check back later.": "您的会话管理信息正在自动更新，请稍后查看。",
+  "You are logged in with the only active and current session on your account.": "您已使用帐户中唯一活动的当前会话登录。",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "您有<span class=\"notranslate\">%d</span>活动会话。",
+  "Log out from other devices": "从其他设备注销",
+  "My Account - Invalidate Other Sessions": "我的帐户 - 使其他会话无效",
+  "Successfully logged out all other devices.": "已成功注销所有其他设备。"
 }

@@ -8403,5 +8403,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 ứng dụng email nguồn mở hàng đầu cho <span class=\"notranslate\">Web</span> <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 ứng dụng email nguồn mở hàng đầu cho <span class=\"notranslate\">Webmail</span> <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Tính đến ngày 18 tháng 3 năm 2025, chúng tôi cũng đã thêm các vùng lãnh thổ hải ngoại của Pháp này vào danh sách này (",
-  "per this GitHub request": "theo yêu cầu GitHub này"
+  "per this GitHub request": "theo yêu cầu GitHub này",
+  "Family name was invalid; please contact us if necessary.": "Họ không hợp lệ; vui lòng liên hệ với chúng tôi nếu cần thiết.",
+  "Given name was invalid; please contact us if necessary.": "Tên không hợp lệ; vui lòng liên hệ với chúng tôi nếu cần thiết.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Nếu bạn nâng cấp lên gói trả phí, bạn sẽ mở khóa được tính năng phân tích của chúng tôi.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Nếu bạn không muốn nâng cấp, vui lòng xem <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Tùy chọn A đến G trong Câu hỏi thường gặp của chúng tôi</a> để xem phân tích.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Nếu bạn nâng cấp lên gói trả phí, bạn sẽ mở khóa được tính năng nhật ký của chúng tôi.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Nếu bạn không muốn nâng cấp, vui lòng xem <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Tùy chọn A đến G trong Câu hỏi thường gặp của chúng tôi</a> để xem nhật ký.",
+  "Session Management": "Quản lý phiên",
+  "Your session management information is being automatically updated, please check back later.": "Thông tin quản lý phiên của bạn đang được tự động cập nhật, vui lòng kiểm tra lại sau.",
+  "You are logged in with the only active and current session on your account.": "Bạn đang đăng nhập bằng phiên làm việc hiện tại và duy nhất trên tài khoản của mình.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Bạn có <span class=\"notranslate\">%d</span> phiên hoạt động.",
+  "Log out from other devices": "Đăng xuất khỏi các thiết bị khác",
+  "My Account - Invalidate Other Sessions": "Tài khoản của tôi - Làm mất hiệu lực các phiên khác",
+  "Successfully logged out all other devices.": "Đã đăng xuất thành công tất cả các thiết bị khác."
 }

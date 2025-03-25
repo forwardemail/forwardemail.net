@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> <span class=\"notranslate\">Web</span> İçin En İyi 5 Açık Kaynaklı E-posta İstemcisi",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> <span class=\"notranslate\">Webmail</span> için En İyi 5 Açık Kaynaklı E-posta İstemcisi",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "18 Mart 2025 tarihi itibariyle bu Fransız denizaşırı topraklarını da bu listeye ekledik (",
-  "per this GitHub request": "bu GitHub isteğine göre"
+  "per this GitHub request": "bu GitHub isteğine göre",
+  "Family name was invalid; please contact us if necessary.": "Soyadı geçersiz; lütfen gerekirse bizimle iletişime geçin.",
+  "Given name was invalid; please contact us if necessary.": "Verilen isim geçersiz; lütfen gerekirse bizimle iletişime geçin.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Ücretli bir plana yükseltme yaparsanız, analiz özelliğimizin kilidini açacaksınız.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Yükseltme yapmak istemiyorsanız, analizleri görüntülemek için lütfen <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">SSS bölümümüzdeki A&#39;dan G&#39;ye kadar olan Seçeneklere</a> bakın.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Ücretli bir plana yükseltme yaparsanız, günlük özelliğimizin kilidini açacaksınız.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Yükseltme yapmak istemiyorsanız, günlükleri görüntülemek için lütfen <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">SSS bölümümüzdeki A&#39;dan G&#39;ye kadar olan seçeneklere</a> bakın.",
+  "Session Management": "Oturum Yönetimi",
+  "Your session management information is being automatically updated, please check back later.": "Oturum yönetimi bilgileriniz otomatik olarak güncelleniyor, lütfen daha sonra tekrar kontrol edin.",
+  "You are logged in with the only active and current session on your account.": "Hesabınızdaki tek etkin ve geçerli oturumla giriş yaptınız.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "<span class=\"notranslate\">%d</span> aktif oturumunuz var.",
+  "Log out from other devices": "Diğer cihazlardan çıkış yapın",
+  "My Account - Invalidate Other Sessions": "Hesabım - Diğer Oturumları Geçersiz Kıl",
+  "Successfully logged out all other devices.": "Diğer tüm cihazlardan başarıyla çıkış yapıldı."
 }

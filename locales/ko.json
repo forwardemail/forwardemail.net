@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> <span class=\"notranslate\">Web</span> 5대 오픈소스 이메일 클라이언트",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> 년 <span class=\"notranslate\">Webmail</span> 위한 5대 오픈소스 이메일 클라이언트",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "2025년 3월 18일부터 우리는 이 목록에 이러한 프랑스 해외 영토도 추가했습니다.",
-  "per this GitHub request": "이 GitHub 요청에 따라"
+  "per this GitHub request": "이 GitHub 요청에 따라",
+  "Family name was invalid; please contact us if necessary.": "성이 잘못되었습니다. 필요 시 저희에게 연락해 주시기 바랍니다.",
+  "Given name was invalid; please contact us if necessary.": "이름이 잘못되었습니다. 필요 시 저희에게 연락해 주시기 바랍니다.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "유료 플랜으로 업그레이드하면 분석 기능을 사용할 수 있습니다.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "업그레이드를 원하지 않을 경우 <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">FAQ에서 옵션 A~G를</a> 참조하여 분석 내용을 확인하세요.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "유료 플랜으로 업그레이드하면 로그 기능을 사용할 수 있습니다.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "업그레이드를 원하지 않을 경우 <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">FAQ에서 옵션 A~G를</a> 참조하여 로그를 확인하세요.",
+  "Session Management": "세션 관리",
+  "Your session management information is being automatically updated, please check back later.": "세션 관리 정보가 자동으로 업데이트되고 있습니다. 나중에 다시 확인하세요.",
+  "You are logged in with the only active and current session on your account.": "귀하의 계정에서 유일하게 활성화된 현재 세션에 로그인되어 있습니다.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "활성 세션이 <span class=\"notranslate\">%d</span> 개 있습니다.",
+  "Log out from other devices": "다른 기기에서 로그아웃",
+  "My Account - Invalidate Other Sessions": "내 계정 - 다른 세션 무효화",
+  "Successfully logged out all other devices.": "다른 모든 장치에서 성공적으로 로그아웃되었습니다."
 }

@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 nejlepších e-mailových klientů s otevřeným zdrojovým kódem pro <span class=\"notranslate\">Web</span> v <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 nejlepších e-mailových klientů s otevřeným zdrojovým kódem pro <span class=\"notranslate\">Webmail</span> v <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Od 18. března 2025 jsme na tento seznam přidali také tato francouzská zámořská území (",
-  "per this GitHub request": "podle tohoto požadavku GitHubu"
+  "per this GitHub request": "podle tohoto požadavku GitHubu",
+  "Family name was invalid; please contact us if necessary.": "Příjmení bylo neplatné; v případě potřeby nás prosím kontaktujte.",
+  "Given name was invalid; please contact us if necessary.": "Křestní jméno bylo neplatné; v případě potřeby nás prosím kontaktujte.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Pokud upgradujete na placený plán, odemknete naši analytickou funkci.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Pokud si nepřejete upgradovat, přečtěte si prosím <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">možnosti A až G v našich nejčastějších dotazech</a> , kde si můžete prohlédnout analýzy.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Pokud upgradujete na placený plán, odemknete naši funkci protokolů.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Pokud si nepřejete upgradovat, podívejte se prosím na <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Možnosti A až G v našich FAQ</a> , kde najdete protokoly.",
+  "Session Management": "Správa relace",
+  "Your session management information is being automatically updated, please check back later.": "Informace o správě relací se automaticky aktualizují, vraťte se prosím později.",
+  "You are logged in with the only active and current session on your account.": "Jste přihlášeni pomocí jediné aktivní a aktuální relace na vašem účtu.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Máte <span class=\"notranslate\">%d</span> aktivních relací.",
+  "Log out from other devices": "Odhlaste se z jiných zařízení",
+  "My Account - Invalidate Other Sessions": "Můj účet – zrušit platnost dalších relací",
+  "Successfully logged out all other devices.": "Všechna ostatní zařízení byla úspěšně odhlášena."
 }

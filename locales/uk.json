@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 найкращих <span class=\"notranslate\">Web</span> -клієнтів електронної пошти з відкритим кодом у <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 найкращих поштових клієнтів із відкритим кодом для <span class=\"notranslate\">Webmail</span> у <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Станом на 18 березня 2025 року ми також додали ці французькі заморські території до цього списку (",
-  "per this GitHub request": "за цим запитом GitHub"
+  "per this GitHub request": "за цим запитом GitHub",
+  "Family name was invalid; please contact us if necessary.": "Прізвище недійсне; будь ласка, зв'яжіться з нами, якщо це необхідно.",
+  "Given name was invalid; please contact us if necessary.": "Дане ім'я недійсне; будь ласка, зв'яжіться з нами, якщо це необхідно.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Якщо ви перейдете на платний план, ви розблокуєте нашу функцію аналітики.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Якщо ви не бажаєте оновлюватись, перегляньте <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">варіанти від A до G у наших поширених запитаннях</a> , щоб переглянути аналітику.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Якщо ви перейдете на платний план, ви розблокуєте нашу функцію журналів.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Якщо ви не бажаєте оновлюватися, перегляньте <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">варіанти від A до G у наших поширених запитаннях</a> , щоб переглянути журнали.",
+  "Session Management": "Керування сеансами",
+  "Your session management information is being automatically updated, please check back later.": "Ваша інформація про керування сеансом автоматично оновлюється, перевірте пізніше.",
+  "You are logged in with the only active and current session on your account.": "Ви ввійшли в єдиний активний і поточний сеанс у своєму обліковому записі.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "У вас <span class=\"notranslate\">%d</span> активних сеансів.",
+  "Log out from other devices": "Вийти з інших пристроїв",
+  "My Account - Invalidate Other Sessions": "Мій обліковий запис - анулювати інші сеанси",
+  "Successfully logged out all other devices.": "Ви успішно вийшли з усіх інших пристроїв."
 }

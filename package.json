@@ -1,5 +1,5 @@
 {
-  "name": "forwardemail-net",
+  "name": "forward-email",
   "description": "The best open-source and free email forwarding service for custom domains. We do not keep logs nor store emails. We don't track you. Unlimited aliases, catch-alls, wildcards, API access, and disposable addresses. Built-in support for DKIM, SRS, SPF, ARC, DMARC, and more. No credit card required.",
   "version": "0.4.40",
   "author": "Forward Email LLC <support@forwardemail.net> (https://forwardemail.net)",

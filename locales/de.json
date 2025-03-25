@@ -9889,5 +9889,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "Die 5 besten Open-Source-E-Mail-Clients für <span class=\"notranslate\">Web</span> im <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "Die 5 besten Open-Source-E-Mail-Clients für <span class=\"notranslate\">Webmail</span> im <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Ab dem 18. März 2025 haben wir dieser Liste auch die folgenden französischen Überseegebiete hinzugefügt (",
-  "per this GitHub request": "gemäß dieser GitHub-Anfrage"
+  "per this GitHub request": "gemäß dieser GitHub-Anfrage",
+  "Family name was invalid; please contact us if necessary.": "Der Familienname war ungültig. Bitte kontaktieren Sie uns ggf.",
+  "Given name was invalid; please contact us if necessary.": "Der Vorname war ungültig. Bitte kontaktieren Sie uns gegebenenfalls.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Wenn Sie auf einen kostenpflichtigen Plan upgraden, schalten Sie unsere Analysefunktion frei.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Wenn Sie kein Upgrade wünschen, sehen Sie sich bitte <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">die Optionen A bis G in unseren FAQ</a> an, um die Analysen anzuzeigen.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Wenn Sie auf einen kostenpflichtigen Plan upgraden, wird unsere Protokollfunktion freigeschaltet.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Wenn Sie kein Upgrade wünschen, sehen Sie sich <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">die Optionen A bis G in unseren FAQ</a> an, um die Protokolle anzuzeigen.",
+  "Session Management": "Sitzungsverwaltung",
+  "Your session management information is being automatically updated, please check back later.": "Ihre Sitzungsverwaltungsinformationen werden automatisch aktualisiert. Bitte schauen Sie später noch einmal vorbei.",
+  "You are logged in with the only active and current session on your account.": "Sie sind mit der einzigen aktiven und aktuellen Sitzung Ihres Kontos angemeldet.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Sie haben <span class=\"notranslate\">%d</span> aktive Sitzungen.",
+  "Log out from other devices": "Von anderen Geräten abmelden",
+  "My Account - Invalidate Other Sessions": "Mein Konto – Andere Sitzungen ungültig machen",
+  "Successfully logged out all other devices.": "Alle anderen Geräte erfolgreich abgemeldet."
 }

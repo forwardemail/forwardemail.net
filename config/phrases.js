@@ -20,6 +20,7 @@ for (const key of Object.keys(statuses.message)) {
 }
 
 module.exports = {
+  LOGGED_OUT_OTHER_DEVICES: 'Successfully logged out all other devices.',
   NEWSLETTER_ALREADY_SUBSCRIBED:
     'You are already subscribed to our newsletter.',
   NEWSLETTER_SUBSCRIBED:

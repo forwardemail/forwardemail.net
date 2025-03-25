@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 ไคลเอนต์อีเมลโอเพ่นซอร์สยอดนิยมสำหรับ <span class=\"notranslate\">Web</span> ใน <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 ไคลเอนต์อีเมลโอเพ่นซอร์สยอดนิยมสำหรับ <span class=\"notranslate\">Webmail</span> ใน <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "ณ วันที่ 18 มีนาคม 2025 เรายังได้เพิ่มดินแดนโพ้นทะเลของฝรั่งเศสเหล่านี้ลงในรายการนี้ด้วย (",
-  "per this GitHub request": "ตามคำขอ GitHub นี้"
+  "per this GitHub request": "ตามคำขอ GitHub นี้",
+  "Family name was invalid; please contact us if necessary.": "นามสกุลไม่ถูกต้อง กรุณาติดต่อเราหากจำเป็น",
+  "Given name was invalid; please contact us if necessary.": "ชื่อที่ระบุไม่ถูกต้อง กรุณาติดต่อเราหากจำเป็น",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "หากคุณอัปเกรดเป็นแผนแบบชำระเงิน คุณจะปลดล็อคฟีเจอร์วิเคราะห์ของเราได้",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "หากคุณไม่ต้องการอัพเกรด โปรดดู <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">ตัวเลือก A ถึง G ในคำถามที่พบบ่อยของเรา</a> เพื่อดูข้อมูลวิเคราะห์",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "หากคุณอัปเกรดเป็นแผนแบบชำระเงิน คุณจะปลดล็อคคุณสมบัติบันทึกของเราได้",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "หากคุณไม่ต้องการอัพเกรด โปรดดู <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">ตัวเลือก A ถึง G ในคำถามที่พบบ่อยของเรา</a> เพื่อดูบันทึก",
+  "Session Management": "การจัดการเซสชั่น",
+  "Your session management information is being automatically updated, please check back later.": "ข้อมูลการจัดการเซสชันของคุณกำลังได้รับการอัปเดตโดยอัตโนมัติ โปรดตรวจสอบอีกครั้งในภายหลัง",
+  "You are logged in with the only active and current session on your account.": "คุณเข้าสู่ระบบด้วยเซสชันที่ใช้งานอยู่และปัจจุบันเท่านั้นในบัญชีของคุณ",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "คุณมีเซสชันที่ใช้งานอยู่ <span class=\"notranslate\">%d</span>",
+  "Log out from other devices": "ออกจากระบบจากอุปกรณ์อื่น",
+  "My Account - Invalidate Other Sessions": "บัญชีของฉัน - ยกเลิกเซสชันอื่น ๆ",
+  "Successfully logged out all other devices.": "ออกจากระบบอุปกรณ์อื่น ๆ ทั้งหมดสำเร็จแล้ว"
 }

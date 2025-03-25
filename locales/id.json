@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 Klien Email Open Source Teratas untuk <span class=\"notranslate\">Web</span> pada <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 Klien Email Open Source Teratas untuk <span class=\"notranslate\">Webmail</span> pada <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Pada tanggal 18 Maret 2025, kami juga telah menambahkan wilayah seberang laut Prancis ini ke dalam daftar ini (",
-  "per this GitHub request": "sesuai permintaan GitHub ini"
+  "per this GitHub request": "sesuai permintaan GitHub ini",
+  "Family name was invalid; please contact us if necessary.": "Nama keluarga tidak valid; silakan hubungi kami jika perlu.",
+  "Given name was invalid; please contact us if necessary.": "Nama yang diberikan tidak valid; harap hubungi kami jika perlu.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Jika Anda meningkatkan ke paket berbayar, maka Anda akan membuka fitur analitik kami.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Jika Anda tidak ingin melakukan peningkatan, silakan lihat <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Opsi A hingga G di Tanya Jawab Umum kami</a> untuk melihat analitik.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Jika Anda meningkatkan ke paket berbayar, maka Anda akan membuka fitur log kami.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Jika Anda tidak ingin melakukan peningkatan, silakan lihat <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Opsi A hingga G di Tanya Jawab Umum kami</a> untuk melihat log.",
+  "Session Management": "Manajemen Sesi",
+  "Your session management information is being automatically updated, please check back later.": "Informasi manajemen sesi Anda sedang diperbarui secara otomatis, silakan periksa kembali nanti.",
+  "You are logged in with the only active and current session on your account.": "Anda masuk dengan satu-satunya sesi yang aktif dan terkini pada akun Anda.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Anda memiliki <span class=\"notranslate\">%d</span> sesi aktif.",
+  "Log out from other devices": "Keluar dari perangkat lain",
+  "My Account - Invalidate Other Sessions": "Akun Saya - Batalkan Sesi Lainnya",
+  "Successfully logged out all other devices.": "Berhasil keluar dari semua perangkat lainnya."
 }

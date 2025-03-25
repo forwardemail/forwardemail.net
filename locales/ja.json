@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>の<span class=\"notranslate\">Web</span>向けオープンソース メール クライアント トップ 5",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>の<span class=\"notranslate\">Webmail</span>向けオープンソース メール クライアント トップ 5",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "2025年3月18日現在、以下のフランス海外領土もこのリストに追加されています（",
-  "per this GitHub request": "このGitHubリクエストに従って"
+  "per this GitHub request": "このGitHubリクエストに従って",
+  "Family name was invalid; please contact us if necessary.": "姓が無効です。必要な場合はご連絡ください。",
+  "Given name was invalid; please contact us if necessary.": "指定された名前は無効です。必要な場合はご連絡ください。",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "有料プランにアップグレードすると、分析機能が利用できるようになります。",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "アップグレードを希望しない場合は、分析を表示するには、 <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">FAQ のオプション A ～ G を</a>参照してください。",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "有料プランにアップグレードすると、ログ機能が利用できるようになります。",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "アップグレードを希望しない場合は、ログを表示するには<a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">FAQ のオプション A ～ G を</a>参照してください。",
+  "Session Management": "セッション管理",
+  "Your session management information is being automatically updated, please check back later.": "セッション管理情報は自動的に更新されていますので、後でもう一度確認してください。",
+  "You are logged in with the only active and current session on your account.": "アカウント上の唯一のアクティブかつ現在のセッションでログインしています。",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "アクティブなセッションが<span class=\"notranslate\">%d</span>あります。",
+  "Log out from other devices": "他のデバイスからログアウトする",
+  "My Account - Invalidate Other Sessions": "マイアカウント - 他のセッションを無効にする",
+  "Successfully logged out all other devices.": "他のすべてのデバイスから正常にログアウトしました。"
 }

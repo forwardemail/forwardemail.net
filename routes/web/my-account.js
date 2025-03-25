@@ -29,6 +29,7 @@ const Users = require('#models/users');
 const config = require('#config');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
+const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
@@ -541,6 +542,12 @@ router
   })
   .post('/timezone', web.myAccount.updateTimezone)
   .delete('/security', web.myAccount.resetAPIToken)
+  .post('/invalidate-other-sessions', async (ctx) => {
+    await invalidateOtherSessions(ctx);
+    ctx.flash('success', ctx.translate('LOGGED_OUT_OTHER_DEVICES'));
+    if (ctx.accepts('html')) ctx.redirect('back');
+    else ctx.body = { reloadPage: true };
+  })
   .get(
     '/security',
     web.myAccount.checkVerifiedEmail,

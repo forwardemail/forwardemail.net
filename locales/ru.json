@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 лучших почтовых клиентов с открытым исходным кодом для <span class=\"notranslate\">Web</span> в <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 лучших почтовых клиентов с открытым исходным кодом для <span class=\"notranslate\">Webmail</span> в <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "По состоянию на 18 марта 2025 года мы также добавили в этот список следующие французские заморские территории (",
-  "per this GitHub request": "по этому запросу GitHub"
+  "per this GitHub request": "по этому запросу GitHub",
+  "Family name was invalid; please contact us if necessary.": "Фамилия указана неверно. При необходимости свяжитесь с нами.",
+  "Given name was invalid; please contact us if necessary.": "Имя указано неверно. При необходимости свяжитесь с нами.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Если вы перейдете на платный план, вам станет доступна наша функция аналитики.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Если вы не хотите обновляться, ознакомьтесь с <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">вариантами A–G в разделе часто задаваемых вопросов</a> , чтобы просмотреть аналитику.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Если вы перейдете на платный тарифный план, вы разблокируете функцию наших журналов.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Если вы не хотите обновляться, то, чтобы просмотреть журналы, ознакомьтесь с <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">вариантами A–G в разделе часто задаваемых вопросов</a> .",
+  "Session Management": "Управление сеансом",
+  "Your session management information is being automatically updated, please check back later.": "Информация об управлении сеансом автоматически обновляется. Повторите попытку позже.",
+  "You are logged in with the only active and current session on your account.": "Вы вошли в систему с единственным активным и текущим сеансом в вашей учетной записи.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "У вас <span class=\"notranslate\">%d</span> активных сеансов.",
+  "Log out from other devices": "Выйдите из других устройств",
+  "My Account - Invalidate Other Sessions": "Мой аккаунт - Аннулировать другие сеансы",
+  "Successfully logged out all other devices.": "Успешно выполнен выход из всех остальных устройств."
 }

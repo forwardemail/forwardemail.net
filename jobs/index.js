@@ -225,6 +225,12 @@ const jobs = [
     name: 'update-alias-and-domain-counts',
     interval: '1d',
     timeout: 0
+  },
+  // session management
+  {
+    name: 'session-management',
+    interval: '1h',
+    timeout: 0
   }
 ];
 

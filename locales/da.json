@@ -7879,5 +7879,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 Top Open Source e-mail-klienter til <span class=\"notranslate\">Web</span> i <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 Top Open Source e-mail-klienter til <span class=\"notranslate\">Webmail</span> i <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Fra den 18. marts 2025 har vi også tilføjet disse franske oversøiske territorier til denne liste (",
-  "per this GitHub request": "efter denne GitHub-anmodning"
+  "per this GitHub request": "efter denne GitHub-anmodning",
+  "Family name was invalid; please contact us if necessary.": "Efternavnet var ugyldigt; kontakt os venligst hvis det er nødvendigt.",
+  "Given name was invalid; please contact us if necessary.": "Fornavnet var ugyldigt; kontakt os venligst hvis det er nødvendigt.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Hvis du opgraderer til en betalt plan, låser du vores analysefunktion op.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Hvis du ikke ønsker at opgradere, så se venligst <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">valgmuligheder A til G i vores ofte stillede spørgsmål</a> for at se analyser.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Hvis du opgraderer til en betalt plan, låser du vores logfunktion op.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Hvis du ikke ønsker at opgradere, så se venligst <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">valgmuligheder A til G i vores FAQ</a> for at se logfiler.",
+  "Session Management": "Sessionsstyring",
+  "Your session management information is being automatically updated, please check back later.": "Din sessionsstyringsoplysninger bliver automatisk opdateret. Kom venligst tilbage senere.",
+  "You are logged in with the only active and current session on your account.": "Du er logget ind med den eneste aktive og aktuelle session på din konto.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Du har <span class=\"notranslate\">%d</span> aktive sessioner.",
+  "Log out from other devices": "Log ud fra andre enheder",
+  "My Account - Invalidate Other Sessions": "Min konto - Ugyldiggør andre sessioner",
+  "Successfully logged out all other devices.": "Alle andre enheder er blevet logget ud."
 }

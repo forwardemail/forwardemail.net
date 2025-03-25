@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "أفضل 5 عملاء بريد إلكتروني مفتوح المصدر <span class=\"notranslate\">Web</span> في <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "أفضل 5 عملاء بريد إلكتروني مفتوح المصدر للبريد <span class=\"notranslate\">Webmail</span> في <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "اعتبارًا من 18 مارس 2025، أضفنا أيضًا هذه الأقاليم الفرنسية الخارجية إلى هذه القائمة (",
-  "per this GitHub request": "وفقًا لطلب GitHub هذا"
+  "per this GitHub request": "وفقًا لطلب GitHub هذا",
+  "Family name was invalid; please contact us if necessary.": "اسم العائلة غير صالح؛ يرجى الاتصال بنا إذا لزم الأمر.",
+  "Given name was invalid; please contact us if necessary.": "الاسم الأول غير صالح؛ يرجى الاتصال بنا إذا لزم الأمر.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "إذا قمت بالترقية إلى خطة مدفوعة، فسوف تتمكن من إلغاء قفل ميزة التحليلات لدينا.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "إذا كنت لا ترغب في الترقية، فيرجى الاطلاع على <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">الخيارات من A إلى G في قسم الأسئلة الشائعة لدينا</a> لعرض التحليلات.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "إذا قمت بالترقية إلى خطة مدفوعة، فسوف تتمكن من إلغاء قفل ميزة سجلاتنا.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "إذا كنت لا ترغب في الترقية، فيرجى الاطلاع على <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">الخيارات من A إلى G في قسم الأسئلة الشائعة لدينا</a> لعرض السجلات.",
+  "Session Management": "إدارة الجلسة",
+  "Your session management information is being automatically updated, please check back later.": "يتم تحديث معلومات إدارة الجلسة الخاصة بك تلقائيًا، يرجى التحقق مرة أخرى لاحقًا.",
+  "You are logged in with the only active and current session on your account.": "لقد قمت بتسجيل الدخول باستخدام الجلسة النشطة والحالية الوحيدة على حسابك.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "لديك <span class=\"notranslate\">%d</span> جلسات نشطة.",
+  "Log out from other devices": "تسجيل الخروج من الأجهزة الأخرى",
+  "My Account - Invalidate Other Sessions": "حسابي - إلغاء الجلسات الأخرى",
+  "Successfully logged out all other devices.": "تم تسجيل الخروج من جميع الأجهزة الأخرى بنجاح."
 }

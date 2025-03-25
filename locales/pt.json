@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 principais clientes de e-mail de código aberto para <span class=\"notranslate\">Web</span> em <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 principais clientes de e-mail de código aberto para <span class=\"notranslate\">Webmail</span> em <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "A partir de 18 de março de 2025, também adicionamos esses territórios ultramarinos franceses a esta lista (",
-  "per this GitHub request": "por esta solicitação do GitHub"
+  "per this GitHub request": "por esta solicitação do GitHub",
+  "Family name was invalid; please contact us if necessary.": "O sobrenome é inválido; entre em contato conosco se necessário.",
+  "Given name was invalid; please contact us if necessary.": "O nome fornecido é inválido; entre em contato conosco se necessário.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Se você fizer upgrade para um plano pago, você desbloqueará nosso recurso de análise.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Se você não deseja fazer o upgrade, consulte <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">as Opções de A a G em nossas Perguntas Frequentes</a> para visualizar as análises.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Se você fizer upgrade para um plano pago, você desbloqueará nosso recurso de registros.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Se você não deseja atualizar, consulte <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">as Opções de A a G em nossas Perguntas Frequentes</a> para visualizar os registros.",
+  "Session Management": "Gerenciamento de Sessão",
+  "Your session management information is being automatically updated, please check back later.": "Suas informações de gerenciamento de sessão estão sendo atualizadas automaticamente. Volte mais tarde.",
+  "You are logged in with the only active and current session on your account.": "Você está conectado com a única sessão ativa e atual em sua conta.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "Você tem <span class=\"notranslate\">%d</span> sessões ativas.",
+  "Log out from other devices": "Sair de outros dispositivos",
+  "My Account - Invalidate Other Sessions": "Minha conta - Invalidar outras sessões",
+  "Successfully logged out all other devices.": "Todos os outros dispositivos foram desconectados com sucesso."
 }

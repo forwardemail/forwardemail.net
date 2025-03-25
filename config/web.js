@@ -20,14 +20,15 @@ const ms = require('ms');
 const openpgp = require('openpgp/dist/node/openpgp.js');
 const sharedConfig = require('@ladjs/shared-config');
 const { Octokit } = require('@octokit/core');
-const routes = require('../routes');
 
+const routes = require('../routes');
 const cookieOptions = require('./cookies');
 const env = require('./env');
 const koaCashConfig = require('./koa-cash');
 
 const config = require('.');
 
+const Users = require('#models/users');
 const createTangerine = require('#helpers/create-tangerine');
 const i18n = require('#helpers/i18n');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
@@ -446,24 +447,50 @@ module.exports = (redis) => ({
     });
 
     // if user has OTP remember me then set on session
+    // and/or
+    // if user is logged in then ensure their current session ID is stored
     app.use((ctx, next) => {
-      if (
-        ctx.session &&
-        ctx.isAuthenticated() &&
-        ctx.state.user[config.passport.fields.otpEnabled]
-      ) {
-        if (ctx.session.otp) {
-          if (ctx.session.otp_remember_me) {
-            ctx.cookies.set(
-              'otp_remember_me',
-              ctx.state.user.id,
-              cookieOptions
-            );
-          } else {
-            ctx.cookies.set('otp_remember_me', null);
+      if (ctx.session && ctx.isAuthenticated()) {
+        if (!Array.isArray(ctx.state.user.sessions)) {
+          Users.findOneAndUpdate(
+            {
+              id: ctx.state.user.id
+            },
+            {
+              $set: {
+                sessions: [ctx.sessionId]
+              }
+            }
+          );
+        } else if (!ctx.state.user.sessions.includes(ctx.sessionId)) {
+          Users.findOneAndUpdate(
+            {
+              id: ctx.state.user.id
+            },
+            {
+              $addToSet: {
+                sessions: ctx.sessionId
+              }
+            }
+          )
+            .then()
+            .catch((err) => ctx.logger.fatal(err));
+        }
+
+        if (ctx.state.user[config.passport.fields.otpEnabled]) {
+          if (ctx.session.otp) {
+            if (ctx.session.otp_remember_me) {
+              ctx.cookies.set(
+                'otp_remember_me',
+                ctx.state.user.id,
+                cookieOptions
+              );
+            } else {
+              ctx.cookies.set('otp_remember_me', null);
+            }
+          } else if (ctx.cookies.get('otp_remember_me') === ctx.state.user.id) {
+            ctx.session.otp = 'remember_me';
           }
-        } else if (ctx.cookies.get('otp_remember_me') === ctx.state.user.id) {
-          ctx.session.otp = 'remember_me';
         }
       }
 

@@ -137,6 +137,7 @@ const getSettings = require('./get-settings');
 const isAutoReplyOrMailingList = require('./is-auto-reply-or-mailing-list');
 const signMessage = require('./sign-message');
 const isExpiredOrNewlyCreated = require('./is-expired-or-newly-created');
+const invalidateOtherSessions = require('./invalidate-other-sessions');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -277,5 +278,6 @@ module.exports = {
   getSettings,
   isAutoReplyOrMailingList,
   signMessage,
-  isExpiredOrNewlyCreated
+  isExpiredOrNewlyCreated,
+  invalidateOtherSessions
 };

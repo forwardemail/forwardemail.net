@@ -150,9 +150,23 @@ async function login(ctx) {
   const user = await Users.findById(ctx.params.id);
   if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
 
+  // store a reference to the session ID so we can clean it up on user model
+  const { sessionId } = ctx;
+  const userId = ctx.state.user._id;
+
   ctx.logout();
 
   await ctx.login(user);
+
+  // remove from the user session array the matching value
+  // (from the admin's session list)
+  Users.findByIdAndUpdate(userId, {
+    $pullAll: {
+      sessions: [sessionId]
+    }
+  })
+    .then()
+    .catch((err) => ctx.logger.fatal(err));
 
   if (user[config.passport.fields.otpEnabled] && ctx.session) {
     ctx.session.otp_remember_me = false;

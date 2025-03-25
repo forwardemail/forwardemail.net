@@ -26,7 +26,7 @@ router
     return ctx.render('otp/login');
   })
   .post(config.otpRouteLoginPath, web.auth.loginOtp, rateLimit(30, 'otp login'))
-  .get('/setup', render('otp/setup'))
+  .get('/setup', web.otp.setup, render('otp/setup'))
   .post('/setup', rateLimit(10, 'otp setup'), web.otp.setup)
   .post('/disable', rateLimit(10, 'otp disable'), web.otp.disable)
   .post('/recovery', rateLimit(10, 'otp recovery'), web.otp.recovery)

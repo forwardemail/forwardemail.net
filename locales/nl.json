@@ -10850,5 +10850,18 @@
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>": "5 beste open source e-mailclients voor <span class=\"notranslate\">Web</span> in <span class=\"notranslate\">2025</span>",
   "5 Top Open Source Email Clients for <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>": "5 beste open source e-mailclients voor <span class=\"notranslate\">Webmail</span> in <span class=\"notranslate\">2025</span>",
   "As of March 18, 2025 we have also added these French overseas territories to this list (": "Vanaf 18 maart 2025 hebben we ook deze Franse overzeese gebieden aan deze lijst toegevoegd (",
-  "per this GitHub request": "volgens dit GitHub-verzoek"
+  "per this GitHub request": "volgens dit GitHub-verzoek",
+  "Family name was invalid; please contact us if necessary.": "De achternaam is ongeldig. Neem contact met ons op als dat nodig is.",
+  "Given name was invalid; please contact us if necessary.": "De voornaam is ongeldig. Neem contact met ons op indien nodig.",
+  "If you upgrade to a paid plan, then you will unlock our analytics feature.": "Als u een upgrade uitvoert naar een betaald abonnement, krijgt u toegang tot onze analysefunctie.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view analytics.": "Als u niet wilt upgraden, raadpleeg dan <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">opties A tot en met G in onze FAQ</a> om analyses te bekijken.",
+  "If you upgrade to a paid plan, then you will unlock our logs feature.": "Als u een upgrade uitvoert naar een betaald abonnement, ontgrendelt u onze logfunctie.",
+  "If you do not wish to upgrade, then please see <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">Options A to G in our FAQ</a> in order to view logs.": "Als u niet wilt upgraden, raadpleeg dan <a href=\"%s\" class=\"text-decoration-underline text-primary font-weight-bold\" target=\"_blank\">opties A tot en met G in onze FAQ</a> om de logs te bekijken.",
+  "Session Management": "Sessiebeheer",
+  "Your session management information is being automatically updated, please check back later.": "Uw sessiebeheergegevens worden automatisch bijgewerkt. Kom later nog eens terug.",
+  "You are logged in with the only active and current session on your account.": "U bent ingelogd met de enige actieve en huidige sessie op uw account.",
+  "You have <span class=\"notranslate\">%d</span> active sessions.": "U hebt <span class=\"notranslate\">%d</span> actieve sessies.",
+  "Log out from other devices": "Uitloggen van andere apparaten",
+  "My Account - Invalidate Other Sessions": "Mijn account - Andere sessies ongeldig maken",
+  "Successfully logged out all other devices.": "Alle andere apparaten zijn succesvol afgemeld."
 }

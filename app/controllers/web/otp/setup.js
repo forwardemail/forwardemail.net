@@ -17,8 +17,31 @@ authenticator.options = {
   window: 1
 };
 
-async function setup(ctx) {
+async function setup(ctx, next) {
+  //
+  // NOTE: if user has not verified email yet then do not permit OTP to be setup
+  //
+  if (!ctx.state.user[config.userFields.hasVerifiedEmail]) {
+    ctx.flash('warning', ctx.translate('EMAIL_VERIFICATION_REQUIRED'));
+
+    const redirectTo = ctx.state.l(config.verifyRoute);
+    if (ctx.accepts('html')) ctx.redirect(redirectTo);
+    else ctx.body = { redirectTo };
+
+    return;
+  }
+
+  if (ctx.method === 'GET') return next();
+
   const { body } = ctx.request;
+
+  if (ctx.state.user[config.userFields.hasSetPassword]) {
+    if (!isSANB(body.password))
+      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+
+    const { user } = await ctx.state.user.authenticate(body.password);
+    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
+  }
 
   if (ctx.method === 'DELETE') {
     ctx.state.user[config.passport.fields.otpEnabled] = false;
@@ -67,14 +90,6 @@ async function setup(ctx) {
     });
     ctx.redirect(ctx.state.l('/my-account/security'));
     return;
-  }
-
-  if (ctx.state.user[config.userFields.hasSetPassword]) {
-    if (!isSANB(body.password))
-      throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
-
-    const { user } = await ctx.state.user.authenticate(body.password);
-    if (!user) throw Boom.badRequest(ctx.translateError('INVALID_PASSWORD'));
   }
 
   ctx.state.otpTokenURI = authenticator.keyuri(
