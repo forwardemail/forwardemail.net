@@ -473,8 +473,16 @@ object[config.lastLocaleField] = {
 //
 // company information
 //
+object[config.userFields.companyName] = {
+  type: String,
+  trim: true,
+  maxlength: 255,
+  validate(value) {
+    // allow company names to be website dot com's
+    return isNameValue(value) || isFQDN(value);
+  }
+};
 for (const prop of [
-  config.userFields.companyName,
   config.userFields.addressLine1,
   config.userFields.addressLine2,
   config.userFields.addressCity,

@@ -839,7 +839,7 @@ Domains.pre('validate', async function (next) {
       }
 
       if (badUserEmails.length > 0) {
-        logger.error(
+        logger.debug(
           new Error(
             `Restricted domain had personal emails: ${domain.name} (${domain.id})`
           ),

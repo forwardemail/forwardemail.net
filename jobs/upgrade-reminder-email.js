@@ -87,7 +87,7 @@ async function mapper(upgradeReminder) {
 
   // if queue size is greater than 10 then it must be abused for disposable service
   if (upgradeReminder.queue.length > 10) {
-    logger.error(`${upgradeReminder.domain} has more than 10 recipients`, {
+    logger.debug(`${upgradeReminder.domain} has more than 10 recipients`, {
       upgradeReminder
     });
     return;

@@ -1815,7 +1815,8 @@ async function parsePayload(data, ws) {
           //
           // run in worker pool to offset from main thread (because of VACUUM)
           if (!runBackup)
-            throw Boom.clientTimeout(
+            // throw Boom.clientTimeout(
+            throw Boom.tooManyRequests(
               i18n.translateError(
                 'BACKUP_IN_PROGRESS',
                 payload.session.user.locale
