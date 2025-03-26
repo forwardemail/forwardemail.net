@@ -649,6 +649,22 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
   </tbody>
 </table>
 
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    Catch-all forwarding rules could also be described as 'fall-through'; Incoming emails which match at least one 'specific' forwarding rule will be ignored by catch-all rules.
+    'Specific' rules include regular expression, single- and multi-email rules.
+    For example:
+    <br /><br />
+    <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
+    <br /><br />
+    Emails addressed to <code>hello@example.com</code> will *not* be forwarded to <code>second@gmail.com</code> with this configuration.
+  </span>
+</div>
+
 ---
 
 </li><li class="mb-2 mb-md-3 mb-lg-5">Using your registrar's DNS management page (the other tab you have opened), additionally set the following <strong class="notranslate">TXT</strong> record:
