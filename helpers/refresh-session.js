@@ -5,6 +5,7 @@
 
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const { IMAPServer } = require('wildduck/imap-core');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
@@ -50,21 +51,11 @@ async function refreshSession(session, command) {
   if (this.isClosing) throw new ServerShutdownError();
 
   // NOTE: WildDuck POP3 doesn't expose socket on session yet (also see similar comment in onAuth helper)
-  // check if socket is still connected
-  if (
-    this?.constructor?.name !== 'SQLite' &&
-    this?.constructor?.name !== 'POP3' &&
-    this?.constructor?.name !== 'CalDAV'
-  ) {
+  // check if socket is still connected (only applicable for IMAP and POP3 servers)
+  if (this?.server instanceof IMAPServer) {
     const socket = (session.socket && session.socket._parent) || session.socket;
-    if (!socket || socket?.destroyed || socket?.readyState !== 'open') {
-      const err = new SocketError();
-      err.isCodeBug = true;
-      err.socket = socket;
-      err.session = session;
-      this.logger.fatal(err);
-      // throw err; // TODO: investigate why socket error occurs here
-    }
+    if (!socket || socket?.destroyed || socket?.readyState !== 'open')
+      throw new SocketError();
   }
 
   if (!isSANB(session?.user?.domain_id) || !isSANB(session?.user?.domain_name))

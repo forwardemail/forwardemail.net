@@ -19,7 +19,7 @@ class SocketError extends Error {
     Error.captureStackTrace(this, SocketError);
     // wildduck uses `responseMessage` in some instances
     this.responseMessage = message;
-    this.responseCode = 550;
+    this.responseCode = 421; // 550;
     this.response = 'NO';
   }
 }

@@ -61,19 +61,13 @@ async function onAuth(auth, session, fn) {
     // NOTE: WildDuck POP3 server uses naming of `_closingTimeout` instead of `_closeTimeout`
     if (this.server._closingTimeout) throw new ServerShutdownError();
 
-    // NOTE: socket is not yet exposed in WildDuck POP3 server in session object
+    // NOTE: WildDuck POP3 doesn't expose socket on session yet (also see similar comment in onAuth helper)
     // check if socket is still connected (only applicable for IMAP and POP3 servers)
     if (this.server instanceof IMAPServer) {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
-      if (!socket || socket?.destroyed || socket?.readyState !== 'open') {
-        const err = new SocketError();
-        err.isCodeBug = true;
-        err.socket = socket;
-        err.session = session;
-        this.logger.fatal(err);
-        // throw err; // TODO: investigate why socket error occurs here
-      }
+      if (!socket || socket?.destroyed || socket?.readyState !== 'open')
+        throw new SocketError();
     }
 
     // NOTE: this is only required for WildDuck servers (IMAP/POP3)
