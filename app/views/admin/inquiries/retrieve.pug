@@ -6,7 +6,6 @@ block body
       .col
         include ../../_breadcrumbs
         each message in messages
-          - const isSenderEmail = message?.sender_email?.includes("support@");
           iframe.bg-white.border-dark(
             sandbox="allow-downloads allow-scripts",
             referrerpolicy="no-referrer",
