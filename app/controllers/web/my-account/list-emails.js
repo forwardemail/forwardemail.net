@@ -254,7 +254,7 @@ async function listEmails(ctx, next) {
           $skip: ctx.paginate.skip
         },
         {
-          $limit: ctx.query.limit
+          $limit: Number.parseInt(ctx.query.limit, 10)
         }
       ]),
       Emails.aggregate([...arr, { $count: 'count' }])

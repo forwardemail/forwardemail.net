@@ -135,7 +135,7 @@ async function list(ctx) {
         $skip: ctx.paginate.skip
       },
       {
-        $limit: ctx.query.limit
+        $limit: Number.parseInt(ctx.query.limit, 10)
       }
     ]).exec(),
     Inquiries.countDocuments(query)
