@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Выйдите из других устройств",
   "My Account - Invalidate Other Sessions": "Мой аккаунт - Аннулировать другие сеансы",
   "Successfully logged out all other devices.": "Успешно выполнен выход из всех остальных устройств.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Если вам нужно удалить",
+  "properties from the payload body, simply add": "свойства из тела полезной нагрузки, просто добавьте",
+  "to your webhook endpoint as a querystring parameter (e.g.": "к конечной точке вашего веб-перехватчика в качестве параметра строки запроса (например,",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Правила пересылки Catch-all также можно описать как «провал».\nЭто означает, что входящие письма, которые соответствуют хотя бы одному определенному правилу пересылки, будут использоваться вместо правила catch-all.\nОпределенные правила включают адреса электронной почты и регулярные выражения.",
+  "Emails sent to": "Письма отправлены",
+  "will **not** be forwarded to": "не будет **пересылаться**",
+  "(catch-all) with this configuration, and instead only be delivered to": "(всеобъемлющий) с этой конфигурацией, и вместо этого доставляться только"
 }

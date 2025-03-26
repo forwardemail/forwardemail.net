@@ -178,7 +178,8 @@ const Member = new mongoose.Schema({
     default: 'user',
     enum: ['admin', 'user'],
     lowercase: true,
-    trim: true
+    trim: true,
+    index: true
   }
 });
 
@@ -499,6 +500,8 @@ Domains.index(
     }
   }
 );
+
+Domains.index({ 'members.user': 1, 'members.group': 1 });
 
 Domains.index({
   name: 1,

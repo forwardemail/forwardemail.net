@@ -8907,7 +8907,11 @@
   "Log out from other devices": "התנתק ממכשירים אחרים",
   "My Account - Invalidate Other Sessions": "החשבון שלי - בטל תוקף של הפעלות אחרות",
   "Successfully logged out all other devices.": "התנתק בהצלחה מכל שאר המכשירים.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "אם אתה צריך להסיר",
+  "properties from the payload body, simply add": "מאפיינים מגוף המטען, פשוט הוסף",
+  "to your webhook endpoint as a querystring parameter (e.g.": "לנקודת הקצה של ה-webhook שלך כפרמטר querystring (למשל.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "ניתן לתאר כללים להעברת כלים כ\"נפילה\".\n    המשמעות היא שהודעות דוא\"ל נכנסות שתואמות לפחות כלל העברת מידע ספציפי אחד ישמשו במקום ה-catch-all.\n    כללים ספציפיים כוללים כתובות דוא\"ל וביטויים רגולריים.",
+  "Emails sent to": "מיילים שנשלחו אל",
+  "will **not** be forwarded to": "**לא** יועבר ל",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) עם תצורה זו, ובמקום זאת להימסר רק אל"
 }

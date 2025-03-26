@@ -8417,7 +8417,11 @@
   "Log out from other devices": "Đăng xuất khỏi các thiết bị khác",
   "My Account - Invalidate Other Sessions": "Tài khoản của tôi - Làm mất hiệu lực các phiên khác",
   "Successfully logged out all other devices.": "Đã đăng xuất thành công tất cả các thiết bị khác.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Nếu bạn cần phải loại bỏ",
+  "properties from the payload body, simply add": "thuộc tính từ phần thân tải trọng, chỉ cần thêm",
+  "to your webhook endpoint as a querystring parameter (e.g.": "đến điểm cuối webhook của bạn dưới dạng tham số chuỗi truy vấn (ví dụ:",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Quy tắc chuyển tiếp catch-all cũng có thể được mô tả là \"fall-through\". Điều này có nghĩa là các email đến khớp với ít nhất một quy tắc chuyển tiếp cụ thể sẽ được sử dụng thay vì catch-all.\nCác quy tắc cụ thể bao gồm địa chỉ email và biểu thức chính quy.",
+  "Emails sent to": "Email được gửi đến",
+  "will **not** be forwarded to": "sẽ **không** được chuyển tiếp đến",
+  "(catch-all) with this configuration, and instead only be delivered to": "(bắt tất cả) với cấu hình này và thay vào đó chỉ được chuyển đến"
 }

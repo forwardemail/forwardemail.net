@@ -10864,7 +10864,11 @@
   "Log out from other devices": "他のデバイスからログアウトする",
   "My Account - Invalidate Other Sessions": "マイアカウント - 他のセッションを無効にする",
   "Successfully logged out all other devices.": "他のすべてのデバイスから正常にログアウトしました。",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "削除する必要がある場合",
+  "properties from the payload body, simply add": "ペイロード本体からプロパティを削除するには、",
+  "to your webhook endpoint as a querystring parameter (e.g.": "クエリ文字列パラメータとして webhook エンドポイントに追加します (例:",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "キャッチオール転送ルールは、「フォールスルー」とも呼ばれます。\nこれは、キャッチオールの代わりに、少なくとも 1 つの特定の転送ルールに一致する受信メールが使用されることを意味します。\n特定のルールには、電子メール アドレスと正規表現が含まれます。",
+  "Emails sent to": "送信されたメール",
+  "will **not** be forwarded to": "**転送されません**",
+  "(catch-all) with this configuration, and instead only be delivered to": "（キャッチオール）この設定では、代わりに"
 }

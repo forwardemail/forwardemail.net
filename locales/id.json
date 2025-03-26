@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Keluar dari perangkat lain",
   "My Account - Invalidate Other Sessions": "Akun Saya - Batalkan Sesi Lainnya",
   "Successfully logged out all other devices.": "Berhasil keluar dari semua perangkat lainnya.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Jika Anda perlu menghapus",
+  "properties from the payload body, simply add": "properti dari badan muatan, cukup tambahkan",
+  "to your webhook endpoint as a querystring parameter (e.g.": "ke titik akhir webhook Anda sebagai parameter querystring (misalnya",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Aturan penerusan catch-all juga dapat dideskripsikan sebagai \"fall-through\".\nIni berarti bahwa email masuk yang cocok dengan setidaknya satu aturan penerusan tertentu akan digunakan sebagai ganti catch-all.\nAturan khusus mencakup alamat email dan ekspresi reguler.",
+  "Emails sent to": "Email dikirim ke",
+  "will **not** be forwarded to": "**tidak** akan diteruskan ke",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) dengan konfigurasi ini, dan sebaliknya hanya akan dikirimkan ke"
 }

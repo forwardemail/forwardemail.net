@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Logga ut från andra enheter",
   "My Account - Invalidate Other Sessions": "Mitt konto - ogiltigförklara andra sessioner",
   "Successfully logged out all other devices.": "Loggade ut alla andra enheter.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Om du behöver ta bort",
+  "properties from the payload body, simply add": "egenskaper från nyttolastkroppen, lägg helt enkelt till",
+  "to your webhook endpoint as a querystring parameter (e.g.": "till din webhook-slutpunkt som en frågesträngsparameter (t.ex.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all-vidarebefordransregler kan också beskrivas som \"fall-through\".\n    Detta innebär att inkommande e-postmeddelanden som matchar minst en specifik vidarebefordranregel kommer att användas istället för catch-all.\n    Specifika regler inkluderar e-postadresser och reguljära uttryck.",
+  "Emails sent to": "E-postmeddelanden skickas till",
+  "will **not** be forwarded to": "kommer **inte** att vidarebefordras till",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) med denna konfiguration, och istället bara levereras till"
 }

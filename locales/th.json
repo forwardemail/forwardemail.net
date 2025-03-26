@@ -10864,7 +10864,11 @@
   "Log out from other devices": "ออกจากระบบจากอุปกรณ์อื่น",
   "My Account - Invalidate Other Sessions": "บัญชีของฉัน - ยกเลิกเซสชันอื่น ๆ",
   "Successfully logged out all other devices.": "ออกจากระบบอุปกรณ์อื่น ๆ ทั้งหมดสำเร็จแล้ว",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "หากคุณต้องการที่จะลบออก",
+  "properties from the payload body, simply add": "คุณสมบัติจากตัวบรรทุก เพียงแค่เพิ่ม",
+  "to your webhook endpoint as a querystring parameter (e.g.": "ไปยังจุดสิ้นสุดของ webhook ของคุณโดยเป็นพารามิเตอร์ querystring (เช่น",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "กฎการส่งต่อแบบ Catch-all อาจเรียกอีกอย่างหนึ่งว่า \"fall-through\" ซึ่งหมายความว่าอีเมลขาเข้าที่ตรงกับกฎการส่งต่ออย่างน้อยหนึ่งกฎจะถูกนำมาใช้แทนกฎ Catch-all\nกฎเฉพาะรวมถึงที่อยู่อีเมลและนิพจน์ทั่วไป",
+  "Emails sent to": "อีเมล์ถูกส่งถึง",
+  "will **not** be forwarded to": "จะ **ไม่** ถูกส่งต่อไปยัง",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) ด้วยการกำหนดค่านี้ และแทนที่จะส่งไปที่"
 }

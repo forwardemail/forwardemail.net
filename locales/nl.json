@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Uitloggen van andere apparaten",
   "My Account - Invalidate Other Sessions": "Mijn account - Andere sessies ongeldig maken",
   "Successfully logged out all other devices.": "Alle andere apparaten zijn succesvol afgemeld.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Als u moet verwijderen",
+  "properties from the payload body, simply add": "eigenschappen van de payload body, voeg eenvoudig toe",
+  "to your webhook endpoint as a querystring parameter (e.g.": "naar uw webhook-eindpunt als een querystringparameter (bijv.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all forwarding rules kunnen ook worden beschreven als \"fall-through\".\nDit betekent dat binnenkomende e-mails die voldoen aan ten minste één specifieke forwarding rule worden gebruikt in plaats van de catch-all.\nSpecifieke regels omvatten e-mailadressen en reguliere expressies.",
+  "Emails sent to": "E-mails verzonden naar",
+  "will **not** be forwarded to": "wordt **niet** doorgestuurd naar",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) met deze configuratie, en in plaats daarvan alleen worden afgeleverd aan"
 }

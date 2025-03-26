@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Sair de outros dispositivos",
   "My Account - Invalidate Other Sessions": "Minha conta - Invalidar outras sessões",
   "Successfully logged out all other devices.": "Todos os outros dispositivos foram desconectados com sucesso.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Se você precisar remover",
+  "properties from the payload body, simply add": "propriedades do corpo da carga útil, basta adicionar",
+  "to your webhook endpoint as a querystring parameter (e.g.": "para o seu ponto de extremidade do webhook como um parâmetro de string de consulta (por exemplo,",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Regras de encaminhamento catch-all também podem ser descritas como \"fall-through\".\nIsso significa que e-mails recebidos que correspondem a pelo menos uma regra de encaminhamento específica serão usados em vez do catch-all.\nRegras específicas incluem endereços de e-mail e expressões regulares.",
+  "Emails sent to": "E-mails enviados para",
+  "will **not** be forwarded to": "**não** será encaminhado para",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) com esta configuração e, em vez disso, ser entregue apenas a"
 }

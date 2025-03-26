@@ -10864,7 +10864,11 @@
   "Log out from other devices": "تسجيل الخروج من الأجهزة الأخرى",
   "My Account - Invalidate Other Sessions": "حسابي - إلغاء الجلسات الأخرى",
   "Successfully logged out all other devices.": "تم تسجيل الخروج من جميع الأجهزة الأخرى بنجاح.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "إذا كنت بحاجة إلى إزالة",
+  "properties from the payload body, simply add": "الخصائص من نص الحمولة، أضف ببساطة",
+  "to your webhook endpoint as a querystring parameter (e.g.": "إلى نقطة نهاية خطاف الويب الخاص بك كمعلمة سلسلة استعلام (على سبيل المثال",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "يمكن وصف قواعد إعادة التوجيه الشاملة أيضًا بأنها \"غير مكتملة\". هذا يعني أنه سيتم استخدام رسائل البريد الإلكتروني الواردة التي تتوافق مع قاعدة إعادة توجيه واحدة على الأقل بدلاً من قواعد إعادة التوجيه الشاملة.\n\nتشمل القواعد المحددة عناوين البريد الإلكتروني والتعبيرات العادية.",
+  "Emails sent to": "رسائل البريد الإلكتروني المرسلة إلى",
+  "will **not** be forwarded to": "لن يتم إرسالها إلى",
+  "(catch-all) with this configuration, and instead only be delivered to": "(شامل) مع هذا التكوين، وبدلاً من ذلك يتم تسليمه فقط إلى"
 }

@@ -10711,7 +10711,11 @@
   "Log out from other devices": "Kirjaudu ulos muista laitteista",
   "My Account - Invalidate Other Sessions": "Oma tili - mitätöi muut istunnot",
   "Successfully logged out all other devices.": "Kaikkien muiden laitteiden uloskirjautuminen onnistui.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Jos sinun on poistettava",
+  "properties from the payload body, simply add": "ominaisuuksia hyötykuorman rungosta, lisää vain",
+  "to your webhook endpoint as a querystring parameter (e.g.": "webhook-päätepisteeseen kyselymerkkijonoparametrina (esim.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all-lähetyssääntöjä voitaisiin myös kuvata \"putoamissääntönä\".\n    Tämä tarkoittaa, että saapuvia sähköposteja, jotka vastaavat vähintään yhtä tiettyä edelleenlähetyssääntöä, käytetään keräyksen sijaan.\n    Erityiset säännöt sisältävät sähköpostiosoitteet ja säännölliset lausekkeet.",
+  "Emails sent to": "Sähköpostit lähetetty osoitteeseen",
+  "will **not** be forwarded to": "**ei** välitetä osoitteeseen",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch all) tällä kokoonpanolla, ja sen sijaan toimitetaan vain osoitteeseen"
 }

@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Jelentkezzen ki más eszközökről",
   "My Account - Invalidate Other Sessions": "Saját fiók – Más munkamenetek érvénytelenítése",
   "Successfully logged out all other devices.": "Sikeresen kijelentkezett az összes többi eszközről.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Ha el kell távolítania",
+  "properties from the payload body, simply add": "tulajdonságait a hasznos tehertestből, egyszerűen adja hozzá",
+  "to your webhook endpoint as a querystring parameter (e.g.": "a webhook-végponthoz lekérdezési karakterlánc-paraméterként (pl.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "A mindenre kiterjedő továbbítási szabályokat úgy is lehetne jellemezni, mint \"bukás\".\n    Ez azt jelenti, hogy a legalább egy meghatározott továbbítási szabálynak megfelelő bejövő e-maileket a rendszer az összesítő helyett.\n    A speciális szabályok közé tartoznak az e-mail címek és a reguláris kifejezések.",
+  "Emails sent to": "A címre küldött e-mailek",
+  "will **not** be forwarded to": "**nem** lesz továbbítva",
+  "(catch-all) with this configuration, and instead only be delivered to": "(a mindenre kiterjedő) ezzel a konfigurációval, és ehelyett csak a következő címre lesz kézbesítve"
 }

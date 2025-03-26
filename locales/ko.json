@@ -10864,7 +10864,11 @@
   "Log out from other devices": "다른 기기에서 로그아웃",
   "My Account - Invalidate Other Sessions": "내 계정 - 다른 세션 무효화",
   "Successfully logged out all other devices.": "다른 모든 장치에서 성공적으로 로그아웃되었습니다.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "제거해야 하는 경우",
+  "properties from the payload body, simply add": "페이로드 본문의 속성을 추가하기만 하면 됩니다.",
+  "to your webhook endpoint as a querystring parameter (e.g.": "웹훅 엔드포인트에 쿼리 문자열 매개변수로 전달(예:",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "캐치올 전달 규칙은 \"폴스루\"라고도 설명할 수 있습니다.\n즉, 적어도 하나의 특정 전달 규칙과 일치하는 수신 이메일이 캐치올 대신 사용됩니다.\n특정 규칙에는 이메일 주소와 정규 표현식이 포함됩니다.",
+  "Emails sent to": "이메일은 다음으로 전송됩니다.",
+  "will **not** be forwarded to": "**전달되지 않습니다**",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) 이 구성을 사용하면 대신 다음에만 전달됩니다."
 }

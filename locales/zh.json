@@ -10557,7 +10557,11 @@
   "Log out from other devices": "从其他设备注销",
   "My Account - Invalidate Other Sessions": "我的帐户 - 使其他会话无效",
   "Successfully logged out all other devices.": "已成功注销所有其他设备。",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "如果需要删除",
+  "properties from the payload body, simply add": "有效载荷主体的属性，只需添加",
+  "to your webhook endpoint as a querystring parameter (e.g.": "作为查询字符串参数添加到你的 webhook 端点（例如",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "全部转发规则也可以描述为“fall-through”。\n这意味着将使用至少符合一条特定转发规则的传入电子邮件，而不是全部转发规则。\n具体规则包括电子邮件地址和正则表达式。",
+  "Emails sent to": "电子邮件发送至",
+  "will **not** be forwarded to": "不会转发至",
+  "(catch-all) with this configuration, and instead only be delivered to": "（catch-all）使用此配置，而只传递给"
 }

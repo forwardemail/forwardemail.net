@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Odhlaste se z jiných zařízení",
   "My Account - Invalidate Other Sessions": "Můj účet – zrušit platnost dalších relací",
   "Successfully logged out all other devices.": "Všechna ostatní zařízení byla úspěšně odhlášena.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Pokud potřebujete odstranit",
+  "properties from the payload body, simply add": "vlastnosti z nástavby užitečného zatížení, jednoduše přidejte",
+  "to your webhook endpoint as a querystring parameter (e.g.": "na váš koncový bod webhooku jako parametr querystring (např.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Pravidla pro předávání catch-all by také mohla být popsána jako „pádová“.\n    To znamená, že příchozí e-maily, které odpovídají alespoň jednomu konkrétnímu pravidlu pro přesměrování, budou použity místo univerzálního koše.\n    Specifická pravidla zahrnují e-mailové adresy a regulární výrazy.",
+  "Emails sent to": "E-maily odeslané na adresu",
+  "will **not** be forwarded to": "bude **ne** předáno na",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) s touto konfigurací a místo toho být doručen pouze do"
 }

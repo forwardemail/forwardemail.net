@@ -36,46 +36,71 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    for await (const user of Users.find({})
-      .lean()
-      .select('_id')
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      const [domainCount, aliasCount] = await Promise.all([
-        Domains.countDocuments({
-          members: {
-            $elemMatch: {
-              user: user._id,
-              group: 'admin'
+    await Promise.all([
+      (async () => {
+        try {
+          for await (const user of Users.find({})
+            .lean()
+            .select('_id')
+            .cursor()
+            .addCursorFlag('noCursorTimeout', true)) {
+            try {
+              const [domainCount, aliasCount] = await Promise.all([
+                Domains.countDocuments({
+                  members: {
+                    $elemMatch: {
+                      user: user._id,
+                      group: 'admin'
+                    }
+                  }
+                }),
+                Aliases.countDocuments({
+                  user: user._id
+                })
+              ]);
+              Users.findByIdAndUpdate(user._id, {
+                $set: {
+                  [config.userFields.domainCount]: domainCount,
+                  [config.userFields.aliasCount]: aliasCount
+                }
+              })
+                .then()
+                .catch((err) => logger.fatal(err));
+            } catch (err) {
+              logger.fatal(err);
             }
           }
-        }),
-        Aliases.countDocuments({
-          user: user._id
-        })
-      ]);
-      await Users.findByIdAndUpdate(user._id, {
-        $set: {
-          [config.userFields.domainCount]: domainCount,
-          [config.userFields.aliasCount]: aliasCount
+        } catch (err) {
+          logger.fatal(err);
         }
-      });
-    }
-
-    for await (const domain of Domains.find({})
-      .lean()
-      .select('_id')
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true)) {
-      const count = await Aliases.countDocument({
-        domain: domain._id
-      });
-      await Domains.findByIdAndUpdate(domain._id, {
-        $set: {
-          alias_count: count
+      })(),
+      (async () => {
+        try {
+          for await (const domain of Domains.find({})
+            .lean()
+            .select('_id')
+            .cursor()
+            .addCursorFlag('noCursorTimeout', true)) {
+            try {
+              const count = await Aliases.countDocuments({
+                domain: domain._id
+              });
+              Domains.findByIdAndUpdate(domain._id, {
+                $set: {
+                  alias_count: count
+                }
+              })
+                .then()
+                .catch((err) => logger.fatal(err));
+            } catch (err) {
+              logger.fatal(err);
+            }
+          }
+        } catch (err) {
+          logger.fatal(err);
         }
-      });
-    }
+      })()
+    ]);
 
     /*
     // aggregating users and calculating domain count

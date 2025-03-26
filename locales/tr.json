@@ -10864,7 +10864,11 @@
   "Log out from other devices": "Diğer cihazlardan çıkış yapın",
   "My Account - Invalidate Other Sessions": "Hesabım - Diğer Oturumları Geçersiz Kıl",
   "Successfully logged out all other devices.": "Diğer tüm cihazlardan başarıyla çıkış yapıldı.",
-  "If you need to remove": "If you need to remove",
-  "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "If you need to remove": "Eğer kaldırmanız gerekiyorsa",
+  "properties from the payload body, simply add": "yük gövdesinden özellikler, basitçe ekleyin",
+  "to your webhook endpoint as a querystring parameter (e.g.": "webhook uç noktanıza bir sorgu dizesi parametresi olarak (örn.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Her şeyi kapsayan yönlendirme kuralları \"düşüş\" olarak da tanımlanabilir.\nBu, en azından bir belirli yönlendirme kuralıyla eşleşen gelen e-postaların, her şeyi kapsayan kural yerine kullanılacağı anlamına gelir.\nBelirli kurallar arasında e-posta adresleri ve düzenli ifadeler bulunur.",
+  "Emails sent to": "Gönderilen e-postalar",
+  "will **not** be forwarded to": "**İletilmeyecek**",
+  "(catch-all) with this configuration, and instead only be delivered to": "(her şeyi kapsayan) bu yapılandırma ile ve bunun yerine yalnızca teslim edilebilir"
 }

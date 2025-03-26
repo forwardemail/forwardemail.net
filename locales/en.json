@@ -7048,5 +7048,9 @@
   "Successfully logged out all other devices.": "Successfully logged out all other devices.",
   "If you need to remove": "If you need to remove",
   "properties from the payload body, simply add": "properties from the payload body, simply add",
-  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g."
+  "to your webhook endpoint as a querystring parameter (e.g.": "to your webhook endpoint as a querystring parameter (e.g.",
+  "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.",
+  "Emails sent to": "Emails sent to",
+  "will **not** be forwarded to": "will **not** be forwarded to",
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) with this configuration, and instead only be delivered to"
 }
