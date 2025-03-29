@@ -51,6 +51,7 @@ graceful.listen();
         { $match: { is_smtp_suspended: true } },
         { $group: { _id: '$_id' } }
       ])
+        .option({ maxTimeMS: 120000 })
         .allowDiskUse(true)
         .exec(),
       Emails.aggregate([
@@ -70,6 +71,7 @@ graceful.listen();
           $group: { _id: '$_id' }
         }
       ])
+        .option({ maxTimeMS: 120000 })
         .allowDiskUse(true)
         .exec()
     ]);

@@ -185,4 +185,15 @@ block body
                       i.fa.fa-clipboard
                       = " "
                       = t("Copy")
+
+            if user[config.userFields.hasSetPassword]
+              .form-group.floating-label.mt-4
+                input#input-password.form-control.form-control-lg(
+                  type="password",
+                  autocomplete=config.env === "test" ? "off" : randomstring(),
+                  name="password",
+                  required
+                )
+                label(for="input-password")= t("Confirm Password")
+
             button.btn.btn-lg.btn-block.btn-primary(type="submit")= t("Complete Setup")

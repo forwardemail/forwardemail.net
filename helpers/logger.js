@@ -105,7 +105,10 @@ const REDACTED_FIELDS = new Set([
   'otp_recovery_keys',
   'api_token',
   'otp_token',
-  'verification_pin'
+  'verification_pin',
+
+  // redis object specific
+  'auth'
 ]);
 
 //

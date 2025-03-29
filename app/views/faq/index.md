@@ -658,12 +658,11 @@ Advanced settings <i class="fa fa-angle-right"></i> Custom Records</td>
     Catch-all forwarding rules could also be described as "fall-through".
     This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.
     Specific rules include email addresses and regular expressions.
-    <br />
     <br /><br />
     For example:
-    <br /><br />
+    <br />
     <code>forward-email=hello:first@gmail.com,second@gmail.com</code>
-    <br /><br />
+    <br />
     Emails sent to <code>hello@example.com</code> will **not** be forwarded to <code>second@gmail.com</code> (catch-all) with this configuration, and instead only be delivered to <code>first@gmail.com</code>.
   </span>
 </div>

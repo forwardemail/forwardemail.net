@@ -366,6 +366,8 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     gh repo deploy-key add deployment-keys/caldav-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/mx1-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/mx2-do-ny-ny.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/mx1-dp-dv-co.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/mx2-dp-dv-co.pub -R forwardemail/forwardemail.net
     ```
 
 18. Set up PM2 deployment directories on all the servers:

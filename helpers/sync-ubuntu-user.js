@@ -112,8 +112,9 @@ async function syncUbuntuUser(user, map) {
 
     // if the user was banned then don't allow
     if (user[config.userFields.isBanned]) {
-      const err = new InvalidUbuntuUserError('User was banned');
-      err.ignoreHook = true;
+      const err = new InvalidUbuntuUserError('User was banned', {
+        ignoreHook: true
+      });
       throw err;
     }
 
@@ -136,7 +137,8 @@ async function syncUbuntuUser(user, map) {
       throw new InvalidUbuntuUserError('Property "is_valid" was false', {
         url,
         response,
-        json
+        json,
+        ignoreHook: true
       });
 
     if (!json.is_ubuntu_coc_signer)
@@ -145,7 +147,8 @@ async function syncUbuntuUser(user, map) {
         {
           url,
           response,
-          json
+          json,
+          ignoreHook: true
         }
       );
 
@@ -167,7 +170,8 @@ async function syncUbuntuUser(user, map) {
     //   throw new InvalidUbuntuUserError('Property "is_probationary" was true', {
     //     url,
     //     response,
-    //     json
+    //     json,
+    //     ignoreHook: true
     //   });
 
     //
