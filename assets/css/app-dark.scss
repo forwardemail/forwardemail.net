@@ -103,9 +103,9 @@ $input-disabled-bg:                     $dark;
   .btn-ubuntu {
     @include button-variant(#e95320, darken(#e95320, 10%));
   }
-}
 
-// <https://github.com/chakra-ui/chakra-ui/issues/1786>
-input {
-  color-scheme: dark;
+  // <https://github.com/chakra-ui/chakra-ui/issues/1786>
+  input {
+    color-scheme: dark;
+  }
 }
