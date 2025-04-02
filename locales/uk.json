@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Загальні правила пересилання також можна описати як \"прохідні\".\n    Це означає, що вхідні електронні листи, які відповідають принаймні одному конкретному правилу пересилання, використовуватимуться замість універсального.\n    Спеціальні правила включають адреси електронної пошти та регулярні вирази.",
   "Emails sent to": "Електронні листи надіслано на адресу",
   "will **not** be forwarded to": "**не** буде перенаправлено",
-  "(catch-all) with this configuration, and instead only be delivered to": "(всеохоплюючий) із цією конфігурацією, а натомість доставлятися лише до"
+  "(catch-all) with this configuration, and instead only be delivered to": "(всеохоплюючий) із цією конфігурацією, а натомість доставлятися лише до",
+  "[!IMPORTANT]\nOur email service is": "[!ВАЖЛИВО]\nНаша служба електронної пошти",
+  "[!TIP]\nInterested in learning more? Read": "[!ПОРАДА]\nХочете дізнатися більше? Прочитайте",
+  "Mail Server Providers": "Постачальники поштових серверів",
+  "Best Mail Server Providers": "Найкращі постачальники поштових серверів",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Комплексне порівняння постачальників VPS і виділених серверів для розміщення поштових серверів (SMTP-серверів).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Найкращі постачальники поштових серверів у <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Найкращі постачальники поштових серверів у <span class=\"notranslate\">2025</span>"
 }

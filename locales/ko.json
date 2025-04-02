@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "캐치올 전달 규칙은 \"폴스루\"라고도 설명할 수 있습니다.\n즉, 적어도 하나의 특정 전달 규칙과 일치하는 수신 이메일이 캐치올 대신 사용됩니다.\n특정 규칙에는 이메일 주소와 정규 표현식이 포함됩니다.",
   "Emails sent to": "이메일은 다음으로 전송됩니다.",
   "will **not** be forwarded to": "**전달되지 않습니다**",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) 이 구성을 사용하면 대신 다음에만 전달됩니다."
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) 이 구성을 사용하면 대신 다음에만 전달됩니다.",
+  "[!IMPORTANT]\nOur email service is": "[!중요]\n저희 이메일 서비스는",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\n더 자세히 알고 싶으신가요? 읽어보세요",
+  "Mail Server Providers": "메일 서버 제공자",
+  "Best Mail Server Providers": "최고의 메일 서버 제공자",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "메일 서버(SMTP 서버) 호스팅을 위한 VPS 및 전용 서버 제공업체를 포괄적으로 비교합니다.",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "<span class=\"notranslate\">2024</span> 년 최고의 메일 서버 제공업체",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> 년 최고의 메일 서버 제공업체"
 }

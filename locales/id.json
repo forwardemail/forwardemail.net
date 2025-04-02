@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Aturan penerusan catch-all juga dapat dideskripsikan sebagai \"fall-through\".\nIni berarti bahwa email masuk yang cocok dengan setidaknya satu aturan penerusan tertentu akan digunakan sebagai ganti catch-all.\nAturan khusus mencakup alamat email dan ekspresi reguler.",
   "Emails sent to": "Email dikirim ke",
   "will **not** be forwarded to": "**tidak** akan diteruskan ke",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) dengan konfigurasi ini, dan sebaliknya hanya akan dikirimkan ke"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) dengan konfigurasi ini, dan sebaliknya hanya akan dikirimkan ke",
+  "[!IMPORTANT]\nOur email service is": "[!PENTING]\nLayanan email kami adalah",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nTertarik untuk mempelajari lebih lanjut? Baca",
+  "Mail Server Providers": "Penyedia Server Email",
+  "Best Mail Server Providers": "Penyedia Server Email Terbaik",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Perbandingan menyeluruh penyedia VPS dan server khusus untuk hosting server email (server SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Penyedia Server Email Terbaik di <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Penyedia Server Email Terbaik di <span class=\"notranslate\">2025</span>"
 }

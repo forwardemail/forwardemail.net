@@ -10868,5 +10868,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Las reglas de reenvío generales también podrían describirse como \"de transición\".\nEsto significa que se utilizarán los correos electrónicos entrantes que cumplan al menos una regla de reenvío específica en lugar de la general.\nLas reglas específicas incluyen direcciones de correo electrónico y expresiones regulares.",
   "Emails sent to": "Correos electrónicos enviados a",
   "will **not** be forwarded to": "**no** será reenviado a",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) con esta configuración y, en su lugar, solo se entregará a"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) con esta configuración y, en su lugar, solo se entregará a",
+  "[!IMPORTANT]\nOur email service is": "[!IMPORTANTE]\nNuestro servicio de correo electrónico es",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\n¿Te interesa saber más? Lee",
+  "Mail Server Providers": "Proveedores de servidores de correo",
+  "Best Mail Server Providers": "Los mejores proveedores de servidores de correo",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Comparación completa de proveedores de servidores dedicados y VPS para alojar servidores de correo (servidores SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Los mejores proveedores de servidores de correo en <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Los mejores proveedores de servidores de correo en <span class=\"notranslate\">2025</span>"
 }

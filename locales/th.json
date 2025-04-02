@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "กฎการส่งต่อแบบ Catch-all อาจเรียกอีกอย่างหนึ่งว่า \"fall-through\" ซึ่งหมายความว่าอีเมลขาเข้าที่ตรงกับกฎการส่งต่ออย่างน้อยหนึ่งกฎจะถูกนำมาใช้แทนกฎ Catch-all\nกฎเฉพาะรวมถึงที่อยู่อีเมลและนิพจน์ทั่วไป",
   "Emails sent to": "อีเมล์ถูกส่งถึง",
   "will **not** be forwarded to": "จะ **ไม่** ถูกส่งต่อไปยัง",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) ด้วยการกำหนดค่านี้ และแทนที่จะส่งไปที่"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) ด้วยการกำหนดค่านี้ และแทนที่จะส่งไปที่",
+  "[!IMPORTANT]\nOur email service is": "[!IMPORTANT]\nบริการอีเมลของเราคือ",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nสนใจเรียนรู้เพิ่มเติมหรือไม่? อ่าน",
+  "Mail Server Providers": "ผู้ให้บริการเซิร์ฟเวอร์เมล",
+  "Best Mail Server Providers": "ผู้ให้บริการเซิร์ฟเวอร์เมลที่ดีที่สุด",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "การเปรียบเทียบอย่างครอบคลุมระหว่างผู้ให้บริการ VPS และเซิร์ฟเวอร์เฉพาะสำหรับการโฮสต์เซิร์ฟเวอร์อีเมล (เซิร์ฟเวอร์ SMTP)",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "ผู้ให้บริการเซิร์ฟเวอร์อีเมลที่ดีที่สุดใน <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "ผู้ให้บริการเซิร์ฟเวอร์อีเมลที่ดีที่สุดใน <span class=\"notranslate\">2025</span>"
 }

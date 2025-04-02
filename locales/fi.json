@@ -10717,5 +10717,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all-lähetyssääntöjä voitaisiin myös kuvata \"putoamissääntönä\".\n    Tämä tarkoittaa, että saapuvia sähköposteja, jotka vastaavat vähintään yhtä tiettyä edelleenlähetyssääntöä, käytetään keräyksen sijaan.\n    Erityiset säännöt sisältävät sähköpostiosoitteet ja säännölliset lausekkeet.",
   "Emails sent to": "Sähköpostit lähetetty osoitteeseen",
   "will **not** be forwarded to": "**ei** välitetä osoitteeseen",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch all) tällä kokoonpanolla, ja sen sijaan toimitetaan vain osoitteeseen"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch all) tällä kokoonpanolla, ja sen sijaan toimitetaan vain osoitteeseen",
+  "[!IMPORTANT]\nOur email service is": "[!TÄRKEÄÄ]\nSähköpostipalvelumme on",
+  "[!TIP]\nInterested in learning more? Read": "[!KÄRKI]\nOletko kiinnostunut oppimaan lisää? Lukea",
+  "Mail Server Providers": "Postipalvelimen tarjoajat",
+  "Best Mail Server Providers": "Parhaat postipalvelintarjoajat",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Kattava vertailu VPS:n ja dedikoidun palvelimen tarjoajista sähköpostipalvelimien (SMTP-palvelimien) isännöintiin.",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Parhaat sähköpostipalvelintoimittajat vuonna <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Parhaat sähköpostipalvelintoimittajat vuonna <span class=\"notranslate\">2025</span>"
 }

@@ -212,6 +212,7 @@ const purgeCssOptions = {
       'list-inline',
       'list-inline-item',
       'markdown-body',
+      /markdown-alert/,
       'mb-0',
       'mb-3',
       'ml-0',

@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "يمكن وصف قواعد إعادة التوجيه الشاملة أيضًا بأنها \"غير مكتملة\". هذا يعني أنه سيتم استخدام رسائل البريد الإلكتروني الواردة التي تتوافق مع قاعدة إعادة توجيه واحدة على الأقل بدلاً من قواعد إعادة التوجيه الشاملة.\n\nتشمل القواعد المحددة عناوين البريد الإلكتروني والتعبيرات العادية.",
   "Emails sent to": "رسائل البريد الإلكتروني المرسلة إلى",
   "will **not** be forwarded to": "لن يتم إرسالها إلى",
-  "(catch-all) with this configuration, and instead only be delivered to": "(شامل) مع هذا التكوين، وبدلاً من ذلك يتم تسليمه فقط إلى"
+  "(catch-all) with this configuration, and instead only be delivered to": "(شامل) مع هذا التكوين، وبدلاً من ذلك يتم تسليمه فقط إلى",
+  "[!IMPORTANT]\nOur email service is": "[!هام]\nخدمة البريد الإلكتروني لدينا هي",
+  "[!TIP]\nInterested in learning more? Read": "[!نصيحة]\nهل ترغب بمعرفة المزيد؟ اقرأ",
+  "Mail Server Providers": "مزودو خوادم البريد",
+  "Best Mail Server Providers": "أفضل مزودي خدمة البريد الإلكتروني",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "مقارنة شاملة بين مقدمي خدمات VPS والخوادم المخصصة لاستضافة خوادم البريد الإلكتروني (خوادم SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "أفضل مزودي خدمة البريد الإلكتروني في <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "أفضل مزودي خدمة البريد الإلكتروني في <span class=\"notranslate\">2025</span>"
 }

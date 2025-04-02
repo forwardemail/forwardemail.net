@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Правила пересылки Catch-all также можно описать как «провал».\nЭто означает, что входящие письма, которые соответствуют хотя бы одному определенному правилу пересылки, будут использоваться вместо правила catch-all.\nОпределенные правила включают адреса электронной почты и регулярные выражения.",
   "Emails sent to": "Письма отправлены",
   "will **not** be forwarded to": "не будет **пересылаться**",
-  "(catch-all) with this configuration, and instead only be delivered to": "(всеобъемлющий) с этой конфигурацией, и вместо этого доставляться только"
+  "(catch-all) with this configuration, and instead only be delivered to": "(всеобъемлющий) с этой конфигурацией, и вместо этого доставляться только",
+  "[!IMPORTANT]\nOur email service is": "[!ВАЖНО]\nНаша электронная почта",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nХотите узнать больше? Читать",
+  "Mail Server Providers": "Поставщики почтовых серверов",
+  "Best Mail Server Providers": "Лучшие поставщики почтовых серверов",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Комплексное сравнение провайдеров VPS и выделенных серверов для размещения почтовых серверов (SMTP-серверов).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Лучшие поставщики почтовых серверов в <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Лучшие поставщики почтовых серверов в <span class=\"notranslate\">2025</span>"
 }

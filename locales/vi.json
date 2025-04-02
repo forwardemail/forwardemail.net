@@ -8423,5 +8423,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Quy tắc chuyển tiếp catch-all cũng có thể được mô tả là \"fall-through\". Điều này có nghĩa là các email đến khớp với ít nhất một quy tắc chuyển tiếp cụ thể sẽ được sử dụng thay vì catch-all.\nCác quy tắc cụ thể bao gồm địa chỉ email và biểu thức chính quy.",
   "Emails sent to": "Email được gửi đến",
   "will **not** be forwarded to": "sẽ **không** được chuyển tiếp đến",
-  "(catch-all) with this configuration, and instead only be delivered to": "(bắt tất cả) với cấu hình này và thay vào đó chỉ được chuyển đến"
+  "(catch-all) with this configuration, and instead only be delivered to": "(bắt tất cả) với cấu hình này và thay vào đó chỉ được chuyển đến",
+  "[!IMPORTANT]\nOur email service is": "[!QUAN TRỌNG]\nDịch vụ email của chúng tôi là",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nBạn có muốn tìm hiểu thêm không? Đọc",
+  "Mail Server Providers": "Nhà cung cấp máy chủ thư",
+  "Best Mail Server Providers": "Nhà cung cấp máy chủ thư tốt nhất",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "So sánh toàn diện các nhà cung cấp VPS và máy chủ chuyên dụng để lưu trữ máy chủ thư (máy chủ SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Nhà cung cấp máy chủ thư tốt nhất <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Nhà cung cấp máy chủ thư tốt nhất <span class=\"notranslate\">2025</span>"
 }

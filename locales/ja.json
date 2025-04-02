@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "キャッチオール転送ルールは、「フォールスルー」とも呼ばれます。\nこれは、キャッチオールの代わりに、少なくとも 1 つの特定の転送ルールに一致する受信メールが使用されることを意味します。\n特定のルールには、電子メール アドレスと正規表現が含まれます。",
   "Emails sent to": "送信されたメール",
   "will **not** be forwarded to": "**転送されません**",
-  "(catch-all) with this configuration, and instead only be delivered to": "（キャッチオール）この設定では、代わりに"
+  "(catch-all) with this configuration, and instead only be delivered to": "（キャッチオール）この設定では、代わりに",
+  "[!IMPORTANT]\nOur email service is": "[!重要]\n当社のメールサービスは",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nさらに詳しく知りたいですか? 読んでください",
+  "Mail Server Providers": "メールサーバープロバイダー",
+  "Best Mail Server Providers": "最高のメールサーバープロバイダー",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "メール サーバー (SMTP サーバー) をホストするための VPS および専用サーバー プロバイダーの包括的な比較。",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "<span class=\"notranslate\">2024</span>のベスト メール サーバー プロバイダー",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>のベスト メール サーバー プロバイダー"
 }

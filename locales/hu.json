@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "A mindenre kiterjedő továbbítási szabályokat úgy is lehetne jellemezni, mint \"bukás\".\n    Ez azt jelenti, hogy a legalább egy meghatározott továbbítási szabálynak megfelelő bejövő e-maileket a rendszer az összesítő helyett.\n    A speciális szabályok közé tartoznak az e-mail címek és a reguláris kifejezések.",
   "Emails sent to": "A címre küldött e-mailek",
   "will **not** be forwarded to": "**nem** lesz továbbítva",
-  "(catch-all) with this configuration, and instead only be delivered to": "(a mindenre kiterjedő) ezzel a konfigurációval, és ehelyett csak a következő címre lesz kézbesítve"
+  "(catch-all) with this configuration, and instead only be delivered to": "(a mindenre kiterjedő) ezzel a konfigurációval, és ehelyett csak a következő címre lesz kézbesítve",
+  "[!IMPORTANT]\nOur email service is": "[!FONTOS]\nE-mail szolgáltatásunk az",
+  "[!TIP]\nInterested in learning more? Read": "[!TIPP]\nÉrdekel többet tanulni? Olvas",
+  "Mail Server Providers": "Levelezőszerver-szolgáltatók",
+  "Best Mail Server Providers": "A legjobb levelezőszerver-szolgáltatók",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "A VPS és a dedikált szerverszolgáltatók átfogó összehasonlítása levelezőszerverek (SMTP-kiszolgálók) hosztolásához.",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "A legjobb levelezőszerver-szolgáltatók <span class=\"notranslate\">2024</span> ben",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "A legjobb levelezőszerver-szolgáltatók <span class=\"notranslate\">2025</span> ben"
 }

@@ -10563,5 +10563,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "全部转发规则也可以描述为“fall-through”。\n这意味着将使用至少符合一条特定转发规则的传入电子邮件，而不是全部转发规则。\n具体规则包括电子邮件地址和正则表达式。",
   "Emails sent to": "电子邮件发送至",
   "will **not** be forwarded to": "不会转发至",
-  "(catch-all) with this configuration, and instead only be delivered to": "（catch-all）使用此配置，而只传递给"
+  "(catch-all) with this configuration, and instead only be delivered to": "（catch-all）使用此配置，而只传递给",
+  "[!IMPORTANT]\nOur email service is": "[!重要]\n我们的电子邮件服务是",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\n有兴趣了解更多吗？阅读",
+  "Mail Server Providers": "邮件服务器提供商",
+  "Best Mail Server Providers": "最佳邮件服务器提供商",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "全面比较用于托管邮件服务器（SMTP 服务器）的 VPS 和专用服务器提供商。",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "<span class=\"notranslate\">2024</span>年最佳邮件服务器提供商",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>年最佳邮件服务器提供商"
 }

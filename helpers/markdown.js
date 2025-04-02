@@ -8,6 +8,7 @@ const markdownItEmoji = require('markdown-it-emoji');
 const markdownItGitHubHeadings = require('markdown-it-github-headings');
 const markdownItHighlightJS = require('markdown-it-highlightjs');
 const markdownItTaskCheckbox = require('markdown-it-task-checkbox');
+const markdownItGitHubAlerts = require('markdown-it-github-alerts');
 
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -19,6 +20,13 @@ const markdown = markdownIt({
   html: true,
   linkify: true
 });
+//
+// rewrite GitHub-specific CAUTION/TIP etc sections
+// <https://github.com/orgs/community/discussions/16925>
+// <https://github.com/antfu/markdown-it-github-alerts>
+// <https://github.com/antfu/markdown-it-github-alerts/issues/8>
+//
+markdown.use(markdownItGitHubAlerts);
 markdown.use(markdownItHighlightJS);
 markdown.use(markdownItTaskCheckbox);
 markdown.use(markdownItEmoji);

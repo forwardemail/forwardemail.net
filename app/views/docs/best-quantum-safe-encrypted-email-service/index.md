@@ -24,7 +24,8 @@
 
 ## Foreword
 
-> **tldr;** Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> \[!IMPORTANT]
+> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
 
 Until we launched [IMAP support](/faq#do-you-support-receiving-email-with-imap), we used MongoDB for our persistent data storage needs.
 
@@ -57,6 +58,7 @@ We are the only 100% open-source and privacy-focused email service provider that
 
 3. Mail exchange servers (commonly known as "MX" servers) receive new inbound email and store it to your mailbox.  When this happens your email client will get notified and sync your mailbox.  Our mail exchange servers can forward your email to one or more recipients (including [webhooks](/faq#do-you-support-webhooks)), store your email for you in your encrypted IMAP storage with us, **or both**!
 
+   > \[!TIP]
    > Interested in learning more? Read [how to setup email forwarding](/faq#how-do-i-get-started-and-set-up-email-forwarding), [how our mail exchange service works](/faq#how-does-your-email-forwarding-system-work), or view [our guides](https://forwardemail.net/guides).
 
 4. Behind the scenes, our secure email storage design works in two ways to keep your mailboxes encrypted and only accessible by you:

@@ -7052,5 +7052,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.",
   "Emails sent to": "Emails sent to",
   "will **not** be forwarded to": "will **not** be forwarded to",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) with this configuration, and instead only be delivered to"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) with this configuration, and instead only be delivered to",
+  "[!IMPORTANT]\nOur email service is": "[!IMPORTANT]\nOur email service is",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nInterested in learning more? Read",
+  "Mail Server Providers": "Mail Server Providers",
+  "Best Mail Server Providers": "Best Mail Server Providers",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Best Mail Server Providers in <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Best Mail Server Providers in <span class=\"notranslate\">2025</span>"
 }

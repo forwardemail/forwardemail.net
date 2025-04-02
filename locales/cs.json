@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Pravidla pro předávání catch-all by také mohla být popsána jako „pádová“.\n    To znamená, že příchozí e-maily, které odpovídají alespoň jednomu konkrétnímu pravidlu pro přesměrování, budou použity místo univerzálního koše.\n    Specifická pravidla zahrnují e-mailové adresy a regulární výrazy.",
   "Emails sent to": "E-maily odeslané na adresu",
   "will **not** be forwarded to": "bude **ne** předáno na",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) s touto konfigurací a místo toho být doručen pouze do"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) s touto konfigurací a místo toho být doručen pouze do",
+  "[!IMPORTANT]\nOur email service is": "[!DŮLEŽITÉ]\nNaše e-mailová služba je",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nMáte zájem dozvědět se více? Číst",
+  "Mail Server Providers": "Poskytovatelé poštovních serverů",
+  "Best Mail Server Providers": "Nejlepší poskytovatelé poštovních serverů",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Komplexní srovnání poskytovatelů VPS a dedikovaných serverů pro hosting poštovních serverů (SMTP servery).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Nejlepší poskytovatelé poštovních serverů v <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Nejlepší poskytovatelé poštovních serverů v <span class=\"notranslate\">2025</span>"
 }

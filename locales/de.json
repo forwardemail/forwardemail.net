@@ -9909,5 +9909,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-All-Weiterleitungsregeln können auch als „Fall-Through“-Regeln bezeichnet werden.\nDas bedeutet, dass eingehende E-Mails, die mindestens einer bestimmten Weiterleitungsregel entsprechen, anstelle der Catch-All-Regel verwendet werden.\nSpezifische Regeln umfassen E-Mail-Adressen und reguläre Ausdrücke.",
   "Emails sent to": "E-Mails gesendet an",
   "will **not** be forwarded to": "wird **nicht** weitergeleitet an",
-  "(catch-all) with this configuration, and instead only be delivered to": "(Catch-All) mit dieser Konfiguration und stattdessen nur an"
+  "(catch-all) with this configuration, and instead only be delivered to": "(Catch-All) mit dieser Konfiguration und stattdessen nur an",
+  "[!IMPORTANT]\nOur email service is": "[!WICHTIG]\nUnser E-Mail-Dienst ist",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nMöchten Sie mehr erfahren? Lesen Sie",
+  "Mail Server Providers": "Mailserver-Anbieter",
+  "Best Mail Server Providers": "Beste Mailserver-Anbieter",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Umfassender Vergleich von VPS- und dedizierten Serveranbietern für das Hosting von Mailservern (SMTP-Servern).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Die besten Mailserver-Anbieter im <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Die besten Mailserver-Anbieter im <span class=\"notranslate\">2025</span>"
 }

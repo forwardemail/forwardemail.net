@@ -10875,5 +10875,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Catch-all-videresendingsregler kan også beskrives som \"fall-through\".\n    Dette betyr at innkommende e-poster som samsvarer med minst én spesifikk videresendingsregel vil bli brukt i stedet for oppsamlingsadressen.\n    Spesifikke regler inkluderer e-postadresser og regulære uttrykk.",
   "Emails sent to": "E-poster sendt til",
   "will **not** be forwarded to": "vil **ikke** bli videresendt til",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) med denne konfigurasjonen, og i stedet bare leveres til"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) med denne konfigurasjonen, og i stedet bare leveres til",
+  "[!IMPORTANT]\nOur email service is": "[!VIKTIG]\nVår e-posttjeneste er",
+  "[!TIP]\nInterested in learning more? Read": "[!TUPP]\nInteressert i å lære mer? Lese",
+  "Mail Server Providers": "E-postserverleverandører",
+  "Best Mail Server Providers": "Beste e-postserverleverandører",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Omfattende sammenligning av VPS og dedikerte serverleverandører for hosting av e-postservere (SMTP-servere).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Beste e-postserverleverandører i <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Beste e-postserverleverandører i <span class=\"notranslate\">2025</span>"
 }

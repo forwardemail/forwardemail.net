@@ -8419,5 +8419,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Les règles de transfert fourre-tout peuvent également être qualifiées de « fall-through ». Cela signifie que les e-mails entrants correspondant à au moins une règle de transfert spécifique seront utilisés à la place de la règle fourre-tout.\nLes règles spécifiques incluent les adresses e-mail et les expressions régulières.",
   "Emails sent to": "E-mails envoyés à",
   "will **not** be forwarded to": "ne sera **pas** transmis à",
-  "(catch-all) with this configuration, and instead only be delivered to": "(fourre-tout) avec cette configuration, et au lieu de cela être livré uniquement à"
+  "(catch-all) with this configuration, and instead only be delivered to": "(fourre-tout) avec cette configuration, et au lieu de cela être livré uniquement à",
+  "[!IMPORTANT]\nOur email service is": "[!IMPORTANT]\nNotre service de messagerie est",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nEnvie d'en savoir plus ? Lire",
+  "Mail Server Providers": "Fournisseurs de serveurs de messagerie",
+  "Best Mail Server Providers": "Meilleurs fournisseurs de serveurs de messagerie",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "Comparaison complète des fournisseurs de VPS et de serveurs dédiés pour l'hébergement de serveurs de messagerie (serveurs SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "Meilleurs fournisseurs de serveurs de messagerie en <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "Meilleurs fournisseurs de serveurs de messagerie en <span class=\"notranslate\">2025</span>"
 }

@@ -412,6 +412,10 @@ const i18n = new I18N({
 
 module.exports = {
   md(string, options) {
+    // <https://github.com/antfu/markdown-it-github-alerts/issues/8>
+    // `> \[!` -> `> [!`
+    string = string.replaceAll('> \\[!', '> [!');
+
     if (typeof options !== 'object' || !isSANB(options.locale))
       return fixTableOfContents(markdown.render(string), i18n, options);
     return fixTableOfContents(

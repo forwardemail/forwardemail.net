@@ -8913,5 +8913,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "ניתן לתאר כללים להעברת כלים כ\"נפילה\".\n    המשמעות היא שהודעות דוא\"ל נכנסות שתואמות לפחות כלל העברת מידע ספציפי אחד ישמשו במקום ה-catch-all.\n    כללים ספציפיים כוללים כתובות דוא\"ל וביטויים רגולריים.",
   "Emails sent to": "מיילים שנשלחו אל",
   "will **not** be forwarded to": "**לא** יועבר ל",
-  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) עם תצורה זו, ובמקום זאת להימסר רק אל"
+  "(catch-all) with this configuration, and instead only be delivered to": "(catch-all) עם תצורה זו, ובמקום זאת להימסר רק אל",
+  "[!IMPORTANT]\nOur email service is": "[!חָשׁוּב]\nשירות המייל שלנו הוא",
+  "[!TIP]\nInterested in learning more? Read": "[!עֵצָה]\nמעוניינים ללמוד עוד? לִקְרוֹא",
+  "Mail Server Providers": "ספקי שרת דואר",
+  "Best Mail Server Providers": "ספקי שרתי הדואר הטובים ביותר",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "השוואה מקיפה בין ספקי VPS ושרתים ייעודיים לאירוח שרתי דואר (שרתי SMTP).",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "ספקי שרתי הדואר הטובים ביותר בשנת <span class=\"notranslate\">2024</span>",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "ספקי שרתי הדואר הטובים ביותר בשנת <span class=\"notranslate\">2025</span>"
 }

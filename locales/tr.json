@@ -10870,5 +10870,12 @@
   "Catch-all forwarding rules could also be described as \"fall-through\".\n    This means that incoming emails which match at least one specific forwarding rule will be used instead of the catch-all.\n    Specific rules include email addresses and regular expressions.": "Her şeyi kapsayan yönlendirme kuralları \"düşüş\" olarak da tanımlanabilir.\nBu, en azından bir belirli yönlendirme kuralıyla eşleşen gelen e-postaların, her şeyi kapsayan kural yerine kullanılacağı anlamına gelir.\nBelirli kurallar arasında e-posta adresleri ve düzenli ifadeler bulunur.",
   "Emails sent to": "Gönderilen e-postalar",
   "will **not** be forwarded to": "**İletilmeyecek**",
-  "(catch-all) with this configuration, and instead only be delivered to": "(her şeyi kapsayan) bu yapılandırma ile ve bunun yerine yalnızca teslim edilebilir"
+  "(catch-all) with this configuration, and instead only be delivered to": "(her şeyi kapsayan) bu yapılandırma ile ve bunun yerine yalnızca teslim edilebilir",
+  "[!IMPORTANT]\nOur email service is": "[!ÖNEMLİ]\nE-posta hizmetimiz",
+  "[!TIP]\nInterested in learning more? Read": "[!TIP]\nDaha fazlasını öğrenmek ister misiniz? Okuyun",
+  "Mail Server Providers": "Posta Sunucusu Sağlayıcıları",
+  "Best Mail Server Providers": "En İyi Posta Sunucusu Sağlayıcıları",
+  "Comprehensive comparison of VPS and dedicated server providers for hosting mail servers (SMTP servers).": "E-posta sunucularını (SMTP sunucuları) barındırmak için VPS ve özel sunucu sağlayıcılarının kapsamlı karşılaştırması.",
+  "Best Mail Server Providers in <span class=\"notranslate\">2024</span>": "<span class=\"notranslate\">2024</span> En İyi Posta Sunucusu Sağlayıcıları",
+  "Best Mail Server Providers in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> En İyi Posta Sunucusu Sağlayıcıları"
 }
