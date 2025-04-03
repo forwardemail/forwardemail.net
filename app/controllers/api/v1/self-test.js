@@ -6,9 +6,9 @@
 const os = require('node:os');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const config = require('#config');
@@ -22,7 +22,9 @@ async function selfTest(ctx) {
   async function mapper(to) {
     try {
       const user = await Users.findOne({ email: to });
-      const locale = user ? user[config.lastLocaleField] : i18n.getLocale();
+      const locale = user
+        ? user[config.lastLocaleField]
+        : i18n.config.defaultLocale;
       await email({
         template: 'self-test',
         message: { to },

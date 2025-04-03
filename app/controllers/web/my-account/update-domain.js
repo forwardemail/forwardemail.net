@@ -7,11 +7,11 @@ const punycode = require('node:punycode');
 
 const RE2 = require('re2');
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
 const { isPort } = require('@forwardemail/validator');
+const _ = require('#helpers/lodash');
 
 const { Domains } = require('#models');
 

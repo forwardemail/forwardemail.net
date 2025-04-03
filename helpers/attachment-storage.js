@@ -15,7 +15,6 @@
 
 const { Buffer } = require('node:buffer');
 
-const _ = require('lodash');
 const intoStream = require('into-stream');
 const ms = require('ms');
 const pRetry = require('p-retry');
@@ -24,6 +23,7 @@ const revHash = require('rev-hash');
 const { Builder } = require('json-sql');
 
 const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
+const _ = require('#helpers/lodash');
 
 //
 // we don't use base64 decoding/encoding of attachments (unlike wildduck)

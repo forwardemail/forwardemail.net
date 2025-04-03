@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dayjs = require('dayjs-with-plugins');
@@ -17,6 +16,7 @@ const onAppend = require('./imap/on-append');
 const updateStorageUsed = require('./update-storage-used');
 const { syncConvertResult } = require('./mongoose-to-sqlite');
 
+const _ = require('#helpers/lodash');
 const TemporaryMessages = require('#models/temporary-messages');
 
 const onAppendPromise = pify(onAppend, { multiArgs: true });

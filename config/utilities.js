@@ -8,7 +8,6 @@ const path = require('node:path');
 const punycode = require('node:punycode');
 
 const RE2 = require('re2');
-const _ = require('lodash');
 const ajc = require('array-join-conjunction');
 const ansiHTML = require('ansi-html-community');
 const arrayJoinConjunction = require('array-join-conjunction');
@@ -37,6 +36,7 @@ const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
 const { randomstring } = require('@sidoshi/random-string');
+const _ = require('#helpers/lodash');
 
 const { decrypt } = require('#helpers/encrypt-decrypt');
 

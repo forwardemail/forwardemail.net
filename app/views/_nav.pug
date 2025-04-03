@@ -627,7 +627,7 @@ nav.navbar(class=navbarClasses.join(" "))
                     = t("API Reference")
                 a.dropdown-item(
                   href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
-                  class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active" : ""
+                  class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : "font-weight-bold"
                 )
                   if isBot(ctx.get("User-Agent"))
                     = t("Free Email Webhooks")
@@ -638,7 +638,7 @@ nav.navbar(class=navbarClasses.join(" "))
                 a.dropdown-item(
                   href=l("/email-forwarding-regex-pattern-filter"),
                   class=ctx.pathWithoutLocale === "/email-forwarding-regex-pattern-filter" ? "active" : ""
-                )= t("Regex Email Forwarding")
+                )= t("Custom Domain Regex Filtering")
                 if config.alternatives && config.alternatives.length > 0
                   hr.dropdown-divider
                   h6.dropdown-header= t("Email Service Comparison")
@@ -665,9 +665,9 @@ nav.navbar(class=navbarClasses.join(" "))
                           i(class=doc.icon)
                           = " "
                         if isBot(ctx.get('User-Agent'))
-                          = t(doc.title)
+                          = t(doc.shortTitle || doc.title)
                         else
-                          = t(doc.title.replace("Best ", ""))
+                          = t(doc.shortTitle || doc.title.replace("Best ", ""))
                 if platforms.length > 0 && isBot(ctx.get('User-Agent'))
                   hr.dropdown-divider
                   h6.dropdown-header= t("Open Source")

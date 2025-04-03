@@ -6,8 +6,8 @@
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
-const _ = require('lodash');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

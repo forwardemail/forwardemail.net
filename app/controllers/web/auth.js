@@ -5,7 +5,6 @@
 
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -18,6 +17,7 @@ const { errors } = require('passport-local-mongoose');
 const {
   SessionChallengeStore
 } = require('@forwardemail/passport-fido2-webauthn');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');

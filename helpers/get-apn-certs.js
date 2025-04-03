@@ -22,12 +22,12 @@ const { Buffer } = require('node:buffer');
 const { isMainThread } = require('node:worker_threads');
 
 const X509 = require('@peculiar/x509');
-const _ = require('lodash');
 const ms = require('ms');
 const pEvent = require('p-event');
 const pWaitFor = require('p-wait-for');
 const plist = require('plist');
 const splitLines = require('split-lines');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const config = require('#config');

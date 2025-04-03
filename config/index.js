@@ -10,7 +10,6 @@ const punycode = require('node:punycode');
 
 const Axe = require('axe');
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const consolidate = require('@ladjs/consolidate');
 const dayjs = require('dayjs-with-plugins');
@@ -36,6 +35,7 @@ const utilities = require('./utilities');
 const payments = require('./payments');
 const metaConfig = require('./meta-config');
 const alternatives = require('./alternatives');
+const _ = require('#helpers/lodash');
 
 const zxcvbn = require('#helpers/zxcvbn');
 

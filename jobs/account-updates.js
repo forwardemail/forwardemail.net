@@ -13,10 +13,10 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const _ = require('lodash');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');

@@ -29,15 +29,40 @@ footer.mt-auto(aria-label=t("Footer"))
         if (domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
           //- Empty on purpose
         else
+          .small.text-center.mb-2: strong= t("Learn more about:")
           .text-center.mb-3
           ul.list-inline.mb-3.text-center
-            li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
-              i.fa.fa-lock.mr-2
-              = t("Privacy Protected")
-            li.list-inline-item.border.rounded-lg.bg-dark.text-white.border-light.h6.p-2.mb-1
-              i.fa.fa-shield.mr-2
-              = t("Secure Checkout")
-          .small.text-center.mb-2: strong= t("Payment Methods Accepted:")
+            li.list-inline-item.mb-3
+              a.btn.btn-outline-light(
+                href=l("/blog/docs/best-email-forwarding-service")
+              )
+                i.fa.fa-lock.mr-2
+                = t("Privacy Protected")
+            li.list-inline-item.mb-3
+              a.btn.btn-outline-light(
+                href=l("/guides/send-email-with-custom-domain-smtp")
+              )
+                i.fas.fa-network-wired.mr-2
+                = t("Custom Domain Email")
+            li.list-inline-item.mb-3
+              a.btn.btn-outline-light(
+                href=l("/blog/docs/why-open-source-email-security-privacy")
+              )
+                i.fas.fa-code-branch.mr-2
+                = t("Open Source Email")
+            li.list-inline-item.mb-3
+              a.btn.btn-outline-light(
+                href=l("/blog/docs/email-privacy-protection-technical-implementation")
+              )
+                i.fas.fa-share.mr-2
+                = t("Secure Email Forwarding")
+            li.list-inline-item.mb-3
+              a.btn.btn-outline-light(
+                href=l("/blog/docs/building-reliable-payment-system-stripe-paypal")
+              )
+                i.fa.fa-shield.mr-2
+                = t("Secure Checkout")
+          .small.text-center.mb-2: strong= t("Payment methods accepted:")
           ul.list-inline.mb-3.text-center.mb-5
             li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-paypal
@@ -346,9 +371,9 @@ footer.mt-auto(aria-label=t("Footer"))
                       i(class=doc.icon)
                       = " "
                     if isBot(ctx.get('User-Agent'))
-                      = t(doc.title)
+                      = t(doc.shortTitle || doc.title)
                     else
-                      = t(doc.title.replace("Best ", ""))
+                      = t(doc.shortTitle || doc.title.replace("Best ", ""))
           if platforms.length > 0 && isBot(ctx.get('User-Agent'))
             hr.d-lg-none.w-100
             h2.h5.mb-2: a.text-white(href=l("/blog/open-source"))= t("Open Source Email Clients and Servers")

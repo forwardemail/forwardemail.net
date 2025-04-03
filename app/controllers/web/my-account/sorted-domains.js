@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const { isIP } = require('@forwardemail/validator');
+const _ = require('#helpers/lodash');
 
 function sortedDomains(ctx, next) {
   ctx.state.sortedDomains = _.clone(ctx.state.domains);

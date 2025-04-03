@@ -14,7 +14,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const falso = require('@ngneat/falso');
 const ip = require('ip');
 const mongoose = require('mongoose');
@@ -25,6 +24,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { ImapFlow } = require('imapflow');
 const { randomstring } = require('@sidoshi/random-string');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const combineErrors = require('#helpers/combine-errors');

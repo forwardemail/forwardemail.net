@@ -13,7 +13,7 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');

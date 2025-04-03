@@ -14,7 +14,6 @@ const Redis =
   process.env.NODE_ENV === 'test'
     ? require('ioredis-mock')
     : require('@ladjs/redis');
-const _ = require('lodash');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
@@ -42,6 +41,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const Users = require('./users');
 const Domains = require('./domains');
 const Emails = require('./emails');
+const _ = require('#helpers/lodash');
 
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');

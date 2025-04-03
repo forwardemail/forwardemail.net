@@ -4,8 +4,8 @@
  */
 
 const ErrorStackParser = require('error-stack-parser');
-const _ = require('lodash');
 const prepareStackTrace = require('prepare-stack-trace');
+const _ = require('#helpers/lodash');
 
 //
 // taken from our other project but should be in its own package

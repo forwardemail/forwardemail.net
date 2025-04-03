@@ -13,9 +13,9 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Users = require('#models/users');

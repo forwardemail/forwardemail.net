@@ -10,7 +10,6 @@ const { Writable } = require('node:stream');
 const API = require('@ladjs/api');
 const Client = require('nodemailer/lib/smtp-connection');
 const Redis = require('ioredis-mock');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
@@ -25,6 +24,7 @@ const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
 const SMTP = require('../../smtp-server');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const createPassword = require('#helpers/create-password');

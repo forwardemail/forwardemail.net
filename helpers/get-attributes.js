@@ -6,9 +6,9 @@
 const punycode = require('node:punycode');
 const os = require('node:os');
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
+const _ = require('#helpers/lodash');
 
 const checkSRS = require('#helpers/check-srs');
 const getHeaders = require('#helpers/get-headers');

@@ -19,7 +19,6 @@ const superagent = require('superagent');
 
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
-const _ = require('lodash');
 
 // this package is ignored in `browser` config in `package.json`
 // in order to make the client-side payload less kb
@@ -31,6 +30,7 @@ const isCodeBug = require('./is-code-bug');
 const isTLSError = require('./is-tls-error');
 const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
+const _ = require('./lodash');
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
@@ -40,7 +40,7 @@ const hasMixin = mongoose && _ && _.mixin;
 
 if (hasMixin) {
   // <https://stackoverflow.com/a/41978063>
-  _.mixin({
+  _.mixin(_, {
     deeply(map) {
       // <https://stackoverflow.com/a/48032359>
       const deeplyArray = function (obj, fn) {

@@ -4,10 +4,10 @@
  */
 
 const RE2 = require('re2');
-const _ = require('lodash');
 // const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');

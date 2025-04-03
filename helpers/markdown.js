@@ -9,6 +9,7 @@ const markdownItGitHubHeadings = require('markdown-it-github-headings');
 const markdownItHighlightJS = require('markdown-it-highlightjs');
 const markdownItTaskCheckbox = require('markdown-it-task-checkbox');
 const markdownItGitHubAlerts = require('markdown-it-github-alerts');
+const markdownItFootnote = require('markdown-it-footnote');
 
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
@@ -27,6 +28,7 @@ const markdown = markdownIt({
 // <https://github.com/antfu/markdown-it-github-alerts/issues/8>
 //
 markdown.use(markdownItGitHubAlerts);
+markdown.use(markdownItFootnote);
 markdown.use(markdownItHighlightJS);
 markdown.use(markdownItTaskCheckbox);
 markdown.use(markdownItEmoji);

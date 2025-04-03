@@ -5,12 +5,12 @@
 
 const punycode = require('node:punycode');
 
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

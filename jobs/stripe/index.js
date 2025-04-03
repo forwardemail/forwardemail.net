@@ -12,7 +12,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const pMap = require('p-map');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
@@ -21,6 +20,7 @@ const safeStringify = require('fast-safe-stringify');
 const syncStripePayments = require('./sync-stripe-payments');
 const fraudCheck = require('./fraud-check');
 const checkSubscriptionAccuracy = require('./check-subscription-accuracy');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const env = require('#config/env');

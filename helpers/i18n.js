@@ -15,4 +15,20 @@ const i18n = new I18N({
   logger
 });
 
+//
+// delete unused methods since it pollutes memory
+//
+// NOTE: if you change this, also change it elsewhere `rg "new I18N"`
+//
+for (const fn of [
+  'addLocale',
+  'removeLocale',
+  'configure',
+  'getCatalog',
+  'getLocale',
+  'getLocales'
+]) {
+  delete i18n[fn];
+}
+
 module.exports = i18n;

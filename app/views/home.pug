@@ -124,7 +124,7 @@ block body
   .min-vh-100.d-flex.flex-column.pb-5(
     data-ignore-hash-change,
     id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
-    class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+    class=isBot(ctx.get("User-Agent")) || ctx.query.reduce_motion ? "" : "text-white"
   )
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
     if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
@@ -153,16 +153,16 @@ block body
         )
         .col-12.text-center
           if isBot(ctx.get("User-Agent"))
-            h1.mb-3.text-sans-serif(data-ignore-hash-change)= t("Free Email Forwarding Service")
+            h1.mb-3.text-sans-serif(data-ignore-hash-change)= t("Free Email Forwarding for Custom Domains")
           else
-            #typed-home-header.h1.mb-3(data-ignore-hash-change)
+            h1#typed-home-header.mb-3(data-ignore-hash-change)
               span#typed-home.text-sans-serif(data-ignore-hash-change)
                 != t("Email for everyone")
           if isBot(ctx.get("User-Agent"))
             p
               != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
               = " "
-              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain or use one of ours!')
+              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain for free. Set up custom domain email forwarding in minutes!')
           if !isBot(ctx.get("User-Agent"))
             a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
               href=l("/register"),
@@ -256,6 +256,7 @@ block body
             .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
               data-vendor="youtube_nocookie",
               title=t("How to create unlimited email addresses and aliases"),
+              loading="lazy",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
       .row
@@ -311,7 +312,7 @@ block body
         .col-12
           h2.display-3.font-weight-bold.text-white.my-3.my-md-3
             if isBot(ctx.get('User-Agent'))
-              = t("Open-source email forwarding")
+              = t("Open-source custom domain email forwarding")
             else
               = t("Open-source")
       .row
@@ -354,7 +355,7 @@ block body
       .row.d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Privacy-focused")
+            h2.display-5.font-weight-bold.mb-3= t("Privacy-focused custom domain email")
             p.lead.mb-3= t("We created this service because you have a right to privacy.  Existing services did not respect it.  We use robust encryption with TLS, do not store SMTP logs (with the exception of errors and outbound SMTP), and do not write your emails to disk storage.", l("/faq#do-you-store-error-logs"))
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/privacy")
@@ -370,7 +371,7 @@ block body
               i.fa.fa-angle-double-right.align-middle
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-0.m-2.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Disposable Addresses")
+            h2.display-5.font-weight-bold.mb-3= t("Custom Domain Disposable Addresses")
             p.lead.mb-3!= t("Create a specific or an anonymous email address that forwards to you.  You can even assign it a label and enable or disable it at any time to keep your inbox tidy.  Your actual email address is never exposed.")
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/disposable-addresses")
@@ -386,7 +387,7 @@ block body
               i.fa.fa-angle-double-right.align-middle
         .col-12.col-lg-6.d-flex
           .p-md-5.mt-5.mt-lg-2.m-2.mb-lg-0.rounded-lg.border-md.border-themed.bg-md-white.bg-themed.border-md.dark-50.border-md.d-flex.flex-column.flex-grow-1.align-items-start
-            h2.display-5.font-weight-bold.mb-3= t("Multiple Recipients and Wildcards")
+            h2.display-5.font-weight-bold.mb-3= t("Custom Domain Email Forwarding with Multiple Recipients")
             p.lead.mb-3!= t("You can forward a single address to multiple, and even use wildcard addresses &ndash; also known as catch-all's.  Managing your company's inboxes has never been easier.")
             a.d-none.d-md-block.mt-auto.stretched-link.btn.btn-lg.btn-outline-dark(
               href=l("/register"),

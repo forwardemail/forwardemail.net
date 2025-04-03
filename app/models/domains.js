@@ -13,7 +13,6 @@ const { promisify } = require('node:util');
 const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
@@ -32,6 +31,7 @@ const { convert } = require('html-to-text');
 const { isPort, isURL } = require('@forwardemail/validator');
 
 const pkg = require('../../package.json');
+const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
@@ -1220,7 +1220,7 @@ Domains.plugin(mongooseCommonPlugin, {
       resolver: 'hide'
     }
   },
-  defaultLocale: i18n.getLocale()
+  defaultLocale: i18n.config.defaultLocale
 });
 
 async function getNSRecords(domain, resolver) {
@@ -1966,7 +1966,12 @@ async function getToAndMajorityLocaleByDomain(domain) {
 
   // <https://stackoverflow.com/a/49731453>
   const locales = users.map((user) => user[config.lastLocaleField]);
-  const locale = _.head(_(locales).countBy().entries().maxBy(_.last));
+
+  // const locale = _.head(_.chain(locales).countBy().entries().maxBy(_.last));
+  const countedLocales = _.countBy(locales);
+  const localeEntries = Object.entries(countedLocales);
+  const maxLocaleEntry = _.maxBy(localeEntries, (entry) => entry[1]);
+  const locale = maxLocaleEntry[0];
 
   return { to, locale };
 }

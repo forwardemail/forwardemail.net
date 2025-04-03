@@ -4,13 +4,13 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
 const pMap = require('p-map');
 const titleize = require('titleize');
+const _ = require('#helpers/lodash');
 
 const Logs = require('#models/logs');
 // const config = require('#config');

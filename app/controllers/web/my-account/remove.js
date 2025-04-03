@@ -5,10 +5,10 @@
 
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const numeral = require('numeral');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');
@@ -187,7 +187,7 @@ async function remove(ctx) {
   }
 
   ctx.state.user.email = `${ctx.state.user.id}@${config.removedEmailDomain}`;
-  ctx.state.user[config.lastLocaleField] = i18n.getLocale();
+  ctx.state.user[config.lastLocaleField] = i18n.config.defaultLocale;
   ctx.state.user[config.passport.fields.appleAccessToken] = undefined;
   ctx.state.user[config.passport.fields.appleProfileID] = undefined;
   ctx.state.user[config.passport.fields.appleRefreshToken] = undefined;

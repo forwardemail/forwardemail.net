@@ -15,8 +15,6 @@ const Redis =
   process.env.NODE_ENV === 'test'
     ? require('ioredis-mock')
     : require('@ladjs/redis');
-const SpamScanner = require('spamscanner');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
@@ -40,6 +38,7 @@ const { convert } = require('html-to-text');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
 const Users = require('./users');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const MessageSplitter = require('#helpers/message-splitter');
@@ -86,10 +85,8 @@ const transporter = nodemailer.createTransport({
   })
 });
 
-const scanner = new SpamScanner({
-  logger,
-  clamscan: env.NODE_ENV === 'test'
-});
+let SpamScanner;
+let scanner;
 
 const webSharedConfig = sharedConfig('WEB');
 
@@ -1412,6 +1409,13 @@ Emails.statics.queue = async function (
         ![config.supportEmail, config.abuseEmail].includes(to.toLowerCase())
     )
   ) {
+    if (!SpamScanner) SpamScanner = require('spamscanner');
+    if (!scanner)
+      scanner = new SpamScanner({
+        logger,
+        clamscan: env.NODE_ENV === 'test'
+      });
+
     const scan = await scanner.scan(message);
 
     const messages = [

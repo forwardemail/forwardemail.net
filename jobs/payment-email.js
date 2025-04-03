@@ -13,11 +13,11 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const pMapSeries = require('p-map-series');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const setupMongoose = require('#helpers/setup-mongoose');
 const config = require('#config');

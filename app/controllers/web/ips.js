@@ -4,9 +4,9 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const ms = require('ms');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const config = require('#config');
@@ -112,7 +112,10 @@ async function ips(ctx, next) {
 
     // sort by A-Z hostname so it's always consistent in ordering
     // <https://github.com/lodash/lodash/issues/1459#issuecomment-253969771>
-    obj = _(obj).toPairs().sortBy(0).fromPairs().value();
+    // obj = _.chain(obj).toPairs().sortBy(0).fromPairs().value();
+    const pairs = _.toPairs(obj);
+    const sortedPairs = _.sortBy(pairs, 0);
+    obj = Object.fromEntries(sortedPairs);
 
     // if cache not set then cache for 1 day
     if (!cache)

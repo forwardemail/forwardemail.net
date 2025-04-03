@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const ratelimit = require('@ladjs/koa-simple-ratelimit');
 
 const logger = require('./logger');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 
 // defaults to 10 requests per day

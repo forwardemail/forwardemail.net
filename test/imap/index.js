@@ -29,13 +29,13 @@ const openpgp = require('openpgp/dist/node/openpgp.js');
 const pWaitFor = require('p-wait-for');
 const splitLines = require('split-lines');
 const test = require('ava');
-const _ = require('lodash');
 const { ImapFlow } = require('imapflow');
 const { Semaphore } = require('@shopify/semaphore');
 
 const utils = require('../utils');
 const SQLite = require('../../sqlite-server');
 const IMAP = require('../../imap-server');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');

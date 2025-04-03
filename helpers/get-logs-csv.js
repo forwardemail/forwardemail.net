@@ -6,7 +6,7 @@
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const titleize = require('titleize');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Logs = require('#models/logs');
 

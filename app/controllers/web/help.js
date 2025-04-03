@@ -6,9 +6,9 @@
 const sanitize = require('sanitize-html');
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const nodemailer = require('nodemailer');
 const Axe = require('axe');
+const _ = require('#helpers/lodash');
 
 const emailHelper = require('#helpers/email');
 const { Domains, Emails, Inquiries } = require('#models');

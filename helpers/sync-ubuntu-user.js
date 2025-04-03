@@ -4,13 +4,13 @@
  */
 
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pEvent = require('p-event');
 const pMap = require('p-map');
 const revHash = require('rev-hash');
 const sharedConfig = require('@ladjs/shared-config');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

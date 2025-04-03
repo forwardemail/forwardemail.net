@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const getStream = require('get-stream');
 const pFilter = require('p-filter');
 const safeStringify = require('fast-safe-stringify');
+const _ = require('#helpers/lodash');
 
 const MessageSplitter = require('#helpers/message-splitter');
 const SMTPError = require('#helpers/smtp-error');

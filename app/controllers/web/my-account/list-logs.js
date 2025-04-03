@@ -8,7 +8,6 @@ const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -16,6 +15,7 @@ const paginate = require('koa-ctx-paginate');
 const regexParser = require('regex-parser');
 const revHash = require('rev-hash');
 const ms = require('ms');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const config = require('#config');

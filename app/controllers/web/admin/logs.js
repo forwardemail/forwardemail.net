@@ -4,8 +4,8 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const paginate = require('koa-ctx-paginate');
+const _ = require('#helpers/lodash');
 
 const getMongoQuery = require('#helpers/get-mongo-query');
 const { Logs } = require('#models');

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const memoize = require('memoizee');
@@ -11,6 +10,7 @@ const ms = require('ms');
 const numeral = require('numeral');
 const revHash = require('rev-hash');
 const titleize = require('titleize');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const locales = require('#config/locales');

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 // const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');

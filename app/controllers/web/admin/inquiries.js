@@ -6,7 +6,6 @@
 const { Buffer } = require('node:buffer');
 const path = require('node:path');
 const getStream = require('get-stream');
-const _ = require('lodash');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
@@ -14,6 +13,7 @@ const parser = require('mongodb-query-parser');
 const previewEmail = require('preview-email');
 const nodemailer = require('nodemailer');
 const Axe = require('axe');
+const _ = require('#helpers/lodash');
 
 const { Emails, Inquiries, Users } = require('#models');
 const config = require('#config');

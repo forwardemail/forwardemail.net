@@ -8,7 +8,6 @@ const punycode = require('node:punycode');
 const Boom = require('@hapi/boom');
 const Email = require('email-templates');
 const Meta = require('koa-meta');
-const _ = require('lodash');
 const emailAddresses = require('email-addresses');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -17,6 +16,7 @@ const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
 const { ValidationError } = require('mongoose/lib/error');
 const { parse } = require('node-html-parser');
+const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
 const config = require('#config');

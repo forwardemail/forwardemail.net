@@ -16,7 +16,7 @@ const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const ms = require('ms');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Payments = require('#models/payments');
 const Users = require('#models/users');

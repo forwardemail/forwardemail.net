@@ -6,7 +6,6 @@
 const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
@@ -15,6 +14,7 @@ const parseErr = require('parse-err');
 const pMapSeries = require('p-map-series');
 const titleize = require('titleize');
 const safeStringify = require('fast-safe-stringify');
+const _ = require('#helpers/lodash');
 
 const { Users, Domains } = require('#models');
 const config = require('#config');

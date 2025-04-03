@@ -14,12 +14,12 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 const sharedConfig = require('@ladjs/shared-config');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');

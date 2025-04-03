@@ -4,12 +4,12 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 
 const splitSpaces = require('./split-spaces');
+const _ = require('#helpers/lodash');
 
 function getMongoQuery(ctx) {
   let query = {};

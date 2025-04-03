@@ -5,8 +5,8 @@
 
 const punycode = require('node:punycode');
 
-const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const populateDomainStorage = require('#helpers/populate-domain-storage');

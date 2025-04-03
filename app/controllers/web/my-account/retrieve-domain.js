@@ -8,13 +8,13 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pug = require('pug');
 const { parse } = require('node-html-parser');
 
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const importAliases = require('./import-aliases');
+const _ = require('#helpers/lodash');
 
 const { Domains, Aliases } = require('#models');
 const config = require('#config');

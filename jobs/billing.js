@@ -12,10 +12,10 @@ require('#config/env');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const i18n = require('#helpers/i18n');
 const config = require('#config');

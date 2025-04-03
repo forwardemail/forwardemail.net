@@ -13,12 +13,12 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const _ = require('lodash');
 const mongoose = require('mongoose');
 const validationErrorTransform = require('mongoose-validation-error-transform');
 
 const Mailboxes = require('./mailboxes');
 const Threads = require('./threads');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const {

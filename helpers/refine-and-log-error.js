@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const splitLines = require('split-lines');
 const striptags = require('striptags');
 // const { convert } = require('html-to-text');
@@ -13,6 +12,7 @@ const isRetryableError = require('./is-retryable-error');
 const isLockingError = require('./is-locking-error');
 const isCodeBug = require('./is-code-bug');
 const logger = require('./logger');
+const _ = require('#helpers/lodash');
 
 // const env = require('#config/env');
 

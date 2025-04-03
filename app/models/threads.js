@@ -17,11 +17,11 @@ const crypto = require('node:crypto');
 
 const Database = require('better-sqlite3-multiple-ciphers');
 const MessageHandler = require('wildduck/lib/message-handler');
-const _ = require('lodash');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const validationErrorTransform = require('mongoose-validation-error-transform');
 const { Builder } = require('json-sql');
+const _ = require('#helpers/lodash');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');

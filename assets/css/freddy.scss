@@ -13,15 +13,16 @@
   overflow-x: clip;
   #stars {
     position: absolute;
-    background-color: #000000;
+    // background-color: #000000;
     top: -60px;
     z-index: -3;
     width: 100%;
     bottom: 0;
-    background-size: 40vmin, 50vmin, 110%;
-    background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
-    background-repeat: no-repeat, repeat, no-repeat;
-    background-position: 110% 110%, 50% 50%, 100% 100%;
+    background-color: #000033;
+    background-size: 40vmin;
+    background-image: url('b64---../img/art/planet.svg---');
+    background-repeat: no-repeat;
+    background-position: 110% 110%;
   }
   #rocket {
     transition: all 1.5s linear;
@@ -60,7 +61,11 @@
   }
   @include media-breakpoint-up(md) {
     #stars {
-      background-size: 45vmin, 50vmin, 110%;
+      background-size: 40vmin, 50vmin, 110%;
+      background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
+      background-repeat: no-repeat, repeat, no-repeat;
+      background-position: 110% 110%, 50% 50%, 100% 100%;
+      // background-size: 45vmin;
     }
     #waving {
       right: 15%;
@@ -70,7 +75,9 @@
   }
   @include media-breakpoint-up(lg) {
     #stars {
+      background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
       background-size: 50vmin, 50vmin, 110%;
+      // background-size: 50vmin;
     }
     #waving {
       width: 126px;
@@ -80,6 +87,7 @@
   @include media-breakpoint-up(xl) {
     #stars {
       background-size: 60vmin, 50vmin, 110%;
+      // background-size: 60vmin;
     }
   }
 }

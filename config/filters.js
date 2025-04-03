@@ -188,7 +188,7 @@ function fixTableOfContents(content, i18n, options) {
       'aria-label',
       i18n.api.t({
         phrase: 'Go to top',
-        locale: (options && options.locale) || i18n.getLocale()
+        locale: (options && options.locale) || i18n.config.defaultLocale
       })
     );
 
@@ -348,7 +348,7 @@ function fixTableOfContents(content, i18n, options) {
 
   const str = i18n.api.t({
     phrase: phrases.TABLE_OF_CONTENTS,
-    locale: (options && options.locale) || i18n.getLocale()
+    locale: (options && options.locale) || i18n.config.defaultLocale
   });
 
   ul.rawTagName = 'div';
@@ -360,7 +360,7 @@ function fixTableOfContents(content, i18n, options) {
 
   const search = i18n.api.t({
     phrase: phrases.SEARCH_PAGE,
-    locale: (options && options.locale) || i18n.getLocale()
+    locale: (options && options.locale) || i18n.config.defaultLocale
   });
 
   if (!options.isDocs && lis.length <= MAX_SECTIONS)
@@ -407,8 +407,29 @@ const i18n = new I18N({
 });
 
 //
+// delete unused methods since it pollutes memory
+//
+// NOTE: if you change this, also change it elsewhere `rg "new I18N"`
+//
+for (const fn of [
+  'addLocale',
+  'removeLocale',
+  'configure',
+  'getCatalog',
+  'getLocale',
+  'getLocales'
+]) {
+  delete i18n[fn];
+}
+
+//
 // TODO: create an in-memory hash map with rev-hash to render quick in production
 //
+
+const escapedFootnotePattern = /\\(\[(\^[^\]]+)])/g;
+function fixFootnoteReferences(markdownText) {
+  return markdownText.replace(escapedFootnotePattern, '$1');
+}
 
 module.exports = {
   md(string, options) {
@@ -416,12 +437,15 @@ module.exports = {
     // `> \[!` -> `> [!`
     string = string.replaceAll('> \\[!', '> [!');
 
+    // replace footnote escaped chars
+    string = fixFootnoteReferences(string);
+
     if (typeof options !== 'object' || !isSANB(options.locale))
       return fixTableOfContents(markdown.render(string), i18n, options);
     return fixTableOfContents(
       i18n.api.t({
         phrase: markdown.render(string),
-        locale: (options && options.locale) || i18n.getLocale()
+        locale: (options && options.locale) || i18n.config.defaultLocale
       }),
       i18n,
       options

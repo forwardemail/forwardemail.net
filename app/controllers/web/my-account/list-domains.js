@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
 const pMap = require('p-map');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

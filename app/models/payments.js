@@ -469,13 +469,13 @@ Payments.pre('save', async function (next) {
 
 Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',
-  defaultLocale: i18n.getLocale()
+  defaultLocale: i18n.config.defaultLocale
 });
 
 async function getPDFReceipt(
   payment,
   user,
-  locale = i18n.getLocale(),
+  locale = i18n.config.defaultLocale,
   returnHTML = false
 ) {
   const t = (phrase, ...args) => {

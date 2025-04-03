@@ -17,7 +17,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
@@ -26,6 +25,7 @@ const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const sharedConfig = require('@ladjs/shared-config');
 const safeStringify = require('fast-safe-stringify');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

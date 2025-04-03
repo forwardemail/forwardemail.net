@@ -14,11 +14,11 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');

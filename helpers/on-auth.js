@@ -12,7 +12,6 @@ const pify = require('pify');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { IMAPServer } = require('wildduck/imap-core');
-const _ = require('lodash');
 
 const SMTPError = require('./smtp-error');
 const ServerShutdownError = require('./server-shutdown-error');
@@ -22,6 +21,7 @@ const parseRootDomain = require('./parse-root-domain');
 const refineAndLogError = require('./refine-and-log-error');
 const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

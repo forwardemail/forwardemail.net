@@ -4,10 +4,10 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const paginate = require('koa-ctx-paginate');
 const parseErr = require('parse-err');
 const previewEmail = require('preview-email');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const Emails = require('#models/emails');

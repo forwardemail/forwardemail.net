@@ -4,12 +4,12 @@
  */
 
 const Router = require('@koa/router');
-const _ = require('lodash');
 const bodyParser = require('koa-bodyparser');
 const dayjs = require('dayjs-with-plugins');
 const multer = require('@koa/multer');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 
 const api = require('#controllers/api');
 const policies = require('#helpers/policies');

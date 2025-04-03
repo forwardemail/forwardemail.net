@@ -11,7 +11,6 @@ const { randomUUID } = require('node:crypto');
 
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dayjs = require('dayjs-with-plugins');
@@ -29,6 +28,7 @@ const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const { Iconv } = require('iconv');
 const Boom = require('@hapi/boom');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

@@ -16,7 +16,7 @@ html.h-100.no-js(
       if meta && meta.description
         meta(name="description", content=striptags(convert(meta.description)))
       meta(name="viewport", content="width=device-width, initial-scale=1")
-
+      link(rel="preconnect", href="https://www.youtube-nocookie.com")
       //- search
       //- <https://stackoverflow.com/q/44189748>
       link(
@@ -148,6 +148,16 @@ html.h-100.no-js(
           "@type": "Organization",
           "url": "https://forwardemail.net",
           "name": "Forward Email",
+          "description": "Free open-source email forwarding service for custom domains",
+          "keywords": "email forwarding, custom domain email, free email forwarding, open source email",
+          "alternateName": "ForwardEmail",
+          "foundingDate": "2017",
+          "founders": [
+            {
+              "@type": "Person",
+              "name": "Forward Email Team"
+            }
+          ],
           "legalName": "Forward Email",
           "logo": "https://forwardemail.net/img/social.png",
           "sameAs": ["https://en.wikipedia.org/wiki/Forward_Email"]
@@ -243,7 +253,7 @@ html.h-100.no-js(
     //- prefetch fonts
     //- https://caniuse.com/link-rel-prefetch
     - const fonts = ["fa-solid-900.woff2", "fa-brands-400.woff2"];
-    if !isBot(ctx.get('User-Agent'))
+    if !isBot(ctx.get('User-Agent')) && !ctx.query.reduce_motion
       - fonts.push("nunito-sans-latin-400.woff2");
       - fonts.push("nunito-sans-latin-700.woff2");
       //- - fonts.push("inconsolata-dz.otf");
@@ -261,7 +271,7 @@ html.h-100.no-js(
 
     //- css file
     block stylesheets
-      if isBot(ctx.get('User-Agent'))
+      if isBot(ctx.get('User-Agent')) || ctx.query.reduce_motion
         if ctx.pathWithoutLocale === '/' && botCss
           style(nonce=nonce)!= botCss
           link(
@@ -286,7 +296,7 @@ html.h-100.no-js(
           )
         else
           if ctx.pathWithoutLocale === '/' && appCss
-            style(nonce=nonce)!= appCss
+            style(nonce=nonce, data-critical="true")!= appCss
             link(
               rel="prefetch",
               href=manifest("css/app.css"),
@@ -320,6 +330,7 @@ html.h-100.no-js(
     role="document",
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
+    data-reduce-motion=ctx.query.reduce_motion ? true : false,
     class=(domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
   )
     - const isHelp = ctx.pathWithoutLocale && ctx.pathWithoutLocale === "/help";

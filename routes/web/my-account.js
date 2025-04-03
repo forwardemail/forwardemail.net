@@ -10,7 +10,6 @@ const Attestation = require('@forwardemail/passport-fido2-webauthn/lib/fido2/att
 const AuthenticatorData = require('@forwardemail/passport-fido2-webauthn/lib/fido2/authenticatordata');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
-const _ = require('lodash');
 const attestationFormats = require('@forwardemail/passport-fido2-webauthn/lib/fido2/formats');
 const base64url = require('base64url');
 const cose2jwk = require('cose-to-jwk');
@@ -24,6 +23,7 @@ const {
   SessionChallengeStore
 } = require('@forwardemail/passport-fido2-webauthn');
 const { sha256 } = require('crypto-hash');
+const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
 const config = require('#config');

@@ -12,7 +12,6 @@ const BaseFactory = require('@zainundin/mongoose-factory').default;
 const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
-const _ = require('lodash');
 const falso = require('@ngneat/falso');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -20,6 +19,7 @@ const pWaitFor = require('p-wait-for');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { listen } = require('async-listen');
+const _ = require('#helpers/lodash');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');

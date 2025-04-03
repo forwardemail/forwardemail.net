@@ -9,7 +9,6 @@ const { Buffer } = require('node:buffer');
 const { createPublicKey, randomBytes, createHmac } = require('node:crypto');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
@@ -47,6 +46,7 @@ const sendEmail = require('./send-email');
 const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const env = require('#config/env');

@@ -7,12 +7,12 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

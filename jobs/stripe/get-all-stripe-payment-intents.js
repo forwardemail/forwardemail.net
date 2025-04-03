@@ -5,7 +5,7 @@
 
 const pWhilst = require('p-whilst');
 const Stripe = require('stripe');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 

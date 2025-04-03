@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
@@ -20,6 +19,7 @@ const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
 const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 

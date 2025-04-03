@@ -8,7 +8,6 @@ const path = require('node:path');
 const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
-const _ = require('lodash');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -33,6 +32,7 @@ const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const policies = require('#helpers/policies');
@@ -500,6 +500,10 @@ localeRouter
     rateLimit(50, 'login'),
     web.auth.login
   )
+  .get('/signup', (ctx) => {
+    ctx.status = 301;
+    ctx.redirect(ctx.state.l('/register'));
+  })
   .get(
     '/register',
     policies.ensureLoggedOut,

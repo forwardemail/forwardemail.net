@@ -15,7 +15,6 @@ require('#config/mongoose');
 const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
@@ -23,6 +22,7 @@ const ms = require('ms');
 const parseErr = require('parse-err');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

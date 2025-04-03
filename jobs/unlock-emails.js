@@ -15,7 +15,7 @@ require('#config/mongoose');
 const Graceful = require('@ladjs/graceful');
 const dayjs = require('dayjs-with-plugins');
 const mongoose = require('mongoose');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');

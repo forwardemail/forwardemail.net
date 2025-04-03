@@ -51,8 +51,8 @@ module.exports = function (config) {
     // meta for a specific route it'd be confusing to see Home
     // in the title bar in the user's browser
     '/': [
-      'Free Email Forwarding for Custom Domains',
-      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP, IMAP, and POP3.'
+      'Free Email Forwarding for Custom Domains | Free Custom Domain Email Forwarding',
+      'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP, IMAP, and POP3. Set up free email forwarding for your custom domain in minutes.'
     ],
     '/about': [
       'Free Email Forwarder for Custom Domains',
@@ -419,16 +419,20 @@ module.exports = function (config) {
   for (const doc of developerDocs) {
     if (doc.notCodeExample) {
       meta[doc.slug] = [
-        `${doc.title} in <span class="notranslate">${dayjs(now).format(
-          'YYYY'
-        )}</span>`,
+        doc.noYearAffix
+          ? doc.title
+          : `${doc.title} in <span class="notranslate">${dayjs(now).format(
+              'YYYY'
+            )}</span>`,
         doc.description
       ];
     } else {
       meta[doc.slug] = [
-        `${doc.title} Code Example in <span class="notranslate">${dayjs(
-          now
-        ).format('YYYY')}</span>`,
+        doc.noYearAffix
+          ? doc.title
+          : `${doc.title} Code Example in <span class="notranslate">${dayjs(
+              now
+            ).format('YYYY')}</span>`,
         doc.description
       ];
     }

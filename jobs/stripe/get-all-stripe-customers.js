@@ -5,7 +5,7 @@
 
 /* eslint-disable no-await-in-loop */
 const Stripe = require('stripe');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 

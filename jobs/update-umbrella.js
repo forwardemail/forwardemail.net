@@ -14,7 +14,6 @@ const AdmZip = require('adm-zip');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const Tangerine = require('tangerine');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const getDmarcRecord = require('mailauth/lib/dmarc/get-dmarc-record');
 const got = require('got');
@@ -30,6 +29,7 @@ const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const setupMongoose = require('#helpers/setup-mongoose');

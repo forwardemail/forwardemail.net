@@ -4,9 +4,9 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const splitLines = require('split-lines');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('#helpers/lodash');
 
 const emailHelper = require('#helpers/email');
 const i18n = require('#helpers/i18n');

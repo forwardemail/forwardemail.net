@@ -5,7 +5,6 @@
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -19,6 +18,7 @@ const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { isIP, isURL } = require('@forwardemail/validator');
 const { randomstring } = require('@sidoshi/random-string');
+const _ = require('#helpers/lodash');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
 mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
@@ -471,7 +471,7 @@ Aliases.pre('validate', function (next) {
 Aliases.plugin(mongooseCommonPlugin, {
   object: 'alias',
   omitExtraFields: ['is_rekey', 'is_api', 'tokens', 'pgp_error_sent_at', 'aps'],
-  defaultLocale: i18n.getLocale()
+  defaultLocale: i18n.config.defaultLocale
 });
 
 Aliases.virtual('virtual_member')

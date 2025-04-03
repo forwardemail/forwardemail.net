@@ -4,9 +4,9 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const ms = require('ms');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('#helpers/lodash');
 
 const emailHelper = require('#helpers/email');
 const config = require('#config');

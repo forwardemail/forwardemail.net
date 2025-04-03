@@ -4,7 +4,7 @@
  */
 
 const prettyMilliseconds = require('pretty-ms');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');

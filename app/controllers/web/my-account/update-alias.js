@@ -6,7 +6,7 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 

@@ -4,9 +4,9 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
+const _ = require('#helpers/lodash');
 
 const emailHelper = require('#helpers/email');
 const config = require('#config');

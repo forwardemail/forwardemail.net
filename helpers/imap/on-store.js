@@ -17,7 +17,7 @@ const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

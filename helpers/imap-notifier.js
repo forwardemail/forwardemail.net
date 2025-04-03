@@ -16,9 +16,9 @@
 const { EventEmitter } = require('node:events');
 
 const Database = require('better-sqlite3-multiple-ciphers');
-const _ = require('lodash');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
+const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Journals = require('#models/journals');

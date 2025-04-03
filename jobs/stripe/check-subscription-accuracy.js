@@ -7,13 +7,13 @@ const os = require('node:os');
 
 const { setTimeout } = require('node:timers/promises');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const ms = require('ms');
 const pMap = require('p-map');
 const pMapSeries = require('p-map-series');
 
 const getAllStripeCustomers = require('./get-all-stripe-customers');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const config = require('#config');

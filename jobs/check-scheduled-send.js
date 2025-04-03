@@ -17,7 +17,7 @@ const Redis = require('@ladjs/redis');
 const dayjs = require('dayjs-with-plugins');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 const Emails = require('#models/emails');
 const Users = require('#models/users');

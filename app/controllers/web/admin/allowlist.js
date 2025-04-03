@@ -5,11 +5,11 @@
 
 const Boom = require('@hapi/boom');
 const RE2 = require('re2');
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const { isIP } = require('@forwardemail/validator');
+const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
 

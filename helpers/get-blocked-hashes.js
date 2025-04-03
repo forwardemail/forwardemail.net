@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const revHash = require('rev-hash');
+const _ = require('#helpers/lodash');
 
 function getBlockedHashes(prefix, date = new Date()) {
   const arr = [];

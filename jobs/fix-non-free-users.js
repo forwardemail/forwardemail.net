@@ -14,10 +14,10 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pMap = require('p-map');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const { Users, Domains } = require('#models');
 const config = require('#config');

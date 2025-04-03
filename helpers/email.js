@@ -4,7 +4,6 @@
  */
 
 const Email = require('email-templates');
-const _ = require('lodash');
 const nodemailer = require('nodemailer');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
@@ -12,6 +11,7 @@ const { decode } = require('html-entities');
 
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const env = require('#config/env');

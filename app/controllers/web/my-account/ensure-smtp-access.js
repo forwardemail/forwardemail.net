@@ -4,8 +4,8 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
+const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 

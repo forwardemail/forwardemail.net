@@ -10,7 +10,6 @@ const process = require('node:process');
 
 const Boom = require('@hapi/boom');
 const Cabin = require('cabin');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const ipaddr = require('ipaddr.js');
 const isFQDN = require('is-fqdn');
@@ -27,6 +26,7 @@ const env = require('./env');
 const koaCashConfig = require('./koa-cash');
 
 const config = require('.');
+const _ = require('#helpers/lodash');
 
 const Users = require('#models/users');
 const createTangerine = require('#helpers/create-tangerine');

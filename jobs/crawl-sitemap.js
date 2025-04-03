@@ -15,7 +15,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const ms = require('ms');
@@ -26,6 +25,7 @@ const splitLines = require('split-lines');
 const { XMLParser } = require('fast-xml-parser');
 const { convert } = require('html-to-text');
 const { parse } = require('node-html-parser');
+const _ = require('#helpers/lodash');
 
 const RetryClient = require('#helpers/retry-client');
 const SearchResults = require('#models/search-results');

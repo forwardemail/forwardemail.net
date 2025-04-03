@@ -5,10 +5,10 @@
 
 const path = require('node:path');
 
-const _ = require('lodash');
 const knex = require('knex');
 const ms = require('ms');
 const { SchemaInspector } = require('knex-schema-inspector');
+const _ = require('#helpers/lodash');
 
 const combineErrors = require('#helpers/combine-errors');
 const env = require('#config/env');

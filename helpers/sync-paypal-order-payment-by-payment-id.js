@@ -5,10 +5,10 @@
 
 const { setTimeout } = require('node:timers/promises');
 const ms = require('ms');
-const _ = require('lodash');
 
 const logger = require('./logger');
 const { paypalAgent } = require('./paypal');
+const _ = require('#helpers/lodash');
 const Payments = require('#models/payments');
 
 const FIVE_SECONDS = ms('5s');

@@ -7,7 +7,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const puppeteer = require('puppeteer');
 const slug = require('speakingurl');
@@ -15,6 +14,7 @@ const { isURL } = require('@forwardemail/validator');
 const { parse } = require('node-html-parser');
 
 const env = require('./env');
+const _ = require('#helpers/lodash');
 
 const logger = require('#helpers/logger');
 const parseRootDomain = require('#helpers/parse-root-domain');

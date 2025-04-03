@@ -6,11 +6,11 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const config = require('#config');

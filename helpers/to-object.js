@@ -4,7 +4,7 @@
  */
 
 const mongoose = require('mongoose');
-const _ = require('lodash');
+const _ = require('#helpers/lodash');
 
 function toObject(Model, doc) {
   if (_.isUndefined(Model) || _.isUndefined(doc))

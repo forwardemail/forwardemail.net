@@ -6,10 +6,10 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const striptags = require('striptags');
 const ms = require('ms');
+const _ = require('#helpers/lodash');
 
 const Domains = require('#models/domains');
 const config = require('#config');

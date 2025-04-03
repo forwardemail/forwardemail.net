@@ -9,7 +9,6 @@ const { setTimeout } = require('node:timers/promises');
 
 const ObjectID = require('bson-objectid');
 const Redis = require('ioredis-mock');
-const _ = require('lodash');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
@@ -22,6 +21,7 @@ const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 
 const utils = require('../utils');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const createSession = require('#helpers/create-session');

@@ -4,7 +4,6 @@
  */
 
 const Stripe = require('stripe');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const dedent = require('dedent');
 const isSANB = require('is-string-and-not-blank');
@@ -14,6 +13,7 @@ const safeStringify = require('fast-safe-stringify');
 
 const logger = require('./logger');
 const ThresholdError = require('./threshold-error');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const env = require('#config/env');
 const Users = require('#models/users');

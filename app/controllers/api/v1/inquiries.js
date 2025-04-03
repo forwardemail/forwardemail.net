@@ -6,8 +6,8 @@
 const { createHmac } = require('node:crypto');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
-const _ = require('lodash');
 const { Headers } = require('mailsplit');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const env = require('#config/env');

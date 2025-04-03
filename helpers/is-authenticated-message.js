@@ -6,10 +6,10 @@
 const os = require('node:os');
 const { Buffer } = require('node:buffer');
 
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const { spf } = require('mailauth/lib/spf');
 const { authenticate } = require('mailauth');
+const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');

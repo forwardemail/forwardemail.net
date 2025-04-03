@@ -4,9 +4,9 @@
  */
 
 const RE2 = require('re2');
-const _ = require('lodash');
 const parseErr = require('parse-err');
 const { SRS } = require('sender-rewriting-scheme');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 

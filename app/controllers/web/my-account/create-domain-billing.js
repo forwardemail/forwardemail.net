@@ -7,7 +7,6 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
@@ -17,6 +16,7 @@ const ms = require('ms');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const titleize = require('titleize');
+const _ = require('#helpers/lodash');
 
 const env = require('#config/env');
 const config = require('#config');

@@ -6,10 +6,10 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');

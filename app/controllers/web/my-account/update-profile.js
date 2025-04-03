@@ -4,12 +4,12 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const cryptoRandomString = require('crypto-random-string');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
 const { boolean } = require('boolean');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

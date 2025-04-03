@@ -7,7 +7,6 @@ const { isIP } = require('node:net');
 const { Buffer } = require('node:buffer');
 
 const RE2 = require('re2');
-const _ = require('lodash');
 const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
@@ -18,6 +17,7 @@ const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
 const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
+const _ = require('#helpers/lodash');
 
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');

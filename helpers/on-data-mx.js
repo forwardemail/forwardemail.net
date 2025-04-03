@@ -23,7 +23,6 @@ const { isIP } = require('node:net');
 const MimeNode = require('nodemailer/lib/mime-node');
 const RE2 = require('re2');
 const URLParse = require('url-parse');
-const _ = require('lodash');
 const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -44,6 +43,7 @@ const { SRS } = require('sender-rewriting-scheme');
 const { boolean } = require('boolean');
 const { sealMessage } = require('mailauth');
 const { simpleParser } = require('mailparser');
+const _ = require('#helpers/lodash');
 
 const getReceivedHeader = require('#helpers/get-received-header');
 
@@ -1436,7 +1436,7 @@ async function forward(recipient, headers, session, body) {
                   .exec();
                 const locale = user
                   ? user[config.lastLocaleField]
-                  : i18n.getLocale();
+                  : i18n.config.defaultLocale;
                 const locals = { locale };
                 if (user) locals.user = user;
 

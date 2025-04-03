@@ -6,7 +6,6 @@
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const bytes = require('@forwardemail/bytes');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
@@ -31,6 +30,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Payments = require('./payments');
 
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const email = require('#helpers/email');
 const i18n = require('#helpers/i18n');
@@ -467,7 +467,7 @@ object[fields.otpToken] = String;
 // Shared field names with @ladjs/i18n and email-templates
 object[config.lastLocaleField] = {
   type: String,
-  default: i18n.getLocale()
+  default: i18n.config.defaultLocale
 };
 
 //
@@ -923,7 +923,7 @@ Users.plugin(mongooseCommonPlugin, {
   object: 'user',
   omitCommonFields: false,
   omitExtraFields,
-  defaultLocale: i18n.getLocale(),
+  defaultLocale: i18n.config.defaultLocale,
   mongooseHidden: {
     virtuals: {
       [config.userFields.verificationPinHasExpired]: 'hide'

@@ -15,11 +15,11 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const pMap = require('p-map');
 const shortID = require('mongodb-short-id');
 const sharedConfig = require('@ladjs/shared-config');
 const mongoose = require('mongoose');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const email = require('#helpers/email');

@@ -15,10 +15,10 @@
 
 const { Buffer } = require('node:buffer');
 
-const _ = require('lodash');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
+const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

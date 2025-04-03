@@ -13,7 +13,6 @@ const AdmZip = require('adm-zip');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
 const Tangerine = require('tangerine');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const got = require('got');
 const isFQDN = require('is-fqdn');
@@ -24,6 +23,7 @@ const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 const { fromUrl, parseDomain, ParseResultType } = require('parse-domain');
+const _ = require('#helpers/lodash');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
 const config = require('#config');

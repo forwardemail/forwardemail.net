@@ -5,11 +5,11 @@
 
 const punycode = require('node:punycode');
 
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const safeStringify = require('fast-safe-stringify');
+const _ = require('#helpers/lodash');
 
 const logger = require('#helpers/logger');
 

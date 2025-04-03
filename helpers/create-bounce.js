@@ -7,13 +7,13 @@ const os = require('node:os');
 const { isIP } = require('node:net');
 
 const MimeNode = require('nodemailer/lib/mime-node');
-const _ = require('lodash');
 const ip = require('ip');
 const isFQDN = require('is-fqdn');
 const { convert } = require('html-to-text');
 
 const getErrorCode = require('./get-error-code');
 const getDiagnosticCode = require('./get-diagnostic-code');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 
 const HOSTNAME = os.hostname();

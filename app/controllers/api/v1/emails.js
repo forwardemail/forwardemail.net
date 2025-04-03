@@ -4,10 +4,10 @@
  */
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const pickOriginal = require('@ladjs/pick-original');
 const { Libmime } = require('libmime');
+const _ = require('#helpers/lodash');
 
 const Emails = require('#models/emails');
 const config = require('#config');

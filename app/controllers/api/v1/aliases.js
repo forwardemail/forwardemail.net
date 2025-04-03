@@ -4,10 +4,10 @@
  */
 
 const ObjectID = require('bson-objectid');
-const _ = require('lodash');
 const pickOriginal = require('@ladjs/pick-original');
 
 const { _domainJSON } = require('./domains');
+const _ = require('#helpers/lodash');
 const { Aliases, Users } = require('#models');
 const toObject = require('#helpers/to-object');
 

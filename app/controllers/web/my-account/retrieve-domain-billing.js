@@ -8,7 +8,6 @@ const punycode = require('node:punycode');
 const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
-const _ = require('lodash');
 const numeral = require('numeral');
 const dayjs = require('dayjs-with-plugins');
 const isFQDN = require('is-fqdn');
@@ -18,6 +17,7 @@ const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const striptags = require('striptags');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const emailHelper = require('#helpers/email');

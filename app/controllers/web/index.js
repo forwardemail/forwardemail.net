@@ -10,7 +10,6 @@ const { Buffer } = require('node:buffer');
 const Boom = require('@hapi/boom');
 const Meta = require('koa-meta');
 const QRCode = require('qrcode');
-const _ = require('lodash');
 const dayjs = require('dayjs-with-plugins');
 const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
@@ -44,6 +43,7 @@ const search = require('./search');
 const ips = require('./ips');
 const mobileConfig = require('./mobile-config');
 const feed = require('./feed');
+const _ = require('#helpers/lodash');
 
 const isEmail = require('#helpers/is-email');
 

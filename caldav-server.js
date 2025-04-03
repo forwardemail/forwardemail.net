@@ -4,7 +4,6 @@
  */
 
 const { randomUUID } = require('node:crypto');
-const _ = require('lodash');
 
 // const getUuid = require('@forwardemail/uuid-by-string');
 const API = require('@ladjs/api');
@@ -18,6 +17,7 @@ const mongoose = require('mongoose');
 const uuid = require('uuid');
 const { boolean } = require('boolean');
 const { rrulestr } = require('rrule');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const CalendarEvents = require('#models/calendar-events');

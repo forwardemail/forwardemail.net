@@ -6,11 +6,11 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const dashify = require('dashify');
 const isSANB = require('is-string-and-not-blank');
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');

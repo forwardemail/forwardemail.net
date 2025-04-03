@@ -6,12 +6,12 @@
 const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
-const _ = require('lodash');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const splitLines = require('split-lines');
 const { boolean } = require('boolean');
 const { isIP } = require('@forwardemail/validator');
+const _ = require('#helpers/lodash');
 
 const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');

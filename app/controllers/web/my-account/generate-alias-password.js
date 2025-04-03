@@ -7,12 +7,12 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const QRCode = require('qrcode');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const sanitizeHtml = require('sanitize-html');
 const shortID = require('mongodb-short-id');
 const { boolean } = require('boolean');
 const ms = require('ms');
+const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');

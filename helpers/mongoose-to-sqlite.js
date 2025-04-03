@@ -6,12 +6,12 @@
 const { Buffer } = require('node:buffer');
 
 const Database = require('better-sqlite3-multiple-ciphers');
-const _ = require('lodash');
 const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
+const _ = require('#helpers/lodash');
 
 const config = require('#config');
 const logger = require('#helpers/logger');

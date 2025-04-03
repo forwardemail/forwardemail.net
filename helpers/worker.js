@@ -17,7 +17,6 @@ const { PassThrough } = require('node:stream');
 const { setTimeout } = require('node:timers/promises');
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
-const _ = require('lodash');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
 const bytes = require('@forwardemail/bytes');
@@ -42,8 +41,9 @@ const {
 const { Builder } = require('json-sql');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const isEmail = require('#helpers/is-email');
 
+const isEmail = require('#helpers/is-email');
+const _ = require('#helpers/lodash');
 const Aliases = require('#models/aliases');
 const AttachmentStorage = require('#helpers/attachment-storage');
 const Messages = require('#models/messages');
