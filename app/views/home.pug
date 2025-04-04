@@ -124,7 +124,7 @@ block body
   .min-vh-100.d-flex.flex-column.pb-5(
     data-ignore-hash-change,
     id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
-    class=isBot(ctx.get("User-Agent")) || ctx.query.reduce_motion ? "" : "text-white"
+    class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
   )
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
     if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
