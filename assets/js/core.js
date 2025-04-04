@@ -75,7 +75,9 @@ const logger = require('./logger');
 const sendRequest = require('./send-request');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
-resizeNavbarPadding($);
+$(window).on('load', () => {
+  resizeNavbarPadding($);
+});
 
 // highlight.js
 // const hljs = require('highlight.js');
