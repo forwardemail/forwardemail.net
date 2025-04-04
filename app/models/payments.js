@@ -303,7 +303,9 @@ const Payments = new mongoose.Schema({
       'us_bank_account',
       'wechat_pay',
       'cashapp',
-      'amazon_pay'
+      'amazon_pay',
+      // crypto
+      'crypto'
     ]
   },
   // this is the duration of time added
