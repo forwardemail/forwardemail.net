@@ -96,6 +96,10 @@ module.exports = function (config) {
       'Read our terms and conditions of use for our email forwarding service.'
     ],
     '/gdpr': ['GDPR Compliance', 'Read how our service is GDPR compliant.'],
+    '/security': [
+      'Security Practices',
+      "We've implemented comprehensive security measures to protect your email communications and personal data."
+    ],
     '/dpa': [
       'Data Processing Agreement',
       'Read our data processing agreement, terms of service, and how our service is GDPR compliant.'
@@ -152,6 +156,10 @@ module.exports = function (config) {
         now
       ).format('YYYY')}</span>`,
       'Set up email forwarding for free with custom domain and Gmail to forward, send, and receive email. Send mail as not working? Follow our video and instructions.'
+    ],
+    '/guides/smtp-integration': [
+      'SMTP Integration Examples',
+      "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications."
     ],
     '/guides/port-25-blocked-by-isp-workaround': [
       'Port 25 blocked by ISP',

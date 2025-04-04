@@ -15,6 +15,10 @@ const i18n = new I18N({
   logger
 });
 
+delete i18n.config.phrases;
+if (!global.phrases) global.phrases = i18nConfig.phrases;
+i18n.config.phrases = global.phrases;
+
 //
 // delete unused methods since it pollutes memory
 //

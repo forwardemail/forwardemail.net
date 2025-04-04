@@ -11,7 +11,7 @@ block append scripts
       window.addEventListener(
         "load",
         function load() {
-          if (!window.Typed) return setTimeout(load, 50);
+          if (!window.Typed) return setTimeout(load, 2000);
           if ($("#typed-home").length === 0 || $("#typed-home-strings").length === 0) return;
           setTimeout(function () {
             const typed = new window.Typed("#typed-home", {
@@ -23,7 +23,7 @@ block append scripts
               backDelay: 2000,
               autoInsertCss: false,
             });
-          }, 7000);
+          }, 3000);
         },
         false
       );
@@ -128,9 +128,11 @@ block body
   )
     - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
     if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
-      #stars.user-select-none(data-ignore-hash-change)
+      #stars
+      #stars2
+      #stars3
       if !isSafari
-        #rocket.user-select-none(data-ignore-hash-change)
+        #rocket.d-none.user-select-none(data-ignore-hash-change)
       #waving.user-select-none(
         class=isSafari ? "" : "floating-animation",
         data-ignore-hash-change
@@ -256,7 +258,6 @@ block body
             .lazyframe.border.d-block.mx-auto.lazyframe-bordered(
               data-vendor="youtube_nocookie",
               title=t("How to create unlimited email addresses and aliases"),
-              loading="lazy",
               data-src="https://www.youtube-nocookie.com/embed/oWEVGMPXMbA?autoplay=0"
             )
       .row

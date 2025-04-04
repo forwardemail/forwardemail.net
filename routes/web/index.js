@@ -370,6 +370,7 @@ localeRouter
   )
   .get('/about', render('about'))
   .get('/press', render('press'))
+  .get('/security', render('security'))
   .get(
     '/domain-registration',
     web.myAccount.retrieveDomains,
@@ -431,6 +432,11 @@ localeRouter
     '/guides/send-mail-as-gmail-custom-domain',
     web.guides.sendMailAs,
     render('guides/send-mail-as-using-gmail')
+  )
+  .get(
+    '/guides/smtp-integration',
+    web.onboard,
+    render('guides/smtp-integration')
   )
   .get(
     '/guides/port-25-blocked-by-isp-workaround',

@@ -562,6 +562,11 @@ nav.navbar(class=navbarClasses.join(" "))
               )
                 h6.dropdown-header= t("Outbound SMTP")
                 a.dropdown-item(
+                  href=l("/guides/smtp-integration"),
+                  class=ctx.pathWithoutLocale === "/guides/smtp-integration" ? "active" : ""
+                )
+                  = t("SMTP Integration Examples")
+                a.dropdown-item(
                   href=l("/guides/send-email-with-custom-domain-smtp"),
                   class=ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp" ? "active" : ""
                 )

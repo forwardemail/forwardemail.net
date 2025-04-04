@@ -64,7 +64,7 @@ function fixTableOfContents(content) {
 const MAX_SECTIONS = 5;
 
 // eslint-disable-next-line complexity
-function fixTableOfContents(content, i18n, options) {
+function fixTableOfContents(content, options) {
   // CSP fixes
   content = content.replaceAll(
     'style="text-align:center"',
@@ -406,6 +406,10 @@ const i18n = new I18N({
   logger
 });
 
+delete i18n.config.phrases;
+if (!global.phrases) global.phrases = i18nConfig.phrases;
+i18n.config.phrases = global.phrases;
+
 //
 // delete unused methods since it pollutes memory
 //
@@ -441,13 +445,12 @@ module.exports = {
     string = fixFootnoteReferences(string);
 
     if (typeof options !== 'object' || !isSANB(options.locale))
-      return fixTableOfContents(markdown.render(string), i18n, options);
+      return fixTableOfContents(markdown.render(string), options);
     return fixTableOfContents(
       i18n.api.t({
         phrase: markdown.render(string),
         locale: (options && options.locale) || i18n.config.defaultLocale
       }),
-      i18n,
       options
     );
   }

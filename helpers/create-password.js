@@ -11,11 +11,12 @@ const Boom = require('@hapi/boom');
 const cryptoRandomString = require('crypto-random-string');
 const isSANB = require('is-string-and-not-blank');
 
-const zxcvbn = require('./zxcvbn');
 const pbkdf2 = require('./pbkdf2');
 
 const config = require('#config');
 const phrases = require('#config/phrases');
+
+let zxcvbn;
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -38,6 +39,7 @@ async function createPassword(existingPassword, userInputs = []) {
       throw err;
     }
 
+    if (!zxcvbn) zxcvbn = require('./zxcvbn');
     const { score, feedback } = zxcvbn(existingPassword, userInputs);
 
     if (score < 3) {

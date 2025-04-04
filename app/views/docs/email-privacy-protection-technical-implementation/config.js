@@ -9,7 +9,7 @@ module.exports = {
   shortTitle: 'How Forward Email Safeguards Your Communications',
   description:
     "We've built the world's most secure, private, and flexible email forwarding service.",
-  icon: 'fas fa-share',
+  icon: 'fas fa-fw fa-share',
   published: true,
   ogBtnText: 'Ultimate Email Forwarding Guide',
   notCodeExample: true,

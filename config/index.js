@@ -37,7 +37,7 @@ const metaConfig = require('./meta-config');
 const alternatives = require('./alternatives');
 const _ = require('#helpers/lodash');
 
-const zxcvbn = require('#helpers/zxcvbn');
+let zxcvbn;
 
 const brandAndCorporateDomains = [
   'aaa',
@@ -1119,6 +1119,7 @@ const config = {
       }
 
       if (env.NODE_ENV === 'development') return fn();
+      if (!zxcvbn) zxcvbn = require('#helpers/zxcvbn');
       const { score, feedback } = zxcvbn(password);
       if (score >= 3) return fn();
       let message = phrases.INVALID_PASSWORD_STRENGTH;

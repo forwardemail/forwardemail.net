@@ -16,7 +16,13 @@ html.h-100.no-js(
       if meta && meta.description
         meta(name="description", content=striptags(convert(meta.description)))
       meta(name="viewport", content="width=device-width, initial-scale=1")
+
+      //- Add preconnect for key domains to establish early connections
       link(rel="preconnect", href="https://www.youtube-nocookie.com")
+      link(rel="preconnect", href=config.urls.web)
+      link(rel="preconnect", href="https://challenges.cloudflare.com")
+      link(rel="dns-prefetch", href="https://challenges.cloudflare.com")
+
       //- search
       //- <https://stackoverflow.com/q/44189748>
       link(
@@ -136,32 +142,33 @@ html.h-100.no-js(
           content="interest-cohort=(), user-id=()"
         )
 
+      //- Inline critical JS with minimal impact on FCP
       script(nonce=nonce).
-        document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();
+        (function () {
+          // Execute after first paint using requestAnimationFrame
+          requestAnimationFrame(function () {
+            document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();
+          });
+        })();
+
+      script(nonce=nonce).
+        // Load animations after LCP
+        window.addEventListener("load", function () {
+          // Function to show deferred animations
+          function showDeferredAnimations() {
+            // Show rocket animation
+            var rocket = document.getElementById("rocket");
+            if (rocket) {
+              rocket.classList.remove("d-none");
+            }
+          }
+
+          // Delay animations to improve LCP
+          setTimeout(showDeferredAnimations, 2000);
+        });
+
       if isBot(ctx.get('User-Agent'))
         style(nonce=nonce)= ".is-bot { display: none !important; }"
-
-      //- associate with wikipedia
-      script(type="application/ld+json", nonce=nonce).
-        {
-          "@context": "http://schema.org",
-          "@type": "Organization",
-          "url": "https://forwardemail.net",
-          "name": "Forward Email",
-          "description": "Free open-source email forwarding service for custom domains",
-          "keywords": "email forwarding, custom domain email, free email forwarding, open source email",
-          "alternateName": "ForwardEmail",
-          "foundingDate": "2017",
-          "founders": [
-            {
-              "@type": "Person",
-              "name": "Forward Email Team"
-            }
-          ],
-          "legalName": "Forward Email",
-          "logo": "https://forwardemail.net/img/social.png",
-          "sameAs": ["https://en.wikipedia.org/wiki/Forward_Email"]
-        }
 
     //- add opengraph tags to your structured data pages
     block opengraph
@@ -266,7 +273,8 @@ html.h-100.no-js(
         rel="preload",
         href=manifest(`fonts/${font}`),
         as="font",
-        crossorigin="anonymous"
+        crossorigin="anonymous",
+        fetchpriority="high"
       )
 
     //- css file
@@ -365,6 +373,28 @@ html.h-100.no-js(
       )
         i.fa.fa-comment
 
+    //- associate with wikipedia
+    script(type="application/ld+json", nonce=nonce).
+      {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "url": "https://forwardemail.net",
+        "name": "Forward Email",
+        "description": "Free open-source email forwarding service for custom domains",
+        "keywords": "email forwarding, custom domain email, free email forwarding, open source email",
+        "alternateName": "ForwardEmail",
+        "foundingDate": "2017",
+        "founders": [
+          {
+            "@type": "Person",
+            "name": "Forward Email Team"
+          }
+        ],
+        "legalName": "Forward Email",
+        "logo": "https://forwardemail.net/img/social.png",
+        "sameAs": ["https://en.wikipedia.org/wiki/Forward_Email"]
+      }
+
     //- scripts
     //- prettier-ignore
     block scripts
@@ -442,14 +472,16 @@ html.h-100.no-js(
           script(
             defer,
             src=`${config.urls.web}/js/build.js`,
-            crossorigin="anonymous"
+            crossorigin="anonymous",
+            fetchpriority="low"
           )
         else
           script(
             defer,
             src=manifest("js/build.js"),
             integrity=manifest("js/build.js", "integrity"),
-            crossorigin="anonymous"
+            crossorigin="anonymous",
+            fetchpriority="low"
           )
 
         //- cloudflare turnstile (hidden from bots and admins)
@@ -457,4 +489,4 @@ html.h-100.no-js(
           script(defer, nonce=nonce).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
-          script(defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')
+          script(async, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')

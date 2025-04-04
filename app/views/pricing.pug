@@ -59,9 +59,11 @@ block body
     )
       - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
       if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email' || Object.keys(useCases).includes(ctx.pathWithoutLocale)) && !isBot(ctx.get('User-Agent')))
-        #stars.user-select-none(data-ignore-hash-change)
+        #stars
+        #stars2
+        #stars3
         if !isSafari
-          #rocket.user-select-none(data-ignore-hash-change)
+          #rocket.d-none.user-select-none(data-ignore-hash-change)
         #waving.user-select-none(
           class=isSafari ? "" : "floating-animation",
           data-ignore-hash-change

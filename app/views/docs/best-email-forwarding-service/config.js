@@ -9,7 +9,7 @@ module.exports = {
   shortTitle: "The Complete Guide to Forward Email's Service",
   description:
     'Explore the technical implementations that make our service one of the most privacy-focused email forwarding solutions available.',
-  icon: 'fa fa-lock',
+  icon: 'fa fa-fw fa-lock',
   published: true,
   ogBtnText: 'Email Privacy Deep Dive',
   notCodeExample: true,

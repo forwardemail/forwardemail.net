@@ -163,7 +163,11 @@ const NS_PROVIDERS = {
     'Hetzner',
     // <https://www.hetzner.com/dns-console>
     // <https://docs.hetzner.com/dns-console/dns/general/dns-overview/>
-    'https://accounts.hetzner.com/login'
+    'https://accounts.hetzner.com/login',
+    '',
+    '',
+    '',
+    true
   ],
   'jimdo.com': [
     'jimdo',

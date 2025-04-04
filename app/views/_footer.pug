@@ -64,6 +64,10 @@ footer.mt-auto(aria-label=t("Footer"))
                 = t("Secure Checkout")
           .small.text-center.mb-2: strong= t("Payment methods accepted:")
           ul.list-inline.mb-3.text-center.mb-5
+            li.list-inline-item
+              a.badge.bg-white.text-dark.small(href=l("/blog/docs/crypto-payments-privacy-email-service"))
+                i.fab.fa-btc
+                = " Crypto"
             li.list-inline-item.badge.bg-white.text-dark.small
               i.fab.fa-paypal
               = " PayPal"
@@ -266,6 +270,10 @@ footer.mt-auto(aria-label=t("Footer"))
           h2.h5.mb-2: a.text-white(href=l("/guides"))= t("Guides")
           ul.list-unstyled.mb-0.mb-lg-3
             li: a.d-block.text-white.py-2.py-md-0(
+              href=l("/guides/smtp-integration")
+            )
+              = t("SMTP Integration Examples")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/guides/send-email-with-custom-domain-smtp")
             )
               = t("Send Email with Custom Domain")
@@ -464,14 +472,7 @@ footer.mt-auto(aria-label=t("Footer"))
                 data-title=t("Send us an email"),
                 data-placement="bottom"
               )= t("Careers")
-              li: a.d-block.text-white.py-2.py-md-0(
-                href="https://github.com/forwardemail/forwardemail.net/security/policy",
-                target="_blank",
-                rel="noopener noreferrer",
-                data-toggle="tooltip",
-                data-title=t("Read our policy"),
-                data-placement="bottom"
-              )= t("Security Policy")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/security"))= t("Security")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
               if !isBot(ctx.get('User-Agent')) && config.env !== 'test'
                 li: a.d-block.text-white.py-2.py-md-0(

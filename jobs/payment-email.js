@@ -21,7 +21,8 @@ const _ = require('#helpers/lodash');
 
 const setupMongoose = require('#helpers/setup-mongoose');
 const config = require('#config');
-const { email, logger } = require('#helpers');
+const email = require('#helpers/email');
+const logger = require('#helpers/logger');
 const { Users, Payments } = require('#models');
 const monitorServer = require('#helpers/monitor-server');
 

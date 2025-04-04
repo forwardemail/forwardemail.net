@@ -442,7 +442,7 @@
     "pug-lint": "@ladjs/pug-lint",
     "better-sqlite3": "better-sqlite3-multiple-ciphers"
   },
-  "packageManager": "pnpm@7.x",
+  "packageManager": "pnpm@9.15.9",
   "private": true,
   "repository": {
     "type": "git",

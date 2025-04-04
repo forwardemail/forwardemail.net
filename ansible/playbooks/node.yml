@@ -156,7 +156,7 @@
     - name: Install pnpm
       become: true
       become_user: deploy
-      shell: source /home/deploy/.bashrc && npm install -g pnpm@7
+      shell: source /home/deploy/.bashrc && npm install -g pnpm@9.15.9
       args:
          executable: /bin/bash
       when: not pnpm_result.stat.exists

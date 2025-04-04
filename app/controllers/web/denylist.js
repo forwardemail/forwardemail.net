@@ -13,7 +13,8 @@ const { isIP } = require('@forwardemail/validator');
 
 const isEmail = require('#helpers/is-email');
 const config = require('#config');
-const { email, decrypt } = require('#helpers');
+const email = require('#helpers/email');
+const decrypt = require('#helpers/encrypt-decrypt');
 const { Inquiries } = require('#models');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');

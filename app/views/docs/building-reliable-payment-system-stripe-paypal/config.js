@@ -9,7 +9,7 @@ module.exports = {
   shortTitle: 'Bulletproof Payment System with Stripe and PayPal',
   description:
     'Learn how our development team integrated both Stripe and PayPal using a trifecta approach that ensures 1:1 real-time accuracy across our entire system.',
-  icon: 'fa fa-shield',
+  icon: 'fa fa-fw fa-shield',
   published: true,
   ogBtnText: 'Payment System Trifecta',
   notCodeExample: true,
