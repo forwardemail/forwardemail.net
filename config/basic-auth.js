@@ -14,7 +14,7 @@ if (env.AUTH_BASIC_ENABLED) {
   }
 
   if (!auth.name && !auth.pass) {
-    auth = false; // throw?
+    auth = false;
   }
 }
 

@@ -676,7 +676,7 @@ Test`.trim()
   await resolver.options.cache.mset(map);
 
   // spin up a test smtp server that simply responds with OK
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   let attempted = false;
   const server = new SMTPServer({
@@ -1089,7 +1089,7 @@ test('smtp outbound spam block detection', async (t) => {
   await resolver.options.cache.mset(map);
 
   // spin up a test smtp server that simply responds with OK
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const server = new SMTPServer({
     disabledCommands: ['AUTH'],

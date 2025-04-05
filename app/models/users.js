@@ -538,10 +538,6 @@ Users.pre('save', async function (next) {
     return next();
   }
 
-  // arbitrary block due to stripe spam unresolved in november 2024
-  if (typeof user.email === 'string' && user.email.startsWith('hbrzi'))
-    return next(new Error('Try again later'));
-
   // If user has a paid plan then consider their email verified
   if (user.plan !== 'free') user[config.userFields.hasVerifiedEmail] = true;
 

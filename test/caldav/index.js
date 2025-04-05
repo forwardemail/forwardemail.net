@@ -81,7 +81,7 @@ test.beforeEach(async (t) => {
 
   t.context.client = client;
 
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const sqlitePort = await getPort();
 

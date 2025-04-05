@@ -279,13 +279,13 @@ Within the web UI, you can view `/admin/emails` and `/admin/logs` for outbound e
 
 If you see a message like Connection timed out when connecting to MX server... then you may need to check if port 25 is blocked. It is common for ISPs or cloud providers to block this by default where you may need to reach out to support / file a ticket to get this opened up.
 
-#### What tool(s) should I use to test email configuration best practices?
+#### What tool(s) should I use to test email configuration best practices and IP reputation?
+
+Take a look at our [FAQ here]([/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation]\(https://forwardemail.net/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation\)).
 
 [mxtoolbox](https://mxtoolbox.com/)
 
 [google postmaster tools](https://postmaster.google.com/)
-
-#### What tool(s) should I use to check IP reputation?
 
 Use your server IP address to check against the following sites if they are on a blacklist. It's, unfortunately, not uncommon for common cloud providers to have IP reputation issues do to email spam usage. If you see your IP on a blacklist, it is recommended to spin up a new server and check the new IP address.
 
