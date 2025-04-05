@@ -11664,5 +11664,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VAROITUS] Tämä päätepisteosio on työn alla, ja se julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin avattavasta Sovellukset-valikosta.",
   "[!NOTE] This will": "[!HUOM] Tämä tulee",
   "[!TIP]\nFolder endpoints with a folder's path": "[!KÄRKI]\nKansion päätepisteet kansion polulla",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!KÄRKI]\nVerkkotunnuksen päätepisteet verkkotunnuksen nimellä"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!KÄRKI]\nVerkkotunnuksen päätepisteet verkkotunnuksen nimellä",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!HUOM]\n1. marraskuuta 2024 alkaen API-päätepisteet",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!HUOM]\nToisin kuin muut API-päätepisteet, nämä vaativat",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VAROITUS]\nTämä päätepisteosio on työn alla, ja se julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasta verkkosivustomme navigoinnin \"Sovellukset\"-pudotusvalikosta.",
+  "[!NOTE]\nThis will": "[!HUOM]\nTämä tulee"
 }

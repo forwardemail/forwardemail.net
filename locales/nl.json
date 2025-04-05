@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] Deze endpointsectie is nog in ontwikkeling en wordt (hopelijk) in 2024 uitgebracht. Gebruik in de tussentijd een IMAP-client uit de vervolgkeuzelijst 'Apps' in de navigatie van onze website.",
   "[!NOTE] This will": "[!NOTE] Dit zal",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nMap-eindpunten met het pad van een map",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomeineindpunten met een domeinnaam"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomeineindpunten met een domeinnaam",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\nVanaf 1 november 2024 zijn de API-eindpunten voor",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nIn tegenstelling tot andere API-eindpunten vereisen deze",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING]\nDeze endpointsectie is nog in ontwikkeling en wordt (hopelijk) in 2024 uitgebracht. Gebruik in de tussentijd een IMAP-client uit de vervolgkeuzelijst 'Apps' in de navigatie van onze website.",
+  "[!NOTE]\nThis will": "[!NOTE]\nDit zal"
 }

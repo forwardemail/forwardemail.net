@@ -8004,5 +8004,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.",
   "[!NOTE] This will": "[!NOTE] This will",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nFolder endpoints with a folder's path",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomain endpoints with a domain's name"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomain endpoints with a domain's name",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\nAs of November 1st, 2024 the API endpoints for",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nUnlike other API endpoints, these require",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.",
+  "[!NOTE]\nThis will": "[!NOTE]\nThis will"
 }

@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!PERINGATAN] Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami.",
   "[!NOTE] This will": "[!NOTE] Ini akan",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nTitik akhir folder dengan jalur folder",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nTitik akhir domain dengan nama domain"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nTitik akhir domain dengan nama domain",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\nSejak 1 November 2024, titik akhir API untuk",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nTidak seperti titik akhir API lainnya, ini memerlukan",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!PERINGATAN]\nBagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami.",
+  "[!NOTE]\nThis will": "[!NOTE]\nIni akan"
 }

@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!UYARI] Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2024'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın.",
   "[!NOTE] This will": "[!NOT] Bu,",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nKlasörün yolu olan klasör uç noktaları",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nBir alan adına sahip alan uç noktaları"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nBir alan adına sahip alan uç noktaları",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOT]\n1 Kasım 2024 itibarıyla API uç noktaları",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nDiğer API uç noktalarından farklı olarak, bunlar şunları gerektirir:",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!UYARI]\nBu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2024'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın.",
+  "[!NOTE]\nThis will": "[!NOT]\nBu,"
 }

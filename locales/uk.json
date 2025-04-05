@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!УВАГА] Робота над цим розділом кінцевої точки триває і буде випущено (сподіваємось) у 2024 році. Тим часом використовуйте клієнт IMAP зі спадного меню «Програми» в навігаційній панелі нашого веб-сайту.",
   "[!NOTE] This will": "[!ПРИМІТКА] Це буде",
   "[!TIP]\nFolder endpoints with a folder's path": "[!ПОРАДА]\nКінцеві точки папок із шляхом до папки",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!ПОРАДА]\nКінцеві точки домену з іменем домену"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!ПОРАДА]\nКінцеві точки домену з іменем домену",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!ПРИМІТКА]\nСтаном на 1 листопада 2024 року кінцеві точки API для",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!ПРИМІТКА]\nНа відміну від інших кінцевих точок API, ці потребують",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!УВАГА]\nЦей розділ кінцевої точки ще триває і буде випущений (сподіваємось) у 2024 році. Тим часом використовуйте клієнт IMAP зі спадного меню «Програми» в навігаційній панелі нашого веб-сайту.",
+  "[!NOTE]\nThis will": "[!ПРИМІТКА]\nЦе буде"
 }

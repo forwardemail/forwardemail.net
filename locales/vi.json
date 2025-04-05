@@ -9376,5 +9376,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!CẢNH BÁO] Phần điểm cuối này đang trong quá trình hoàn thiện và hy vọng sẽ được phát hành vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng ứng dụng khách IMAP từ menu thả xuống \"Ứng dụng\" trong phần điều hướng của trang web của chúng tôi.",
   "[!NOTE] This will": "[!LƯU Ý] Điều này sẽ",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nĐiểm cuối thư mục với đường dẫn của thư mục",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nĐiểm cuối miền với tên miền"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nĐiểm cuối miền với tên miền",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!LƯU Ý]\nTính đến ngày 1 tháng 11 năm 2024, các điểm cuối API cho",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!LƯU Ý]\nKhông giống như các điểm cuối API khác, những điểm cuối này yêu cầu",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!CẢNH BÁO]\nPhần điểm cuối này đang trong quá trình hoàn thiện và sẽ được phát hành (hy vọng là vậy) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng ứng dụng khách IMAP từ menu thả xuống \"Ứng dụng\" trong phần điều hướng của trang web của chúng tôi.",
+  "[!NOTE]\nThis will": "[!LƯU Ý]\nĐiều này sẽ"
 }

@@ -11822,5 +11822,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!ADVARSEL] Denne endepunktseksjonen er under arbeid og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt.",
   "[!NOTE] This will": "[! MERK] Dette vil",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TUPP]\nMappeendepunkter med en mappes bane",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TUPP]\nDomeneendepunkter med et domenenavn"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TUPP]\nDomeneendepunkter med et domenenavn",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\nFra 1. november 2024 er API-endepunktene for",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nI motsetning til andre API-endepunkter krever disse",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!ADVARSEL]\nDenne endepunktseksjonen er under arbeid og vil bli utgitt (forhåpentligvis) i 2024. I mellomtiden vennligst bruk en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt.",
+  "[!NOTE]\nThis will": "[!NOTE]\nDette vil"
 }

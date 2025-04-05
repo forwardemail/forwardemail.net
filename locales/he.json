@@ -9865,5 +9865,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!אזהרה] קטע נקודת קצה זה נמצא בתהליך עבודה והוא ישוחרר (בתקווה) בשנת 2024. בינתיים, אנא השתמש בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט של האתר שלנו.",
   "[!NOTE] This will": "[!הערה] זה יהיה",
   "[!TIP]\nFolder endpoints with a folder's path": "[!עֵצָה]\nנקודות קצה של תיקיה עם נתיב של תיקיה",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!עֵצָה]\nנקודות קצה של דומיין עם שם דומיין"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!עֵצָה]\nנקודות קצה של דומיין עם שם דומיין",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!פֶּתֶק]\nהחל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!פֶּתֶק]\nשלא כמו נקודות קצה אחרות של API, אלה דורשות",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!אַזהָרָה]\nחלק זה של נקודות קצה הוא עבודה בתהליך והוא ישוחרר (בתקווה) בשנת 2024. בינתיים, אנא השתמש בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט של האתר שלנו.",
+  "[!NOTE]\nThis will": "[!פֶּתֶק]\nצוואה זו"
 }

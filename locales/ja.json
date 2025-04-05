@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!警告] このエンドポイント セクションは現在開発中であり、(うまくいけば) 2024 年にリリースされる予定です。それまでの間、当社の Web サイトのナビゲーションにある [アプリ] ドロップダウンから IMAP クライアントを使用してください。",
   "[!NOTE] This will": "[!NOTE] これにより",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nフォルダのパスを持つフォルダ エンドポイント",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nドメイン名を持つドメイン エンドポイント"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nドメイン名を持つドメイン エンドポイント",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\n2024年11月1日現在、",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\n他のAPIエンドポイントとは異なり、これらには",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!警告]\nこのエンドポイント セクションは現在開発中であり、2024 年にリリースされる予定です (うまくいけば)。それまでの間、当社の Web サイトのナビゲーションにある [アプリ] ドロップダウンから IMAP クライアントを使用してください。",
+  "[!NOTE]\nThis will": "[!NOTE]\nこれにより"
 }

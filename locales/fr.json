@@ -9372,5 +9372,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!AVERTISSEMENT] Cette section de point de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP à partir du menu déroulant « Applications » dans la navigation de notre site Web.",
   "[!NOTE] This will": "[!NOTE] Cela va",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nPoints de terminaison de dossier avec le chemin d'accès d'un dossier",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPoints de terminaison de domaine avec un nom de domaine"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPoints de terminaison de domaine avec un nom de domaine",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\nÀ compter du 1er novembre 2024, les points de terminaison de l'API pour",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nContrairement aux autres points de terminaison d'API, ceux-ci nécessitent",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!AVERTISSEMENT]\nCette section relative aux points de terminaison est en cours de développement et sera disponible (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP disponible dans le menu déroulant « Applications » de notre site web.",
+  "[!NOTE]\nThis will": "[!NOTE]\nCela"
 }

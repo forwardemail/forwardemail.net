@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VARNING] Detta slutpunktsavsnitt är ett pågående arbete och kommer att släppas (förhoppningsvis) 2024. Under tiden, använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats.",
   "[!NOTE] This will": "[!OBS] Detta kommer",
   "[!TIP]\nFolder endpoints with a folder's path": "[!DRICKS]\nMappslutpunkter med en mapps sökväg",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!DRICKS]\nDomänändpunkter med ett domännamn"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!DRICKS]\nDomänändpunkter med ett domännamn",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTERA]\nFrån och med den 1 november 2024 är API-slutpunkterna för",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTERA]\nTill skillnad från andra API-slutpunkter kräver dessa",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VARNING]\nDenna slutpunktssektion är ett pågående arbete och kommer att släppas (förhoppningsvis) 2024. Under tiden, använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats.",
+  "[!NOTE]\nThis will": "[!NOTERA]\nDetta kommer"
 }

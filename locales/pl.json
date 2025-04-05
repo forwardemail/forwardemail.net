@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!OSTRZEŻENIE] Ta sekcja punktu końcowego jest w trakcie realizacji i zostanie wydana (miejmy nadzieję) w 2024 r. W międzyczasie prosimy o korzystanie z klienta IMAP z rozwijanego menu „Aplikacje” w nawigacji naszej witryny.",
   "[!NOTE] This will": "[!UWAGA] To spowoduje",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nPunkty końcowe folderu ze ścieżką folderu",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPunkty końcowe domeny z nazwą domeny"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPunkty końcowe domeny z nazwą domeny",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!UWAGA]\nOd 1 listopada 2024 r. punkty końcowe interfejsu API dla",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!UWAGA]\nW przeciwieństwie do innych punktów końcowych API, te wymagają",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!OSTRZEŻENIE]\nTa sekcja punktu końcowego jest w trakcie realizacji i zostanie wydana (miejmy nadzieję) w 2024 r. W międzyczasie prosimy o korzystanie z klienta IMAP z rozwijanego menu „Aplikacje” w nawigacji naszej witryny.",
+  "[!NOTE]\nThis will": "[!UWAGA]\nTo spowoduje"
 }

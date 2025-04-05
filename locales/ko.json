@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!경고] 이 엔드포인트 섹션은 진행 중인 작업이며 (희망적으로) 2024년에 출시될 예정입니다. 그동안 웹사이트 탐색의 \"앱\" 드롭다운에서 IMAP 클라이언트를 사용하세요.",
   "[!NOTE] This will": "[!NOTE] 이것은",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\n폴더 경로가 있는 폴더 엔드포인트",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\n도메인 이름을 가진 도메인 엔드포인트"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\n도메인 이름을 가진 도메인 엔드포인트",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\n2024년 11월 1일부터 API 엔드포인트는",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\n다른 API 엔드포인트와 달리 이것들은 다음을 요구합니다.",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!경고]\n이 엔드포인트 섹션은 진행 중이며 (희망적으로) 2024년에 출시될 예정입니다. 그동안 웹사이트 탐색의 \"앱\" 드롭다운에서 IMAP 클라이언트를 사용하세요.",
+  "[!NOTE]\nThis will": "[!NOTE]\n이것은"
 }

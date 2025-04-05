@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!FIGYELMEZTETÉS] Ez a végpontszakasz folyamatban van, és (remélhetőleg) 2024-ben fog megjelenni. Addig is, kérjük, használjon IMAP-klienst a webhelyünk navigációs részének „Alkalmazások” legördülő menüjében.",
   "[!NOTE] This will": "[!MEGJEGYZÉS] Ez lesz",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIPP]\nMappavégpontok a mappa elérési útjával",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIPP]\nTartományi végpontok egy tartománynévvel"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIPP]\nTartományi végpontok egy tartománynévvel",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!JEGYZET]\n2024. november 1-től az API-végpontok a következőhöz:",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!JEGYZET]\nMás API-végpontokkal ellentétben ezek megkövetelik",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!FIGYELMEZTETÉS]\nEz a végpontszakasz folyamatban van, és (remélhetőleg) 2024-ben fog megjelenni. Addig is, kérjük, használjon IMAP-klienst a webhelyünk navigációs részének „Alkalmazások” legördülő menüjében.",
+  "[!NOTE]\nThis will": "[!JEGYZET]\nEz lesz"
 }

@@ -11513,5 +11513,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航中“应用程序”下拉菜单中的 IMAP 客户端。",
   "[!NOTE] This will": "这将",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\n带有文件夹路径的文件夹端点",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\n带有域名的域端点"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\n带有域名的域端点",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTE]\n截至 2024 年 11 月 1 日，API 端点",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\n与其他 API 端点不同，这些端点需要",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!警告]\n此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航中“应用程序”下拉菜单中的 IMAP 客户端。",
+  "[!NOTE]\nThis will": "[!NOTE]\n这将"
 }

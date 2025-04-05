@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!UPOZORNĚNÍ] Tato sekce pro koncový bod je ve vývoji a bude vydána (doufejme) v roce 2024. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našem webu.",
   "[!NOTE] This will": "[!POZNÁMKA] To bude",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nKoncové body složky s cestou ke složce",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nKoncové body domény s názvem domény"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nKoncové body domény s názvem domény",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!POZNÁMKA]\nOd 1. listopadu 2024 budou koncové body API pro",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!POZNÁMKA]\nNa rozdíl od jiných koncových bodů API tyto vyžadují",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VAROVÁNÍ]\nTato sekce koncového bodu je ve vývoji a bude vydána (doufejme) v roce 2024. Mezitím prosím používejte klienta IMAP z rozevíracího seznamu „Aplikace“ v navigaci na našem webu.",
+  "[!NOTE]\nThis will": "[!POZNÁMKA]\nToto bude"
 }

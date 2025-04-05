@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] ส่วนปลายทางนี้ยังอยู่ระหว่างการดำเนินการ และจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2024 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา",
   "[!NOTE] This will": "[!หมายเหตุ] สิ่งนี้จะ",
   "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nจุดสิ้นสุดของโฟลเดอร์พร้อมเส้นทางของโฟลเดอร์",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nจุดสิ้นสุดโดเมนที่มีชื่อโดเมน"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nจุดสิ้นสุดโดเมนที่มีชื่อโดเมน",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!หมายเหตุ]\nณ วันที่ 1 พฤศจิกายน 2024 จุดสิ้นสุดของ API สำหรับ",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTE]\nไม่เหมือนกับจุดสิ้นสุด API อื่นๆ สิ่งเหล่านี้จำเป็นต้องใช้",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING]\nส่วนปลายทางนี้อยู่ระหว่างดำเนินการและจะเปิดตัวในปี 2024 (หวังว่าจะเป็นเช่นนั้น) ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา",
+  "[!NOTE]\nThis will": "[!หมายเหตุ]\nสิ่งนี้จะ"
 }

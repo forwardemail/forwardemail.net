@@ -11817,5 +11817,9 @@
   "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!AVISO] Esta seção de endpoint é um trabalho em andamento e será lançada (espero) em 2024. Enquanto isso, use um cliente IMAP no menu suspenso \"Aplicativos\" na navegação do nosso site.",
   "[!NOTE] This will": "[!NOTA] Isto irá",
   "[!TIP]\nFolder endpoints with a folder's path": "[!DICA]\nPontos de extremidade de pasta com o caminho de uma pasta",
-  "[!TIP]\nDomain endpoints with a domain's name": "[!DICA]\nPontos de extremidade de domínio com um nome de domínio"
+  "[!TIP]\nDomain endpoints with a domain's name": "[!DICA]\nPontos de extremidade de domínio com um nome de domínio",
+  "[!NOTE]\nAs of November 1st, 2024 the API endpoints for": "[!NOTA]\nA partir de 1º de novembro de 2024, os endpoints da API para",
+  "[!NOTE]\nUnlike other API endpoints, these require": "[!NOTA]\nAo contrário de outros endpoints de API, estes requerem",
+  "[!WARNING]\nThis endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!AVISO]\nEsta seção de endpoint é um trabalho em andamento e será lançada (espero) em 2024. Enquanto isso, use um cliente IMAP no menu suspenso \"Aplicativos\" na navegação do nosso site.",
+  "[!NOTE]\nThis will": "[!NOTA]\nIsto irá"
 }
