@@ -516,17 +516,17 @@ flowchart TD
 
 If you encounter issues not covered here, please:
 
-1. Check our [FAQ page](/en/faq) for common questions
-2. Review our [blog post on email delivery](/en/blog/docs/best-email-forwarding-service) for detailed information
+1. Check our [FAQ page](/faq) for common questions
+2. Review our [blog post on email delivery](/blog/docs/best-email-forwarding-service) for detailed information
 3. Contact our support team at <support@forwardemail.net>
 
 
 ## Additional Resources
 
-* [Forward Email Documentation](/en/docs)
-* [SMTP Server Limits and Configuration](/en/faq#what-are-your-outbound-smtp-limits)
-* [Email Best Practices Guide](/en/blog/docs/best-email-forwarding-service)
-* [Security Practices](/en/security-practices)
+* [Forward Email Documentation](/docs)
+* [SMTP Server Limits and Configuration](/faq#what-are-your-outbound-smtp-limits)
+* [Email Best Practices Guide](/blog/docs/best-email-forwarding-service)
+* [Security Practices](/security)
 
 
 ## Conclusion

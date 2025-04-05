@@ -163,7 +163,7 @@ For more information about cryptocurrencies and blockchain technology, check out
 
 Adding cryptocurrency payments is just one more step in our ongoing commitment to [privacy](https://en.wikipedia.org/wiki/Privacy), [security](https://en.wikipedia.org/wiki/Computer_security), and user choice. We believe that your email service should respect your privacy at every level—from the messages you send to how you pay for the service.
 
-As always, we welcome your feedback on this new payment option. If you have questions about using cryptocurrency with Forward Email, please reach out to our [support team](https://forwardemail.net/en/support).
+As always, we welcome your feedback on this new payment option. If you have questions about using cryptocurrency with Forward Email, please reach out to our [support team](/help).
 
 ---
 
