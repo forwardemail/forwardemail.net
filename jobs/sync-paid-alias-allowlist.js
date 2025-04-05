@@ -57,25 +57,7 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const bannedUserIds = await Users.distinct('_id', {
-      $or: [
-        {
-          [config.userFields.isBanned]: true
-        },
-        {
-          [config.userFields.hasVerifiedEmail]: false
-        },
-        {
-          [config.userFields.paymentReminderTerminationNoticeSentAt]: {
-            $exists: true
-          }
-        }
-      ]
-    });
-
-    const bannedUserIdStrings = new Set(
-      bannedUserIds.map((_id) => _id.toString())
-    );
+    const bannedUserIdsSet = await Users.getBannedUserIdSet(client);
 
     for await (const domain of Domains.find({
       plan: { $in: ['enhanced_protection', 'team'] },
@@ -92,7 +74,7 @@ graceful.listen();
       if (
         !domain.members ||
         !Array.isArray(domain.members) ||
-        domain.members.every((m) => bannedUserIdStrings.has(m.user.toString()))
+        domain.members.every((m) => bannedUserIdsSet.has(m.user.toString()))
       ) {
         logger.info('all domain users were banned %s', domain.name);
         continue;
@@ -114,7 +96,7 @@ graceful.listen();
         domain: domain._id,
         is_enabled: true,
         user: {
-          $nin: bannedUserIds
+          $nin: [...bannedUserIdsSet]
         }
       })
         .lean()

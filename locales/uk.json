@@ -11810,5 +11810,12 @@
   "as well.": "також.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!ВАЖЛИВО]\nЯкщо запрошений користувач уже є прийнятим учасником будь-якого іншого домену, учасником якого є адміністратор, який його запрошує, він автоматично прийме запрошення та не надішле електронний лист.",
   "as well.  You can set this to": "також.  Ви можете встановити це як",
-  "if necessary to explicitly disable this, but that is not necessary.": "якщо потрібно явно вимкнути це, але це не обов’язково."
+  "if necessary to explicitly disable this, but that is not necessary.": "якщо потрібно явно вимкнути це, але це не обов’язково.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!ПОРАДА]\nЯкщо ви отримали код статусу 5xx (чого не повинно статися), зв’яжіться з нами за адресою",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!ПРИМІТКА] Станом на 1 листопада 2024 року кінцеві точки API для",
+  "[!NOTE] Unlike other API endpoints, these require": "[!ПРИМІТКА] На відміну від інших кінцевих точок API, ці потребують",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!УВАГА] Робота над цим розділом кінцевої точки триває і буде випущено (сподіваємось) у 2024 році. Тим часом використовуйте клієнт IMAP зі спадного меню «Програми» в навігаційній панелі нашого веб-сайту.",
+  "[!NOTE] This will": "[!ПРИМІТКА] Це буде",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!ПОРАДА]\nКінцеві точки папок із шляхом до папки",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!ПОРАДА]\nКінцеві точки домену з іменем домену"
 }

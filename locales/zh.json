@@ -11506,5 +11506,12 @@
   "as well.": "也一样。",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\n如果受邀用户已经是邀请他们的管理员所属的任何其他域的接受成员，则它将自动接受邀请并且不会发送电子邮件。",
   "as well.  You can set this to": "也可以。您可以将其设置为",
-  "if necessary to explicitly disable this, but that is not necessary.": "如果有必要的话可以明确禁用此功能，但这不是必需的。"
+  "if necessary to explicitly disable this, but that is not necessary.": "如果有必要的话可以明确禁用此功能，但这不是必需的。",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\n如果您收到 5xx 状态代码（这不应该发生），请联系我们",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] 自 2024 年 11 月 1 日起，",
+  "[!NOTE] Unlike other API endpoints, these require": "与其他 API 端点不同，这些端点需要",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航中“应用程序”下拉菜单中的 IMAP 客户端。",
+  "[!NOTE] This will": "这将",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\n带有文件夹路径的文件夹端点",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\n带有域名的域端点"
 }

@@ -11810,5 +11810,12 @@
   "as well.": "เช่นกัน.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nหากผู้ใช้ที่ได้รับคำเชิญเป็นสมาชิกที่ได้รับการยอมรับของโดเมนอื่นใดที่ผู้ดูแลระบบที่ส่งคำเชิญเป็นสมาชิกอยู่แล้ว ระบบจะยอมรับคำเชิญโดยอัตโนมัติและจะไม่ส่งอีเมล",
   "as well.  You can set this to": "เช่นกัน คุณสามารถตั้งค่านี้ให้เป็น",
-  "if necessary to explicitly disable this, but that is not necessary.": "หากจำเป็นต้องปิดการใช้งานนี้โดยชัดเจน แต่ก็ไม่จำเป็น"
+  "if necessary to explicitly disable this, but that is not necessary.": "หากจำเป็นต้องปิดการใช้งานนี้โดยชัดเจน แต่ก็ไม่จำเป็น",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nหากคุณได้รับรหัสสถานะ 5xx (ซึ่งไม่ควรเกิดขึ้น) โปรดติดต่อเราที่",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!หมายเหตุ] ณ วันที่ 1 พฤศจิกายน 2024 จุดสิ้นสุด API สำหรับ",
+  "[!NOTE] Unlike other API endpoints, these require": "[!หมายเหตุ] ต่างจากจุดสิ้นสุด API อื่นๆ สิ่งเหล่านี้จำเป็นต้องใช้",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] ส่วนปลายทางนี้ยังอยู่ระหว่างการดำเนินการ และจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2024 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา",
+  "[!NOTE] This will": "[!หมายเหตุ] สิ่งนี้จะ",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nจุดสิ้นสุดของโฟลเดอร์พร้อมเส้นทางของโฟลเดอร์",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nจุดสิ้นสุดโดเมนที่มีชื่อโดเมน"
 }

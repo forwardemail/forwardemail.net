@@ -11810,5 +11810,12 @@
   "as well.": "is.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!FONTOS]\nHa a meghívott felhasználó már elfogadott tagja bármely más domainnek, amelynek az őt meghívó adminisztrátor tagja, akkor automatikusan elfogadja a meghívást, és nem küld e-mailt.",
   "as well.  You can set this to": "is.  Ezt beállíthatja",
-  "if necessary to explicitly disable this, but that is not necessary.": "ha szükséges, ezt kifejezetten letiltja, de ez nem szükséges."
+  "if necessary to explicitly disable this, but that is not necessary.": "ha szükséges, ezt kifejezetten letiltja, de ez nem szükséges.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIPP]\nHa 5xx állapotkódot kap (aminek nem szabad megtörténnie), kérjük, vegye fel velünk a kapcsolatot a telefonszámon",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!MEGJEGYZÉS] 2024. november 1-től az API-végpontok a következőhöz:",
+  "[!NOTE] Unlike other API endpoints, these require": "[!MEGJEGYZÉS] Más API-végpontokkal ellentétben ezek megkövetelik",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!FIGYELMEZTETÉS] Ez a végpontszakasz folyamatban van, és (remélhetőleg) 2024-ben fog megjelenni. Addig is, kérjük, használjon IMAP-klienst a webhelyünk navigációs részének „Alkalmazások” legördülő menüjében.",
+  "[!NOTE] This will": "[!MEGJEGYZÉS] Ez lesz",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIPP]\nMappavégpontok a mappa elérési útjával",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIPP]\nTartományi végpontok egy tartománynévvel"
 }

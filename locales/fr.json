@@ -9365,5 +9365,12 @@
   "as well.": "aussi.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nSi l'utilisateur invité est déjà membre d'un autre domaine dont l'administrateur l'invite est membre, l'invitation sera automatiquement acceptée et aucun e-mail ne sera envoyé.",
   "as well.  You can set this to": "également. Vous pouvez définir ceci sur",
-  "if necessary to explicitly disable this, but that is not necessary.": "si nécessaire, désactivez explicitement cela, mais ce n'est pas nécessaire."
+  "if necessary to explicitly disable this, but that is not necessary.": "si nécessaire, désactivez explicitement cela, mais ce n'est pas nécessaire.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nSi vous recevez un code d'état 5xx (ce qui ne devrait pas arriver), veuillez nous contacter à l'adresse",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] À compter du 1er novembre 2024, les points de terminaison de l'API pour",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] Contrairement à d'autres points de terminaison d'API, ceux-ci nécessitent",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!AVERTISSEMENT] Cette section de point de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP à partir du menu déroulant « Applications » dans la navigation de notre site Web.",
+  "[!NOTE] This will": "[!NOTE] Cela va",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nPoints de terminaison de dossier avec le chemin d'accès d'un dossier",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPoints de terminaison de domaine avec un nom de domaine"
 }

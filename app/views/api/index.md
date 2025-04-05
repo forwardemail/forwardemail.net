@@ -117,15 +117,8 @@ If any errors occur, the response body of the API request will contain a detaile
 | 503  | Service Unavailable   |
 | 504  | Gateway Time-out      |
 
-<div class="alert my-3 alert-primary">
-  <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Tip:
-  </strong>
-  <span>
-    If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net">api@forwardemail.net</a> and we will help you to resolve your issue immediately.
-  </span>
-</div>
+> \[!TIP]
+> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
 
 
 ## Localization
@@ -135,7 +128,7 @@ Our service is translated to over 25 different languages. All API response messa
 
 ## Pagination
 
-> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> \[!NOTE] As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
 
 Pagination is supported by all API endpoints that list results.
 
@@ -267,11 +260,11 @@ curl -X PUT BASE_URI/v1/account \
 
 ## Alias Contacts (CardDAV)
 
-> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> \[!NOTE] Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
 
-> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> \[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
 
-> **NOTE:** [CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274).
+> \[!NOTE] [CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274).
 
 ### List contacts
 
@@ -306,9 +299,9 @@ curl -X PUT BASE_URI/v1/account \
 
 ## Alias Calendars (CalDAV)
 
-> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> \[!NOTE] Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
 
-> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> \[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
 
 ### List calendars
 
@@ -343,9 +336,9 @@ curl -X PUT BASE_URI/v1/account \
 
 ## Alias Messages (IMAP/POP3)
 
-> **NOTE:** Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> \[!NOTE] Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
 
-> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> \[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
 
 Please ensure that you have followed setup instructions for your domain.
 
@@ -359,7 +352,7 @@ These instructions can be found in our FAQ section [Do you support receiving ema
 
 ### Create message
 
-> **NOTE:** This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> \[!NOTE] This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
 
 > `POST /v1/messages`
 
@@ -386,17 +379,10 @@ These instructions can be found in our FAQ section [Do you support receiving ema
 
 ## Alias Folders (IMAP/POP3)
 
-<div class="alert my-3 alert-primary">
-  <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Tip:
-  </strong>
-  <span>
-    Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
-  </span>
-</div>
+> \[!TIP]
+> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
 
-> **WIP:** This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> \[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
 
 ### List folders
 
@@ -563,19 +549,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 
 ## Domains
 
-<div class="alert my-3 alert-primary">
-  <i class="fa fa-info-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Tip:
-  </strong>
-  <span>
-    Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
-  </span>
-</div>
+> \[!TIP]
+> Domain endpoints with a domain's name <code>/v1/domains/:domain\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
 
 ### List domains
 
-> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> \[!NOTE] As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
 
 > `GET /v1/domains`
 
@@ -784,7 +763,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 
 ### List domain aliases
 
-> **NOTE:** As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> \[!NOTE] As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 

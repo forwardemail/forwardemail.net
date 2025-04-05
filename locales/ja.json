@@ -11810,5 +11810,12 @@
   "as well.": "同じように。",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!重要]\n招待されたユーザーが、招待した管理者がメンバーである他のドメインで既に承認されたメンバーである場合、招待は自動的に承認され、メールは送信されません。",
   "as well.  You can set this to": "これも設定できます",
-  "if necessary to explicitly disable this, but that is not necessary.": "必要に応じてこれを明示的に無効にすることもできますが、その必要はありません。"
+  "if necessary to explicitly disable this, but that is not necessary.": "必要に応じてこれを明示的に無効にすることもできますが、その必要はありません。",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\n5xx ステータス コード (発生しないはずの) が表示された場合は、",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] 2024年11月1日現在、",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] 他のAPIエンドポイントとは異なり、これらには",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!警告] このエンドポイント セクションは現在開発中であり、(うまくいけば) 2024 年にリリースされる予定です。それまでの間、当社の Web サイトのナビゲーションにある [アプリ] ドロップダウンから IMAP クライアントを使用してください。",
+  "[!NOTE] This will": "[!NOTE] これにより",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nフォルダのパスを持つフォルダ エンドポイント",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nドメイン名を持つドメイン エンドポイント"
 }

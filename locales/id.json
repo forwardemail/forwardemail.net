@@ -11810,5 +11810,12 @@
   "as well.": "demikian juga.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!PENTING]\nJika pengguna yang diundang sudah menjadi anggota yang diterima di domain lain tempat admin yang mengundangnya menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan dikirimi email.",
   "as well.  You can set this to": "juga. Anda dapat mengaturnya ke",
-  "if necessary to explicitly disable this, but that is not necessary.": "jika perlu untuk menonaktifkan ini secara eksplisit, tetapi itu tidak perlu."
+  "if necessary to explicitly disable this, but that is not necessary.": "jika perlu untuk menonaktifkan ini secara eksplisit, tetapi itu tidak perlu.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nJika Anda menerima kode status 5xx (yang seharusnya tidak terjadi), silakan hubungi kami di",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!CATATAN] Mulai 1 November 2024, titik akhir API untuk",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] Tidak seperti titik akhir API lainnya, ini memerlukan",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!PERINGATAN] Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami.",
+  "[!NOTE] This will": "[!NOTE] Ini akan",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nTitik akhir folder dengan jalur folder",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nTitik akhir domain dengan nama domain"
 }

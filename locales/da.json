@@ -8845,5 +8845,12 @@
   "as well.": "ligeså.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!VIGTIG]\nHvis brugeren, der inviteres, allerede er et accepteret medlem af andre domæner, som administratoren, der inviterer dem, er medlem af, vil den automatisk acceptere invitationen og ikke sende en e-mail.",
   "as well.  You can set this to": "ligeså.  Du kan indstille dette til",
-  "if necessary to explicitly disable this, but that is not necessary.": "hvis det er nødvendigt eksplicit at deaktivere dette, men det er ikke nødvendigt."
+  "if necessary to explicitly disable this, but that is not necessary.": "hvis det er nødvendigt eksplicit at deaktivere dette, men det er ikke nødvendigt.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nHvis du modtager en 5xx statuskode (hvilket ikke burde ske), så kontakt os venligst på",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!BEMÆRK] Fra den 1. november 2024 er API-endepunkterne for",
+  "[!NOTE] Unlike other API endpoints, these require": "[!BEMÆRK] I modsætning til andre API-endepunkter kræver disse",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!ADVARSEL] Denne endepunktssektion er et igangværende arbejde og vil blive frigivet (forhåbentlig) i 2024. I mellemtiden bedes du bruge en IMAP-klient fra rullemenuen \"Apps\" i navigationen på vores hjemmeside.",
+  "[!NOTE] This will": "[!BEMÆRK] Dette vil",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nMappeslutpunkter med en mappes sti",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomæneendepunkter med et domænenavn"
 }

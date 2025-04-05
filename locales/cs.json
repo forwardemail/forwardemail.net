@@ -11810,5 +11810,12 @@
   "as well.": "také.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!DŮLEŽITÉ]\nPokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je administrátor, který jej zve, pak pozvánku automaticky přijme a neodešle e-mail.",
   "as well.  You can set this to": "také.  Můžete to nastavit na",
-  "if necessary to explicitly disable this, but that is not necessary.": "v případě potřeby to výslovně zakázat, ale není to nutné."
+  "if necessary to explicitly disable this, but that is not necessary.": "v případě potřeby to výslovně zakázat, ale není to nutné.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nPokud obdržíte stavový kód 5xx (což by se nemělo stávat), kontaktujte nás prosím na adrese",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] Od 1. listopadu 2024 koncové body API pro",
+  "[!NOTE] Unlike other API endpoints, these require": "[!POZNÁMKA] Na rozdíl od jiných koncových bodů API tyto vyžadují",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!UPOZORNĚNÍ] Tato sekce pro koncový bod je ve vývoji a bude vydána (doufejme) v roce 2024. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našem webu.",
+  "[!NOTE] This will": "[!POZNÁMKA] To bude",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nKoncové body složky s cestou ke složce",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nKoncové body domény s názvem domény"
 }

@@ -11810,5 +11810,12 @@
   "as well.": "också.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!VIKTIG]\nOm användaren som bjuds in redan är en accepterad medlem av någon annan domän som administratören som bjuder in dem är medlem i, kommer den att automatiskt acceptera inbjudan och inte skicka ett e-postmeddelande.",
   "as well.  You can set this to": "också.  Du kan ställa in detta till",
-  "if necessary to explicitly disable this, but that is not necessary.": "om nödvändigt för att uttryckligen inaktivera detta, men det är inte nödvändigt."
+  "if necessary to explicitly disable this, but that is not necessary.": "om nödvändigt för att uttryckligen inaktivera detta, men det är inte nödvändigt.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!DRICKS]\nOm du får en 5xx-statuskod (vilket inte borde hända), vänligen kontakta oss på",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!OBS] Från och med den 1 november 2024 slutpunkterna för API:et för",
+  "[!NOTE] Unlike other API endpoints, these require": "[!OBS] Till skillnad från andra API-slutpunkter kräver dessa",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VARNING] Detta slutpunktsavsnitt är ett pågående arbete och kommer att släppas (förhoppningsvis) 2024. Under tiden, använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats.",
+  "[!NOTE] This will": "[!OBS] Detta kommer",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!DRICKS]\nMappslutpunkter med en mapps sökväg",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!DRICKS]\nDomänändpunkter med ett domännamn"
 }

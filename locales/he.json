@@ -9858,5 +9858,12 @@
   "as well.": "גַם כֵּן.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!חָשׁוּב]\nאם המשתמש המוזמן כבר חבר מקובל בכל תחום אחר שהמנהל המזמין אותו חבר בו, הוא יקבל אוטומטית את ההזמנה ולא ישלח אימייל.",
   "as well.  You can set this to": "גַם כֵּן.  אתה יכול להגדיר את זה ל",
-  "if necessary to explicitly disable this, but that is not necessary.": "אם יש צורך להשבית זאת במפורש, אבל זה לא הכרחי."
+  "if necessary to explicitly disable this, but that is not necessary.": "אם יש צורך להשבית זאת במפורש, אבל זה לא הכרחי.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!עֵצָה]\nאם אתה מקבל קוד סטטוס 5xx (מה שלא אמור לקרות), אנא צור איתנו קשר בכתובת",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!הערה] החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור",
+  "[!NOTE] Unlike other API endpoints, these require": "[!הערה] שלא כמו נקודות קצה אחרות של API, אלה דורשות",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!אזהרה] קטע נקודת קצה זה נמצא בתהליך עבודה והוא ישוחרר (בתקווה) בשנת 2024. בינתיים, אנא השתמש בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט של האתר שלנו.",
+  "[!NOTE] This will": "[!הערה] זה יהיה",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!עֵצָה]\nנקודות קצה של תיקיה עם נתיב של תיקיה",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!עֵצָה]\nנקודות קצה של דומיין עם שם דומיין"
 }

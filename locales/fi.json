@@ -11657,5 +11657,12 @@
   "as well.": "samoin.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!TÄRKEÄÄ]\nJos kutsuttava käyttäjä on jo minkä tahansa muun verkkotunnuksen hyväksytty jäsen, jonka jäsen häntä kutsuva järjestelmänvalvoja on, se hyväksyy kutsun automaattisesti eikä lähetä sähköpostia.",
   "as well.  You can set this to": "samoin.  Voit asettaa tämän",
-  "if necessary to explicitly disable this, but that is not necessary.": "tarvittaessa poista se käytöstä, mutta se ei ole välttämätöntä."
+  "if necessary to explicitly disable this, but that is not necessary.": "tarvittaessa poista se käytöstä, mutta se ei ole välttämätöntä.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!KÄRKI]\nJos saat 5xx-tilakoodin (mitä ei pitäisi tapahtua), ota meihin yhteyttä osoitteessa",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!HUOMAA] 1. marraskuuta 2024 alkaen API-päätepisteet verkkotunnukselle",
+  "[!NOTE] Unlike other API endpoints, these require": "[!HUOMAA] Toisin kuin muut API-päätepisteet, nämä vaativat",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!VAROITUS] Tämä päätepisteosio on työn alla, ja se julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin avattavasta Sovellukset-valikosta.",
+  "[!NOTE] This will": "[!HUOM] Tämä tulee",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!KÄRKI]\nKansion päätepisteet kansion polulla",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!KÄRKI]\nVerkkotunnuksen päätepisteet verkkotunnuksen nimellä"
 }

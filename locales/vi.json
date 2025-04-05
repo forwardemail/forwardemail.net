@@ -9369,5 +9369,12 @@
   "as well.": "cũng như vậy.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!QUAN TRỌNG]\nNếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì nó sẽ tự động chấp nhận lời mời và không gửi email.",
   "as well.  You can set this to": "cũng như vậy. Bạn có thể thiết lập điều này thành",
-  "if necessary to explicitly disable this, but that is not necessary.": "nếu cần thiết phải vô hiệu hóa tính năng này một cách rõ ràng, nhưng điều đó không cần thiết."
+  "if necessary to explicitly disable this, but that is not necessary.": "nếu cần thiết phải vô hiệu hóa tính năng này một cách rõ ràng, nhưng điều đó không cần thiết.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nNếu bạn nhận được mã trạng thái 5xx (điều này không nên xảy ra), vui lòng liên hệ với chúng tôi theo địa chỉ",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!LƯU Ý] Tính đến ngày 1 tháng 11 năm 2024, các điểm cuối API cho",
+  "[!NOTE] Unlike other API endpoints, these require": "[!LƯU Ý] Không giống như các điểm cuối API khác, những điểm cuối này yêu cầu",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!CẢNH BÁO] Phần điểm cuối này đang trong quá trình hoàn thiện và hy vọng sẽ được phát hành vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng ứng dụng khách IMAP từ menu thả xuống \"Ứng dụng\" trong phần điều hướng của trang web của chúng tôi.",
+  "[!NOTE] This will": "[!LƯU Ý] Điều này sẽ",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nĐiểm cuối thư mục với đường dẫn của thư mục",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nĐiểm cuối miền với tên miền"
 }

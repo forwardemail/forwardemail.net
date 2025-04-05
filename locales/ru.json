@@ -11810,5 +11810,12 @@
   "as well.": "также.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!ВАЖНО]\nЕсли приглашаемый пользователь уже является принятым участником любого другого домена, членом которого является приглашающий его администратор, то он автоматически примет приглашение и не отправит электронное письмо.",
   "as well.  You can set this to": "также. Вы можете установить это на",
-  "if necessary to explicitly disable this, but that is not necessary.": "при необходимости можно явно отключить эту функцию, но это не обязательно."
+  "if necessary to explicitly disable this, but that is not necessary.": "при необходимости можно явно отключить эту функцию, но это не обязательно.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!СОВЕТ]\nЕсли вы получили код статуса 5xx (чего не должно быть), свяжитесь с нами по адресу",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!ПРИМЕЧАНИЕ] С 1 ноября 2024 года конечные точки API для",
+  "[!NOTE] Unlike other API endpoints, these require": "[!ПРИМЕЧАНИЕ] В отличие от других конечных точек API, эти требуют",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!ВНИМАНИЕ] Этот раздел конечной точки находится в стадии разработки и будет выпущен (надеюсь) в 2024 году. В это время используйте клиент IMAP из раскрывающегося списка «Приложения» в навигации нашего веб-сайта.",
+  "[!NOTE] This will": "[!ПРИМЕЧАНИЕ] Это будет",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nКонечные точки папки с путем к папке",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nКонечные точки домена с именем домена"
 }

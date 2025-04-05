@@ -11810,5 +11810,12 @@
   "as well.": "anche.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANTE]\nSe l'utente invitato è già un membro accettato di uno qualsiasi degli altri domini di cui è membro l'amministratore che lo invita, accetterà automaticamente l'invito e non invierà un'e-mail.",
   "as well.  You can set this to": "anche. Puoi impostarlo su",
-  "if necessary to explicitly disable this, but that is not necessary.": "se necessario, disabilitarlo esplicitamente, ma non è necessario."
+  "if necessary to explicitly disable this, but that is not necessary.": "se necessario, disabilitarlo esplicitamente, ma non è necessario.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nSe ricevi un codice di stato 5xx (cosa che non dovrebbe accadere), contattaci all'indirizzo",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] A partire dal 1° novembre 2024 gli endpoint API per",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] A differenza di altri endpoint API, questi richiedono",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] Questa sezione dell'endpoint è un lavoro in corso e verrà rilasciata (si spera) nel 2024. Nel frattempo, utilizza un client IMAP dal menu a discesa \"App\" nella navigazione del nostro sito Web.",
+  "[!NOTE] This will": "[!NOTE] Questo lo farà",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nEndpoint delle cartelle con il percorso di una cartella",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nEndpoint di dominio con un nome di dominio"
 }

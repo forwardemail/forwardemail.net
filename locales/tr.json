@@ -11810,5 +11810,12 @@
   "as well.": "ilave olarak.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!ÖNEMLİ]\nDavet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir etki alanının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.",
   "as well.  You can set this to": "Ayrıca bunu şu şekilde ayarlayabilirsiniz:",
-  "if necessary to explicitly disable this, but that is not necessary.": "gerekirse bunu açıkça devre dışı bırakmak gerekir, ancak bu gerekli değildir."
+  "if necessary to explicitly disable this, but that is not necessary.": "gerekirse bunu açıkça devre dışı bırakmak gerekir, ancak bu gerekli değildir.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\n5xx durum kodunu alırsanız (ki bu olmamalı), lütfen bizimle şu adresten iletişime geçin:",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOT] 1 Kasım 2024 itibarıyla API uç noktaları",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOT] Diğer API uç noktalarından farklı olarak, bunlar şunları gerektirir:",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!UYARI] Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2024'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın.",
+  "[!NOTE] This will": "[!NOT] Bu,",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nKlasörün yolu olan klasör uç noktaları",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nBir alan adına sahip alan uç noktaları"
 }

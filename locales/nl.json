@@ -11810,5 +11810,12 @@
   "as well.": "ook.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!BELANGRIJK]\nAls de gebruiker die wordt uitgenodigd al een geaccepteerd lid is van andere domeinen waarvan de beheerder die hen uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.",
   "as well.  You can set this to": "ook. U kunt dit instellen op",
-  "if necessary to explicitly disable this, but that is not necessary.": "indien nodig moet u dit expliciet uitschakelen, maar dat is niet noodzakelijk."
+  "if necessary to explicitly disable this, but that is not necessary.": "indien nodig moet u dit expliciet uitschakelen, maar dat is niet noodzakelijk.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nAls u een 5xx-statuscode ontvangt (wat niet zou moeten gebeuren), neem dan contact met ons op via",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] Vanaf 1 november 2024 zijn de API-eindpunten voor",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] In tegenstelling tot andere API-eindpunten vereisen deze",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] Deze endpointsectie is nog in ontwikkeling en wordt (hopelijk) in 2024 uitgebracht. Gebruik in de tussentijd een IMAP-client uit de vervolgkeuzelijst 'Apps' in de navigatie van onze website.",
+  "[!NOTE] This will": "[!NOTE] Dit zal",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nMap-eindpunten met het pad van een map",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomeineindpunten met een domeinnaam"
 }

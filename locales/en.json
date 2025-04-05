@@ -7997,5 +7997,12 @@
   "as well.": "as well.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
   "as well.  You can set this to": "as well.  You can set this to",
-  "if necessary to explicitly disable this, but that is not necessary.": "if necessary to explicitly disable this, but that is not necessary."
+  "if necessary to explicitly disable this, but that is not necessary.": "if necessary to explicitly disable this, but that is not necessary.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] As of November 1st, 2024 the API endpoints for",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] Unlike other API endpoints, these require",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.",
+  "[!NOTE] This will": "[!NOTE] This will",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nFolder endpoints with a folder's path",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomain endpoints with a domain's name"
 }

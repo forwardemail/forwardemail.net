@@ -232,7 +232,7 @@ async function mapper(alias) {
   try {
     const bannedUserIds = await Users.getBannedUserIdSet(client);
     const ids = await Aliases.distinct('_id', {
-      user: { $nin: bannedUserIds }
+      user: { $nin: [...bannedUserIds] }
     });
 
     await pMap(ids, mapper, { concurrency });

@@ -10853,5 +10853,12 @@
   "as well.": "sowie.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!WICHTIG]\nWenn der eingeladene Benutzer bereits Mitglied einer anderen Domäne ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail gesendet.",
   "as well.  You can set this to": "auch. Sie können dies einstellen auf",
-  "if necessary to explicitly disable this, but that is not necessary.": "ggf. explizit deaktivieren, aber das ist nicht nötig."
+  "if necessary to explicitly disable this, but that is not necessary.": "ggf. explizit deaktivieren, aber das ist nicht nötig.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nWenn Sie einen 5xx-Statuscode erhalten (was nicht vorkommen sollte), kontaktieren Sie uns bitte unter",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!NOTE] Ab dem 1. November 2024 sind die API-Endpunkte für",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] Im Gegensatz zu anderen API-Endpunkten erfordern diese",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!WARNING] Dieser Endpunktabschnitt befindet sich in Arbeit und wird (hoffentlich) im Jahr 2024 veröffentlicht. Verwenden Sie in der Zwischenzeit bitte einen IMAP-Client aus dem Dropdown-Menü „Apps“ in der Navigation unserer Website.",
+  "[!NOTE] This will": "[!NOTE] Dies wird",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nOrdnerendpunkte mit Ordnerpfad",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nDomänenendpunkte mit Domänennamen"
 }

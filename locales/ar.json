@@ -11810,5 +11810,12 @@
   "as well.": "أيضًا.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[هام!]\nإذا كان المستخدم المدعو عضوًا مقبولًا في أي نطاق آخر ينتمي إليه المسؤول الذي دعاه، فسيتم قبول الدعوة تلقائيًا ولن يتم إرسال بريد إلكتروني.",
   "as well.  You can set this to": "كذلك. يمكنك ضبط هذا على",
-  "if necessary to explicitly disable this, but that is not necessary.": "إذا لزم الأمر لتعطيل هذا صراحةً، ولكن هذا ليس ضروريًا."
+  "if necessary to explicitly disable this, but that is not necessary.": "إذا لزم الأمر لتعطيل هذا صراحةً، ولكن هذا ليس ضروريًا.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[نصيحة!]\nإذا تلقيت رمز حالة 5xx (وهو أمر غير متوقع)، يُرجى التواصل معنا على",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[ملاحظة!] اعتبارًا من 1 نوفمبر 2024، نقاط نهاية واجهة برمجة التطبيقات لـ",
+  "[!NOTE] Unlike other API endpoints, these require": "[!NOTE] على عكس نقاط نهاية واجهة برمجة التطبيقات الأخرى، تتطلب هذه",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!تحذير] هذا القسم الخاص بنقطة النهاية قيد التطوير، ومن المأمول إصداره في عام ٢٠٢٤. في هذه الأثناء، يُرجى استخدام برنامج IMAP من القائمة المنسدلة \"التطبيقات\" ضمن شريط التنقل بموقعنا الإلكتروني.",
+  "[!NOTE] This will": "[!ملاحظة] هذا سوف",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nنهايات المجلدات مع مسار المجلد",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nنقاط نهاية النطاق مع اسم النطاق"
 }

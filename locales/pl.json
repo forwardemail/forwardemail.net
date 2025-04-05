@@ -11810,5 +11810,12 @@
   "as well.": "również.",
   "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!WAŻNE]\nJeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, której członkiem jest zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i nie zostanie wysłany e-mail.",
   "as well.  You can set this to": "również. Możesz to ustawić na",
-  "if necessary to explicitly disable this, but that is not necessary.": "jeśli to konieczne, można tę opcję wyraźnie wyłączyć, ale nie jest to konieczne."
+  "if necessary to explicitly disable this, but that is not necessary.": "jeśli to konieczne, można tę opcję wyraźnie wyłączyć, ale nie jest to konieczne.",
+  "[!TIP]\nIf you receive a 5xx status code (which should not happen), then please contact us at": "[!TIP]\nJeśli otrzymasz kod statusu 5xx (co nie powinno mieć miejsca), skontaktuj się z nami pod adresem",
+  "[!NOTE] As of November 1st, 2024 the API endpoints for": "[!UWAGA] Od 1 listopada 2024 r. punkty końcowe interfejsu API dla",
+  "[!NOTE] Unlike other API endpoints, these require": "[!UWAGA] W przeciwieństwie do innych punktów końcowych interfejsu API, te wymagają",
+  "[!WARNING] This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.": "[!OSTRZEŻENIE] Ta sekcja punktu końcowego jest w trakcie realizacji i zostanie wydana (miejmy nadzieję) w 2024 r. W międzyczasie prosimy o korzystanie z klienta IMAP z rozwijanego menu „Aplikacje” w nawigacji naszej witryny.",
+  "[!NOTE] This will": "[!UWAGA] To spowoduje",
+  "[!TIP]\nFolder endpoints with a folder's path": "[!TIP]\nPunkty końcowe folderu ze ścieżką folderu",
+  "[!TIP]\nDomain endpoints with a domain's name": "[!TIP]\nPunkty końcowe domeny z nazwą domeny"
 }
