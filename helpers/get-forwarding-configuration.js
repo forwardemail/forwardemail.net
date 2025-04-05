@@ -480,6 +480,15 @@ async function getForwardingConfiguration({
       alias.recipients = recipients;
     }
 
+    //
+    // if there were no recipients entered and it was disabled
+    // then we should do a virtual `nobody@forwardemail.net`
+    // so the logic in `pushToBody` works properly
+    //
+    if (!alias.is_enabled && alias.recipients.length === 0) {
+      alias.recipients = ['nobody@forwardemail.net'];
+    }
+
     // if there were no recipients and it wasnt a username query with IMAP
     if (alias.recipients.length === 0 && (!username || !alias.has_imap))
       continue;
