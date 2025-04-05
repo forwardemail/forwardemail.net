@@ -503,7 +503,13 @@ module.exports = (redis) => ({
         // to avoid LCP lighthouse issues
         ctx.state.appCss = appCss;
         ctx.state.botCss = botCss;
-        ctx.state.freddyCss = freddyCss;
+        //
+        // test mode should not render this because stars function
+        // uses `random()` which causes CSS output to constantly change
+        // (and CI would otherwise fail)
+        //
+        if (config.env !== 'test') ctx.state.freddyCss = freddyCss;
+
         ctx.state.tti = false;
       }
 
