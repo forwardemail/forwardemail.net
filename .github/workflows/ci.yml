@@ -14,6 +14,7 @@ jobs:
         node_version:
           - "18.20.4"
     name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
+    secrets: inherit
     env:
       # ... TODO: AWS
       AUTH_GITHUB_ENABLED: "false"
