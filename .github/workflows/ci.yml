@@ -1,67 +1,9 @@
+---
 name: CI
 on:
   - push
   - pull_request
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    continue-on-error: false
-    strategy:
-      fail-fast: true
-      matrix:
-        os:
-          - ubuntu-latest
-        node_version:
-          - "18.20.4"
-    name: Node ${{ matrix.node_version }} on ${{ matrix.os }}
-    env:
-      # ... TODO: AWS
-      AUTH_GITHUB_ENABLED: "false"
-      AUTH_GOOGLE_ENABLED: "false"
-      I18N_SYNC_FILES: "true"
-      I18N_UPDATE_FILES: "true"
-      PREVIEW_EMAIL: "false"
-      TRUTH_SOURCES: "truthsource.com"
-      TURNSTILE_ENABLED: "false"
-      WEB_HOST: "example.com"
-      SMTP_MESSAGE_MAX_SIZE: ${{ secrets.SMTP_MESSAGE_MAX_SIZE }}
-      DKIM_PRIVATE_KEY_VALUE: ${{ secrets.DKIM_PRIVATE_KEY_VALUE }}
-      AXE_SILENT: ${{ secrets.AXE_SILENT }}
-      AXE_SHOW_META: ${{ secrets.AXE_SHOW_META }}
-      AXE_SHOW_STACK: ${{ secrets.AXE_SHOW_STACK }}
-      TXT_ENCRYPTION_KEY: ${{ secrets.TXT_ENCRYPTION_KEY }}
-      HELPER_ENCRYPTION_KEY: ${{ secrets.HELPER_ENCRYPTION_KEY }}
-      HELPER_ENCRYPTION_KEY_LEGACY: ${{ secrets.HELPER_ENCRYPTION_KEY_LEGACY }}
-      PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
-      PAYPAL_ENHANCED_PLAN_180D: ${{ secrets.PAYPAL_ENHANCED_PLAN_180D }}
-      PAYPAL_ENHANCED_PLAN_1Y: ${{ secrets.PAYPAL_ENHANCED_PLAN_1Y }}
-      PAYPAL_ENHANCED_PLAN_30D: ${{ secrets.PAYPAL_ENHANCED_PLAN_30D }}
-      PAYPAL_ENHANCED_PLAN_60D: ${{ secrets.PAYPAL_ENHANCED_PLAN_60D }}
-      PAYPAL_ENHANCED_PLAN_90D: ${{ secrets.PAYPAL_ENHANCED_PLAN_90D }}
-      PAYPAL_SECRET: ${{ secrets.PAYPAL_SECRET }}
-      PAYPAL_TEAM_PLAN_180D: ${{ secrets.PAYPAL_TEAM_PLAN_180D }}
-      PAYPAL_TEAM_PLAN_1Y: ${{ secrets.PAYPAL_TEAM_PLAN_1Y }}
-      PAYPAL_TEAM_PLAN_30D: ${{ secrets.PAYPAL_TEAM_PLAN_30D }}
-      PAYPAL_TEAM_PLAN_60D: ${{ secrets.PAYPAL_TEAM_PLAN_60D }}
-      PAYPAL_TEAM_PLAN_90D: ${{ secrets.PAYPAL_TEAM_PLAN_90D }}
-      PAYPAL_WEBHOOK_ID: ${{ secrets.PAYPAL_WEBHOOK_ID }}
-      SRS_SECRET: ${{ secrets.SRS_SECRET }}
-      STRIPE_ENDPOINT_SECRET: ${{ secrets.STRIPE_ENDPOINT_SECRET }}
-      STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
-      - name: start redis
-        uses: supercharge/redis-github-action@1.4.0
-        with:
-          redis-version: latest
-      - name: Install pnpm v9.15.9
-        run: npm i -g pnpm@9.15.9
-      - name: Install dependencies
-        run: pnpm install
-      - name: Run tests
-        run: npm test
+    uses: ./.github/workflows/build.yml
+    secrets: inherit

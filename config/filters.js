@@ -358,21 +358,12 @@ function fixTableOfContents(content, options) {
   h2.remove();
   ul.remove();
 
-  const search = i18n.api.t({
-    phrase: phrases.SEARCH_PAGE,
-    locale: (options && options.locale) || i18n.config.defaultLocale
-  });
-
   if (!options.isDocs && lis.length <= MAX_SECTIONS)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
   return `
     <div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js d-print-none">
       <ul class="list-inline mb-0">
-        <li class="list-inline-item text-white">
-          ${search}
-        </li>
-        <li class="list-inline-item"><i class="fa fa-angle-right align-middle text-white"></i></li>
         <li class="list-inline-item">
           <a data-toggle="modal-anchor" role="button" data-target="#modal-table-of-contents" class="btn btn-success">
             <i class="fa fa-search"></i> ${str}
