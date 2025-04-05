@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Pro pokročilejší případy použití nebo vlastní integrace kontaktujte náš tým podpory.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Zavedli jsme komplexní bezpečnostní opatření na ochranu vaší e-mailové komunikace a osobních údajů.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integrujte se službou SMTP Forward Email pomocí různých programovacích jazyků, rámců a e-mailových klientů. Naše služba SMTP je navržena tak, aby byla spolehlivá, bezpečná a snadno integrovatelná s vašimi stávajícími aplikacemi.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Nyní přijímáme platby kryptoměnami prostřednictvím integrace kryptoplateb Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Nyní přijímáme platby kryptoměnami prostřednictvím integrace kryptoplateb Stripe.",
+  "None; this is my own domain": "Žádný; toto je moje vlastní doména",
+  "Assign to same domain team": "Přiřadit ke stejnému týmu domény",
+  "String (domain ID or domain name; FQDN)": "Řetězec (ID domény nebo název domény; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Automaticky přiřadit tuto doménu stejnému týmu z jiné domény.  To znamená, že všichni členové z této domény budou přiřazeni jako členové týmu a",
+  "will automatically be set to": "bude automaticky nastaveno na",
+  "as well.": "také.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!DŮLEŽITÉ]\nPokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je administrátor, který jej zve, pak pozvánku automaticky přijme a neodešle e-mail.",
+  "as well.  You can set this to": "také.  Můžete to nastavit na",
+  "if necessary to explicitly disable this, but that is not necessary.": "v případě potřeby to výslovně zakázat, ale není to nutné."
 }

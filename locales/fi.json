@@ -11648,5 +11648,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Jos tarvitset kehittyneempiä käyttötapauksia tai mukautettuja integraatioita, ota yhteyttä tukitiimiimme.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Olemme ottaneet käyttöön kattavat turvatoimenpiteet sähköpostiviestinnän ja henkilötietojen suojaamiseksi.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integroi Forward Emailin SMTP-palveluun käyttämällä erilaisia ohjelmointikieliä, kehyksiä ja sähköpostiohjelmia. SMTP-palvelumme on suunniteltu luotettavaksi, turvalliseksi ja helposti integroitavaksi olemassa oleviin sovelluksiisi.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Hyväksymme nyt kryptovaluuttamaksut Stripen kryptomaksuintegraation kautta."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Hyväksymme nyt kryptovaluuttamaksut Stripen kryptomaksuintegraation kautta.",
+  "None; this is my own domain": "Ei mitään; tämä on oma verkkotunnukseni",
+  "Assign to same domain team": "Määritä samalle verkkotunnuksen tiimille",
+  "String (domain ID or domain name; FQDN)": "Merkkijono (verkkotunnuksen tunnus tai verkkotunnuksen nimi; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Määritä tämä verkkotunnus automaattisesti samalle tiimille toisesta verkkotunnuksesta.  Tämä tarkoittaa, että kaikki tämän verkkotunnuksen jäsenet määritetään tiimin jäseniksi, ja",
+  "will automatically be set to": "asetetaan automaattisesti",
+  "as well.": "samoin.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!TÄRKEÄÄ]\nJos kutsuttava käyttäjä on jo minkä tahansa muun verkkotunnuksen hyväksytty jäsen, jonka jäsen häntä kutsuva järjestelmänvalvoja on, se hyväksyy kutsun automaattisesti eikä lähetä sähköpostia.",
+  "as well.  You can set this to": "samoin.  Voit asettaa tämän",
+  "if necessary to explicitly disable this, but that is not necessary.": "tarvittaessa poista se käytöstä, mutta se ei ole välttämätöntä."
 }

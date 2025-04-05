@@ -9360,5 +9360,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Đối với các trường hợp sử dụng nâng cao hơn hoặc tích hợp tùy chỉnh, vui lòng liên hệ với nhóm hỗ trợ của chúng tôi.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Chúng tôi đã triển khai các biện pháp bảo mật toàn diện để bảo vệ thông tin liên lạc qua email và dữ liệu cá nhân của bạn.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Tích hợp với dịch vụ SMTP của Forward Email bằng nhiều ngôn ngữ lập trình, khuôn khổ và ứng dụng email khác nhau. Dịch vụ SMTP của chúng tôi được thiết kế để đáng tin cậy, an toàn và dễ tích hợp với các ứng dụng hiện có của bạn.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Hiện chúng tôi chấp nhận thanh toán bằng tiền điện tử thông qua tích hợp thanh toán bằng tiền điện tử của Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Hiện chúng tôi chấp nhận thanh toán bằng tiền điện tử thông qua tích hợp thanh toán bằng tiền điện tử của Stripe.",
+  "None; this is my own domain": "Không có; đây là tên miền của riêng tôi",
+  "Assign to same domain team": "Chỉ định cho cùng một nhóm miền",
+  "String (domain ID or domain name; FQDN)": "Chuỗi (ID miền hoặc tên miền; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Tự động chỉ định miền này cho cùng một nhóm từ một miền khác. Điều này có nghĩa là tất cả các thành viên từ miền này sẽ được chỉ định làm thành viên nhóm và",
+  "will automatically be set to": "sẽ tự động được thiết lập thành",
+  "as well.": "cũng như vậy.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!QUAN TRỌNG]\nNếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì nó sẽ tự động chấp nhận lời mời và không gửi email.",
+  "as well.  You can set this to": "cũng như vậy. Bạn có thể thiết lập điều này thành",
+  "if necessary to explicitly disable this, but that is not necessary.": "nếu cần thiết phải vô hiệu hóa tính năng này một cách rõ ràng, nhưng điều đó không cần thiết."
 }

@@ -11497,5 +11497,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "如需更多高级用例或自定义集成，请联系我们的支持团队。",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "我们已经实施了全面的安全措施来保护您的电子邮件通信和个人数据。",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "使用各种编程语言、框架和电子邮件客户端与 Forward Email 的 SMTP 服务集成。我们的 SMTP 服务设计可靠、安全，并且易于与您现有的应用程序集成。",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "我们现在通过 Stripe 的加密支付集成接受加密货币支付。"
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "我们现在通过 Stripe 的加密支付集成接受加密货币支付。",
+  "None; this is my own domain": "无；这是我自己的域名",
+  "Assign to same domain team": "分配给同一域团队",
+  "String (domain ID or domain name; FQDN)": "字符串（域 ID 或域名；FQDN）",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "自动将此域分配给另一个域中的同一团队。这意味着来自此域的所有成员都将被分配为团队成员，并且",
+  "will automatically be set to": "将自动设置为",
+  "as well.": "也一样。",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\n如果受邀用户已经是邀请他们的管理员所属的任何其他域的接受成员，则它将自动接受邀请并且不会发送电子邮件。",
+  "as well.  You can set this to": "也可以。您可以将其设置为",
+  "if necessary to explicitly disable this, but that is not necessary.": "如果有必要的话可以明确禁用此功能，但这不是必需的。"
 }

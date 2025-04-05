@@ -7988,5 +7988,14 @@
   "Email Best Practices Guide": "Email Best Practices Guide",
   "Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. With our intelligent queue system, 5-day retry mechanism, and comprehensive delivery status notifications, you can be confident that your emails will reach their destination.": "Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. With our intelligent queue system, 5-day retry mechanism, and comprehensive delivery status notifications, you can be confident that your emails will reach their destination.",
   "For more advanced use cases or custom integrations, please contact our support team.": "For more advanced use cases or custom integrations, please contact our support team.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "We now accept cryptocurrency payments through Stripe's crypto payment integration."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "We now accept cryptocurrency payments through Stripe's crypto payment integration.",
+  "None; this is my own domain": "None; this is my own domain",
+  "Assign to same domain team": "Assign to same domain team",
+  "String (domain ID or domain name; FQDN)": "String (domain ID or domain name; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the",
+  "will automatically be set to": "will automatically be set to",
+  "as well.": "as well.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
+  "as well.  You can set this to": "as well.  You can set this to",
+  "if necessary to explicitly disable this, but that is not necessary.": "if necessary to explicitly disable this, but that is not necessary."
 }

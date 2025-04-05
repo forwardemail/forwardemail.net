@@ -82,7 +82,11 @@ graceful.listen();
           const user = await Users.findOne({ id: json.passport.user })
             .lean()
             .exec();
-          if (!user) await client.del(key);
+          if (!user) {
+            await client.del(key);
+            return;
+          }
+
           await Users.findByIdAndUpdate(user._id, {
             $addToSet: {
               sessions: id

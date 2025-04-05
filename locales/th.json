@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "สำหรับกรณีการใช้งานขั้นสูงหรือการรวมแบบกำหนดเองเพิ่มเติม โปรดติดต่อทีมสนับสนุนของเรา",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "เราได้นำมาตรการรักษาความปลอดภัยที่ครอบคลุมมาใช้เพื่อปกป้องการสื่อสารทางอีเมลและข้อมูลส่วนบุคคลของคุณ",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "บูรณาการกับบริการ SMTP ของ Forward Email โดยใช้ภาษาการเขียนโปรแกรม เฟรมเวิร์ก และไคลเอนต์อีเมลต่างๆ บริการ SMTP ของเราได้รับการออกแบบมาให้เชื่อถือได้ ปลอดภัย และบูรณาการกับแอปพลิเคชันที่มีอยู่ของคุณได้ง่าย",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "ตอนนี้เราสามารถยอมรับการชำระเงินด้วยสกุลเงินดิจิทัลผ่านการผสานการชำระเงินด้วยสกุลเงินดิจิทัลของ Stripe แล้ว"
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "ตอนนี้เราสามารถยอมรับการชำระเงินด้วยสกุลเงินดิจิทัลผ่านการผสานการชำระเงินด้วยสกุลเงินดิจิทัลของ Stripe แล้ว",
+  "None; this is my own domain": "ไม่มี; นี่เป็นโดเมนของฉันเอง",
+  "Assign to same domain team": "มอบหมายให้กับทีมโดเมนเดียวกัน",
+  "String (domain ID or domain name; FQDN)": "สตริง (ID โดเมนหรือชื่อโดเมน; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "กำหนดโดเมนนี้ให้กับทีมเดียวกันจากโดเมนอื่นโดยอัตโนมัติ ซึ่งหมายความว่าสมาชิกทั้งหมดจากโดเมนนี้จะถูกกำหนดให้เป็นสมาชิกในทีม และ",
+  "will automatically be set to": "จะถูกตั้งค่าให้อัตโนมัติ",
+  "as well.": "เช่นกัน.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nหากผู้ใช้ที่ได้รับคำเชิญเป็นสมาชิกที่ได้รับการยอมรับของโดเมนอื่นใดที่ผู้ดูแลระบบที่ส่งคำเชิญเป็นสมาชิกอยู่แล้ว ระบบจะยอมรับคำเชิญโดยอัตโนมัติและจะไม่ส่งอีเมล",
+  "as well.  You can set this to": "เช่นกัน คุณสามารถตั้งค่านี้ให้เป็น",
+  "if necessary to explicitly disable this, but that is not necessary.": "หากจำเป็นต้องปิดการใช้งานนี้โดยชัดเจน แต่ก็ไม่จำเป็น"
 }

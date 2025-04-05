@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Voor geavanceerdere use cases of aangepaste integraties kunt u contact opnemen met ons supportteam.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Wij hebben uitgebreide beveiligingsmaatregelen geïmplementeerd om uw e-mailcommunicatie en persoonlijke gegevens te beschermen.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integreer met de SMTP-service van Forward Email met behulp van verschillende programmeertalen, frameworks en e-mailclients. Onze SMTP-service is ontworpen om betrouwbaar, veilig en eenvoudig te integreren met uw bestaande applicaties.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Wij accepteren nu betalingen in cryptovaluta via de cryptobetalingsintegratie van Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Wij accepteren nu betalingen in cryptovaluta via de cryptobetalingsintegratie van Stripe.",
+  "None; this is my own domain": "Geen; dit is mijn eigen domein",
+  "Assign to same domain team": "Toewijzen aan hetzelfde domeinteam",
+  "String (domain ID or domain name; FQDN)": "String (domein-ID of domeinnaam; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Wijs dit domein automatisch toe aan hetzelfde team van een ander domein. Dit betekent dat alle leden van dit domein worden toegewezen als teamleden en de",
+  "will automatically be set to": "wordt automatisch ingesteld op",
+  "as well.": "ook.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!BELANGRIJK]\nAls de gebruiker die wordt uitgenodigd al een geaccepteerd lid is van andere domeinen waarvan de beheerder die hen uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.",
+  "as well.  You can set this to": "ook. U kunt dit instellen op",
+  "if necessary to explicitly disable this, but that is not necessary.": "indien nodig moet u dit expliciet uitschakelen, maar dat is niet noodzakelijk."
 }

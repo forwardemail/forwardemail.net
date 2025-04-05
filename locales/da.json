@@ -8836,5 +8836,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "For mere avancerede brugssager eller tilpassede integrationer, kontakt venligst vores supportteam.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Vi har implementeret omfattende sikkerhedsforanstaltninger for at beskytte din e-mail-kommunikation og personlige data.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integrer med Forward Emails SMTP-tjeneste ved hjælp af forskellige programmeringssprog, rammer og e-mail-klienter. Vores SMTP-tjeneste er designet til at være pålidelig, sikker og nem at integrere med dine eksisterende applikationer.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Vi accepterer nu cryptocurrency-betalinger gennem Stripes crypto-betalingsintegration."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Vi accepterer nu cryptocurrency-betalinger gennem Stripes crypto-betalingsintegration.",
+  "None; this is my own domain": "Ingen; dette er mit eget domæne",
+  "Assign to same domain team": "Tildel til samme domæneteam",
+  "String (domain ID or domain name; FQDN)": "Streng (domæne-id eller domænenavn; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Tildel automatisk dette domæne til det samme team fra et andet domæne.  Det betyder, at alle medlemmer fra dette domæne vil blive tildelt som teammedlemmer, og",
+  "will automatically be set to": "vil automatisk blive indstillet til",
+  "as well.": "ligeså.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!VIGTIG]\nHvis brugeren, der inviteres, allerede er et accepteret medlem af andre domæner, som administratoren, der inviterer dem, er medlem af, vil den automatisk acceptere invitationen og ikke sende en e-mail.",
+  "as well.  You can set this to": "ligeså.  Du kan indstille dette til",
+  "if necessary to explicitly disable this, but that is not necessary.": "hvis det er nødvendigt eksplicit at deaktivere dette, men det er ikke nødvendigt."
 }

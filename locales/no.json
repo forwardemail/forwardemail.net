@@ -11806,5 +11806,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "For mer avanserte brukstilfeller eller tilpassede integrasjoner, vennligst kontakt supportteamet vårt.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Vi har implementert omfattende sikkerhetstiltak for å beskytte din e-postkommunikasjon og personlige data.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integrer med Forward Emails SMTP-tjeneste ved å bruke ulike programmeringsspråk, rammeverk og e-postklienter. Vår SMTP-tjeneste er utviklet for å være pålitelig, sikker og enkel å integrere med eksisterende applikasjoner.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Vi aksepterer nå kryptovalutabetalinger gjennom Stripes kryptobetalingsintegrasjon."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Vi aksepterer nå kryptovalutabetalinger gjennom Stripes kryptobetalingsintegrasjon.",
+  "None; this is my own domain": "Ingen; dette er mitt eget domene",
+  "Assign to same domain team": "Tilordne til samme domeneteam",
+  "String (domain ID or domain name; FQDN)": "String (domene-ID eller domenenavn; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Tilordne dette domenet automatisk til det samme teamet fra et annet domene.  Dette betyr at alle medlemmer fra dette domenet vil bli tildelt som teammedlemmer, og",
+  "will automatically be set to": "vil automatisk bli satt til",
+  "as well.": "også.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!VIKTIG]\nHvis brukeren som blir invitert allerede er et akseptert medlem av andre domener administratoren som inviterer vedkommende er medlem av, vil den automatisk godta invitasjonen og ikke sende en e-post.",
+  "as well.  You can set this to": "også.  Du kan sette dette til",
+  "if necessary to explicitly disable this, but that is not necessary.": "om nødvendig for å eksplisitt deaktivere dette, men det er ikke nødvendig."
 }

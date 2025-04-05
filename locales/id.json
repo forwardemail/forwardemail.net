@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Untuk kasus penggunaan lebih lanjut atau integrasi khusus, silakan hubungi tim dukungan kami.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Kami telah menerapkan langkah-langkah keamanan yang komprehensif untuk melindungi komunikasi email dan data pribadi Anda.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integrasikan dengan layanan SMTP Forward Email menggunakan berbagai bahasa pemrograman, kerangka kerja, dan klien email. Layanan SMTP kami dirancang agar dapat diandalkan, aman, dan mudah diintegrasikan dengan aplikasi Anda yang sudah ada.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Kami sekarang menerima pembayaran mata uang kripto melalui integrasi pembayaran kripto Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Kami sekarang menerima pembayaran mata uang kripto melalui integrasi pembayaran kripto Stripe.",
+  "None; this is my own domain": "Tidak ada; ini adalah domain saya sendiri",
+  "Assign to same domain team": "Tetapkan ke tim domain yang sama",
+  "String (domain ID or domain name; FQDN)": "String (ID domain atau nama domain; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Tetapkan domain ini secara otomatis ke tim yang sama dari domain lain. Ini berarti bahwa semua anggota dari domain ini akan ditetapkan sebagai anggota tim, dan",
+  "will automatically be set to": "akan secara otomatis diatur ke",
+  "as well.": "demikian juga.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!PENTING]\nJika pengguna yang diundang sudah menjadi anggota yang diterima di domain lain tempat admin yang mengundangnya menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan dikirimi email.",
+  "as well.  You can set this to": "juga. Anda dapat mengaturnya ke",
+  "if necessary to explicitly disable this, but that is not necessary.": "jika perlu untuk menonaktifkan ini secara eksplisit, tetapi itu tidak perlu."
 }

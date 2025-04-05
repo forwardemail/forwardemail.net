@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Daha gelişmiş kullanım durumları veya özel entegrasyonlar için lütfen destek ekibimizle iletişime geçin.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "E-posta iletişimlerinizi ve kişisel verilerinizi korumak için kapsamlı güvenlik önlemleri uyguladık.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Çeşitli programlama dilleri, çerçeveler ve e-posta istemcileri kullanarak Forward Email'in SMTP hizmetiyle bütünleşin. SMTP hizmetimiz güvenilir, güvenli ve mevcut uygulamalarınızla bütünleşmesi kolay olacak şekilde tasarlanmıştır.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Artık Stripe'ın kripto para ödeme entegrasyonu aracılığıyla kripto para ödemelerini kabul ediyoruz."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Artık Stripe'ın kripto para ödeme entegrasyonu aracılığıyla kripto para ödemelerini kabul ediyoruz.",
+  "None; this is my own domain": "Hiçbiri; bu benim kendi alanım",
+  "Assign to same domain team": "Aynı etki alanı ekibine atayın",
+  "String (domain ID or domain name; FQDN)": "Dize (alan adı kimliği veya alan adı; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Bu etki alanını otomatik olarak başka bir etki alanından aynı takıma atayın. Bu, bu etki alanındaki tüm üyelerin takım üyesi olarak atanacağı ve",
+  "will automatically be set to": "otomatik olarak ayarlanacaktır",
+  "as well.": "ilave olarak.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!ÖNEMLİ]\nDavet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir etki alanının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.",
+  "as well.  You can set this to": "Ayrıca bunu şu şekilde ayarlayabilirsiniz:",
+  "if necessary to explicitly disable this, but that is not necessary.": "gerekirse bunu açıkça devre dışı bırakmak gerekir, ancak bu gerekli değildir."
 }

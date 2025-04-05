@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Speciálisabb használati esetekért vagy egyéni integrációkért forduljon ügyfélszolgálatunkhoz.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Átfogó biztonsági intézkedéseket vezettünk be az e-mail kommunikáció és a személyes adatok védelme érdekében.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integrálható a Forward Email SMTP szolgáltatásával különféle programozási nyelvek, keretrendszerek és e-mail kliensek használatával. SMTP szolgáltatásunkat úgy terveztük, hogy megbízható, biztonságos és könnyen integrálható legyen a meglévő alkalmazásaival.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "A Stripe kriptofizetési integrációján keresztül immár kriptovaluta fizetéseket is elfogadunk."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "A Stripe kriptofizetési integrációján keresztül immár kriptovaluta fizetéseket is elfogadunk.",
+  "None; this is my own domain": "Egyik sem; ez a saját domain",
+  "Assign to same domain team": "Hozzárendelés ugyanahhoz a domain csapathoz",
+  "String (domain ID or domain name; FQDN)": "Karakterlánc (domainazonosító vagy tartománynév; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "A domain automatikus hozzárendelése ugyanahhoz a csapathoz egy másik tartományból.  Ez azt jelenti, hogy a tartomány minden tagja csapattagként lesz hozzárendelve, és a",
+  "will automatically be set to": "automatikusan be lesz állítva",
+  "as well.": "is.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!FONTOS]\nHa a meghívott felhasználó már elfogadott tagja bármely más domainnek, amelynek az őt meghívó adminisztrátor tagja, akkor automatikusan elfogadja a meghívást, és nem küld e-mailt.",
+  "as well.  You can set this to": "is.  Ezt beállíthatja",
+  "if necessary to explicitly disable this, but that is not necessary.": "ha szükséges, ezt kifejezetten letiltja, de ez nem szükséges."
 }

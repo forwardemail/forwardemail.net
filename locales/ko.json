@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "더욱 고급 사용 사례나 맞춤형 통합에 대한 내용은 당사 지원팀에 문의하세요.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "저희는 귀하의 이메일 통신과 개인 데이터를 보호하기 위해 포괄적인 보안 조치를 시행하고 있습니다.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "다양한 프로그래밍 언어, 프레임워크, 이메일 클라이언트를 사용하여 Forward Email의 SMTP 서비스와 통합하세요. 당사의 SMTP 서비스는 안정적이고 안전하며 기존 애플리케이션과 쉽게 통합되도록 설계되었습니다.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "이제 Stripe의 암호화폐 결제 통합을 통해 암호화폐 결제를 허용합니다."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "이제 Stripe의 암호화폐 결제 통합을 통해 암호화폐 결제를 허용합니다.",
+  "None; this is my own domain": "없음; 이것은 내 도메인입니다",
+  "Assign to same domain team": "동일한 도메인 팀에 할당",
+  "String (domain ID or domain name; FQDN)": "문자열(도메인 ID 또는 도메인 이름; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "이 도메인을 다른 도메인의 동일한 팀에 자동으로 할당합니다. 즉, 이 도메인의 모든 멤버가 팀 멤버로 할당되고",
+  "will automatically be set to": "자동으로 설정됩니다",
+  "as well.": "또한.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!중요]\n초대되는 사용자가 이미 초대하는 관리자가 회원인 다른 도메인의 승인된 회원인 경우 초대를 자동으로 수락하고 이메일을 보내지 않습니다.",
+  "as well.  You can set this to": "또한 이것을 설정할 수 있습니다",
+  "if necessary to explicitly disable this, but that is not necessary.": "필요한 경우 이를 명시적으로 비활성화할 수 있지만 반드시 그럴 필요는 없습니다."
 }

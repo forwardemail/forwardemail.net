@@ -9849,5 +9849,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "למקרי שימוש מתקדמים יותר או אינטגרציות מותאמות אישית, אנא צור קשר עם צוות התמיכה שלנו.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "יישמנו אמצעי אבטחה מקיפים כדי להגן על תקשורת הדוא\"ל והנתונים האישיים שלך.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "השתלב עם שירות ה-SMTP של Forward Email באמצעות שפות תכנות שונות, מסגרות ולקוחות דוא\"ל. שירות ה-SMTP שלנו נועד להיות אמין, מאובטח וקל לשילוב עם היישומים הקיימים שלך.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "כעת אנו מקבלים תשלומים במטבעות קריפטוגרפיים באמצעות שילוב תשלומי קריפטו של Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "כעת אנו מקבלים תשלומים במטבעות קריפטוגרפיים באמצעות שילוב תשלומי קריפטו של Stripe.",
+  "None; this is my own domain": "אַף לֹא אֶחָד; זה התחום שלי",
+  "Assign to same domain team": "הקצה לאותו צוות דומיין",
+  "String (domain ID or domain name; FQDN)": "מחרוזת (מזהה דומיין או שם דומיין; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "הקצה אוטומטית דומיין זה לאותו צוות מדומיין אחר.  המשמעות היא שכל החברים מהדומיין הזה יוקצו כחברי צוות, וה-",
+  "will automatically be set to": "יוגדר אוטומטית ל",
+  "as well.": "גַם כֵּן.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!חָשׁוּב]\nאם המשתמש המוזמן כבר חבר מקובל בכל תחום אחר שהמנהל המזמין אותו חבר בו, הוא יקבל אוטומטית את ההזמנה ולא ישלח אימייל.",
+  "as well.  You can set this to": "גַם כֵּן.  אתה יכול להגדיר את זה ל",
+  "if necessary to explicitly disable this, but that is not necessary.": "אם יש צורך להשבית זאת במפורש, אבל זה לא הכרחי."
 }

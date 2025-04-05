@@ -59,8 +59,8 @@ jobs:
         uses: supercharge/redis-github-action@1.4.0
         with:
           redis-version: latest
-      - name: Install pnpm v7
-        run: npm i -g pnpm@7
+      - name: Install pnpm v9.15.9
+        run: npm i -g pnpm@9.15.9
       - name: Install dependencies
         run: pnpm install
       - name: Run tests

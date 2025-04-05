@@ -4,6 +4,8 @@
  */
 
 const Boom = require('@hapi/boom');
+const isSANB = require('is-string-and-not-blank');
+const mongoose = require('mongoose');
 const { boolean } = require('boolean');
 
 const { Domains, Aliases } = require('#models');
@@ -13,7 +15,36 @@ const logger = require('#helpers/logger');
 
 // eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
+  //
+  // if `team_domain` was specified then ensure that it's valid
+  // (it's either an object ID or a name)
+  //
+  let teamDomain;
   if (
+    isSANB(ctx.request.body.team_domain) &&
+    ctx.request.body.team_domain !== 'none'
+  ) {
+    teamDomain = ctx.state.domains.find((d) => {
+      if (d.plan !== 'team') return false; // return if not team plan
+      if (d.group !== 'admin') return false; // if user logged in is not an admin ignore
+      // if the ID matched
+      if (
+        mongoose.isObjectIdOrHexString(ctx.request.body.team_domain) &&
+        d.id === ctx.request.body.team_domain
+      )
+        return true;
+      // if the name matched
+      if (d.name === ctx.request.body.team_domain.toLowerCase()) return true;
+      return false;
+    });
+
+    // throw error if it wasn't valid
+    if (!teamDomain)
+      throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST_ANYWHERE'));
+  }
+
+  if (
+    !teamDomain &&
     !ctx.state.user[config.userFields.hasVerifiedEmail] &&
     ctx.state.user.plan === 'free'
   ) {
@@ -58,17 +89,33 @@ async function createDomain(ctx, next) {
   }
 
   try {
-    ctx.state.domain = await Domains.create({
-      is_api: boolean(ctx.api),
-      members: [{ user: ctx.state.user._id, group: 'admin' }],
-      name: ctx.request.body.domain,
-      is_global:
-        ctx.state.user.group === 'admin' && boolean(ctx.request.body.is_global),
-      locale: ctx.locale,
-      plan: ctx.request.body.plan,
-      resolver: ctx.resolver,
-      ...ctx.state.optionalBooleans
-    });
+    if (teamDomain) {
+      ctx.state.domain = await Domains.create({
+        is_api: boolean(ctx.api),
+        members: teamDomain.members,
+        name: ctx.request.body.domain,
+        is_global:
+          ctx.state.user.group === 'admin' &&
+          boolean(ctx.request.body.is_global),
+        locale: ctx.locale,
+        plan: teamDomain.plan,
+        resolver: ctx.resolver,
+        ...ctx.state.optionalBooleans
+      });
+    } else {
+      ctx.state.domain = await Domains.create({
+        is_api: boolean(ctx.api),
+        members: [{ user: ctx.state.user._id, group: 'admin' }],
+        name: ctx.request.body.domain,
+        is_global:
+          ctx.state.user.group === 'admin' &&
+          boolean(ctx.request.body.is_global),
+        locale: ctx.locale,
+        plan: ctx.request.body.plan,
+        resolver: ctx.resolver,
+        ...ctx.state.optionalBooleans
+      });
+    }
 
     // create a default alias for the user pointing to the user or recipients
     if (boolean(ctx.api) && ctx.request.body.catchall === false) {

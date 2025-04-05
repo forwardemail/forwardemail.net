@@ -24,6 +24,19 @@
               type="text"
             )
             label(for="input-domain")= t("Domain name")
+          //-
+          //- if user is an admin of any teams they belong to
+          //- then render a dropdown menu and allow the user to select one
+          //-
+          - const adminTeams = domains ? domains.filter(d => d.plan === 'team' && d.group === 'admin') : []
+          if adminTeams.length > 0
+            .form-group.floating-label
+              select#input-team-domain.form-control.input-lg(name="team_domain")
+                option(value='none', selected)= t("None; this is my own domain")
+                each adminTeam in adminTeams
+                  option(value=adminTeam.id)= adminTeam.name
+              label(for="input-team-domain")= t("Assign to same domain team")
+
           if user.group === 'admin'
             .form-group.form-check
               input#input-is-global.form-check-input(
@@ -32,6 +45,7 @@
                 value="true"
               )
               label.form-check-label(for="input-is-global")= t("Global domain")
+
           button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
         .alert.alert-warning.mt-3.mb-0.text-center
           ul.list-inline.mb-0

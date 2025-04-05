@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "より高度な使用例やカスタム統合については、サポート チームにお問い合わせください。",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "当社では、お客様の電子メール通信と個人データを保護するために包括的なセキュリティ対策を実施しています。",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "さまざまなプログラミング言語、フレームワーク、電子メール クライアントを使用して、Forward Email の SMTP サービスと統合します。当社の SMTP サービスは、信頼性が高く、安全で、既存のアプリケーションと簡単に統合できるように設計されています。",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "現在、Stripe の暗号通貨支払い統合を通じて暗号通貨による支払いを受け付けています。"
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "現在、Stripe の暗号通貨支払い統合を通じて暗号通貨による支払いを受け付けています。",
+  "None; this is my own domain": "なし。これは私自身のドメインです",
+  "Assign to same domain team": "同じドメインチームに割り当てる",
+  "String (domain ID or domain name; FQDN)": "文字列 (ドメイン ID またはドメイン名、FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "このドメインを別のドメインの同じチームに自動的に割り当てます。つまり、このドメインのすべてのメンバーがチームメンバーとして割り当てられ、",
+  "will automatically be set to": "自動的に設定されます",
+  "as well.": "同じように。",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!重要]\n招待されたユーザーが、招待した管理者がメンバーである他のドメインで既に承認されたメンバーである場合、招待は自動的に承認され、メールは送信されません。",
+  "as well.  You can set this to": "これも設定できます",
+  "if necessary to explicitly disable this, but that is not necessary.": "必要に応じてこれを明示的に無効にすることもできますが、その必要はありません。"
 }

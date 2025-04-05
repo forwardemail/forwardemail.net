@@ -11799,5 +11799,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Para casos de uso más avanzados o integraciones personalizadas, comuníquese con nuestro equipo de soporte.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Hemos implementado medidas de seguridad integrales para proteger sus comunicaciones por correo electrónico y sus datos personales.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Integre el servicio SMTP de Forward Email utilizando diversos lenguajes de programación, frameworks y clientes de correo electrónico. Nuestro servicio SMTP está diseñado para ser confiable, seguro y fácil de integrar con sus aplicaciones existentes.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Ahora aceptamos pagos de criptomonedas a través de la integración de pagos de criptomonedas de Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Ahora aceptamos pagos de criptomonedas a través de la integración de pagos de criptomonedas de Stripe.",
+  "None; this is my own domain": "Ninguno; este es mi propio dominio.",
+  "Assign to same domain team": "Asignar al mismo equipo de dominio",
+  "String (domain ID or domain name; FQDN)": "Cadena (ID de dominio o nombre de dominio; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Asignar automáticamente este dominio al mismo equipo de otro dominio. Esto significa que todos los miembros de este dominio se asignarán como miembros del equipo y...",
+  "will automatically be set to": "se establecerá automáticamente en",
+  "as well.": "también.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANTE]\nSi el usuario invitado ya es miembro de otro dominio del que es miembro el administrador que lo invita, se aceptará automáticamente la invitación y no se enviará un correo electrónico.",
+  "as well.  You can set this to": "También puedes configurar esto para",
+  "if necessary to explicitly disable this, but that is not necessary.": "Si es necesario deshabilitar esto explícitamente, pero no es necesario."
 }

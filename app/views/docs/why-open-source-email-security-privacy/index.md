@@ -247,8 +247,6 @@ The future of email is open, transparent, and privacy-focused. The future is For
 
 ---
 
-*Ready to experience truly open-source email? [Sign up for Forward Email today](https://forwardemail.net/register) or explore our [GitHub repository](https://github.com/forwardemail/forwardemail.net) to learn more about our open-source approach.*
-
 \[^1]: SNS Insider. "The Open Source Services Market was valued at USD 28.6 billion in 2023 and will reach to USD 114.8 Billion by 2032, growing at a CAGR of 16.70% by 2032." [Open Source Services Market Size & Analysis Report 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
 
 \[^2]: Privacy Guides Community. "Forward Email (email provider) - Site Development / Tool Suggestions." [Privacy Guides Discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)

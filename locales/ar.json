@@ -11801,5 +11801,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "للحصول على حالات استخدام أكثر تقدمًا أو تكاملات مخصصة، يرجى الاتصال بفريق الدعم الخاص بنا.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "لقد قمنا بتنفيذ تدابير أمنية شاملة لحماية اتصالات البريد الإلكتروني والبيانات الشخصية الخاصة بك.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "تكامل مع خدمة SMTP من Forward Email باستخدام لغات برمجة وأطر عمل وبرامج بريد إلكتروني متنوعة. صُممت خدمة SMTP لدينا لتكون موثوقة وآمنة وسهلة التكامل مع تطبيقاتك الحالية.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "نحن الآن نقبل مدفوعات العملات المشفرة من خلال تكامل مدفوعات العملات المشفرة مع Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "نحن الآن نقبل مدفوعات العملات المشفرة من خلال تكامل مدفوعات العملات المشفرة مع Stripe.",
+  "None; this is my own domain": "لا يوجد؛ هذا هو نطاقي الخاص",
+  "Assign to same domain team": "تعيين إلى نفس فريق المجال",
+  "String (domain ID or domain name; FQDN)": "سلسلة (معرف المجال أو اسم المجال؛ FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "تعيين هذا النطاق تلقائيًا للفريق نفسه من نطاق آخر. هذا يعني أن جميع أعضاء هذا النطاق سيتم تعيينهم كأعضاء في الفريق،",
+  "will automatically be set to": "سيتم ضبطه تلقائيًا على",
+  "as well.": "أيضًا.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[هام!]\nإذا كان المستخدم المدعو عضوًا مقبولًا في أي نطاق آخر ينتمي إليه المسؤول الذي دعاه، فسيتم قبول الدعوة تلقائيًا ولن يتم إرسال بريد إلكتروني.",
+  "as well.  You can set this to": "كذلك. يمكنك ضبط هذا على",
+  "if necessary to explicitly disable this, but that is not necessary.": "إذا لزم الأمر لتعطيل هذا صراحةً، ولكن هذا ليس ضروريًا."
 }

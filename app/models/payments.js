@@ -256,56 +256,100 @@ const Payments = new mongoose.Schema({
       // (this is also a type from Stripe payment_method.card.brand)
       // (and we have a job that detects unknown methods to notify us)
       'unknown',
-      // paypal
+      // Used for PayPal payments
       'paypal',
       // if we give free credit to users
       'free_beta_program',
       // if we convert between plans
       'plan_conversion',
-      // when stripe's payment.type === 'card'
+      // Used to debit Canadian bank accounts through the Automated Clearing Settlement System (ACSS)
+      'acss_debit',
+      // A buy now, pay later payment method in the US
+      'affirm',
+      // A buy now, pay later payment method used in Australia, Canada, France, New Zealand, Spain, the UK, and the US
+      'afterpay_clearpay',
+      // A digital wallet payment method used in China
+      'alipay',
+      // A Buy Now, Pay Later payment method that lets customers pay in 2, 3, or 4 installments
+      'alma',
+      // A Wallet payment method that lets hundreds of millions of Amazon customers pay their way, every day
+      'amazon_pay',
+      // Used to debit Australian bank accounts through the Bulk Electronic Clearing System (BECS)
+      'au_becs_debit',
+      // Used for bank transfers in the UK
+      'bacs_debit',
+      // Used for bank transfers
+      'bancontact',
+      // Used for bank transfers in the EU
+      'blik',
+      // Used for bank transfers in Brazil
+      'boleto',
+      // Credit or debit card
+      'card',
+      // Used for card-based payments in the US
+      'card_present',
+      // Used for cash-based payments
+      'cashapp',
+      // Used for cryptocurrency payments (Note: This is for integration with crypto wallets, not direct crypto payments)
+      'crypto',
+      // Used for customer balance payments
+      'customer_balance',
+      // Used for bank transfers in the EU
+      'eps',
+      // Used for bank transfers in Malaysia
+      'fpx',
+      // Used for bank transfers in the EU
+      'giropay',
+      // Used for bank transfers in Southeast Asia
+      'grabpay',
+      // Used for bank transfers in the Netherlands
+      'ideal',
+      // Used for in-person payments in Canada
+      'interac_present',
+      // Used for buy now, pay later payments
+      'klarna',
+      // Used for convenience store payments in Japan
+      'konbini',
+      // Used for accelerated checkout with saved payment details
+      'link',
+      // Used for mobile payments in Nordic countries
+      'mobilepay',
+      // Used for bank transfers in Portugal
+      'multibanco',
+      // Used for cash voucher payments in Mexico
+      'oxxo',
+      // Used for bank transfers in Poland
+      'p24',
+      // Used for real-time payments in Singapore
+      'paynow',
+      // Used for prepaid card payments
+      'paysafecard',
+      // Used for QR code payments in Thailand
+      'promptpay',
+      // Used for Revolut payments
+      'revolut_pay',
+      // Used for bank transfers in the EU
+      'sepa_debit',
+      // Used for bank transfers in Germany, Austria, Belgium, Italy, Netherlands, and Spain
+      'sofort',
+      // Used for mobile payments in Sweden
+      'swish',
+      // Swiss mobile payment method
+      'twint',
+      // Used for bank transfers in the US
+      'us_bank_account',
+      // Used for digital wallet payments in China
+      'wechat_pay',
+      // Used for buy now, pay later payments
+      'zip',
+      // Card brand types from Stripe payment_method.card.brand
       'amex',
       'diners',
       'discover',
       'jcb',
       'mastercard',
       'unionpay',
-      'visa',
-      // <https://stripe.com/docs/api/payment_methods/object?lang=node>
-      // otherwise when it's !== 'card' we use payment.type as value
-      'acss_debit',
-      'affirm',
-      'afterpay_clearpay',
-      'alipay',
-      'au_becs_debit',
-      'bacs_debit',
-      'bancontact',
-      'blik',
-      'boleto',
-      // unsupported
-      // 'card',
-      // 'card_present',
-      // 'customer_balance',
-      'eps',
-      'fpx',
-      'giropay',
-      'grabpay',
-      'ideal',
-      'interac_present',
-      'klarna',
-      'konbini',
-      'link',
-      'oxxo',
-      'p24',
-      'paynow',
-      'promptpay',
-      'sepa_debit',
-      'sofort',
-      'us_bank_account',
-      'wechat_pay',
-      'cashapp',
-      'amazon_pay',
-      // crypto
-      'crypto'
+      'visa'
     ]
   },
   // this is the duration of time added

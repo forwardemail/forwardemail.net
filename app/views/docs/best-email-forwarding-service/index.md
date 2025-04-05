@@ -130,7 +130,7 @@ We retry mail delivery for 5 days, similar to industry standards like [Postfix](
 
 On a similar note, we also redact the message content of outbound SMTP emails after successful delivery. This is configured in our storage system with a default retention period of 30 days, which you can adjust in your domain's Advanced Settings. After this period, the email content is automatically redacted and purged, with only a placeholder message remaining:
 
-```
+```txt
 This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
 ```
 

@@ -9356,5 +9356,14 @@
   "For more advanced use cases or custom integrations, please contact our support team.": "Pour des cas d'utilisation plus avancés ou des intégrations personnalisées, veuillez contacter notre équipe d'assistance.",
   "We've implemented comprehensive security measures to protect your email communications and personal data.": "Nous avons mis en place des mesures de sécurité complètes pour protéger vos communications par courrier électronique et vos données personnelles.",
   "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications.": "Intégrez le service SMTP de Forward Email à l'aide de différents langages de programmation, frameworks et clients de messagerie. Notre service SMTP est conçu pour être fiable, sécurisé et facile à intégrer à vos applications existantes.",
-  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Nous acceptons désormais les paiements en crypto-monnaie via l'intégration de paiement crypto de Stripe."
+  "We now accept cryptocurrency payments through Stripe's crypto payment integration.": "Nous acceptons désormais les paiements en crypto-monnaie via l'intégration de paiement crypto de Stripe.",
+  "None; this is my own domain": "Aucun ; ceci est mon propre domaine",
+  "Assign to same domain team": "Affecter à la même équipe de domaine",
+  "String (domain ID or domain name; FQDN)": "Chaîne (ID de domaine ou nom de domaine ; FQDN)",
+  "Automatically assign this domain to the same team from another domain.  This means that all members from this domain will be assigned as team members, and the": "Affecter automatiquement ce domaine à la même équipe d'un autre domaine. Cela signifie que tous les membres de ce domaine seront affectés à l'équipe.",
+  "will automatically be set to": "sera automatiquement réglé sur",
+  "as well.": "aussi.",
+  "[!IMPORTANT]\nIf the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.": "[!IMPORTANT]\nSi l'utilisateur invité est déjà membre d'un autre domaine dont l'administrateur l'invite est membre, l'invitation sera automatiquement acceptée et aucun e-mail ne sera envoyé.",
+  "as well.  You can set this to": "également. Vous pouvez définir ceci sur",
+  "if necessary to explicitly disable this, but that is not necessary.": "si nécessaire, désactivez explicitement cela, mais ce n'est pas nécessaire."
 }
