@@ -1046,9 +1046,10 @@ class CalDAV extends API {
                   from: ctx.state.user.username,
                   to,
                   bcc: ctx.state.user.username,
-                  subject: `${i18n.translate('CANCELLED', ctx.locale)}: ${
-                    oldEvent.summary
-                  }`,
+                  subject: `${i18n.translate(
+                    'CANCELLED',
+                    ctx.locale
+                  )}: ${oldEvent.getFirstPropertyValue('summary')}`,
                   icalEvent: {
                     method,
                     filename: 'invite.ics',
@@ -1127,7 +1128,10 @@ class CalDAV extends API {
 
           logger.debug('ics output', ics);
 
-          let subject = event.summary;
+          let subject =
+            event.summary ||
+            (event.getFirstPropertyValue &&
+              event.getFirstPropertyValue('summary'));
 
           subject =
             method === 'CANCEL'
