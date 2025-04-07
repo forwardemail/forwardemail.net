@@ -1,8 +1,6 @@
-# Self Hosted
-
-
 ## Table of Contents
 
+* [Getting started](#getting-started)
 * [Requirements](#requirements)
   * [Cloud-init / User-data](#cloud-init--user-data)
 * [Install](#install)
@@ -23,24 +21,46 @@
   * [How do I upgrade to the latest forward email code](#how-do-i-upgrade-to-the-latest-forward-email-code)
   * [How do I restore from a backup](#how-do-i-restore-from-a-backup)
 * [Troubleshooting](#troubleshooting)
-  * [Why is the certbot acme challenge failing](#why-is-the-certbot-acme-challenge-failing)
   * [What is the basic auth username and password](#what-is-the-basic-auth-username-and-password)
   * [How do I know what is running](#how-do-i-know-what-is-running)
   * [How do I know if something isn't running that should be](#how-do-i-know-if-something-isnt-running-that-should-be)
   * [How do I find logs](#how-do-i-find-logs)
   * [Why are my outgoing emails timing out](#why-are-my-outgoing-emails-timing-out)
-  * [What tool(s) should I use to test email configuration best practices and IP reputation](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation)
+
+
+## Getting started
+
+Our self-hosted email solution, like all our products, is 100% open-source—both frontend and backend. This means:
+
+1. **Complete Transparency**: Every line of code that processes your emails is available for public scrutiny
+2. **Community Contributions**: Anyone can contribute improvements or fix issues
+3. **Security Through Openness**: Vulnerabilities can be identified and fixed by a global community
+4. **No Vendor Lock-in**: You're never dependent on our company's existence
+
+The entire codebase is available on GitHub at <https://github.com/forwardemail/forwardemail.net>, licensed under the MIT License.
+
+The architecture includes containers for:
+
+* SMTP server for outbound email
+* IMAP/POP3 servers for email retrieval
+* Web interface for administration
+* Database for configuration storage
+* Redis for caching and performance
+* SQLite for secure, encrypted mailbox storage
 
 
 ## Requirements
 
 Before running the installation script, ensure you have the following:
 
-* **Operating System**: A Linux-based server (e.g. Ubuntu 22.04+).
+* **Operating System**: A Linux-based server (currently supporting Ubuntu 22.04+).
 * **Resources**: 1 vCPUs and 2GB RAM
 * **Root Access**: Administrative privileges to execute commands.
 * **Domain Name**: A custom domain ready for DNS configuration.
-* **Clean IP**: Ensure your server has a clean IP address with no prior spam reputation by checking blacklists. More info [here](#what-tools-should-i-use-to-check-ip-reputation).
+* **Clean IP**: Ensure your server has a clean IP address with no prior spam reputation by checking blacklists. More info [here](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* Public IP address with port 25 support
+* Ability to set [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* IPv4 and IPv6 support
 
 > \[!TIP]
 > See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
@@ -51,11 +71,11 @@ Most cloud vendors support a cloud-init configuration for when the virtual priva
 
 **Options**
 
-* `EMAIL` - `EMAIL` environment variable used for certbot expiration reminders
-* `DOMAIN` - custom domain used for self hosting setup
+* `EMAIL` - email used for certbot expiration reminders
+* `DOMAIN` - custom domain (e.g. `example.com`) used for self hosting setup
 * `AUTH_BASIC_USERNAME` - username used in first time setup to protect the site
 * `AUTH_BASIC_PASSWORD` - passward used in first time setup to protect the site
-* `/root/.cloudflare.ini` - (**Cloudflare users only**)cloudflare configuration file used by certbot for DNS configuration. It requires you set your API token via `dns_cloudflare_api_token`. Read more [here](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**Cloudflare users only**) cloudflare configuration file used by certbot for DNS configuration. It requires you set your API token via `dns_cloudflare_api_token`. Read more [here](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Example:
 
@@ -270,7 +290,11 @@ Follow the [install script](#install) and choose `option 6` in the prompt.
 
 ## Troubleshooting
 
-### Why is the certbot acme challenge failing
+#### Why doesn't this work outside of Ubuntu
+
+We're currently looking to support Debian, MacOS and will look to others. Please open a [discussion](https://github.com/orgs/forwardemail/discussions) or contribute if you would like to see others supported.
+
+#### Why is the certbot acme challenge failing
 
 Most common pitfall is that certbot / letsencrypt will sometimes request **2** challenges. You need to be sure to add **BOTH** txt records.
 
@@ -305,6 +329,6 @@ Within the web UI, you can view `/admin/emails` and `/admin/logs` for outbound e
 
 If you see a message like Connection timed out when connecting to MX server... then you may need to check if port 25 is blocked. It is common for ISPs or cloud providers to block this by default where you may need to reach out to support / file a ticket to get this opened up.
 
-### What tool(s) should I use to test email configuration best practices and IP reputation
+#### What tools should I use to test email configuration best practices and IP reputation
 
 Take a look at our [FAQ here](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
