@@ -146,7 +146,6 @@ According to IT professionals on ServerFault, for universities seeking to implem
 
 We've developed seamless integration pathways with existing university infrastructure:
 
-* SSO authentication via university identity providers
 * Automated provisioning through [RESTful API](https://forwardemail.net/email-api) integration
 * Custom branding options for university portals
 * Flexible alias management for departments and organizations
@@ -255,7 +254,6 @@ Our technical team handles all aspects of system setup:
 
 * DNS configuration and verification
 * API integration with university systems
-* SSO implementation with identity providers
 * Custom portal development with university branding
 * Email authentication setup (SPF, DKIM, DMARC)
 
@@ -311,7 +309,6 @@ Forward Email implemented a comprehensive solution:
 * Email forwarding for all @cam.ac.uk alumni addresses
 * Custom-branded portal for alumni self-service
 * API integration with Cambridge's alumni database
-* SSO authentication with Cambridge credentials
 * Comprehensive email security implementation
 
 ### Results
