@@ -348,6 +348,13 @@ footer.mt-auto(aria-label=t("Footer"))
               else
                 = t("Email Webhooks")
             li: a.d-block.text-white.py-2.py-md-0(
+              href=isBot(ctx.get("User-Agent")) ? l("/self-hosted") : l("/faq#do-you-support-self-hosting")
+            )
+              if isBot(ctx.get("User-Agent"))
+                = t("Self Hosted")
+              else
+                = t("Self Hosted Email")
+            li: a.d-block.text-white.py-2.py-md-0(
               href=l("/faq#do-you-support-bounce-webhooks")
             )= t("Bounce Webhooks")
             li: a.d-block.text-white.py-2.py-md-0(

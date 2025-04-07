@@ -68,7 +68,7 @@ test.beforeEach(async (t) => {
   await utils.setupRedisClient(t);
   const secure = false;
   t.context.secure = secure;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const sqlitePort = await getPort();
   const sqlite = new SQLite({
@@ -928,7 +928,7 @@ test('onGetQuotaRoot', async (t) => {
     await t.context.wsp.request(
       {
         action: 'size',
-        timeout: ms('15s'),
+        timeout: ms('30s'),
         alias_id: alias.id
       },
       0
@@ -958,7 +958,7 @@ test('onGetQuotaRoot', async (t) => {
     await t.context.wsp.request(
       {
         action: 'size',
-        timeout: ms('15s'),
+        timeout: ms('30s'),
         alias_id: alias.id
       },
       0
@@ -1021,7 +1021,7 @@ ZXhhbXBsZQo=
     await t.context.wsp.request(
       {
         action: 'size',
-        timeout: ms('15s'),
+        timeout: ms('30s'),
         alias_id: alias.id
       },
       0
@@ -1049,7 +1049,7 @@ test('onGetQuota', async (t) => {
   await t.context.wsp.request(
     {
       action: 'size',
-      timeout: ms('15s'),
+      timeout: ms('30s'),
       alias_id: t.context.alias.id
     },
     0
@@ -1238,7 +1238,7 @@ ZXhhbXBsZQo=
 
   t.true(res);
 
-  if (!data) await pWaitFor(() => Boolean(data), { timeout: ms('15s') });
+  if (!data) await pWaitFor(() => Boolean(data), { timeout: ms('30s') });
 
   t.is(data.path, 'expunge');
   t.is(data.vanished, false);

@@ -412,6 +412,7 @@ localeRouter
     web.onboard,
     render('email-forwarding-regex-pattern-filter')
   )
+  .get('/self-hosted', render('self-hosted'))
   .get('/resources', render('resources'))
   .get('/guides', render('guides'))
   // feed

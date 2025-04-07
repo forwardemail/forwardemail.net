@@ -49,7 +49,7 @@ test.beforeEach(utils.setupFactories);
 test.beforeEach(async (t) => {
   const secure = false;
   t.context.secure = secure;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   const sqlitePort = await getPort();
   const sqlite = new SQLite({

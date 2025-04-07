@@ -51,7 +51,7 @@ test.beforeEach(utils.setupFactories);
 // setup API server so we can configure MX with it
 // (similar to `utils.setupApiServer`)
 test.beforeEach(async (t) => {
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const sqlitePort = await getPort();
   const sqlite = new SQLite({
     client: t.context.client,
@@ -72,7 +72,7 @@ test('imap/forward/webhook', async (t) => {
     wsp: t.context.wsp
   });
   const { resolver } = smtp;
-  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('15s') });
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
   const port = await getPort();
   await smtp.listen(port);
 

@@ -187,6 +187,8 @@ async function retrieveDomain(ctx, next) {
   ctx.state.domain.root_name = parseRootDomain(ctx.state.domain.name);
   ctx.state.hasExistingMX = false;
   ctx.state.hasExistingTXT = false;
+  ctx.state.isSelfHosted = config.isSelfHosted;
+  ctx.state.exchanges = Array.isArray(EXCHANGES) ? EXCHANGES : [EXCHANGES];
 
   //
   // only check dns/mx if we're on the setup page

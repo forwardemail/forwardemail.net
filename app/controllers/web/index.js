@@ -81,7 +81,7 @@ async function checkGitHubStars() {
   if (STARS <= 0) STARS = 1000;
 }
 
-if (config.env !== 'test') {
+if (config.env !== 'test' && !config.isSelfHosted) {
   checkGitHubStars();
   setInterval(checkGitHubStars, ms('6h'));
 }

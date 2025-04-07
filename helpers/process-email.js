@@ -59,7 +59,7 @@ const ONE_SECOND_AFTER_UNIX_EPOCH = new Date(1000);
 
 const RETURN_PATH =
   config.webHost === 'localhost' && config.env === 'development'
-    ? 'forwardemail.net'
+    ? 'localhost' // TODO: is this wrong? We want localhost or we need DNS involved?
     : config.webHost;
 
 const srs = new SRS(config.srs);

@@ -21,6 +21,7 @@ const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
 const _ = require('#helpers/lodash');
 
+const env = require('#config/env');
 const config = require('#config');
 
 async function getPGPResults({
@@ -143,6 +144,8 @@ async function sendEmail(
   // if we're in development mode then use preview-email to render queue processing
   //
   if (config.env === 'development') {
+    if (env.SEND_EMAIL)
+      logger.fatal(new Error('Email is strictly disabled in development mode'));
     await previewEmail(raw, {
       ...config.previewEmailOptions,
       returnHTML: false
