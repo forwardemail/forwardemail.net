@@ -35,7 +35,7 @@ This blog post explores the philosophy behind our self-hosted solution, its tech
 
 ## Why Self-Hosted Email Matters
 
-Our self-hosted email solution is clearest expression of our belief that true privacy means control, and control starts with open source. For users who demand full ownership over their digital communications, self-hosting is no longer a fringe idea — it’s an essential right. We're proud to stand behind that belief with a fully open, verifiable platform you can run on your own terms.
+Our self-hosted email solution is clearest expression of our belief that true privacy means control, and control starts with open source. For users who demand full ownership over their digital communications, self-hosting is no longer a fringe idea — it's an essential right. We're proud to stand behind that belief with a fully open, verifiable platform you can run on your own terms.
 
 ### The Problem with Traditional Email Services
 

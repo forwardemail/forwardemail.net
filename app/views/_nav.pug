@@ -660,13 +660,10 @@ nav.navbar(class=navbarClasses.join(" "))
                   href=l("/self-hosted"),
                   class=ctx.pathWithoutLocale === "/self-hosted" ? "active" : ""
                 )
-                  if isBot(ctx.get("User-Agent"))
-                    = t("Email Self Hosted")
-                  else
-                    = t("Self Hosted")
+                  = t("Self Hosted Email")
                 a.dropdown-item(
                   href=isBot(ctx.get("User-Agent")) ? l("/free-email-webhooks") : l("/faq#do-you-support-webhooks"),
-                  class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : "font-weight-bold"
+                  class=ctx.pathWithoutLocale === "/free-email-webhooks" ? "active font-weight-bold" : ""
                 )
                   if isBot(ctx.get("User-Agent"))
                     = t("Free Email Webhooks")

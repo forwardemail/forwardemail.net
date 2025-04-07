@@ -5,10 +5,10 @@
 
 module.exports = {
   title: 'Introducing Our Self-Hosted Email Stack',
-  shortTitle: 'Self-hosted Email Solution',
+  shortTitle: 'Self-Hosted Email',
   description:
     'Fully open source, self-hosted email solution that gives you complete control, transparency, and privacy.',
-  icon: 'fa-envelope fa-lock',
+  icon: 'fas fa-fw fa-envelope-open-text',
   published: true,
   ogBtnText: 'Self-Hosted Email',
   notCodeExample: true,

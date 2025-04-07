@@ -229,25 +229,25 @@ Once configured, you should be able to send and receive email to your newly crea
 
 ### Maintenance
 
-#### How do I backup my data?
+#### How do I backup my data
 
-Follow the [install script](./Install) and choose `option 2` in the prompt.
+Follow the [install script](#install) and choose `option 2` in the prompt.
 
-#### How do I renew my certificates?
+#### How do I renew my certificates
 
-Follow the [install script](./Install) and choose `option 3` in the prompt.
+Follow the [install script](#install) and choose `option 3` in the prompt.
 
-#### How do I upgrade to the latest forward email code?
+#### How do I upgrade to the latest forward email code
 
-Follow the [install script](./Install) and choose `option 4` in the prompt.
+Follow the [install script](#install) and choose `option 4` in the prompt.
 
-#### How do I restore from a backup?
+#### How do I restore from a backup
 
-Follow the [install script](./Install) and choose `option 6` in the prompt.
+Follow the [install script](#install) and choose `option 6` in the prompt.
 
 ### Troubleshooting
 
-#### Why is the certbot acme challenge failing?
+#### Why is the certbot acme challenge failing
 
 Most common pitfall is that certbot / letsencrypt will sometimes request **2** challenges. You need to be sure to add **BOTH** txt records.
 
@@ -260,29 +260,29 @@ It is also possible that DNS propagation has not completed. You can use tools li
 
 Another option is to use the automated cerbot DNS changes by setting the `/root/.cloudflare.ini` file with the api token in your cloud-init / user-data on initial VPS setup or create this file and run the script again. This will manage the DNS changes and challenge updates automatically.
 
-#### What is the basic auth username and password?
+#### What is the basic auth username and password
 
 For self hosting, we add a first time browser native authentication pop up with a simple username (`admin`) and password (randomly generated on initial setup). We just add this as a protection in case automation / scrapers somehow beat you to first sign up on the web experience. You can find this password after initial setup in your `.env` file under `AUTH_BASIC_USERNAME` and `AUTH_BASIC_PASSWORD`.
 
-#### How do I know what is running?
+#### How do I know what is running
 
 You can run `docker ps` to see all the running containers which is being spun up from the `docker-compose-self-hosting.yml` file. You can also run `docker ps -a` to see everything (including containers that aren't running).
 
-#### How do I know if something isn't running that should be?
+#### How do I know if something isn't running that should be
 
 You can run `docker ps -a` to see everything (including containers that aren't running). You may see an exit log or note.
 
-#### How do I find logs?
+#### How do I find logs
 
 You can get more logs via `docker logs -f <container_name>`. If anything exited, it's likely related to the `.env` file being configured incorrectly.
 
 Within the web UI, you can view `/admin/emails` and `/admin/logs` for outbound email logs and error logs respectively.
 
-#### Why are my outgoing emails timing out?
+#### Why are my outgoing emails timing out
 
 If you see a message like Connection timed out when connecting to MX server... then you may need to check if port 25 is blocked. It is common for ISPs or cloud providers to block this by default where you may need to reach out to support / file a ticket to get this opened up.
 
-#### What tool(s) should I use to test email configuration best practices and IP reputation?
+#### What tool(s) should I use to test email configuration best practices and IP reputation
 
 Take a look at our [FAQ here]([/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation]\(https://forwardemail.net/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation\)).
 
