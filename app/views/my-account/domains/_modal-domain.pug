@@ -28,11 +28,13 @@
           //- if user is an admin of any teams they belong to
           //- then render a dropdown menu and allow the user to select one
           //-
-          - const adminTeams = domains ? domains.filter(d => d.plan === 'team' && d.group === 'admin') : []
+          - const adminTeams = domains ? domains.filter((d) => d.plan === "team" && d.group === "admin") : [];
           if adminTeams.length > 0
             .form-group.floating-label
-              select#input-team-domain.form-control.input-lg(name="team_domain")
-                option(value='none', selected)= t("None; this is my own domain")
+              select#input-team-domain.form-control.input-lg(
+                name="team_domain"
+              )
+                option(value="none", selected)= t("None; this is my own domain")
                 each adminTeam in adminTeams
                   option(value=adminTeam.id)= adminTeam.name
               label(for="input-team-domain")= t("Assign to same domain team")

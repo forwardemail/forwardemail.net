@@ -65,7 +65,9 @@ footer.mt-auto(aria-label=t("Footer"))
           .small.text-center.mb-2: strong= t("Payment methods accepted:")
           ul.list-inline.mb-3.text-center.mb-5
             li.list-inline-item
-              a.badge.bg-white.text-dark.small(href=l("/blog/docs/crypto-payments-privacy-email-service"))
+              a.badge.bg-white.text-dark.small(
+                href=l("/blog/docs/crypto-payments-privacy-email-service")
+              )
                 i.fab.fa-btc
                 = " Crypto"
             li.list-inline-item.badge.bg-white.text-dark.small
@@ -325,6 +327,33 @@ footer.mt-auto(aria-label=t("Footer"))
             )= t("Reserved Email Addresses")
             if !isBot(ctx.get('User-Agent'))
               li: a.d-block.text-white.py-2.py-md-0(href=l("/denylist"))= t("Denylist Removal")
+
+            li: a.d-block.text-white.py-2.py-md-0(
+              href="https://alumniemail.com",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) AlumniEmail.com
+            li: a.d-block.text-white.py-2.py-md-0(
+              href="https://timetoinbox.com",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) TimeToInbox.com
+            li: a.d-block.text-white.py-2.py-md-0(
+              href="https://serverauditing.com",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) ServerAuditing.com
+            li: a.d-block.text-white.py-2.py-md-0(
+              href="https://sshmonitor.com",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) SSHMonitor.com
+            li: a.d-block.text-white.py-2.py-md-0(
+              href="https://sslmonitor.com",
+              target="_blank",
+              rel="noopener noreferrer"
+            ) SSLMonitor.com
+
           //-.
             if isBot(ctx.get('User-Agent'))
               hr.d-lg-none.w-100

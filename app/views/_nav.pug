@@ -408,7 +408,7 @@ nav.navbar(class=navbarClasses.join(" "))
             //- - const resourcePages = ["/private-business-email", "/email-analytics", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const resourcePages = ["/private-business-email", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const companyPages = ["/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
-            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && (ctx.query && !boolean(ctx.query.pricing))) || companyPages.includes(ctx.pathWithoutLocale));
+            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && ctx.query && !boolean(ctx.query.pricing)) || companyPages.includes(ctx.pathWithoutLocale));
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(
@@ -458,6 +458,32 @@ nav.navbar(class=navbarClasses.join(" "))
                           = t("Denylist Removal")
                         else
                           = t(titleize(humanize(resourcePage.replace("/", ""))))
+                  a.dropdown-item(
+                    href="https://alumniemail.com",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) AlumniEmail.com
+                  a.dropdown-item(
+                    href="https://timetoinbox.com",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) TimeToInbox.com
+                  a.dropdown-item(
+                    href="https://serverauditing.com",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) ServerAuditing.com
+                  a.dropdown-item(
+                    href="https://sshmonitor.com",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) SSHMonitor.com
+                  a.dropdown-item(
+                    href="https://sslmonitor.com",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  ) SSLMonitor.com
+
                   hr.dropdown-divider
                   h6.dropdown-header= t("Community")
                   a.dropdown-item(

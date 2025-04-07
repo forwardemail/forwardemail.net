@@ -1,0 +1,64 @@
+extends ../../layout
+
+include ../../_onboard
+
+block body
+  .container.py-3.py-md-4.py-lg-5
+    .row
+      .col-12.text-center
+        h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+        include ../../_author
+  .container.pb-5
+    .row
+      .col
+        case locale
+          when 'ar'
+            include:md(locale="ar", isDocs) index-ar.md
+          when 'cs'
+            include:md(locale="cs", isDocs) index-cs.md
+          when 'da'
+            include:md(locale="da", isDocs) index-da.md
+          when 'de'
+            include:md(locale="de", isDocs) index-de.md
+          when 'es'
+            include:md(locale="es", isDocs) index-es.md
+          when 'fi'
+            include:md(locale="fi", isDocs) index-fi.md
+          when 'fr'
+            include:md(locale="fr", isDocs) index-fr.md
+          when 'he'
+            include:md(locale="he", isDocs) index-he.md
+          when 'hu'
+            include:md(locale="hu", isDocs) index-hu.md
+          when 'id'
+            include:md(locale="id", isDocs) index-id.md
+          when 'it'
+            include:md(locale="it", isDocs) index-it.md
+          when 'ja'
+            include:md(locale="ja", isDocs) index-ja.md
+          when 'ko'
+            include:md(locale="ko", isDocs) index-ko.md
+          when 'nl'
+            include:md(locale="nl", isDocs) index-nl.md
+          when 'no'
+            include:md(locale="no", isDocs) index-no.md
+          when 'pl'
+            include:md(locale="pl", isDocs) index-pl.md
+          when 'pt'
+            include:md(locale="pt", isDocs) index-pt.md
+          when 'ru'
+            include:md(locale="ru", isDocs) index-ru.md
+          when 'sv'
+            include:md(locale="sv", isDocs) index-sv.md
+          when 'th'
+            include:md(locale="th", isDocs) index-th.md
+          when 'tr'
+            include:md(locale="tr", isDocs) index-tr.md
+          when 'uk'
+            include:md(locale="uk", isDocs) index-uk.md
+          when 'vi'
+            include:md(locale="vi", isDocs) index-vi.md
+          when 'zh'
+            include:md(locale="zh", isDocs) index-zh.md
+          default
+            include:md(isDocs) index.md

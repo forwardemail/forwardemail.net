@@ -105,7 +105,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-* Canonical
+* [Canonical](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * Netflix
 * The Linux Foundation
 * The PHP Foundation
@@ -113,14 +113,14 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Disney Ad Sales
 * jQuery
 * LineageOS
-* Ubuntu
-* Kubuntu
-* Lubuntu
-* The University of Cambridge
-* The University of Maryland
-* The University of Washington
-* Tufts University
-* Swarthmore College
+* [Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Kubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Lubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [The University of Cambridge](/blog/docs/alumni-email-forwarding-university-case-study)
+* [The University of Maryland](/blog/docs/alumni-email-forwarding-university-case-study)
+* [The University of Washington](/blog/docs/alumni-email-forwarding-university-case-study)
+* [Tufts University](/blog/docs/alumni-email-forwarding-university-case-study)
+* [Swarthmore College](/blog/docs/alumni-email-forwarding-university-case-study)
 * Government of South Australia
 * Government of Dominican Republic
 * Fly.io

@@ -46,7 +46,7 @@ Unlike many email providers who scan your messages for advertising purposes or s
 
 One of the most significant privacy advantages of Forward Email is our carefully engineered [SQLite](https://en.wikipedia.org/wiki/SQLite) implementation. We've fine-tuned SQLite with specific PRAGMA settings and [Write-Ahead Logging (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) to ensure both durability and portability of your data, while maintaining the highest standards of privacy and security.
 
-Here's a look at how we've implemented SQLite with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for quantum-safe encryption:
+Here's a look at how we've implemented SQLite with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for quantum-resistant encryption:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers

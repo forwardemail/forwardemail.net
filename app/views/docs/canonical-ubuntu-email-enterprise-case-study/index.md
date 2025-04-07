@@ -60,7 +60,7 @@ Key factors that made Forward Email the ideal choice included:
 
 4. **Cost-effective scaling**: Our pricing model allows organizations to scale without paying per user, making it ideal for Canonical's large contributor base.
 
-5. **Quantum-resistant encryption**: We use individually encrypted SQLite mailboxes with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for [quantum-safe encryption](/blog/docs/best-quantum-safe-encrypted-email-service). Each mailbox is a separate encrypted file, meaning access to one user's data doesn't grant access to others.
+5. **Quantum-resistant encryption**: We use individually encrypted SQLite mailboxes with [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) as the cipher for [quantum-resistant encryption](/blog/docs/best-quantum-safe-encrypted-email-service). Each mailbox is a separate encrypted file, meaning access to one user's data doesn't grant access to others.
 
 
 ## The Implementation: Seamless SSO Integration
