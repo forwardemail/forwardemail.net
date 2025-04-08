@@ -51,23 +51,21 @@
       li.list-inline-item.badge.bg-white.text-dark= t("David Heinemeier Hansson (Ruby on Rails)")
 hr
 .row
-  .col-12
-    h2.display-5.font-weight-bold.mt-5.mb-3
+  .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xl-6
+    h2.display-5.font-weight-bold.my-3
       if isBot(ctx.get("User-Agent"))
         = t("Custom Domain Email Hosting")
       else
-        = t("Why use us as your email provider?")
-    .lead
+        = t("Features")
+    .lead.text-left
       include _feature-list
-hr
-.row
-  .col-12
+  .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xl-6
     h2.display-5.font-weight-bold.my-3
       if isBot(ctx.get("User-Agent"))
         = t("Open-source Email Hosting Service")
       else
-        = t("What makes us different than others?")
-    .lead
+        = t("Compared to others")
+    .lead.text-left
       ul.list-unstyled.mb-3
         li.mb-3
           i.fa.fa-fw.fa-check-circle.text-success
@@ -98,17 +96,3 @@ hr
       != t("Read Email Service Comparison")
       = " "
       i.fa.fa-angle-right.align-middle
-hr
-.row
-  .col-12
-    h2.display-5.font-weight-bold.my-3
-      if isBot(ctx.get("User-Agent"))
-        = t("Custom Domain Email Forwarding")
-      else
-        = t("Did you know?")
-    p.lead
-      != t('Other email services advertise as open-source, but <strong class="text-danger">they do not release the source code to their back-end</strong>.')
-      = " "
-      != t("The back-end is the <strong>most sensitive part</strong> of an email provider.")
-      = " "
-      != t("It is also important to use 100% open-source because it builds trust and allows anyone to contribute and independently audit.")

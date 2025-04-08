@@ -8812,5 +8812,16 @@
   "Why are my outgoing emails timing out": "Why are my outgoing emails timing out",
   "What tool(s) should I use to test email configuration best practices and IP reputation": "What tool(s) should I use to test email configuration best practices and IP reputation",
   "Our self-hosted email solution is clearest expression of our belief that true privacy means control, and control starts with open source. For users who demand full ownership over their digital communications, self-hosting is no longer a fringe idea — it's an essential right. We're proud to stand behind that belief with a fully open, verifiable platform you can run on your own terms.": "Our self-hosted email solution is clearest expression of our belief that true privacy means control, and control starts with open source. For users who demand full ownership over their digital communications, self-hosting is no longer a fringe idea — it's an essential right. We're proud to stand behind that belief with a fully open, verifiable platform you can run on your own terms.",
-  "Self-Hosted Email": "Self-Hosted Email"
+  "Self-Hosted Email": "Self-Hosted Email",
+  "Add": "Add",
+  "in front of the install script for verbose output:": "in front of the install script for verbose output:",
+  "We're <strong class=\"text-decoration-underline\">the only 100% open-source provider</strong> (we're transparent and focused on privacy and security)": "We're <strong class=\"text-decoration-underline\">the only 100% open-source provider</strong> (we're transparent and focused on privacy and security)",
+  "Other email services advertise as open-source, but <strong class=\"text-danger\">they do not release the source code to their back-end</strong>. ": "Other email services advertise as open-source, but <strong class=\"text-danger\">they do not release the source code to their back-end</strong>. ",
+  "The back-end is the <strong>most sensitive part</strong> of an email provider. ": "The back-end is the <strong>most sensitive part</strong> of an email provider. ",
+  "Why use us?": "Why use us?",
+  "What makes us different?": "What makes us different?",
+  "Compared to others": "Compared to others",
+  "80 Best Email Services in <span class=\"notranslate\">2025</span>": "80 Best Email Services in <span class=\"notranslate\">2025</span>",
+  "We've implemented comprehensive security measures to protect your email communications and personal data.": "We've implemented comprehensive security measures to protect your email communications and personal data.",
+  "[!TIP]\nWe recommend several mail server providers at": "[!TIP]\nWe recommend several mail server providers at"
 }

@@ -720,7 +720,7 @@ block body
                   tr
                     td.w-33.align-middle.text-center
                       if typeof alternatives[0][key] === 'string'
-                        if validator.isURL(alternatives[0][key])
+                        if isURL(alternatives[0][key])
                           a.btn.btn-dark.btn-sm.text-nowrap(
                             href=alternatives[0][key],
                             target="_blank",
@@ -819,7 +819,7 @@ block body
                             i.fa.fa-info-circle
                     td.w-33.align-middle.text-center
                       if typeof alternatives[1][key] === 'string'
-                        if validator.isURL(alternatives[1][key])
+                        if isURL(alternatives[1][key])
                           a.btn.btn-dark.btn-sm.text-nowrap(
                             href=alternatives[1][key],
                             target="_blank",
@@ -1195,7 +1195,7 @@ block body
               each key in ['oss', 'sandboxed', 'unlimited_domains', 'unlimited_aliases', 'tti', 'smtp', 'imap', 'pop3', 'api', 'e2ee', 'openpgp', 'wkd' ]
                 td.align-middle.text-center
                   if typeof alternative[key] === 'string'
-                    if validator.isURL(alternative[key])
+                    if isURL(alternative[key])
                       a.btn.btn-dark.btn-sm.text-nowrap(
                         href=alternative[key],
                         target="_blank",

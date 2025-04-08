@@ -3,20 +3,36 @@
 
 ## Table of Contents
 
-* [Installation](#installation)
-  * [Requirements](#requirements)
-  * [Install](#install)
-  * [Services](#services)
-  * [Configuration](#configuration)
-  * [Onboarding](#onboarding)
-  * [Testing](#testing)
-  * [Maintenance](#maintenance)
-  * [Troubleshooting](#troubleshooting)
+* [Requirements](#requirements)
+  * [Cloud-init / User-data](#cloud-init--user-data)
+* [Install](#install)
+  * [Debug install script](#debug-install-script)
+  * [Prompts](#prompts)
+  * [Initial Setup (Option 1)](#initial-setup-option-1)
+* [Services](#services)
+  * [Important file paths](#important-file-paths)
+* [Configuration](#configuration)
+  * [Initial DNS setup](#initial-dns-setup)
+* [Onboarding](#onboarding)
+* [Testing](#testing)
+  * [Creating your first alias](#creating-your-first-alias)
+  * [Sending / Receiving your first email](#sending--receiving-your-first-email)
+* [Maintenance](#maintenance)
+  * [How do I backup my data](#how-do-i-backup-my-data)
+  * [How do I renew my certificates](#how-do-i-renew-my-certificates)
+  * [How do I upgrade to the latest forward email code](#how-do-i-upgrade-to-the-latest-forward-email-code)
+  * [How do I restore from a backup](#how-do-i-restore-from-a-backup)
+* [Troubleshooting](#troubleshooting)
+  * [Why is the certbot acme challenge failing](#why-is-the-certbot-acme-challenge-failing)
+  * [What is the basic auth username and password](#what-is-the-basic-auth-username-and-password)
+  * [How do I know what is running](#how-do-i-know-what-is-running)
+  * [How do I know if something isn't running that should be](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [How do I find logs](#how-do-i-find-logs)
+  * [Why are my outgoing emails timing out](#why-are-my-outgoing-emails-timing-out)
+  * [What tool(s) should I use to test email configuration best practices and IP reputation](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation)
 
 
-## Installation
-
-### Requirements
+## Requirements
 
 Before running the installation script, ensure you have the following:
 
@@ -29,7 +45,7 @@ Before running the installation script, ensure you have the following:
 > \[!TIP]
 > See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
 
-#### Cloud-init / User-data
+### Cloud-init / User-data
 
 Most cloud vendors support a cloud-init configuration for when the virtual private server (VPS) is provisioned. This is great way to set some files and environment variables ahead of time for use by the scripts initial setup logic which will bypass the need to prompt while the script is running for additional information.
 
@@ -60,7 +76,8 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-### Install
+
+## Install
 
 Run the following command in your server to download and execute the installation script:
 
@@ -68,15 +85,15 @@ Run the following command in your server to download and execute the installatio
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-#### Debug install script
+### Debug install script
 
-Add DEBUG=true in front of the install script for verbose output:
+Add `DEBUG=true` in front of the install script for verbose output:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-#### Prompts
+### Prompts
 
 ```sh
 1. Initial setup
@@ -94,13 +111,14 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * **Renew certificates**: Certbot / lets encrypt is used for SSL certificates and keys will expire every 3 months. This will renew the certificates for your domain and place them in the necessary folder for related components to consume. See [important file paths](#important-file-paths)
 * **Restore from backup**: Will trigger mongodb and redis to restore from backup data.
 
-#### Initial Setup (Option 1)
+### Initial Setup (Option 1)
 
 Choose option `1. Initial setup` to begin.
 
 Once complete, you should see a success message. You can even run `docker ps` to see **the** components spun up. More information on componets below.
 
-### Services
+
+## Services
 
 | Service Name | Default Port | Description                                            |
 | ------------ | :----------: | ------------------------------------------------------ |
@@ -119,7 +137,7 @@ Once complete, you should see a success message. You can even run `docker ps` to
 | Redis        |    `6379`    | Redis for caching and state management                 |
 | SQLite       |     None     | SQLite database(s) for encrypted mailboxes             |
 
-#### Important file paths
+### Important file paths
 
 Note: *Host path* below is relative to `/root/forwardemail.net/self-hosting/`.
 
@@ -139,9 +157,10 @@ Note: *Host path* below is relative to `/root/forwardemail.net/self-hosting/`.
 > Save the `.env` file securely. It is critical for recovery in case of failure.
 > You can find this in `/root/forwardemail.net/self-hosting/.env`.
 
-### Configuration
 
-#### Initial DNS setup
+## Configuration
+
+### Initial DNS setup
 
 In your DNS provider of choice, configure the appropriate DNS records. Do note anything in brackets (`<>`) is dynamic and needs to be updated with your value.
 
@@ -158,15 +177,16 @@ In your DNS provider of choice, configure the appropriate DNS records. Do note a
 | MX    | "@", ".", or blank | mx.<domain_name> (priority 0) | auto |
 | TXT   | "@", ".", or blank | "v=spf1 a -all"               | auto |
 
-##### Reverse DNS / PTR record
+#### Reverse DNS / PTR record
 
 Reverse DNS (rDNS) or reverse pointer records (PTR records) are essential for email servers because they help verify the legitimacy of the server sending the email. Each cloud provider does this differently, so you will need to lookup how to add "Reverse DNS" to map the host and IP to it's corresponding hostname. Most likely in the networking section of the provider.
 
-##### Port 25 Blocked
+#### Port 25 Blocked
 
 Some ISPs and cloud providers block 25 to avoid bad actors. You may need to file a support ticket to open up port 25 for SMTP / outgoing email.
 
-### Onboarding
+
+## Onboarding
 
 1. Open the Landing Page
    Navigate to https\://\<domain\_name>, replacing \<domain\_name> with the domain configured in your DNS settings. You should see the Forward Email landing page.
@@ -185,9 +205,10 @@ Some ISPs and cloud providers block 25 to avoid bad actors. You may need to file
 > \[!NOTE]
 > No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
 
-### Testing
 
-#### Creating your first alias
+## Testing
+
+### Creating your first alias
 
 1. Navigate to the Aliases Page
    Open the alias management page:
@@ -214,7 +235,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 * Enter the alias name and generated password.
 * Configure the **IMAP** and **SMTP** settings accordingly.
 
-##### Email server settings
+#### Email server settings
 
 Username: `<alias name>`
 
@@ -223,31 +244,33 @@ Username: `<alias name>`
 | SMTP | smtp.<domain_name> | 465  | SSL / TLS           | Normal Password |
 | IMAP | imap.<domain_name> | 993  | SSL / TLS           | Normal Password |
 
-#### Sending / Receiving your first email
+### Sending / Receiving your first email
 
 Once configured, you should be able to send and receive email to your newly created and self hosted email address!
 
-### Maintenance
 
-#### How do I backup my data
+## Maintenance
+
+### How do I backup my data
 
 Follow the [install script](#install) and choose `option 2` in the prompt.
 
-#### How do I renew my certificates
+### How do I renew my certificates
 
 Follow the [install script](#install) and choose `option 3` in the prompt.
 
-#### How do I upgrade to the latest forward email code
+### How do I upgrade to the latest forward email code
 
 Follow the [install script](#install) and choose `option 4` in the prompt.
 
-#### How do I restore from a backup
+### How do I restore from a backup
 
 Follow the [install script](#install) and choose `option 6` in the prompt.
 
-### Troubleshooting
 
-#### Why is the certbot acme challenge failing
+## Troubleshooting
+
+### Why is the certbot acme challenge failing
 
 Most common pitfall is that certbot / letsencrypt will sometimes request **2** challenges. You need to be sure to add **BOTH** txt records.
 
@@ -260,38 +283,28 @@ It is also possible that DNS propagation has not completed. You can use tools li
 
 Another option is to use the automated cerbot DNS changes by setting the `/root/.cloudflare.ini` file with the api token in your cloud-init / user-data on initial VPS setup or create this file and run the script again. This will manage the DNS changes and challenge updates automatically.
 
-#### What is the basic auth username and password
+### What is the basic auth username and password
 
 For self hosting, we add a first time browser native authentication pop up with a simple username (`admin`) and password (randomly generated on initial setup). We just add this as a protection in case automation / scrapers somehow beat you to first sign up on the web experience. You can find this password after initial setup in your `.env` file under `AUTH_BASIC_USERNAME` and `AUTH_BASIC_PASSWORD`.
 
-#### How do I know what is running
+### How do I know what is running
 
 You can run `docker ps` to see all the running containers which is being spun up from the `docker-compose-self-hosting.yml` file. You can also run `docker ps -a` to see everything (including containers that aren't running).
 
-#### How do I know if something isn't running that should be
+### How do I know if something isn't running that should be
 
 You can run `docker ps -a` to see everything (including containers that aren't running). You may see an exit log or note.
 
-#### How do I find logs
+### How do I find logs
 
 You can get more logs via `docker logs -f <container_name>`. If anything exited, it's likely related to the `.env` file being configured incorrectly.
 
 Within the web UI, you can view `/admin/emails` and `/admin/logs` for outbound email logs and error logs respectively.
 
-#### Why are my outgoing emails timing out
+### Why are my outgoing emails timing out
 
 If you see a message like Connection timed out when connecting to MX server... then you may need to check if port 25 is blocked. It is common for ISPs or cloud providers to block this by default where you may need to reach out to support / file a ticket to get this opened up.
 
-#### What tool(s) should I use to test email configuration best practices and IP reputation
+### What tool(s) should I use to test email configuration best practices and IP reputation
 
-Take a look at our [FAQ here]([/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation]\(https://forwardemail.net/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation\)).
-
-[mxtoolbox](https://mxtoolbox.com/)
-
-[google postmaster tools](https://postmaster.google.com/)
-
-Use your server IP address to check against the following sites if they are on a blacklist. It's, unfortunately, not uncommon for common cloud providers to have IP reputation issues do to email spam usage. If you see your IP on a blacklist, it is recommended to spin up a new server and check the new IP address.
-
-[spamhaus](https://check.spamhaus.org/)
-
-[spamrats](https://www.spamrats.com/)
+Take a look at our [FAQ here](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

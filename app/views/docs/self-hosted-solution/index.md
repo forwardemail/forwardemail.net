@@ -144,7 +144,7 @@ Our self-hosted email solution, like all our products, is 100% open-source—bot
 3. **Security Through Openness**: Vulnerabilities can be identified and fixed by a global community
 4. **No Vendor Lock-in**: You're never dependent on our company's existence
 
-The entire codebase is available on GitHub at <https://github.com/forwardemail/forwardemail.net>, licensed under the MIT License.
+The entire codebase is available on GitHub at <https://github.com/forwardemail/forwardemail.net>.
 
 
 ## Self-Hosted vs. Managed: Making the Right Choice
@@ -200,14 +200,14 @@ Ready to take control of your email infrastructure? Here's how to get started:
 * Ability to set [reverse PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * IPv4 and IPv6 support
 
-> Tip
+> \[!TIP]
 > We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Installation Steps
 
 1. **Run the Installation Script**:
    ```bash
-   curl -sL https://forwardemail.net/scripts/self-host | bash
+   bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
 
 2. **Follow the Interactive Prompts**:
@@ -243,8 +243,6 @@ Email is too important to be controlled by closed, proprietary systems that prio
 We believe that privacy isn't just a feature; it's a fundamental right. And with our self-hosted email option, we're making that right more accessible than ever before.
 
 Ready to take control of your email? [Get started today](https://forwardemail.net/self-hosted) or explore our [GitHub repository](https://github.com/forwardemail/forwardemail.net) to learn more.
-
----
 
 
 ## References

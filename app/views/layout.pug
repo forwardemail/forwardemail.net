@@ -159,12 +159,18 @@ html.h-100.no-js(
             // Show rocket animation
             var rocket = document.getElementById("rocket");
             if (rocket) {
-              rocket.classList.remove("d-none");
+              rocket.classList.add("loaded");
+            }
+
+            // Show freddy image (static -> gif)
+            var waving = document.getElementById("waving");
+            if (waving) {
+              waving.classList.add("loaded");
             }
           }
 
           // Delay animations to improve LCP
-          setTimeout(showDeferredAnimations, 2000);
+          setTimeout(showDeferredAnimations, 3000);
         });
 
       if isBot(ctx.get('User-Agent'))
@@ -259,22 +265,22 @@ html.h-100.no-js(
 
     //- prefetch fonts
     //- https://caniuse.com/link-rel-prefetch
+    //- integrity attribute not currently supported
+    //- <https://crbug.com/981419>
+    //-.
     - const fonts = ["fa-solid-900.woff2", "fa-brands-400.woff2"];
     if !isBot(ctx.get('User-Agent'))
       - fonts.push("nunito-sans-latin-400.woff2");
       - fonts.push("nunito-sans-latin-700.woff2");
-      //- - fonts.push("inconsolata-dz.otf");
       - fonts.push("vc-honey-latin-400.woff2");
       - fonts.push("vc-honey-latin-700.woff2");
     each font in fonts
-      //- integrity attribute not currently supported
-      //- <https://crbug.com/981419>
       link(
-        rel="preload",
+        rel="prefetch",
         href=manifest(`fonts/${font}`),
+        type="font/woff2",
         as="font",
-        crossorigin="anonymous",
-        fetchpriority="high"
+        crossorigin="anonymous"
       )
 
     //- css file
@@ -293,6 +299,7 @@ html.h-100.no-js(
             rel="stylesheet",
             href=manifest("css/app-bot.css"),
             integrity=manifest("css/app-bot.css", "integrity"),
+            fetchpriority="high",
             crossorigin="anonymous"
           )
       else
@@ -300,6 +307,7 @@ html.h-100.no-js(
           link(
             rel="stylesheet",
             href=`${config.urls.web}/css/app.css`,
+            fetchpriority="high",
             crossorigin="anonymous"
           )
         else
@@ -316,6 +324,7 @@ html.h-100.no-js(
               rel="stylesheet",
               href=manifest("css/app.css"),
               integrity=manifest("css/app.css", "integrity"),
+              fetchpriority="high",
               crossorigin="anonymous"
             )
 
@@ -488,4 +497,4 @@ html.h-100.no-js(
           script(defer, nonce=nonce).
             window.TURNSTILE_RENDER_ERROR = "#{ t('Turnstile render error, please try again or contact us.') }";
             window.TURNSTILE_SITE_KEY = "#{ config.turnstileSiteKey }";
-          script(async, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')
+          script(defer, src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback')

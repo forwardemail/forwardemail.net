@@ -26,7 +26,7 @@ block body
             .alert.alert-primary.text-center.mb-3
               != t("Requests are not permanent and removals may be reversed.")
           form.ajax-form(action=ctx.path, method="POST")
-            if user.group === 'admin' && isSANB(ctx.query.email) && validator.isEmail(ctx.query.email)
+            if user.group === 'admin' && isSANB(ctx.query.email) && isEmail(ctx.query.email)
               input(
                 type="hidden",
                 name="email",
@@ -38,12 +38,12 @@ block body
                 required,
                 name="q",
                 value=isSANB(ctx.query.q) && ctx.query.q !== "true" ? ctx.query.q : "",
-                readonly=isSANB(ctx.query.q) && !isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== "true",
+                readonly=isSANB(ctx.query.q) && !isFQDN(ctx.query.q) && !isEmail(ctx.query.q) && !isIP(ctx.query.q) && ctx.query.q !== "true",
                 placeholder=" ",
                 autocomplete=config.env === "test" ? "off" : randomstring()
               )
               label(for="input-q")
-                if isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !validator.isEmail(ctx.query.q) && !validator.isIP(ctx.query.q) && ctx.query.q !== 'true')
+                if isSANB(ctx.query.q) && (!isFQDN(ctx.query.q) && !isEmail(ctx.query.q) && !isIP(ctx.query.q) && ctx.query.q !== 'true')
                   = t("Encrypted value to protect privacy")
                 else
                   = t("Email, domain name, or IP address")

@@ -76,7 +76,7 @@ block body
                 .text-left!= t(useCases[ctx.pathWithoutLocale][0])
               else
                 != meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
-            p
+            p.d-none.d-md-block
               if Object.keys(useCases).includes(ctx.pathWithoutLocale)
                 .text-left!= meta.description
               else

@@ -125,9 +125,14 @@ $shadows-big: multiple-box-shadow(100);
     position: absolute;
     background-size: 99.9%;
     background-repeat: no-repeat;
-    background-image: url('b64---../img/art/rocket.gif---');
-    width: 83.5px;
-    height: 65.5px;
+    background-image: none;
+    width: 0px;
+    height: 0px;
+    &.loaded {
+      background-image: url('b64---../img/art/rocket.gif---');
+      width: 83.5px;
+      height: 65.5px;
+    }
     left: -50%;
     top: -50%;
   }
@@ -136,7 +141,10 @@ $shadows-big: multiple-box-shadow(100);
     position: absolute;
     background-size: 99.9%;
     background-repeat: no-repeat;
-    background-image: url('b64---../img/art/freddy.gif---');
+    background-image: url('b64---../img/art/freddy.png---');
+    &.loaded {
+      background-image: url('b64---../img/art/freddy.gif---');
+    }
     width: 57.7px;
     height: 79.65px;
     right: 5%;

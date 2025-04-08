@@ -558,9 +558,9 @@ p.text-center.d-lg-none
                     each recipient in alias.recipients
                       li.list-inline-item.markdown-body
                         code.badge.badge-dark.text-monospace.font-weight-normal(
-                          class=validator.isURL(recipient) ? "" : "text-nowrap"
+                          class=isURL(recipient) ? "" : "text-nowrap"
                         )
-                          if validator.isEmail(recipient) || validator.isURL(recipient)
+                          if isEmail(recipient) || isURL(recipient)
                             = recipient
                           else
                             = `${alias.name}@${recipient}`
@@ -594,8 +594,8 @@ p.text-center.d-lg-none
                             data-title=t("Queued Verification Email")
                           )
                             i.fa.fa-fw.fa-exclamation-circle
-                        if validator.isEmail(recipient) || validator.isURL(recipient)
-                          code(class=validator.isURL(recipient) ? "" : "text-nowrap")= recipient
+                        if isEmail(recipient) || isURL(recipient)
+                          code(class=isURL(recipient) ? "" : "text-nowrap")= recipient
                         else
                           code.text-nowrap= `${alias.name}@${recipient}`
                         if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
@@ -747,9 +747,9 @@ p.text-center.d-lg-none
                   each recipient in alias.recipients
                     li.list-inline-item.markdown-body
                       code.badge.badge-dark.text-monospace.font-weight-normal(
-                        class=validator.isURL(recipient) ? "" : "text-nowrap"
+                        class=isURL(recipient) ? "" : "text-nowrap"
                       )
-                        if validator.isEmail(recipient) || validator.isURL(recipient)
+                        if isEmail(recipient) || isURL(recipient)
                           = recipient
                         else
                           = `${alias.name}@${recipient}`
@@ -783,8 +783,8 @@ p.text-center.d-lg-none
                           data-title=t("Queued Verification Email")
                         )
                           i.fa.fa-fw.fa-exclamation-circle
-                      if validator.isEmail(recipient) || validator.isURL(recipient)
-                        code(class=validator.isURL(recipient) ? "" : "text-nowrap")= recipient
+                      if isEmail(recipient) || isURL(recipient)
+                        code(class=isURL(recipient) ? "" : "text-nowrap")= recipient
                       else
                         code.text-nowrap= `${alias.name}@${recipient}`
                       if !alias.verified_recipients.includes(recipient) && alias.pending_recipients.includes(recipient)
