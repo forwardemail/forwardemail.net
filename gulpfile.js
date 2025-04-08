@@ -202,6 +202,7 @@ const purgeCssOptions = {
       'fa-times',
       'fa-bell',
       'fa-graduation-cap',
+      'fa-history',
       'fa-envelope-open-text',
       'fade',
       'fixed-bottom',
