@@ -324,13 +324,14 @@ async function img() {
     base: config.assetsBase,
     since: lastRun(img)
   })
-    .pipe(
-      // <https://github.com/sindresorhus/gulp-imagemin/tree/main#custom-plugin-options>
-      // progressive: true,
-      // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
-      imagemin()
-    )
-    .pipe(dest(config.assetsBase));
+    // .pipe(
+    //   // <https://github.com/sindresorhus/gulp-imagemin/tree/main#custom-plugin-options>
+    //   // progressive: true,
+    //   // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
+    //   imagemin()
+    // )
+    // .pipe(dest(config.assetsBase));
+    .pipe(dest(config.buildBase));
 
   // if (DEV) stream = stream.pipe(lr(config.livereload));
 
@@ -749,7 +750,7 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    series(parallel(static, markdown, bundle, fonts, faFonts, css), sri)
+    series(parallel(img, static, markdown, bundle, fonts, faFonts, css), sri)
   )
 );
 

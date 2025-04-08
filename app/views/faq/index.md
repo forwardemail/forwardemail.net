@@ -107,7 +107,7 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 
 * [Canonical](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * Netflix
-* The Linux Foundation
+* [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study)
 * The PHP Foundation
 * Fox News Radio
 * Disney Ad Sales

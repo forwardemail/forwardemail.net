@@ -14,7 +14,7 @@
 
 Forward Email is the only 100% open-source email hosting service focused on security and privacy.
 
-Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as Canonical, Netflix, The Linux Foundation, several universities and governments, and more.
+Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [several universities](/blog/docs/alumni-email-forwarding-university-case-study) and governments, and more.
 
 Our goal is to be the enterprise-grade email and security infrastructure platform – and we adhere to [several principles](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
