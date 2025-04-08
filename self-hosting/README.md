@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Setup steps...
-      
+
       # Build and publish Docker image
       - name: Build / Publish Docker image to GitHub Container Registry
         run: |
@@ -170,10 +170,8 @@ Users can choose to use a specific version for stability or the `latest` tag to 
 
 The Docker images are publicly available at:
 
-```
-ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
-ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0  # Example version tag
-```
+* `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
+* `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (example version tag)
 
 No authentication is required to pull these images.
 

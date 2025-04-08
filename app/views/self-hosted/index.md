@@ -1,3 +1,6 @@
+# Self Hosted
+
+
 ## Table of Contents
 
 * [Getting started](#getting-started)
