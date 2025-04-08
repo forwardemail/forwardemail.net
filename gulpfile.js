@@ -330,9 +330,9 @@ async function img() {
       // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
       imagemin()
     )
-    .pipe(dest(config.buildBase));
+    .pipe(dest(config.assetsBase));
 
-  if (DEV) stream = stream.pipe(lr(config.livereload));
+  // if (DEV) stream = stream.pipe(lr(config.livereload));
 
   // convert to conventional stream
   stream = stream.pipe(through2.obj((chunk, enc, cb) => cb()));
@@ -749,7 +749,7 @@ const build = series(
   clean,
   parallel(
     ...(TEST ? [] : [xo, remark]),
-    series(parallel(img, static, markdown, bundle, fonts, faFonts, css), sri)
+    series(parallel(static, markdown, bundle, fonts, faFonts, css), sri)
   )
 );
 
