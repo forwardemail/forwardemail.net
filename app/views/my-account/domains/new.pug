@@ -52,8 +52,9 @@ block body
             //- if user is an admin of any teams they belong to
             //- then render a dropdown menu and allow the user to select one
             //-
-            - const adminTeams = domains ? domains.filter((d) => d.plan === "team" && d.group === "admin") : [];
-            if adminTeams.length > 0
+            if adminTeams && adminTeams.length > 0
+              if adminTeams.length >= 500
+                p.small.help-text.text-muted= t("Limited to the first 1000 results")
               .form-group.floating-label
                 select#input-team-domain.form-control.input-lg(
                   name="team_domain"

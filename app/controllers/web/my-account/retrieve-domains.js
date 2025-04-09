@@ -13,6 +13,7 @@ const { Domains, Aliases } = require('#models');
 // eslint-disable-next-line complexity
 async function retrieveDomains(ctx, next) {
   ctx.state.domains = [];
+  ctx.state.adminTeams = [];
 
   if (!ctx.isAuthenticated()) return next();
 
@@ -73,15 +74,35 @@ async function retrieveDomains(ctx, next) {
   //       (e.g. someone with 5000+ domains would experience quite some slowness here)
   //
 
-  // eslint-disable-next-line unicorn/no-array-callback-reference
-  ctx.state.domains = await Domains.find(query)
-    .populate(
-      'members.user',
-      `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
-    )
-    .sort('name') // A-Z domains
-    .lean()
-    .exec();
+  const [domains, adminTeams] = await Promise.all([
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    Domains.find(query)
+      .populate(
+        'members.user',
+        `id email plan ${config.passport.fields.displayName} ${config.userFields.isBanned}`
+      )
+      .sort('name') // A-Z domains
+      .lean()
+      .exec(),
+    // (only contains id and name)
+    Domains.find({
+      plan: 'team',
+      members: {
+        $elemMatch: {
+          user: ctx.state.user._id,
+          group: 'admin'
+        }
+      }
+    })
+      .select('-_id id name')
+      .sort('name')
+      .limit(1000)
+      .lean()
+      .exec()
+  ]);
+
+  ctx.state.domains = domains;
+  ctx.state.adminTeams = adminTeams;
 
   const globalDomainIds = ctx.state.domains
     .filter((d) => d.is_global)

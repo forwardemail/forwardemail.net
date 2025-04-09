@@ -24,19 +24,29 @@ async function createDomain(ctx, next) {
     isSANB(ctx.request.body.team_domain) &&
     ctx.request.body.team_domain !== 'none'
   ) {
-    teamDomain = ctx.state.domains.find((d) => {
-      if (d.plan !== 'team') return false; // return if not team plan
-      if (d.group !== 'admin') return false; // if user logged in is not an admin ignore
-      // if the ID matched
-      if (
-        mongoose.isObjectIdOrHexString(ctx.request.body.team_domain) &&
-        d.id === ctx.request.body.team_domain
-      )
-        return true;
-      // if the name matched
-      if (d.name === ctx.request.body.team_domain.toLowerCase()) return true;
-      return false;
-    });
+    const query = mongoose.isObjectIdOrHexString(ctx.request.body.team_domain)
+      ? {
+          id: ctx.request.body.team_domain,
+          plan: 'team',
+          members: {
+            $elemMatch: {
+              user: ctx.state.user._id,
+              group: 'admin'
+            }
+          }
+        }
+      : {
+          name: ctx.request.body.team_domain.toLowerCase(),
+          plan: 'team',
+          members: {
+            $elemMatch: {
+              user: ctx.state.user._id,
+              group: 'admin'
+            }
+          }
+        };
+
+    teamDomain = await Domains.findOne(query).lean().exec();
 
     // throw error if it wasn't valid
     if (!teamDomain)
