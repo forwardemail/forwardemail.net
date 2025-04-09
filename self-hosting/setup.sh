@@ -324,7 +324,16 @@ update_dns_resolvers() {
     systemctl mask systemd-resolved
   fi
   
-  echo "nameserver 1.1.1.1" | tee /etc/resolv.conf
+  tee /etc/resolv.conf > /dev/null <<EOF
+nameserver 1.1.1.1
+nameserver 2606:4700:4700::1111
+nameserver 1.0.0.1
+nameserver 2606:4700:4700::1001
+nameserver 8.8.8.8
+nameserver 2001:4860:4860::8888
+nameserver 8.8.4.4
+nameserver 2001:4860:4860::8844
+EOF
 }
 
 update_env_file() {
@@ -606,6 +615,12 @@ source /etc/lsb-release
 if [[ "$DISTRIB_ID" != "Ubuntu" ]]; then
     echo -e "⚠️  Warning: This script is in beta and currently only supports Ubuntu. Your system is not supported yet."
     exit 1
+fi
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root. Exiting."
+  exit 1
 fi
 
 prompt_command
