@@ -10,8 +10,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "curl -ksL -o /dev/null https://127.0.0.1"
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -40,8 +40,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "curl -ksL -o /dev/null https://127.0.0.1:4000/v1/test"
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -87,8 +87,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 993"
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -116,8 +116,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 995"
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -143,8 +143,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 465"
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -211,8 +211,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 3456"
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -263,8 +263,8 @@ services:
       - ./.env:/app/.env
     healthcheck:
       test: "nc -z 127.0.0.1 25"
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
@@ -292,8 +292,8 @@ services:
       - ./ssl:/app/ssl/
     healthcheck:
       test: "nc -z 127.0.0.1 5000"
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 30s
       retries: 3
     restart: unless-stopped
     extra_hosts:
