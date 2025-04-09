@@ -261,6 +261,9 @@ install_dependencies() {
 
   snap install aws-cli --classic
   snap install certbot --classic
+  
+  snap set certbot trust-plugin-with-root=ok
+  snap install certbot-dns-cloudflare
 
   # Add Docker’s official GPG key
   install -m 0755 -d /etc/apt/keyrings
@@ -462,11 +465,8 @@ clone_repo() {
     echo "Directory $ROOT_DIR already exists. Skipping git clone."
     cd "$ROOT_DIR"
   else
-    git clone --filter=blob:none --no-checkout "$REPO_URL" "$ROOT_DIR"
+    git clone "$REPO_URL" "$ROOT_DIR"
     cd "$ROOT_DIR"
-    git sparse-checkout init --no-cone
-    git sparse-checkout set self-hosting
-    git checkout master
   fi
 }
 
