@@ -126,7 +126,6 @@ We provide email hosting and email forwarding service to 500,000+ domains and th
 * Fly.io
 * RCD Hotels
 * International Correspondence Chess Federation
-* [John Graham-Cumming (Cloudflare)](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Isaac Z. Schlueter (npm)](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * David Heinemeier Hansson (Ruby on Rails)
 

@@ -482,8 +482,6 @@ A critical component of Forward Email's infrastructure is our DNS resolution sys
 
 We've integrated Tangerine with mx-connect through [pull request #4](https://github.com/zone-eu/mx-connect/pull/4), ensuring application-layer DNS over HTTP requests throughout Forward Email. This provides global caching for DNS at scale with 1:1 consistency across any region, app, or process—critical for reliable email delivery in a distributed system.
 
-We're grateful to the team at Cloudflare, including Dane Knecht (the new CTO) and John Graham-Cumming (the former CTO who is now a board member), for their contributions to DNS infrastructure. John Graham-Cumming is also a Forward Email user, using our service for his domain [jgc.org](https://jgc.org)\[^33].
-
 
 ## Enterprise Impact: From Open Source to Mission-Critical Solutions
 
@@ -550,7 +548,6 @@ Thank you to everyone who has used our packages, contributed to our projects, re
 \[^30]: npm download statistics for bree, February-March 2025
 \[^31]: Based on GitHub pull requests to Upptime
 \[^32]: Based on GitHub pull requests to Upptime
-\[^33]: <https://blog-cloudflare-com.webpkgcache.com/doc/-/s/blog.cloudflare.com/three-chapters-at-cloudflare-programmer-to-cto-to-board-of-directors/>
 \[^34]: npm download statistics for koa, February-March 2025
 \[^35]: npm download statistics for @koa/router, February-March 2025
 \[^36]: npm download statistics for koa-router, February-March 2025
