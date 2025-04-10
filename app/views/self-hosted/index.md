@@ -18,11 +18,6 @@
 * [Testing](#testing)
   * [Creating your first alias](#creating-your-first-alias)
   * [Sending / Receiving your first email](#sending--receiving-your-first-email)
-* [Maintenance](#maintenance)
-  * [How do I backup my data](#how-do-i-backup-my-data)
-  * [How do I renew my certificates](#how-do-i-renew-my-certificates)
-  * [How do I upgrade to the latest forward email code](#how-do-i-upgrade-to-the-latest-forward-email-code)
-  * [How do I restore from a backup](#how-do-i-restore-from-a-backup)
 * [Troubleshooting](#troubleshooting)
   * [What is the basic auth username and password](#what-is-the-basic-auth-username-and-password)
   * [How do I know what is running](#how-do-i-know-what-is-running)
@@ -270,25 +265,6 @@ Username: `<alias name>`
 ### Sending / Receiving your first email
 
 Once configured, you should be able to send and receive email to your newly created and self hosted email address!
-
-
-## Maintenance
-
-### How do I backup my data
-
-Follow the [install script](#install) and choose `option 2` in the prompt.
-
-### How do I renew my certificates
-
-Follow the [install script](#install) and choose `option 3` in the prompt.
-
-### How do I upgrade to the latest forward email code
-
-Follow the [install script](#install) and choose `option 4` in the prompt.
-
-### How do I restore from a backup
-
-Follow the [install script](#install) and choose `option 6` in the prompt.
 
 
 ## Troubleshooting
