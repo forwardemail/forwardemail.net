@@ -645,6 +645,10 @@ nav.navbar(class=navbarClasses.join(" "))
                 aria-labelledby="navbar-dropdown-docs"
               )
                 a.dropdown-item(
+                  href="/technical-whitepaper.pdf",
+                  target="_blank"
+                )= t("Technical Whitepaper")
+                a.dropdown-item(
                   href=l("/ips"),
                   class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
                 )= t("IP Addresses")

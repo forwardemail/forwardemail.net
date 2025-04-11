@@ -85,19 +85,35 @@ block body
             if !isBot(ctx.get("User-Agent"))
               if Object.keys(useCases).includes(ctx.pathWithoutLocale)
                 .text-left
-                  a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
+                  a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3(
                     href=l("/register"),
                     data-toggle="modal-anchor",
                     data-target="#modal-sign-up"
                   )
                     = t("Sign up free")
+                  br
+                  a.btn.btn-light.btn-sm.font-weight-bold.mb-3.mb-md-5(
+                    href="/technical-whitepaper.pdf",
+                    target="_blank"
+                  )
+                    i.fa.fas.fa-book
+                    = " "
+                    = t("Technical Whitepaper")
               else
-                a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.mb-md-5(
+                a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3(
                   href=l("/register"),
                   data-toggle="modal-anchor",
                   data-target="#modal-sign-up"
                 )
                   = t("Sign up free")
+                br
+                a.btn.btn-light.btn-sm.font-weight-bold.mb-3.mb-md-5(
+                  href="/technical-whitepaper.pdf",
+                  target="_blank"
+                )
+                  i.fa.fas.fa-book
+                  = " "
+                  = t("Technical Whitepaper")
             if isBot(ctx.get("User-Agent"))
               ul.list-inline
                 li.list-inline-item.d-block.d-md-inline
