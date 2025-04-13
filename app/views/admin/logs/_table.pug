@@ -30,7 +30,7 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle.text-center.dayjs(
               data-time=new Date(log.created_at).getTime()
             )
-              = dayjs(log.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+              = dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
             td.align-middle.small
               if !log.err && log.meta && log.meta.is_http
                 .markdown-body.ml-0.mb-0

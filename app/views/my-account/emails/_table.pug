@@ -28,12 +28,12 @@ table.table.table-hover.table-bordered.table-sm
                   span.badge.badge-pill.badge-dark= "CREATED"
                   = " "
                   span.small.text-monospace
-                    span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                    span.dayjs(data-time=email.created_at.getTime())= dayjs(email.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
                 li
                   span.badge.badge-pill.badge-dark= "DATE"
                   = " "
                   span.small.text-monospace
-                    span.dayjs(data-time=email.date.getTime())= dayjs(email.date).tz(user.timezone).format("M/D/YY h:mm A z")
+                    span.dayjs(data-time=email.date.getTime())= dayjs(email.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
                 //- MAIL FROM
                 li
                   span.badge.badge-pill.badge-dark= "MAIL FROM"

@@ -125,7 +125,7 @@ include ../../_pagination
                     span.dayjs(
                       data-time=new Date(domain.smtp_suspended_sent_at).getTime()
                     )
-                      = dayjs(domain.smtp_suspended_sent_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                      = dayjs(domain.smtp_suspended_sent_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
                   button.btn.btn-sm(
                     type="submit",
                     class=_.isDate(domain.smtp_suspended_sent_at) ? "btn-warning" : "btn-danger"
@@ -159,7 +159,7 @@ include ../../_pagination
               td.align-middle.text-center.dayjs(
                 data-time=new Date(domain.created_at).getTime()
               )
-                = dayjs(domain.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                = dayjs(domain.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
               td.align-middle
                 form.ajax-form.confirm-prompt(
                   action=l(`/admin/domains/${domain.id}`),

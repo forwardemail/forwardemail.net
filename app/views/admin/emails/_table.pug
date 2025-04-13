@@ -32,11 +32,11 @@ table.table.table-hover.table-bordered.table-sm
             td.align-middle.text-center.dayjs(
               data-time=new Date(email.created_at).getTime()
             )
-              = dayjs(email.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+              = dayjs(email.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
             td.align-middle.text-center.dayjs(
               data-time=new Date(email.updated_at).getTime()
             )
-              = dayjs(email.updated_at).tz(user.timezone).format("M/D/YY h:mm A z")
+              = dayjs(email.updated_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
             td.align-middle.text-center
               //- pending (secondary)
               //- queued (dark)

@@ -153,7 +153,7 @@ block body
                         td.align-middle.text-center.dayjs(
                           data-time=new Date(token.created_at).getTime()
                         )
-                          = dayjs(token.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                          = dayjs(token.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
                         td.align-middle
                           form.ajax-form.confirm-prompt.d-inline-block(
                             action=l(`/my-account/domains/${punycode.toASCII(domain.name)}/catch-all-passwords/${token.id}`),

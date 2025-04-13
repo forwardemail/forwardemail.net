@@ -94,7 +94,7 @@ block body
                       td.align-middle.text-center.dayjs(
                         data-time=new Date(passkey.created_at).getTime()
                       )
-                        small= dayjs(passkey.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                        small= dayjs(passkey.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
                       td.align-middle
                         ul.list-inline.mb-0
                           li.list-inline-item

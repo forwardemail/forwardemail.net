@@ -31,9 +31,9 @@ block body
             th!= t("Date &amp; Time")
             td
               if log.meta && log.meta.session && log.meta.session.arrivalDate
-                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).tz(user.timezone).format("M/D/YY h:mm A z")
+                span.dayjs(data-time=log.meta.session.arrivalTime)= dayjs(log.meta.session.arrivalDate).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
               else
-                span.dayjs(data-time=log.created_at)= dayjs(log.created_at).tz(user.timezone).format("M/D/YY h:mm A z")
+                span.dayjs(data-time=log.created_at)= dayjs(log.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
           if log.meta.session.envelope.mailFrom && log.meta.session.envelope.mailFrom.address && isSANB(log.meta.session.envelope.mailFrom.address)
             tr
               th= "MAIL FROM"

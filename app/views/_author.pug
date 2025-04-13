@@ -47,12 +47,12 @@
         )
           if publishedISOString
             if user
-              = dayjs(new Date(publishedISOString)).tz(user.timezone).format("M/D/YY")
+              = dayjs(new Date(publishedISOString)).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY")
             else
               = dayjs(new Date(publishedISOString)).format("M/D/YY")
           else
             if user
-              = dayjs().tz(user.timezone).startOf("month").format("M/D/YY")
+              = dayjs().tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).startOf("month").format("M/D/YY")
             else
               = dayjs().startOf("month").format("M/D/YY")
     .d-none.d-md-flex.flex-column.ml-3.ml-md-5.font-weight-bold.text-themed

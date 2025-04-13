@@ -84,7 +84,7 @@ block body
                     .alert.alert-success.small!= t("Don't worry &ndash; we'll automatically refund previous payments.")
                 else
                   p.text-success.small.font-weight-bold
-                    != t('Eligible for automatic refund until <span class="notranslate">%s</span>.', dayjs().add(30, "day").locale(ctx.locale).tz(user.timezone).format("LL"))
+                    != t('Eligible for automatic refund until <span class="notranslate">%s</span>.', dayjs().add(30, "day").locale(ctx.locale).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("LL"))
               - const hasPlanExpired = user.plan !== "free" && new Date(user[config.userFields.planExpiresAt]).getTime() < Date.now();
               - const hasSubscription = isSANB(user[config.userFields.stripeSubscriptionID]) || isSANB(user[config.userFields.paypalSubscriptionID]);
               if isMakePayment && hasSubscription && !hasPlanExpired
@@ -106,7 +106,7 @@ block body
                       - str += ` ${t("and")} ${dayjs().add(months, "months").locale(locale).fromNow(true)}`;
                   != t('Your account is <strong class="notranslate">%s</strong> past due.', str)
               if isEnableAutoRenew && !hasPlanExpired
-                .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).tz(user.timezone).format("M/D/YY"))
+                .alert.alert-primary!= t('Don\'t worry &ndash; <strong>you will <u>not</u> be charged</strong> until your plan expires on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY"))
               form#form-billing(
                 action=ctx.path,
                 method="POST",
