@@ -602,6 +602,7 @@
       fail2ban_bantime: -1
       # dbpurgeage is ignored if bantime is -1 (?)
       fail2ban_dbpurgeage: 365d
+      fail2ban_findtime: 365d
 
       # TODO: add IMAP, POP3, and SMTP with pm2 error log output
       # https://www.teaparty.net/technotes/fail2ban.html#:~:text=I%20added%20the%20following%20to%20my%20jail.conf%3A
