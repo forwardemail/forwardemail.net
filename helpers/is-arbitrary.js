@@ -122,6 +122,7 @@ function isArbitrary(session, headers) {
   }
 
   // DocuSign impersonation
+  /*
   if (
     from &&
     from.toLowerCase().includes('docusign ') &&
@@ -132,6 +133,7 @@ function isArbitrary(session, headers) {
     err.isCodeBug = true; // alert admins for inspection
     throw err;
   }
+  */
 
   // pCloud impersonation
   if (
