@@ -12,15 +12,18 @@ const metaFn = require('#config/meta');
 const alternatives = require('#config/alternatives');
 
 // in-memory caching
-const cache = new Map();
+// const cache = new Map();
+let cache;
 
 const meta = metaFn(metaConfig, true);
 
 // <https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap>
 async function sitemap(ctx) {
-  if (cache.has(ctx.path)) {
+  // if (cache.has(ctx.path)) {
+  if (cache) {
     ctx.set('Content-Type', 'application/xml');
-    ctx.body = cache.get(ctx.path);
+    // ctx.body = cache.get(ctx.path);
+    ctx.body = cache;
     return;
   }
 
@@ -92,7 +95,8 @@ async function sitemap(ctx) {
   getStream
     .buffer(smStream)
     .then((body) => {
-      cache.set(ctx.path, body.toString());
+      cache = body;
+      // cache.set(ctx.path, body.toString());
     })
     .catch((err) => ctx.logger.fatal(err));
 }
