@@ -6,10 +6,15 @@
 const getStream = require('get-stream');
 const { SitemapStream } = require('sitemap');
 
-const config = require('#config');
+const env = require('#config/env');
+const metaConfig = require('#config/meta-config');
+const metaFn = require('#config/meta');
+const alternatives = require('#config/alternatives');
 
 // in-memory caching
 const cache = new Map();
+
+const meta = metaFn(metaConfig, true);
 
 // <https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap>
 async function sitemap(ctx) {
@@ -20,11 +25,11 @@ async function sitemap(ctx) {
   }
 
   const smStream = new SitemapStream({
-    hostname: config.urls.web
+    hostname: env.WEB_URL.toLowerCase()
   });
 
   // TODO: if you change this then also change test/web/index.js sitemap stuff
-  const keys = Object.keys(config.meta).filter((key) => {
+  const keys = Object.keys(meta).filter((key) => {
     // exclude certain pages from sitemap
     // (e.g. 401 not authorized)
     if (
@@ -36,8 +41,8 @@ async function sitemap(ctx) {
         '/logout',
         '/denylist',
         '/reset-password',
-        config.verifyRoute,
-        config.otpRoutePrefix
+        metaConfig.verifyRoute,
+        metaConfig.otpRoutePrefix
       ].includes(key)
     )
       return false;
@@ -46,14 +51,17 @@ async function sitemap(ctx) {
   });
 
   // add all the alternatives (since it would be massive translation file addition otherwise)
-  for (const alternative of config.alternatives) {
+  for (const alternative of alternatives) {
     keys.push(`/blog/best-${alternative.slug}-alternative`);
-    for (const a of config.alternatives) {
+    /*
+    // NOTE: with this the keys length is 6600+
+    for (const a of alternatives) {
       if (a.name === alternative.name) continue;
       keys.push(
         `/blog/${alternative.slug}-vs-${a.slug}-email-service-comparison`
       );
     }
+    */
   }
 
   // for each language, iterate over each key, and write to sitemap
@@ -77,10 +85,16 @@ async function sitemap(ctx) {
 
   smStream.end();
 
-  ctx.set('Content-Type', 'application/xml');
-  const body = await getStream.buffer(smStream);
-  ctx.body = body;
-  cache.set(ctx.path, body);
+  // ctx.set('Content-Type', 'application/xml');
+  ctx.body = smStream;
+
+  // store in cache in background
+  getStream
+    .buffer(smStream)
+    .then((body) => {
+      cache.set(ctx.path, body);
+    })
+    .catch((err) => ctx.logger.fatal(err));
 }
 
 module.exports = sitemap;
