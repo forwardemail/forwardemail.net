@@ -92,7 +92,7 @@ async function sitemap(ctx) {
   getStream
     .buffer(smStream)
     .then((body) => {
-      cache.set(ctx.path, body);
+      cache.set(ctx.path, body.toString());
     })
     .catch((err) => ctx.logger.fatal(err));
 }
