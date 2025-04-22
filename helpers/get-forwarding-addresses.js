@@ -11,10 +11,7 @@ const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
-const pMapSeries = require('p-map-series');
 const regexParser = require('regex-parser');
-const revHash = require('rev-hash');
-const safeStringify = require('fast-safe-stringify');
 const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
@@ -180,7 +177,7 @@ async function getForwardingAddresses(
     }
   }
 
-  let isFreePlanDomain = false;
+  let isFreePlanDomain = true;
 
   if (verifications.length > 0 && username) {
     if (verifications.length > 1)
@@ -199,6 +196,9 @@ async function getForwardingAddresses(
       ignoreBilling,
       client: this.client
     });
+
+    // if it was not empty then it was not a free domain
+    if (!_.isEmpty(body)) isFreePlanDomain = false;
 
     // body = {
     //   has_imap: boolean,
@@ -233,8 +233,6 @@ async function getForwardingAddresses(
       for (const element of body.mapping) {
         validRecords.push(element);
       }
-    } else {
-      isFreePlanDomain = true;
     }
   }
 
@@ -354,64 +352,40 @@ async function getForwardingAddresses(
   */
 
   //
-  // if the domain on free plan and was expired or newly created in the background
+  // if the domain recently was expired or newly created in the background
   // and alert admins if we need to mitigate and shadow ban the user
+  // (we have seen abuse actors do this on paid plans with fraudulent cards)
   //
-  if (addresses.length > 0 && isFreePlanDomain)
-    isExpiredOrNewlyCreated(rootDomain, this.client)
-      .then((obj) => {
-        // obj = {
-        //   result: true, // true or false if it met criteria (see `helpers/is-recently-expired.js`)
-        //   response: {
-        //     // ... whois data stuff
-        //   }
-        // }
-        if (!obj.result) return;
-        const emails = addresses.filter((addr) => isEmail(addr));
-        if (emails.length === 0) return;
-        pMapSeries(emails, async (email) => {
-          const key = `expired:${revHash(email.toLowerCase())}`;
-          const cache = await this.client.get(key);
-          let json;
-          if (cache) {
-            try {
-              json = JSON.parse(cache);
-              if (
-                typeof json !== 'object' ||
-                typeof json.domains !== 'object' ||
-                !Array.isArray(json.domains) ||
-                typeof json.sent !== 'boolean'
-              )
-                throw new TypeError('JSON invalid');
-            } catch (err) {
-              logger.fatal(err);
-              json = null;
-            }
-          }
+  logger.debug('checking root domain', { rootDomain });
 
-          if (!json) json = { domains: [], sent: false };
-          if (!json.domains.includes(rootDomain)) json.domains.push(rootDomain);
-          json.email = email;
+  // wrap with try/catch in case of unknown errors with the whois lookup
+  let obj;
+  try {
+    obj = await isExpiredOrNewlyCreated(rootDomain, this.client);
+  } catch (err) {
+    err.isCodeBug = true;
+    logger.fatal(err);
+  }
 
-          // rudimentary email alert to admins if we detect the count was >= 3
-          if (!json.sent && json.domains.length >= 3) {
-            json.sent = true;
+  //
+  // TODO: may want to alert admins if we detect paid plan
+  //       otherwise block for free plan tier
+  //
+  // output to console for testing period
+  // (then we will `throw err`)
+  if (obj?.err)
+    console.error(
+      'isFreePlanDomain',
+      isFreePlanDomain,
+      'rootDomain',
+      rootDomain,
+      obj.err.message,
+      JSON.stringify(obj.response, null, 2)
+    );
 
-            // log fatal error email alert to admins
-            const err = new TypeError(
-              `${email} being forwarded to from ${json.domains.length} recently expired or newly created domains`
-            );
-            err.isCodeBug = true;
-            err.domains = json.domains;
-            logger.fatal(err);
-          }
+  logger.debug('isExpiredOrNewlyCreated', { obj });
 
-          await this.client.set(key, safeStringify(json), 'PX', ms('90d'));
-        })
-          .then()
-          .catch((err) => logger.fatal(err));
-      })
-      .catch((err) => logger.fatal(err));
+  // obj.result = true (means we should block this actor)
 
   // store if address is ignored or not
   let ignored = false; // 250

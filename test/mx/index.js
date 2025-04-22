@@ -9,6 +9,7 @@ const { Writable } = require('node:stream');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const dayjs = require('dayjs-with-plugins');
+const falso = require('@ngneat/falso');
 const ip = require('ip');
 const ms = require('ms');
 const mxConnect = require('mx-connect');
@@ -16,6 +17,7 @@ const nodemailer = require('nodemailer');
 const openpgp = require('openpgp/dist/node/openpgp.js');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
+const safeStringify = require('fast-safe-stringify');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 const { SRS } = require('sender-rewriting-scheme');
@@ -29,6 +31,7 @@ const Emails = require('#models/emails');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
+const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const logger = require('#helpers/logger');
 const processEmail = require('#helpers/process-email');
 
@@ -485,6 +488,127 @@ Test`.trim()
 
   t.is(email.status, 'sent');
   t.deepEqual(email.accepted, ['test@test.com']);
+});
+
+//
+// TODO: this needs tested against MX integration
+//
+test('isExpiredOrNewlyCreated', async (t) => {
+  const rootDomain = falso.randDomainName();
+
+  //
+  // NOTE: we basically test by spoofing the DNS whois cache
+  //
+
+  //
+  // 1) if response.found = false then assume expired
+  //
+  await t.context.client.set(
+    `whois:${rootDomain}`,
+    safeStringify({
+      found: false,
+      ts: {
+        expires: new Date(),
+        created: new Date()
+      }
+    }),
+    'PX',
+    ms('1d')
+  );
+
+  {
+    const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
+    t.is(
+      obj.err.message,
+      `${rootDomain} WHOIS lookup failed and may be expired; this domain is temporarily blocked for abuse prevention`
+    );
+    t.is(obj.err.responseCode, 421);
+    t.is(obj.response.found, false);
+  }
+
+  //
+  // 2) if response.status of "pending delete" then assume expired
+  //
+  await t.context.client.set(
+    `whois:${rootDomain}`,
+    safeStringify({
+      found: true,
+      status: 'pending delete',
+      ts: {
+        expires: new Date(),
+        created: new Date()
+      }
+    }),
+    'PX',
+    ms('1d')
+  );
+
+  {
+    const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
+    t.is(
+      obj.err.message,
+      `${rootDomain} WHOIS lookup indicates it is pending delete; this domain is temporarily blocked for abuse prevention`
+    );
+    t.is(obj.err.responseCode, 550);
+    t.is(obj.response.found, true);
+    t.is(obj.response.status, 'pending delete');
+  }
+
+  //
+  // 3) if response.ts.expired within now to 90d ago then assume expired
+  //
+  {
+    const expires = dayjs().subtract(30, 'day').toDate();
+    await t.context.client.set(
+      `whois:${rootDomain}`,
+      safeStringify({
+        found: true,
+        ts: {
+          expires,
+          created: new Date()
+        }
+      }),
+      'PX',
+      ms('1d')
+    );
+    const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
+    t.is(
+      obj.err.message,
+      `${rootDomain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention`
+    );
+    t.is(obj.err.responseCode, 550);
+    t.is(obj.response.found, true);
+    t.deepEqual(obj.response.ts.expires, expires);
+  }
+
+  //
+  // 4) if response.ts.created within now to 90d ago then assume expired
+  //
+  {
+    const expires = dayjs().add(1, 'year').toDate();
+    const created = dayjs().subtract(30, 'day').toDate();
+    await t.context.client.set(
+      `whois:${rootDomain}`,
+      safeStringify({
+        found: true,
+        ts: {
+          expires,
+          created
+        }
+      }),
+      'PX',
+      ms('1d')
+    );
+    const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
+    t.is(
+      obj.err.message,
+      `${rootDomain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention`
+    );
+    t.is(obj.err.responseCode, 550);
+    t.is(obj.response.found, true);
+    t.deepEqual(obj.response.ts.expires, expires);
+    t.deepEqual(obj.response.ts.created, created);
+  }
 });
 
 // TODO: checkBounceForSpam logic

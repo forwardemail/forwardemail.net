@@ -9,8 +9,9 @@ const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const safeStringify = require('fast-safe-stringify');
-const _ = require('#helpers/lodash');
 
+const SMTPError = require('#helpers/smtp-error');
+const _ = require('#helpers/lodash');
 const logger = require('#helpers/logger');
 
 // dynamically import @cleandns/whois-rdap
@@ -49,6 +50,11 @@ async function isExpiredOrNewlyCreated(input, client) {
         response = null;
         throw new TypeError('Response was invalid');
       }
+
+      // convert the cached dates in `ts` obj to Date objects
+      for (const key of Object.keys(response.ts)) {
+        response.ts[key] = new Date(response.ts[key]);
+      }
     } catch (err) {
       logger.fatal(err, { domain });
       client
@@ -70,27 +76,37 @@ async function isExpiredOrNewlyCreated(input, client) {
     );
   }
 
-  let result = false;
+  let err;
 
-  // if the domain wasn't found then assume it was recently created or expired
-  if (!response.found) result = true;
-  // if the domain is pending deletion, update, or transfer
+  // if the domain wasn't found then assume it was recently created or expired (421)
+  if (!response.found)
+    err = new SMTPError(
+      `${domain} WHOIS lookup failed and may be expired; this domain is temporarily blocked for abuse prevention`,
+      {
+        responseCode: 421
+      }
+    );
+  // if the domain is pending deletion, update, or transfer (550)
   else if (
     ['pending delete', 'pending update', 'pending transfer'].includes(
       response.status
     )
   )
-    result = true;
+    err = new SMTPError(
+      `${domain} WHOIS lookup indicates it is ${response.status}; this domain is temporarily blocked for abuse prevention`
+    );
   // if the domain expiration date is within the past 90d
   // (safeguard for users in case they have a domain that expired they should renew it first)
   else if (
     _.isDate(response?.ts?.expires) &&
-    new Date(response.ts.expired).getTime() <= Date.now() &&
-    new Date(response.ts.expired).getTime() >= Date.now() - ms('90d')
+    new Date(response.ts.expires).getTime() <= Date.now() &&
+    new Date(response.ts.expires).getTime() >= Date.now() - ms('90d')
   )
-    result = true;
+    err = new SMTPError(
+      `${domain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention`
+    );
   //
-  // if the domain was created within the past year then ensure that a paid plan is required
+  // if the domain was created within the past 90d
   // (this is a massive deterrent to scammers as it makes them wait 3 months before they can use us)
   // (this might frustrate some folks, but prevention of being blocked by massive registrars is more important)
   //
@@ -107,9 +123,11 @@ async function isExpiredOrNewlyCreated(input, client) {
     _.isDate(response?.ts?.created) &&
     new Date(response.ts.created).getTime() >= Date.now() - ms('90d')
   )
-    result = true;
+    err = new SMTPError(
+      `${domain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention`
+    );
 
-  return { result, response };
+  return { err, response };
 }
 
 module.exports = isExpiredOrNewlyCreated;
