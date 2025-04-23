@@ -9,6 +9,7 @@ const isFQDN = require('is-fqdn');
 const ms = require('ms');
 const pWaitFor = require('p-wait-for');
 const safeStringify = require('fast-safe-stringify');
+const undici = require('undici');
 
 const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
@@ -19,6 +20,12 @@ let whois;
 import('@cleandns/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
+
+// <https://github.com/LayeredStudio/whoiser/pull/121>
+// let whoisDomain;
+// import('whoiser').then((obj) => {
+//   whoisDomain = obj.whoisDomain;
+// });
 
 //
 // NOTE: this only gets run for domains on the free plan via MX server
@@ -66,7 +73,9 @@ async function isExpiredOrNewlyCreated(input, client) {
 
   // if no cache then perform a WHOIS lookup
   if (!response) {
-    response = await whois(domain);
+    response = await whois(domain, {
+      fetch: undici.fetch
+    });
     // store to cache the WHOIS lookup for 24 hours
     await client.set(
       `whois:${domain}`,
@@ -78,16 +87,10 @@ async function isExpiredOrNewlyCreated(input, client) {
 
   let err;
 
-  // if the domain wasn't found then assume it was recently created or expired (421)
-  if (!response.found)
-    err = new SMTPError(
-      `${domain} WHOIS lookup failed and may be expired; this domain is temporarily blocked for abuse prevention`,
-      {
-        responseCode: 421
-      }
-    );
+  if (!response.found) return { err, response };
+
   // if the domain is pending deletion, update, or transfer (550)
-  else if (
+  if (
     ['pending delete', 'pending update', 'pending transfer'].includes(
       response.status
     )

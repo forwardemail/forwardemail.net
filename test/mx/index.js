@@ -501,7 +501,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
   //
 
   //
-  // 1) if response.found = false then assume expired
+  // 1) if response.found = false then no errors (may be WHOIS block on our server)
   //
   await t.context.client.set(
     `whois:${rootDomain}`,
@@ -518,11 +518,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
 
   {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
-    t.is(
-      obj.err.message,
-      `${rootDomain} WHOIS lookup failed and may be expired; this domain is temporarily blocked for abuse prevention`
-    );
-    t.is(obj.err.responseCode, 421);
+    t.is(obj.err, undefined);
     t.is(obj.response.found, false);
   }
 
