@@ -529,7 +529,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     `whois:${rootDomain}`,
     safeStringify({
       found: true,
-      status: 'pending delete',
+      status: ['pending delete'],
       ts: {
         expires: new Date(),
         created: new Date()
@@ -543,11 +543,11 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} WHOIS lookup indicates it is pending delete; this domain is temporarily blocked for abuse prevention`
+      `${rootDomain} WHOIS lookup indicates it is pending delete, update, or transfer; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);
-    t.is(obj.response.status, 'pending delete');
+    t.deepEqual(obj.response.status, ['pending delete']);
   }
 
   //
@@ -570,7 +570,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention`
+      `${rootDomain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);
@@ -598,7 +598,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention`
+      `${rootDomain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);

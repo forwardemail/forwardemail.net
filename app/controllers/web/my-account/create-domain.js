@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const { boolean } = require('boolean');
 
 const { Domains, Aliases } = require('#models');
+const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 
 const config = require('#config');
 const logger = require('#helpers/logger');
@@ -99,6 +100,22 @@ async function createDomain(ctx, next) {
   }
 
   try {
+    // wrap with try/catch in case of unknown errors with the whois lookup
+    let obj;
+    try {
+      obj = await isExpiredOrNewlyCreated(ctx.request.body.domain, ctx.client);
+    } catch (err) {
+      err.isCodeBug = true;
+      logger.fatal(err);
+    }
+
+    if (obj?.err) {
+      obj.err.isCodeBug = true;
+      obj.err.response = obj.response;
+      ctx.logger.fatal(obj.err);
+      throw Boom.badRequest(obj.err.message);
+    }
+
     if (teamDomain) {
       ctx.state.domain = await Domains.create({
         is_api: boolean(ctx.api),

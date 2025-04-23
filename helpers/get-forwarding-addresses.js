@@ -11,14 +11,16 @@ const isBase64 = require('is-base64');
 const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
+const pMapSeries = require('p-map-series');
 const regexParser = require('regex-parser');
 const { boolean } = require('boolean');
 const { isURL } = require('@forwardemail/validator');
-const _ = require('#helpers/lodash');
 
+const _ = require('#helpers/lodash');
 const SMTPError = require('#helpers/smtp-error');
 const config = require('#config');
 const env = require('#config/env');
+const emailHelper = require('#helpers/email');
 const getErrorCode = require('#helpers/get-error-code');
 const getForwardingConfiguration = require('#helpers/get-forwarding-configuration');
 const getKeyInfo = require('#helpers/get-key-info');
@@ -367,25 +369,67 @@ async function getForwardingAddresses(
     logger.fatal(err);
   }
 
-  //
-  // TODO: may want to alert admins if we detect paid plan
-  //       otherwise block for free plan tier
-  //
-  // output to console for testing period
-  // (then we will `throw err`)
-  if (obj?.err)
-    console.error(
-      'isFreePlanDomain',
-      isFreePlanDomain,
-      'rootDomain',
-      rootDomain,
-      obj.err.message,
-      JSON.stringify(obj.response, null, 2)
-    );
+  // detect if abuse prevention is required
+  if (obj?.err) {
+    const emails = addresses.filter((addr) => isEmail(addr));
+    if (emails.length > 0) {
+      if (isFreePlanDomain) {
+        pMapSeries(emails, async (addr) => {
+          try {
+            // cache on a per email basis for 30d
+            const key = `abuse_prevention:${addr.toLowerCase()}`;
+            const cache = await this.client.get(key);
+            if (cache) return;
+            await this.client.set(key, true, 'PX', ms('30d'));
+            await emailHelper({
+              template: 'alert',
+              message: {
+                subject: `Emails blocked via abuse prevention: ${rootDomain}`,
+                to: addr,
+                bcc: config.email.message.from
+              },
+              locals: {
+                message: `The domain ${rootDomain} was detected via WHOIS lookup to have expired or been created within the past 90 days.  As part of our efforts working with major registrars including GoDaddy, Namecheap, and Hostgator &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity.  Without this abuse prevention, our service would be blocked entirely from these registrars and we would lose significant business.  We now require you to upgrade to a paid plan for recently expired or newly registered domains.  Paid plans start at only $3/mo for unlimited domains, aliases, and more.  Learn more at: <a href="${config.urls.web}" target="_blank" rel="noopener noreferrer">${config.urls.web}</a>`,
+                locale: 'en'
+              }
+            });
+          } catch (err) {
+            logger.fatal(err, { addr, rootDomain, obj, isFreePlanDomain });
+          }
+        })
+          .then()
+          .catch((err) =>
+            logger.fatal(err, { rootDomain, obj, isFreePlanDomain })
+          );
+      } else {
+        try {
+          // cache on a per domain basis for 30d
+          const key = `abuse_prevention:${rootDomain}`;
+          const cache = await this.client.get(key);
+          if (!cache) {
+            await this.client.set(key, true, 'PX', ms('30d'));
+            await emailHelper({
+              template: 'alert',
+              message: {
+                subject: `Possible paid plan abuse: ${rootDomain}`,
+                to: config.email.message.from
+              },
+              locals: {
+                message: `<pre><code>${emails.join('<br />')}</code></pre>`,
+                locale: 'en'
+              }
+            });
+          }
+        } catch (err) {
+          logger.fatal(err, { rootDomain, obj, isFreePlanDomain });
+        }
+      }
+    }
+
+    if (isFreePlanDomain) throw obj.err;
+  }
 
   logger.debug('isExpiredOrNewlyCreated', { obj });
-
-  // obj.result = true (means we should block this actor)
 
   // store if address is ignored or not
   let ignored = false; // 250

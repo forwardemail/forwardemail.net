@@ -13,6 +13,7 @@ const undici = require('undici');
 
 const SMTPError = require('#helpers/smtp-error');
 const _ = require('#helpers/lodash');
+const config = require('#config');
 const logger = require('#helpers/logger');
 
 // dynamically import @cleandns/whois-rdap
@@ -91,12 +92,13 @@ async function isExpiredOrNewlyCreated(input, client) {
 
   // if the domain is pending deletion, update, or transfer (550)
   if (
-    ['pending delete', 'pending update', 'pending transfer'].includes(
-      response.status
+    Array.isArray(response.status) &&
+    response.status.some((s) =>
+      ['pending delete', 'pending update', 'pending transfer'].includes(s)
     )
   )
     err = new SMTPError(
-      `${domain} WHOIS lookup indicates it is ${response.status}; this domain is temporarily blocked for abuse prevention`
+      `${domain} WHOIS lookup indicates it is pending delete, update, or transfer; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
   // if the domain expiration date is within the past 90d
   // (safeguard for users in case they have a domain that expired they should renew it first)
@@ -106,7 +108,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     new Date(response.ts.expires).getTime() >= Date.now() - ms('90d')
   )
     err = new SMTPError(
-      `${domain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention`
+      `${domain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
   //
   // if the domain was created within the past 90d
@@ -127,7 +129,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     new Date(response.ts.created).getTime() >= Date.now() - ms('90d')
   )
     err = new SMTPError(
-      `${domain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention`
+      `${domain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
     );
 
   return { err, response };
