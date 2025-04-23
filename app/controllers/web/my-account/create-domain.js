@@ -111,7 +111,7 @@ async function createDomain(ctx, next) {
 
     if (
       obj?.err &&
-      (ctx.request.body.plan === 'free' || teamDomain?.plan === 'free')
+      (ctx?.request?.body?.plan === 'free' || teamDomain?.plan === 'free')
     ) {
       obj.err.isCodeBug = true;
       obj.err.response = obj.response;
