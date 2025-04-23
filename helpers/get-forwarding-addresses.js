@@ -424,9 +424,10 @@ async function getForwardingAddresses(
           logger.fatal(err, { rootDomain, obj, isFreePlanDomain });
         }
       }
-    }
 
-    if (isFreePlanDomain) throw obj.err;
+      // by keeping this inside, we allow custom port forwarding to work
+      if (isFreePlanDomain) throw obj.err;
+    }
   }
 
   logger.debug('isExpiredOrNewlyCreated', { obj });
