@@ -109,7 +109,10 @@ async function createDomain(ctx, next) {
       logger.fatal(err);
     }
 
-    if (obj?.err) {
+    if (
+      obj?.err &&
+      (ctx.request.body.plan === 'free' || teamDomain?.plan === 'free')
+    ) {
       obj.err.isCodeBug = true;
       obj.err.response = obj.response;
       ctx.logger.fatal(obj.err);
