@@ -116,7 +116,14 @@ async function createDomain(ctx, next) {
       obj.err.isCodeBug = true;
       obj.err.response = obj.response;
       ctx.logger.fatal(obj.err);
-      throw Boom.badRequest(obj.err.message);
+      if (ctx.api) throw Boom.badRequest(obj.err.message);
+      const redirectTo = ctx.state.l(
+        `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
+      );
+      ctx.flash('warning', obj.err.message);
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+      return;
     }
 
     if (teamDomain) {
