@@ -89,6 +89,7 @@
 * [Do you offer unlimited domains for one price](#do-you-offer-unlimited-domains-for-one-price)
 * [Which payment methods do you accept](#which-payment-methods-do-you-accept)
 * [How do you perform DNS lookups on domain names](#how-do-you-perform-dns-lookups-on-domain-names)
+* [Do you support self-hosting](#do-you-support-self-hosting)
 
 
 ## What is Forward Email
@@ -3900,6 +3901,11 @@ We accept cards, wallets, and bank transfers using [Stripe](https://stripe.com/g
 We created an open-source software project :tangerine: [Tangerine](https://github.com/forwardemail/tangerine) and use it for DNS lookups.  The default DNS servers used are `1.1.1.1` and `1.0.0.1`, and DNS queries are through [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") at the application layer.
 
 :tangerine: [Tangerine](https://github.com/tangerine) uses [CloudFlare's privacy-first consumer DNS service by default][cloudflare-dns].
+
+
+## Do you support self-hosting
+
+Yes, as of March 2025, we support a self-hosted option. Read the blog [here](https://forwardemail.net/blog/docs/self-hosted-solution). Checkout the [self-hosted guide](https://forwardemail.net/self-hosted) to get started.
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
