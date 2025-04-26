@@ -22,6 +22,7 @@ import('@cleandns/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
 
+// <https://github.com/cleandns-inc/tool-whois/issues/3>
 // <https://github.com/LayeredStudio/whoiser/pull/121>
 // let whoisDomain;
 // import('whoiser').then((obj) => {

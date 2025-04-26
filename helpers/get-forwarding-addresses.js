@@ -385,8 +385,7 @@ async function getForwardingAddresses(
               template: 'alert',
               message: {
                 subject: `Emails blocked via abuse prevention: ${rootDomain}`,
-                to: addr,
-                bcc: config.email.message.from
+                to: addr
               },
               locals: {
                 message: `The domain ${rootDomain} was detected via WHOIS lookup to have expired or been created within the past 90 days.  As part of our efforts working with major registrars including GoDaddy, Namecheap, and Hostgator &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity.  Without this abuse prevention, our service would be blocked entirely from these registrars and we would lose significant business.  We now require you to upgrade to a paid plan for recently expired or newly registered domains.  Paid plans start at only $3/mo for unlimited domains, aliases, and more.  Learn more at: <a href="${config.urls.web}" target="_blank" rel="noopener noreferrer">${config.urls.web}</a>`,
@@ -429,8 +428,6 @@ async function getForwardingAddresses(
       if (isFreePlanDomain) throw obj.err;
     }
   }
-
-  logger.debug('isExpiredOrNewlyCreated', { obj });
 
   // store if address is ignored or not
   let ignored = false; // 250

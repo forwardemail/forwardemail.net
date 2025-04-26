@@ -113,9 +113,6 @@ async function createDomain(ctx, next) {
       obj?.err &&
       (ctx?.request?.body?.plan === 'free' || teamDomain?.plan === 'free')
     ) {
-      obj.err.isCodeBug = true;
-      obj.err.response = obj.response;
-      ctx.logger.fatal(obj.err);
       if (ctx.api) throw Boom.badRequest(obj.err.message);
       const redirectTo = ctx.state.l(
         `/my-account/billing/upgrade?plan=enhanced_protection&domain=${ctx.request.body.domain}`
