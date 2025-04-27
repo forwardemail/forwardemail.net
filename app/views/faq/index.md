@@ -15,6 +15,8 @@
 * [How do I set up MTA-STS for Forward Email](#how-do-i-set-up-mta-sts-for-forward-email)
 * [Do you support sending email with SMTP](#do-you-support-sending-email-with-smtp)
 * [What are your outbound SMTP limits](#what-are-your-outbound-smtp-limits)
+* [Do I need approval to enable SMTP](#do-i-need-approval-to-enable-smtp)
+* [Do you support newsletters or mailing lists for marketing related emails?](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-emails)
 * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
 * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
 * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
@@ -991,7 +993,19 @@ Yes, as of May 2023 we support sending email with SMTP as an add-on for all paid
 
 ## What are your outbound SMTP limits
 
-We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please contact us.
+We rate limit users and domains to 300 outbound SMTP messages per 1 day. This averages 9000+ emails in a calendar month. If you need to exceed this amount or have consistently large emails, then please [contact us](https://forwardemail.net/help).
+
+
+## Do I need approval to enable SMTP
+
+Yes, please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
+
+
+## Do you support newsletters or mailing lists for marketing related emails?
+
+Yes, you can read more at <https://forwardemail.net/guides/newsletter-with-listmonk>.
+
+Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for **newsletter approval**. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
 
 
 ## What are your SMTP server configuration settings
