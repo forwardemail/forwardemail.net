@@ -8558,5 +8558,10 @@
   "Page not found": "Stránka nenalezena",
   "We're sorry, but the page you requested could not be found.": "Je nám líto, ale požadovaná stránka nebyla nalezena.",
   "Go to homepage": "Přejít na domovskou stránku",
-  "Free Email Forwarding - Custom Domain Emails": "Přesměrování e-mailů zdarma – e-maily vlastní domény"
+  "Free Email Forwarding - Custom Domain Emails": "Přesměrování e-mailů zdarma – e-maily vlastní domény",
+  "Do you support self-hosting": "Podporujete self-hosting",
+  "Yes, as of March 2025, we support a self-hosted option. Read the blog": "Ano, od března 2025 podporujeme možnost vlastního hostování. Přečtěte si blog",
+  ". Checkout the": ". Podívejte se na",
+  "self-hosted guide": "průvodce s vlastním hostitelem",
+  "to get started.": "začít."
 }
