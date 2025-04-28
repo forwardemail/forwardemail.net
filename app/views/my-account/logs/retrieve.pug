@@ -70,6 +70,11 @@ block body
               span.badge.badge-pill(class=badgeClass)= statusCode
           li.list-inline-item.small.d-inline
             small.text-monospace
+              if log.err && log.err.envelope && log.err.envelope.to && typeof log.err.envelope.to === 'string'
+                = '('
+                = log.err.envelope.to
+                = ')'
+                = ' '
               if log.err && log.err.isCodeBug === true
                 = "An unexpected internal server error has occurred"
               else
