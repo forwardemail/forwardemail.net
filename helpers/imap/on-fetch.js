@@ -154,7 +154,7 @@ async function onFetch(mailboxId, options, session, fn) {
       if (projection[key] === true) fields.push(key);
     }
 
-    const count = await Messages.countDocuments(this, session, condition);
+    // const count = await Messages.countDocuments(this, session, condition);
 
     const sql = builder.build({
       type: 'select',
@@ -194,7 +194,13 @@ async function onFetch(mailboxId, options, session, fn) {
 
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
     const stmt = session.db.prepare(sql.query);
-    const isBatchMode = count > 1000;
+
+    //
+    // NOTE: we explicitly disable `isBatchMode` for now since there is a bug somewhere
+    //       in the logic for `await this.wss.broadcast(...)` below which code lies in `sqlite-server.js`
+    //       and the loop itself has a `5m` timeout, so basically FETCH calls were taking 5m+ before timing out
+    //
+    const isBatchMode = false; // count > 1000;
 
     for (const result of isBatchMode
       ? stmt.all(sql.values)
