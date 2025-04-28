@@ -151,6 +151,12 @@ module.exports = function (config, isSitemap = false) {
       ).format('YYYY')}</span>`,
       'Set up free email forwarding and email hosting with your custom domain, DNS, SMTP, IMAP, and POP3 configuration setup guide.'
     ],
+    '/guides/newsletter-with-listmonk': [
+      `Create and Manage Newsletters with Listmonk in <span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>`,
+      'setting up a newsletter and mailing list system using Listmonk for campaign management and Forward Email as the SMTP provider for secure and reliable email delivery.'
+    ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `How to Send Mail As for Gmail Alias <span class="notranslate">${dayjs(
         now
