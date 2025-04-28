@@ -444,6 +444,10 @@ localeRouter
     web.onboard,
     render('guides/port-25-blocked-by-isp-workaround')
   )
+  .get(
+    '/guides/newsletter-with-listmonk',
+    render('guides/newsletter-with-listmonk')
+  )
   .get('/donate', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));
