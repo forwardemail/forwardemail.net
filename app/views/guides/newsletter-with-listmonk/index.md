@@ -4,7 +4,7 @@
 ## Table of Contents
 
 * [Overview](#overview)
-* [Why Listmonk and Forward Email?](#why-listmonk-and-forward-email)
+* [Why Listmonk and Forward Email](#why-listmonk-and-forward-email)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [1. Update Your Server](#1-update-your-server)
@@ -34,7 +34,7 @@ This guide provides developers with step-by-step instructions for setting up [Li
 By integrating these two, you retain full control over your data and infrastructure while leveraging Forward Email's robust delivery system.
 
 
-## Why Listmonk and Forward Email?
+## Why Listmonk and Forward Email
 
 * **Open Source**: Both Listmonk and the principles behind Forward Email emphasize transparency and control. You host Listmonk yourself, owning your data.
 * **Privacy-Focused**: Forward Email is built with privacy at its core, minimizing data retention and focusing on secure transmission.
@@ -103,7 +103,7 @@ Confirm enabling the firewall when prompted.
 
 Running Listmonk over HTTPS is crucial for security. You have two primary options:
 
-**Option A: Using Cloudflare Proxy (Recommended for Simplicity)**
+#### Option A: Using Cloudflare Proxy (Recommended for Simplicity)
 
 If your domain's DNS is managed by Cloudflare, you can leverage their proxy feature for easy HTTPS.
 
@@ -114,7 +114,7 @@ If your domain's DNS is managed by Cloudflare, you can leverage their proxy feat
    ```
    This makes Listmonk accessible internally on port 80, which Cloudflare can then proxy and secure with HTTPS.
 
-**Option B: Using a Reverse Proxy (Nginx, Caddy, etc.)**
+#### Option B: Using a Reverse Proxy (Nginx, Caddy, etc.)
 
 Alternatively, you can set up a reverse proxy like Nginx or Caddy on your VPS to handle HTTPS termination and proxy requests to Listmonk (running on port 9000 by default).
 
@@ -170,7 +170,7 @@ Bounce processing allows Listmonk to automatically handle emails that couldn't b
 2. Navigate to **Domains**, select the domain you are using for sending, and go to its **Settings** page.
 3. Scroll down to the **Bounce Webhook URL** section.
 4. Enter the following URL, replacing `<your_listmonk_domain>` with the actual domain or subdomain where your Listmonk instance is accessible:
-   ```
+   ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
    *Example*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
