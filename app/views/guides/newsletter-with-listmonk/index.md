@@ -1,231 +1,246 @@
-# Create and Manage Newsletters with Listmonk
+# Listmonk with Forward Email for Secure Newsletter Delivery
 
 
 ## Table of Contents
 
 * [Overview](#overview)
+* [Why Listmonk and Forward Email?](#why-listmonk-and-forward-email)
 * [Prerequisites](#prerequisites)
-* [VPS Setup Tips](#vps-setup-tips)
-* [Install Listmonk](#install-listmonk)
-* [Enable SMTP in Forward Email](#enable-smtp-in-forward-email)
-* [Configure Forward Email as SMTP](#configure-forward-email-as-smtp)
-* [Configure Bounce Processing](#configure-bounce-processing)
-  * [Changes in Forward Email](#changes-in-forward-email)
-  * [Changes in Listmonk](#changes-in-listmonk)
-  * [Additional Notes](#additional-notes)
-* [Create a Mailing List and Campaign in Listmonk](#create-a-mailing-list-and-campaign-in-listmonk)
+* [Installation](#installation)
+  * [1. Update Your Server](#1-update-your-server)
+  * [2. Install Dependencies](#2-install-dependencies)
+  * [3. Download Listmonk Configuration](#3-download-listmonk-configuration)
+  * [4. Configure Firewall (UFW)](#4-configure-firewall-ufw)
+  * [5. Configure HTTPS Access](#5-configure-https-access)
+  * [6. Start Listmonk](#6-start-listmonk)
+  * [7. Configure Forward Email SMTP in Listmonk](#7-configure-forward-email-smtp-in-listmonk)
+  * [8. Configure Bounce Processing](#8-configure-bounce-processing)
+* [Testing](#testing)
   * [Create a Mailing List](#create-a-mailing-list)
   * [Add Subscribers](#add-subscribers)
   * [Create and Send a Campaign](#create-and-send-a-campaign)
-* [Testing and Verification](#testing-and-verification)
-* [Notes for Developers](#notes-for-developers)
+* [Verification](#verification)
+* [Developer Notes](#developer-notes)
 * [Conclusion](#conclusion)
 
 
 ## Overview
 
-This guide walks developers through setting up a newsletter and mailing list system using [Listmonk](https://listmonk.app/) for campaign management and [Forward Email](https://forwardemail.net/) as the SMTP provider for secure and reliable email delivery.
+This guide provides developers with step-by-step instructions for setting up [Listmonk](https://listmonk.app/), a powerful open-source newsletter and mailing list manager, to use [Forward Email](https://forwardemail.net/) as its SMTP provider. This combination allows you to manage your campaigns effectively while ensuring secure, private, and reliable email delivery.
 
-| Component         | Responsibility                                                                                         |
-| :---------------- | :----------------------------------------------------------------------------------------------------- |
-| **Listmonk**      | Manages subscribers, mailing lists, campaign creation, and scheduling.                                 |
-| **Forward Email** | Provides SMTP service for sending emails and enforces built-in email security (SPF, DKIM, DMARC, TLS). |
+* **Listmonk**: Handles subscriber management, list organization, campaign creation, and performance tracking.
+* **Forward Email**: Acts as the secure SMTP server, handling the actual sending of emails with built-in security features like SPF, DKIM, DMARC, and TLS encryption.
 
-You will use Listmonk to **manage your audience and newsletters**, while Forward Email **handles email delivery and security**.
+By integrating these two, you retain full control over your data and infrastructure while leveraging Forward Email's robust delivery system.
 
----
+
+## Why Listmonk and Forward Email?
+
+* **Open Source**: Both Listmonk and the principles behind Forward Email emphasize transparency and control. You host Listmonk yourself, owning your data.
+* **Privacy-Focused**: Forward Email is built with privacy at its core, minimizing data retention and focusing on secure transmission.
+* **Cost-Effective**: Listmonk is free, and Forward Email offers generous free tiers and affordable paid plans, making this a budget-friendly solution.
+* **Scalability**: Listmonk is highly performant, and Forward Email's infrastructure is designed for reliable delivery at scale.
+* **Developer-Friendly**: Listmonk offers a robust API, and Forward Email provides straightforward SMTP integration and webhooks.
 
 
 ## Prerequisites
 
-* A VPS (Virtual Private Server) with at least:
-  * 1 CPU
-  * 1 GB RAM (2 GB recommended)
-  * Ubuntu 20.04+ or similar Linux distro
-* A domain name with control over DNS records
-* An account with [Forward Email](https://forwardemail.net/)
-* Basic Linux server administration knowledge
+Before you begin, ensure you have the following:
 
----
+* A Virtual Private Server (VPS) running a recent Linux distribution (Ubuntu 20.04+ recommended) with at least 1 CPU and 1GB RAM (2GB recommended).
+  * Need a provider? Check out the [recommended VPS list](https://github.com/forwardemail/awesome-mail-server-providers).
+* A domain name that you control (DNS access required).
+* An active account with [Forward Email](https://forwardemail.net/).
+* Root or `sudo` access to your VPS.
+* Basic familiarity with Linux command-line operations.
 
 
-## VPS Setup Tips
+## Installation
 
-1. **Update your system:**
+These steps guide you through installing Listmonk using Docker and Docker Compose on your VPS.
 
+### 1. Update Your Server
+
+Ensure your system's package list and installed packages are up-to-date.
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### 2. Install Dependencies
+
+Install Docker, Docker Compose, and UFW (Uncomplicated Firewall).
+
+```bash
+sudo apt install -y docker.io docker-compose ufw
+```
+
+### 3. Download Listmonk Configuration
+
+Create a directory for Listmonk and download the official `docker-compose.yml` file.
+
+```bash
+mkdir listmonk && cd listmonk
+curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/master/docker-compose.yml
+```
+
+This file defines the Listmonk application container and its required PostgreSQL database container.
+
+### 4. Configure Firewall (UFW)
+
+Allow essential traffic (SSH, HTTP, HTTPS) through the firewall. If your SSH runs on a non-standard port, adjust accordingly.
+
+```bash
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+```
+
+Confirm enabling the firewall when prompted.
+
+### 5. Configure HTTPS Access
+
+Running Listmonk over HTTPS is crucial for security. You have two primary options:
+
+**Option A: Using Cloudflare Proxy (Recommended for Simplicity)**
+
+If your domain's DNS is managed by Cloudflare, you can leverage their proxy feature for easy HTTPS.
+
+1. **Point DNS**: Create an `A` record in Cloudflare for your Listmonk subdomain (e.g., `listmonk.yourdomain.com`) pointing to your VPS IP address. Ensure the **Proxy status** is set to **Proxied** (orange cloud).
+2. **Modify Docker Compose**: Edit the `docker-compose.yml` file you downloaded:
    ```bash
-   sudo apt update && sudo apt upgrade -y
+   sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
+   This makes Listmonk accessible internally on port 80, which Cloudflare can then proxy and secure with HTTPS.
 
-2. **Install necessary packages:**
+**Option B: Using a Reverse Proxy (Nginx, Caddy, etc.)**
 
-   ```bash
-   sudo apt install -y docker.io docker-compose
+Alternatively, you can set up a reverse proxy like Nginx or Caddy on your VPS to handle HTTPS termination and proxy requests to Listmonk (running on port 9000 by default).
+
+* Keep the default `ports: - "127.0.0.1:9000:9000"` in `docker-compose.yml` to ensure Listmonk is only accessible locally.
+* Configure your chosen reverse proxy to listen on ports 80 and 443, handle SSL certificate acquisition (e.g., via Let's Encrypt), and forward traffic to `http://127.0.0.1:9000`.
+* Detailed reverse proxy setup is beyond this guide's scope, but many tutorials are available online.
+
+### 6. Start Listmonk
+
+Navigate back to your `listmonk` directory (if you aren't already there) and start the containers in detached mode.
+
+```bash
+cd ~/listmonk # Or the directory where you saved docker-compose.yml
+docker compose up -d
+```
+
+Docker will download the necessary images and start the Listmonk application and database containers. It might take a minute or two the first time.
+
+✅ **Access Listmonk**: You should now be able to access the Listmonk web interface via the domain you configured (e.g., `https://listmonk.yourdomain.com`).
+
+### 7. Configure Forward Email SMTP in Listmonk
+
+Next, configure Listmonk to send emails using your Forward Email account.
+
+1. **Enable SMTP in Forward Email**: Ensure you have generated SMTP credentials within your Forward Email account dashboard. Follow the [Forward Email guide to send email with a custom domain via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) if you haven't already.
+2. **Configure Listmonk**: Log in to your Listmonk admin panel.
+   * Navigate to **Settings -> SMTP**.
+
+   * Listmonk has built-in support for Forward Email. Select **ForwardEmail** from the provider list, or manually enter the following details:
+
+     | Setting           | Value                                                                                                               |
+     | :---------------- | :------------------------------------------------------------------------------------------------------------------ |
+     | **Host**          | `smtp.forwardemail.net`                                                                                             |
+     | **Port**          | `465`                                                                                                               |
+     | **Auth protocol** | `LOGIN`                                                                                                             |
+     | **Username**      | Your Forward Email **SMTP username**                                                                                |
+     | **Password**      | Your Forward Email **SMTP password**                                                                                |
+     | **TLS**           | `SSL/TLS`                                                                                                           |
+     | **From e-mail**   | Your desired `From` address (e.g., `newsletter@yourdomain.com`). Ensure this domain is configured in Forward Email. |
+
+   * **Important**: Always use Port `465` with `SSL/TLS` for secure connections with Forward Email. Do not use STARTTLS (port 587).
+
+   * Click **Save**.
+3. **Send Test Email**: Use the "Send Test E-mail" button within the SMTP settings page. Enter a recipient address you can access and click **Send**. Verify that the email arrives in the recipient's inbox.
+
+### 8. Configure Bounce Processing
+
+Bounce processing allows Listmonk to automatically handle emails that couldn't be delivered (e.g., due to invalid addresses). Forward Email provides a webhook to notify Listmonk about bounces.
+
+#### Forward Email Setup
+
+1. Log in to your [Forward Email Dashboard](https://forwardemail.net/).
+2. Navigate to **Domains**, select the domain you are using for sending, and go to its **Settings** page.
+3. Scroll down to the **Bounce Webhook URL** section.
+4. Enter the following URL, replacing `<your_listmonk_domain>` with the actual domain or subdomain where your Listmonk instance is accessible:
    ```
-
-3. **Set up a basic firewall (UFW):**
-
-   ```bash
-   sudo ufw allow ssh
-   sudo ufw allow http
-   sudo ufw allow https
-   sudo ufw enable
+   https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
+   *Example*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
+5. Scroll down further to the **Webhook Signature Payload Verification Key** section.
+6. **Copy** the generated verification key. You will need this in Listmonk.
+7. Save the changes in your Forward Email domain settings.
 
-> \[!NOTE] Note on HTTPS
-> You may wish to configure a reverse proxy (e.g., with Nginx or Caddy) to provide HTTPS support for your Listmonk instance.
->
-> Alternatively, if you are using **Cloudflare** for your DNS, you can enable the **proxy** setting for your VPS IP to get automatic HTTPS support through Cloudflare.
->
-> * To do this, you'll need to modify your Listmonk Docker Compose file:
->   * Change the app's port mapping from `9000:9000` to `80:9000`.
->   * This allows Cloudflare to route traffic to standard HTTP (port 80) while still securing it externally.
->
-> Example Docker Compose change:
->
-> ```yaml
-> ports:
->   - "80:9000"
-> ```
->
-> Make sure to restart your containers (`docker compose down && docker compose up -d`) after making this change.
+#### Listmonk Setup
 
----
+1. In your Listmonk admin panel, navigate to **Settings -> Bounces**.
+2. Enable **Enable bounce processing**.
+3. Enable **Enable bounce webhooks**.
+4. Scroll down to the **Webhook Providers** section.
+5. Enable **Forward Email**.
+6. Paste the **Webhook Signature Payload Verification Key** you copied from the Forward Email dashboard into the **Forward Email Key** field.
+7. Click **Save** at the bottom of the page.
+8. Bounce processing is now configured! When Forward Email detects a bounce for an email sent by Listmonk, it will notify your Listmonk instance via the webhook, and Listmonk will mark the subscriber accordingly.
+9. Complete the steps below in [Testing](#testing) to ensure everything is working.
 
 
-## Install Listmonk
+## Testing
 
-1. **Download Listmonk:**
-
-   ```bash
-   # Download the compose file to the current directory.
-   curl -LO https://github.com/knadh/listmonk/raw/master/docker-compose.yml
-   ```
-
-2. **Start listmonk components**
-
-   ```bash
-   # Run the services in the background.
-   docker compose up -d
-   ```
-
-✅ Listmonk is now running on `http://<your-server-ip>:<port>`.
-
----
-
-
-## Enable SMTP in Forward Email
-
-Follow [this guide](https://forwardemail.net/guides/send-email-with-custom-domain-smtp) to enable SMTP for your domains alias if you haven't done so already.
-
-> !\[IMPORTANT]
-> Please ensure you have read our [Terms](https://forwardemail.net/terms), [Privacy Policy](https://forwardemail.net/privacy), and [Outbound SMTP Limits](https://forwardemail.net/faq#what-are-your-outbound-smtp-limits) – your use is considered acknowledgement and agreement.
->
-> Please note that in order to maintain IP reputation and ensure deliverability, Forward Email has a manual review process on a per-domain basis for outbound SMTP approval. Email <support@forwardemail.net> or open a [help request](https://forwardemail.net/help) for approval. This typically takes less than 24 hours, with most requests being honored within 1-2 hours. In the near future we aim to make this process instant with additional spam controls and alerting. This process ensures that your emails reach the inbox and your messages don't get marked as spam.
-
----
-
-
-## Configure Forward Email as SMTP
-
-Listmonk includes a built-in option for **Forward Email** in the SMTP settings tab.\
-You simply need to populate the fields as follows:
-
-| Setting           | Value                        |
-| :---------------- | :--------------------------- |
-| **Host**          | `smtp.forwardemail.net`      |
-| **Port**          | `465`                        |
-| **Auth protocol** | `LOGIN`                      |
-| **Username**      | Your alias **SMTP username** |
-| **Password**      | Your alias **SMTP password** |
-| **TLS**           | `SSL/TLS`                    |
-
-✅ Using these settings ensures secure and authenticated email sending through Forward Email.
-
----
-
-
-## Configure Bounce Processing
-
-> !\[NOTE]
-> Bounce processing in email is the process of handling emails that couldn’t be delivered to the recipient.
->
-> When you send an email, sometimes it can’t reach the destination inbox. When that happens, the receiving email server sends back a bounce message (also called a Non-Delivery Report or NDR) to let you know delivery failed. Bounce processing is the system or logic you have that catches those bounce messages, reads them, and reacts to them.
-
-### Changes in Forward Email
-
-In the Forward Email dashboard, under your Domains Settings page, navigate down to the **Bounce Webhook URL** section and add `https://<your_listmonk_domain>/webhooks/service/forwardemail`. This will tell forward email when processing a bounced email to send a webhook (`POST` request) back to listmonk to process.
-
-Just below this section, is the **Webhook Signature Payload Verification Key** section. Copy this verification key which will be used in your listmonk settings described below.
-
-### Changes in Listmonk
-
-In listmonk, navigate to **Settings** -> **Bounces**.
-
-* Click the slider for **Enable bounce processing**.
-* Click the slider for **Enable bounce webhooks**.
-  * Scroll down and click the **Enable Forward Email**
-  * For **Forward Email Key**, input the **Webhook Signature Payload Verification Key** you copied from Forward Email dashboard referenced above.
-* Be sure to click Save.
-
-✅ You've successfully enabled bounce processing! When a campaign email is unable to deliver to it's destination email address, you will see bounce information in the campaign dashboard.
-
-### Additional Notes
-
-* **Username/Password**: You can generate or view your SMTP credentials in your [Forward Email dashboard](https://forwardemail.net/).
-* **TLS/SSL**: Always select **SSL/TLS** (not STARTTLS) for port 465 for best security.
-* **Testing**: After configuring, use Listmonk’s built-in "Send Test Email" function to verify SMTP setup before launching a real campaign.
-
----
-
-
-## Create a Mailing List and Campaign in Listmonk
+Here's a quick overview of core Listmonk functions:
 
 ### Create a Mailing List
 
-* Go to **Lists** → **New List** → Fill in name, type (public/private), and save.
+* Go to **Lists** in the sidebar.
+* Click **New List**.
+* Fill in the details (Name, Type: Public/Private, Description, Tags) and **Save**.
 
 ### Add Subscribers
 
-* **Manually** (through admin UI), **bulk CSV upload**, or **API**.
+* Navigate to the **Subscribers** section.
+* You can add subscribers:
+  * **Manually**: Click **New Subscriber**.
+  * **Import**: Click **Import Subscribers** to upload a CSV file.
+  * **API**: Use the Listmonk API for programmatic additions.
+* Assign subscribers to one or more lists during creation or import.
+* **Best Practice**: Use a double opt-in process. Configure this under **Settings -> Opt-in & Subscriptions**.
 
 ### Create and Send a Campaign
 
-* Create a new campaign.
-* Write your email content (HTML or plain text).
-* Attach the campaign to one or more mailing lists.
-* Send a **test email** first!
-* Launch the campaign when ready.
-
----
-
-
-## Testing and Verification
-
-* Ensure emails are **sent successfully** via Forward Email's SMTP server.
-* Verify email security headers using tools like [Mail-Tester](https://www.mail-tester.com/).
-* Monitor Listmonk’s delivery and bounce reports.
-* Use Forward Email’s dashboard/logs for any SMTP delivery issues.
-
----
+* Go to **Campaigns** -> **New Campaign**.
+* Fill in the campaign details (Name, Subject, From Email, List(s) to send to).
+* Choose your content type (Rich Text/HTML, Plain Text, Raw HTML).
+* Compose your email content. You can use template variables like `{{ .Subscriber.Email }}` or `{{ .Subscriber.FirstName }}`.
+* **Always send a test email first!** Use the "Send Test" option to preview the email in your inbox.
+* Once satisfied, click **Start Campaign** to send immediately or schedule it for later.
 
 
-## Notes for Developers
+## Verification
 
-* **Templates**: Listmonk supports Go templates (`{{ .Subscriber.Email }}`) for dynamic email content.
-* **APIs**: Listmonk is fully API-driven for programmatic list, subscriber, and campaign management.
-* **Scalability**: Forward Email handles security and high deliverability at scale; Listmonk can be horizontally scaled if needed.
-* **Best Practice**: Always use double opt-in workflows for mailing lists to ensure compliance and reduce bounces.
+* **SMTP Delivery**: Regularly send test emails via Listmonk's SMTP settings page and test campaigns to ensure emails are delivered correctly.
+* **Bounce Handling**: Send a test campaign to a known invalid email address (e.g., `bounce-test@yourdomain.com` if you don't have a real one handy, though results may vary). Check the campaign stats in Listmonk after a short while to see if the bounce is registered.
+* **Email Headers**: Use tools like [Mail-Tester](https://www.mail-tester.com/) or inspect email headers manually to verify that SPF, DKIM, and DMARC are passing, indicating proper setup through Forward Email.
+* **Forward Email Logs**: Check your Forward Email dashboard logs if you suspect delivery issues originating from the SMTP server.
 
----
+
+## Developer Notes
+
+* **Templating**: Listmonk uses Go's templating engine. Explore its documentation for advanced personalization: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **API**: Listmonk provides a comprehensive REST API for managing lists, subscribers, campaigns, templates, and more. Find the API documentation link in your Listmonk instance's footer.
+* **Custom Fields**: Define custom subscriber fields under **Settings -> Subscriber Fields** to store additional data.
+* **Webhooks**: Besides bounces, Listmonk can send webhooks for other events (e.g., subscriptions), allowing integration with other systems.
 
 
 ## Conclusion
 
-By combining Listmonk and Forward Email:
+By integrating the self-hosted power of Listmonk with the secure, privacy-respecting delivery of Forward Email, you create a robust and ethical email marketing platform. You maintain full ownership of your audience data while benefiting from high deliverability and automated security features.
 
-* You **own your subscribers and campaigns**.
-* You **control your email deliverability and security**.
-* You have a **cost-effective, scalable, and privacy-focused** system.
+This setup provides a scalable, cost-effective, and developer-friendly alternative to proprietary email services, aligning perfectly with the ethos of open-source software and user privacy.
 
-Happy sending! 🚀
+Happy Sending! 🚀
