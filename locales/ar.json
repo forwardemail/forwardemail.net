@@ -13434,5 +13434,166 @@
   "You have a": "لديك",
   "cost-effective, scalable, and privacy-focused": "فعّالة من حيث التكلفة، وقابلة للتطوير، وتركز على الخصوصية",
   "system.": "نظام.",
-  "Happy sending! 🚀": "إرسال سعيد! 🚀"
+  "Happy sending! 🚀": "إرسال سعيد! 🚀",
+  "Listmonk with Forward Email for Secure Newsletter Delivery": "Listmonk مع إعادة توجيه البريد الإلكتروني لتسليم النشرة الإخبارية بشكل آمن",
+  "Why Listmonk and Forward Email": "لماذا Listmonk وإعادة توجيه البريد الإلكتروني",
+  "1. Update Your Server": "1. تحديث الخادم الخاص بك",
+  "2. Install Dependencies": "2. تثبيت التبعيات",
+  "3. Download Listmonk Configuration": "3. تنزيل تكوين Listmonk",
+  "4. Configure Firewall (UFW)": "4. تكوين جدار الحماية (UFW)",
+  "5. Configure HTTPS Access": "5. تكوين الوصول عبر HTTPS",
+  "6. Start Listmonk": "6. ابدأ Listmonk",
+  "7. Configure Forward Email SMTP in Listmonk": "7. تكوين إعادة توجيه البريد الإلكتروني SMTP في Listmonk",
+  "8. Configure Bounce Processing": "8. تكوين معالجة الارتداد",
+  "Verification": "تَحَقّق",
+  "Developer Notes": "ملاحظات المطور",
+  "This guide provides developers with step-by-step instructions for setting up": "يوفر هذا الدليل للمطورين تعليمات خطوة بخطوة لإعداد",
+  ", a powerful open-source newsletter and mailing list manager, to use": "، وهو مدير قوي مفتوح المصدر للنشرات الإخبارية وقوائم البريد، للاستخدام",
+  "as its SMTP provider. This combination allows you to manage your campaigns effectively while ensuring secure, private, and reliable email delivery.": "كمزود SMTP. يتيح لك هذا المزيج إدارة حملاتك بفعالية مع ضمان تسليم بريد إلكتروني آمن وخاص وموثوق.",
+  ": Handles subscriber management, list organization, campaign creation, and performance tracking.": ":يتولى إدارة المشتركين وتنظيم القائمة وإنشاء الحملات وتتبع الأداء.",
+  ": Acts as the secure SMTP server, handling the actual sending of emails with built-in security features like SPF, DKIM, DMARC, and TLS encryption.": ":يعمل كخادم SMTP آمن، ويتولى إرسال رسائل البريد الإلكتروني الفعلية باستخدام ميزات الأمان المضمنة مثل تشفير SPF وDKIM وDMARC وTLS.",
+  "By integrating these two, you retain full control over your data and infrastructure while leveraging Forward Email's robust delivery system.": "من خلال دمج هذين النظامين، يمكنك الاحتفاظ بالتحكم الكامل في بياناتك وبنيتك الأساسية مع الاستفادة من نظام التسليم القوي الخاص بـ Forward Email.",
+  ": Both Listmonk and the principles behind Forward Email emphasize transparency and control. You host Listmonk yourself, owning your data.": ":يؤكد كلٌّ من Listmonk ومبادئ Forward Email على الشفافية والتحكم. أنت تستضيف Listmonk بنفسك، وتملك بياناتك.",
+  "Privacy-Focused": "التركيز على الخصوصية",
+  ": Forward Email is built with privacy at its core, minimizing data retention and focusing on secure transmission.": "تم تصميم البريد الإلكتروني الأمامي مع مراعاة الخصوصية في جوهره، مما يقلل من الاحتفاظ بالبيانات ويركز على النقل الآمن.",
+  "Cost-Effective": "فعالة من حيث التكلفة",
+  ": Listmonk is free, and Forward Email offers generous free tiers and affordable paid plans, making this a budget-friendly solution.": ":Listmonk مجاني، ويقدم Forward Email طبقات مجانية سخية وخطط مدفوعة بأسعار معقولة، مما يجعل هذا حلاً صديقًا للميزانية.",
+  ": Listmonk is highly performant, and Forward Email's infrastructure is designed for reliable delivery at scale.": ":يتميز Listmonk بالأداء العالي، كما تم تصميم البنية الأساسية لـ Forward Email للتسليم الموثوق به على نطاق واسع.",
+  "Developer-Friendly": "مناسب للمطورين",
+  ": Listmonk offers a robust API, and Forward Email provides straightforward SMTP integration and webhooks.": ":يوفر Listmonk واجهة برمجة تطبيقات قوية، ويوفر Forward Email تكاملاً مباشرًا مع SMTP وخطافات الويب.",
+  "Before you begin, ensure you have the following:": "قبل أن تبدأ، تأكد من أن لديك ما يلي:",
+  "A Virtual Private Server (VPS) running a recent Linux distribution (Ubuntu 20.04+ recommended) with at least 1 CPU and 1GB RAM (2GB recommended).": "خادم خاص افتراضي (VPS) يعمل بنظام Linux حديث (يوصى باستخدام Ubuntu 20.04+) مع وحدة معالجة مركزية واحدة على الأقل وذاكرة وصول عشوائي (RAM) بحجم 1 جيجابايت (يوصى باستخدام 2 جيجابايت).",
+  "Need a provider? Check out the": "هل تحتاج إلى مزود خدمة؟ تحقق من",
+  "recommended VPS list": "قائمة VPS الموصى بها",
+  "A domain name that you control (DNS access required).": "اسم المجال الذي تتحكم فيه (يتطلب الوصول إلى DNS).",
+  "An active account with": "حساب نشط مع",
+  "Root or": "الجذر أو",
+  "access to your VPS.": "الوصول إلى VPS الخاص بك.",
+  "Basic familiarity with Linux command-line operations.": "المعرفة الأساسية بعمليات سطر الأوامر في لينكس.",
+  "These steps guide you through installing Listmonk using Docker and Docker Compose on your VPS.": "ترشدك هذه الخطوات خلال عملية تثبيت Listmonk باستخدام Docker وDocker Compose على VPS الخاص بك.",
+  "Ensure your system's package list and installed packages are up-to-date.": "تأكد من أن قائمة حزم النظام لديك والحزم المثبتة محدثة.",
+  "Install Docker, Docker Compose, and UFW (Uncomplicated Firewall).": "قم بتثبيت Docker وDocker Compose وUFW (جدار الحماية غير المعقد).",
+  "Create a directory for Listmonk and download the official": "إنشاء دليل لـ Listmonk وتنزيل الدليل الرسمي",
+  "file.": "ملف.",
+  "This file defines the Listmonk application container and its required PostgreSQL database container.": "يقوم هذا الملف بتعريف حاوية تطبيق Listmonk وحاوية قاعدة بيانات PostgreSQL المطلوبة لها.",
+  "Allow essential traffic (SSH, HTTP, HTTPS) through the firewall. If your SSH runs on a non-standard port, adjust accordingly.": "اسمح بمرور البيانات الأساسية (SSH، HTTP، HTTPS) عبر جدار الحماية. إذا كان منفذ SSH يعمل على منفذ غير قياسي، فاضبطه وفقًا لذلك.",
+  "Confirm enabling the firewall when prompted.": "قم بتأكيد تمكين جدار الحماية عند مطالبتك بذلك.",
+  "Running Listmonk over HTTPS is crucial for security. You have two primary options:": "يُعد تشغيل Listmonk عبر HTTPS أمرًا بالغ الأهمية للأمان. لديك خياران رئيسيان:",
+  "Option A: Using Cloudflare Proxy (Recommended for Simplicity)": "الخيار أ: استخدام Cloudflare Proxy (موصى به للبساطة)",
+  "If your domain's DNS is managed by Cloudflare, you can leverage their proxy feature for easy HTTPS.": "إذا كان DNS الخاص بنطاقك يُدار بواسطة Cloudflare، فيمكنك الاستفادة من ميزة الوكيل الخاصة بهم لتسهيل استخدام HTTPS.",
+  "Point DNS": "نقطة DNS",
+  ": Create an": ":إنشاء",
+  "record in Cloudflare for your Listmonk subdomain (e.g.,": "سجل في Cloudflare لنطاقك الفرعي Listmonk (على سبيل المثال،",
+  ") pointing to your VPS IP address. Ensure the": ") يشير إلى عنوان IP الخاص بخادم VPS الخاص بك. تأكد من",
+  "Proxy status": "حالة الوكيل",
+  "is set to": "تم ضبطه على",
+  "Proxied": "وكيل",
+  "(orange cloud).": "(سحابة برتقالية).",
+  "Modify Docker Compose": "تعديل Docker Compose",
+  ": Edit the": ":تعديل",
+  "file you downloaded:": "الملف الذي قمت بتنزيله:",
+  "This makes Listmonk accessible internally on port 80, which Cloudflare can then proxy and secure with HTTPS.": "يؤدي هذا إلى جعل Listmonk متاحًا داخليًا على المنفذ 80، والذي يمكن لـ Cloudflare بعد ذلك توكيله وتأمينه باستخدام HTTPS.",
+  "Option B: Using a Reverse Proxy (Nginx, Caddy, etc.)": "الخيار ب: استخدام وكيل عكسي (Nginx، Caddy، وما إلى ذلك)",
+  "Alternatively, you can set up a reverse proxy like Nginx or Caddy on your VPS to handle HTTPS termination and proxy requests to Listmonk (running on port 9000 by default).": "بدلاً من ذلك، يمكنك إعداد وكيل عكسي مثل Nginx أو Caddy على VPS الخاص بك للتعامل مع إنهاء HTTPS وطلبات الوكيل إلى Listmonk (يعمل على المنفذ 9000 بشكل افتراضي).",
+  "Keep the default": "الحفاظ على الوضع الافتراضي",
+  "in": "في",
+  "to ensure Listmonk is only accessible locally.": "للتأكد من إمكانية الوصول إلى Listmonk محليًا فقط.",
+  "Configure your chosen reverse proxy to listen on ports 80 and 443, handle SSL certificate acquisition (e.g., via Let's Encrypt), and forward traffic to": "قم بتكوين الوكيل العكسي الذي اخترته للاستماع على المنفذين 80 و443، والتعامل مع اكتساب شهادة SSL (على سبيل المثال، عبر Let's Encrypt)، وإعادة توجيه حركة المرور إلى",
+  "Detailed reverse proxy setup is beyond this guide's scope, but many tutorials are available online.": "إن إعداد الوكيل العكسي التفصيلي يتجاوز نطاق هذا الدليل، ولكن هناك العديد من البرامج التعليمية المتاحة عبر الإنترنت.",
+  "Navigate back to your": "العودة إلى موقعك",
+  "directory (if you aren't already there) and start the containers in detached mode.": "الدليل (إذا لم تكن موجودًا هناك بالفعل) وابدأ تشغيل الحاويات في الوضع المنفصل.",
+  "Docker will download the necessary images and start the Listmonk application and database containers. It might take a minute or two the first time.": "سيقوم Docker بتنزيل الصور اللازمة وبدء تشغيل تطبيق Listmonk وحاويات قاعدة البيانات. قد يستغرق الأمر دقيقة أو دقيقتين في المرة الأولى.",
+  "Access Listmonk": "الوصول إلى Listmonk",
+  ": You should now be able to access the Listmonk web interface via the domain you configured (e.g.,": ":يجب أن تكون قادرًا الآن على الوصول إلى واجهة الويب Listmonk عبر المجال الذي قمت بتكوينه (على سبيل المثال،",
+  "Next, configure Listmonk to send emails using your Forward Email account.": "بعد ذلك، قم بتكوين Listmonk لإرسال رسائل البريد الإلكتروني باستخدام حساب إعادة توجيه البريد الإلكتروني الخاص بك.",
+  ": Ensure you have generated SMTP credentials within your Forward Email account dashboard. Follow the": "تأكد من إنشاء بيانات اعتماد SMTP ضمن لوحة معلومات حساب إعادة توجيه البريد الإلكتروني. اتبع التعليمات",
+  "Forward Email guide to send email with a custom domain via SMTP": "دليل إعادة توجيه البريد الإلكتروني لإرسال البريد الإلكتروني باستخدام نطاق مخصص عبر SMTP",
+  "if you haven't already.": "إذا لم تكن قد فعلت ذلك بالفعل.",
+  "Configure Listmonk": "تكوين Listmonk",
+  ": Log in to your Listmonk admin panel.": ":قم بتسجيل الدخول إلى لوحة إدارة Listmonk الخاصة بك.",
+  "Navigate to": "انتقل إلى",
+  "Settings -> SMTP": "الإعدادات -> SMTP",
+  "Listmonk has built-in support for Forward Email. Select": "يدعم Listmonk إعادة توجيه البريد الإلكتروني. اختر",
+  "ForwardEmail": "إعادة توجيه البريد الإلكتروني",
+  "from the provider list, or manually enter the following details:": "من قائمة مقدمي الخدمة، أو أدخل التفاصيل التالية يدويًا:",
+  "Your Forward Email": "بريدك الإلكتروني المُعاد توجيهه",
+  "From e-mail": "من البريد الإلكتروني",
+  "Your desired": "المطلوب منك",
+  "address (e.g.,": "العنوان (على سبيل المثال،",
+  "). Ensure this domain is configured in Forward Email.": "). تأكد من تكوين هذا المجال في إعادة توجيه البريد الإلكتروني.",
+  ": Always use Port": ":استخدم المنفذ دائمًا",
+  "for secure connections with Forward Email. Do not use STARTTLS (port 587).": "للاتصالات الآمنة مع إعادة توجيه البريد الإلكتروني. لا تستخدم STARTTLS (المنفذ ٥٨٧).",
+  "Send Test Email": "إرسال بريد إلكتروني اختباري",
+  ": Use the \"Send Test E-mail\" button within the SMTP settings page. Enter a recipient address you can access and click": "استخدم زر \"إرسال بريد إلكتروني تجريبي\" في صفحة إعدادات SMTP. أدخل عنوان مستلم يمكنك الوصول إليه، ثم انقر على",
+  "Send": "يرسل",
+  ". Verify that the email arrives in the recipient's inbox.": "تأكد من وصول البريد الإلكتروني إلى صندوق الوارد الخاص بالمستلم.",
+  "Bounce processing allows Listmonk to automatically handle emails that couldn't be delivered (e.g., due to invalid addresses). Forward Email provides a webhook to notify Listmonk about bounces.": "تتيح معالجة الارتدادات لـ Listmonk التعامل تلقائيًا مع رسائل البريد الإلكتروني التي تعذّر تسليمها (مثلاً، بسبب عناوين غير صالحة). يوفر إعادة توجيه البريد الإلكتروني رابطًا ويب لإخطار Listmonk بالارتدادات.",
+  "Forward Email Setup": "إعداد إعادة توجيه البريد الإلكتروني",
+  "Log in to your": "تسجيل الدخول إلى حسابك",
+  "Forward Email Dashboard": "لوحة معلومات إعادة توجيه البريد الإلكتروني",
+  ", select the domain you are using for sending, and go to its": "، حدد المجال الذي تستخدمه للإرسال، وانتقل إلى",
+  "Scroll down to the": "انتقل إلى الأسفل إلى",
+  "section.": "قسم.",
+  "Enter the following URL, replacing": "أدخل عنوان URL التالي، مع استبداله بـ",
+  "with the actual domain or subdomain where your Listmonk instance is accessible:": "مع المجال الفعلي أو المجال الفرعي الذي يمكن الوصول إليه من خلاله إلى مثيل Listmonk الخاص بك:",
+  "Scroll down further to the": "قم بالتمرير إلى الأسفل أكثر إلى",
+  "the generated verification key. You will need this in Listmonk.": "مفتاح التحقق المُولّد. ستحتاجه في Listmonk.",
+  "Save the changes in your Forward Email domain settings.": "احفظ التغييرات في إعدادات نطاق إعادة توجيه البريد الإلكتروني الخاص بك.",
+  "Listmonk Setup": "إعداد Listmonk",
+  "In your Listmonk admin panel, navigate to": "في لوحة إدارة Listmonk الخاصة بك، انتقل إلى",
+  "Settings -> Bounces": "الإعدادات -> الارتدادات",
+  "Enable": "يُمكَِن",
+  "Webhook Providers": "مزودو خدمة الويب هوك",
+  "Paste the": "الصق",
+  "you copied from the Forward Email dashboard into the": "لقد قمت بنسخها من لوحة معلومات إعادة توجيه البريد الإلكتروني إلى",
+  "field.": "مجال.",
+  "at the bottom of the page.": "في أسفل الصفحة.",
+  "Bounce processing is now configured! When Forward Email detects a bounce for an email sent by Listmonk, it will notify your Listmonk instance via the webhook, and Listmonk will mark the subscriber accordingly.": "تم الآن إعداد معالجة الارتداد! عندما يكتشف \"إعادة توجيه البريد الإلكتروني\" ارتدادًا لرسالة بريد إلكتروني مرسلة من Listmonk، سيُعلم مثيل Listmonk الخاص بك عبر خطاف الويب، وسيُحدد Listmonk المشترك بناءً على ذلك.",
+  "Complete the steps below in": "أكمل الخطوات أدناه",
+  "to ensure everything is working.": "للتأكد من أن كل شيء يعمل.",
+  "Here's a quick overview of core Listmonk functions:": "فيما يلي نظرة عامة سريعة على وظائف Listmonk الأساسية:",
+  "in the sidebar.": "في الشريط الجانبي.",
+  "Fill in the details (Name, Type: Public/Private, Description, Tags) and": "قم بملء التفاصيل (الاسم، النوع: عام/خاص، الوصف، العلامات) و",
+  "Navigate to the": "انتقل إلى",
+  "Subscribers": "المشتركين",
+  "You can add subscribers:": "يمكنك إضافة المشتركين:",
+  ": Click": ": انقر",
+  "New Subscriber": "مشترك جديد",
+  "Import": "يستورد",
+  "Import Subscribers": "استيراد المشتركين",
+  "to upload a CSV file.": "لتحميل ملف CSV.",
+  ": Use the Listmonk API for programmatic additions.": ":استخدم واجهة برمجة التطبيقات Listmonk للإضافات البرمجية.",
+  "Assign subscribers to one or more lists during creation or import.": "تعيين المشتركين لقائمة واحدة أو أكثر أثناء الإنشاء أو الاستيراد.",
+  ": Use a double opt-in process. Configure this under": ":استخدم عملية الاشتراك المزدوج. قم بتكوين هذا ضمن",
+  "Settings -> Opt-in & Subscriptions": "الإعدادات -> الاشتراك والاشتراكات",
+  "Campaigns": "الحملات",
+  "New Campaign": "حملة جديدة",
+  "Fill in the campaign details (Name, Subject, From Email, List(s) to send to).": "قم بملء تفاصيل الحملة (الاسم، الموضوع، البريد الإلكتروني، القائمة (القوائم) التي تريد الإرسال إليها).",
+  "Choose your content type (Rich Text/HTML, Plain Text, Raw HTML).": "اختر نوع المحتوى الخاص بك (نص غني/HTML، نص عادي، HTML خام).",
+  "Compose your email content. You can use template variables like": "صِغ محتوى بريدك الإلكتروني. يمكنك استخدام متغيرات القالب مثل",
+  "Always send a test email first!": "أرسل دائمًا بريدًا إلكترونيًا اختباريًا أولاً!",
+  "Use the \"Send Test\" option to preview the email in your inbox.": "استخدم خيار \"إرسال اختبار\" لمعاينة البريد الإلكتروني في صندوق الوارد الخاص بك.",
+  "Once satisfied, click": "بمجرد الرضا، انقر فوق",
+  "Start Campaign": "ابدأ الحملة",
+  "to send immediately or schedule it for later.": "لإرسالها على الفور أو جدولتها لاحقًا.",
+  "SMTP Delivery": "تسليم SMTP",
+  ": Regularly send test emails via Listmonk's SMTP settings page and test campaigns to ensure emails are delivered correctly.": ":أرسل رسائل بريد إلكتروني اختبارية بانتظام عبر صفحة إعدادات SMTP الخاصة بـ Listmonk واختبر الحملات للتأكد من تسليم رسائل البريد الإلكتروني بشكل صحيح.",
+  "Bounce Handling": "التعامل مع الارتداد",
+  ": Send a test campaign to a known invalid email address (e.g.,": ":أرسل حملة اختبار إلى عنوان بريد إلكتروني غير صالح معروف (على سبيل المثال،",
+  "if you don't have a real one handy, though results may vary). Check the campaign stats in Listmonk after a short while to see if the bounce is registered.": "إذا لم يكن لديك واحد حقيقي في متناول يدك، على الرغم من أن النتائج قد تختلف). تحقق من إحصائيات الحملة في Listmonk بعد فترة قصيرة لمعرفة ما إذا كان الارتداد مسجلاً.",
+  "Email Headers": "عناوين البريد الإلكتروني",
+  ": Use tools like": ":استخدم أدوات مثل",
+  "or inspect email headers manually to verify that SPF, DKIM, and DMARC are passing, indicating proper setup through Forward Email.": "أو افحص رؤوس البريد الإلكتروني يدويًا للتأكد من مرور SPF وDKIM وDMARC، مما يشير إلى الإعداد الصحيح من خلال إعادة توجيه البريد الإلكتروني.",
+  "Forward Email Logs": "سجلات إعادة توجيه البريد الإلكتروني",
+  ": Check your Forward Email dashboard logs if you suspect delivery issues originating from the SMTP server.": ":تحقق من سجلات لوحة معلومات إعادة توجيه البريد الإلكتروني إذا كنت تشك في وجود مشكلات في التسليم تنشأ من خادم SMTP.",
+  ": Listmonk uses Go's templating engine. Explore its documentation for advanced personalization:": "يستخدم Listmonk محرك قوالب Go. استكشف وثائقه لمزيد من التخصيص المتقدم:",
+  ": Listmonk provides a comprehensive REST API for managing lists, subscribers, campaigns, templates, and more. Find the API documentation link in your Listmonk instance's footer.": "يوفر Listmonk واجهة برمجة تطبيقات REST شاملة لإدارة القوائم والمشتركين والحملات والقوالب وغيرها. ابحث عن رابط وثائق واجهة برمجة التطبيقات في تذييل نسخة Listmonk الخاصة بك.",
+  "Custom Fields": "الحقول المخصصة",
+  ": Define custom subscriber fields under": ":قم بتحديد حقول المشترك المخصصة تحت",
+  "Settings -> Subscriber Fields": "الإعدادات -> حقول المشتركين",
+  "to store additional data.": "لتخزين البيانات الإضافية.",
+  ": Besides bounces, Listmonk can send webhooks for other events (e.g., subscriptions), allowing integration with other systems.": ":بالإضافة إلى الارتدادات، يمكن لـ Listmonk إرسال خطافات ويب لأحداث أخرى (على سبيل المثال، الاشتراكات)، مما يسمح بالتكامل مع أنظمة أخرى.",
+  "By integrating the self-hosted power of Listmonk with the secure, privacy-respecting delivery of Forward Email, you create a robust and ethical email marketing platform. You maintain full ownership of your audience data while benefiting from high deliverability and automated security features.": "بدمج قوة الاستضافة الذاتية من Listmonk مع خدمة Forward Email الآمنة والمحترمة للخصوصية، ستُنشئ منصة تسويق بريد إلكتروني قوية وأخلاقية. ستحتفظ بملكية كاملة لبيانات جمهورك، مع الاستفادة من قابلية توصيل عالية وميزات أمان آلية.",
+  "This setup provides a scalable, cost-effective, and developer-friendly alternative to proprietary email services, aligning perfectly with the ethos of open-source software and user privacy.": "يوفر هذا الإعداد بديلاً قابلاً للتطوير وفعّالاً من حيث التكلفة وصديقًا للمطورين لخدمات البريد الإلكتروني الاحتكارية، وهو يتماشى تمامًا مع مبادئ البرمجيات مفتوحة المصدر وخصوصية المستخدم.",
+  "Happy Sending! 🚀": "إرسال سعيد! 🚀"
 }
