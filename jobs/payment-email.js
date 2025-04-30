@@ -53,15 +53,13 @@ async function mapper(id) {
 
   const user = await Users.findOne({
     _id: payment.user,
-    // TODO: we want to send refund receipts even to banned customers (see below note)
-    [config.userFields.isBanned]: false,
     [config.userFields.hasVerifiedEmail]: true
   })
     .lean()
     .exec();
 
   if (!user) {
-    logger.info('User does not exist, not verified, or was banned');
+    logger.info('User does not exist or not verified');
     return;
   }
 

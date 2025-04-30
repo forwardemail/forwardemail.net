@@ -139,6 +139,7 @@ const signMessage = require('./sign-message');
 const isExpiredOrNewlyCreated = require('./is-expired-or-newly-created');
 const invalidateOtherSessions = require('./invalidate-other-sessions');
 const lodash = require('./lodash');
+const abusePreventionByUserId = require('./abuse-prevention-by-user-id');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -281,5 +282,6 @@ module.exports = {
   signMessage,
   isExpiredOrNewlyCreated,
   invalidateOtherSessions,
-  lodash
+  lodash,
+  abusePreventionByUserId
 };

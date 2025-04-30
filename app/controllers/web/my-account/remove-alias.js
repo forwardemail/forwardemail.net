@@ -7,6 +7,7 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 
+const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 const config = require('#config');
 const { Aliases } = require('#models');
 
@@ -30,6 +31,11 @@ async function removeAlias(ctx, next) {
     if (member.group === 'user')
       throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
   }
+
+  //
+  // abuse prevention (need to wait at least 5 days if any payments made)
+  //
+  await abusePreventionByUserId(ctx);
 
   await Aliases.findByIdAndRemove(ctx.state.alias._id);
   if (!ctx.api)

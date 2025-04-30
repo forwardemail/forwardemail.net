@@ -10,6 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const pMapSeries = require('p-map-series');
 const _ = require('#helpers/lodash');
 
+const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
@@ -46,6 +47,11 @@ async function remove(ctx) {
   // safeguard in case admins were of global
   if (ctx.state.domains.some((d) => d.is_global && d.group === 'admin'))
     throw Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'));
+
+  //
+  // abuse prevention (need to wait at least 5 days if any payments made)
+  //
+  await abusePreventionByUserId(ctx);
 
   // filter domain ids for admin owned domains
   const domainIds = ctx.state.domains

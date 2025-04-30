@@ -6,13 +6,20 @@
 const isSANB = require('is-string-and-not-blank');
 const Boom = require('@hapi/boom');
 
-const { Domains, Aliases } = require('#models');
+const abusePreventionByUserId = require('#helpers/abuse-prevention-by-user-id');
 const config = require('#config');
+const { Domains, Aliases } = require('#models');
 
 async function removeDomain(ctx, next) {
   // we have the same logic in a pre('remove') hook in domains model
   if (ctx.state.domain.is_global)
     throw Boom.badRequest(ctx.translateError('CANNOT_REMOVE_GLOBAL_DOMAIN'));
+
+  //
+  // abuse prevention (need to wait at least 5 days if any payments made)
+  //
+  await abusePreventionByUserId(ctx);
+
   // remove all aliases
   await Aliases.deleteMany({
     domain: ctx.state.domain._id

@@ -60,6 +60,10 @@ We may need to and will comply with court ordered legal requests (but keep in mi
 
 If at any time if you wish to remove information that you have provided us with, then go to <a href="/my-account/security">My Account > Security</a> and click "Delete Account".
 
+Due to abuse prevention and mitigation, your account may require manual deletion review by our admins if you delete it within 5 days of your first payment.
+
+This process usually takes less than 24 hours and was implemented due to users were spamming with our service, and then quickly deleting their accounts – which prevented us from blocking their payment method fingerprint(s) in Stripe.
+
 
 ## Additional Disclosures
 
