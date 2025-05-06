@@ -683,7 +683,7 @@ const config = {
   STRIPE_LOCALES,
   openPGPKey: '/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.asc',
   returnPath: 'fe-bounces',
-  imapConfigurations,
+  imapConfigurations: env.SELF_HOSTED ? [] : imapConfigurations,
   passkeyLimit: 30,
   IMAP_REDIS_CHANNEL_NAME: 'imap_events',
 

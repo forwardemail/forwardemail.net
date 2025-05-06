@@ -415,8 +415,7 @@ block body
                       td.align-middle: strong.px-2 TXT
                       td.align-middle.text-left.py-3
                         code#copy-dmarc.d-block.text-break.small
-                          //- TODO: consume dmarc reports and parse dmarc-$domain
-                          = `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+                          = `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@${config.webHost};`
                         if !domain.has_dmarc_record
                           button.btn.btn-dark.btn-sm.text-nowrap.mt-1(
                             type="button",
