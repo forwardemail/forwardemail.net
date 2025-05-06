@@ -393,6 +393,7 @@ update_default_env() {
   update_env_file WEBSITE_URL "$DOMAIN"
   update_env_file CACHE_RESPONSES true
   update_env_file AUTH_BASIC_ENABLED true
+  update_env_file TXT_RECORD_PREFIX $(echo $DOMAIN | tr '.' '-')
 }
 
 update_ssl_paths() {
@@ -624,3 +625,4 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 prompt_command
+
