@@ -126,6 +126,10 @@ module.exports = function (config, isSitemap = false) {
       'Disposable Email Addresses for Custom Domains',
       'Get disposable email forwarding addresses using your custom domain name.'
     ],
+    '/self-hosted': [
+      'Self Hosted',
+      'Check out our complete self hosted setup.'
+    ],
     '/resources': [
       `Free Startup and Developer Email Tools List in <span class="notranslate">${dayjs(
         now

@@ -458,6 +458,9 @@ generate_encryption_keys() {
   openssl genrsa -f4 -out "$SELF_HOST_DIR/ssl/dkim.key" 2048
   update_env_file "DKIM_PRIVATE_KEY_PATH" "/app/ssl/dkim.key"
 
+  webhook_signature_key=$(openssl rand -hex 16)
+  update_env_file "WEBHOOK_SIGNATURE_KEY" "$webhook_signature_key"
+
   echo "Helper, DKIM and SRS encryption keys generated."
 }
 
