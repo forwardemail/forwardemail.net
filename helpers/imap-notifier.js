@@ -142,15 +142,6 @@ class IMAPNotifier extends EventEmitter {
 
   // eslint-disable-next-line complexity
   async addEntries(instance, session, mailboxId, entries) {
-    if (!session?.db || (!(session.db instanceof Database) && !instance.wsp)) {
-      const err = new TypeError('Database is missing');
-      err.instance = instance;
-      err.session = session;
-      err.mailboxId = mailboxId;
-      err.entries = entries;
-      throw err;
-    }
-
     if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
       throw new TypeError('WebSocketAsPromised instance required');
 
@@ -286,6 +277,16 @@ class IMAPNotifier extends EventEmitter {
               checkpoint: 'PASSIVE'
             });
           } else {
+            if (!session?.db || !(session.db instanceof Database)) {
+              const err = new TypeError('Database is missing');
+              err.isCodeBug = true;
+              err.instance = instance;
+              err.session = session;
+              err.mailboxId = mailboxId;
+              err.entries = entries;
+              throw err;
+            }
+
             session.db.prepare(sql.query).run(sql.values);
           }
         } catch (err) {
@@ -330,8 +331,6 @@ class IMAPNotifier extends EventEmitter {
     return entries.length;
   }
 
-  // TODO: rewrite this b/c we don't use `payload` ever
-  // TODO: remove safeStringify and replace with just the aliasId
   fire(aliasId, payload) {
     if (!aliasId) throw new Error('Alias ID missing');
 

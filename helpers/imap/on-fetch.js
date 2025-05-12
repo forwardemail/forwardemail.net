@@ -41,18 +41,19 @@ async function onFetch(mailboxId, options, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response, compiledPayloads] = await this.wsp.request({
-        action: 'fetch',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress,
-          selected: session.selected,
-          acceptUTF8Enabled: session.isUTF8Enabled()
-        },
-        mailboxId,
-        options
-      });
+      const [bool, response, compiledPayloads, entries] =
+        await this.wsp.request({
+          action: 'fetch',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected,
+            acceptUTF8Enabled: session.isUTF8Enabled()
+          },
+          mailboxId,
+          options
+        });
 
       if (Array.isArray(compiledPayloads)) {
         for (const compiled of compiledPayloads) {
@@ -61,6 +62,13 @@ async function onFetch(mailboxId, options, session, fn) {
       }
 
       fn(null, bool, response);
+
+      if (entries.length > 0) {
+        this.server.notifier
+          .addEntries(this, session, mailboxId, entries)
+          .then(() => this.server.notifier.fire(session.user.alias_id))
+          .catch((err) => this.logger.fatal(err, { session }));
+      }
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -114,16 +122,14 @@ async function onFetch(mailboxId, options, session, fn) {
     //       (e.g. `options.messages = [ 50 ]` when `50` doesn't exist, e.g. after COPY in Thunderbird)
     //
 
-    let queryAll;
-
-    // `1:*`
-    // <https://github.com/nodemailer/wildduck/pull/559>
-    if (
-      _.isEqual(_.sortBy(options.messages), _.sortBy(session.selected.uidList))
-    )
+    let queryAll = false;
+    if (options.messages.length === session.selected.uidList.length) {
+      // 1:*
       queryAll = true;
-    // NOTE: don't use uid for `1:*`
-    else pageQuery.uid = tools.checkRangeQuery(options.messages, false);
+    } else {
+      // do not use uid selector for 1:*
+      pageQuery.uid = tools.checkRangeQuery(options.messages, false);
+    }
 
     // TODO: take out JSON.parse and JSON.stringify
     // converts objectids -> strings and arrays/json appropriately
@@ -361,13 +367,6 @@ async function onFetch(mailboxId, options, session, fn) {
         .immediate(ops);
     }
 
-    if (entries.length > 0) {
-      this.server.notifier
-        .addEntries(this, session, mailbox._id, entries)
-        .then(() => this.server.notifier.fire(session.user.alias_id))
-        .catch((err) => this.logger.fatal(err, { session }));
-    }
-
     fn(
       null,
       true,
@@ -375,7 +374,8 @@ async function onFetch(mailboxId, options, session, fn) {
         rowCount,
         totalBytes
       },
-      compiledPayloads
+      compiledPayloads,
+      entries
     );
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));

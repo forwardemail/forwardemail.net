@@ -17,7 +17,6 @@ const imapTools = require('wildduck/imap-core/lib/imap-tools');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
-const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
@@ -42,7 +41,7 @@ async function onStore(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, modified, payloads] = await this.wsp.request({
+      const [err, bool, modified, payloads, entries] = await this.wsp.request({
         action: 'store',
         session: {
           id: session.id,
@@ -61,6 +60,17 @@ async function onStore(mailboxId, update, session, fn) {
       }
 
       // <https://github.com/nodemailer/wildduck/blob/08c5804798e7ffe1b281859c4edcec2465d058c2/imap-core/lib/commands/store.js#L145>
+      if (entries.length > 0) {
+        this.server.notifier
+          .addEntries(this, session, mailboxId, entries)
+          .then(() => this.server.notifier.fire(session.user.alias_id))
+          .catch((err) =>
+            this.logger.fatal(err, { mailboxId, update, session })
+          );
+      }
+
+      if (err) throw err;
+
       fn(null, bool, modified);
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -94,16 +104,15 @@ async function onStore(mailboxId, update, session, fn) {
     };
 
     let newModseq;
-    let queryAll;
 
-    // `1:*`
-    // <https://github.com/nodemailer/wildduck/pull/569>
-    if (
-      _.isEqual(_.sortBy(update.messages), _.sortBy(session.selected.uidList))
-    )
+    let queryAll = false;
+    if (update.messages.length === session.selected.uidList.length) {
+      // 1:*
       queryAll = true;
-    // NOTE: don't use uid for `1:*`
-    else query.uid = tools.checkRangeQuery(update.messages);
+    } else {
+      // do not use uid selector for 1:*
+      query.uid = tools.checkRangeQuery(update.messages);
+    }
 
     // converts objectids -> strings and arrays/json appropriately
     const condition = prepareQuery(
@@ -422,8 +431,12 @@ async function onStore(mailboxId, update, session, fn) {
       err = _err;
     }
 
-    // if there was an error during cursor then throw
-    if (err) throw err;
+    //
+    // NOTE: if an error was thrown then we should still write payloads
+    //       (e.g. if there was an error during cursor)
+    //
+    // send response
+    fn(null, err, true, modified, payloads, entries);
 
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');
@@ -435,16 +448,6 @@ async function onStore(mailboxId, update, session, fn) {
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
-
-    if (entries.length > 0) {
-      this.server.notifier
-        .addEntries(this, session, mailboxId, entries)
-        .then(() => this.server.notifier.fire(session.user.alias_id))
-        .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
-    }
-
-    // send response
-    fn(null, true, modified, payloads);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

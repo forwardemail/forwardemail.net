@@ -702,11 +702,16 @@ async function processEmail({ email, port = 25, resolver, client }) {
       dkimAlignedMatch = dkim?.results
         ? dkim.results.find((result) => {
             const isAligned =
-              result.signingDomain === domain.name &&
+              punycode.toASCII(result.signingDomain) ===
+                punycode.toASCII(domain.name) &&
               result.selector === domain.dkim_key_selector &&
               result?.status?.result === 'pass' &&
-              (result?.status?.aligned === domain.name ||
-                result?.status?.aligned === parseRootDomain(domain.name));
+              ((result?.status?.aligned &&
+                punycode.toASCII(result.status.aligned) ===
+                  punycode.toASCII(domain.name)) ||
+                (result?.status?.aligned &&
+                  punycode.toASCII(result.status.aligned) ===
+                    parseRootDomain(punycode.toASCII(domain.name))));
 
             if (!isAligned) return;
 
@@ -728,16 +733,24 @@ async function processEmail({ email, port = 25, resolver, client }) {
       dkim.results.some(
         (r) =>
           r.status?.comment === 'body hash did not verify' &&
-          r.signingDomain === domain.name &&
+          punycode.toASCII(r.signingDomain) === punycode.toASCII(domain.name) &&
           r.selector === domain.dkim_key_selector &&
-          (r.status?.aligned === domain.name ||
-            r.status?.aligned === parseRootDomain(domain.name))
+          ((r.status?.aligned &&
+            punycode.toASCII(r.status.aligned) ===
+              punycode.toASCII(domain.name)) ||
+            (r.status?.aligned &&
+              punycode.toASCII(r.status.aligned) ===
+                parseRootDomain(punycode.toASCII(domain.name))))
       )
     )
       bodyHashIssue = true;
 
     if (!bodyHashIssue && (!dkim || !dkimAlignedMatch)) {
-      throw Boom.badRequest(i18n.translateError('INVALID_DKIM_SIGNATURE'));
+      const err = Boom.badRequest(
+        i18n.translateError('INVALID_DKIM_SIGNATURE')
+      );
+      err.dkim = dkim;
+      throw err;
     }
 
     // verify SPF
@@ -757,8 +770,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // verify DMARC
     if (
       !dmarc ||
-      (dmarc?.domain !== domain.name &&
-        dmarc?.domain !== parseRootDomain(domain.name)) ||
+      (dmarc?.domain &&
+        punycode.toASCII(dmarc.domain) !== punycode.toASCII(domain.name) &&
+        dmarc?.domain &&
+        punycode.toASCII(dmarc.domain) !==
+          parseRootDomain(punycode.toASCII(domain.name))) ||
       // !isSANB(dmarc?.policy) ||
       // !['none', 'reject', 'quarantine'].includes(dmarc.policy) ||
       // dmarc?.policy !== 'reject' ||

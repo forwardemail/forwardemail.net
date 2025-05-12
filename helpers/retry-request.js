@@ -30,6 +30,11 @@ async function retryRequest(url, opts = {}, count = 1) {
         );
     }, opts.timeout);
 
+    //
+    // TODO: an uncaught exception occurs here in self hosting sometimes (?)
+    // TypeError: Cannot read properties of undefined (reading 'length')
+    // (which means it occurs in tangerine under the hood)
+    //
     if (opts.resolver)
       opts.dispatcher = new undici.Agent({
         // TODO: should we change defaults here; if so, change elsewhere too

@@ -1189,6 +1189,7 @@ Domains.pre('save', function (next) {
 Domains.plugin(mongooseCommonPlugin, {
   object: 'domain',
   omitExtraFields: [
+    'alias_count',
     'is_global',
     'is_api',
     'onboard_email_sent_at',

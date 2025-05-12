@@ -17,7 +17,7 @@ const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const i18n = require('#helpers/i18n');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-const updateStorageUsed = require('#helpers/update-storage-used');
+// const updateStorageUsed = require('#helpers/update-storage-used');
 
 async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
@@ -78,6 +78,9 @@ async function onRename(path, newPath, session, fn) {
         }
       );
 
+    // send response
+    fn(null, true, renamedMailbox._id);
+
     this.server.notifier
       .addEntries(this, session, mailbox, {
         command: 'RENAME',
@@ -88,12 +91,10 @@ async function onRename(path, newPath, session, fn) {
       .catch((err) => this.logger.fatal(err, { path, session }));
 
     // update storage in background
-    updateStorageUsed(session.user.alias_id, this.client)
-      .then()
-      .catch((err) => this.logger.fatal(err, { path, session }));
-
-    // send response
-    fn(null, true, renamedMailbox._id);
+    // NOTE: this won't work since IMAP usage occurs here without FS access to SQLite server
+    // updateStorageUsed(session.user.alias_id, this.client)
+    //   .then()
+    //   .catch((err) => this.logger.fatal(err, { path, session }));
   } catch (err) {
     const error = refineAndLogError(err, session, true, this);
     if (error.imapResponse) return fn(null, error.imapResponse);

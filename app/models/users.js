@@ -51,6 +51,8 @@ const omitExtraFields = [
   ..._.without(mongooseOmitCommonFields.underscored.keys, 'email'),
   'has_passed_kyc',
   'passkeys',
+  config.userFields.domainCount,
+  config.userFields.aliasCount,
   // TODO: change to allowlist
   config.userFields.isRateLimitWhitelisted,
   config.userFields.apiToken,

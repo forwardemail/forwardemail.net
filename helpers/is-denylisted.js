@@ -22,7 +22,11 @@ function createDenylistError(val, code = 421) {
   else if (isIP(val)) str = 'IP';
   else if (isFQDN(val)) str = 'domain';
   return new DenylistError(
-    `The ${str} ${val} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${val} ;`,
+    `The ${str} ${val} is denylisted by ${
+      config.urls.web
+    } ; To request removal, you must visit ${
+      config.urls.web
+    }/denylist?q=${encodeURIComponent(val)} ;`,
     code,
     val
   );

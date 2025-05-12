@@ -231,6 +231,12 @@ let jobs = [
     name: 'session-management',
     interval: '1h',
     timeout: 0
+  },
+  // check alias abuse
+  {
+    name: 'check-alias-recipient-abuse',
+    interval: '1h',
+    timeout: 0
   }
 ];
 

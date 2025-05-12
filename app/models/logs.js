@@ -1012,6 +1012,14 @@ Logs.post('save', async (doc, next) => {
 
   try {
     //
+    // TODO: `err.bounceInfo.category = blocklist'`
+    //       IFF `err.truthSource` has a value set
+    //       and ratelimit cache for once every 12 hours
+    //       by unique `err.response` message hash
+    //       (so we can get alerted if we're blocked by Outlook)
+    //
+
+    //
     // TODO: put this in queue instead
     //       otherwise it's too slow and can fail
     //

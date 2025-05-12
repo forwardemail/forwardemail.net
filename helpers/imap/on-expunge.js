@@ -35,7 +35,7 @@ async function onExpunge(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, payloads] = await this.wsp.request({
+      const [bool, mailbox, messages] = await this.wsp.request({
         action: 'expunge',
         session: {
           id: session.id,
@@ -47,6 +47,38 @@ async function onExpunge(mailboxId, update, session, fn) {
         update
       });
 
+      const payloads = [];
+
+      if (
+        messages.length > 0 &&
+        // write to socket we've expunged message
+        // <https://github.com/zone-eu/wildduck/issues/811>
+        (!update.silent ||
+          (session &&
+            session.selected &&
+            session.selected.mailbox &&
+            session.selected.mailbox.toString() === mailbox._id.toString()))
+      ) {
+        payloads.push(
+          ...messages.map((message) =>
+            formatResponse.call(session, 'EXPUNGE', message.uid)
+          )
+        );
+      }
+
+      if (!update.silent && session?.selected?.uidList) {
+        payloads.push({
+          tag: '*',
+          command: String(session.selected.uidList.length),
+          attributes: [
+            {
+              type: 'atom',
+              value: 'EXISTS'
+            }
+          ]
+        });
+      }
+
       if (Array.isArray(payloads) && payloads.length > 0) {
         for (const payload of payloads) {
           session.writeStream.write(payload);
@@ -54,6 +86,30 @@ async function onExpunge(mailboxId, update, session, fn) {
       }
 
       fn(null, bool);
+
+      const entries =
+        messages.length > 0
+          ? messages.map((message) => ({
+              ignore: session.id,
+              command: 'EXPUNGE',
+              uid: message.uid,
+              mailbox: mailbox._id,
+              message: message._id,
+              // modseq: message.modseq
+              thread: message.thread,
+              unseen: message.unseen
+              // idate: message.idate
+            }))
+          : [];
+
+      // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L883C31-L893>
+      if (Array.isArray(entries) && entries.length > 0)
+        this.server.notifier
+          .addEntries(this, session, mailboxId, entries)
+          .then(() => this.server.notifier.fire(session.user.alias_id))
+          .catch((err) =>
+            this.logger.fatal(err, { mailboxId, update, session })
+          );
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -63,8 +119,6 @@ async function onExpunge(mailboxId, update, session, fn) {
   }
 
   try {
-    const payloads = [];
-
     await this.refreshSession(session, 'EXPUNGE');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -97,130 +151,55 @@ async function onExpunge(mailboxId, update, session, fn) {
       undeleted: 0
     };
 
-    // NOTE: this edge case would never get hit right now since `onExpunge` cmd in wildduck always passes `isUid: false`
+    // NOTE: this occurs for UID EXPUNGE command
     if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
 
     this.logger.debug('expunge query', { condition });
 
-    let err;
+    const sql = builder.build({
+      type: 'remove',
+      table: 'Messages',
+      condition,
+      returning: [
+        '_id',
+        'uid',
+        'modseq',
+        'magic',
+        'mimeTree',
+        'thread',
+        'unseen'
+      ],
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
 
+    // delete messages
+    const messages = session.db.prepare(sql.query).all(sql.values);
+
+    // delete attachments
     try {
-      const sql = builder.build({
-        type: 'remove',
-        table: 'Messages',
-        condition,
-        returning: ['_id', 'uid', 'modseq', 'magic', 'mimeTree'],
-        // sort required for IMAP UIDPLUS
-        sort: 'uid'
-      });
-
-      // delete messages
-      let messages;
-      if (session.db.readonly) {
-        messages = await this.wsp.request({
-          action: 'stmt',
-          session: { user: session.user },
-          stmt: [
-            ['prepare', sql.query],
-            ['all', sql.values]
-          ],
-          checkpoint: 'PASSIVE'
-        });
-      } else {
-        messages = session.db.prepare(sql.query).all(sql.values);
-      }
-
-      // delete attachments
-      try {
-        await pMapSeries(messages, async (m) => {
-          const attachmentIds = getAttachments(m.mimeTree);
-          if (attachmentIds.length > 0)
-            await this.attachmentStorage.deleteMany(
-              this,
-              session,
-              attachmentIds,
-              m.magic
-            );
-        });
-      } catch (err) {
-        err.message = `Error while deleting attachments: ${err.message}`;
-        err.isCodeBug = true;
-        this.logger.fatal(err, { mailboxId, update, session });
-      }
-
-      if (messages.length > 0) {
-        //
-        // NOTE: we have autovacuum on so we don't need to do a checkpoint nor vacuum
-        //
-        // run a checkpoint to copy over wal to db
-        // try { session.db.pragma('wal_checkpoint(PASSIVE)'); } catch (err) { ... }
-        //
-        // vacuum database
-        // session.db.prepare('VACUUM').run();
-
-        // write to socket we've expunged message
-        if (
-          !update.silent ||
-          (session &&
-            session.selected &&
-            session.selected.mailbox &&
-            session.selected.mailbox.toString() === mailbox._id.toString())
-        ) {
-          payloads.push(
-            ...messages.map((message) =>
-              formatResponse.call(session, 'EXPUNGE', message.uid)
-            )
-          );
-        }
-
-        if (!update.silent && session?.selected?.uidList) {
-          payloads.push({
-            tag: '*',
-            command: String(session.selected.uidList.length),
-            attributes: [
-              {
-                type: 'atom',
-                value: 'EXISTS'
-              }
-            ]
-          });
-        }
-
-        this.server.notifier
-          .addEntries(
+      await pMapSeries(messages, async (m) => {
+        const attachmentIds = getAttachments(m.mimeTree);
+        if (attachmentIds.length > 0)
+          await this.attachmentStorage.deleteMany(
             this,
             session,
-            mailbox,
-            messages.map((message) => ({
-              ignore: session.id,
-              command: 'EXPUNGE',
-              uid: message.uid,
-              mailbox: mailbox._id,
-              message: message._id,
-              modseq: message.modseq
-              // thread: message.thread,
-              // unseen: message.unseen,
-              // idate: message.idate
-            }))
-          )
-          .then(() => this.server.notifier.fire(session.user.alias_id))
-          .catch((err) =>
-            this.logger.fatal(err, { mailboxId, update, session })
+            attachmentIds,
+            m.magic
           );
-      }
-    } catch (_err) {
-      err = _err;
+      });
+    } catch (err) {
+      err.message = `Error while deleting attachments: ${err.message}`;
+      err.isCodeBug = true;
+      this.logger.fatal(err, { mailboxId, update, session });
     }
+
+    fn(null, true, mailbox, messages);
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
-
-    // throw error
-    if (err) throw err;
-
-    fn(null, true, payloads);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }
