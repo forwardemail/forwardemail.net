@@ -109,7 +109,7 @@ graceful.listen();
 
     // eslint-disable-next-line unicorn/no-array-callback-reference
     for await (const log of Logs.find(query)
-      .sort({ created_at: -1 })
+      // .sort({ created_at: -1 })
       .cursor()
       .addCursorFlag('noCursorTimeout', true)) {
       // this calls the internal static method `parseLog`

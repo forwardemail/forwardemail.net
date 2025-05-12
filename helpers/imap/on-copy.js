@@ -17,7 +17,7 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
-// const { boolean } = require('boolean');
+const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');
 const IMAPError = require('#helpers/imap-error');
@@ -45,7 +45,7 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }, ms('15s'));
       })();
 
-      const [bool, response] = await this.wsp.request({
+      const [bool, response, entries, targetMailbox] = await this.wsp.request({
         action: 'copy',
         session: {
           id: session.id,
@@ -58,6 +58,17 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       });
       clearTimeout(timeout);
       fn(null, bool, response);
+
+      if (entries.length > 0) {
+        this.server.notifier
+          .addEntries(this, session, targetMailbox._id, entries)
+          .then(() =>
+            this.server.notifier.fire(session.user.alias_id, update.destination)
+          )
+          .catch((err) =>
+            this.logger.fatal(err, { connection, mailboxId, update, session })
+          );
+      }
     } catch (err) {
       clearTimeout(timeout);
       if (err.imapResponse) return fn(null, err.imapResponse);
@@ -95,7 +106,6 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     const entries = [];
     let copiedMessages = 0;
     let copiedStorage = 0;
-    let err;
 
     const mailbox = await Mailboxes.findOne(this, session, {
       _id: mailboxId
@@ -130,165 +140,160 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }
       );
 
-    try {
-      const condition = {
-        mailbox: mailbox._id.toString()
-      };
+    const condition = {
+      mailbox: mailbox._id.toString()
+    };
 
-      // <https://github.com/nodemailer/wildduck/issues/698>
-      if (update.messages.length > 0) {
-        condition.uid = tools.checkRangeQuery(update.messages);
-      } else {
-        // no messages were selected
-        throw new IMAPError(
-          i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
-          { imapResponse: 'CANNOT' }
-        );
-      }
-
-      const sql = builder.build({
-        type: 'select',
-        table: 'Messages',
-        condition,
-        // sort required for IMAP UIDPLUS
-        sort: 'uid'
-      });
-
-      let { uidNext } = targetMailbox;
-
-      // const stmt = session.db.prepare(sql.query);
-      // for (const m of stmt.iterate(sql.values))
-      //
-      // NOTE: this is inefficient but works for now
-      //
-      const messages = session.db.prepare(sql.query).all(sql.values);
-
-      if (messages.length > 0)
-        session.db
-          .transaction((messages) => {
-            for (const m of messages) {
-              // don't copy in bulk so it doesn't get out of incremental uid sync
-              const _id = new mongoose.Types.ObjectId();
-              sourceUid.unshift(m.uid);
-              sourceIds.push(m._id);
-              destinationUid.unshift(uidNext);
-
-              // copy the message and generate new id
-              m._id = _id.toString();
-              m.mailbox = targetMailbox._id.toString();
-              m.uid = uidNext;
-              m.exp = (
-                typeof targetMailbox.retention === 'number'
-                  ? targetMailbox.retention !== 0
-                  : false
-              )
-                ? 1
-                : 0;
-              m.rdate = new Date(
-                Date.now() +
-                  (typeof targetMailbox.retention === 'number'
-                    ? targetMailbox.retention
-                    : 0)
-              ).toISOString();
-              m.modseq = mailbox.modifyIndex;
-              m.junk = targetMailbox.specialUse === '\\Junk';
-              m.remoteAddress = session.remoteAddress;
-              m.transaction = 'COPY';
-
-              // create new message
-              {
-                const sql = builder.build({
-                  type: 'insert',
-                  table: 'Messages',
-                  values: m
-                });
-                session.db.prepare(sql.query).run(sql.values);
-              }
-
-              // update attachment store magic number
-              const attachmentIds = getAttachments(m.mimeTree);
-              if (attachmentIds.length > 0) {
-                const sql = builder.build({
-                  type: 'update',
-                  table: 'Attachments',
-                  condition: {
-                    hash: {
-                      $in: attachmentIds
-                    }
-                  },
-                  modifier: {
-                    $inc: {
-                      counter: 1,
-                      magic: m.magic
-                    },
-                    $set: {
-                      counterUpdated: new Date().toString()
-                    }
-                  }
-                });
-                session.db.prepare(sql.query).run(sql.values);
-              }
-
-              // increase counters
-              copiedMessages++;
-              copiedStorage += m.size;
-              uidNext++;
-
-              // add entries
-              entries.push({
-                command: 'EXISTS',
-                uid: m.uid,
-                // mailbox: targetMailbox._id,
-                message: _id
-                // thread: new mongoose.Types.ObjectId(m.thread),
-                // unseen: boolean(m.unseen),
-                // idate: new Date(m.idate),
-                // junk: boolean(m.junk)
-              });
-            }
-
-            // set all existing messages as copied
-            {
-              const sql = builder.build({
-                type: 'update',
-                table: 'Messages',
-                condition: {
-                  _id: {
-                    $in: sourceIds
-                  }
-                },
-                modifier: {
-                  $set: {
-                    copied: true
-                  }
-                }
-              });
-              session.db.prepare(sql.query).run(sql.values);
-            }
-
-            // store on target mailbox the final value of `uidNext`
-            {
-              const sql = builder.build({
-                type: 'update',
-                table: 'Mailboxes',
-                condition: {
-                  _id: targetMailbox._id.toString()
-                },
-                modifier: {
-                  $set: {
-                    uidNext
-                  }
-                }
-              });
-              session.db.prepare(sql.query).run(sql.values);
-            }
-          })
-          .immediate(messages);
-    } catch (_err) {
-      err = _err;
+    // <https://github.com/nodemailer/wildduck/issues/698>
+    if (update.messages.length > 0) {
+      condition.uid = tools.checkRangeQuery(update.messages);
+    } else {
+      // no messages were selected
+      throw new IMAPError(
+        i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
+        { imapResponse: 'CANNOT' }
+      );
     }
 
-    if (err) throw err;
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition,
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
+
+    let { uidNext } = targetMailbox;
+
+    // const stmt = session.db.prepare(sql.query);
+    // for (const m of stmt.iterate(sql.values))
+    //
+    // NOTE: this is inefficient but works for now
+    //
+    const messages = session.db.prepare(sql.query).all(sql.values);
+
+    if (messages.length > 0)
+      session.db
+        .transaction((messages) => {
+          for (const m of messages) {
+            // don't copy in bulk so it doesn't get out of incremental uid sync
+            const _id = new mongoose.Types.ObjectId();
+            sourceUid.unshift(m.uid);
+            sourceIds.push(m._id);
+            destinationUid.unshift(uidNext);
+
+            // copy the message and generate new id
+            m._id = _id.toString();
+            m.mailbox = targetMailbox._id.toString();
+            m.uid = uidNext;
+            m.exp = (
+              typeof targetMailbox.retention === 'number'
+                ? targetMailbox.retention !== 0
+                : false
+            )
+              ? 1
+              : 0;
+            m.rdate = new Date(
+              Date.now() +
+                (typeof targetMailbox.retention === 'number'
+                  ? targetMailbox.retention
+                  : 0)
+            ).toISOString();
+            m.modseq = mailbox.modifyIndex;
+            m.junk = targetMailbox.specialUse === '\\Junk';
+            m.remoteAddress = session.remoteAddress;
+            m.transaction = 'COPY';
+
+            // create new message
+            {
+              const sql = builder.build({
+                type: 'insert',
+                table: 'Messages',
+                values: m
+              });
+              session.db.prepare(sql.query).run(sql.values);
+            }
+
+            // update attachment store magic number
+            const attachmentIds = getAttachments(m.mimeTree);
+            if (attachmentIds.length > 0) {
+              const sql = builder.build({
+                type: 'update',
+                table: 'Attachments',
+                condition: {
+                  hash: {
+                    $in: attachmentIds
+                  }
+                },
+                modifier: {
+                  $inc: {
+                    counter: 1,
+                    magic: m.magic
+                  },
+                  $set: {
+                    counterUpdated: new Date().toString()
+                  }
+                }
+              });
+              session.db.prepare(sql.query).run(sql.values);
+            }
+
+            // increase counters
+            copiedMessages++;
+            copiedStorage += m.size;
+            uidNext++;
+
+            // add entries
+            // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/handlers/on-copy.js#L342-L353>
+            entries.push({
+              command: 'EXISTS',
+              uid: m.uid,
+              mailbox: targetMailbox._id,
+              message: _id,
+              thread: new mongoose.Types.ObjectId(m.thread),
+              unseen: boolean(m.unseen),
+              idate: new Date(m.idate),
+              junk: boolean(m.junk)
+            });
+          }
+
+          // set all existing messages as copied
+          {
+            const sql = builder.build({
+              type: 'update',
+              table: 'Messages',
+              condition: {
+                _id: {
+                  $in: sourceIds
+                }
+              },
+              modifier: {
+                $set: {
+                  copied: true
+                }
+              }
+            });
+            session.db.prepare(sql.query).run(sql.values);
+          }
+
+          // store on target mailbox the final value of `uidNext`
+          {
+            const sql = builder.build({
+              type: 'update',
+              table: 'Mailboxes',
+              condition: {
+                _id: targetMailbox._id.toString()
+              },
+              modifier: {
+                $set: {
+                  uidNext
+                }
+              }
+            });
+            session.db.prepare(sql.query).run(sql.values);
+          }
+        })
+        .immediate(messages);
 
     // update quota if copied messages
     if (copiedMessages > 0 && copiedStorage > 0) {
@@ -360,29 +365,20 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       this.logger.fatal(err, { connection, mailboxId, update, session });
     }
 
+    const response = {
+      uidValidity: targetMailbox.uidValidity,
+      sourceUid,
+      destinationUid
+    };
+
+    fn(null, true, response, entries, targetMailbox);
+
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) =>
         this.logger.fatal(err, { connection, mailboxId, update, session })
       );
-
-    if (entries.length > 0) {
-      this.server.notifier
-        .addEntries(this, session, targetMailbox._id, entries)
-        .then(() =>
-          this.server.notifier.fire(session.user.alias_id, update.destination)
-        )
-        .catch((err) =>
-          this.logger.fatal(err, { connection, mailboxId, update, session })
-        );
-    }
-
-    fn(null, true, {
-      uidValidity: targetMailbox.uidValidity,
-      sourceUid,
-      destinationUid
-    });
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

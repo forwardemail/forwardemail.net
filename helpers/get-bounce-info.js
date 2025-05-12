@@ -178,6 +178,26 @@ function getBounceInfo(err) {
     bounceInfo.category = 'spam';
   } else if (
     err.truthSource === 'google.com' &&
+    response.includes('NotAuthorizedError') &&
+    response.includes(`[${IP_ADDRESS}]`)
+  ) {
+    // 550-5.7.1 [104.248.224.170] The IP you're using to send mail is not authorized
+    // 550-5.7.1 to send email directly to our servers. Please use the SMTP relay at
+    // 550-5.7.1 your service provider instead. For more information, go to
+    // 550 5.7.1 https://support.google.com/mail/?p=NotAuthorizedError 8926c6da1cb9f-4f88a8b5013si16229094173.21 - gsmtp
+    bounceInfo.category = 'blocklist';
+  } else if (
+    response.includes(
+      `Mail from IP ${IP_ADDRESS} was rejected due to listing in Spamhaus`
+    ) ||
+    response.includes(`Client host [${IP_ADDRESS}] blocked using Spamhaus`)
+  ) {
+    // 550 5.7.1 Mail from IP 104.248.224.170 was rejected due to listing in Spamhaus PBL. For details please see http://www.spamhaus.org/query/bl?ip=104.248.224.170
+    // and
+    // 550 5.7.1 Service unavailable, Client host [104.248.224.170] blocked using Spamhaus. To request removal from this list see https://www.spamhaus.org/query/ip/104.248.224.170 AS(1450) [ML1PEPF00011309.ausprd01.prod.outlook.com 2025-05-08T08:05:01.086Z 08DD8D91D7D59D80]
+    bounceInfo.category = 'blocklist';
+  } else if (
+    err.truthSource === 'google.com' &&
     response.includes('this message exceeded its quota') &&
     response.includes('messages with the same Message-ID')
   ) {

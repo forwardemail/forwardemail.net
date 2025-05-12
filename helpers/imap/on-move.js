@@ -14,6 +14,7 @@
  */
 
 const mongoose = require('mongoose');
+const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
@@ -38,17 +39,61 @@ async function onMove(mailboxId, update, session, fn) {
 
   if (this.wsp) {
     try {
-      const [bool, response, payloads] = await this.wsp.request({
-        action: 'move',
-        session: {
-          id: session.id,
-          user: session.user,
-          remoteAddress: session.remoteAddress,
-          selected: session.selected
-        },
-        mailboxId,
-        update
-      });
+      const [bool, response, targetMailbox, expungeEntries, existEntries] =
+        await this.wsp.request({
+          action: 'move',
+          session: {
+            id: session.id,
+            user: session.user,
+            remoteAddress: session.remoteAddress,
+            selected: session.selected
+          },
+          mailboxId,
+          update
+        });
+
+      const payloads = [];
+
+      // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L2184-L2201>
+      // NOTE: see the code for `formatResponse` here which modifies the session object
+      // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/imap-core/lib/imap-connection.js#L819-L821>
+      // if (command === 'EXPUNGE') {
+      //   this.selected.uidList.splice(seq - 1, 1);
+      // }
+      //
+      // NOTE: therefore all EXPUNGE instances need to have
+      //       formatResponse get called in the IMAP instance
+      //       and similarly for EXISTS
+      // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/imap-core/lib/imap-connection.js#L808-L811>
+      // if (command === 'EXISTS') {
+      //     this.selected.uidList.push(uid);
+      //
+      // so basically anywhere formatResponse is called it needs to happen on IMAP side
+      //
+      if (!update.silent && response.sourceUid.length > 0) {
+        for (const uid of response.sourceUid) {
+          payloads.push(formatResponse.call(session, 'EXPUNGE', uid));
+        }
+      }
+
+      // set by POP3 `on-update.js` to not broadcast messages
+      // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L2083-L2095>
+      if (
+        !update.silent &&
+        response.sourceUid.length > 0 &&
+        session?.selected?.uidList
+      ) {
+        payloads.push({
+          tag: '*',
+          command: String(session.selected.uidList.length),
+          attributes: [
+            {
+              type: 'atom',
+              value: 'EXISTS'
+            }
+          ]
+        });
+      }
 
       if (Array.isArray(payloads)) {
         for (const payload of payloads) {
@@ -57,13 +102,23 @@ async function onMove(mailboxId, update, session, fn) {
       }
 
       fn(null, bool, response);
-    } catch (err) {
-      if (Array.isArray(err.payloads)) {
-        for (const payload of err.payloads) {
-          session.writeStream.write(payload);
-        }
-      }
 
+      if (expungeEntries.length > 0 && existEntries.length > 0) {
+        this.server.notifier
+          .addEntries(this, session, mailboxId, expungeEntries)
+          .then(() =>
+            this.server.notifier
+              .addEntries(this, session, targetMailbox._id, existEntries)
+              .then(() => this.server.notifier.fire(session.user.alias_id))
+              .catch((err) =>
+                this.logger.fatal(err, { mailboxId, update, session })
+              )
+          )
+          .catch((err) =>
+            this.logger.fatal(err, { mailboxId, update, session })
+          );
+      }
+    } catch (err) {
       // NOTE: if POP3 then throw err (since POP3 re-uses this)
       if (this?.constructor?.name !== 'POP3' && err.imapResponse)
         return fn(null, err.imapResponse);
@@ -72,8 +127,6 @@ async function onMove(mailboxId, update, session, fn) {
 
     return;
   }
-
-  const payloads = [];
 
   try {
     await this.refreshSession(session, 'MOVE');
@@ -137,8 +190,6 @@ async function onMove(mailboxId, update, session, fn) {
         }
       );
 
-    let err;
-
     const sourceUid = [];
     const destinationUid = [];
     const ops = [];
@@ -166,300 +217,120 @@ async function onMove(mailboxId, update, session, fn) {
       throw err;
     }
 
-    try {
-      const condition = {
-        mailbox: mailbox._id.toString()
-      };
+    // <https://github.com/nodemailer/wildduck/issues/698>
+    // <https://github.com/nodemailer/wildduck/issues/710>
+    // TODO: do a test when `update.messages = []`
+    const condition = {
+      mailbox: mailbox._id.toString(),
+      uid: tools.checkRangeQuery(update.messages)
+    };
 
-      // <https://github.com/nodemailer/wildduck/issues/698>
-      if (update.messages.length > 0) {
-        // <https://github.com/nodemailer/wildduck/issues/710>
-        // condition.uid = tools.checkRangeQuery(update.messages);
-        condition.uid = { $in: update.messages };
-      } else {
-        // update = { destination: 'INBOX', messages: [] }
-        // verbose for admins to investigate
-        /*
-        const err = new TypeError('IMAP MOVE no messages selected');
-        err.isCodeBug = true;
-        err.mailboxId = mailboxId;
-        err.update = update;
-        err.session = session;
-        err.targetMailbox = targetMailbox;
-        this.logger.fatal(err);
+    const { modifyIndex, specialUse, retention, _id } = targetMailbox;
+    let { uidNext } = targetMailbox;
 
-        // no messages were selected
-        throw new IMAPError(
-          i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
-          { imapResponse: 'CANNOT' }
-        );
-        */
-      }
+    const sql = builder.build({
+      type: 'select',
+      table: 'Messages',
+      condition,
+      // sort required for IMAP UIDPLUS
+      sort: 'uid'
+    });
 
-      /*
-      const conditionalCountSql = builder.build({
-        table: 'Messages',
-        condition,
-        fields: [
-          {
-            expression: 'count(1)'
-          }
-        ]
-      });
+    const stmt = session.db.prepare(sql.query);
+    for (const m of stmt.iterate(sql.values)) {
+      // add to source uid array
+      sourceUid.push(m.uid);
+      destinationUid.push(uidNext);
 
-      const conditionCount = session.db
-        .prepare(conditionalCountSql.query)
-        .pluck()
-        .get(conditionalCountSql.values);
+      const flags = JSON.parse(m.flags);
 
-      const totalCountSql = builder.build({
+      // update message
+      const exp = typeof retention === 'number' ? retention !== 0 : false;
+      const rdate = new Date(Date.now() + (retention || 0));
+
+      const sql = builder.build({
+        type: 'update',
         table: 'Messages',
         condition: {
-          mailbox: mailbox._id.toString()
+          _id: m._id
         },
-        fields: [
-          {
-            expression: 'count(1)'
-          }
-        ]
-      });
-
-      const totalCount = session.db
-        .prepare(totalCountSql.query)
-        .pluck()
-        .get(totalCountSql.values);
-
-      //
-      // safeguard to prevent moving all messages from Inbox to Trash
-      //
-      if (
-        totalCount !== 1 &&
-        totalCount === conditionCount &&
-        ((mailbox.path === 'INBOX' && targetMailbox.path === 'Trash') ||
-          (mailbox.specialUse === '\\Inbox' &&
-            targetMailbox.specialUse === '\\Trash'))
-      ) {
-        // temporary logging for admins
-        const err = new TypeError(
-          `Inbox safeguard detected for ${session.user.username}`
-        );
-        err.mailboxId = mailboxId;
-        err.update = update;
-        err.isCodeBug = true;
-        err.session = session;
-        err.totalCount = totalCount;
-        err.conditionCount = conditionCount;
-        this.logger.fatal(err);
-
-        // alert user by email
-        this.client
-          .get(`move_check:${session.user.alias_id}`)
-          .then((cache) => {
-            if (cache) return;
-            this.client
-              .set(`move_check:${session.user.alias_id}`, true, 'PX', ms('7d'))
-              .then(() => {
-                email({
-                  template: 'alert',
-                  message: {
-                    to: session.user.username,
-                    // cc: session.user.owner_full_email,
-                    bcc: config.email.message.from,
-                    subject: i18n.translate(
-                      'IMAP_INBOX_SAFEGUARD_SUBJECT',
-                      session.user.locale
-                    )
-                  },
-                  locals: {
-                    message: i18n.translate(
-                      'IMAP_INBOX_SAFEGUARD',
-                      session.user.locale
-                    ),
-                    locale: session.user.locale
-                  }
-                })
-                  .then()
-                  .catch((err) => {
-                    this.logger.fatal(err);
-                    this.client
-                      .set(
-                        `move_check:${session.user.alias_id}`,
-                        true,
-                        'PX',
-                        ms('1m')
-                      )
-                      .then()
-                      .catch((err) => this.logger.fatal(err));
-                  });
-              })
-              .catch((err) => this.logger.fatal(err));
-          })
-          .catch((err) => this.logger.fatal(err));
-
-        throw new IMAPError(
-          i18n.translate('IMAP_INBOX_SAFEGUARD', session.user.locale),
-          { imapResponse: 'CANNOT' }
-        );
-      }
-      */
-
-      const { modifyIndex, specialUse, retention, _id } = targetMailbox;
-      let { uidNext } = targetMailbox;
-
-      if (condition.uid) {
-        const sql = builder.build({
-          type: 'select',
-          table: 'Messages',
-          condition,
-          // sort required for IMAP UIDPLUS
-          sort: 'uid'
-        });
-
-        const stmt = session.db.prepare(sql.query);
-        for (const m of stmt.iterate(sql.values)) {
-          // add to source uid array
-          sourceUid.push(m.uid);
-          destinationUid.push(uidNext);
-
-          const flags = JSON.parse(m.flags);
-
-          // update message
-          const exp = typeof retention === 'number' ? retention !== 0 : false;
-          const rdate = new Date(Date.now() + (retention || 0));
-
-          const sql = builder.build({
-            type: 'update',
-            table: 'Messages',
-            condition: {
-              _id: m._id
-            },
-            modifier: {
-              $set: prepareQuery(Messages.mapping, {
-                mailbox: _id,
-                uid: uidNext,
-                exp,
-                rdate,
-                modseq: modifyIndex,
-                junk: specialUse === '\\Junk',
-                remoteAddress: session.remoteAddress,
-                transaction: 'MOVE',
-                searchable: !flags.includes('\\Deleted')
-              })
-            }
-          });
-
-          // NOTE: otherwise we get the error:
-          // > "This database connection is busy executing a query"
-          // session.db.prepare(sql.query).run(sql.values);
-
-          ops.push([sql.query, sql.values, m.uid]);
-
-          expungeEntries.push({
-            ignore: session.id,
-            command: 'EXPUNGE',
-            uid: m.uid,
-            // modseq is needed to avoid updating mailbox entry
-            modseq: mailbox.modifyIndex || 1,
-            unseen: boolean(m.unseen),
-            idate: new Date(m.idate),
-            mailbox: mailbox._id,
-            message: new mongoose.Types.ObjectId(m._id),
-            thread: new mongoose.Types.ObjectId(m.thread)
-          });
-
-          // EXIST entries
-          existEntries.push({
-            command: 'EXISTS',
-            uid: uidNext,
-            unseen: boolean(m.unseen),
-            // TODO: set `modseq` equal to modifyIndex + 1 of target mailbox (?)
-            idate: new Date(m.idate),
+        modifier: {
+          $set: prepareQuery(Messages.mapping, {
             mailbox: _id,
-            message: new mongoose.Types.ObjectId(m._id),
-            thread: new mongoose.Types.ObjectId(m.thread)
-            // junk
-          });
-
-          // increment uid next by one
-          uidNext++;
-        }
-      }
-
-      if (ops.length > 0) {
-        // store on target mailbox the final value of `uidNext`
-        {
-          const sql = builder.build({
-            type: 'update',
-            table: 'Mailboxes',
-            condition: {
-              _id: _id.toString()
-            },
-            modifier: {
-              $set: {
-                uidNext
-              }
-            }
-          });
-          ops.push([sql.query, sql.values]);
-        }
-
-        // perform db operations
-        session.db
-          .transaction((ops) => {
-            for (const op of ops) {
-              session.db.prepare(op[0]).run(op[1]);
-              if (!update.silent && op[2])
-                payloads.push(formatResponse.call(session, 'EXPUNGE', op[2]));
-            }
+            uid: uidNext,
+            exp,
+            rdate,
+            modseq: modifyIndex,
+            junk: specialUse === '\\Junk',
+            remoteAddress: session.remoteAddress,
+            transaction: 'MOVE',
+            searchable: !flags.includes('\\Deleted')
           })
-          .immediate(ops);
-      }
-    } catch (_err) {
-      err = _err;
-    }
-
-    // set by POP3 `on-update.js` to not broadcast messages
-    if (!update.silent && sourceUid.length > 0 && session?.selected?.uidList) {
-      payloads.push({
-        tag: '*',
-        command: String(session.selected.uidList.length),
-        attributes: [
-          {
-            type: 'atom',
-            value: 'EXISTS'
-          }
-        ]
+        }
       });
+
+      // NOTE: otherwise we get the error:
+      // > "This database connection is busy executing a query"
+      // session.db.prepare(sql.query).run(sql.values);
+
+      ops.push([sql.query, sql.values]);
+
+      expungeEntries.push({
+        ignore: session.id,
+        command: 'EXPUNGE',
+        uid: m.uid,
+        // modseq is needed to avoid updating mailbox entry
+        modseq: mailbox.modifyIndex || 1,
+        unseen: boolean(m.unseen),
+        idate: new Date(m.idate),
+        mailbox: mailbox._id,
+        message: new mongoose.Types.ObjectId(m._id),
+        thread: new mongoose.Types.ObjectId(m.thread)
+      });
+
+      existEntries.push({
+        command: 'EXISTS',
+        uid: uidNext,
+        unseen: boolean(m.unseen),
+        // TODO: set `modseq` equal to modifyIndex + 1 of target mailbox (?)
+        idate: new Date(m.idate),
+        mailbox: _id,
+        message: new mongoose.Types.ObjectId(m._id),
+        thread: new mongoose.Types.ObjectId(m.thread),
+        junk: boolean(m.junk)
+      });
+
+      // increment uid next by one
+      uidNext++;
     }
 
-    try {
-      session.db.pragma('wal_checkpoint(PASSIVE)');
-    } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
+    if (ops.length > 0) {
+      // store on target mailbox the final value of `uidNext`
+      {
+        const sql = builder.build({
+          type: 'update',
+          table: 'Mailboxes',
+          condition: {
+            _id: _id.toString()
+          },
+          modifier: {
+            $set: {
+              uidNext
+            }
+          }
+        });
+        ops.push([sql.query, sql.values]);
+      }
+
+      // perform db operations
+      session.db
+        .transaction((ops) => {
+          for (const op of ops) {
+            session.db.prepare(op[0]).run(op[1]);
+          }
+        })
+        .immediate(ops);
     }
-
-    // update storage in background
-    updateStorageUsed(session.user.alias_id, this.client)
-      .then()
-      .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
-
-    if (expungeEntries.length > 0) {
-      // expunge messages from old mailbox
-      this.server.notifier
-        .addEntries(this, session, mailboxId, expungeEntries)
-        .then(() =>
-          this.server.notifier
-            .addEntries(this, session, targetMailbox._id, existEntries)
-            .then(() => this.server.notifier.fire(session.user.alias_id))
-            .catch((err) =>
-              this.logger.fatal(err, { mailboxId, update, session })
-            )
-        )
-        .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
-    }
-
-    // throw error if any
-    if (err) throw err;
 
     // send response
     const response = {
@@ -471,9 +342,19 @@ async function onMove(mailboxId, update, session, fn) {
       status: 'moved'
     };
 
-    fn(null, true, response, payloads);
+    fn(null, true, response, targetMailbox, expungeEntries, existEntries);
+
+    try {
+      session.db.pragma('wal_checkpoint(PASSIVE)');
+    } catch (err) {
+      this.logger.fatal(err, { mailboxId, update, session });
+    }
+
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
   } catch (err) {
-    err.payloads = payloads;
     fn(refineAndLogError(err, session, true, this));
   }
 }

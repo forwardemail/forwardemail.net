@@ -61,7 +61,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
         );
 
-      const [bool, response] = await this.wsp.request({
+      const [bool, response, entry] = await this.wsp.request({
         action: 'append',
         session: {
           id: session.id,
@@ -85,6 +85,12 @@ async function onAppend(path, flags, date, raw, session, fn) {
       }
 
       fn(null, bool, response);
+
+      if (entry)
+        this.server.notifier
+          .addEntries(this, session, response.mailbox, entry)
+          .then(() => this.server.notifier.fire(session.user.alias_id))
+          .catch((err) => this.logger.fatal(err, { session }));
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -366,7 +372,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
       // (sometimes senders will make multiple attempts even if one succeeded)
       //
       if (existingMessage) {
-        fn(null, true, {
+        const response = {
           uidValidity: mailbox.uidValidity,
           uid: existingMessage.uid,
           id: existingMessage._id,
@@ -374,7 +380,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
           mailboxPath: mailbox.path,
           size: existingMessage.size,
           status: 'new'
-        });
+        };
+        fn(null, true, response); // no `entry` last arg
         return;
       }
     }
@@ -568,13 +575,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
       session
     });
 
-    // update storage in background
-    updateStorageUsed(session.user.alias_id, this.client)
-      .then()
-      .catch((err) =>
-        this.logger.fatal(err, { message, path, flags, date, session })
-      );
-
     const response = {
       uidValidity: mailbox.uidValidity,
       uid: message.uid,
@@ -585,27 +585,35 @@ async function onAppend(path, flags, date, raw, session, fn) {
       status: 'new'
     };
 
-    this.logger.debug('command response', { response });
+    // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L607-L618>
+    const entry = {
+      ignore: session.id,
+      // ignore:
+      //   session?.selected?.mailbox &&
+      //   session.selected.mailbox.toString() === message.mailbox.toString(),
+      command: 'EXISTS',
+      uid: message.uid,
+      mailbox: mailbox._id,
+      message: message._id,
+      modseq: message.modseq,
+      unseen: message.unseen,
+      idate: message.idate,
+      thread: message.thread
+    };
 
-    this.server.notifier
-      .addEntries(this, session, mailbox._id, {
-        ignore:
-          session?.selected?.mailbox &&
-          session.selected.mailbox.toString() === message.mailbox.toString(),
-        command: 'EXISTS',
-        uid: message.uid,
-        mailbox: mailbox._id,
-        message: message._id
-      })
-      .then(() => this.server.notifier.fire(session.user.alias_id))
-      .catch((err) => this.logger.fatal(err, { session }));
+    fn(null, true, response, entry);
+
+    // update storage in background
+    updateStorageUsed(session.user.alias_id, this.client)
+      .then()
+      .catch((err) =>
+        this.logger.fatal(err, { message, path, flags, date, session })
+      );
 
     // send apple push notification
     sendApn(this.client, session.user.alias_id, path)
       .then()
       .catch((err) => this.logger.fatal(err, { session }));
-
-    fn(null, true, response);
   } catch (err) {
     // delete attachments if we need to cleanup
     const attachmentIds =

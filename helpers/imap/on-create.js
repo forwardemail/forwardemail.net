@@ -26,7 +26,7 @@ async function onCreate(path, session, fn) {
 
   if (this.wsp) {
     try {
-      const data = await this.wsp.request({
+      const [bool, mailboxId, entry] = await this.wsp.request({
         action: 'create',
         session: {
           id: session.id,
@@ -35,7 +35,14 @@ async function onCreate(path, session, fn) {
         },
         path
       });
-      fn(null, ...data);
+
+      fn(null, bool, mailboxId);
+
+      // TypeError: Database is missing
+      this.server.notifier
+        .addEntries(this, session, mailboxId, entry)
+        .then(() => this.server.notifier.fire(session.user.alias_id))
+        .catch((err) => this.logger.fatal(err, { path, session }));
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -103,21 +110,18 @@ async function onCreate(path, session, fn) {
       retention: 0
     });
 
-    this.server.notifier
-      .addEntries(this, session, mailbox, {
-        command: 'CREATE',
-        mailbox: mailbox._id,
-        path
-      })
-      .then(() => this.server.notifier.fire(session.user.alias_id))
-      .catch((err) => this.logger.fatal(err, { path, session }));
+    const entry = {
+      command: 'CREATE',
+      mailbox: mailbox._id,
+      path
+    };
+
+    fn(null, true, mailbox._id, entry);
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) => this.logger.fatal(err, { path, session }));
-
-    fn(null, true, mailbox._id);
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

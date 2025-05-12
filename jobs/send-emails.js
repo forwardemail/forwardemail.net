@@ -212,7 +212,7 @@ async function sendEmails() {
 
   // eslint-disable-next-line unicorn/no-array-callback-reference
   for await (const email of Emails.find(query)
-    .sort({ created_at: -1 })
+    .sort({ created_at: -1 }) // TODO: slows this query down by having sort
     .lean()
     .limit(limit)
     .cursor()

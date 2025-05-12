@@ -1017,7 +1017,8 @@ Emails.post('save', async function (email, next) {
           throw new SMTPError('Rate limit exceeded', { ignoreHook: true });
       } catch (err) {
         // remove the job from the queue
-        Emails.findByIdAndRemove(email._id)
+        email.constructor
+          .findByIdAndRemove(email._id)
           .then()
           .catch((err) => logger.fatal(err));
         throw err;

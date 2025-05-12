@@ -88,7 +88,11 @@ async function onConnect(session, fn) {
 
     if (isDenylisted && !isPOP && !isIMAP) {
       const err = new DenylistError(
-        `The value ${isDenylisted} is denylisted by ${config.urls.web} ; To request removal, you must visit ${config.urls.web}/denylist?q=${isDenylisted} ;`,
+        `The value ${isDenylisted} is denylisted by ${
+          config.urls.web
+        } ; To request removal, you must visit ${
+          config.urls.web
+        }/denylist?q=${encodeURIComponent(isDenylisted)} ;`,
         550,
         isDenylisted
       );
