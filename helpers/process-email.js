@@ -757,9 +757,10 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (
       !spf ||
       !spf.domain ||
-      ![`${domain.return_path}.${domain.name}`, env.WEB_HOST].includes(
-        spf.domain
-      ) ||
+      ![
+        `${domain.return_path}.${punycode.toASCII(domain.name)}`,
+        env.WEB_HOST
+      ].includes(punycode.toASCII(spf.domain)) ||
       spf?.status?.result !== 'pass'
     ) {
       const err = Boom.badRequest(i18n.translateError('INVALID_SPF_RESULT'));
