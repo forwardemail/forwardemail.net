@@ -565,7 +565,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
       signTime: new Date(),
       signatureData: [
         {
-          signingDomain: domain.name,
+          signingDomain: punycode.toASCII(domain.name),
           selector: domain.dkim_key_selector,
           privateKey: decrypt(domain.dkim_private_key),
           algorithm: 'rsa-sha256',
@@ -597,7 +597,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // then use that as the return path for SRS rewrite, otherwise use our normal value
     //
     let srsDomain;
-    const returnPath = `${domain.return_path}.${domain.name}`;
+    const returnPath = `${domain.return_path}.${punycode.toASCII(domain.name)}`;
     let returnPathResults;
     try {
       returnPathResults = await resolver.resolveCname(returnPath);
@@ -664,9 +664,12 @@ async function processEmail({ email, port = 25, resolver, client }) {
     // rewrite envelope From with SRS using CNAME
     // (custom Return-Path but we don't add this header since IMAP does)
     const envelope = {
-      from: email.envelope.from.toLowerCase().endsWith(`@${env.WEB_HOST}`)
-        ? email.envelope.from
-        : srs.forward(email.envelope.from, srsDomain),
+      from: punycode
+        .toASCII(email.envelope.from)
+        .toLowerCase()
+        .endsWith(`@${env.WEB_HOST}`)
+        ? punycode.toASCII(email.envelope.from)
+        : srs.forward(punycode.toASCII(email.envelope.from), srsDomain),
       to: [...email.envelope.to]
     };
 
@@ -765,6 +768,9 @@ async function processEmail({ email, port = 25, resolver, client }) {
     ) {
       const err = Boom.badRequest(i18n.translateError('INVALID_SPF_RESULT'));
       if (spf) err.spf = spf;
+      err.envelope = envelope;
+      err.srsDomain = srsDomain;
+      err.returnPath = returnPath;
       throw err;
     }
 
