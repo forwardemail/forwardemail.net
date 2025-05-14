@@ -13,16 +13,12 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const { Builder } = require('json-sql');
-
 const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
 const IMAPError = require('#helpers/imap-error');
 const i18n = require('#helpers/i18n');
 const syncTemporaryMailbox = require('#helpers/sync-temporary-mailbox');
 const refineAndLogError = require('#helpers/refine-and-log-error');
-
-const builder = new Builder();
 
 //
 // NOTE: if you rewrite this to use `if (this.wsp)` like others
@@ -69,47 +65,6 @@ async function onGetQuotaRoot(path, session, fn) {
           imapResponse: 'NONEXISTENT'
         }
       );
-
-    //
-    // if the mailbox is currently selected then update the uidList
-    // <https://github.com/nodemailer/wildduck/issues/708#issuecomment-2227090990>
-    //
-    if (
-      session?.selected?.mailbox &&
-      session.selected.mailbox.toString() === mailbox._id.toString()
-    ) {
-      // update modifyIndex
-      session.selected.modifyIndex = mailbox.modifyIndex;
-
-      // update uidList
-      const sql = builder.build({
-        type: 'select',
-        table: 'Messages',
-        condition: {
-          mailbox: mailbox._id.toString()
-        },
-        group: 'uid',
-        fields: ['uid'],
-        sort: 'uid'
-      });
-
-      if (session.db.readonly) {
-        session.selected.uidList = await this.wsp.request({
-          action: 'stmt',
-          session: { user: session.user },
-          stmt: [
-            ['prepare', sql.query],
-            ['pluck', true],
-            ['all', sql.values]
-          ]
-        });
-      } else {
-        session.selected.uidList = session.db
-          .prepare(sql.query)
-          .pluck()
-          .all(sql.values);
-      }
-    }
 
     const { storageUsed, maxQuotaPerAlias } = await Aliases.isOverQuota(
       {
