@@ -61,7 +61,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           i18n.translate('IMAP_MESSAGE_SIZE_EXCEEDED', session.user.locale)
         );
 
-      const [bool, response, entry] = await this.wsp.request({
+      const [bool, response] = await this.wsp.request({
         action: 'append',
         session: {
           id: session.id,
@@ -85,12 +85,6 @@ async function onAppend(path, flags, date, raw, session, fn) {
       }
 
       fn(null, bool, response);
-
-      if (entry)
-        this.server.notifier
-          .addEntries(this, session, response.mailbox, entry)
-          .then(() => this.server.notifier.fire(session.user.alias_id))
-          .catch((err) => this.logger.fatal(err, { session }));
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -98,6 +92,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
 
     return;
   }
+
+  // TODO: if !this.wsp then we need an alternative
+  //       anytime `'sync'` or `syncTemporaryMailbox` is called
+  //       (anywhere onAppendPromise is called to, e.g. POP3)
 
   let thread;
   let hasNodeBodies;
@@ -381,7 +379,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
           size: existingMessage.size,
           status: 'new'
         };
-        fn(null, true, response); // no `entry` last arg
+        fn(null, true, response);
         return;
       }
     }
@@ -585,6 +583,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
       status: 'new'
     };
 
+    fn(null, true, response);
+
     // <https://github.com/zone-eu/wildduck/blob/76f79fd274e62da3dffe8a2aac170ba41aecaa2b/lib/message-handler.js#L607-L618>
     const entry = {
       ignore: session.id,
@@ -601,7 +601,10 @@ async function onAppend(path, flags, date, raw, session, fn) {
       thread: message.thread
     };
 
-    fn(null, true, response, entry);
+    this.server.notifier
+      .addEntries(this, session, response.mailbox, entry)
+      .then(() => this.server.notifier.fire(session.user.alias_id))
+      .catch((err) => this.logger.fatal(err, { session }));
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)

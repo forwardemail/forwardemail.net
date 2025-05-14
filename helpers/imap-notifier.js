@@ -35,10 +35,10 @@ class IMAPNotifier extends EventEmitter {
 
     const { publisher, subscriber } = options;
 
-    if (!publisher || !subscriber) throw new Error('Options missing');
+    if (!publisher) throw new Error('Options missing');
 
     this.publisher = publisher;
-    this.subscriber = subscriber;
+    if (subscriber) this.subscriber = subscriber;
 
     this.connectionSessions = new WeakMap();
     this.publishTimers = new Map();
@@ -82,52 +82,54 @@ class IMAPNotifier extends EventEmitter {
     };
 
     // <https://github.com/nodemailer/wildduck/commit/5721047bc1c23b816f08cbf1cba7fbe494724af5>
-    this.subscriber.on('message', (channel, message) => {
-      if (channel !== config.IMAP_REDIS_CHANNEL_NAME) return;
+    if (this.subscriber) {
+      this.subscriber.on('message', (channel, message) => {
+        if (channel !== config.IMAP_REDIS_CHANNEL_NAME) return;
 
-      let data;
-      // if e present at beginning, check if p also is present
-      // if no p -> no json parse
-      // if p -> json parse ONLY p
-      // if e not in beginning but p is -> json parse whole
+        let data;
+        // if e present at beginning, check if p also is present
+        // if no p -> no json parse
+        // if p -> json parse ONLY p
+        // if e not in beginning but p is -> json parse whole
 
-      let needFullParse = true;
+        let needFullParse = true;
 
-      if (
-        message.length === 32 &&
-        message[2] === 'e' &&
-        message[5] === '"' &&
-        message[6 + 24] === '"'
-      ) {
-        // there is only e, no p -> no need for full parse
-        needFullParse = false;
-      }
-
-      if (needFullParse) {
-        // full parse
-        try {
-          data = JSON.parse(message);
-        } catch {
-          return;
+        if (
+          message.length === 32 &&
+          message[2] === 'e' &&
+          message[5] === '"' &&
+          message[6 + 24] === '"'
+        ) {
+          // there is only e, no p -> no need for full parse
+          needFullParse = false;
         }
-      } else {
-        // get e and continue
-        data = { e: message.slice(6, 6 + 24) };
-      }
 
-      if (this._listeners._events[data.e]?.length > 0) {
-        // do not schedule or fire/emit empty events
-        if (data.e && !data.p) {
-          // events without payload are scheduled, these are notifications about changes in journal
-          scheduleDataEvent(data.e);
-        } else if (data.e) {
-          // events with payload are triggered immediatelly, these are actions for doing something
-          this._listeners.emit(data.e, data.p);
+        if (needFullParse) {
+          // full parse
+          try {
+            data = JSON.parse(message);
+          } catch {
+            return;
+          }
+        } else {
+          // get e and continue
+          data = { e: message.slice(6, 6 + 24) };
         }
-      }
-    });
 
-    this.subscriber.subscribe(config.IMAP_REDIS_CHANNEL_NAME);
+        if (this._listeners._events[data.e]?.length > 0) {
+          // do not schedule or fire/emit empty events
+          if (data.e && !data.p) {
+            // events without payload are scheduled, these are notifications about changes in journal
+            scheduleDataEvent(data.e);
+          } else if (data.e) {
+            // events with payload are triggered immediatelly, these are actions for doing something
+            this._listeners.emit(data.e, data.p);
+          }
+        }
+      });
+
+      this.subscriber.subscribe(config.IMAP_REDIS_CHANNEL_NAME);
+    }
   }
 
   addListener(session, handler) {

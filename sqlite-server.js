@@ -22,6 +22,7 @@ const { WebSocketServer } = require('ws');
 const { mkdirp } = require('mkdirp');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
+const IMAPNotifier = require('#helpers/imap-notifier');
 const Indexer = require('#helpers/indexer');
 const config = require('#config');
 const createTangerine = require('#helpers/create-tangerine');
@@ -93,6 +94,16 @@ class SQLite {
         generateIndexedHeaders: MessageHandler.prototype.generateIndexedHeaders
       })
     );
+
+    //
+    // the notifier is utilized in the IMAP connection (see `wildduck/imap-core/lib/imap-connection.js`)
+    // in order to `getUpdates` and send them over the socket (e.g. `EXIST`, `EXPUNGE`, `FETCH`)
+    // <https://github.com/nodemailer/wildduck/issues/509>
+    //
+    server.notifier = new IMAPNotifier({
+      publisher: this.client
+      // NOTE: we do not supply `subscriber` option since it's not IMAP
+    });
 
     // this.wss = new WebSocketServer({ noServer: true, perMessageDeflate: true });
     this.wss = new WebSocketServer({
