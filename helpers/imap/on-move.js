@@ -217,9 +217,27 @@ async function onMove(mailboxId, update, session, fn) {
       throw err;
     }
 
+    // return early if no messages
+    // (we could also do `_id: -1` as a query)
+    if (update.messages.length === 0)
+      fn(
+        null,
+        true,
+        {
+          uidValidity: targetMailbox.uidValidity,
+          sourceUid,
+          destinationUid,
+          mailbox: mailbox._id,
+          target: targetMailbox._id,
+          status: 'moved'
+        },
+        targetMailbox,
+        expungeEntries,
+        existEntries
+      );
+
     // <https://github.com/nodemailer/wildduck/issues/698>
     // <https://github.com/nodemailer/wildduck/issues/710>
-    // TODO: do a test when `update.messages = []`
     const condition = {
       mailbox: mailbox._id.toString(),
       uid: tools.checkRangeQuery(update.messages)

@@ -152,7 +152,12 @@ async function onExpunge(mailboxId, update, session, fn) {
     };
 
     // NOTE: this occurs for UID EXPUNGE command
-    if (update.isUid) condition.uid = tools.checkRangeQuery(update.messages);
+    if (update.isUid) {
+      // return early if no messages
+      // (we could also do `_id: -1` as a query)
+      if (update.messages.length === 0) return fn(null, true, mailbox, []);
+      condition.uid = tools.checkRangeQuery(update.messages);
+    }
 
     this.logger.debug('expunge query', { condition });
 

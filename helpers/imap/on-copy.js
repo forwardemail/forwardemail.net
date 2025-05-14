@@ -140,20 +140,25 @@ async function onCopy(connection, mailboxId, update, session, fn) {
         }
       );
 
-    const condition = {
-      mailbox: mailbox._id.toString()
-    };
-
-    // <https://github.com/nodemailer/wildduck/issues/698>
-    if (update.messages.length > 0) {
-      condition.uid = tools.checkRangeQuery(update.messages);
-    } else {
-      // no messages were selected
-      throw new IMAPError(
-        i18n.translate('IMAP_NO_MESSAGES_SELECTED', session.user.locale),
-        { imapResponse: 'CANNOT' }
+    // return early if no messages
+    // (we could also do `_id: -1` as a query)
+    if (update.messages.length === 0)
+      return fn(
+        null,
+        true,
+        {
+          uidValidity: targetMailbox.uidValidity,
+          sourceUid,
+          destinationUid
+        },
+        entries,
+        targetMailbox
       );
-    }
+
+    const condition = {
+      mailbox: mailbox._id.toString(),
+      uid: tools.checkRangeQuery(update.messages)
+    };
 
     const sql = builder.build({
       type: 'select',

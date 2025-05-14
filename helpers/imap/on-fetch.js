@@ -79,6 +79,12 @@ async function onFetch(mailboxId, options, session, fn) {
 
   try {
     const compiledPayloads = [];
+    const entries = [];
+    const ops = [];
+
+    let rowCount = 0;
+    let totalBytes = 0;
+
     await this.refreshSession(session, 'FETCH');
 
     const mailbox = await Mailboxes.findOne(this, session, {
@@ -123,7 +129,26 @@ async function onFetch(mailboxId, options, session, fn) {
     //
 
     let queryAll = false;
-    if (options.messages.length === session.selected.uidList.length) {
+
+    // return early if no messages
+    // (we could also do `_id: -1` as a query)
+    if (options.messages.length === 0) {
+      return fn(
+        null,
+        true,
+        {
+          rowCount,
+          totalBytes
+        },
+        compiledPayloads,
+        entries
+      );
+    }
+
+    if (
+      !options.isUid &&
+      options.messages.length === session.selected.uidList.length
+    ) {
       // 1:*
       queryAll = true;
     } else {
@@ -192,11 +217,6 @@ async function onFetch(mailboxId, options, session, fn) {
     // TODO: we may want to use `.all()` instead of `.all()`
     // with the `batchSize` value at a time (for better performance)
     //
-    const entries = [];
-    const ops = [];
-
-    let rowCount = 0;
-    let totalBytes = 0;
 
     // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/docs/api.md#iteratebindparameters---iterator>
     const stmt = session.db.prepare(sql.query);
@@ -215,11 +235,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
       // don't process messages that are new since query started
       // <https://github.com/nodemailer/wildduck/issues/708>
-      if (
-        queryAll &&
-        session?.selected?.uidList &&
-        !session.selected.uidList.includes(message.uid)
-      ) {
+      if (queryAll && !session.selected.uidList.includes(message.uid)) {
         continue;
       }
 

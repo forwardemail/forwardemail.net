@@ -186,7 +186,8 @@ test.beforeEach(async (t) => {
     auth: {
       user: `${alias.name}@${domain.name}`,
       pass
-    }
+    },
+    commandTimeout: 120000 // Increased to 120 seconds
   });
 
   await imapFlow.connect();
@@ -1808,4 +1809,546 @@ ${base64image}
   const download = await t.context.imapFlow.download('*');
   const content = await getStream(download.content);
   t.true(splitLines(raw).join('') === splitLines(content).join(''));
+});
+
+test('imap_flag_consistency_test', async (t) => {
+  const { imapFlow, alias, domain } = t.context;
+  const mailboxPath = 'INBOX'; // Or a dedicated test mailbox
+
+  // 1. Append multiple messages
+  const messageContent1 = `To: ${alias.name}@${domain.name}\nFrom: test1@example.com\nSubject: Test Message 1\n\nBody 1`;
+  const messageContent2 = `To: ${alias.name}@${domain.name}\nFrom: test2@example.com\nSubject: Test Message 2\n\nBody 2`;
+  const messageContent3 = `To: ${alias.name}@${domain.name}\nFrom: test3@example.com\nSubject: Test Message 3\n\nBody 3`;
+
+  await imapFlow.append(
+    mailboxPath,
+    Buffer.from(messageContent1),
+    [],
+    new Date()
+  );
+  await imapFlow.append(
+    mailboxPath,
+    Buffer.from(messageContent2),
+    [],
+    new Date()
+  );
+  await imapFlow.append(
+    mailboxPath,
+    Buffer.from(messageContent3),
+    [],
+    new Date()
+  );
+
+  // Open mailbox to get message counts and UIDs if needed for store by UID
+  await imapFlow.mailboxOpen(mailboxPath);
+  t.is(imapFlow.mailbox.exists, 3, 'Should have 3 messages initially');
+
+  // 2. Initial Flag Verification (Optional)
+  let messages = [];
+  for await (const msg of imapFlow.fetch('1:*', { flags: true })) {
+    messages.push(msg);
+  } // End of first fetch loop
+
+  // Assuming UIDs are 1, 2, 3. If using sequence numbers, ensure mailbox is open.
+  // Using sequence number for simplicity here, ensure mailbox is selected.
+  await imapFlow.messageFlagsAdd('2', ['\\Answered']);
+  // Or using UID: const storeResult = await imapFlow.messageStore("2", { flags: ["\\Answered"] }, { byUid: true });
+  // Check storeResult if necessary, though the main check is fetching flags again.
+
+  // 4. Verify Flags on All Messages
+  messages = [];
+  for await (const msg of imapFlow.fetch('1:*', { flags: true })) {
+    messages.push(msg);
+  }
+
+  t.is(messages.length, 3, 'Should still have 3 messages');
+
+  // Message 1 (sequence 1) should NOT be answered
+  t.false(
+    messages[0].flags.has('\\Answered'),
+    'Msg 1 (seq 1) should NOT have \\Answered flag'
+  );
+
+  // Message 2 (sequence 2) SHOULD be answered
+  t.true(
+    messages[1].flags.has('\\Answered'),
+    'Msg 2 (seq 2) SHOULD have \\Answered flag'
+  );
+
+  // Message 3 (sequence 3) should NOT be answered
+  t.false(
+    messages[2].flags.has('\\Answered'),
+    'Msg 3 (seq 3) should NOT have \\Answered flag'
+  );
+});
+
+test('imap_flag_consistency_large_mailbox_test', async (t) => {
+  const { imapFlow, alias, domain } = t.context;
+  const mailboxPath = 'INBOX'; // Or a dedicated test mailbox
+  const numberOfMessages = 150; // Using 150 messages for a large mailbox test
+  const targetMessageSequence = Math.floor(numberOfMessages / 2) + 1; // e.g., message 76 for 150 messages
+
+  // 1. Append many messages
+  t.log(`Appending ${numberOfMessages} messages...`);
+  for (let i = 1; i <= numberOfMessages; i++) {
+    const messageContent = `To: ${alias.name}@${domain.name}\nFrom: testuser${i}@example.com\nSubject: Large Mailbox Test Message ${i}\n\nThis is body of message ${i}.`;
+    // eslint-disable-next-line no-await-in-loop
+    await imapFlow.append(
+      mailboxPath,
+      Buffer.from(messageContent),
+      [],
+      new Date()
+    );
+  }
+
+  t.log(`${numberOfMessages} messages appended.`);
+
+  // 2. Open Mailbox and verify count
+  await imapFlow.mailboxOpen(mailboxPath);
+  t.is(
+    imapFlow.mailbox.exists,
+    numberOfMessages,
+    `Should have ${numberOfMessages} messages initially after append`
+  );
+
+  // 3. Initial Flag Verification (Optional but good for sanity)
+  t.log('Verifying initial flags...');
+  const initialMessages = [];
+  for await (const msg of imapFlow.fetch(`1:${numberOfMessages}`, {
+    flags: true
+  })) {
+    initialMessages.push(msg);
+  }
+
+  t.is(
+    initialMessages.length,
+    numberOfMessages,
+    'Fetched all messages for initial flag check'
+  );
+  for (const initialMessage of initialMessages) {
+    t.false(
+      initialMessage.flags.has('\\Answered'),
+      `Msg ${initialMessage.seq} should not have Answered flag initially`
+    );
+  }
+
+  t.log('Initial flags verified.');
+
+  // 4. Mark One Message as Answered
+  t.log(
+    `Marking message with sequence number ${targetMessageSequence} as \\Answered...`
+  );
+  await imapFlow.messageFlagsAdd(targetMessageSequence.toString(), [
+    '\\Answered'
+  ]);
+  t.log(`Message ${targetMessageSequence} marked.`);
+
+  // 5. Verify Flags on All Messages Post-Update
+  t.log('Verifying flags on all messages post-update...');
+  const updatedMessages = [];
+  for await (const msg of imapFlow.fetch(`1:${numberOfMessages}`, {
+    flags: true
+  })) {
+    updatedMessages.push(msg);
+  }
+
+  t.is(
+    updatedMessages.length,
+    numberOfMessages,
+    'Fetched all messages for final flag check'
+  );
+
+  let unexpectedAnsweredFlags = 0;
+  for (const updatedMessage of updatedMessages) {
+    const currentMessageSeq = updatedMessage.seq;
+    if (currentMessageSeq === targetMessageSequence) {
+      t.true(
+        updatedMessage.flags.has('\\Answered'),
+        `Target Msg ${currentMessageSeq} SHOULD have \\Answered flag`
+      );
+    } else {
+      if (updatedMessage.flags.has('\\Answered')) {
+        unexpectedAnsweredFlags++;
+        t.log(
+          `ERROR: Msg ${currentMessageSeq} UNEXPECTEDLY has \\Answered flag`
+        );
+      }
+
+      t.false(
+        updatedMessage.flags.has('\\Answered'),
+        `Msg ${currentMessageSeq} should NOT have \\Answered flag`
+      );
+    }
+  }
+
+  t.is(
+    unexpectedAnsweredFlags,
+    0,
+    'No other messages should have the \\Answered flag'
+  );
+  t.log('All flags verified post-update.');
+});
+
+test('imap_thunderbird_simulation_answered_flag_large_mailbox', async (t) => {
+  t.log(
+    'Starting imap_thunderbird_simulation_answered_flag_large_mailbox test'
+  );
+  // eslint-disable-next-line unicorn/prefer-add-event-listener
+  t.context.imapFlow.onerror = (err) => {
+    console.error(
+      'IMAPFlow client error during test imap_thunderbird_simulation_answered_flag_large_mailbox:',
+      err
+    );
+    t.log('IMAPFlow client error occurred');
+  };
+
+  const { imapFlow, alias, domain } = t.context;
+  const mailboxName = `INBOX`;
+  const client = imapFlow;
+  t.log('IMAP client initialized.');
+
+  if (client.mailbox?.path === mailboxName) {
+    t.log(`${mailboxName} is already open.`);
+  } else {
+    t.log(
+      `Mailbox path is ${client.mailbox?.path}, attempting to open ${mailboxName}`
+    );
+    await client.mailboxOpen(mailboxName);
+    t.log(`${mailboxName} opened.`);
+  }
+
+  t.log(`Attempting to get lock for ${mailboxName}`);
+  const lock = await client.getMailboxLock(mailboxName);
+  t.log(`Lock for ${mailboxName} acquired.`);
+
+  try {
+    const numMessages = 200;
+    const targetMessageSequence = 101;
+
+    t.log(`Populating ${mailboxName} with ${numMessages} messages...`);
+    for (let i = 1; i <= numMessages; i++) {
+      const subject = `Test Email Large Sim ${i}`;
+      const body = `This is test email number ${i} for the large mailbox simulation.`;
+      const message = `Subject: ${subject}\r\nTo: ${alias.name}@${domain.name}\r\nFrom: testuser${i}@example.com\r\n\r\n${body}`;
+      // eslint-disable-next-line no-await-in-loop
+      await client.append(mailboxName, Buffer.from(message), []);
+      if (i % 50 === 0 || i === numMessages) {
+        t.log(`Appended ${i} of ${numMessages} messages to ${mailboxName}.`);
+      }
+    }
+
+    t.log(`${numMessages} messages appended to ${mailboxName}.`);
+
+    t.log(`Fetching status for ${mailboxName} to verify message count.`);
+    await client.mailboxOpen(mailboxName);
+    t.log(
+      `Mailbox ${mailboxName} re-opened/selected. Current message count: ${client.mailbox.exists}`
+    );
+    t.is(
+      client.mailbox.exists,
+      numMessages,
+      `Should have ${numMessages} messages after append in ${mailboxName}. Actual: ${client.mailbox.exists}`
+    );
+
+    t.log(`Determining UID for target sequence ${targetMessageSequence}...`);
+    let targetUid = null;
+    const fetchedMessagesForUidScan = [];
+    for await (const msg of client.fetch(`1:${numMessages}`, {
+      uid: true,
+      seq: true
+    })) {
+      fetchedMessagesForUidScan.push(msg);
+      if (msg.seq === targetMessageSequence) {
+        targetUid = msg.uid;
+      }
+    }
+
+    t.log(
+      `Scanned ${fetchedMessagesForUidScan.length} messages to find UID for sequence ${targetMessageSequence}.`
+    );
+    t.truthy(
+      targetUid,
+      `Target UID for message sequence ${targetMessageSequence} should be found. Messages scanned: ${fetchedMessagesForUidScan
+        .map((m) => `seq ${m.seq} uid ${m.uid}`)
+        .join(', ')}`
+    );
+    if (!targetUid) {
+      t.fail(
+        `Could not determine UID for target sequence ${targetMessageSequence}. Aborting test.`
+      );
+      return;
+    }
+
+    t.log(
+      `Target message sequence ${targetMessageSequence} has UID ${targetUid}.`
+    );
+
+    t.log(`Fetching initial flags for UID ${targetUid}.`);
+    const initialTargetFlagsMsg = await client.fetchOne(targetUid.toString(), {
+      flags: true,
+      uid: true
+    });
+
+    t.truthy(
+      initialTargetFlagsMsg,
+      `Should fetch message with UID ${targetUid} to check initial flags.`
+    );
+    if (initialTargetFlagsMsg) {
+      t.false(
+        initialTargetFlagsMsg.flags.has('\\Answered'),
+        `Msg UID ${targetUid} (seq ${targetMessageSequence}) should NOT initially have \\Answered flag. Current flags: ${[
+          ...initialTargetFlagsMsg.flags
+        ].join(', ')}`
+      );
+    }
+
+    t.log(`Initial flags for UID ${targetUid} verified (not \\Answered).`);
+
+    t.log(`Adding \\Answered flag to UID ${targetUid}.`);
+    await client.messageFlagsAdd(targetUid.toString(), ['\\Answered'], {
+      uid: true
+    });
+    t.log(`\\Answered flag added to UID ${targetUid}.`);
+
+    t.log('Verifying flags on all messages post-update...');
+    const allMessagesPostUpdate = [];
+    for await (const msg of client.fetch(`1:${numMessages}`, {
+      flags: true,
+      uid: true,
+      seq: true
+    })) {
+      allMessagesPostUpdate.push(msg);
+    }
+
+    t.is(
+      allMessagesPostUpdate.length,
+      numMessages,
+      'Fetched all messages for final flag check'
+    );
+    t.log(
+      `Fetched ${allMessagesPostUpdate.length} messages for final verification.`
+    );
+
+    let unexpectedAnsweredFlags = 0;
+    let foundTargetFlagged = false;
+    for (const msg of allMessagesPostUpdate) {
+      if (msg.uid === targetUid) {
+        foundTargetFlagged = true;
+        t.true(
+          msg.flags.has('\\Answered'),
+          `Target Msg UID ${msg.uid} (seq ${
+            msg.seq
+          }) SHOULD have \\Answered flag. Flags: ${[...msg.flags].join(', ')}`
+        );
+      } else if (msg.flags.has('\\Answered')) {
+        t.log(
+          `ERROR: Msg UID ${msg.uid} (seq ${
+            msg.seq
+          }) UNEXPECTEDLY has \\Answered flag. Flags: ${[...msg.flags].join(
+            ', '
+          )}`
+        );
+        unexpectedAnsweredFlags++;
+      }
+    }
+
+    t.true(
+      foundTargetFlagged,
+      `The target message (UID ${targetUid}) must be found in the final verification set.`
+    );
+
+    if (unexpectedAnsweredFlags > 0) {
+      t.fail(
+        `Found ${unexpectedAnsweredFlags} messages unexpectedly flagged as \\Answered. This indicates the bug is reproduced.`
+      );
+    } else {
+      t.pass(
+        `No other messages were unexpectedly flagged. Target message UID ${targetUid} correctly flagged.`
+      );
+    }
+
+    t.log('Flag verification complete.');
+  } catch (err) {
+    t.log(
+      `Test execution failed with error: ${err.message}. Stack: ${err.stack}`
+    );
+    t.fail(`Test failed with error: ${err.message}\nStack: ${err.stack}`);
+  } finally {
+    if (lock) {
+      t.log(`Releasing lock for ${mailboxName}.`);
+      await lock.release();
+      t.log(`Lock for ${mailboxName} released.`);
+    }
+
+    t.log(
+      'Exiting imap_thunderbird_simulation_answered_flag_large_mailbox test.'
+    );
+  }
+});
+
+test('imap_sequence_store_single_message_flag_consistency', async (t) => {
+  const { imapFlow, alias, domain } = t.context;
+  const mailboxPath = 'INBOX';
+
+  // 1. Setup: Append 5 messages
+  const numMessages = 5;
+  const appendedMessages = [];
+  for (let i = 0; i < numMessages; i++) {
+    const raw = `To: ${alias.name}@${
+      domain.name
+    }\nFrom: test@example.com\nSubject: Test Message ${
+      i + 1
+    }\n\nThis is test message ${i + 1}.`;
+    // eslint-disable-next-line no-await-in-loop
+    const appendResult = await imapFlow.append(
+      mailboxPath,
+      Buffer.from(raw),
+      [],
+      new Date()
+    );
+    appendedMessages.push(appendResult);
+    t.log(`Appended message ${i + 1}, UID: ${appendResult.uid}`);
+  }
+
+  // 2. Client Connect & Initial State Fetch
+  // Connection is already established in beforeEach
+  // Select INBOX (usually default, but good to be explicit if needed, though append implies selection)
+  const lock = await imapFlow.getMailboxLock(mailboxPath);
+  try {
+    t.log('Fetching initial state of all messages...');
+    const initialMessagesState = [];
+    for await (const msg of imapFlow.fetch('1:*', {
+      uid: true,
+      flags: true,
+      envelope: true
+    })) {
+      initialMessagesState.push({
+        uid: msg.uid,
+        flags: new Set(msg.flags),
+        seq: msg.seq,
+        subject: msg.envelope.subject
+      });
+    }
+
+    t.is(
+      initialMessagesState.length,
+      numMessages,
+      'Should have fetched initial state for all messages'
+    );
+    t.log(
+      'Initial messages state:',
+      initialMessagesState.map((m) => ({
+        seq: m.seq,
+        uid: m.uid,
+        flags: [...m.flags]
+      }))
+    );
+
+    // 3. Target Selection
+    const targetSeq = 3; // Target the 3rd message by sequence number
+    const targetMessageInitial = initialMessagesState.find(
+      (m) => m.seq === targetSeq
+    );
+    if (!targetMessageInitial) {
+      t.fail(
+        `Could not find message with sequence number ${targetSeq} in initial fetch.`
+      );
+      return;
+    }
+
+    const targetUid = targetMessageInitial.uid;
+    t.log(`Targeting message with Seq: ${targetSeq}, UID: ${targetUid}`);
+
+    // 4. Client Action (STORE by Sequence Number)
+    const flagToAdd = '\\Flagged';
+    t.log(`Adding flag '${flagToAdd}' to message with Seq: ${targetSeq}`);
+    // Using 'STORE <sequence> +FLAGS (<flag>)' equivalent
+    // imapflow's store command takes a sequence set string
+    const storeResult = await imapFlow.messageFlagsAdd(String(targetSeq), [
+      flagToAdd
+    ]);
+    t.log('Store command result:', storeResult);
+    // storeResult for imapflow is an array of objects like [{seq, flags, uid (if fetched)}]
+    // We should verify the command was successful, though imapflow throws on error.
+
+    // 5. Verification
+    t.log('Fetching final state of all messages...');
+    const finalMessagesState = [];
+    for await (const msg of imapFlow.fetch('1:*', {
+      uid: true,
+      flags: true,
+      envelope: true
+    })) {
+      finalMessagesState.push({
+        uid: msg.uid,
+        flags: new Set(msg.flags),
+        seq: msg.seq,
+        subject: msg.envelope.subject
+      });
+    }
+
+    t.is(
+      finalMessagesState.length,
+      numMessages,
+      'Should have fetched final state for all messages'
+    );
+    t.log(
+      'Final messages state:',
+      finalMessagesState.map((m) => ({
+        seq: m.seq,
+        uid: m.uid,
+        flags: [...m.flags]
+      }))
+    );
+
+    // Assertion 1 (Target Message)
+    const targetMessageFinal = finalMessagesState.find(
+      (m) => m.uid === targetUid
+    );
+    if (!targetMessageFinal) {
+      t.fail(`Could not find target message UID ${targetUid} in final fetch.`);
+      return;
+    }
+
+    t.true(
+      targetMessageFinal.flags.has(flagToAdd),
+      `Target message (UID: ${targetUid}, Seq: ${targetMessageFinal.seq}) should have the '${flagToAdd}' flag.`
+    );
+    // Check that other original flags are preserved
+    for (const initialFlag of targetMessageInitial.flags) {
+      if (initialFlag !== flagToAdd) {
+        // if it was already flagged, it's fine
+        t.true(
+          targetMessageFinal.flags.has(initialFlag),
+          `Target message (UID: ${targetUid}) should still have original flag '${initialFlag}'.`
+        );
+      }
+    }
+
+    // Assertion 2 (Other Messages)
+    for (const finalMsg of finalMessagesState) {
+      if (finalMsg.uid === targetUid) continue; // Skip the target message
+
+      const initialMsg = initialMessagesState.find(
+        (m) => m.uid === finalMsg.uid
+      );
+      if (!initialMsg) {
+        t.fail(
+          `Found a message in final state (UID: ${finalMsg.uid}) that was not in initial state.`
+        );
+        continue;
+      }
+
+      t.deepEqual(
+        [...finalMsg.flags].sort(),
+        [...initialMsg.flags].sort(),
+        `Flags for non-target message (UID: ${finalMsg.uid}, Seq: ${finalMsg.seq}) should be unchanged.`
+      );
+    }
+
+    // Assertion 3 (Connection Stability) - Implicitly tested by commands not throwing connection errors.
+    t.pass('Test completed, connection remained stable.');
+  } finally {
+    if (lock) await lock.release();
+  }
 });

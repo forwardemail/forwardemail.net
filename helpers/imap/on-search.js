@@ -223,7 +223,10 @@ async function onSearch(mailboxId, options, session, fn) {
               // if (
               //   !_.isEqual(_.sortBy(term.value), _.sortBy(session.selected.uidList))
               // )
-              if (term.value.length !== session.selected.uidList.length) {
+              if (
+                term.value.length !== session.selected.uidList.length &&
+                term.value.length > 0
+              ) {
                 // not 1:*
                 parent.push({
                   uid: tools.checkRangeQuery(term.value, ne)

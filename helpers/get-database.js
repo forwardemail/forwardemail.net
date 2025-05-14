@@ -635,7 +635,7 @@ async function getDatabase(
                   return;
                 }
 
-                await Mailboxes.create({
+                const mailbox = await Mailboxes.create({
                   // Virtual helper
                   instance,
                   session,
@@ -648,22 +648,16 @@ async function getDatabase(
                   retention: 0
                 });
 
-                // NOTE: no longer used since SQLite doesn't have IMAP notifier
-                /*
-                if (instance?.server?.notifier?.addEntries) {
-                  instance.server.notifier
-                    .addEntries(instance, session, mailbox, {
-                      command: 'CREATE',
-                      mailbox: mailbox._id,
-                      path
-                    })
-                    .then(() => {
-                      if (instance?.server?.notifier?.fire)
-                        instance.server.notifier.fire(session.user.alias_id);
-                    })
-                    .catch((err) => logger.fatal(err, { session }));
-                }
-                */
+                instance.server.notifier
+                  .addEntries(instance, session, mailbox, {
+                    command: 'CREATE',
+                    mailbox: mailbox._id,
+                    path
+                  })
+                  .then(() => {
+                    instance.server.notifier.fire(session.user.alias_id);
+                  })
+                  .catch((err) => logger.fatal(err, { session }));
               } catch (err) {
                 logger.fatal(err, { session });
               }

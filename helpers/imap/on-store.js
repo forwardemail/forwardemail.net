@@ -95,6 +95,7 @@ async function onStore(mailboxId, update, session, fn) {
         }
       );
 
+    let err;
     const modified = [];
     const entries = [];
     const payloads = [];
@@ -106,7 +107,16 @@ async function onStore(mailboxId, update, session, fn) {
     let newModseq;
 
     let queryAll = false;
-    if (update.messages.length === session.selected.uidList.length) {
+
+    // return early if no messages
+    // (we could also do `_id: -1` as a query)
+    if (update.messages.length === 0)
+      return fn(null, null, true, modified, payloads, entries);
+
+    if (
+      !update.isUid &&
+      update.messages.length === session.selected.uidList.length
+    ) {
       // 1:*
       queryAll = true;
     } else {
@@ -142,8 +152,6 @@ async function onStore(mailboxId, update, session, fn) {
 
     const messages = session.db.prepare(sql.query).all(sql.values);
 
-    let err;
-
     try {
       if (messages.length > 0) {
         session.db
@@ -160,11 +168,7 @@ async function onStore(mailboxId, update, session, fn) {
               // });
 
               // skip messages if necessary
-              if (
-                queryAll &&
-                (!session?.selected?.uidList ||
-                  !session.selected.uidList.includes(message.uid))
-              ) {
+              if (queryAll && !session.selected.uidList.includes(message.uid)) {
                 this.logger.debug('message skipped due to queryAll', {
                   message,
                   queryAll,
