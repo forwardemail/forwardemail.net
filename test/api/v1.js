@@ -20,9 +20,27 @@ const pWaitFor = require('p-wait-for');
 const test = require('ava');
 const { SMTPServer } = require('smtp-server');
 
+// const _ = require('lodash');
 const utils = require('../utils');
-const _ = require('#helpers/lodash');
 
+/*
+function findKeyDifferences(object1, object2) {
+  const keys1 = _.keys(object1);
+  const keys2 = object2;
+
+  const addedKeys = _.difference(keys2, keys1);
+  const removedKeys = _.difference(keys1, keys2);
+  const commonKeys = _.intersection(keys1, keys2);
+
+  return {
+    added: addedKeys,
+    removed: removedKeys,
+    common: commonKeys
+  };
+}
+*/
+
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const createSession = require('#helpers/create-session');
 const createTangerine = require('#helpers/create-tangerine');
@@ -40,6 +58,48 @@ import('@ava/get-port').then((obj) => {
 });
 
 const { emoji } = config.views.locals;
+
+// domain keys from API responses
+const keys = _.sortBy([
+  'has_newsletter',
+  'ignore_mx_check',
+  'retention_days',
+  'has_regex',
+  'has_catchall',
+  'allowlist',
+  'denylist',
+  'restricted_alias_names',
+  'has_adult_content_protection',
+  'has_phishing_protection',
+  'has_executable_protection',
+  'has_virus_protection',
+  'is_catchall_regex_disabled',
+  'has_smtp',
+  'is_smtp_suspended',
+  'plan',
+  'max_recipients_per_alias',
+  'smtp_port',
+  'members',
+  'invites',
+  'name',
+  'has_mx_record',
+  'has_txt_record',
+  'verification_record',
+  'has_dkim_record',
+  'has_return_path_record',
+  'has_dmarc_record',
+  'has_recipient_verification',
+  'has_custom_verification',
+  'id',
+  'object',
+  'created_at',
+  'updated_at',
+  'storage_used',
+  'storage_used_by_aliases',
+  'storage_quota',
+  'smtp_dns_records',
+  'link'
+]);
 
 const IP_ADDRESS = ip.address();
 const client = new Redis();
@@ -232,38 +292,16 @@ test('creates alias with global catch-all', async (t) => {
 
   t.deepEqual(
     _.sortBy(Object.keys(res.body.domain)),
-    _.sortBy([
-      'max_recipients_per_alias',
-      'allowlist',
-      'denylist',
-      'invites',
-      'restricted_alias_names',
-      'created_at',
-      'has_adult_content_protection',
-      'has_catchall',
-      'has_custom_verification',
-      'has_executable_protection',
-      'has_mx_record',
-      'has_newsletter',
-      'has_phishing_protection',
-      'has_recipient_verification',
-      'has_regex',
-      'has_smtp',
-      'has_txt_record',
-      'has_virus_protection',
-      'id',
-      'ignore_mx_check',
-      'is_catchall_regex_disabled',
-      'locale',
-      'members',
-      'name',
-      'object',
-      'plan',
-      'retention_days',
-      'smtp_port',
-      'updated_at',
-      'verification_record'
-    ])
+    _.sortBy(
+      _.without(
+        keys,
+        'link',
+        'smtp_dns_records',
+        'storage_quota',
+        'storage_used',
+        'storage_used_by_aliases'
+      )
+    )
   );
 
   t.is(res.body.domain.members.length, 1);
@@ -1141,7 +1179,7 @@ test('smtp outbound spam block detection', async (t) => {
   //
   {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console loug
+    delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);
@@ -1217,6 +1255,90 @@ test('smtp outbound spam block detection', async (t) => {
   await setTimeout(1000);
 });
 
+test('creates, retrieves, and lists domains', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  // create domain
+  {
+    const res = await t.context.api
+      .post('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        domain: 'testdomain1.com',
+        catchall: 'false'
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+  }
+
+  // list domains
+  // (excludes "invites", "locale", and "members")
+  {
+    const res = await t.context.api
+      .get('/v1/domains')
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send();
+
+    t.is(res.status, 200);
+    t.is(res.body.length, 1);
+    t.deepEqual(
+      _.sortBy(Object.keys(res.body[0])),
+      _.sortBy(_.without(keys, 'invites', 'members'))
+    );
+  }
+
+  // retrieve domain
+  // (excludes "locale")
+  {
+    const res = await t.context.api
+      .get('/v1/domains/testdomain1.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send();
+
+    t.is(res.status, 200);
+    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+  }
+
+  // update domain
+  {
+    const res = await t.context.api
+      .put('/v1/domains/testdomain1.com')
+      .auth(user[config.userFields.apiToken])
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        ignore_mx_check: true
+      });
+
+    t.is(res.status, 200);
+    t.deepEqual(_.sortBy(Object.keys(res.body)), keys);
+  }
+});
+
 test('create domain without catchall', async (t) => {
   const user = await t.context.userFactory
     .withState({
@@ -1289,47 +1411,7 @@ test('create domain without catchall', async (t) => {
     // filter for properties for exposed values
     t.deepEqual(
       _.sortBy(Object.keys(res.body[0])),
-      _.sortBy([
-        'allowlist',
-        'denylist',
-        'created_at',
-        'restricted_alias_names',
-        'has_adult_content_protection',
-        'has_catchall',
-        'has_custom_verification',
-        'has_executable_protection',
-        'has_mx_record',
-        'has_newsletter',
-        'has_phishing_protection',
-        'has_recipient_verification',
-        'has_regex',
-        'has_smtp',
-        'has_txt_record',
-        'has_virus_protection',
-        'id',
-        'ignore_mx_check',
-        'is_catchall_regex_disabled',
-        'max_recipients_per_alias',
-        'name',
-        'object',
-        'plan',
-        'retention_days',
-        'smtp_port',
-        'updated_at',
-        'verification_record',
-        //
-        // NOTE: paid plans additionally expose these three properties:
-        //       (see `app/controllers/web/my-account/list-domains.js`)
-        //       - storage_used
-        //       - storage_used_by_aliases
-        //       - storage_quota
-        //
-        'storage_used',
-        'storage_used_by_aliases',
-        'storage_quota',
-        // added by API v1 domains controller as a helper
-        'link'
-      ])
+      _.sortBy(_.without(keys, 'invites', 'members'))
     );
     t.is(res.headers['x-page-count'], '1');
     t.is(res.headers['x-page-current'], '1');
@@ -1890,7 +1972,7 @@ test('smtp email blocklist', async (t) => {
   //
   {
     const email = await Emails.findOne({ id: res.body.id }).lean().exec();
-    delete email.message; // suppress buffer output from console loug
+    delete email.message; // suppress buffer output from console log
     t.is(email.id, res.body.id);
     t.is(email.status, 'rejected');
     t.deepEqual(email.accepted, []);

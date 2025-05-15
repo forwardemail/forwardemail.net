@@ -226,6 +226,7 @@ block body
                           i.fa.fa-external-link
                       td.align-middle.small.text-left
                         code#copy-host-dkim.d-block.text-nowrap
+                          //- TODO: fix `parseRootDomain` for emoji domains with subdomain
                           = `${domain.dkim_key_selector}._domainkey`
                           if domain.root_name !== domain.name
                             = "."

@@ -130,6 +130,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
     let queryAll = false;
 
+    /*
     // return early if no messages
     // (we could also do `_id: -1` as a query)
     if (options.messages.length === 0) {
@@ -144,6 +145,7 @@ async function onFetch(mailboxId, options, session, fn) {
         entries
       );
     }
+    */
 
     if (
       !options.isUid &&
