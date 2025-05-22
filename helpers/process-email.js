@@ -487,7 +487,11 @@ async function processEmail({ email, port = 25, resolver, client }) {
       data.headers.remove('x-forward-email-sender');
       data.headers.add(
         'X-Forward-Email-Sender',
-        `rfc822; ${[email.envelope.from, HOSTNAME, IP_ADDRESS].join(', ')}`
+        `rfc822; ${[
+          punycode.toASCII(email.envelope.from),
+          HOSTNAME,
+          IP_ADDRESS
+        ].join(', ')}`
         // data.headers.lines.length
       );
       data.headers.remove('x-forward-email-id');

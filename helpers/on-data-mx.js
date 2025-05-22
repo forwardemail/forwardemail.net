@@ -5,6 +5,7 @@
 
 const crypto = require('node:crypto');
 const os = require('node:os');
+const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
@@ -246,7 +247,7 @@ async function sendVacationResponder(vacationResponder, headers, session) {
     info: {
       message,
       envelope: {
-        from: vacationResponder.from,
+        from: punycode.toASCII(vacationResponder.from),
         to: [checkSRS(session.envelope.mailFrom.address)]
       }
     },
@@ -296,7 +297,11 @@ function createVacationResponder(vacationResponder, headers, session) {
   rootNode.setHeader('X-Forward-Email-Version', config.pkg.version);
   rootNode.setHeader(
     'X-Forward-Email-Sender',
-    `rfc822; ${[vacationResponder.from, HOSTNAME, IP_ADDRESS].join(', ')}`
+    `rfc822; ${[
+      punycode.toASCII(vacationResponder.from),
+      HOSTNAME,
+      IP_ADDRESS
+    ].join(', ')}`
   );
 
   rootNode.setContent(vacationResponder.message);
@@ -1559,7 +1564,9 @@ function updateMXHeaders(headers, session) {
     isSANB(session.envelope.mailFrom.address) &&
     isEmail(session.envelope.mailFrom.address)
   )
-    senderHeader.push(checkSRS(session.envelope.mailFrom.address));
+    senderHeader.push(
+      punycode.toASCII(checkSRS(session.envelope.mailFrom.address))
+    );
   if (session.resolvedClientHostname)
     senderHeader.push(session.resolvedClientHostname);
   senderHeader.push(session.remoteAddress);
