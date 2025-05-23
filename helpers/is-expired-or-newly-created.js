@@ -99,7 +99,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     )
   )
     err = new SMTPError(
-      `${domain} WHOIS lookup indicates it is pending delete, update, or transfer; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${domain} was detected as a pending state domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
   // if the domain expiration date is within the past 90d
   // (safeguard for users in case they have a domain that expired they should renew it first)
@@ -109,7 +109,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     new Date(response.ts.expires).getTime() >= Date.now() - ms('90d')
   )
     err = new SMTPError(
-      `${domain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
   //
   // if the domain was created within the past 90d
@@ -130,7 +130,7 @@ async function isExpiredOrNewlyCreated(input, client) {
     new Date(response.ts.created).getTime() >= Date.now() - ms('90d')
   )
     err = new SMTPError(
-      `${domain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${domain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
 
   return { err, response };
