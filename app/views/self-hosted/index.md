@@ -46,6 +46,9 @@ The architecture includes containers for:
 * Redis for caching and performance
 * SQLite for secure, encrypted mailbox storage
 
+> \[!NOTE]
+> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+
 
 ## Requirements
 
