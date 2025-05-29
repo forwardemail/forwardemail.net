@@ -4,6 +4,8 @@
  */
 
 const Boom = require('@hapi/boom');
+const RE2 = require('re2');
+const bytes = require('@forwardemail/bytes');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
@@ -12,6 +14,8 @@ const _ = require('#helpers/lodash');
 
 const { Users } = require('#models');
 const config = require('#config');
+
+const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
 const USER_SEARCH_PATHS = [
   'email',
@@ -91,17 +95,56 @@ async function update(ctx) {
   if (!user) throw Boom.notFound(ctx.translateError('INVALID_USER'));
   const { body } = ctx.request;
 
-  user[config.passport.fields.givenName] =
-    body[config.passport.fields.givenName];
-  user[config.passport.fields.familyName] =
-    body[config.passport.fields.familyName];
-  user[config.passport.fields.otpEnabled] =
-    body[config.passport.fields.otpEnabled];
-  user.email = body.email;
-  user.group = body.group;
+  if (body[config.passport.fields.givenName])
+    user[config.passport.fields.givenName] =
+      body[config.passport.fields.givenName];
 
-  if (boolean(!body[config.passport.fields.otpEnabled]))
+  if (body[config.passport.fields.familyName])
+    user[config.passport.fields.familyName] =
+      body[config.passport.fields.familyName];
+
+  if (body[config.passport.fields.otpEnabled])
+    user[config.passport.fields.otpEnabled] =
+      body[config.passport.fields.otpEnabled];
+
+  if (
+    body[config.passport.fields.otpEnabled] &&
+    boolean(!body[config.passport.fields.otpEnabled])
+  )
     user[config.userFields.pendingRecovery] = false;
+
+  if (body.email) user.email = body.email;
+
+  if (body.group) user.group = body.group;
+
+  if (isSANB(body.has_passed_kyc))
+    user.has_passed_kyc = boolean(body.has_passed_kyc);
+
+  if (body.max_quota_per_alias) {
+    // validate `body.max_quota_per_alias_per_alias` if a value was passed
+    if (
+      typeof body.max_quota_per_alias !== 'undefined' &&
+      typeof body.max_quota_per_alias !== 'string'
+    )
+      throw Boom.badRequest(ctx.translateError('INVALID_BYTES'));
+
+    // indicates reset of the value
+    if (body.max_quota_per_alias === '') {
+      user.max_quota_per_alias = Number.isFinite(
+        ctx.state.domain.max_quota_per_alias
+      )
+        ? ctx.state.domain.max_quota_per_alias
+        : config.maxQuotaPerAlias;
+    } else if (typeof body.max_quota_per_alias === 'string') {
+      // test against bytes regex
+      if (!REGEX_BYTES.test(body.max_quota_per_alias))
+        throw Boom.badRequest(ctx.translateError('INVALID_BYTES'));
+      // otherwise convert the value
+      user.max_quota_per_alias = bytes(body.max_quota_per_alias);
+    }
+  }
+
+  if (body.smtp_limit) user.smtp_limit = body.smtp_limit;
 
   await user.save();
 

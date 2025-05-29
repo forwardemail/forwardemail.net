@@ -20,6 +20,12 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('group', null, '#table-users')
         th(scope="col")
+          +sortHeader('has_passed_kyc', 'Passed KYC', '#table-users')
+        th(scope="col")
+          +sortHeader('max_quota_per_alias', 'Max Qouta', '#table-users')
+        th(scope="col")
+          +sortHeader('smtp_limit', 'SMTP Limit', '#table-users')
+        th(scope="col")
           +sortHeader('created_at', 'Created', '#table-users')
         th(scope="col")
           +sortHeader('updated_at', 'Updated', '#table-users')
@@ -51,6 +57,63 @@ include ../../_pagination
             td.align-middle= user.alias_count
             td.align-middle= titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/users/${user.id}`),
+                method="POST"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                input(
+                  type="hidden",
+                  name="has_passed_kyc",
+                  value=(!user.has_passed_kyc).toString()
+                )
+                button.btn.btn-sm(
+                  type="submit",
+                  class=user.has_passed_kyc ? "btn-danger" : "btn-success"
+                )
+                  if user.has_passed_kyc
+                    = "Missing KYC"
+                  else
+                    = "Passed KYC"
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/users/${user.id}`),
+                method="PUT"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                .input-group
+                  input.form-control(
+                    type="string",
+                    name="max_quota_per_alias",
+                    value=Number.isFinite(user.max_quota_per_alias) ? bytes(user.max_quota_per_alias) : ""
+                  )
+                  .input-group-append
+                    button.btn.btn-sm.btn-dark(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Update")
+                    ): i.fa.fa-fw.fa-save
+            td.align-middle.text-center
+              form.ajax-form.confirm-prompt.d-inline-block(
+                action=l(`/admin/users/${user.id}`),
+                method="PUT"
+              )
+                input(type="hidden", name="_method", value="PUT")
+                .input-group
+                  input.form-control(
+                    type="number",
+                    min=300,
+                    step=100,
+                    name="smtp_limit",
+                    value=user.smtp_limit
+                  )
+                  .input-group-append
+                    button.btn.btn-sm.btn-dark(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Update")
+                    ): i.fa.fa-fw.fa-save
             td.align-middle.dayjs(
               data-time=new Date(user.created_at).getTime()
             )= dayjs(user.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
