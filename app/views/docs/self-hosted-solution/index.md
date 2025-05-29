@@ -86,6 +86,9 @@ The architecture includes containers for:
 * Redis for caching and performance
 * SQLite for secure, encrypted mailbox storage
 
+> \[!NOTE]
+> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+
 ### Bash Script Installation: Accessibility Meets Security
 
 We've designed the installation process to be as simple as possible while maintaining security best practices:

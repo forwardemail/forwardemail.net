@@ -25,6 +25,9 @@ This section documents the CI/CD workflow for ForwardEmail's self-hosted solutio
 
 ForwardEmail's self-hosted solution uses GitHub Actions to automatically build and publish Docker images whenever a new release is created. These images are then available for users to deploy on their own servers using the provided setup script.
 
+> \[!NOTE]
+> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+
 
 ## CI/CD Workflow
 
