@@ -1,0 +1,2269 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Forward Email API",
+    "description": "Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features:\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **Coming Soon:** Features like CardDAV contacts, CalDAV calendars, and IMAP/POP3 message/folder management are planned.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** (currently marked as \"Coming Soon\") will use a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 10      | `>= 1`, `<= 50`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Forward Email Support",
+      "url": "https://forwardemail.net",
+      "email": "api@forwardemail.net"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.forwardemail.net",
+      "description": "Forward Email API Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "\nUse your API Key as the **username** for Basic Authentication. Leave the password field empty.\n\n**Example:**\nIf your API Key is `YOUR_API_KEY`, the Base64 encoded value for the `Authorization` header would be `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+      },
+      "AliasAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n*(Note: These features are currently marked as \"Coming Soon\")*\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User's email address"
+          },
+          "given_name": {
+            "type": "string",
+            "description": "User's first name"
+          }
+        }
+      },
+      "Email": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address of the sender (must exist as an alias of the domain)"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Comma separated list of recipients for the \"To\" header"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "Array of recipients for the \"To\" header"
+              }
+            ]
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Comma separated list of recipients for the \"Cc\" header"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "Array of recipients for the \"Cc\" header"
+              }
+            ]
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Comma separated list of recipients for the \"Bcc\" header"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "Array of recipients for the \"Bcc\" header"
+              }
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the email"
+          },
+          "text": {
+            "type": "string",
+            "description": "The plaintext version of the message"
+          },
+          "html": {
+            "type": "string",
+            "description": "The HTML version of the message"
+          },
+          "attachments": {
+            "type": "array",
+            "description": "An array of attachment objects",
+            "items": {
+              "type": "object"
+            }
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address for the \"Sender\" header"
+          },
+          "raw": {
+            "type": "string",
+            "description": "With the exception of envelope and dkim (set automatically), all Nodemailer options are supported"
+          }
+        }
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Domain ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Domain name"
+          }
+        }
+      },
+      "Alias": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Alias ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Alias name"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain ID"
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "description": "Array of recipient email addresses"
+          }
+        }
+      },
+      "EmailLimit": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Current count of emails sent"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of emails allowed"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Member ID"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Member's email address"
+          },
+          "role": {
+            "type": "string",
+            "description": "Member's role"
+          }
+        }
+      },
+      "Invite": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Invited email address"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "description": "Page of results to return. If not specified, value will be 1. Must be a number greater than or equal to 1.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of results to return per page. Defaults to 10 if not specified. Must be a number greater than or equal to 1, and less than or equal to 50.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 10
+        }
+      },
+      "pagination": {
+        "name": "pagination",
+        "in": "query",
+        "description": "Opt-in to pagination before November 1st, 2024",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "domainId": {
+        "name": "domain_id",
+        "in": "path",
+        "required": true,
+        "description": "Domain ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "aliasId": {
+        "name": "alias_id",
+        "in": "path",
+        "required": true,
+        "description": "Alias ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "memberId": {
+        "name": "member_id",
+        "in": "path",
+        "required": true,
+        "description": "Member ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "emailId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Email ID",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/account": {
+      "post": {
+        "summary": "Create account",
+        "description": "Create a new user account\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Account"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (5 requests for 'create user')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve account",
+        "description": "Retrieve the current user's account information\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Account"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update account",
+        "description": "Update the current user's account information\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Account"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address"
+                  },
+                  "given_name": {
+                    "type": "string",
+                    "description": "First name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/logs/download": {
+      "get": {
+        "summary": "Download logs",
+        "description": "**Download logs**\n\nDescription: Our API programmatically allows you to download logs for your account. Submitting a request to this endpoint will process all logs for your account and email them to you as an attachment (Gzip compressed CSV spreadsheet file) once complete.\n\nThis allows you to create background jobs with a Cron job or using Node.js job scheduling software Bree to receive logs whenever you desire. Note that this endpoint is limited to `10` requests per day.\n\nThe attachment is the lowercase form of `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` and the email itself contains a brief summary of the logs retrieved.\n\nQuerystring Parameters:\n- `domain` (String FQDN, Optional): Filter logs by fully qualified domain.",
+        "tags": [
+          "Logs"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Filter logs by fully qualified domain (\"FQDN\"). If not provided, all logs across all domains will be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Search for logs by email, domain, alias name, IP address, or date (M/Y, M/D/YY, M-D, M-D-YY, or M.D.YY format).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bounce_category",
+            "in": "query",
+            "description": "Search for logs by a specific bounce category (e.g. \"blocklist\").",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_code",
+            "in": "query",
+            "description": "Search for logs by a specific error response code (e.g. 421 or 550).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs will be emailed as an attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logs will be emailed to you shortly"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (10 requests for 'download logs')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/emails": {
+      "get": {
+        "summary": "List outbound SMTP emails",
+        "description": "**List outbound SMTP emails**\n\nDescription: List all outbound SMTP emails.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of outbound SMTP emails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Email"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create outbound SMTP email",
+        "description": "**Create outbound SMTP email**\n\nDescription: Create and send an outbound SMTP email.\n\nBody Parameters:\n- Various parameters based on Nodemailer's message configuration\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/emails \\\n  -u API_TOKEN: \\\n  -d \"from=alias@domain.com\" \\\n  -d \"to=user@gmail.com\" \\\n  -d \"subject=Hello\" \\\n  -d \"text=Hello world\"\n```",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Email"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email sent successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/emails/limit": {
+      "get": {
+        "summary": "Get outbound SMTP email limit",
+        "description": "**Get outbound SMTP email limit**\n\nDescription: This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails/limit \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email limit information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/emails/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/emailId"
+        }
+      ],
+      "get": {
+        "summary": "Retrieve outbound SMTP email",
+        "description": "**Retrieve outbound SMTP email**\n\nDescription: Retrieve a specific outbound SMTP email.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails/EMAIL_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete outbound SMTP email",
+        "description": "**Delete outbound SMTP email**\n\nDescription: Delete a specific outbound SMTP email.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/emails/EMAIL_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Emails"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains": {
+      "get": {
+        "summary": "List domains",
+        "description": "**List domains**\n\nDescription: List all domains.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Domain"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create domain",
+        "description": "**Create domain**\n\nDescription: Create a new domain.\n\nBody Parameters:\n- `name` (String, Required): Domain name\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains \\\n  -u API_TOKEN: \\\n  -d \"name=domain.com\"\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Domain name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (50 requests for 'create domain')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Retrieve domain",
+        "description": "**Retrieve domain**\n\nDescription: Retrieve a specific domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update domain",
+        "description": "**Update domain**\n\nDescription: Update a specific domain.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete domain",
+        "description": "**Delete domain**\n\nDescription: Delete a specific domain.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Domain deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/verify-records": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Verify domain records",
+        "description": "**Verify domain records**\n\nDescription: Verify DNS records for a specific domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/verify-records \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Domains"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain records verification result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "verified": {
+                      "type": "boolean",
+                      "description": "Whether the domain records are verified"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "Record type"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Record name"
+                          },
+                          "value": {
+                            "type": "string",
+                            "description": "Record value"
+                          },
+                          "verified": {
+                            "type": "boolean",
+                            "description": "Whether the record is verified"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Accept domain invite",
+        "description": "**Accept domain invite**\n\nDescription: Accept an invitation to a domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Invites"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite accepted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create domain invite",
+        "description": "**Create domain invite**\n\nDescription: Create an invitation to a domain.\n\nBody Parameters:\n- `email` (String, Required): Email address to invite\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN: \\\n  -d \"email=user@gmail.com\"\n```",
+        "tags": [
+          "Invites"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address to invite"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (10 requests for 'create invite')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove domain invite",
+        "description": "**Remove domain invite**\n\nDescription: Remove an invitation to a domain.\n\nBody Parameters:\n- `email` (String, Required): Email address to remove invitation for\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN: \\\n  -d \"email=user@gmail.com\"\n```",
+        "tags": [
+          "Invites"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address to remove invitation for"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/members/{member_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/memberId"
+        }
+      ],
+      "put": {
+        "summary": "Update domain member",
+        "description": "**Update domain member**\n\nDescription: Update a domain member.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID/members/MEMBER_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "description": "Member's role"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain member updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove domain member",
+        "description": "**Remove domain member**\n\nDescription: Remove a domain member.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/members/MEMBER_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain member removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Member removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "List domain aliases",
+        "description": "**List domain aliases**\n\nDescription: List all aliases for a specific domain.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Aliases"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain aliases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alias"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new domain alias",
+        "description": "**Create new domain alias**\n\nDescription: Create a new alias for a specific domain.\n\nBody Parameters:\n- `name` (String, Required): Alias name\n- `recipients` (Array, Required): Array of recipient email addresses\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases \\\n  -u API_TOKEN: \\\n  -d \"name=alias\" \\\n  -d \"recipients[]=user@gmail.com\"\n```",
+        "tags": [
+          "Aliases"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "recipients"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Alias name"
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "Array of recipient email addresses"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (300 requests for 'create alias')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/aliasId"
+        }
+      ],
+      "get": {
+        "summary": "Retrieve domain alias",
+        "description": "**Retrieve domain alias**\n\nDescription: Retrieve a specific alias for a domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Aliases"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update domain alias",
+        "description": "**Update domain alias**\n\nDescription: Update a specific alias for a domain.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN: \\\n  -d \"recipients[]=user@gmail.com\"\n```",
+        "tags": [
+          "Aliases"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "Array of recipient email addresses"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete domain alias",
+        "description": "**Delete domain alias**\n\nDescription: Delete a specific alias for a domain.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN:\n```",
+        "tags": [
+          "Aliases"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Alias deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/encrypt": {
+      "post": {
+        "summary": "Encrypt TXT Record",
+        "description": "**Encrypt TXT Record**\n\nDescription: Encrypt a TXT record.\n\nBody Parameters:\n- `text` (String, Required): Text to encrypt\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/encrypt \\\n  -u API_TOKEN: \\\n  -d \"text=user@gmail.com\"\n```",
+        "tags": [
+          "Encrypt"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Text to encrypt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Text encrypted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encrypted": {
+                      "type": "string",
+                      "description": "Encrypted text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (50 requests for 'encrypt')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "summary": "List contacts",
+        "description": "List all contacts (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Contacts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create contact",
+        "description": "Create a new contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Contacts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Contact ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve contact",
+        "description": "Retrieve a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Contacts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update contact",
+        "description": "Update a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Contacts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete contact",
+        "description": "Delete a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Contacts"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "summary": "List calendars",
+        "description": "List all calendars (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Calendars"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create calendar",
+        "description": "Create a new calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Calendars"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Calendar ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve calendar",
+        "description": "Retrieve a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Calendars"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update calendar",
+        "description": "Update a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Calendars"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete calendar",
+        "description": "Delete a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Calendars"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "summary": "List and search for messages",
+        "description": "List and search for messages (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Messages"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create message",
+        "description": "Create a new message (IMAP/POP3). This will NOT send an email – it will only simply add the message to your mailbox folder (similar to the IMAP APPEND command). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Messages"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Message ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve message",
+        "description": "Retrieve a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Messages"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update message",
+        "description": "Update a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Messages"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete message",
+        "description": "Delete a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Messages"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "summary": "List folders",
+        "description": "List all folders (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create folder",
+        "description": "Create a new folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Folder ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve folder",
+        "description": "Retrieve a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update folder",
+        "description": "Update a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete folder",
+        "description": "Delete a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/copy": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Folder ID",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Copy folder",
+        "description": "Copy a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "tags": [
+          "Alias Folders"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Account management endpoints"
+    },
+    {
+      "name": "Logs",
+      "description": "Log management endpoints"
+    },
+    {
+      "name": "Emails",
+      "description": "Email management endpoints"
+    },
+    {
+      "name": "Domains",
+      "description": "Domain management endpoints"
+    },
+    {
+      "name": "Invites",
+      "description": "Domain invite management endpoints"
+    },
+    {
+      "name": "Members",
+      "description": "Domain member management endpoints"
+    },
+    {
+      "name": "Aliases",
+      "description": "Domain alias management endpoints"
+    },
+    {
+      "name": "Encrypt",
+      "description": "Encryption endpoints"
+    },
+    {
+      "name": "Alias Contacts",
+      "description": "Alias contacts management endpoints (CardDAV)"
+    },
+    {
+      "name": "Alias Calendars",
+      "description": "Alias calendars management endpoints (CalDAV)"
+    },
+    {
+      "name": "Alias Messages",
+      "description": "Alias messages management endpoints (IMAP/POP3)"
+    },
+    {
+      "name": "Alias Folders",
+      "description": "Alias folders management endpoints (IMAP/POP3)"
+    }
+  ]
+}

@@ -351,7 +351,7 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/email-api'));
   })
-  .get('/email-api', web.myAccount.retrieveDomains, web.api)
+  .get('/email-api', web.api)
   .get(
     '/help',
     policies.ensureLoggedIn,
