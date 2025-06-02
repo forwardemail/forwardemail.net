@@ -52,7 +52,7 @@ async function listBilling(ctx) {
 
   //
   // set HTTP headers for pagination
-  // <https://forwardemail.net/api#pagination>
+  // <https://forwardemail.net/email-api#description/pagination>
   //
   setPaginationHeaders(
     ctx,
