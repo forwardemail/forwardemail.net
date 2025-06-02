@@ -188,7 +188,7 @@ async function retrieveAliases(ctx, next) {
 
     //
     // set HTTP headers for pagination
-    // <https://forwardemail.net/api#pagination>
+    // <https://forwardemail.net/email-api#description/pagination>
     //
     setPaginationHeaders(
       ctx,
@@ -224,7 +224,7 @@ async function retrieveAliases(ctx, next) {
 
     //
     // set HTTP headers for pagination
-    // <https://forwardemail.net/api#pagination>
+    // <https://forwardemail.net/email-api#description/pagination>
     //
     setPaginationHeaders(
       ctx,

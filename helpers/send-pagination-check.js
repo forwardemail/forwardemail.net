@@ -18,7 +18,7 @@ async function sendPaginationCheck(ctx) {
     await ctx.client.set(key, true, 'PX', ms('90d'));
     const link = `${config.urls.web}/${
       ctx.state.user[config.lastLocaleField]
-    }/api#pagination`;
+    }/email-api#description/pagination`;
     const subject = i18n.translate(
       'PAGINATION_CHECK_SUBJECT',
       ctx.state.user[config.lastLocaleField]

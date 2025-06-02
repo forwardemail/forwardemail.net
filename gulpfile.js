@@ -555,6 +555,21 @@ async function bundle() {
       ),
       path.join(config.buildBase, 'js', 'polyfill.js')
     ),
+
+    // scalar API reference
+    fs.promises.copyFile(
+      path.join(
+        __dirname,
+        'node_modules',
+        '@scalar',
+        'api-reference',
+        'dist',
+        'browser',
+        'standalone.js'
+      ),
+      path.join(config.buildBase, 'js', 'scalar.js')
+    ),
+
     // lazyload
     fs.promises.copyFile(
       path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
@@ -724,7 +739,8 @@ async function sri() {
         '!build/robots.txt',
         '!build/browserconfig.xml',
         '!build/opensearch.xml',
-        '!build/technical-whitepaper.pdf'
+        '!build/technical-whitepaper.pdf',
+        '!build/api-spec.json'
       ],
       { base: config.buildBase }
     )

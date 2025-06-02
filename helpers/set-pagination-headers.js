@@ -20,7 +20,7 @@ function getLink(ctx, page) {
 
 //
 // set HTTP headers for pagination
-// <https://forwardemail.net/api#pagination>
+// <https://forwardemail.net/email-api#description/pagination>
 //
 // eslint-disable-next-line max-params
 function setPaginationHeaders(

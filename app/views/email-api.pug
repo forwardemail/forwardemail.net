@@ -1,0 +1,41 @@
+block body
+  #app
+
+  - const ogImage = `${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === "/" ? "/index" : ""}.png`;
+
+  script(src="/js/scalar.js", crossorigin="anonymous")
+
+  script.
+    window.WEB_URL = "#{config.WEB_URL}";
+    window.API_TOKEN = "#{user ? user[config.userFields.apiToken] : ""}";
+    window.OG_IMAGE = "#{ogImage}";
+    window.SITE_NAME = "#{config.appName}";
+    window.TITLE = "#{meta.title}";
+    window.DESCRIPTION = "#{meta.description}";
+
+    Scalar.createApiReference("#app", {
+      url: `${window.WEB_URL}/api-spec.json`,
+      authentication: {
+        preferredSecurityScheme: "ApiKeyAuth",
+        securitySchemes: {
+          ApiKeyAuth: {
+            username: window.API_TOKEN,
+            password: "",
+          },
+          AliasAuth: {
+            name: "Authorization",
+            in: "header",
+            value: window.API_TOKEN,
+          },
+        }
+      },
+      favicon: '/img/apple-touch-icon.png',
+      metaData: {
+        title: window.TITLE,
+        ogTitle: window.TITLE,
+        description: window.DESCRIPTION,
+        ogDescription: window.DESCRIPTION,
+        ogImage: window.OG_IMAGE,
+        siteName: window.SITE_NAME
+      }
+    });

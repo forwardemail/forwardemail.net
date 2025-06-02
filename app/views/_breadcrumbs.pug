@@ -176,7 +176,10 @@ if breadcrumbs.length > 1
                           )
                             = category === "dmarc" ? "DMARC" : titleize(humanize(category))
                 li.list-inline-item.mb-1
-                  a.btn.btn-dark(href=l("/email-api#logs"), target="_blank")
+                  a.btn.btn-dark(
+                    href=l("/email-api#tag/logs"),
+                    target="_blank"
+                  )
                     i.fa.fa-fw.fa-code.text-themed
                     = " "
                     = t("Retrieve via API")
