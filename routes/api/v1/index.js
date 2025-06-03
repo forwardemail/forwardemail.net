@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
 const dayjs = require('dayjs-with-plugins');
@@ -12,6 +13,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const api = require('#controllers/api');
+const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
@@ -80,6 +82,15 @@ router
   //
   // public
   //
+  .use((ctx, next) => {
+    if (
+      ctx.method === 'DELETE' &&
+      ctx.get('Origin') &&
+      ctx.get('Origin').startsWith(config.urls.web)
+    )
+      throw Boom.badRequest(ctx.translateError('DELETE_PROTECTED'));
+    return next();
+  })
   .post('/account', rateLimit(5, 'create user'), api.v1.users.create)
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
   .get(

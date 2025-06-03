@@ -268,6 +268,8 @@ module.exports = {
   PASSKEY_REMOVED: 'Passkey was removed from your account',
   PASSKEYS_MAX_LIMIT_EXCEEDED:
     'You cannot have more than <span class="notranslate">%d</span> passkeys at the same time.',
+  DELETE_PROTECTED:
+    'DELETE requests are dummy-proofed and protected from access within our API docs, please make a request outside of our API docs using your preferred client to perform this request.',
   INVALID_WEBAUTHN_KEY: 'Invalid WebAuthn key.',
   INVALID_API_CREDENTIALS: 'Invalid API credentials.',
   INVALID_API_TOKEN: 'Invalid API token.',
