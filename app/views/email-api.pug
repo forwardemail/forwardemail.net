@@ -6,7 +6,8 @@ block body
   script(src="/js/scalar.js", crossorigin="anonymous")
 
   script.
-    window.WEB_URL = "#{config.WEB_URL}";
+    window.API_URL = "#{config.urls.api}";
+    window.WEB_URL = "#{config.urls.web}";
     window.API_TOKEN = "#{user ? user[config.userFields.apiToken] : ""}";
     window.OG_IMAGE = "#{ogImage}";
     window.SITE_NAME = "#{config.appName}";
@@ -14,6 +15,11 @@ block body
     window.DESCRIPTION = "#{meta.description}";
 
     Scalar.createApiReference("#app", {
+      servers: [
+        {
+          url: window.API_URL
+        }
+      ],
       url: `${window.WEB_URL}/api-spec.json`,
       authentication: {
         preferredSecurityScheme: "ApiKeyAuth",
