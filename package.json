@@ -64,7 +64,7 @@
     "@opensumi/reconnecting-websocket": "4.4.0",
     "@parse/node-apn": "6.2.1",
     "@peculiar/x509": "1.12.3",
-    "@scalar/api-reference": "^1.31.2",
+    "@scalar/api-reference": "1.31.2",
     "@shopify/semaphore": "3.1.0",
     "@sidoshi/random-string": "1.0.0",
     "@tkrotoff/bootstrap-floating-label": "0.8.0",
