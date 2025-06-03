@@ -13291,5 +13291,7 @@
   ": Besides bounces, Listmonk can send webhooks for other events (e.g., subscriptions), allowing integration with other systems.": "：除了退回邮件，Listmonk 还可以发送其他事件（例如订阅）的 webhook，从而允许与其他系统集成。",
   "By integrating the self-hosted power of Listmonk with the secure, privacy-respecting delivery of Forward Email, you create a robust and ethical email marketing platform. You maintain full ownership of your audience data while benefiting from high deliverability and automated security features.": "通过将 Listmonk 的自托管功能与 Forward Email 的安全、尊重隐私的交付功能相结合，您可以创建一个强大且符合道德规范的电子邮件营销平台。您可以完全掌控您的受众数据，同时享受高送达率和自动化安全功能。",
   "This setup provides a scalable, cost-effective, and developer-friendly alternative to proprietary email services, aligning perfectly with the ethos of open-source software and user privacy.": "此设置提供了一种可扩展、经济高效且开发人员友好的专有电子邮件服务替代方案，完全符合开源软件和用户隐私的精神。",
-  "Happy Sending! 🚀": "发送愉快！🚀"
+  "Happy Sending! 🚀": "发送愉快！🚀",
+  "DELETE requests are dummy-proofed and protected from access within our API docs, please make a request outside of our API docs using your preferred client to perform this request.": "DELETE 请求是经过防假处理的，并且在我们的 API 文档中受到访问保护，请使用您首选的客户端在我们的 API 文档之外发出请求来执行此请求。",
+  "Check out our complete self hosted setup.": "查看我们完整的自托管设置。"
 }

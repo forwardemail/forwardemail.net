@@ -11645,5 +11645,7 @@
   ": Besides bounces, Listmonk can send webhooks for other events (e.g., subscriptions), allowing integration with other systems.": "מלבד יציאות חוזרות (bounces), Listmonk יכול לשלוח webhooks עבור אירועים אחרים (למשל, מנויים), מה שמאפשר אינטגרציה עם מערכות אחרות.",
   "By integrating the self-hosted power of Listmonk with the secure, privacy-respecting delivery of Forward Email, you create a robust and ethical email marketing platform. You maintain full ownership of your audience data while benefiting from high deliverability and automated security features.": "על ידי שילוב העוצמה של Listmonk המאוחסנת בעצמה עם המסירה המאובטחת והמכבדת את הפרטיות של Forward Email, אתם יוצרים פלטפורמת שיווק בדוא\"ל חזקה ואתית. אתם שומרים על בעלות מלאה על נתוני הקהל שלכם תוך כדי שאתם נהנים מיכולת מסירה גבוהה ותכונות אבטחה אוטומטיות.",
   "This setup provides a scalable, cost-effective, and developer-friendly alternative to proprietary email services, aligning perfectly with the ethos of open-source software and user privacy.": "הגדרה זו מספקת אלטרנטיבה ניתנת להרחבה, חסכונית וידידותית למפתחים לשירותי דוא\"ל קנייניים, ותואמת באופן מושלם את האתוס של תוכנה בקוד פתוח ופרטיות המשתמש.",
-  "Happy Sending! 🚀": "שליחה מהנה! 🚀"
+  "Happy Sending! 🚀": "שליחה מהנה! 🚀",
+  "DELETE requests are dummy-proofed and protected from access within our API docs, please make a request outside of our API docs using your preferred client to perform this request.": "בקשות DELETE מוגנות מפני גישה ומוכחות בפני דמה בתוך מסמכי ה-API שלנו. אנא שלח בקשה מחוץ למסמכי ה-API שלנו באמצעות הלקוח המועדף עליך כדי לבצע בקשה זו.",
+  "Check out our complete self hosted setup.": "בדקו את מערך האירוח העצמי המלא שלנו."
 }
