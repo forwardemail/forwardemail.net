@@ -220,7 +220,7 @@ module.exports = (redis) => ({
                   ? []
                   : ['https://www.sandbox.paypal.com'])
               ],
-              'font-src': [...defaultSrc],
+              'font-src': [...defaultSrc, 'https://fonts.scalar.com'],
               'img-src': [
                 ...defaultSrc,
                 'https://badge.hardenize.com',
