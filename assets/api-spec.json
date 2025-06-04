@@ -403,16 +403,143 @@
       "Domain": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "description": "Domain ID"
+          "has_newsletter": { "type": "boolean" },
+          "ignore_mx_check": { "type": "boolean" },
+          "retention_days": { "type": "integer" },
+          "has_regex": { "type": "boolean" },
+          "has_catchall": { "type": "boolean" },
+          "allowlist": {
+            "type": "array",
+            "items": { "type": "string" }
           },
-          "name": {
+          "denylist": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "restricted_alias_names": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "has_adult_content_protection": { "type": "boolean" },
+          "has_phishing_protection": { "type": "boolean" },
+          "has_executable_protection": { "type": "boolean" },
+          "has_virus_protection": { "type": "boolean" },
+          "is_catchall_regex_disabled": { "type": "boolean" },
+          "has_smtp": { "type": "boolean" },
+          "is_smtp_suspended": { "type": "boolean" },
+          "plan": { "type": "string" },
+          "max_recipients_per_alias": { "type": "integer" },
+          "smtp_port": { "type": "string" },
+          "name": { "type": "string" },
+          "has_mx_record": { "type": "boolean" },
+          "has_txt_record": { "type": "boolean" },
+          "has_dkim_record": { "type": "boolean" },
+          "has_return_path_record": { "type": "boolean" },
+          "has_dmarc_record": { "type": "boolean" },
+          "has_recipient_verification": { "type": "boolean" },
+          "has_custom_verification": { "type": "boolean" },
+          "verification_record": { "type": "string" },
+          "id": { "type": "string" },
+          "object": {
             "type": "string",
-            "description": "Domain name"
+            "enum": ["domain"]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_used": { "type": "integer" },
+          "storage_used_by_aliases": { "type": "integer" },
+          "storage_quota": { "type": "integer" },
+          "smtp_dns_records": {
+            "type": "object",
+            "properties": {
+              "dkim": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              },
+              "return_path": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              },
+              "dmarc": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            }
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
           }
+        },
+      "example": [
+        {
+          "has_newsletter": false,
+          "ignore_mx_check": false,
+          "retention_days": 0,
+          "has_regex": false,
+          "has_catchall": true,
+          "allowlist": [],
+          "denylist": [],
+          "restricted_alias_names": [],
+          "has_adult_content_protection": true,
+          "has_phishing_protection": true,
+          "has_executable_protection": true,
+          "has_virus_protection": true,
+          "is_catchall_regex_disabled": false,
+          "has_smtp": false,
+          "is_smtp_suspended": false,
+          "plan": "team",
+          "max_recipients_per_alias": 10,
+          "smtp_port": "25",
+          "name": "test.com",
+          "has_mx_record": false,
+          "has_txt_record": false,
+          "has_dkim_record": false,
+          "has_return_path_record": false,
+          "has_dmarc_record": false,
+          "has_recipient_verification": false,
+          "has_custom_verification": false,
+          "verification_record": "kcjg6vrO8Q",
+          "id": "683f1172c4bad2524410b857",
+          "object": "domain",
+          "created_at": "2025-06-03T15:14:59.000Z",
+          "updated_at": "2025-06-03T15:14:59.254Z",
+          "storage_used": 0,
+          "storage_used_by_aliases": 0,
+          "storage_quota": 10737418240,
+          "smtp_dns_records": {
+            "dkim": {
+              "name": "fe-ebf3212716._domainkey",
+              "value": "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcG+YBDPhyH8bLmyflmU9w1klYDeWpEufIlVqyWqly9lC+J/ntkKn4gum28EeE6vR+55x4JFCR8qSaw0YO1eCRwBgpFB0kKzbELHh2i2TKKwrqB3gPLXp4q4lbcGX2eD6fPCRwckTHqmiOzMhX8GD60zVlEvabok4LJ1i/BOyh6wIDAQAB;"
+            },
+            "return_path": {
+              "name": "fe-bounces",
+              "value": "forwardemail.net"
+            },
+            "dmarc": {
+              "name": "_dmarc",
+              "value": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-683f1172c4bad2524410b857@localhost;"
+            }
+          },
+          "link": "http://localhost:3000/my-account/domains/test.com"
         }
-      },
+      ]
+    },
       "Alias": {
         "type": "object",
         "properties": {
@@ -1134,7 +1261,7 @@
     "/v1/domains": {
       "get": {
         "summary": "List domains",
-        "description": "**List domains**\n\nDescription: List all domains.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains \\\n  -u API_TOKEN:\n```",
+        "description": "> [!NOTE]\n>As of November 1st, 2024 the API endpoints for List domains and List domain aliases will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
         "tags": [
           "Domains"
         ],
@@ -1145,13 +1272,44 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/page"
+            "name": "q",
+            "in": "query",
+            "description": "Search for domains by metadata.",
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "$ref": "#/components/parameters/limit"
+            "name": "domain",
+            "in": "query",
+            "description": "Search for domains by domain name.",
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "$ref": "#/components/parameters/pagination"
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "See Pagination for more insight.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "See Pagination for more insight.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1169,10 +1327,10 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       },
@@ -2620,7 +2778,7 @@
     },
     {
       "name": "Domains",
-      "description": "Domain management endpoints"
+      "description": "> [!TIP]\n> Domain endpoints with a domain's name <code>/v1/domains/:domain\\_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain\\_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value."
     },
     {
       "name": "Invites",
