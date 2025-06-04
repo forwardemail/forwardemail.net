@@ -1860,7 +1860,7 @@
       ],
       "put": {
         "summary": "Update domain member",
-        "description": "**Update domain member**\n\nDescription: Update a domain member.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID/members/MEMBER_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Update a domain member.",
         "tags": [
           "Members"
         ],
@@ -1875,9 +1875,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "role": {
+                  "group": {
+                    "required": true,
                     "type": "string",
-                    "description": "Member's role"
+                    "description": "Group to update the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
                   }
                 }
               }
@@ -1896,22 +1897,22 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "delete": {
         "summary": "Remove domain member",
-        "description": "**Remove domain member**\n\nDescription: Remove a domain member.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/members/MEMBER_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Remove a domain member.",
         "tags": [
           "Members"
         ],
@@ -1938,13 +1939,13 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
