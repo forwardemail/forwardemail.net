@@ -484,8 +484,8 @@
           "link": {
             "type": "string",
             "format": "uri"
-          }
-        },
+        }
+      },
       "example": [
         {
           "has_newsletter": false,
@@ -540,6 +540,139 @@
         }
       ]
     },
+    "CreateDomainInput": {
+        "type": "object",
+        "required": ["domain"],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Fully qualified domain name (FQDN) or IP address"
+          },
+          "team_domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Assign to same team from another domain; can be a domain ID or FQDN. Use \"none\" to explicitly disable."
+          },
+          "plan": {
+            "type": "string",
+            "enum": ["free", "enhanced_protection", "team"],
+            "description": "Plan type (defaults to 'free' or the user's current paid plan)"
+          },
+          "catchall": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "description": "Delimited list of email addresses (comma, space, or newline separated)"
+              }
+            ],
+            "description": "Create a default catch-all alias (defaults to true)"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "Enable Spam Scanner adult content protection"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "Enable Spam Scanner phishing protection"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "Enable Spam Scanner executable protection"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "Enable Spam Scanner virus protection"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Require alias recipients to click email verification link"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "Ignore MX record check for advanced mail routing setups"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "Number of days to retain outbound SMTP logs (0–30, default: 0)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "description": "Webhook URL to receive bounce events"
+              },
+              {
+                "type": "boolean",
+                "enum": [false],
+                "description": "Disable bounce webhook"
+              }
+            ]
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "Storage max quota per alias (e.g. '1 GB')"
+          }
+        }
+      },
+      "UpdateDomainInput": {
+        "type": "object",
+        "properties": {
+          "smtp_port": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" }
+            ],
+            "description": "Custom port to configure for SMTP forwarding (default is '25')"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "Whether to enable Spam Scanner adult content protection on this domain"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "Whether to enable Spam Scanner phishing protection on this domain"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "Whether to enable Spam Scanner executable protection on this domain"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "Whether to enable Spam Scanner virus protection on this domain"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Global domain default for whether to require alias recipients to click an email verification link for emails to flow through"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "Number of days to store outbound SMTP emails (0 = purge immediately)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              { "type": "string", "format": "uri" },
+              { "type": "boolean", "enum": [false] }
+            ],
+            "description": "Webhook URL to receive bounce notifications, or false to disable"
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "Storage quota per alias (e.g. '1 GB', parsed into bytes)"
+          }
+        }
+      },
       "Alias": {
         "type": "object",
         "properties": {
@@ -1336,7 +1469,7 @@
       },
       "post": {
         "summary": "Create domain",
-        "description": "**Create domain**\n\nDescription: Create a new domain.\n\nBody Parameters:\n- `name` (String, Required): Domain name\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains \\\n  -u API_TOKEN: \\\n  -d \"name=domain.com\"\n```",
+        "description": "Creates a new domain in the system. This endpoint allows you to register a fully qualified domain name (FQDN) or IP address for use with the platform.\n\nOptional configuration options include assigning the domain to an existing team, setting a plan type (e.g., free, enhanced protection, or team), and configuring advanced protections such as spam filtering, virus scanning, and recipient verification. You can also configure whether a catch-all alias should be created by default, set a custom bounce webhook URL for SMTP failures, and define storage quota limits for email aliases on this domain. This endpoint performs domain-level validation and provisioning. If the `ignore_mx_check` option is enabled, MX record verification is skipped (recommended only for advanced routing setups). The response will contain full details of the created domain object, including DNS records needed for configuration.",
         "tags": [
           "Domains"
         ],
@@ -1350,16 +1483,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "name"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Domain name"
-                  }
-                }
+                "$ref": "#/components/schemas/CreateDomainInput"
               }
             }
           }
@@ -1376,23 +1500,16 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "429": {
-            "description": "Rate limit exceeded (50 requests for 'create domain')",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/TooManyRequests"
           }
         }
       }
@@ -1405,7 +1522,7 @@
       ],
       "get": {
         "summary": "Retrieve domain",
-        "description": "**Retrieve domain**\n\nDescription: Retrieve a specific domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Retrieve a specific domain",
         "tags": [
           "Domains"
         ],
@@ -1426,19 +1543,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "put": {
         "summary": "Update domain",
-        "description": "**Update domain**\n\nDescription: Update a specific domain.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Update a specific domain.",
         "tags": [
           "Domains"
         ],
@@ -1447,6 +1564,16 @@
             "ApiKeyAuth": []
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDomainInput"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Domain updated successfully",
@@ -1459,19 +1586,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "delete": {
         "summary": "Delete domain",
-        "description": "**Delete domain**\n\nDescription: Delete a specific domain.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Delete a specific domain.",
         "tags": [
           "Domains"
         ],
@@ -1498,13 +1625,13 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -1517,7 +1644,7 @@
       ],
       "get": {
         "summary": "Verify domain records",
-        "description": "**Verify domain records**\n\nDescription: Verify DNS records for a specific domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/verify-records \\\n  -u API_TOKEN:\n```",
+        "description": "Verify DNS records for a specific domain.",
         "tags": [
           "Domains"
         ],
