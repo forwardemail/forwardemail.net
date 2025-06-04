@@ -2519,7 +2519,7 @@
     "/v1/contacts": {
       "get": {
         "summary": "List contacts",
-        "description": "List all contacts (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "List all contacts (CardDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Contacts"
         ],
@@ -2543,7 +2543,7 @@
       },
       "post": {
         "summary": "Create contact",
-        "description": "Create a new contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Create a new contact (CardDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Contacts"
         ],
@@ -2580,7 +2580,7 @@
       ],
       "get": {
         "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Retrieve a specific contact (CardDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Contacts"
         ],
@@ -2604,7 +2604,7 @@
       },
       "put": {
         "summary": "Update contact",
-        "description": "Update a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Update a specific contact (CardDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Contacts"
         ],
@@ -2628,7 +2628,7 @@
       },
       "delete": {
         "summary": "Delete contact",
-        "description": "Delete a specific contact (CardDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Delete a specific contact (CardDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Contacts"
         ],
@@ -2654,7 +2654,7 @@
     "/v1/calendars": {
       "get": {
         "summary": "List calendars",
-        "description": "List all calendars (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "List all calendars (CalDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Calendars"
         ],
@@ -2678,7 +2678,7 @@
       },
       "post": {
         "summary": "Create calendar",
-        "description": "Create a new calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Create a new calendar (CalDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Calendars"
         ],
@@ -2715,7 +2715,7 @@
       ],
       "get": {
         "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Retrieve a specific calendar (CalDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Calendars"
         ],
@@ -2739,7 +2739,7 @@
       },
       "put": {
         "summary": "Update calendar",
-        "description": "Update a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Update a specific calendar (CalDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Calendars"
         ],
@@ -2763,7 +2763,7 @@
       },
       "delete": {
         "summary": "Delete calendar",
-        "description": "Delete a specific calendar (CalDAV). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Delete a specific calendar (CalDAV). This endpoint is coming soon.",
         "tags": [
           "Alias Calendars"
         ],
@@ -2789,7 +2789,7 @@
     "/v1/messages": {
       "get": {
         "summary": "List and search for messages",
-        "description": "List and search for messages (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "List and search for messages (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Messages"
         ],
@@ -2813,7 +2813,7 @@
       },
       "post": {
         "summary": "Create message",
-        "description": "Create a new message (IMAP/POP3). This will NOT send an email – it will only simply add the message to your mailbox folder (similar to the IMAP APPEND command). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Create a new message (IMAP/POP3). This will NOT send an email – it will only simply add the message to your mailbox folder (similar to the IMAP APPEND command). This endpoint is coming soon.",
         "tags": [
           "Alias Messages"
         ],
@@ -2850,7 +2850,7 @@
       ],
       "get": {
         "summary": "Retrieve message",
-        "description": "Retrieve a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Retrieve a specific message (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Messages"
         ],
@@ -2874,7 +2874,7 @@
       },
       "put": {
         "summary": "Update message",
-        "description": "Update a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Update a specific message (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Messages"
         ],
@@ -2898,7 +2898,7 @@
       },
       "delete": {
         "summary": "Delete message",
-        "description": "Delete a specific message (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Delete a specific message (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Messages"
         ],
@@ -2924,7 +2924,7 @@
     "/v1/folders": {
       "get": {
         "summary": "List folders",
-        "description": "List all folders (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "List all folders (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
@@ -2948,7 +2948,7 @@
       },
       "post": {
         "summary": "Create folder",
-        "description": "Create a new folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Create a new folder (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
@@ -2985,7 +2985,7 @@
       ],
       "get": {
         "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Retrieve a specific folder (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
@@ -3009,7 +3009,7 @@
       },
       "put": {
         "summary": "Update folder",
-        "description": "Update a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Update a specific folder (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
@@ -3033,7 +3033,7 @@
       },
       "delete": {
         "summary": "Delete folder",
-        "description": "Delete a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Delete a specific folder (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
@@ -3070,7 +3070,7 @@
       ],
       "post": {
         "summary": "Copy folder",
-        "description": "Copy a specific folder (IMAP/POP3). This endpoint is coming soon.\n\n_(Detailed markdown description could not be automatically extracted.)_",
+        "description": "Copy a specific folder (IMAP/POP3). This endpoint is coming soon.",
         "tags": [
           "Alias Folders"
         ],
