@@ -40,10 +40,8 @@ const gulpXo = require('gulp-xo');
 const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
-const ms = require('ms');
 const nested = require('postcss-nested');
 const order = require('gulp-order');
-const pWaitFor = require('p-wait-for');
 const postcss = require('gulp-postcss');
 const postcss100VHFix = require('postcss-100vh-fix');
 const postcssInlineBase64 = require('postcss-inline-base64');
@@ -80,11 +78,11 @@ const DEV = config.env === 'development';
 const TEST = config.env === 'test';
 
 // dynamically import file-type
-let imagemin;
+// let imagemin;
 
-import('gulp-imagemin').then((obj) => {
-  imagemin = obj.default;
-});
+// import('gulp-imagemin').then((obj) => {
+//   imagemin = obj.default;
+// });
 
 // inspired by postcss-remove-selectors
 function removeClasses(regex) {
@@ -319,8 +317,8 @@ function pug() {
 }
 
 async function img() {
-  if (!imagemin)
-    await pWaitFor(() => Boolean(imagemin), { timeout: ms('15s') });
+  // if (!imagemin)
+  //   await pWaitFor(() => Boolean(imagemin), { timeout: ms('15s') });
   let stream = src('assets/img/**/*', {
     base: config.assetsBase,
     since: lastRun(img)

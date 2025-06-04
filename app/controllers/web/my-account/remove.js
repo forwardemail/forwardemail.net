@@ -169,7 +169,9 @@ async function remove(ctx) {
       },
       {
         $pull: {
-          'members.user': ctx.state.user._id
+          members: {
+            user: ctx.state.user._id
+          }
         }
       }
     );
