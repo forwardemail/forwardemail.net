@@ -1655,53 +1655,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Domain records verification result",
+            "description": "DNS records successfully verified",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "verified": {
-                      "type": "boolean",
-                      "description": "Whether the domain records are verified"
-                    },
-                    "records": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "description": "Record type"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "Record name"
-                          },
-                          "value": {
-                            "type": "string",
-                            "description": "Record value"
-                          },
-                          "verified": {
-                            "type": "boolean",
-                            "description": "Whether the record is verified"
-                          }
-                        }
-                      }
-                    }
-                  }
+                  "type": "string",
+                  "example": "Domain's DNS records have been verified."
                 }
               }
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -1714,7 +1685,7 @@
       ],
       "get": {
         "summary": "Accept domain invite",
-        "description": "**Accept domain invite**\n\nDescription: Accept an invitation to a domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN:\n```",
+        "description": "Accept an invitation to a domain.",
         "tags": [
           "Invites"
         ],
@@ -1741,19 +1712,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "post": {
         "summary": "Create domain invite",
-        "description": "**Create domain invite**\n\nDescription: Create an invitation to a domain.\n\nBody Parameters:\n- `email` (String, Required): Email address to invite\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN: \\\n  -d \"email=user@gmail.com\"\n```",
+        "description": ">[!IMPORTANT]\n>If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.",
         "tags": [
           "Invites"
         ],
@@ -1775,7 +1746,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to invite"
+                    "description": "Email address to invite to domain members list"
+                  },
+                  "group": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Group to add the user to the domain membership with (can be one of `\"admin\"` or `\"user\"`)"
                   }
                 }
               }
@@ -1794,32 +1770,25 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           },
           "429": {
-            "description": "Rate limit exceeded (10 requests for 'create invite')",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/TooManyRequests"
           }
         }
       },
       "delete": {
         "summary": "Remove domain invite",
-        "description": "**Remove domain invite**\n\nDescription: Remove an invitation to a domain.\n\nBody Parameters:\n- `email` (String, Required): Email address to remove invitation for\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/invites \\\n  -u API_TOKEN: \\\n  -d \"email=user@gmail.com\"\n```",
+        "description": "Remove an invitation to a domain.",
         "tags": [
           "Invites"
         ],
@@ -1841,7 +1810,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Email address to remove invitation for"
+                    "description": "Email address to remove from domain members list"
                   }
                 }
               }
@@ -1866,16 +1835,16 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
