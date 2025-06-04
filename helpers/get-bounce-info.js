@@ -12,8 +12,10 @@ const isRetryableError = require('#helpers/is-retryable-error');
 const IP_ADDRESS = ip.address();
 
 const REGEX_SPOOFING = new RE2(/spoof|impersonation|impersonate/im);
-const REGEX_SPAM = new RE2(/ spam /im);
-const REGEX_VIRUS = new RE2(/virus|phishing|malware|trojan/im);
+const REGEX_SPAM = new RE2(/(^|[^a-z\d])spam([^a-z\d]|$)/i);
+const REGEX_VIRUS = new RE2(
+  /(^|[^a-z\d])(virus|phishing|malware|trojan)([^a-z\d]|$)/i
+);
 const REGEX_DENYLIST = new RE2(/denylist|deny\s+list/im);
 const REGEX_BLACKLIST = new RE2(/blacklist|black\s+list/im);
 const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
