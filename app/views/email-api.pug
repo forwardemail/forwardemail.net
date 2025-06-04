@@ -1,3 +1,22 @@
+block head
+  - const fonts = [];
+  - fonts.push("nunito-sans-latin-400.woff2");
+  - fonts.push("nunito-sans-latin-700.woff2");
+  each font in fonts
+    link(
+      rel="prefetch",
+      href=manifest(`fonts/${font}`),
+      type="font/woff2",
+      as="font",
+      crossorigin="anonymous"
+    )
+
+  style.
+    :root {
+      --scalar-font: 'Nunito Sans', 'Helvetica Neue', Arial, sans-serif;
+      --scalar-font-code: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    }
+
 block body
   #app
 
@@ -15,6 +34,7 @@ block body
     window.DESCRIPTION = "#{meta.description}";
 
     Scalar.createApiReference("#app", {
+      withDefaultFonts: false,
       servers: [
         {
           url: window.API_URL
