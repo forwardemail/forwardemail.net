@@ -103,10 +103,11 @@ async function isExpiredOrNewlyCreated(input, client) {
     );
   // if the domain expiration date is within the past 90d
   // (safeguard for users in case they have a domain that expired they should renew it first)
+  // (added 48 hour buffer to give WHOIS/RDAP data time to refresh)
   else if (
     _.isDate(response?.ts?.expires) &&
-    new Date(response.ts.expires).getTime() <= Date.now() &&
-    new Date(response.ts.expires).getTime() >= Date.now() - ms('90d')
+    new Date(response.ts.expires).getTime() + ms('2d') <= Date.now() &&
+    new Date(response.ts.expires).getTime() + ms('2d') >= Date.now() - ms('90d')
   )
     err = new SMTPError(
       `The domain ${domain} was detected as a recently expired domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
