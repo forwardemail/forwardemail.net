@@ -130,89 +130,275 @@
     },
       "Email": {
         "type": "object",
+        "required": ["id", "object", "status", "alias", "domain", "user"],
         "properties": {
-          "from": {
-            "type": "string",
-            "format": "email",
-            "description": "The email address of the sender (must exist as an alias of the domain)"
+          "is_redacted": {
+            "type": "boolean"
           },
-          "to": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Comma separated list of recipients for the \"To\" header"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "description": "Array of recipients for the \"To\" header"
-              }
-            ]
-          },
-          "cc": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Comma separated list of recipients for the \"Cc\" header"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "description": "Array of recipients for the \"Cc\" header"
-              }
-            ]
-          },
-          "bcc": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "Comma separated list of recipients for the \"Bcc\" header"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "description": "Array of recipients for the \"Bcc\" header"
-              }
-            ]
-          },
-          "subject": {
-            "type": "string",
-            "description": "The subject of the email"
-          },
-          "text": {
-            "type": "string",
-            "description": "The plaintext version of the message"
-          },
-          "html": {
-            "type": "string",
-            "description": "The HTML version of the message"
-          },
-          "attachments": {
+          "hard_bounces": {
             "type": "array",
-            "description": "An array of attachment objects",
             "items": {
-              "type": "object"
+              "type": "string"
             }
           },
-          "sender": {
-            "type": "string",
-            "format": "email",
-            "description": "The email address for the \"Sender\" header"
+          "soft_bounces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
-          "raw": {
+          "is_bounce": {
+            "type": "boolean"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "status": {
             "type": "string",
-            "description": "With the exception of envelope and dkim (set automatically), all Nodemailer options are supported"
+            "example": "sent"
+          },
+          "is_locked": {
+            "type": "boolean"
+          },
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "format": "email"
+              },
+              "to": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "accepted": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "email"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
           }
+        },
+        "example": {
+          "is_redacted": true,
+          "hard_bounces": [],
+          "soft_bounces": [],
+          "is_bounce": false,
+          "alias": "67a180fxxxxxxxe46a3f0edf",
+          "domain": "5efae85dxxxxxxxf4bb53c7a",
+          "user": "5efabd3907xxxxxxx12890b8",
+          "status": "sent",
+          "is_locked": false,
+          "envelope": {
+            "from": "test@test.com",
+            "to": ["test@test1.com"]
+          },
+          "messageId": "1a04fee3-5230-4a85-9111-a2c376835885@shaunwarman.com",
+          "date": "2025-06-04T03:32:19.000Z",
+          "subject": "testing",
+          "accepted": ["test@test1.com"],
+          "id": "683fbe4d5baef1b583a1xxxx",
+          "object": "email",
+          "created_at": "2025-06-04T03:32:29.138Z",
+          "updated_at": "2025-06-04T03:32:33.847Z",
+          "link": "https://forwardemail.net/my-account/emails/683fbe4d5baef1b583a11e54"
         }
+      },
+      "EmailList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "SMTP": {
+        "type": "object",
+        "properties": {
+            "from": {
+              "type": "string",
+              "format": "email",
+              "description": "The email address of the sender (must exist as an alias of the domain)."
+            },
+            "to": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "array",
+                  "items": { "type": "string", "format": "email" }
+                }
+              ],
+              "description": "Comma-separated list or an array of recipients for the 'To' header."
+            },
+            "cc": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "array",
+                  "items": { "type": "string", "format": "email" }
+                }
+              ],
+              "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+            },
+            "bcc": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "array",
+                  "items": { "type": "string", "format": "email" }
+                }
+              ],
+              "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+            },
+            "subject": {
+              "type": "string",
+              "description": "The subject of the email."
+            },
+            "text": {
+              "type": "string",
+              "description": "The plaintext version of the message."
+            },
+            "html": {
+              "type": "string",
+              "description": "The HTML version of the message."
+            },
+            "attachments": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "description": "An array of attachment objects (see Nodemailer's common fields)."
+            },
+            "sender": {
+              "type": "string",
+              "format": "email",
+              "description": "The email address for the 'Sender' header."
+            },
+            "replyTo": {
+              "type": "string",
+              "format": "email",
+              "description": "The email address for the 'Reply-To' header."
+            },
+            "inReplyTo": {
+              "type": "string",
+              "description": "The Message-ID the message is in reply to."
+            },
+            "references": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              ],
+              "description": "Space-separated list or an array of Message-IDs."
+            },
+            "attachDataUrls": {
+              "type": "boolean",
+              "description": "If true, converts data: images in the HTML content to embedded attachments."
+            },
+            "watchHtml": {
+              "type": "string",
+              "description": "Apple Watch specific HTML version of the message."
+            },
+            "amp": {
+              "type": "string",
+              "description": "AMP4EMAIL specific HTML version of the message."
+            },
+            "icalEvent": {
+              "type": "object",
+              "description": "An iCalendar event as an alternative message content."
+            },
+            "alternatives": {
+              "type": "array",
+              "items": { "type": "object" },
+              "description": "An array of alternative message content."
+            },
+            "encoding": {
+              "type": "string",
+              "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+            },
+            "raw": {
+              "type": "string",
+              "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+            },
+            "textEncoding": {
+              "type": "string",
+              "enum": ["quoted-printable", "base64"],
+              "description": "Encoding forced to be used for text values."
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["high", "normal", "low"],
+              "description": "Priority level for the email."
+            },
+            "headers": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": true
+                },
+                {
+                  "type": "array",
+                  "items": { "type": "object" }
+                }
+              ],
+              "description": "Object or array of additional header fields."
+            },
+            "messageId": {
+              "type": "string",
+              "description": "Optional Message-ID for the 'Message-ID' header."
+            },
+            "date": {
+              "oneOf": [
+                { "type": "string", "format": "date-time" },
+                { "type": "string" }
+              ],
+              "description": "Optional Date header. Cannot be more than 30 days in the future."
+            },
+            "list": {
+              "type": "object",
+              "description": "Optional object of List-* headers."
+            }
+          }
       },
       "Domain": {
         "type": "object",
@@ -709,7 +895,7 @@
     "/v1/emails": {
       "get": {
         "summary": "List outbound SMTP emails",
-        "description": "**List outbound SMTP emails**\n\nDescription: List all outbound SMTP emails.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails \\\n  -u API_TOKEN:\n```",
+        "description": "**List outbound SMTP emails**\n\nNote that this endpoint does not return property values for an email's `message`, `headers`, nor `rejectedErrors`.\n\nTo return those properties and their values, please use the [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoint with an email ID.",
         "tags": [
           "Emails"
         ],
@@ -720,10 +906,44 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/page"
+            "name": "q",
+            "in": "query",
+            "description": "Search for emails by metadata.",
+            "schema": {
+              "type": "string"
+            }
           },
           {
-            "$ref": "#/components/parameters/limit"
+            "name": "domain",
+            "in": "query",
+            "description": "Search for emails by domain name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by a specific field (prefix with a single hyphen - to sort in the reverse direction of that field). Defaults to created_at if not set.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "See Pagination for more insight.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "See Pagination for more insight.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -741,19 +961,19 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       },
       "post": {
         "summary": "Create outbound SMTP email",
-        "description": "**Create outbound SMTP email**\n\nDescription: Create and send an outbound SMTP email.\n\nBody Parameters:\n- Various parameters based on Nodemailer's message configuration\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/emails \\\n  -u API_TOKEN: \\\n  -d \"from=alias@domain.com\" \\\n  -d \"to=user@gmail.com\" \\\n  -d \"subject=Hello\" \\\n  -d \"text=Hello world\"\n```",
+        "description": "Our API for creating an email is inspired by and leverages Nodemailer's message option configuration. Please defer to the [Nodemailer message configuration](https://nodemailer.com/message/) for all body parameters below.\n\nNote that with the exception of `envelope` and `dkim` (since we set those automatically for you), we support all Nodemailer options. We automatically set `disableFileAccess` and `disableUrlAccess` options to `true` for security purposes.\n\nYou should either pass the single option of `raw` with your raw full email including headers or pass individual body parameter options below.\n\nThis API endpoint will automatically encode emojis for you if they are found in the headers (e.g. a subject line of `Subject: 🤓 Hello` gets converted to `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` automatically). Our goal was to make an extremely developer-friendly and dummy-proof email API.",
         "tags": [
           "Emails"
         ],
@@ -766,7 +986,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Email"
+                "$ref": "#/components/schemas/SMTP"
               }
             }
           }
@@ -789,13 +1009,13 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       }
@@ -803,7 +1023,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Get outbound SMTP email limit",
-        "description": "**Get outbound SMTP email limit**\n\nDescription: This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails/limit \\\n  -u API_TOKEN:\n```",
+        "description": "This is a simple endpoint that returns a JSON object containing the `count` and `limit` for the number of daily SMTP outbound messages on a per account basis.",
         "tags": [
           "Emails"
         ],
@@ -824,10 +1044,10 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       }
@@ -840,7 +1060,7 @@
       ],
       "get": {
         "summary": "Retrieve outbound SMTP email",
-        "description": "**Retrieve outbound SMTP email**\n\nDescription: Retrieve a specific outbound SMTP email.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/emails/EMAIL_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Retrieve a specific outbound SMTP email.",
         "tags": [
           "Emails"
         ],
@@ -861,19 +1081,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "delete": {
         "summary": "Delete outbound SMTP email",
-        "description": "**Delete outbound SMTP email**\n\nDescription: Delete a specific outbound SMTP email.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/emails/EMAIL_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Email deletion will set the status to `\"rejected\"` (and subsequently not process it in the queue) if and only if the current status is one of `\"pending\"`, `\"queued\"`, or `\"deferred\"`. We may purge emails automatically after 30 days after they were created and/or sent – therefore you should keep a copy of outbound SMTP emails in your client, database, or application. You can reference our email ID value in your database if desired – this value is returned from both [Create email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) and [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) endpoints.",
         "tags": [
           "Emails"
         ],
@@ -900,13 +1120,13 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
