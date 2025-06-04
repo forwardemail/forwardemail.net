@@ -676,25 +676,267 @@
       "Alias": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "description": "Alias ID"
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": { "type": "string", "format": "email" },
+              "display_name": { "type": "string" },
+              "id": { "type": "string" }
+            },
+            "required": ["email", "display_name", "id"]
           },
+          "domain": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "id": { "type": "string" }
+            },
+            "required": ["name", "id"]
+          },
+          "name": { "type": "string" },
+          "labels": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "is_enabled": { "type": "boolean" },
+          "has_recipient_verification": { "type": "boolean" },
+          "verified_recipients": {
+            "type": "array",
+            "items": { "type": "string", "format": "email" }
+          },
+          "pending_recipients": {
+            "type": "array",
+            "items": { "type": "string", "format": "email" }
+          },
+          "recipients": {
+            "type": "array",
+            "items": { "type": "string", "format": "email" }
+          },
+          "id": { "type": "string" },
+          "object": { "type": "string", "enum": ["alias"] },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "storage_location": { "type": "string" },
+          "has_imap": { "type": "boolean" }
+        },
+        "required": [
+          "user",
+          "domain",
+          "name",
+          "labels",
+          "is_enabled",
+          "has_recipient_verification",
+          "verified_recipients",
+          "pending_recipients",
+          "recipients",
+          "id",
+          "object",
+          "created_at",
+          "updated_at",
+          "storage_location",
+          "has_imap"
+        ],
+        "example": {
+          "user": {
+            "email": "test@test.com",
+            "display_name": "test@test.com",
+            "id": "5efabd39xxxxxxx4512890b8"
+          },
+          "domain": {
+            "name": "mailsire.com",
+            "id": "5e3c0550xxxxxxx09b7ba023"
+          },
+          "name": "abc123",
+          "labels": [],
+          "is_enabled": true,
+          "has_recipient_verification": false,
+          "verified_recipients": [],
+          "pending_recipients": [],
+          "recipients": [
+            "abc@test1.com"
+          ],
+          "id": "62fa3dcxxxxxxx79dda83ff2",
+          "object": "alias",
+          "created_at": "2022-08-15T12:36:26.593Z",
+          "updated_at": "2022-08-15T12:36:26.593Z",
+          "storage_location": "storage_loc",
+          "has_imap": false
+        }
+      },
+      "AliasInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Alias name (if not provided or if blank, then a random alias is generated)"
+          },
+          "recipients": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+              },
+              {
+                "type": "array",
+                "items": { "type": "string", "format": "email" },
+                "description": "Array of valid recipients"
+              }
+            ],
+            "description": "List of recipients. If not provided or empty, defaults to the requester's email"
+          },
+          "description": {
+            "type": "string",
+            "description": "Alias description"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Line-break/space/comma separated string of labels"
+              },
+              {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Array of labels"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Require recipients to click verification link (defaults to domain setting)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Whether to enable or disable this alias"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [250, 421, 550],
+            "description": "Error code if alias is disabled. Defaults to 250"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "Enable or disable IMAP storage for this alias"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "Enable or disable OpenPGP encryption for this alias"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "OpenPGP public key in ASCII Armor format"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "Storage max quota (e.g. '1 GB')"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "Enable or disable vacation responder"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "Start date (e.g. 'YYYY-MM-DD') for vacation responder"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "End date (e.g. 'YYYY-MM-DD') for vacation responder"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "Plaintext subject for vacation responder"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "Plaintext message for vacation responder"
+          }
+        }
+      },
+      "AliasUpdateInput": {
+        "type": "object",
+        "properties": {
           "name": {
             "type": "string",
             "description": "Alias name"
           },
-          "domain": {
-            "type": "string",
-            "description": "Domain ID"
-          },
           "recipients": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "email"
-            },
-            "description": "Array of recipient email addresses"
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Line-break/space/comma separated string of valid email addresses, FQDNs, IPs, or webhook URLs"
+              },
+              {
+                "type": "array",
+                "items": { "type": "string", "format": "email" },
+                "description": "Array of valid recipients"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "Alias description"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Line-break/space/comma separated string of labels"
+              },
+              {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Array of labels"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Require recipients to click verification link (defaults to domain setting)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Enable or disable alias"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [250, 421, 550],
+            "description": "Error code to use if alias is disabled (defaults to 250)"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "Enable or disable IMAP storage"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "Enable or disable OpenPGP encryption"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "OpenPGP public key in ASCII Armor format"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "Storage maximum quota (e.g., '1 GB')"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "Enable or disable vacation responder"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "Vacation responder start date (e.g. YYYY-MM-DD)"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "Vacation responder end date (e.g. YYYY-MM-DD)"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "Plaintext subject of vacation responder"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "Plaintext message of vacation responder"
           }
         }
       },
@@ -929,7 +1171,6 @@
           "Account"
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1479,7 +1720,6 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1565,7 +1805,6 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1734,7 +1973,6 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1798,7 +2036,6 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1958,7 +2195,7 @@
       ],
       "get": {
         "summary": "List domain aliases",
-        "description": "**List domain aliases**\n\nDescription: List all aliases for a specific domain.\n\nPagination: Supports standard pagination parameters.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases \\\n  -u API_TOKEN:\n```",
+        "description": ">[!NOTE]\n>As of November 1st, 2024 the API endpoints for `List domains` and `List domain aliases` will default to `1000` max results per page. If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query. See Pagination for more insight.",
         "tags": [
           "Aliases"
         ],
@@ -1969,13 +2206,46 @@
         ],
         "parameters": [
           {
+            "name": "q",
+            "in": "query",
+            "description": "Search for aliases in a domain by name, label, or recipient (RegExp supported)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Search for aliases in a domain by name (RegExp supported)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipient",
+            "in": "query",
+            "description": "Search for aliases in a domain by recipient (RegExp supported)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by a specific field (prefix with a single hyphen - to sort in reverse). Defaults to created_at.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
-          },
-          {
-            "$ref": "#/components/parameters/pagination"
           }
         ],
         "responses": {
@@ -1993,19 +2263,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "post": {
         "summary": "Create new domain alias",
-        "description": "**Create new domain alias**\n\nDescription: Create a new alias for a specific domain.\n\nBody Parameters:\n- `name` (String, Required): Alias name\n- `recipients` (Array, Required): Array of recipient email addresses\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases \\\n  -u API_TOKEN: \\\n  -d \"name=alias\" \\\n  -d \"recipients[]=user@gmail.com\"\n```",
+        "description": "Create a new alias for a specific domain.",
         "tags": [
           "Aliases"
         ],
@@ -2015,29 +2285,10 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "recipients"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Alias name"
-                  },
-                  "recipients": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "description": "Array of recipient email addresses"
-                  }
-                }
+                "$ref": "#/components/schemas/AliasInput"
               }
             }
           }
@@ -2054,26 +2305,19 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           },
           "429": {
-            "description": "Rate limit exceeded (300 requests for 'create alias')",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/TooManyRequests"
           }
         }
       }
@@ -2089,7 +2333,7 @@
       ],
       "get": {
         "summary": "Retrieve domain alias",
-        "description": "**Retrieve domain alias**\n\nDescription: Retrieve a specific alias for a domain.\n\nExample Request:\n```\ncurl https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Retrieve a specific alias for a domain.",
         "tags": [
           "Aliases"
         ],
@@ -2110,19 +2354,19 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       },
       "put": {
         "summary": "Update domain alias",
-        "description": "**Update domain alias**\n\nDescription: Update a specific alias for a domain.\n\nExample Request:\n```\ncurl -X PUT https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN: \\\n  -d \"recipients[]=user@gmail.com\"\n```",
+        "description": "Update a specific alias for a domain.",
         "tags": [
           "Aliases"
         ],
@@ -2135,17 +2379,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "recipients": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "description": "Array of recipient email addresses"
-                  }
-                }
+                "$ref": "#/components/schemas/AliasUpdateInput"
               }
             }
           }
@@ -2177,7 +2411,7 @@
       },
       "delete": {
         "summary": "Delete domain alias",
-        "description": "**Delete domain alias**\n\nDescription: Delete a specific alias for a domain.\n\nExample Request:\n```\ncurl -X DELETE https://api.forwardemail.net/v1/domains/DOMAIN_ID/aliases/ALIAS_ID \\\n  -u API_TOKEN:\n```",
+        "description": "Delete a specific alias for a domain.",
         "tags": [
           "Aliases"
         ],
@@ -2204,13 +2438,13 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "$ref": "#/components/responses/Error"
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -2218,7 +2452,7 @@
     "/v1/encrypt": {
       "post": {
         "summary": "Encrypt TXT Record",
-        "description": "**Encrypt TXT Record**\n\nDescription: Encrypt a TXT record.\n\nBody Parameters:\n- `text` (String, Required): Text to encrypt\n\nExample Request:\n```\ncurl -X POST https://api.forwardemail.net/v1/encrypt \\\n  -u API_TOKEN: \\\n  -d \"text=user@gmail.com\"\n```",
+        "description": "We allow you to encrypt records even on the free plan at no cost. Privacy should not be a feature, it should be inherently built-in to all aspects of a product. As highly requested in a [Privacy Guides discussion](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) and on our [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) we've added this.",
         "tags": [
           "Encrypt"
         ],
@@ -2228,7 +2462,6 @@
           }
         ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -2237,9 +2470,10 @@
                   "text"
                 ],
                 "properties": {
-                  "text": {
+                  "input": {
+                    "required": true,
                     "type": "string",
-                    "description": "Text to encrypt"
+                    "description": "Any valid Forward Email plaintext TXT record"
                   }
                 }
               }
