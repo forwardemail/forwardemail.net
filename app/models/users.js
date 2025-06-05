@@ -1064,7 +1064,7 @@ Users.post('save', async (user, next) => {
       template: 'alert',
       message: {
         to,
-        bcc: config.email.message.from,
+        // bcc: config.email.message.from,
         subject: `🎉 ~${
           user[fields.ubuntuUsername]
         } signed into Forward Email with Launchpad!`
