@@ -59,12 +59,13 @@ async function createCatchAllPassword(ctx) {
       ctx.request.body.new_password || null,
       _.uniq(_.compact(userInputs))
     );
-    domain.tokens.push({
+    const token = domain.tokens.create({
       description,
       salt,
       hash,
       user: ctx.state.user._id
     });
+    domain.tokens.push(token);
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
     domain.skip_verification = true;
@@ -100,6 +101,16 @@ async function createCatchAllPassword(ctx) {
       .catch((err) => ctx.logger.fatal(err));
 
     const username = `*@${domain.name}`;
+
+    if (ctx.api) {
+      ctx.body = {
+        id: token.id,
+        username,
+        password,
+        description: token.description
+      };
+      return;
+    }
 
     const html = ctx.translate(
       'ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG',
@@ -137,15 +148,19 @@ async function createCatchAllPassword(ctx) {
   } catch (err) {
     if (err && err.isBoom) throw err;
     if (isErrorConstructorName(err, 'ValidationError')) throw err;
-    ctx.logger.error(err);
-    ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${punycode.toASCII(
-        ctx.state.domain.name
-      )}/advanced-settings?hash=catch-all-passwords`
-    );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    ctx.logger.fatal(err);
+    if (ctx.api) {
+      throw ctx.translateError('UNKNOWN_ERROR');
+    } else {
+      ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(
+          ctx.state.domain.name
+        )}/advanced-settings?hash=catch-all-passwords`
+      );
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+    }
   }
 }
 

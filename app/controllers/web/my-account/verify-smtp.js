@@ -133,9 +133,22 @@ async function verifySMTP(ctx) {
       }
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
-      // TODO: if user already had a domain approved
-      // TODO: if A record and good domain then auto approve and email admins and users
-      if (!_.isDate(domain.smtp_verified_at)) {
+      //
+      // if the logged-in user has passed KYC (know your customer check)
+      // then we should auto-approve their SMTP usage without them needing us to check
+      //
+      if (ctx.state.user.has_passed_kyc) {
+        domain.has_smtp = true;
+        if (!ctx.api)
+          ctx.flash(
+            'success',
+            i18n.translate(
+              'EMAIL_SMTP_ACCESS_ENABLED_SUBJECT',
+              locale,
+              domain.name
+            )
+          );
+      } else if (!_.isDate(domain.smtp_verified_at)) {
         // otherwise if the domain was newly verified
         // and doesn't have smtp yet then email admins
         const subject = i18n.translate(

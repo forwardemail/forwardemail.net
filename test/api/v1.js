@@ -378,6 +378,91 @@ test('creates alias with global catch-all', async (t) => {
   }
 });
 
+test('domain-wide catch-all passwords', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  {
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/catch-all-passwords`)
+      .auth(user[config.userFields.apiToken])
+      .send();
+    t.is(res.status, 200);
+    t.true(typeof res.body.id === 'string');
+    t.true(res.body.id.length > 0);
+    t.is(res.body.username, `*@${domain.name}`);
+    t.true(typeof res.body.password === 'string');
+    t.true(res.body.password.length > 0);
+    t.is(res.body.description, '');
+  }
+
+  {
+    const newPassword = falso.randPassword();
+    const res = await t.context.api
+      .post(`/v1/domains/${domain.name}/catch-all-passwords`)
+      .auth(user[config.userFields.apiToken])
+      .send({
+        new_password: newPassword,
+        description: 'foo bar'
+      });
+    t.is(res.status, 200);
+    t.is(res.body.username, `*@${domain.name}`);
+    t.is(res.body.password, newPassword);
+    t.is(res.body.description, 'foo bar');
+  }
+
+  {
+    const res = await t.context.api
+      .get(`/v1/domains/${domain.name}/catch-all-passwords`)
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send();
+    t.is(res.body.length, 2);
+    t.is(res.status, 200);
+    // delete one
+    const deleteRes = await t.context.api
+      .del(`/v1/domains/${domain.name}/catch-all-passwords/${res.body[0].id}`)
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send();
+    t.is(deleteRes.status, 200);
+    const res2 = await t.context.api
+      .get(`/v1/domains/${domain.name}/catch-all-passwords`)
+      .auth(user[config.userFields.apiToken])
+      .set('Accept', 'application/json')
+      .send();
+    t.is(res2.body.length, 1);
+    t.is(res2.status, 200);
+  }
+});
+
 test('creates alias and generates password', async (t) => {
   const user = await t.context.userFactory
     .withState({

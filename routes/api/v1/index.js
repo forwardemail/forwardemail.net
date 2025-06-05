@@ -212,6 +212,12 @@ router
     api.v1.enforcePaidPlan,
     web.myAccount.verifyRecords
   )
+  .get(
+    '/domains/:domain_id/verify-smtp',
+    web.myAccount.retrieveDomain,
+    api.v1.enforcePaidPlan,
+    web.myAccount.verifySMTP
+  )
   .put(
     '/domains/:domain_id',
     web.myAccount.retrieveDomain,
@@ -359,6 +365,28 @@ router
     web.myAccount.ensureAliasAdmin,
     rateLimit(300, 'generate alias password'),
     web.myAccount.generateAliasPassword
+  )
+  .get(
+    '/domains/:domain_id/catch-all-passwords',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    api.v1.domains.listCatchAllPasswords
+  )
+  .post(
+    '/domains/:domain_id/catch-all-passwords',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    rateLimit(10, 'create catch all password'),
+    web.myAccount.createCatchAllPassword
+  )
+  .delete(
+    '/domains/:domain_id/catch-all-passwords/:token_id',
+    web.myAccount.retrieveDomain,
+    web.myAccount.ensureDomainAdmin,
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.removeCatchAllPassword
   );
 
 // inquiries

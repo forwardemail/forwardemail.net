@@ -51,6 +51,10 @@
   * [Create domain](#create-domain)
   * [Retrieve domain](#retrieve-domain)
   * [Verify domain records](#verify-domain-records)
+  * [Verify domain SMTP records](#verify-domain-smtp-records)
+  * [List domain-wide catch-all passwords](#list-domain-wide-catch-all-passwords)
+  * [Create domain-wide catch-all password](#create-domain-wide-catch-all-password)
+  * [Remove domain-wide catch-all password](#remove-domain-wide-catch-all-password)
   * [Update domain](#update-domain)
   * [Delete domain](#delete-domain)
 * [Invites](#invites)
@@ -632,6 +636,55 @@ curl BASE_URI/v1/domains/DOMAIN_NAME \
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
+  -u API_TOKEN:
+```
+
+### Verify domain SMTP records
+
+> `GET /v1/domains/DOMAIN_NAME/verify-smtp`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
+  -u API_TOKEN:
+```
+
+### List domain-wide catch-all passwords
+
+> `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
+
+> Example Request:
+
+```sh
+curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
+  -u API_TOKEN:
+```
+
+### Create domain-wide catch-all password
+
+> `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
+
+| Body Parameter | Required | Type   | Description                                                                                                                                                                                                               |
+| -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `new_password` | No       | String | Your custom new password to use for the domain-wide catch-all password.  Note that you can leave this blank or missing altogether from your API request body if you wish to get a randomly generated and strong password. |
+| `description`  | No       | String | Description for organization purposes only.                                                                                                                                                                               |
+
+> Example Request:
+
+```sh
+curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
+  -u API_TOKEN:
+```
+
+### Remove domain-wide catch-all password
+
+> `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
+
+> Example Request:
+
+```sh
+curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 

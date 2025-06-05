@@ -170,8 +170,26 @@ async function retrieve(ctx) {
   ctx.body = data;
 }
 
+async function listCatchAllPasswords(ctx) {
+  const tokens = [];
+  if (
+    Array.isArray(ctx.state.domain.tokens) &&
+    ctx.state.domain.tokens.length > 0
+  ) {
+    for (const token of ctx.state.domain.tokens) {
+      tokens.push({
+        id: token.id,
+        description: token.description
+      });
+    }
+  }
+
+  ctx.body = tokens;
+}
+
 module.exports = {
   list,
   retrieve,
-  _domainJSON: json
+  _domainJSON: json,
+  listCatchAllPasswords
 };

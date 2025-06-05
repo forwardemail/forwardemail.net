@@ -143,7 +143,6 @@ const Token = new mongoose.Schema({
   },
   description: {
     type: String,
-    select: false,
     maxlength: 150,
     trim: true
   },
@@ -162,7 +161,7 @@ const Token = new mongoose.Schema({
 Token.plugin(mongooseCommonPlugin, {
   object: 'token',
   omitCommonFields: false,
-  omitExtraFields: ['_id', '__v', 'description', 'salt', 'hash'],
+  omitExtraFields: ['_id', '__v', 'salt', 'hash'],
   uniqueId: false,
   locale: false
 });

@@ -34,6 +34,14 @@ async function removeCatchAllPassword(ctx) {
 
     // TODO: add emails here and elsewhere
 
+    if (ctx.api) {
+      ctx.body = {
+        id: token.id,
+        description: token.description
+      };
+      return;
+    }
+
     ctx.flash('custom', {
       title: ctx.request.t('Success'),
       text: ctx.translate('REQUEST_OK'),
@@ -56,14 +64,18 @@ async function removeCatchAllPassword(ctx) {
     if (err && err.isBoom) throw err;
     if (isErrorConstructorName(err, 'ValidationError')) throw err;
     ctx.logger.fatal(err);
-    ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
-    const redirectTo = ctx.state.l(
-      `/my-account/domains/${punycode.toASCII(
-        ctx.state.domain.name
-      )}/advanced-settings`
-    );
-    if (ctx.accepts('html')) ctx.redirect(redirectTo);
-    else ctx.body = { redirectTo };
+    if (ctx.api) {
+      throw ctx.translateError('UNKNOWN_ERROR');
+    } else {
+      ctx.flash('error', ctx.translate('UNKNOWN_ERROR'));
+      const redirectTo = ctx.state.l(
+        `/my-account/domains/${punycode.toASCII(
+          ctx.state.domain.name
+        )}/advanced-settings`
+      );
+      if (ctx.accepts('html')) ctx.redirect(redirectTo);
+      else ctx.body = { redirectTo };
+    }
   }
 }
 
