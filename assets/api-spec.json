@@ -940,6 +940,28 @@
           }
         }
       },
+      "GenerateAliasPasswordInput": {
+        "type": "object",
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "description": "Your custom new password to use for the alias"
+          },
+          "password": {
+            "type": "string",
+            "description": "Existing password for alias to change it without deleting mailbox storage"
+          },
+          "is_override": {
+            "type": "boolean",
+            "description": "Override existing password and delete IMAP storage (use with caution)"
+          },
+          "emailed_instructions": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address to send alias password and setup instructions"
+          }
+        }
+      },
       "EmailLimit": {
         "type": "object",
         "properties": {
@@ -2187,6 +2209,74 @@
         }
       }
     },
+    "/v1/domains/{domain}/aliases/{alias_id}/generate-password": {
+      "post": {
+        "summary": "Generate an alias password",
+        "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
+        "tags": [
+          "Aliases"
+        ],
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Fully qualified domain name (FQDN)"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique identifier of the alias"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAliasPasswordInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alias credentials returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string",
+                      "example": "alias@yourdomain.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "some-generated-password"
+                    }
+                  },
+                  "required": ["username", "password"]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
     "/v1/domains/{domain_id}/aliases": {
       "parameters": [
         {
@@ -3129,19 +3219,19 @@
     },
     {
       "name": "Alias Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)"
+      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n>This endpoint section is a work in progress and will be released (hopefully) in 2025. In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.\n\n>[!NOTE]\n>[CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274)."
     },
     {
       "name": "Alias Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)"
+      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
     },
     {
       "name": "Alias Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)"
+      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n> [!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
       "name": "Alias Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)"
+      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
     }
   ]
 }
