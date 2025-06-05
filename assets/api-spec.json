@@ -1938,7 +1938,7 @@
         }
       }
     },
-    "/v1/domains/{domain}/verify-smtp": {
+    "/v1/domains/{domain_id}/verify-smtp": {
       "get": {
         "summary": "Verify domain SMTP records",
         "description": "Verifies the SMTP-related DNS records for the specified domain.",
@@ -1985,7 +1985,7 @@
         }
       }
     },
-    "/v1/domains/{domain}/catch-all-passwords": {
+    "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Create domain-wide catch-all password",
         "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
@@ -2462,7 +2462,7 @@
         }
       }
     },
-    "/v1/domains/{domain}/aliases/{alias_id}/generate-password": {
+    "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
         "summary": "Generate an alias password",
         "description": "Generate a password for an alias. If `emailed_instructions` is not provided, the response will contain the generated username and password.",
