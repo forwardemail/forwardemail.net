@@ -1938,6 +1938,259 @@
         }
       }
     },
+    "/v1/domains/{domain}/verify-smtp": {
+      "get": {
+        "summary": "Verify domain SMTP records",
+        "description": "Verifies the SMTP-related DNS records for the specified domain.",
+        "operationId": "verifySmtpRecords",
+        "tags": ["Domains"],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fully qualified domain name (FQDN) to verify",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMTP records successfully verified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain}/catch-all-passwords": {
+      "post": {
+        "summary": "Create domain-wide catch-all password",
+        "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
+        "tags": ["Domains"],
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The domain name to create the catch-all password for"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_password": {
+                    "type": "string",
+                    "description": "Your custom new password to use for the domain-wide catch-all password. Leave blank to generate a strong password."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description for organization purposes only."
+                  }
+                }
+              },
+              "example": {
+                "new_password": "myCustomStrongPassword123!",
+                "description": "Password for team-wide access"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a catch-all password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "ID of the created catch-all password"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the catch-all password"
+                    }
+                  },
+                  "required": ["id", "description"]
+                },
+                "example": {
+                  "id": "6841ec462bd583c73d0632dd",
+                  "username": "*@quas.com",
+                  "password": "6Yq14XhAUaupdZE",
+                  "description": "foo bar"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List domain-wide catch-all passwords",
+        "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
+        "operationId": "listCatchAllPasswords",
+        "tags": ["Domains"],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Fully qualified domain name (FQDN) for which to list catch-all passwords",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain-wide catch-all passwords",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the item",
+                        "example": "6841ec442bd583c73d0632d0"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the item",
+                        "example": "foo bar"
+                      }
+                    },
+                    "required": ["id", "description"]
+                  },
+                  "example": [
+                    {
+                      "id": "6841ec442bd583c73d0632d0",
+                      "description": ""
+                    },
+                    {
+                      "id": "6841ec462bd583c73d0632dd",
+                      "description": "foo bar"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
+      "delete": {
+        "summary": "Remove domain-wide catch-all password",
+        "description": "Deletes a domain-wide catch-all password using the provided token ID.",
+        "tags": ["Domains"],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The domain name associated with the catch-all password"
+          },
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token ID of the domain-wide catch-all password to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catch-all password successfully removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Catch-all password deleted successfully."
+                    }
+                  },
+                  "example": {
+                    "id": "6841ec442bd583c73d0632d0",
+                    "description": ""
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/v1/domains/{domain_id}/invites": {
       "parameters": [
         {
