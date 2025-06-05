@@ -101,6 +101,19 @@ if alias
             i.fa.fa-plus
             = " "
             = t("Add new domain")
+.form-group.form-check
+  input#input-is-enabled.form-check-input(
+    type="checkbox",
+    name="is_enabled",
+    value="true",
+    checked=alias ? alias.is_enabled : true
+  )
+  label.form-check-label(for="input-is-enabled")
+    = t("Active")
+    = " "
+    span.text-muted= t("(optional)")
+  .alert.alert-warning.small.mt-3
+    = t("If you uncheck this, then this email will be deactivated and no emails will flow through.")
 if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
   .form-group.form-check
     input#input-has-imap.form-check-input(
@@ -184,19 +197,6 @@ if !domain || (domain && !domain.is_global)
       span.text-muted= t("(optional)")
     .alert.alert-warning.small.mt-3
       = t("If you check this, then each forwarding recipient will be required to click an email verification link in order for emails to flow through.")
-.form-group.form-check
-  input#input-is-enabled.form-check-input(
-    type="checkbox",
-    name="is_enabled",
-    value="true",
-    checked=alias ? alias.is_enabled : true
-  )
-  label.form-check-label(for="input-is-enabled")
-    = t("Active")
-    = " "
-    span.text-muted= t("(optional)")
-  .alert.alert-warning.small.mt-3
-    = t("If you uncheck this, then this email will be deactivated and no emails will flow through.")
 //- error_code_if_disabled
 .form-group
   label(for="select-error-code-if-disabled")
