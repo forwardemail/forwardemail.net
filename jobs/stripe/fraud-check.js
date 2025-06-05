@@ -48,6 +48,7 @@ async function mapper(customer) {
 
   // only do this for users with an active subscription in stripe
   if (
+    !user.has_passed_kyc &&
     count === 0 &&
     paymentMethods.data.length >= 3 &&
     subscriptions.data.length > 0

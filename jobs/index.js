@@ -94,7 +94,7 @@ let jobs = [
   },
   {
     name: 'check-unknown-payment-methods',
-    interval: '1h',
+    interval: '1d',
     timeout: 0
   },
   {

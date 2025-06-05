@@ -295,7 +295,7 @@ async function syncUbuntuUser(user, map) {
                     message: {
                       to: user.email,
                       cc: adminEmailsForDomain,
-                      bcc: config.email.message.from,
+                      // bcc: config.email.message.from,
                       subject: `${emoji('warning')} ${user[
                         fields.ubuntuUsername
                       ].toLowerCase()}@${domain.name} could not be created`
@@ -331,7 +331,7 @@ async function syncUbuntuUser(user, map) {
                   template: 'alert',
                   message: {
                     to: adminEmailsForDomain,
-                    bcc: config.email.message.from,
+                    // bcc: config.email.message.from,
                     subject: isEqual
                       ? `${emoji('warning')} ${alias.name}@${
                           domain.name
@@ -405,7 +405,7 @@ async function syncUbuntuUser(user, map) {
               template: 'alert',
               message: {
                 to: adminEmailsForDomain,
-                bcc: config.email.message.from,
+                // bcc: config.email.message.from,
                 subject: `${emoji('wastebasket')} ${user[
                   fields.ubuntuUsername
                 ].toLowerCase()}@${domain.name} removed`
@@ -560,7 +560,7 @@ async function syncUbuntuUser(user, map) {
                     message: {
                       to: user.email,
                       cc: adminEmailsForDomain,
-                      bcc: config.email.message.from,
+                      // bcc: config.email.message.from,
                       subject: `${emoji('wastebasket')} ${user[
                         fields.ubuntuUsername
                       ].toLowerCase()}@${domain.name} ${

@@ -175,7 +175,7 @@ async function update(ctx) {
       template: 'alert',
       message: {
         to: obj.to,
-        bcc: config.email.message.from,
+        // bcc: config.email.message.from,
         subject
       },
       locals: {
@@ -206,7 +206,7 @@ async function update(ctx) {
       template: 'alert',
       message: {
         to: obj.to,
-        bcc: config.email.message.from,
+        // bcc: config.email.message.from,
         subject
       },
       locals: {

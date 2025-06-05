@@ -1907,7 +1907,7 @@ async function onDataMX(session, headers, body) {
         // TODO: use Emails.queue or something
         await emailHelper({
           template: 'phishing',
-          message: { to, bcc: config.email.message.from },
+          message: { to },
           locals: {
             from: session.originalFromAddress,
             domain: session.originalFromAddressRootDomain,
