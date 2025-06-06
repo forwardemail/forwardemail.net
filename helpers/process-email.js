@@ -189,6 +189,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     if (
       !domain.members.some(
         (m) =>
+          m.user &&
           !m.user[config.userFields.isBanned] &&
           m.user[config.userFields.hasVerifiedEmail] &&
           validPlans.includes(m.user.plan) &&
@@ -1034,7 +1035,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
               const adminExists = await Users.exists({
                 _id: {
                   $in: domain.members
-                    .filter((m) => m.group === 'admin')
+                    .filter((m) => m.user && m.group === 'admin')
                     .map((m) =>
                       typeof m.user === 'object' &&
                       typeof m?.user?._id === 'object'

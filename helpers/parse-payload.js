@@ -173,9 +173,9 @@ async function parsePayload(data, ws) {
     // request.socket.remoteAddress
     payload = ws ? recursivelyParse(decoder.unpack(data)) : data;
 
-    // if it took more than 5s to be received then we should alert admins
-    if (payload.sent_at && now - payload.sent_at >= 5000) {
-      const err = new TypeError(`Payload took >= 5s to be received`);
+    // if it took more than 10s to be received then we should alert admins
+    if (payload.sent_at && now - payload.sent_at >= 10000) {
+      const err = new TypeError(`Payload took >= 10s to be received`);
       err.payload = payload;
       logger.fatal(err);
     }

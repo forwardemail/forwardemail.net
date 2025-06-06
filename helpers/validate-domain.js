@@ -39,6 +39,7 @@ function validateDomain(domain, domainName) {
   if (
     !domain.members.some(
       (m) =>
+        m.user &&
         !m.user[config.userFields.isBanned] &&
         m.user[config.userFields.hasVerifiedEmail] &&
         validPlans.includes(m.user.plan) &&

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
- Copyright (c) Forward Email LLC
- SPDX-License-Identifier: BUSL-1.1
--->
-
+<!-- Copyright (c) Forward Email LLC SPDX-License-Identifier: BUSL-1.1 -->
 <browserconfig>
-    <msapplication>
-        <tile>
-            <square150x150logo src="/mstile-150x150.png"/>
-            <TileColor>#20c1ed</TileColor>
-        </tile>
-    </msapplication>
+  <msapplication>
+    <tile>
+      <square150x150logo src="/img/mstile-150x150.png"/>
+      <TileColor>#20c1ed</TileColor>
+    </tile>
+  </msapplication>
 </browserconfig>
+

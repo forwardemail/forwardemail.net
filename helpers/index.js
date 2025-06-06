@@ -140,6 +140,8 @@ const isExpiredOrNewlyCreated = require('./is-expired-or-newly-created');
 const invalidateOtherSessions = require('./invalidate-other-sessions');
 const lodash = require('./lodash');
 const abusePreventionByUserId = require('./abuse-prevention-by-user-id');
+const xmlHelpers = require('./carddav-xml');
+const setupAuthSession = require('./setup-auth-session');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -283,5 +285,7 @@ module.exports = {
   isExpiredOrNewlyCreated,
   invalidateOtherSessions,
   lodash,
-  abusePreventionByUserId
+  abusePreventionByUserId,
+  xmlHelpers,
+  setupAuthSession
 };

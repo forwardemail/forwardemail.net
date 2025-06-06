@@ -21,6 +21,8 @@ const TemporaryMessages = require('./temporary-messages');
 const SearchResults = require('./search-results');
 const Calendars = require('./calendars');
 const CalendarEvents = require('./calendar-events');
+const AddressBooks = require('./address-books');
+const Contacts = require('./contacts');
 
 module.exports = {
   Attachments,
@@ -40,5 +42,7 @@ module.exports = {
   TemporaryMessages,
   SearchResults,
   Calendars,
-  CalendarEvents
+  CalendarEvents,
+  AddressBooks,
+  Contacts
 };

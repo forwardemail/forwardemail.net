@@ -29,9 +29,7 @@ const createTangerine = require('#helpers/create-tangerine');
 const env = require('#config/env');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
-const logger = require('#helpers/logger');
-const onAuth = require('#helpers/on-auth');
-const refreshSession = require('#helpers/refresh-session');
+const setupAuthSession = require('#helpers/setup-auth-session');
 
 //
 // Reminders (DEFAULT_TASK_CALENDAR_NAME)
@@ -390,8 +388,8 @@ async function ensureDefaultCalendars(ctx) {
         })
   ]);
 
-  logger.debug('defaultCalendar', { defaultCalendar });
-  logger.debug('defaultTaskCalendar', { defaultTaskCalendar });
+  ctx.logger.debug('defaultCalendar', { defaultCalendar });
+  ctx.logger.debug('defaultTaskCalendar', { defaultTaskCalendar });
 }
 
 //
@@ -403,15 +401,6 @@ async function ensureDefaultCalendars(ctx) {
 //
 
 // TODO: DNS SRV records <https://sabre.io/dav/service-discovery/#dns-srv-records>
-
-async function onAuthPromise(auth, session) {
-  return new Promise((resolve, reject) => {
-    onAuth.call(this, auth, session, (err, user) => {
-      if (err) return reject(err);
-      resolve(user);
-    });
-  });
-}
 
 function bumpSyncToken(synctoken) {
   const parts = synctoken.split('/');
@@ -817,13 +806,12 @@ function bumpSyncToken(synctoken) {
 // <https://www.rfc-editor.org/rfc/rfc4791>
 //
 class CalDAV extends API {
-  constructor(options = {}, Users) {
-    super(options, Users);
+  constructor(...args) {
+    super(...args);
 
-    this.logger = logger;
-    this.resolver = createTangerine(this.client, logger);
+    this.resolver = createTangerine(this.client, this.logger);
 
-    this.wsp = options.wsp;
+    this.wsp = this.config.wsp;
 
     this.authenticate = this.authenticate.bind(this);
     this.createCalendar = this.createCalendar.bind(this);
@@ -1064,7 +1052,7 @@ class CalDAV extends API {
                 isPending: false
               });
             } catch (err) {
-              logger.fatal(err);
+              ctx.logger.fatal(err);
             }
           }
         }
@@ -1126,7 +1114,7 @@ class CalDAV extends API {
             method
           );
 
-          logger.debug('ics output', ics);
+          ctx.logger.debug('ics output', ics);
 
           let subject =
             event.summary ||
@@ -1177,7 +1165,7 @@ class CalDAV extends API {
                   isPending: false
                 });
               } catch (err) {
-                logger.fatal(err);
+                ctx.logger.fatal(err);
               }
             }
           } else {
@@ -1208,74 +1196,26 @@ class CalDAV extends API {
       err.calendar = calendar;
       err.oldCalStr = oldCalStr;
       err.calendarEvent = calendarEvent;
-      logger.fatal(err);
+      ctx.logger.fatal(err);
     }
   }
 
   async authenticate(ctx, { username, password, principalId }) {
-    logger.debug('authenticate', { username, password, principalId });
+    ctx.logger.debug('authenticate', { username, password, principalId });
 
-    ctx.state.session = {
-      id: ctx.req.id,
-      remoteAddress: ctx.ip,
-      request: ctx.request
-    };
+    await setupAuthSession.call(this, ctx, username, password);
 
-    try {
-      const { user } = await onAuthPromise.call(
-        this,
-        // auth
-        {
-          username,
-          password
-        },
-        // session
-        ctx.state.session
-      );
+    // caldav related user properties
+    ctx.state.user.principalId = ctx.state.user.username;
+    ctx.state.user.principalName = ctx.state.user.username; // .toUpperCase()
 
-      // caldav related user properties
-      user.principalId = user.username;
-      user.principalName = user.username; // .toUpperCase()
-
-      // set user in session and state
-      ctx.state.user = user;
-      ctx.state.session.user = user;
-
-      //
-      // store boolean if we're on an Apple device
-      //
-      // ctx.headers['user-agent'] is something like:
-      // - 'macOS/12.7.4 (21H1105) CalendarAgent/961.4.2'
-      // (or)
-      // - 'iOS/18.3.2 (22D82) dataaccessd/1.0'
-      //
-      ctx.state.isApple =
-        typeof ctx.headers['user-agent'] === 'string' &&
-        (ctx.headers['user-agent'].includes('macOS') ||
-          ctx.headers['user-agent'].includes('iOS'));
-
-      logger.debug('isApple', ctx.state.isApple);
-
-      // set locale for translation in ctx
-      ctx.isAuthenticated = () => true;
-      ctx.request.acceptsLanguages = () => false;
-      await i18n.middleware(ctx, () => Promise.resolve());
-
-      // connect to db
-      await refreshSession.call(this, ctx.state.session, 'CALDAV');
-
-      //
-      // TODO: we may want to run this in background
-      //       or alternatively only run it once every X amount of time
-      //
-      // ensure default calendar(s) exist
-      await ensureDefaultCalendars.call(this, ctx);
-
-      return user;
-    } catch (err) {
-      logger.error(err);
-      throw Boom.unauthorized(err);
-    }
+    //
+    // TODO: we may want to run this in background
+    //       or alternatively only run it once every X amount of time
+    //
+    // ensure default calendar(s) exist
+    await ensureDefaultCalendars.call(this, ctx);
+    return ctx.state.user;
   }
 
   //
@@ -1305,7 +1245,7 @@ class CalDAV extends API {
   //
   // eslint-disable-next-line complexity
   async createCalendar(ctx, { name, description, timezone, color, order }) {
-    logger.debug('createCalendar', {
+    ctx.logger.debug('createCalendar', {
       name,
       description,
       timezone,
@@ -1448,7 +1388,7 @@ class CalDAV extends API {
 
   // https://caldav.forwardemail.net/dav/support@forwardemail.net/default
   async getCalendar(ctx, { calendarId, principalId, user }) {
-    logger.debug('getCalendar', {
+    ctx.logger.debug('getCalendar', {
       calendarId,
       principalId,
       user,
@@ -1469,7 +1409,7 @@ class CalDAV extends API {
         });
     }
 
-    logger.debug('getCalendar result', { calendar });
+    ctx.logger.debug('getCalendar result', { calendar });
 
     return calendar;
   }
@@ -1480,7 +1420,12 @@ class CalDAV extends API {
   // <https://github.com/sedenardi/node-caldav-adapter/blob/bdfbe17931bf14a1803da77dbb70509db9332695/example/data.js#L111-L120>
   //
   async updateCalendar(ctx, { principalId, calendarId, user, updates }) {
-    logger.debug('updateCalendar', { principalId, calendarId, user, updates });
+    ctx.logger.debug('updateCalendar', {
+      principalId,
+      calendarId,
+      user,
+      updates
+    });
 
     //
     // if `updates` is specified then this is a PROPPATCH request with XML
@@ -1523,7 +1468,7 @@ class CalDAV extends API {
       if (!comp) throw new TypeError('Component not parsed');
 
       const vevents = comp.getAllSubcomponents('vevent');
-      logger.debug('vevents', { vevents });
+      ctx.logger.debug('vevents', { vevents });
 
       // update the calendar metadata based off VCALENDAR
       const x = [];
@@ -1657,6 +1602,7 @@ class CalDAV extends API {
         }
 
         if (events.length > 0) {
+          // TODO: is this wrong?
           const calendarEvents = await CalendarEvents.create(
             this,
             ctx.state.session,
@@ -1669,7 +1615,7 @@ class CalDAV extends API {
               this.sendEmailWithICS(ctx, calendar, calendarEvent, 'REQUEST')
             )
           );
-          logger.debug('created events', {
+          ctx.logger.debug('created events', {
             calendarEvents,
             principalId,
             calendarId,
@@ -1691,7 +1637,7 @@ class CalDAV extends API {
   // https://caldav.forwardemail.net/dav/calendars <--- both of these would do the same
   // NOTE: in the future we could do readonly and sharing here with auth permissioning system
   async getCalendarsForPrincipal(ctx, { principalId, user }) {
-    logger.debug('getCalendarsForPrincipal', { principalId, user });
+    ctx.logger.debug('getCalendarsForPrincipal', { principalId, user });
     return Calendars.find(this, ctx.state.session, {});
   }
 
@@ -1699,7 +1645,7 @@ class CalDAV extends API {
     ctx,
     { calendarId, principalId, user, fullData, showDeleted }
   ) {
-    logger.debug('getEventsForCalendar', {
+    ctx.logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
       user,
@@ -1724,7 +1670,7 @@ class CalDAV extends API {
     // TODO: improve this with search directly on sql
     if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
 
-    logger.debug('events', { events });
+    ctx.logger.debug('events', { events });
 
     return events;
   }
@@ -1734,7 +1680,7 @@ class CalDAV extends API {
     ctx,
     { calendarId, start, end, principalId, user, fullData }
   ) {
-    logger.debug('getEventsByDate', {
+    ctx.logger.debug('getEventsByDate', {
       calendarId,
       start,
       end,
@@ -1770,7 +1716,7 @@ class CalDAV extends API {
       const vevents = comp.getAllSubcomponents('vevent');
       if (vevents.length === 0) {
         const err = new TypeError('Event missing VEVENT');
-        logger.error(err, { event, calendar });
+        ctx.logger.error(err, { event, calendar });
         continue;
       }
 
@@ -1782,7 +1728,7 @@ class CalDAV extends API {
         let dtstart = vevent.getFirstPropertyValue('dtstart');
         if (!dtstart || !(dtstart instanceof ICAL.Time)) {
           const err = new TypeError('DTSTART missing on event');
-          logger.error(err, { event, calendar });
+          ctx.logger.error(err, { event, calendar });
           continue;
         }
 
@@ -1851,7 +1797,7 @@ class CalDAV extends API {
   }
 
   async getEvent(ctx, { eventId, principalId, calendarId, user, fullData }) {
-    logger.debug('getEvent', {
+    ctx.logger.debug('getEvent', {
       eventId,
       principalId,
       calendarId,
@@ -1893,7 +1839,7 @@ class CalDAV extends API {
   // user: ctx.state.user
   // NOTE: `ical` String is also ctx.request.body in this method
   async createEvent(ctx, { eventId, principalId, calendarId, user }) {
-    logger.debug('createEvent', {
+    ctx.logger.debug('createEvent', {
       eventId,
       principalId,
       calendarId,
@@ -1998,7 +1944,7 @@ class CalDAV extends API {
     //       <https://github.com/nextcloud/server/pull/41370>
     //
 
-    logger.debug('create calendar event', { calendarEvent });
+    ctx.logger.debug('create calendar event', { calendarEvent });
 
     const eventCreated = await CalendarEvents.create(calendarEvent);
 
@@ -2020,7 +1966,7 @@ class CalDAV extends API {
     //   ctx.body = preconditionFail(ctx.url, 'no-uid-conflict');
     //   return;
     // }
-    logger.debug('updateEvent', {
+    ctx.logger.debug('updateEvent', {
       eventId,
       principalId,
       calendarId,
@@ -2072,7 +2018,7 @@ class CalDAV extends API {
         2
       );
       err.isCodeBug = true;
-      logger.fatal(err);
+      ctx.logger.fatal(err);
     }
 
     if (!e) throw Boom.badRequest(ctx.translateError('EVENT_DOES_NOT_EXIST'));
@@ -2108,7 +2054,7 @@ class CalDAV extends API {
 
   async deleteCalendar(ctx, { principalId, calendarId, user }) {
     // , calendar
-    logger.debug('deleteCalendar', { principalId, calendarId, user });
+    ctx.logger.debug('deleteCalendar', { principalId, calendarId, user });
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
@@ -2185,7 +2131,7 @@ class CalDAV extends API {
 
   async deleteEvent(ctx, { eventId, principalId, calendarId, user }) {
     // , calendar
-    logger.debug('deleteEvent', { eventId, principalId, calendarId, user });
+    ctx.logger.debug('deleteEvent', { eventId, principalId, calendarId, user });
 
     const calendar = await this.getCalendar(ctx, {
       calendarId,
@@ -2267,7 +2213,7 @@ class CalDAV extends API {
   //       and after finding numerous issues we decided to simply re-use the existing ICS file
   //
   async buildICS(ctx, events, calendar, method = false) {
-    logger.debug('buildICS', { events, calendar });
+    ctx.logger.debug('buildICS', { events, calendar });
     if (!events || Array.isArray(events)) {
       // <https://github.com/kewisch/ical.js/wiki/Creating-basic-iCalendar>
       const comp = new ICAL.Component(['vcalendar', [], []]);

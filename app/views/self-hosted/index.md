@@ -154,6 +154,7 @@ Once complete, you should see a success message. You can even run `docker ps` to
 | SQLite       |    `3456`    | SQLite server for interactions with sqlite database(s) |
 | SQLite Bree  |     None     | SQLite background job                                  |
 | CalDAV       |    `5000`    | CalDAV server for calendar management                  |
+| CardDAV      |    `6000`    | CardDAV server for calendar management                 |
 | MongoDB      |    `27017`   | MongoDB database for most data management              |
 | Redis        |    `6379`    | Redis for caching and state management                 |
 | SQLite       |     None     | SQLite database(s) for encrypted mailboxes             |
@@ -190,6 +191,7 @@ In your DNS provider of choice, configure the appropriate DNS records. Do note a
 | A     | "@", ".", or blank | <ip_address>                  | auto |
 | CNAME | api                | <domain_name>                 | auto |
 | CNAME | caldav             | <domain_name>                 | auto |
+| CNAME | carddav            | <domain_name>                 | auto |
 | CNAME | fe-bounces         | <domain_name>                 | auto |
 | CNAME | imap               | <domain_name>                 | auto |
 | CNAME | mx                 | <domain_name>                 | auto |
@@ -242,7 +244,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 * Click **Add Alias** (top right).
 * Enter the alias name and adjust email settings as needed.
-* (Optional) Enable **IMAP/POP3/CalDAV** support by selecting the checkbox.
+* (Optional) Enable **IMAP/POP3/CalDAV/CardDAV** support by selecting the checkbox.
 * Click **Create Alias.**
 
 3. Set a Password

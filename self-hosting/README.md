@@ -117,7 +117,8 @@ The `docker-compose-self-hosted.yml` file defines all the services required for 
 * **SMTP**: Email sending service
 * **IMAP/POP3**: Email retrieval services
 * **MX**: Mail exchange service
-* **CalDAV**: Calendar and contacts service
+* **CalDAV**: Calendar service
+* **CardDAV**: Contacts service
 * **MongoDB**: Database for storing user data
 * **Redis**: In-memory data store
 * **SQLite**: Database for storing emails

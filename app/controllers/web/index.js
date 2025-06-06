@@ -69,16 +69,20 @@ const octokit = new Octokit({
 // every 6 hours update github star count
 let STARS = 1000;
 async function checkGitHubStars() {
-  const response = await octokit.request('GET /repos/{owner}/{repo}', {
-    owner: 'forwardemail',
-    repo: 'forwardemail.net',
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
-    }
-  });
-  if (Number.isFinite(response?.data?.stargazers_count))
-    STARS = response.data.stargazers_count;
-  if (STARS <= 0) STARS = 1000;
+  try {
+    const response = await octokit.request('GET /repos/{owner}/{repo}', {
+      owner: 'forwardemail',
+      repo: 'forwardemail.net',
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+    if (Number.isFinite(response?.data?.stargazers_count))
+      STARS = response.data.stargazers_count;
+    if (STARS <= 0) STARS = 1000;
+  } catch (err) {
+    logger.error(err);
+  }
 }
 
 if (config.env !== 'test' && !config.isSelfHosted) {

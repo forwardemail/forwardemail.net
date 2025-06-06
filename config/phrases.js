@@ -77,6 +77,18 @@ module.exports = {
     'Invalid response from Launchpad API, please try again later.',
   UBUNTU_INVALID_GROUP:
     'You must be a member of a specific Launchpad group to get access.  Supported groups include ~ubuntumembers, ~kubuntu-members, ~lubuntu-members, ~edubuntu-members, and ~ubuntustudio-core.',
+
+  ADDRESS_BOOK_DOES_NOT_EXIST: 'Address book does not exist.',
+  ADDRESS_BOOK_ALREADY_EXISTS: 'Address book already exists.',
+  ADDRESS_BOOK_READONLY: 'Address book is read-only.',
+
+  INVALID_XML_REQUEST_BODY: 'Invalid XML request body.',
+  UNSUPPORTED_REPORT_TYPE: 'Unsupported report type.',
+
+  ETAG_DOES_NOT_MATCH: 'ETag does not match.',
+
+  CONTACT_DOES_NOT_EXIST: 'Contact does not exist.',
+
   CALENDAR: 'Calendar',
   CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',
   CALENDAR_DOES_NOT_EXIST: 'Calendar does not exist.',

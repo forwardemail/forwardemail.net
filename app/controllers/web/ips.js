@@ -17,6 +17,7 @@ const HOSTNAMES = _.uniq(
         env.API_HOST,
         env.BREE_HOST,
         env.CALDAV_HOST,
+        env.CARDDAV_HOST,
         env.IMAP_HOST,
         env.POP3_HOST,
         env.SMTP_HOST,
@@ -28,6 +29,7 @@ const HOSTNAMES = _.uniq(
         'api.forwardemail.net',
         'bree.forwardemail.net',
         'caldav.forwardemail.net',
+        'carddav.forwardemail.net',
         'imap.forwardemail.net',
         'pop3.forwardemail.net',
         'smtp.forwardemail.net',
@@ -60,6 +62,7 @@ async function ips(ctx, next) {
     // - api
     // - bree
     // - caldav
+    // - carddav
     // - imap
     // - pop3
     // - smtp

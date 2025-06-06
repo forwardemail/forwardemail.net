@@ -1,17 +1,18 @@
-#modal-search.modal.fade(
-  tabindex="-1",
-  role="dialog",
-  aria-labelledby="modal-search-title",
-  aria-hidden="true"
-)
-  .modal-dialog(role="document")
-    .modal-content
-      .modal-header.text-center.d-block
-        #modal-help-title.h4.d-inline-block.ml-4= t("Search for anything:")
-        button.close(type="button", data-dismiss="modal", aria-label="Close")
-          span(aria-hidden="true") &times;
-      .modal-body
-        include _search-form
+if ctx.pathWithoutLocale !== '/email-api'
+  #modal-search.modal.fade(
+    tabindex="-1",
+    role="dialog",
+    aria-labelledby="modal-search-title",
+    aria-hidden="true"
+  )
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header.text-center.d-block
+          #modal-help-title.h4.d-inline-block.ml-4= t("Search for anything:")
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+        .modal-body
+          include _search-form
 if !isHelp && user && !isBot(ctx.get('User-Agent'))
   #modal-help.modal.fade(
     tabindex="-1",
@@ -86,7 +87,9 @@ else if ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent"))
 else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
 if !isBot(ctx.get("User-Agent"))
-  - navbarClasses.unshift("navbar-expand-lg", "fixed-top");
+  - navbarClasses.unshift("navbar-expand-lg")
+  if ctx.pathWithoutLocale !== '/email-api'
+    - navbarClasses.unshift("fixed-top");
 
 //- these locales require decreased font-size in navbar <a class="btn"> tags
 if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.locale)
@@ -136,18 +139,19 @@ nav.navbar(class=navbarClasses.join(" "))
     if user && user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade
       ul.list-inline.ml-auto.mr-3.d-inline-block.d-lg-none.mb-0
         //- Site Search
-        li.list-inline-item
-          a.btn(
-            href=l("/search"),
-            data-toggle="modal",
-            data-target="#modal-search",
-            role="button",
-            class=`btn-link ${user ? 'text-white' : 'text-themed'}`
-          )
-            i.fa.fa-search
-            span.sr-only
-              = " "
-              = t("Search")
+        if ctx.pathWithoutLocale !== '/email-api'
+          li.list-inline-item
+            a.btn(
+              href=l("/search"),
+              data-toggle="modal",
+              data-target="#modal-search",
+              role="button",
+              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+            )
+              i.fa.fa-search
+              span.sr-only
+                = " "
+                = t("Search")
         if !isUbuntu
           li.list-inline-item
             a.btn.btn-sm.btn-danger(
@@ -157,33 +161,35 @@ nav.navbar(class=navbarClasses.join(" "))
     else if user
       ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
         //- Site Search
-        li.list-inline-item
-          a.btn(
-            href=l("/search"),
-            data-toggle="modal",
-            data-target="#modal-search",
-            role="button",
-            class=`btn-link ${user ? 'text-white' : 'text-themed'}`
-          )
-            i.fa.fa-search
-            span.sr-only
-              = " "
-              = t("Search")
+        if ctx.pathWithoutLocale !== '/email-api'
+          li.list-inline-item
+            a.btn(
+              href=l("/search"),
+              data-toggle="modal",
+              data-target="#modal-search",
+              role="button",
+              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+            )
+              i.fa.fa-search
+              span.sr-only
+                = " "
+                = t("Search")
     else if !user && !isBot(ctx.get('User-Agent'))
       ul.list-inline.ml-auto.d-inline-block.d-lg-none.mb-0
         //- Site Search
-        li.list-inline-item
-          a.btn(
-            href=l("/search"),
-            data-toggle="modal",
-            data-target="#modal-search",
-            role="button",
-            class=`btn-link ${user ? 'text-white' : 'text-themed'}`
-          )
-            i.fa.fa-search
-            span.sr-only
-              = " "
-              = t("Search")
+        if ctx.pathWithoutLocale !== '/email-api'
+          li.list-inline-item
+            a.btn(
+              href=l("/search"),
+              data-toggle="modal",
+              data-target="#modal-search",
+              role="button",
+              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+            )
+              i.fa.fa-search
+              span.sr-only
+                = " "
+                = t("Search")
 
         //- do same for noscript
         if !isBot(ctx.get('User-Agent'))
@@ -267,18 +273,19 @@ nav.navbar(class=navbarClasses.join(" "))
       #navbar-header.collapse.navbar-collapse
         ul.navbar-nav.ml-auto.mt-2.mt-md-0
           //- Site Search
-          li.nav-item.d-none.d-lg-inline-block
-            a.btn.d-block.text-left(
-              href=l("/search"),
-              data-toggle="modal",
-              data-target="#modal-search",
-              role="button",
-              class=`btn-link ${user ? 'text-white' : 'text-themed'}`
-            )
-              i.fa.fa-search
-              span.sr-only
-                = " "
-                = t("Search")
+          if ctx.pathWithoutLocale !== '/email-api'
+            li.nav-item.d-none.d-lg-inline-block
+              a.btn.d-block.text-left(
+                href=l("/search"),
+                data-toggle="modal",
+                data-target="#modal-search",
+                role="button",
+                class=`btn-link ${user ? 'text-white' : 'text-themed'}`
+              )
+                i.fa.fa-search
+                span.sr-only
+                  = " "
+                  = t("Search")
 
           if !isUbuntu && user && user.plan === 'free' && ctx.pathWithoutLocale !== config.verifyRoute && ctx.pathWithoutLocale !== '/my-account/domains/new' && !ctx.pathWithoutLocale.startsWith('/my-account/billing') && !isDomainSpecificUpgrade && ctx.pathWithoutLocale !== '/denylist'
             li.nav-item.mr-md-3.d-none.d-md-inline-block

@@ -466,7 +466,7 @@ async function syncUbuntuUser(user, map) {
             if (count === 0) {
               // if user had zero aliases then remove them from group
               domain.members = domain.members.filter(
-                (m) => m.user.toString() !== user._id.toString()
+                (m) => m.user && m.user.toString() !== user._id.toString()
               );
               await Domains.findByIdAndUpdate(domain._id, {
                 $set: {

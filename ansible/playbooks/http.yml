@@ -32,7 +32,15 @@
     - name: Set hostname
       hostname:
         name: "{{ lookup('env', 'CALDAV_HOST') }}"
-- hosts: web:api:caldav
+- hosts: carddav
+  name: CardDAV Hostname
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'CARDDAV_HOST') }}"
+- hosts: web:api:caldav:carddav
   name: HTTP
   become: true
   become_user: root

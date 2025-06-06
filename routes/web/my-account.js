@@ -389,7 +389,7 @@ router
     web.myAccount.ensureUpgradedPlan,
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
-    rateLimit(20, 'resend verification'),
+    rateLimit(100, 'resend verification'),
     web.myAccount.resendVerification
   )
   .post(
@@ -400,7 +400,7 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
-    rateLimit(50, 'generate alias password'),
+    rateLimit(300, 'generate alias password'),
     web.myAccount.generateAliasPassword
   )
   .post(
@@ -411,7 +411,7 @@ router
     web.myAccount.retrieveAlias,
     web.myAccount.ensureAliasAdmin,
     policies.ensureTurnstile,
-    rateLimit(50, 'qrcode'),
+    rateLimit(500, 'qrcode'),
     web.myAccount.retrieveQRCode
   )
   .post(

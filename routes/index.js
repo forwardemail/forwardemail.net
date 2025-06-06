@@ -6,9 +6,11 @@
 const web = require('./web');
 const api = require('./api');
 const caldav = require('./caldav');
+const carddav = require('./carddav');
 
 module.exports = {
   web,
   api,
-  caldav
+  caldav,
+  carddav
 };

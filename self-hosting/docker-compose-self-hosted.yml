@@ -18,6 +18,7 @@ services:
       - "${DOMAIN}:127.0.0.1"
       - "api.${DOMAIN}:127.0.0.1"
       - "caldav.${DOMAIN}:127.0.0.1"
+      - "carddav.${DOMAIN}:127.0.0.1"
       - "imap.${DOMAIN}:127.0.0.1"
       - "smtp.${DOMAIN}:127.0.0.1"
       - "sqlite.${DOMAIN}:127.0.0.1"
@@ -270,6 +271,7 @@ services:
     extra_hosts:
       - "${DOMAIN}:127.0.0.1"
       - "caldav.${DOMAIN}:127.0.0.1"
+      - "carddav.${DOMAIN}:127.0.0.1"
       - "imap.${DOMAIN}:127.0.0.1"
       - "smtp.${DOMAIN}:127.0.0.1"
       - "sqlite.${DOMAIN}:127.0.0.1"
@@ -292,6 +294,34 @@ services:
       - ./ssl:/app/ssl/
     healthcheck:
       test: "nc -z 127.0.0.1 5000"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: unless-stopped
+    extra_hosts:
+      - "${DOMAIN}:127.0.0.1"
+      - "smtp.${DOMAIN}:127.0.0.1"
+      - "imap.${DOMAIN}:127.0.0.1"
+      - "sqlite.${DOMAIN}:127.0.0.1"
+    depends_on:
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      sqlite:
+        condition: service_healthy
+
+  caldav:
+    image: ghcr.io/forwardemail/forwardemail.net-selfhosted:latest
+    container_name: carddav
+    network_mode: host
+    hostname: carddav.${DOMAIN}
+    command: ["node", "carddav.js"]
+    volumes:
+      - ./.env:/app/.env
+      - ./ssl:/app/ssl/
+    healthcheck:
+      test: "nc -z 127.0.0.1 6000"
       interval: 30s
       timeout: 30s
       retries: 3

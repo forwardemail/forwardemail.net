@@ -19,10 +19,12 @@ const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql');
 const { boolean } = require('boolean');
 
+const AddressBooks = require('#models/address-books');
 const Aliases = require('#models/aliases');
 const Attachments = require('#models/attachments');
 const CalendarEvents = require('#models/calendar-events');
 const Calendars = require('#models/calendars');
+const Contacts = require('#models/contacts');
 const Domains = require('#models/domains');
 const Mailboxes = require('#models/mailboxes');
 const Messages = require('#models/messages');
@@ -141,15 +143,15 @@ async function getDatabase(
     return session.db;
   }
 
-  // instance must be either IMAP, POP3, SQLite, or CalDAV
+  // instance must be either IMAP, POP3, SQLite, CalDAV, or CardDAV
   if (
-    !['IMAP', 'POP3', 'SQLite', 'CalDAV'].includes(
+    !['IMAP', 'POP3', 'SQLite', 'CalDAV', 'CardDAV'].includes(
       instance?.constructor?.name
     ) &&
     HOSTNAME !== env.SQLITE_HOST
   ) {
     throw new TypeError(
-      'Instance must be either IMAP, POP3, SQLite, or CalDAV'
+      'Instance must be either IMAP, POP3, SQLite, CalDAV, or CardDAV'
     );
   }
 
@@ -563,7 +565,9 @@ async function getDatabase(
           Threads,
           Attachments,
           Calendars,
-          CalendarEvents
+          CalendarEvents,
+          AddressBooks,
+          Contacts
         });
 
         if (commands.length > 0) {

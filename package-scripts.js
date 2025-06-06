@@ -22,6 +22,7 @@ module.exports = {
     sqlite: 'nodemon sqlite.js',
     // caldav: 'NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon caldav.js',
     caldav: 'nodemon caldav.js',
+    carddav: 'nodemon carddav.js',
     mx: 'nodemon mx.js',
 
     watch: 'gulp watch',

@@ -205,11 +205,12 @@ async function onAuth(auth, session, fn) {
     // validate the `auth.password` provided
     //
 
-    // IMAP/POP3/CalDAV servers can only validate against aliases
+    // IMAP/POP3/CalDAV/CardDAV servers can only validate against aliases
     if (
       this.server instanceof IMAPServer ||
       this.server instanceof POP3Server ||
-      (alias && this?.constructor?.name === 'CalDAV')
+      (alias && this?.constructor?.name === 'CalDAV') ||
+      (alias && this?.constructor?.name === 'CardDAV')
     ) {
       if (
         alias &&
@@ -424,7 +425,7 @@ async function onAuth(auth, session, fn) {
     }
 
     //
-    // if we're on IMAP/POP3/CalDAV server then as a weekly courtesy
+    // if we're on IMAP/POP3/CalDAV/CardDAV server then as a weekly courtesy
     // if the user does not have IMAP storage enabled then
     // alert them by email to inform them they need to enable IMAP
     // (otherwise they're not going to have any mail received)
@@ -436,6 +437,7 @@ async function onAuth(auth, session, fn) {
       (this.server instanceof IMAPServer ||
         this.server instanceof POP3Server ||
         this?.constructor?.name === 'CalDAV' ||
+        this?.constructor?.name === 'CardDAV' ||
         this?.constructor?.name === 'IMAP' ||
         this?.constructor?.name === 'POP3')
     ) {
@@ -529,6 +531,7 @@ async function onAuth(auth, session, fn) {
     //
     if (
       this?.constructor?.name !== 'CalDAV' &&
+      this?.constructor?.name !== 'CardDAV' &&
       this?.constructor?.name !== 'POP3' &&
       this.server &&
       !(this.server instanceof POP3Server) // not needed but keeping here anyways

@@ -428,9 +428,12 @@ function fixFootnoteReferences(markdownText) {
 
 module.exports = {
   md(string, options) {
+    //
+    // NOTE: this is not needed as v0.3.2 patched the issue
     // <https://github.com/antfu/markdown-it-github-alerts/issues/8>
     // `> \[!` -> `> [!`
-    string = string.replaceAll('> \\[!', '> [!');
+    // string = string.replaceAll('> \\[!', '> [!');
+    //
 
     // replace footnote escaped chars
     string = fixFootnoteReferences(string);

@@ -27,6 +27,7 @@
 * [Do you support calendars (CalDAV)](#do-you-support-calendars-caldav)
   * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
   * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
+* [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -102,7 +103,7 @@ We're an all-in-one alternative to Gmail + Mailchimp + Sendgrid.
 
 Think of us as the service that can power `you@yourdomain.com`.  We're the best alternative to Gmail, Microsoft 365, Proton Mail, Sendgrid, and Amazon SES – without hidden fees nor limits – and ultimately focused on **[100% open-source software](https://github.com/forwardemail)**, **[quantum-resistant encryption](/blog/docs/best-quantum-safe-encrypted-email-service)**, and **[privacy](/privacy)**.
 
-**Unlike other services, we don't charge you per user.**  You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.
+**Unlike other services, we don't charge you per user.**  You get unlimited domains and aliases for only one monthly rate of $3/mo.  All paid plans include 10 GB of SSD-backed encrypted SQLite storage (IMAP/POP3/CalDAV/CardDAV).  Additional storage can be purchased for $3/mo per 10 GB of additional SSD-backed storage.
 
 You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
@@ -1346,6 +1347,11 @@ In order to use calendar support, the **user** must be the email address of an a
 If you'd like to add additional calendars, then just add a new calendar URL of: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**be sure to replace `calendar-name` with your desired calendar name**)
 
 You can change a calendar's name and color after creation – just use your preferred calendar application (e.g. Apple Mail or [Thunderbird](https://thunderbird.net)).
+
+
+## Do you support contacts (CardDAV)
+
+Coming soon...
 
 
 ## How to Send Mail As using Gmail

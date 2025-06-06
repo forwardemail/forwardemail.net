@@ -82,6 +82,7 @@ The architecture includes containers for:
 * SMTP server for outbound email
 * IMAP/POP3 servers for email retrieval
 * CalDAV server for calendars
+* CardDAV server for contacts
 * Database for configuration storage
 * Redis for caching and performance
 * SQLite for secure, encrypted mailbox storage

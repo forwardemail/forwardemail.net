@@ -1,7 +1,14 @@
 block head
-  - const fonts = [];
+  //- prefetch fonts
+  //- https://caniuse.com/link-rel-prefetch
+  //- integrity attribute not currently supported
+  //- <https://crbug.com/981419>
+  //-.
+  - const fonts = ["fa-solid-900.woff2", "fa-brands-400.woff2"];
   - fonts.push("nunito-sans-latin-400.woff2");
   - fonts.push("nunito-sans-latin-700.woff2");
+  - fonts.push("vc-honey-latin-400.woff2");
+  - fonts.push("vc-honey-latin-700.woff2");
   each font in fonts
     link(
       rel="prefetch",
@@ -17,13 +24,27 @@ block head
       --scalar-font-code: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     }
 
+  link(
+    rel="stylesheet",
+    href=manifest("css/app.css"),
+    integrity=manifest("css/app.css", "integrity"),
+    fetchpriority="high",
+    crossorigin="anonymous"
+  )
+
 block body
-  #app
-
+  include _nav
+  .scalar-app-reset
+    #app
+  script(
+    defer,
+    src=manifest("js/build.js"),
+    integrity=manifest("js/build.js", "integrity"),
+    crossorigin="anonymous",
+    fetchpriority="low"
+  )
   - const ogImage = `${config.urls.web}${ctx.path}${ctx.pathWithoutLocale === "/" ? "/index" : ""}.png`;
-
   script(src="/js/scalar.js", crossorigin="anonymous")
-
   script.
     window.API_URL = "#{config.urls.api}";
     window.WEB_URL = "#{config.urls.web}";

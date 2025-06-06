@@ -123,13 +123,13 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       value="true"
     )
     label.form-check-label(for="input-has-imap")
-      = "IMAP/POP3/CalDAV"
+      = "IMAP/POP3/CalDAV/CardDAV"
       = " "
       span.text-muted= t("(optional)")
   .alert.alert-success
     strong= t("Recommended:")
     = " "
-    != t('This will enable <span class="notranslate">IMAP/POP3/CalDAV</span> for this alias.')
+    != t('This will enable <span class="notranslate">IMAP/POP3/CalDAV/CardDAV</span> for this alias.')
     = " "
     = t("You can have this and forwarding recipients enabled at the same time.")
     = " "
@@ -229,7 +229,7 @@ if !domain || !domain.is_global && (!isUbuntuAlias || domain.group === 'admin')
       = " "
       span.text-muted= t("(optional)")
     .alert.alert-warning.small.mt-3
-      != t('Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you\'d like double the level of encryption, then if you have <span class="notranslate">IMAP/POP3/CalDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.')
+      != t('Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you\'d like double the level of encryption, then if you have <span class="notranslate">IMAP/POP3/CalDAV/CardDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.')
       = " "
       != t('If this is checked and no public key is entered below, then we will attempt to perform a lookup <a href="%s" target="_blank" class="alert-link">using Web Key Directory</a> ("WKD").', l("/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd"))
   label(for="textarea-public-key")

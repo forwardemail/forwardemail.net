@@ -167,19 +167,20 @@ Once you have followed [Requirements](#requirements), you should now have all th
 
 You can start any of the services using our pre-built commands to make it easy.  Note that all of these pre-built commands are using [nps](https://github.com/sezna/nps).
 
-| Service Name | Command            | Default Development Port | Development Preview URL |
-| ------------ | ------------------ | :----------------------: | ----------------------- |
-| Web          | `npm start web`    |          `3000`          | <http://localhost:3000> |
-| API          | `npm start api`    |          `4000`          | <http://localhost:4000> |
-| Bree         | `npm start bree`   |           None           | None                    |
-| SMTP         | `npm start smtp`   |          `2432`          | `telnet localhost 2432` |
-| MX           | `npm start mx`     |          `2525`          | `telnet localhost 2525` |
-| IMAP         | `npm start imap`   |          `2113`          | `telnet localhost 2113` |
-| POP3         | `npm start pop3`   |          `2115`          | `telnet localhost 2115` |
-| SQLite       | `npm start sqlite` |          `3456`          | `telnet localhost 3456` |
-| CalDAV       | `npm start caldav` |          `5000`          | <http://localhost:5000> |
+| Service Name | Command             | Default Development Port | Development Preview URL |
+| ------------ | ------------------- | :----------------------: | ----------------------- |
+| Web          | `npm start web`     |          `3000`          | <http://localhost:3000> |
+| API          | `npm start api`     |          `4000`          | <http://localhost:4000> |
+| Bree         | `npm start bree`    |           None           | None                    |
+| SMTP         | `npm start smtp`    |          `2432`          | `telnet localhost 2432` |
+| MX           | `npm start mx`      |          `2525`          | `telnet localhost 2525` |
+| IMAP         | `npm start imap`    |          `2113`          | `telnet localhost 2113` |
+| POP3         | `npm start pop3`    |          `2115`          | `telnet localhost 2115` |
+| SQLite       | `npm start sqlite`  |          `3456`          | `telnet localhost 3456` |
+| CalDAV       | `npm start caldav`  |          `5000`          | <http://localhost:5000> |
+| CardDAV      | `npm start carddav` |          `6000`          | <http://localhost:6000> |
 
-You can test the local SMTP, IMAP, POP3, and CalDAV servers using [Thunderbird](), `telnet`, or `openssl`.  Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
+You can test the local SMTP, IMAP, POP3, CalDAV, CardDAV servers using [Thunderbird](), `telnet`, or `openssl`.  Note that all local development servers do not require TLS and are running with `{ rejectUnauthorized: true }` option passed to TLS server configurations.
 
 Try running the local web server:
 
@@ -206,7 +207,7 @@ An easy way to kill all existing Node apps running is by typing `killall node`.
 
 Our server alias naming convention consists of the following fields, joined together by a hyphen, and converted to lower case:
 
-1. App name (e.g. "web", "api", "bree", "smtp", "imap", "pop3", "sqlite", or "caldav")
+1. App name (e.g. "web", "api", "bree", "smtp", "imap", "pop3", "sqlite", "caldav", or "carddav")
 2. (Optional) App count (starting with 1) of the application (relative to the same provider and region).  Only applicable for apps with potential count > 1.
 3. Provider name (abbreviated to 2 characters, e.g. "do" for "Digital Ocean", but you can optionally use more verbose for providers such as "DataPacket" as "dp")
 4. Region name (this is the region name given by the provider, e.g. "sfo3" for DO's SFO3 region)
@@ -286,13 +287,13 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
    vim .env.production
    ```
 
-8. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json`, `ecosystem-smtp.json`, `ecosystem-imap.json`, `ecosystem-pop3.json`, `ecosystem-sqlite.json`, and `ecosystem-caldav.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
+8. Generate [pm2][] [ecosystem files][ecosystem-files] using our automatic template generator. We created an [ansible-playbook.js](ansible-playbook.js) which loads the `.env.production` environment variables rendered with [@ladjs/env][] into `process.env`, which then gets used in the playbooks.  This is a superior, simple, and the only known dotenv approach we know of in Ansible. Newly created `ecosystem-api.json`, `ecosystem-bree.json`, `ecosystem-web.json`, `ecosystem-smtp.json`, `ecosystem-imap.json`, `ecosystem-pop3.json`, `ecosystem-sqlite.json`, `ecosystem-caldav.json`, and `ecosystem-carddav.json` files will now be created for you in the root of the repository.  If you ever more add or change IP addresses, you can simply re-run this command.
 
    ```sh
    node ansible-playbook ansible/playbooks/ecosystem.yml -l 'localhost'
    ```
 
-9. Set up the web, API, and CalDAV server(s) (see [patterns and ansible-playbook flags docs](https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html#patterns-and-ansible-playbook-flags) if you need help).  If you completely (or partially) run this playbook (or any others below), then the second time you try to run it may not succeed.  This is because we prevent root user access through security hardening.  To workaround this, run the same command but without `--user root` appended as it will default to the `devops` user created.
+9. Set up the web, API, CalDAV, and CardDAV server(s) (see [patterns and ansible-playbook flags docs](https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html#patterns-and-ansible-playbook-flags) if you need help).  If you completely (or partially) run this playbook (or any others below), then the second time you try to run it may not succeed.  This is because we prevent root user access through security hardening.  To workaround this, run the same command but without `--user root` appended as it will default to the `devops` user created.
 
    ```sh
    node ansible-playbook ansible/playbooks/http.yml --user root -l 'http'
@@ -344,11 +345,9 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 17. Go to your repository "Settings" page on GitHub, click on "Deploy keys", and then add a deployment key for each servers' deployment key copied to the `deployment-keys` directory.  If you're on macOS, you can use the `pbcopy` command to copy each file's contents to your clipboard.  Use tab completion for speed, and replace the server names and paths with yours.  You can also use the `gh` CLI at <https://cli.github.com/manual/gh_repo_deploy-key_add> as shown below (switch the repo/org/repo paths and deployment key paths below to yours):
 
     ```sh
-    gh repo deploy-key add deployment-keys/api-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/api-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/api-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/web-dp-dv-co.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/web-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/web-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/bree-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/bree-dp-dv-co.pub -R forwardemail/forwardemail.net
@@ -357,15 +356,11 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     gh repo deploy-key add deployment-keys/smtp-dp-dv-co-2.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/smtp-dp-dv-co-3.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/imap-dp-dv-co.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/imap-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/pop3-vu-sj-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/pop3-dp-dv-co.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/sqlite-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/sqlite-dp-dv-co.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/caldav-do-sf-ca.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/caldav-dp-dv-co.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/mx1-do-sf-ca.pub -R forwardemail/forwardemail.net
-    gh repo deploy-key add deployment-keys/mx2-do-ny-ny.pub -R forwardemail/forwardemail.net
+    gh repo deploy-key add deployment-keys/carddav-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/mx1-dp-dv-co.pub -R forwardemail/forwardemail.net
     gh repo deploy-key add deployment-keys/mx2-dp-dv-co.pub -R forwardemail/forwardemail.net
     ```
@@ -405,6 +400,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ```
 
     ```sh
+    pm2 deploy ecosystem-carddav.json production setup
+    ```
+
+    ```sh
     pm2 deploy ecosystem-mx.json production setup
     ```
 
@@ -428,6 +427,7 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     pm2 deploy ecosystem-pop3.json production exec "pm2 reload all"
     pm2 deploy ecosystem-sqlite.json production exec "pm2 reload all"
     pm2 deploy ecosystem-caldav.json production exec "pm2 reload all"
+    pm2 deploy ecosystem-carddav.json production exec "pm2 reload all"
     pm2 deploy ecosystem-mx.json production exec "pm2 reload all"
     ```
 
@@ -505,6 +505,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
     ```
 
     ```sh
+    pm2 deploy ecosystem-carddav.json production
+    ```
+
+    ```sh
     pm2 deploy ecosystem-mx.json production
     ```
 
@@ -540,6 +544,10 @@ Follow the [Deployment](#deployment) guide below for automatic provisioning and 
 
     ```sh
     pm2 deploy ecosystem-caldav.json production exec "pm2 save"
+    ```
+
+    ```sh
+    pm2 deploy ecosystem-carddav.json production exec "pm2 save"
     ```
 
     ```sh

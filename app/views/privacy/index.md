@@ -31,11 +31,11 @@ For transparency, at any time you can <a href="https://github.com/forwardemail" 
 
 **Strictly for functionality and to improve our service, we collect and store securely the following information:**
 
-* We store emails and calendar information in your [encrypted SQLite database](/blog/docs/best-quantum-safe-encrypted-email-service) strictly for your IMAP/POP3/CalDAV access and mailbox functionality.
+* We store emails and calendar information in your [encrypted SQLite database](/blog/docs/best-quantum-safe-encrypted-email-service) strictly for your IMAP/POP3/CalDAV/CardDAV access and mailbox functionality.
   * Note that if you are using our email forwarding services only, then no emails are stored to disk or database store as described in [Information Not Collected](#information-not-collected).
   * Our email forwarding services operate in-memory only (no writing to disk storage nor databases).
-  * IMAP/POP3/CalDAV storage is encrypted-at-rest, encrypted-in-transit, and stored on a LUKS encrypted disk.
-  * Backups for your IMAP/POP3/CalDAV storage is encrypted-at-rest, encrypted-in-transit, and stored on [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
+  * IMAP/POP3/CalDAV/CardDAV storage is encrypted-at-rest, encrypted-in-transit, and stored on a LUKS encrypted disk.
+  * Backups for your IMAP/POP3/CalDAV/CardDAV storage is encrypted-at-rest, encrypted-in-transit, and stored on [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
 * We store a cookie in a session for your website traffic.
 * We store your email address that you provide us with.
 * We store your domain names, aliases, and configurations that you provide us with.

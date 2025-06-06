@@ -112,23 +112,26 @@ function mobileConfigTemplate(name, username, password) {
         PayloadType: 'com.apple.caldav.account',
         PayloadUUID: getUuid('caldav', getUuid(username)),
         PayloadVersion: 1
-      }
-      /*
-      // TODO: CardDAV
+      },
       {
-        CardDAVAccountDescription: `${name}${name.endsWith('s') ? "'" : "'s"} Contacts`,
+        CardDAVAccountDescription: `${name}${
+          name.endsWith('s') ? "'" : "'s"
+        } Contacts`,
         CardDAVHostName: env.CARDDAV_HOST,
-        // TODO: port
+        CardDAVPort: env.CARDDAV_PORT, // TODO: does this actually work?
         CardDAVPassword: password,
         CardDAVUseSSL: true,
         CardDAVUsername: username,
-        PayloadDisplayName: `${name}${name.endsWith('s') ? "'" : "'s"} Contacts`,
-        PayloadIdentifier: `net.forwardemail.mobileconfig.carddav.${dashify(username)}`,
+        PayloadDisplayName: `${name}${
+          name.endsWith('s') ? "'" : "'s"
+        } Contacts`,
+        PayloadIdentifier: `net.forwardemail.mobileconfig.carddav.${dashify(
+          username
+        )}`,
         PayloadType: 'com.apple.carddav.account',
         PayloadUUID: getUuid('carddav', getUuid(username)),
         PayloadVersion: 1
       }
-      */
     ]
   };
 }

@@ -543,7 +543,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} WHOIS lookup indicates it is pending delete, update, or transfer; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${rootDomain} was detected as a pending state domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);
@@ -570,7 +570,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} has recently expired within the past 90 days; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${rootDomain} was detected as a recently expired domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);
@@ -598,7 +598,7 @@ test('isExpiredOrNewlyCreated', async (t) => {
     const obj = await isExpiredOrNewlyCreated(rootDomain, t.context.client);
     t.is(
       obj.err.message,
-      `${rootDomain} is a new domain and may have been acquired by a malicious actor; this domain is temporarily blocked for abuse prevention; please upgrade to a paid plan at ${config.urls.web}`
+      `The domain ${rootDomain} was detected as a newly created or transferred domain via WHOIS/RDAP lookup. Due to major registrars such as GoDaddy, Namecheap, and Hostgator previously blocking us due to abuse &mdash; we unfortunately have to enforce strict abuse prevention controls to block suspicious activity. Without this abuse prevention, our service would be blocked entirely from these registrars. We require that you please upgrade to a paid plan at ${config.urls.web} to use our service with this domain.`
     );
     t.is(obj.err.responseCode, 550);
     t.is(obj.response.found, true);

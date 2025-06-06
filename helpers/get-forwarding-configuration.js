@@ -180,7 +180,7 @@ async function getForwardingConfiguration({
   //
   if (!domain.is_global && !boolean(ignoreBilling)) {
     const adminUserIds = domain.members
-      .filter((member) => member.group === 'admin')
+      .filter((member) => member.user && member.group === 'admin')
       .map((member) => member.user);
 
     // safeguard in case no admins exist due to data corruption

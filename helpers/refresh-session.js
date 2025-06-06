@@ -44,7 +44,12 @@ const IMAP_COMMANDS = new Set([
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
-  if (command !== 'POP3' && !IMAP_COMMANDS.has(command) && command !== 'CALDAV')
+  if (
+    command !== 'POP3' &&
+    !IMAP_COMMANDS.has(command) &&
+    command !== 'CALDAV' &&
+    command !== 'CARDDAV'
+  )
     throw new Error('Invalid command');
 
   // check if server is in the process of shutting down
@@ -175,7 +180,7 @@ async function refreshSession(session, command) {
   );
 
   // fire notifications if any (e.g. initial creation of databases)
-  // if (this?.constructor?.name !== 'CalDAV')
+  // if (this?.constructor?.name !== 'CalDAV' && this?.constructor?.name !== 'CardDAV')
   //   this.server.notifier.fire(session.user.alias_id);
 }
 

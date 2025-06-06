@@ -122,7 +122,7 @@ prompt_command() {
   3)
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
     AUTO_UPDATE_CRON="0 1 * * * $DOCKER_UPDATE_CMD >> /var/log/autoupdate.log 2>&1"
-    
+
     if crontab -l 2>/dev/null | grep -Fq "$AUTO_UPDATE_CRON"; then
       echo "✅ Cron job is already set. No changes made."
       exit 0
@@ -261,7 +261,7 @@ install_dependencies() {
 
   snap install aws-cli --classic
   snap install certbot --classic
-  
+
   snap set certbot trust-plugin-with-root=ok
   snap install certbot-dns-cloudflare
 
@@ -326,7 +326,7 @@ update_dns_resolvers() {
     systemctl disable systemd-resolved
     systemctl mask systemd-resolved
   fi
-  
+
   tee /etc/resolv.conf > /dev/null <<EOF
 nameserver 1.1.1.1
 nameserver 2606:4700:4700::1111
@@ -365,6 +365,7 @@ update_default_env() {
   update_env_file WEB_HOST {{DOMAIN}}
   update_env_file WEB_PORT 443
   update_env_file CALDAV_HOST caldav.{{DOMAIN}}
+  update_env_file CARDDAV_HOST carddav.{{DOMAIN}}
   update_env_file API_HOST api.{{DOMAIN}}
   update_env_file APP_NAME {{DOMAIN}}
   update_env_file TRANSPORT_DEBUG true
@@ -418,7 +419,7 @@ generate_certificates() {
   # let's encrypt doesn't need an email because htey don't send renewal notices anymore
   # https://letsencrypt.org/2025/01/22/ending-expiration-emails/
   if [[ -f "/root/.cloudflare.ini" ]]; then
-    certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare.ini -d "$DOMAIN" -d "*.$DOMAIN" --non-interactive --agree-tos --email "$EMAIL"  
+    certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare.ini -d "$DOMAIN" -d "*.$DOMAIN" --non-interactive --agree-tos --email "$EMAIL"
   else
     certbot certonly --manual --agree-tos --preferred-challenges dns -d "*.$DOMAIN" -d "$DOMAIN" </dev/tty >/dev/tty 2>&1
   fi
@@ -544,7 +545,7 @@ initial_setup() {
 
   echo "Installing necessary dependencies, this could take a moment..."
   run_silent install_dependencies
-  
+
   echo "Setting up firewall..."
   run_silent setup_firewall
 
@@ -560,7 +561,7 @@ initial_setup() {
 
   echo "Updating default environment variables..."
   run_silent update_default_env
-  
+
   setup_one_time_login
 
   echo "Generating SSL certificates for *.$DOMAIN"

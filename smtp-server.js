@@ -34,7 +34,10 @@ class SMTP {
     secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465
   ) {
     this.client = options.client;
-    this.resolver = createTangerine(this.client, logger);
+
+    const resolver = createTangerine(this.client, logger);
+
+    this.resolver = resolver;
 
     //
     // NOTE: hard-coded values for now (switch to env later)
@@ -52,6 +55,9 @@ class SMTP {
     // setup our smtp server which listens for incoming email
     // TODO: <https://github.com/nodemailer/smtp-server/issues/177>
     this.server = new SMTPServer({
+      // <https://github.com/nodemailer/smtp-server/pull/222>
+      resolver,
+
       // <https://github.com/nodemailer/smtp-server/pull/192>
       authRequiredMessage: config.authRequiredMessage,
 
