@@ -1009,9 +1009,9 @@ Users.pre('save', function (next) {
 Users.post('save', async (user, next) => {
   if (!user._isNew) return next();
 
-  logger.info('user created', {
-    user: user.toObject()
-  });
+  // logger.info('user created', {
+  //   user: user.toObject()
+  // });
 
   // return early if possible
   if (!user[fields.ubuntuUsername] || !user[fields.ubuntuProfileID])

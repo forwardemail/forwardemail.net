@@ -1244,7 +1244,7 @@ async function getNSRecords(domain, resolver) {
     try {
       const rootDomain = parseRootDomain(domain.name);
       if (rootDomain === domain.name) {
-        logger.debug(err);
+        // logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)
@@ -1287,7 +1287,7 @@ async function getNSRecords(domain, resolver) {
         }
       }
     } catch (err) {
-      logger.debug(err);
+      // logger.debug(err);
       if (err.code === 'ENOTFOUND') {
         const error = Boom.badRequest(
           i18n.translateError('ENOTFOUND', domain.locale)
@@ -1763,7 +1763,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
           errors.push(...result.errors);
         }
       } catch (err) {
-        logger.debug(err);
+        // logger.debug(err);
         if (err.code === 'ENOTFOUND') {
           const error = Boom.badRequest(
             i18n.translateError('ENOTFOUND', domain.locale)

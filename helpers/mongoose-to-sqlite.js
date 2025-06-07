@@ -314,7 +314,7 @@ async function deleteMany(instance, session, condition = {}, options = {}) {
   const sql = builder.build({
     type: 'remove',
     table,
-    condition
+    condition: prepareQuery(mapping, condition)
   });
 
   let result;
@@ -358,6 +358,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
   const mapping = this?.mapping;
+
   if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
   if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
     throw new TypeError('Database is missing');
@@ -380,6 +381,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
     {},
     options
   );
+
   if (!doc) return { deletedCount: 0 };
 
   const sql = builder.build({
@@ -965,6 +967,9 @@ function dummyProofModel(model) {
   model.findOneAndUpdate = wrapWithRetry(findOneAndUpdate, model);
   model.distinct = wrapWithRetry(distinct, model);
   model.updateMany = wrapWithRetry(updateMany, model);
+
+  // disabled for now
+  model.prototype.$__remove = noop('remove');
 
   // <https://github.com/Automattic/mongoose/blob/7efa1512915c5527bc53d81a2effd3d539324875/lib/model.js#L311-L318>
   model.prototype.$__handleSave = function (...args) {

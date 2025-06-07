@@ -14,6 +14,8 @@ const config = require('#config');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
 
+// TODO: PROPPATCH
+
 async function ensureDefaultAddressBook(ctx) {
   const count = await AddressBooks.countDocuments(
     ctx.instance,
@@ -61,6 +63,16 @@ router.get('/', (ctx) => {
   ctx.body = 'OK';
 });
 
+router.all('(.*)', (ctx, next) => {
+  // support well-known redirect
+  if (ctx.url.toLowerCase() === '/.well-known/carddav')
+    return ctx.redirect('/dav');
+
+  if (ctx.path === '/') return ctx.redirect('/dav');
+
+  return next();
+});
+
 // OPTIONS route for CORS and DAV discovery
 router.options('(.*)', (ctx) => {
   ctx.set('DAV', '1, 3, addressbook');
@@ -69,15 +81,6 @@ router.options('(.*)', (ctx) => {
     'OPTIONS, GET, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCOL'
   );
   ctx.status = 200;
-});
-
-// support well-known redirect
-router.use((ctx, next) => {
-  console.log('YO YO');
-  console.log('ctx.url', ctx.url);
-  if (ctx.url.toLowerCase() === '/.well-known/carddav')
-    return ctx.redirect('/dav');
-  return next();
 });
 
 const davRouter = new Router({
@@ -101,13 +104,16 @@ davRouter.use(async (ctx, next) => {
 
   await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
+  if (ctx.path === '/dav' && ctx.method === 'PROPFIND')
+    return ctx.redirect(`/dav/${ctx.state.session.user.username}`);
+
   return next();
 });
 
 // PROPFIND routes
 davRouter.all('/:user', async (ctx) => {
-  console.log('ctx.params.user', ctx.params.user);
-  if (ctx.params.user !== ctx.state.session.username) throw Boom.unauthorized();
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {
@@ -158,7 +164,8 @@ davRouter.all('/:user', async (ctx) => {
 });
 
 davRouter.all('/:user/addressbooks', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.username) throw Boom.unauthorized();
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {
@@ -231,7 +238,8 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
 
 // eslint-disable-next-line complexity
 davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.username) throw Boom.unauthorized();
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
   if (!['PROPFIND', 'MKCOL', 'DELETE', 'REPORT'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
@@ -335,9 +343,6 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       if (existingAddressBook)
         throw Boom.conflict(ctx.translateError('ADDRES_BOOK_ALREADY_EXISTS'));
 
-      console.log('ctx.request.headers', ctx.request.headers);
-      console.log('ctx.request.body', ctx.request.body);
-
       // Parse XML request body
       const xmlBody = ctx.request.body
         ? await xmlHelpers.parseXML(ctx.request.body.toString())
@@ -365,7 +370,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       }
 
       // Create new address book
-      await AddressBooks.create({
+      const addressBookCreated = await AddressBooks.create({
         // db virtual helper
         instance: ctx.instance,
         session: ctx.state.session,
@@ -380,6 +385,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.params.user}/addressbooks/${addressbook}`,
         prodId: `//forwardemail.net//carddav//EN`
       });
+      console.log('addressBookCreated', addressBookCreated);
 
       ctx.status = 201;
       break;
@@ -387,12 +393,19 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
     case 'DELETE': {
       // Delete all contacts in the address book
+      console.log('deleting contacts');
       await Contacts.deleteMany(ctx.instance, ctx.state.session, {
         address_book: addressBook._id
       });
 
       // Delete address book
-      await addressBook.remove();
+      console.log('deleting address book');
+      await AddressBooks.deleteOne(ctx.instance, ctx.state.session, {
+        _id: addressBook._id
+      });
+      // TODO: define $__remove in sqlite helper
+      // await addressBook.remove();
+      console.log('DELETED ADDRESS BOOK');
 
       ctx.status = 204;
       break;
@@ -429,7 +442,8 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
 // eslint-disable-next-line complexity
 davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.username) throw Boom.unauthorized();
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
   if (!['PROPFIND', 'GET', 'PUT', 'DELETE'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
@@ -633,7 +647,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
         );
 
       // Delete contact
-      await contactObj.remove();
+      await Contacts.deleteOne(ctx.instance, ctx.state.session, {
+        _id: contactObj._id
+      });
+      // TODO: define $__remove in sqlite helper
+      // await contactObj.remove();
 
       // Update address book sync token
       addressBook.synctoken = `${config.urls.web}/ns/sync-token/${Date.now()}`;

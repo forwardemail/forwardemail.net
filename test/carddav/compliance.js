@@ -253,17 +253,16 @@ test('should respond to PROPFIND on principal with correct properties', async (t
   </d:response>
 </d:multistatus>`);
 
-  try {
-    const response = await axios({
-      method: 'PROPFIND',
-      // TODO: remove this url: `${t.context.serverUrl}/`,
-      url: `${t.context.serverUrl}/dav/${t.context.username}`,
-      headers: {
-        'Content-Type': 'application/xml',
-        Depth: '0',
-        ...t.context.authHeaders
-      },
-      data: `<?xml version="1.0" encoding="UTF-8"?>
+  const response = await axios({
+    method: 'PROPFIND',
+    // TODO: remove this url: `${t.context.serverUrl}/`,
+    url: `${t.context.serverUrl}/dav/${t.context.username}`,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
 <d:propfind xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
   <d:prop>
     <d:displayname/>
@@ -272,20 +271,17 @@ test('should respond to PROPFIND on principal with correct properties', async (t
     <card:addressbook-home-set/>
   </d:prop>
 </d:propfind>`
-    });
+  });
 
-    // Verify response status
-    t.is(response.status, 207);
+  // Verify response status
+  t.is(response.status, 207);
 
-    // Verify response contains required properties
-    t.true(response.data.includes('<d:displayname>'));
-    t.true(response.data.includes('<d:resourcetype>'));
-    t.true(response.data.includes('<d:principal/>'));
-    t.true(response.data.includes('<card:addressbook-home-set>'));
-    t.true(response.data.includes(`/dav/${t.context.username}/addressbooks`));
-  } catch (err) {
-    t.fail(`PROPFIND request failed: ${err.message}`);
-  }
+  // Verify response contains required properties
+  t.true(response.data.includes('<d:displayname>'));
+  t.true(response.data.includes('<d:resourcetype>'));
+  t.true(response.data.includes('<d:principal/>'));
+  t.true(response.data.includes('<card:addressbook-home-set>'));
+  t.true(response.data.includes(`/dav/${t.context.username}/addressbooks`));
 
   // Restore the stub
   xmlHelpers.getMultistatusXML.restore();
@@ -307,15 +303,14 @@ test('should respond to MKCOL for creating address books', async (t) => {
     }
   ]);
 
-  try {
-    const response = await axios({
-      method: 'MKCOL',
-      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/new-address-book`,
-      headers: {
-        'Content-Type': 'application/xml',
-        ...t.context.authHeaders
-      },
-      data: `<?xml version="1.0" encoding="UTF-8"?>
+  const response = await axios({
+    method: 'MKCOL',
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/new-address-book`,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
 <d:mkcol xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
   <d:set>
     <d:prop>
@@ -327,13 +322,10 @@ test('should respond to MKCOL for creating address books', async (t) => {
     </d:prop>
   </d:set>
 </d:mkcol>`
-    });
+  });
 
-    // Verify response status
-    t.is(response.status, 201);
-  } catch (err) {
-    t.fail(`MKCOL request failed: ${err.message}`);
-  }
+  // Verify response status
+  t.is(response.status, 201);
 
   // Restore the stubs
   AddressBooks.findOne.restore();

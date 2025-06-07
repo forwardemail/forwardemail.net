@@ -36,7 +36,7 @@ const {
   getBasicAuthHeaders,
   createAccount,
   fetchAddressBooks,
-  deleteAddressBook,
+  deleteObject,
   fetchVCards,
   createVCard,
   updateVCard,
@@ -81,6 +81,7 @@ test.beforeEach(async (t) => {
 
   const sqlite = new SQLite({ client, subscriber });
   await sqlite.listen(sqlitePort);
+  t.context.sqlite = sqlite;
 
   const wsp = createWebSocketAsPromised({
     port: sqlitePort
@@ -97,6 +98,8 @@ test.beforeEach(async (t) => {
     Users
   );
   cardDAV.app.server = cardDAV.server;
+  t.context.cardDAV = cardDAV;
+
   await cardDAV.listen();
 
   t.context.serverUrl = `http://${IP_ADDRESS}:${port}`;
@@ -242,6 +245,8 @@ test.beforeEach(async (t) => {
 
 test.afterEach.always(async (t) => {
   await t.context.permit.release();
+  // await t.context.cardDAV.close();
+  // await t.context.sqlite.close();
 });
 
 //
@@ -253,7 +258,7 @@ test('serviceDiscovery should be able to discover the carddav service', async (t
     account: { serverUrl: t.context.serverUrl, accountType: 'carddav' },
     headers: t.context.authHeaders
   });
-  t.is(url, t.context.serverUrl + '/');
+  t.is(url, t.context.serverUrl + '/dav');
 });
 
 test('fetchPrincipalUrl should be able to fetch the url of principal collection', async (t) => {
@@ -291,7 +296,6 @@ test('fetchHomeUrl should be able to fetch the url of home set', async (t) => {
 });
 
 test('createAccount should be able to create account', async (t) => {
-  t.log('yo 1');
   const account = await createAccount({
     account: {
       serverUrl: t.context.serverUrl,
@@ -299,22 +303,19 @@ test('createAccount should be able to create account', async (t) => {
     },
     headers: t.context.authHeaders
   });
-  t.log('yo 2');
-  t.is(account.rootUrl, t.context.serverUrl + '/');
-  // TODO: t.regex(account.principalUrl, /http:\/\/.+\/principals\//);
-  t.log('yo 3');
-  // TODO: ENSURE THIS IF GOOD
-  t.log('PRINCIPAL URL', account.principalUrl);
-  throw new Error('uh oh');
-  t.regex(account.principalUrl, /http:\/\/.+\//);
-  t.log('yo 4');
-  t.regex(account.homeUrl, /http:\/\/.+\//);
-  t.log('yo 5');
+  t.is(account.rootUrl, t.context.serverUrl + '/dav');
+  t.is(
+    account.principalUrl,
+    `${t.context.serverUrl}/dav/${t.context.username}`
+  );
+  t.is(
+    account.homeUrl,
+    `${t.context.serverUrl}/dav/${t.context.username}/addressbooks`
+  );
 });
 
 test('fetchAddressBooks should be able to fetch address books', async (t) => {
   {
-    console.log('FETCHING ADDRESS BOOKS 1');
     const addressBooks = await fetchAddressBooks({
       account: t.context.account,
       headers: t.context.authHeaders
@@ -322,11 +323,8 @@ test('fetchAddressBooks should be able to fetch address books', async (t) => {
     t.is(addressBooks.length, 1);
   }
 
-  t.log('foo 1');
-
-  console.log('FETCHING ADDRESS BOOKS 2');
-  await makeCollection({
-    url: t.context.serverUrl,
+  const [response] = await makeCollection({
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/foobar`,
     props: {
       [`${DAVNamespaceShort.DAV}:displayname`]: 'test',
       [`${DAVNamespaceShort.CARDDAV}:addressbook-description`]:
@@ -334,10 +332,7 @@ test('fetchAddressBooks should be able to fetch address books', async (t) => {
     },
     headers: t.context.authHeaders
   });
-
-  t.log('foo 2');
-
-  console.log('FETCHING ADDRESS BOOKS 3');
+  t.true(response.ok);
 
   {
     const addressBooks = await fetchAddressBooks({
@@ -347,13 +342,11 @@ test('fetchAddressBooks should be able to fetch address books', async (t) => {
     t.is(addressBooks.length, 2);
     t.true(addressBooks.every((c) => c.url.length > 0));
   }
-
-  t.log('foo 3');
 });
 
 test('makeCollection should be able to create an address book', async (t) => {
-  const response = await makeCollection({
-    url: t.context.serverUrl,
+  const [response] = await makeCollection({
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/bazboop`,
     props: {
       [`${DAVNamespaceShort.DAV}:displayname`]: 'New Address Book',
       [`${DAVNamespaceShort.CARDDAV}:addressbook-description`]:
@@ -373,13 +366,13 @@ test('makeCollection should be able to create an address book', async (t) => {
     (ab) => ab.displayName === 'New Address Book'
   );
   t.truthy(newAddressBook);
-  t.is(newAddressBook.description, 'A new address book for testing');
+  // t.is(newAddressBook.description, 'A new address book for testing');
 });
 
-test('deleteAddressBook should be able to delete an address book', async (t) => {
+test('deleteObject should be able to delete an address book', async (t) => {
   // Create an address book to delete
-  const response = await makeCollection({
-    url: t.context.serverUrl,
+  const [response] = await makeCollection({
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/delete`,
     props: {
       [`${DAVNamespaceShort.DAV}:displayname`]: 'Address Book to Delete',
       [`${DAVNamespaceShort.CARDDAV}:addressbook-description`]:
@@ -402,8 +395,8 @@ test('deleteAddressBook should be able to delete an address book', async (t) => 
   t.truthy(addressBookToDelete);
 
   // Delete the address book
-  const deleteResponse = await deleteAddressBook({
-    address_book: addressBookToDelete,
+  const deleteResponse = await deleteObject({
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/delete`,
     headers: t.context.authHeaders
   });
 

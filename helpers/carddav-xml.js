@@ -13,7 +13,6 @@ const xmlbuilder = require('xmlbuilder');
  * @returns {Promise<Object>} - Parsed XML as JavaScript object
  */
 async function parseXML(xmlString) {
-  console.log('xmlString', xmlString);
   const result = await parseStringPromise(xmlString, {
     explicitArray: false,
     explicitCharkey: false,
