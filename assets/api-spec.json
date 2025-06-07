@@ -1992,7 +1992,7 @@
         "tags": ["Domains"],
         "parameters": [
           {
-            "name": "domain",
+            "name": "domain_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -2471,7 +2471,7 @@
         ],
         "parameters": [
           {
-            "name": "domain",
+            "name": "domain_id",
             "in": "path",
             "required": true,
             "schema": {
