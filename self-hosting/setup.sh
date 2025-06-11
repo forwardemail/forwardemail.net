@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# How to install
+# Forward Email Self-Hosted Setup Script
+# Enhanced version with Debian support
+# 
+# How to install:
 # bash <(curl -fsSL selfhost.forwardemail.net)
 
 set -e          # Exit immediately if a command exits with a non-zero status
@@ -10,7 +13,6 @@ DEBUG=${DEBUG:-false}
 
 REPO_FOLDER_NAME="forwardemail.net"
 REPO_URL="https://github.com/forwardemail/forwardemail.net.git"
-
 
 MONGODB_DB_BACKUPS_DIR="mongo-backups"
 REDIS_DB_BACKUPS_DIR="redis-backups"
@@ -22,6 +24,56 @@ ENV_FILE=".env"
 ROOT_DIR="/$(whoami)/$REPO_FOLDER_NAME"
 SELF_HOST_DIR="$ROOT_DIR/self-hosting"
 DOCKER_COMPOSE_FILE="$SELF_HOST_DIR/docker-compose-self-hosted.yml"
+
+# Detect operating system
+detect_os() {
+  if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+    OS=$ID
+    OS_VERSION=$VERSION_ID
+  elif [[ -f /etc/lsb-release ]]; then
+    . /etc/lsb-release
+    OS=$DISTRIB_ID
+    OS_VERSION=$DISTRIB_RELEASE
+  else
+    echo "❌ Cannot detect operating system. This script supports Ubuntu and Debian only."
+    exit 1
+  fi
+  
+  # Convert to lowercase for consistency
+  OS=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
+  
+  echo "Detected OS: $OS $OS_VERSION"
+}
+
+# Check if the operating system is supported
+check_os_support() {
+  case "$OS" in
+    ubuntu)
+      if [[ "$OS_VERSION" != "20.04" && "$OS_VERSION" != "22.04" && "$OS_VERSION" != "24.04" ]]; then
+        echo "⚠️  Warning: This script has been tested on Ubuntu 20.04, 22.04, and 24.04. Your version ($OS_VERSION) may not be fully supported."
+        read -rp "Do you want to continue anyway? (y/N): " continue_anyway
+        if [[ "$continue_anyway" != "y" && "$continue_anyway" != "Y" ]]; then
+          exit 1
+        fi
+      fi
+      ;;
+    debian)
+      if [[ "$OS_VERSION" != "11" && "$OS_VERSION" != "12" ]]; then
+        echo "⚠️  Warning: This script has been tested on Debian 11 and 12. Your version ($OS_VERSION) may not be fully supported."
+        read -rp "Do you want to continue anyway? (y/N): " continue_anyway
+        if [[ "$continue_anyway" != "y" && "$continue_anyway" != "Y" ]]; then
+          exit 1
+        fi
+      fi
+      ;;
+    *)
+      echo "❌ Unsupported operating system: $OS"
+      echo "This script currently supports Ubuntu (20.04, 22.04, 24.04) and Debian (11, 12)."
+      exit 1
+      ;;
+  esac
+}
 
 run_cmd() {
   if [[ "$DEBUG" == "true" ]]; then
@@ -99,7 +151,6 @@ prompt_command() {
     fi
 
     set_aws_credentials
-
     chmod +x "$HOME"/forwardemail.net/self-hosting/scripts/backup-mongo.sh
     chmod +x "$HOME"/forwardemail.net/self-hosting/scripts/backup-redis.sh
 
@@ -108,6 +159,7 @@ prompt_command() {
       crontab -l 2>/dev/null
       echo "$MONGO_BACKUP_CRON"
     ) | crontab -
+
     REDIS_BACKUP_CRON="0 0 * * * $HOME/forwardemail.net/self-hosting/scripts/backup-redis.sh >> /var/log/redis-backup.log 2>&1"
     (crontab -l 2>/dev/null | grep -Fq "$REDIS_BACKUP_CRON") || (
       crontab -l 2>/dev/null
@@ -117,7 +169,6 @@ prompt_command() {
     echo "✅ Backup setup complete!"
     echo "You can find the crons using: \`crontab -l\`. These will run at midnight by default."
     echo "NOTE: Please be sure to save your .env file in a safe place in the event of a restore from backup."
-
     ;;
   3)
     DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose -f $DOCKER_COMPOSE_FILE up -d"
@@ -147,7 +198,6 @@ prompt_command() {
 
     echo "crontab -l"
     crontab -l
-
     echo "✅ Upgrade cron setup complete..."
     ;;
   4)
@@ -181,14 +231,12 @@ prompt_command() {
     export_from_env_file DOMAIN
 
     set_aws_credentials
-
     update_dns_resolvers
     install_dependencies
     setup_firewall
     clone_repo
 
     docker-compose -f "$DOCKER_COMPOSE_FILE" down
-
     generate_certificates
     update_ssl_paths
 
@@ -246,10 +294,26 @@ export_from_env_file() {
   fi
 }
 
+# Enhanced dependency installation with OS-specific handling
 install_dependencies() {
+  echo "Installing dependencies for $OS $OS_VERSION..."
+  
+  case "$OS" in
+    ubuntu)
+      install_dependencies_ubuntu
+      ;;
+    debian)
+      install_dependencies_debian
+      ;;
+    *)
+      echo "❌ Unsupported OS for dependency installation: $OS"
+      exit 1
+      ;;
+  esac
+}
+
+install_dependencies_ubuntu() {
   # Update package list and install dependencies
-  # NOTE: should we pipe all this to > /dev/null 2>&1
-  # curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
   apt-get update -y -q
   apt-get install -y -q \
     ca-certificates \
@@ -257,15 +321,16 @@ install_dependencies() {
     gnupg \
     git \
     openssl \
-    docker-compose
+    docker-compose \
+    snapd
 
+  # Install snap packages
   snap install aws-cli --classic
   snap install certbot --classic
-
   snap set certbot trust-plugin-with-root=ok
   snap install certbot-dns-cloudflare
 
-  # Add Docker’s official GPG key
+  # Add Docker's official GPG key
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | tee /etc/apt/keyrings/docker.asc
   chmod a+r /etc/apt/keyrings/docker.asc
@@ -281,6 +346,57 @@ install_dependencies() {
   docker --version
 }
 
+install_dependencies_debian() {
+  # Update package list and install dependencies
+  apt-get update -y -q
+  apt-get install -y -q \
+    ca-certificates \
+    curl \
+    gnupg \
+    git \
+    openssl \
+    lsb-release \
+    apt-transport-https \
+    software-properties-common
+
+  # Install snapd if not present (Debian doesn't include it by default)
+  if ! command -v snap &> /dev/null; then
+    apt-get install -y -q snapd
+    systemctl enable snapd
+    systemctl start snapd
+    # Create symlink for snap to work properly
+    ln -sf /var/lib/snapd/snap /snap
+    # Wait for snapd to be ready
+    sleep 5
+  fi
+
+  # Install snap packages
+  snap install aws-cli --classic
+  snap install certbot --classic
+  snap set certbot trust-plugin-with-root=ok
+  snap install certbot-dns-cloudflare
+
+  # Add Docker's official GPG key
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+
+  # Add Docker repository (using Debian-specific URL and codename)
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list
+
+  # Update package index and install Docker
+  apt-get update -y -q
+  apt-get install -y -q docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+  # Install docker-compose separately if the plugin version doesn't work
+  if ! command -v docker-compose &> /dev/null; then
+    apt-get install -y -q docker-compose
+  fi
+
+  # Verify installation
+  docker --version
+}
+
 # Function to check if Docker is running
 check_docker_running() {
   if ! docker info >/dev/null 2>&1; then
@@ -291,6 +407,7 @@ check_docker_running() {
     if ! docker info >/dev/null 2>&1; then
       echo "Docker issues with systemctl, using dockerd directly..."
       nohup dockerd >/dev/null 2>/dev/null &
+      sleep 5
     fi
   else
     echo "✅ Docker is running."
@@ -344,11 +461,6 @@ update_env_file() {
   local value="$2"
 
   local sed_flag="-i"
-  # if [[ "$(uname)" == "Darwin" ]]; then
-  #   sed_flag="-i ''"
-  # else
-  #   sed_flag="-i"
-  # fi
 
   # Check if the key exists in the file
   if grep -qE "^${key}=" "$SELF_HOST_DIR/$ENV_FILE"; then
@@ -416,7 +528,7 @@ generate_certificates() {
 
   # https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.$DOMAIN
 
-  # let's encrypt doesn't need an email because htey don't send renewal notices anymore
+  # let's encrypt doesn't need an email because they don't send renewal notices anymore
   # https://letsencrypt.org/2025/01/22/ending-expiration-emails/
   if [[ -f "/root/.cloudflare.ini" ]]; then
     certbot certonly --dns-cloudflare --dns-cloudflare-credentials /root/.cloudflare.ini -d "$DOMAIN" -d "*.$DOMAIN" --non-interactive --agree-tos --email "$EMAIL"
@@ -475,6 +587,16 @@ clone_repo() {
 }
 
 setup_firewall() {
+  # Check if ufw is installed, install if not
+  if ! command -v ufw &> /dev/null; then
+    case "$OS" in
+      ubuntu|debian)
+        apt-get update -y -q
+        apt-get install -y -q ufw
+        ;;
+    esac
+  fi
+
   ufw default deny incoming >/dev/null 2>&1
 
   PORTS=(22 25 80 443 465 587 993 995 2993 2995 3456 4000 5000)
@@ -532,7 +654,6 @@ setup_one_time_login() {
     echo ""
 
     read -rp "Press Enter to continue..."
-
 
     update_env_file "AUTH_BASIC_USERNAME" "admin"
     update_env_file "AUTH_BASIC_PASSWORD" "$PASSWORD"
@@ -609,17 +730,13 @@ Double-check that your DNS settings contain BOTH records before proceeding!
   echo -e "\nContinue with the rest of the self hosted guide: https://forwardemail.net/self-hosted#configuration"
 }
 
-# Check if the operating system is Ubuntu
-if [[ "$(uname -s)" != "Linux" || ! -f /etc/lsb-release ]]; then
-    echo -e "⚠️  Warning: This script is in beta and currently only supports Ubuntu. Your system is not supported yet."
-    exit 1
-fi
+# Main execution starts here
+echo "Forward Email Self-Hosted Setup Script"
+echo "======================================"
 
-source /etc/lsb-release
-if [[ "$DISTRIB_ID" != "Ubuntu" ]]; then
-    echo -e "⚠️  Warning: This script is in beta and currently only supports Ubuntu. Your system is not supported yet."
-    exit 1
-fi
+# Detect and check OS support
+detect_os
+check_os_support
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -627,4 +744,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+echo "✅ OS check passed. Proceeding with setup for $OS $OS_VERSION"
+echo ""
+
 prompt_command
+
