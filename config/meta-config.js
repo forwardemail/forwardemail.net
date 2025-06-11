@@ -10,5 +10,6 @@ module.exports = {
   appName: env.APP_NAME,
   loginRoute: '/login',
   verifyRoute: '/verify',
-  otpRoutePrefix: '/otp'
+  otpRoutePrefix: '/otp',
+  ubuntuRoute: '/ubuntu'
 };

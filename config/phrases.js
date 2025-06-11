@@ -240,6 +240,7 @@ module.exports = {
     'From header must end with <span class="notranslate">%s</span>',
   ALIAS_IS_NOT_ENABLED: 'Alias is not enabled.',
   ALIAS_MUST_HAVE_ONE_RECIPIENT: 'Alias must have at least one recipient.',
+  ALIAS_MUST_NOT_MATCH_RECIPIENT: 'Alias can not match a recipient.',
   ENCRYPTED_VALUE:
     '<br /><small class="notranslate alert alert-danger d-inline-block">You must copy the encrypted output below before closing this pop-up; it will not be shown again.</small><br /><strong>Input:</strong><br /><br />%s<br /><br /><strong>Output:</strong><br /><br /><code class="notranslate">%s=%s</code><br /><br /><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="btn btn-dark notranslate"><i class="fa fa-clipboard"></i> Copy</button>',
   INPUT_HAD_FE_SV: 'You do not need to encrypt site verification records',

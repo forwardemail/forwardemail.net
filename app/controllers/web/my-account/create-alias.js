@@ -42,6 +42,12 @@ async function createAlias(ctx, next) {
         throw Boom.notFound(ctx.translateError('UBUNTU_PERMISSIONS'));
     }
 
+    const fullAliasEmail = `${ctx.state.alias.name}@${ctx.state.domain.name}`;
+    if (ctx.state.body?.recipients.includes(fullAliasEmail))
+      throw Boom.badRequest(
+        ctx.translateError('ALIAS_MUST_NOT_MATCH_RECIPIENT')
+      );
+
     try {
       ctx.state.alias = await Aliases.create({
         ...ctx.state.body,

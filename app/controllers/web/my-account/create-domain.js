@@ -16,6 +16,12 @@ const logger = require('#helpers/logger');
 
 // eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
+  const domain = ctx.request.body?.domain?.toLowerCase();
+  if (domain && domain.includes('ubuntu')) {
+    const redirectTo = ctx.state.l(config.ubuntuRoute);
+    return ctx.redirect(redirectTo);
+  }
+
   //
   // if `team_domain` was specified then ensure that it's valid
   // (it's either an object ID or a name)
