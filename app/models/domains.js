@@ -1415,7 +1415,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
             // Remove double whitespace
             .replace(/\s\s+/g, ' ')
             .trim(); // Join chunks together
-          if (line === string_) {
+          if (line === string_ || line === string_.slice(0, -1)) {
             dkim = true;
             break;
           }
