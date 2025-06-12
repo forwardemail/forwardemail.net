@@ -310,7 +310,7 @@ test('createAccount should be able to create account', async (t) => {
     },
     headers: t.context.authHeaders
   });
-  t.is(account.rootUrl, `${t.context.serverUrl}/dav/`);
+  t.is(account.rootUrl, `${t.context.serverUrl}/dav/${t.context.username}/`);
   t.is(
     account.principalUrl,
     `${t.context.serverUrl}/dav/${t.context.username}/`

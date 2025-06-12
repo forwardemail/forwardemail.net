@@ -938,5 +938,6 @@ davRouter.all('/:user', propFindPrincipal);
 davRouter.all('/', propFindPrincipal);
 
 router.use(davRouter.routes());
+router.all('(.*)', propFindPrincipal);
 
 module.exports = router;
