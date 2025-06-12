@@ -80,10 +80,6 @@ router.options('(.*)', (ctx) => {
 });
 
 router.all('(.*)', async (ctx, next) => {
-  // Handle .well-known/carddav redirect (RFC 6764)
-  if (ctx.url.toLowerCase() === '/.well-known/carddav')
-    return ctx.redirect('/dav/');
-
   // if request is authenticated then redirect to principal
   const creds = basicAuth(ctx);
   if (creds) {
@@ -103,11 +99,16 @@ router.all('(.*)', async (ctx, next) => {
 
     await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
-    if (!ctx.path.startsWith('/dav'))
+    // Handle .well-known/carddav redirect (RFC 6764)
+    if (ctx.url.toLowerCase() === '/.well-known/carddav')
       return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
 
     return next();
   }
+
+  // Handle .well-known/carddav redirect (RFC 6764)
+  if (ctx.url.toLowerCase() === '/.well-known/carddav')
+    return ctx.redirect('/dav/');
 
   ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/carddav"');
   throw Boom.unauthorized();
@@ -119,9 +120,6 @@ const davRouter = new Router({
 
 // eslint-disable-next-line complexity
 davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
-
   if (!['PROPFIND', 'GET', 'PUT', 'DELETE'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
@@ -362,8 +360,6 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 
 // eslint-disable-next-line complexity
 davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
   if (!['PROPFIND', 'MKCOL', 'DELETE', 'REPORT'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
@@ -563,8 +559,6 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 });
 
 davRouter.all('/:user/addressbooks', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {
@@ -891,9 +885,6 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
 
 // PROPFIND routes
 async function propFindPrincipal(ctx) {
-  if (ctx.params.user && ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
-
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {

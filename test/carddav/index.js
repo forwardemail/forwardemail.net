@@ -253,11 +253,20 @@ test.afterEach.always(async (t) => {
 // <https://github.com/natelindev/tsdav/tree/master/src/__tests__/integration>
 //
 test('serviceDiscovery should be able to discover the carddav service', async (t) => {
-  const url = await serviceDiscovery({
-    account: { serverUrl: t.context.serverUrl, accountType: 'carddav' },
-    headers: t.context.authHeaders
-  });
-  t.is(url, `${t.context.serverUrl}/dav/`);
+  {
+    const url = await serviceDiscovery({
+      account: { serverUrl: t.context.serverUrl, accountType: 'carddav' }
+    });
+    t.is(url, `${t.context.serverUrl}/dav/`);
+  }
+
+  {
+    const url = await serviceDiscovery({
+      account: { serverUrl: t.context.serverUrl, accountType: 'carddav' },
+      headers: t.context.authHeaders
+    });
+    t.is(url, `${t.context.serverUrl}/dav/${t.context.username}/`);
+  }
 });
 
 test('fetchPrincipalUrl should be able to fetch the url of principal collection', async (t) => {
