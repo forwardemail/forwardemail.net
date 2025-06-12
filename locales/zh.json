@@ -13328,5 +13328,9 @@
   "Address book is read-only.": "地址簿是只读的。",
   "Invalid XML request body.": "XML 请求主体无效。",
   "Unsupported report type.": "不支持的报告类型。",
-  "ETag does not match.": "ETag 不匹配。"
+  "ETag does not match.": "ETag 不匹配。",
+  "How do I connect and configure my contacts": "如何连接和配置我的联系人",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "是的，自 2025 年 6 月 12 日起，我们已添加此功能。我们的服务器是",
+  "In order to use contacts support, the": "为了使用联系人支持，",
+  "To configure your contacts, use the CardDAV URL of:": "要配置您的联系人，请使用以下 CardDAV URL："
 }

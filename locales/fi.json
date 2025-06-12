@@ -13479,5 +13479,9 @@
   "Address book is read-only.": "Osoitekirja on vain luku -tilassa.",
   "Invalid XML request body.": "Virheellinen XML-pyynnön runko.",
   "Unsupported report type.": "Ei-tuettu raporttityyppi.",
-  "ETag does not match.": "ETag ei täsmää."
+  "ETag does not match.": "ETag ei täsmää.",
+  "How do I connect and configure my contacts": "Miten yhdistän ja määritän yhteystiedot",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Kyllä, olemme lisänneet tämän ominaisuuden 12. kesäkuuta 2025 alkaen. Palvelimemme on",
+  "In order to use contacts support, the": "Jotta voit käyttää yhteystietojen tukea,",
+  "To configure your contacts, use the CardDAV URL of:": "Yhteystietojen määrittämiseen käytä CardDAV-URL-osoitetta:"
 }

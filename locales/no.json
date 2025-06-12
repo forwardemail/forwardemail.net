@@ -13637,5 +13637,9 @@
   "Address book is read-only.": "Adresseboken er skrivebeskyttet.",
   "Invalid XML request body.": "Ugyldig XML-forespørselstekst.",
   "Unsupported report type.": "Rapporttypen støttes ikke.",
-  "ETag does not match.": "ETag-en samsvarer ikke."
+  "ETag does not match.": "ETag-en samsvarer ikke.",
+  "How do I connect and configure my contacts": "Hvordan kobler jeg til og konfigurerer kontaktene mine",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Ja, fra og med 12. juni 2025 har vi lagt til denne funksjonen. Serveren vår er",
+  "In order to use contacts support, the": "For å bruke kontaktstøtten,",
+  "To configure your contacts, use the CardDAV URL of:": "For å konfigurere kontaktene dine, bruk CardDAV-URL-en til:"
 }

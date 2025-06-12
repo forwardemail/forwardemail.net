@@ -13630,5 +13630,9 @@
   "Address book is read-only.": "La libreta de direcciones es de sólo lectura.",
   "Invalid XML request body.": "Cuerpo de solicitud XML no válido.",
   "Unsupported report type.": "Tipo de informe no admitido.",
-  "ETag does not match.": "ETag no coincide."
+  "ETag does not match.": "ETag no coincide.",
+  "How do I connect and configure my contacts": "¿Cómo conecto y configuro mis contactos?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Sí, a partir del 12 de junio de 2025, hemos añadido esta función. Nuestro servidor es",
+  "In order to use contacts support, the": "Para poder utilizar el soporte de contactos, el",
+  "To configure your contacts, use the CardDAV URL of:": "Para configurar sus contactos, utilice la URL de CardDAV de:"
 }

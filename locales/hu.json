@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "A címjegyzék csak olvasható.",
   "Invalid XML request body.": "Érvénytelen XML kérés törzse.",
   "Unsupported report type.": "Nem támogatott jelentéstípus.",
-  "ETag does not match.": "Az ETag nem egyezik."
+  "ETag does not match.": "Az ETag nem egyezik.",
+  "How do I connect and configure my contacts": "Hogyan csatlakoztathatom és konfigurálhatom a névjegyeimet?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Igen, 2025. június 12-től hozzáadtuk ezt a funkciót. A szerverünk a következő:",
+  "In order to use contacts support, the": "A kapcsolattartási támogatás használatához a",
+  "To configure your contacts, use the CardDAV URL of:": "A névjegyek konfigurálásához használja a következő CardDAV URL-címet:"
 }

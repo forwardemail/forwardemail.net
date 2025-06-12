@@ -11194,5 +11194,9 @@
   "Address book is read-only.": "Sổ địa chỉ chỉ có thể đọc.",
   "Invalid XML request body.": "Nội dung yêu cầu XML không hợp lệ.",
   "Unsupported report type.": "Loại báo cáo không được hỗ trợ.",
-  "ETag does not match.": "ETag không khớp."
+  "ETag does not match.": "ETag không khớp.",
+  "How do I connect and configure my contacts": "Làm thế nào để kết nối và cấu hình danh bạ của tôi",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Có, kể từ ngày 12 tháng 6 năm 2025, chúng tôi đã thêm tính năng này. Máy chủ của chúng tôi là",
+  "In order to use contacts support, the": "Để sử dụng hỗ trợ liên lạc,",
+  "To configure your contacts, use the CardDAV URL of:": "Để cấu hình danh bạ của bạn, hãy sử dụng URL CardDAV của:"
 }

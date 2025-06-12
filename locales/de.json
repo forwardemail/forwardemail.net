@@ -12677,5 +12677,9 @@
   "Address book is read-only.": "Das Adressbuch ist schreibgeschützt.",
   "Invalid XML request body.": "Ungültiger XML-Anforderungstext.",
   "Unsupported report type.": "Nicht unterstützter Berichtstyp.",
-  "ETag does not match.": "ETag stimmt nicht überein."
+  "ETag does not match.": "ETag stimmt nicht überein.",
+  "How do I connect and configure my contacts": "Wie verbinde und konfiguriere ich meine Kontakte?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Ja, seit dem 12. Juni 2025 haben wir diese Funktion hinzugefügt. Unser Server ist",
+  "In order to use contacts support, the": "Um den Kontakt-Support nutzen zu können, muss der",
+  "To configure your contacts, use the CardDAV URL of:": "Verwenden Sie zum Konfigurieren Ihrer Kontakte die CardDAV-URL von:"
 }

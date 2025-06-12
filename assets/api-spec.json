@@ -3472,7 +3472,7 @@
     },
     {
       "name": "Alias Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n>This endpoint section is a work in progress and will be released (hopefully) in 2025. In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.\n\n>[!NOTE]\n>[CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274)."
+      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n>This endpoint section is a work in progress and will be released (hopefully) in 2025. In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
     },
     {
       "name": "Alias Calendars",

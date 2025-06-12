@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "دفتر العناوين للقراءة فقط.",
   "Invalid XML request body.": "نص طلب XML غير صالح.",
   "Unsupported report type.": "نوع التقرير غير مدعوم.",
-  "ETag does not match.": "ETag غير متطابق."
+  "ETag does not match.": "ETag غير متطابق.",
+  "How do I connect and configure my contacts": "كيف أقوم بتوصيل جهات الاتصال الخاصة بي وتكوينها",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "نعم، اعتبارًا من ١٢ يونيو ٢٠٢٥، أضفنا هذه الميزة. خادمنا هو",
+  "In order to use contacts support, the": "من أجل استخدام دعم جهات الاتصال،",
+  "To configure your contacts, use the CardDAV URL of:": "لتكوين جهات الاتصال الخاصة بك، استخدم عنوان URL الخاص بـ CardDAV:"
 }

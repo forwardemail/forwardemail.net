@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "アドレス帳は読み取り専用です。",
   "Invalid XML request body.": "無効な XML リクエスト本文です。",
   "Unsupported report type.": "サポートされていないレポート タイプです。",
-  "ETag does not match.": "ETag が一致しません。"
+  "ETag does not match.": "ETag が一致しません。",
+  "How do I connect and configure my contacts": "連絡先を接続して設定するにはどうすればいいですか",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "はい、2025年6月12日よりこの機能を追加しました。サーバーは",
+  "In order to use contacts support, the": "連絡先サポートを利用するには、",
+  "To configure your contacts, use the CardDAV URL of:": "連絡先を設定するには、次の CardDAV URL を使用します。"
 }

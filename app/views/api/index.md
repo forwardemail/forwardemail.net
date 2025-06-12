@@ -271,9 +271,6 @@ curl -X PUT BASE_URI/v1/account \
 > \[!WARNING]
 > This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
 
-> \[!NOTE]
-> [CardDAV support is not yet available, follow this discussion on GitHub for updates](https://github.com/orgs/forwardemail/discussions/274).
-
 ### List contacts
 
 > `GET /v1/contacts`

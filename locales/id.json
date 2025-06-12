@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "Buku alamat hanya dapat dibaca.",
   "Invalid XML request body.": "Isi permintaan XML tidak valid.",
   "Unsupported report type.": "Jenis laporan tidak didukung.",
-  "ETag does not match.": "ETag tidak cocok."
+  "ETag does not match.": "ETag tidak cocok.",
+  "How do I connect and configure my contacts": "Bagaimana cara menghubungkan dan mengonfigurasi kontak saya?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Ya, mulai 12 Juni 2025 kami telah menambahkan fitur ini. Server kami",
+  "In order to use contacts support, the": "Untuk menggunakan dukungan kontak,",
+  "To configure your contacts, use the CardDAV URL of:": "Untuk mengonfigurasi kontak Anda, gunakan URL CardDAV:"
 }

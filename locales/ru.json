@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "Адресная книга доступна только для чтения.",
   "Invalid XML request body.": "Неверное тело XML-запроса.",
   "Unsupported report type.": "Неподдерживаемый тип отчета.",
-  "ETag does not match.": "ETag не совпадает."
+  "ETag does not match.": "ETag не совпадает.",
+  "How do I connect and configure my contacts": "Как подключить и настроить мои контакты",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Да, с 12 июня 2025 года мы добавили эту функцию. Наш сервер",
+  "In order to use contacts support, the": "Для того, чтобы воспользоваться поддержкой контактов,",
+  "To configure your contacts, use the CardDAV URL of:": "Для настройки контактов используйте URL-адрес CardDAV:"
 }

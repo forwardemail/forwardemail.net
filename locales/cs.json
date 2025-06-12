@@ -8982,5 +8982,9 @@
   "Address book is read-only.": "Adresář je pouze pro čtení.",
   "Invalid XML request body.": "Neplatné tělo požadavku XML.",
   "Unsupported report type.": "Nepodporovaný typ přehledu.",
-  "ETag does not match.": "ETag se neshoduje."
+  "ETag does not match.": "ETag se neshoduje.",
+  "How do I connect and configure my contacts": "Jak se připojím a nakonfiguruji své kontakty",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Ano, od 12. června 2025 jsme tuto funkci přidali. Náš server je",
+  "In order to use contacts support, the": "Abyste mohli používat podporu kontaktů,",
+  "To configure your contacts, use the CardDAV URL of:": "Pro konfiguraci kontaktů použijte adresu URL CardDAV:"
 }

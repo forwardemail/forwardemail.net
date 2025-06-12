@@ -9818,5 +9818,9 @@
   "Top Email Hosting and Email Forwarding Setup Tutorials in <span class=\"notranslate\">2025</span>": "Top Email Hosting and Email Forwarding Setup Tutorials in <span class=\"notranslate\">2025</span>",
   "Address book does not exist.": "Address book does not exist.",
   "Contact does not exist.": "Contact does not exist.",
-  "json-sql-enhanced": "json-sql-enhanced"
+  "json-sql-enhanced": "json-sql-enhanced",
+  "How do I connect and configure my contacts": "How do I connect and configure my contacts",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Yes, as of June 12, 2025 we have added this feature.  Our server is",
+  "In order to use contacts support, the": "In order to use contacts support, the",
+  "To configure your contacts, use the CardDAV URL of:": "To configure your contacts, use the CardDAV URL of:"
 }

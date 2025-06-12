@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "주소록은 읽기 전용입니다.",
   "Invalid XML request body.": "잘못된 XML 요청 본문입니다.",
   "Unsupported report type.": "지원되지 않는 보고서 유형입니다.",
-  "ETag does not match.": "ETag가 일치하지 않습니다."
+  "ETag does not match.": "ETag가 일치하지 않습니다.",
+  "How do I connect and configure my contacts": "연락처를 연결하고 구성하려면 어떻게 해야 합니까?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "네, 2025년 6월 12일부터 이 기능을 추가했습니다. 저희 서버는",
+  "In order to use contacts support, the": "연락처 지원을 사용하려면",
+  "To configure your contacts, use the CardDAV URL of:": "연락처를 구성하려면 다음의 CardDAV URL을 사용하세요."
 }

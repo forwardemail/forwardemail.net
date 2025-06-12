@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "สมุดที่อยู่เป็นแบบอ่านอย่างเดียว",
   "Invalid XML request body.": "เนื้อหาคำขอ XML ไม่ถูกต้อง",
   "Unsupported report type.": "ประเภทรายงานที่ไม่ได้รับการสนับสนุน",
-  "ETag does not match.": "ETag ไม่ตรงกัน"
+  "ETag does not match.": "ETag ไม่ตรงกัน",
+  "How do I connect and configure my contacts": "ฉันจะเชื่อมต่อและกำหนดค่าผู้ติดต่อของฉันได้อย่างไร",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "ใช่ เราได้เพิ่มฟีเจอร์นี้ตั้งแต่วันที่ 12 มิถุนายน 2025 เซิร์ฟเวอร์ของเรา",
+  "In order to use contacts support, the": "เพื่อใช้การสนับสนุนการติดต่อ",
+  "To configure your contacts, use the CardDAV URL of:": "ในการกำหนดค่าผู้ติดต่อของคุณ ให้ใช้ URL ของ CardDAV ของ:"
 }

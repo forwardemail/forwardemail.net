@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "Адресна книга доступна лише для читання.",
   "Invalid XML request body.": "Недійсний текст XML-запиту.",
   "Unsupported report type.": "Непідтримуваний тип звіту.",
-  "ETag does not match.": "ETag не збігається."
+  "ETag does not match.": "ETag не збігається.",
+  "How do I connect and configure my contacts": "Як підключити та налаштувати мої контакти",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Так, станом на 12 червня 2025 року ми додали цю функцію. Наш сервер…",
+  "In order to use contacts support, the": "Щоб скористатися підтримкою контактів,",
+  "To configure your contacts, use the CardDAV URL of:": "Щоб налаштувати контакти, скористайтеся URL-адресою CardDAV:"
 }

@@ -28,6 +28,7 @@
   * [How do I connect and configure my calendars](#how-do-i-connect-and-configure-my-calendars)
   * [How do I add more calendars and manage existing calendars](#how-do-i-add-more-calendars-and-manage-existing-calendars)
 * [Do you support contacts (CardDAV)](#do-you-support-contacts-carddav)
+  * [How do I connect and configure my contacts](#how-do-i-connect-and-configure-my-contacts)
 * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
 * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
 * [Why am I not receiving my test emails](#why-am-i-not-receiving-my-test-emails)
@@ -1351,7 +1352,20 @@ You can change a calendar's name and color after creation – just use your pref
 
 ## Do you support contacts (CardDAV)
 
-Coming soon...
+Yes, as of June 12, 2025 we have added this feature.  Our server is `carddav.forwardemail.net` and is also monitored on our <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">status page</a>.
+
+It supports both IPv4 and IPv6 and is available over port `443` (HTTPS).
+
+| Login    | Example                    | Description                                                                                                                                                                               |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
+| Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
+
+In order to use contacts support, the **user** must be the email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a> – and the **password** must be an alias-specific generated password.
+
+### How do I connect and configure my contacts
+
+**To configure your contacts, use the CardDAV URL of:** `https://carddav.forwardemail.net` (or simply `carddav.forwardemail.net` if your client allows it)
 
 
 ## How to Send Mail As using Gmail

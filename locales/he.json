@@ -11682,5 +11682,9 @@
   "Address book is read-only.": "פנקס הכתובות הוא לקריאה בלבד.",
   "Invalid XML request body.": "גוף בקשת XML לא חוקי.",
   "Unsupported report type.": "סוג דוח לא נתמך.",
-  "ETag does not match.": "ETag אינו תואם."
+  "ETag does not match.": "ETag אינו תואם.",
+  "How do I connect and configure my contacts": "איך אני מחבר ומגדיר את אנשי הקשר שלי",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "כן, החל מ-12 ביוני 2025 הוספנו תכונה זו. השרת שלנו הוא",
+  "In order to use contacts support, the": "כדי להשתמש בתמיכה של אנשי קשר, ה-",
+  "To configure your contacts, use the CardDAV URL of:": "כדי להגדיר את אנשי הקשר שלך, השתמש בכתובת ה-URL של CardDAV של:"
 }

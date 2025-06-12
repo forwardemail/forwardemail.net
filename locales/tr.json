@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "Adres defteri salt okunurdur.",
   "Invalid XML request body.": "Geçersiz XML istek gövdesi.",
   "Unsupported report type.": "Desteklenmeyen rapor türü.",
-  "ETag does not match.": "ETag eşleşmiyor."
+  "ETag does not match.": "ETag eşleşmiyor.",
+  "How do I connect and configure my contacts": "Kişilerimi nasıl bağlarım ve yapılandırırım?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Evet, 12 Haziran 2025 itibariyle bu özelliği ekledik. Sunucumuz",
+  "In order to use contacts support, the": "Kişiler desteğini kullanmak için,",
+  "To configure your contacts, use the CardDAV URL of:": "Kişilerinizi yapılandırmak için şu CardDAV URL'sini kullanın:"
 }

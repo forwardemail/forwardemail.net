@@ -13632,5 +13632,9 @@
   "Address book is read-only.": "Het adresboek is alleen-lezen.",
   "Invalid XML request body.": "Ongeldige XML-aanvraagtekst.",
   "Unsupported report type.": "Niet-ondersteund rapporttype.",
-  "ETag does not match.": "ETag komt niet overeen."
+  "ETag does not match.": "ETag komt niet overeen.",
+  "How do I connect and configure my contacts": "Hoe maak ik verbinding met mijn contacten en hoe configureer ik ze?",
+  "Yes, as of June 12, 2025 we have added this feature.  Our server is": "Ja, vanaf 12 juni 2025 hebben we deze functie toegevoegd. Onze server is",
+  "In order to use contacts support, the": "Om de contactenondersteuning te kunnen gebruiken, moet u:",
+  "To configure your contacts, use the CardDAV URL of:": "Om uw contacten te configureren, gebruikt u de CardDAV-URL van:"
 }
