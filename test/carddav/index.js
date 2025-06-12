@@ -257,7 +257,7 @@ test('serviceDiscovery should be able to discover the carddav service', async (t
     account: { serverUrl: t.context.serverUrl, accountType: 'carddav' },
     headers: t.context.authHeaders
   });
-  t.is(url, `${t.context.serverUrl}/dav/${t.context.username}/`);
+  t.is(url, `${t.context.serverUrl}/dav/`);
 });
 
 test('fetchPrincipalUrl should be able to fetch the url of principal collection', async (t) => {
@@ -301,7 +301,7 @@ test('createAccount should be able to create account', async (t) => {
     },
     headers: t.context.authHeaders
   });
-  t.is(account.rootUrl, `${t.context.serverUrl}/dav/${t.context.username}/`);
+  t.is(account.rootUrl, `${t.context.serverUrl}/dav/`);
   t.is(
     account.principalUrl,
     `${t.context.serverUrl}/dav/${t.context.username}/`

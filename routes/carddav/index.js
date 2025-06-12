@@ -80,6 +80,10 @@ router.options('(.*)', (ctx) => {
 });
 
 router.all('(.*)', async (ctx, next) => {
+  // Handle .well-known/carddav redirect (RFC 6764)
+  if (ctx.url.toLowerCase() === '/.well-known/carddav')
+    return ctx.redirect('/dav/');
+
   // if request is authenticated then redirect to principal
   const creds = basicAuth(ctx);
   if (creds) {
@@ -107,9 +111,6 @@ router.all('(.*)', async (ctx, next) => {
 
   ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/carddav"');
   throw Boom.unauthorized();
-
-  // support well-known redirect
-  // if (ctx.url.toLowerCase() === '/.well-known/carddav') {
 });
 
 const davRouter = new Router({
@@ -889,9 +890,10 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
 }
 
 // PROPFIND routes
-davRouter.all('/:user', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
+async function propFindPrincipal(ctx) {
+  if (ctx.params.user && ctx.params.user !== ctx.state.session.user.username)
     throw Boom.unauthorized();
+
   if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
 
   try {
@@ -906,7 +908,7 @@ davRouter.all('/:user', async (ctx) => {
     // Create response
     const responses = [
       {
-        href: `/dav/${ctx.params.user}/`,
+        href: `/dav/${ctx.state.session.user.username}/`,
         propstat: [
           {
             props: [
@@ -917,11 +919,11 @@ davRouter.all('/:user', async (ctx) => {
               },
               {
                 name: 'd:current-user-principal',
-                value: `<d:href>/dav/${ctx.params.user}/</d:href>`
+                value: `<d:href>/dav/${ctx.state.session.user.username}/</d:href>`
               },
               {
                 name: 'card:addressbook-home-set',
-                value: `<d:href>/dav/${ctx.params.user}/addressbooks/</d:href>`
+                value: `<d:href>/dav/${ctx.state.session.user.username}/addressbooks/</d:href>`
               }
             ],
             status: '200 OK'
@@ -939,7 +941,10 @@ davRouter.all('/:user', async (ctx) => {
     ctx.logger.error(err);
     throw new TypeError('Error processing PROPFIND request');
   }
-});
+}
+
+davRouter.all('/:user', propFindPrincipal);
+davRouter.all('/', propFindPrincipal);
 
 router.use(davRouter.routes());
 
