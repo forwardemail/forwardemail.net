@@ -46,6 +46,7 @@ module.exports = {
     },
     enableTypes: ['json', 'form', 'text', 'xml']
   },
+  removeTrailingSlashes: false,
   auth: false,
   rateLimit,
   routes: routes.carddav,
