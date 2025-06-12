@@ -69,9 +69,17 @@ router.get('/', (ctx) => {
   ctx.body = 'OK';
 });
 
-router.all('(.*)', async (ctx, next) => {
-  if (ctx.path === '/dav' || ctx.path.startsWith('/dav/')) return next();
+// OPTIONS route for CORS and DAV discovery
+router.options('(.*)', (ctx) => {
+  ctx.set('DAV', '1, 3, addressbook');
+  ctx.set(
+    'Allow',
+    'OPTIONS, GET, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCOL'
+  );
+  ctx.status = 200;
+});
 
+router.all('(.*)', async (ctx, next) => {
   // if request is authenticated then redirect to principal
   const creds = basicAuth(ctx);
   if (creds) {
@@ -91,54 +99,21 @@ router.all('(.*)', async (ctx, next) => {
 
     await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
-    return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
+    if (!ctx.path.startsWith('/dav'))
+      return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
+
+    return next();
   }
 
+  ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/carddav"');
+  throw Boom.unauthorized();
+
   // support well-known redirect
-  if (ctx.url.toLowerCase() === '/.well-known/carddav')
-    return ctx.redirect('/dav');
-
-  if (ctx.path === '/') return ctx.redirect('/dav');
-
-  return next();
-});
-
-// OPTIONS route for CORS and DAV discovery
-router.options('(.*)', (ctx) => {
-  ctx.set('DAV', '1, 3, addressbook');
-  ctx.set(
-    'Allow',
-    'OPTIONS, GET, PUT, DELETE, PROPFIND, PROPPATCH, REPORT, MKCOL'
-  );
-  ctx.status = 200;
+  // if (ctx.url.toLowerCase() === '/.well-known/carddav') {
 });
 
 const davRouter = new Router({
   prefix: '/dav'
-});
-
-davRouter.use(async (ctx, next) => {
-  try {
-    const creds = basicAuth(ctx);
-    // TODO: translation + error message support (similar to CalDAV?)
-    if (!creds) throw Boom.unauthorized();
-    ctx.logger.debug('authenticate', {
-      username: creds.name,
-      password: creds.pass
-    });
-    await setupAuthSession.call(ctx.instance, ctx, creds.name, creds.pass);
-  } catch (err) {
-    ctx.response.set('WWW-Authenticate', 'Basic realm="forwardemail/carddav"');
-    throw err;
-  }
-
-  await ensureDefaultAddressBook.call(ctx.instance, ctx);
-
-  if (ctx.path === '/dav' && ctx.method === 'PROPFIND') {
-    return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
-  }
-
-  return next();
 });
 
 // eslint-disable-next-line complexity
