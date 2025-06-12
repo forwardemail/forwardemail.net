@@ -69,7 +69,31 @@ router.get('/', (ctx) => {
   ctx.body = 'OK';
 });
 
-router.all('(.*)', (ctx, next) => {
+router.all('(.*)', async (ctx, next) => {
+  if (ctx.path === '/dav' || ctx.path.startsWith('/dav/')) return next();
+
+  // if request is authenticated then redirect to principal
+  const creds = basicAuth(ctx);
+  if (creds) {
+    try {
+      ctx.logger.debug('authenticate', {
+        username: creds.name,
+        password: creds.pass
+      });
+      await setupAuthSession.call(ctx.instance, ctx, creds.name, creds.pass);
+    } catch (err) {
+      ctx.response.set(
+        'WWW-Authenticate',
+        'Basic realm="forwardemail/carddav"'
+      );
+      throw err;
+    }
+
+    await ensureDefaultAddressBook.call(ctx.instance, ctx);
+
+    return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
+  }
+
   // support well-known redirect
   if (ctx.url.toLowerCase() === '/.well-known/carddav')
     return ctx.redirect('/dav');
@@ -110,8 +134,9 @@ davRouter.use(async (ctx, next) => {
 
   await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
-  if (ctx.path === '/dav' && ctx.method === 'PROPFIND')
-    return ctx.redirect(`/dav/${ctx.state.session.user.username}`);
+  if (ctx.path === '/dav' && ctx.method === 'PROPFIND') {
+    return ctx.redirect(`/dav/${ctx.state.session.user.username}/`);
+  }
 
   return next();
 });

@@ -257,7 +257,7 @@ test('serviceDiscovery should be able to discover the carddav service', async (t
     account: { serverUrl: t.context.serverUrl, accountType: 'carddav' },
     headers: t.context.authHeaders
   });
-  t.is(url, t.context.serverUrl + '/dav');
+  t.is(url, `${t.context.serverUrl}/dav/${t.context.username}/`);
 });
 
 test('fetchPrincipalUrl should be able to fetch the url of principal collection', async (t) => {
@@ -269,8 +269,7 @@ test('fetchPrincipalUrl should be able to fetch the url of principal collection'
     },
     headers: t.context.authHeaders
   });
-  // TODO: t.regex(url, /http:\/\/.+\/principals\//);
-  t.regex(url, /http:\/\/.+\//);
+  t.is(url, `${t.context.serverUrl}/dav/${t.context.username}/`);
 });
 
 test('fetchHomeUrl should be able to fetch the url of home set', async (t) => {
@@ -302,7 +301,7 @@ test('createAccount should be able to create account', async (t) => {
     },
     headers: t.context.authHeaders
   });
-  t.is(account.rootUrl, t.context.serverUrl + '/dav');
+  t.is(account.rootUrl, `${t.context.serverUrl}/dav/${t.context.username}/`);
   t.is(
     account.principalUrl,
     `${t.context.serverUrl}/dav/${t.context.username}/`
