@@ -3,27 +3,35 @@
 
 ## Table of Contents
 
-* [Getting started](#getting-started)
-* [Requirements](#requirements)
-  * [Cloud-init / User-data](#cloud-init--user-data)
-* [Install](#install)
-  * [Debug install script](#debug-install-script)
-  * [Prompts](#prompts)
-  * [Initial Setup (Option 1)](#initial-setup-option-1)
-* [Services](#services)
-  * [Important file paths](#important-file-paths)
-* [Configuration](#configuration)
-  * [Initial DNS setup](#initial-dns-setup)
-* [Onboarding](#onboarding)
-* [Testing](#testing)
-  * [Creating your first alias](#creating-your-first-alias)
-  * [Sending / Receiving your first email](#sending--receiving-your-first-email)
-* [Troubleshooting](#troubleshooting)
-  * [What is the basic auth username and password](#what-is-the-basic-auth-username-and-password)
-  * [How do I know what is running](#how-do-i-know-what-is-running)
-  * [How do I know if something isn't running that should be](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [How do I find logs](#how-do-i-find-logs)
-  * [Why are my outgoing emails timing out](#why-are-my-outgoing-emails-timing-out)
+- [Self Hosted](#self-hosted)
+  - [Table of Contents](#table-of-contents)
+  - [Getting started](#getting-started)
+  - [Requirements](#requirements)
+    - [Cloud-init / User-data](#cloud-init--user-data)
+  - [Install](#install)
+    - [Debug install script](#debug-install-script)
+    - [Prompts](#prompts)
+    - [Initial Setup (Option 1)](#initial-setup-option-1)
+  - [Services](#services)
+    - [Important file paths](#important-file-paths)
+  - [Configuration](#configuration)
+    - [Initial DNS setup](#initial-dns-setup)
+      - [Reverse DNS / PTR record](#reverse-dns--ptr-record)
+      - [Port 25 Blocked](#port-25-blocked)
+  - [Onboarding](#onboarding)
+  - [Testing](#testing)
+    - [Creating your first alias](#creating-your-first-alias)
+      - [Email server settings](#email-server-settings)
+    - [Sending / Receiving your first email](#sending--receiving-your-first-email)
+  - [Troubleshooting](#troubleshooting)
+      - [Why doesn't this work outside of Ubuntu and Debian?](#why-doesnt-this-work-outside-of-ubuntu-and-debian)
+      - [Why is the certbot acme challenge failing](#why-is-the-certbot-acme-challenge-failing)
+    - [What is the basic auth username and password](#what-is-the-basic-auth-username-and-password)
+    - [How do I know what is running](#how-do-i-know-what-is-running)
+    - [How do I know if something isn't running that should be](#how-do-i-know-if-something-isnt-running-that-should-be)
+    - [How do I find logs](#how-do-i-find-logs)
+    - [Why are my outgoing emails timing out](#why-are-my-outgoing-emails-timing-out)
+      - [What tools should I use to test email configuration best practices and IP reputation](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation)
 
 
 ## Getting started
@@ -48,6 +56,8 @@ The architecture includes containers for:
 
 > \[!NOTE]
 > Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+>
+> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
 
 ## Requirements
@@ -274,9 +284,9 @@ Once configured, you should be able to send and receive email to your newly crea
 
 ## Troubleshooting
 
-#### Why doesn't this work outside of Ubuntu
+#### Why doesn't this work outside of Ubuntu and Debian?
 
-We're currently looking to support Debian, MacOS and will look to others. Please open a [discussion](https://github.com/orgs/forwardemail/discussions) or contribute if you would like to see others supported.
+We're currently looking to support MacOS and will look to others. Please open a [discussion](https://github.com/orgs/forwardemail/discussions) or contribute if you would like to see others supported.
 
 #### Why is the certbot acme challenge failing
 

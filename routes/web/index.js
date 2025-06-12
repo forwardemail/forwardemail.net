@@ -448,6 +448,8 @@ localeRouter
     '/guides/newsletter-with-listmonk',
     render('guides/newsletter-with-listmonk')
   )
+  .get('/guides/selfhosted-on-debian', render('guides/selfhosted-on-debian'))
+  .get('/guides/selfhosted-on-ubuntu', render('guides/selfhosted-on-ubuntu'))
   .get('/donate', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));

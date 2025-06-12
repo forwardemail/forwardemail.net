@@ -161,6 +161,18 @@ module.exports = function (config, isSitemap = false) {
       ).format('YYYY')}</span>`,
       'setting up a newsletter and mailing list system using Listmonk for campaign management and Forward Email as the SMTP provider for secure and reliable email delivery.'
     ],
+    '/guides/selfhosted-on-debian': [
+      `Setup Self-hosted Forward Email on Debian in <span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>`,
+      'Setting up self-hosted forward email on Debian OS.'
+    ],
+    '/guides/selfhosted-on-ubuntu': [
+      `Setup Self-hosted Forward Email on Ubuntu in <span class="notranslate">${dayjs(
+        now
+      ).format('YYYY')}</span>`,
+      'Setting up self-hosted forward email on Ubuntu OS.'
+    ],
     '/guides/send-mail-as-gmail-custom-domain': [
       `How to Send Mail As for Gmail Alias <span class="notranslate">${dayjs(
         now
