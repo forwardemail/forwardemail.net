@@ -5,20 +5,22 @@ This section documents the CI/CD workflow for ForwardEmail's self-hosted solutio
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [CI/CD Workflow](#cicd-workflow)
-  * [GitHub Actions Workflow](#github-actions-workflow)
-  * [Docker Image Structure](#docker-image-structure)
-* [Deployment Process](#deployment-process)
-  * [Installation](#installation)
-  * [Docker Compose Configuration](#docker-compose-configuration)
-* [Maintenance Features](#maintenance-features)
-  * [Automatic Updates](#automatic-updates)
-  * [Backup and Restore](#backup-and-restore)
-  * [Certificate Renewal](#certificate-renewal)
-* [Versioning](#versioning)
-* [Accessing Images](#accessing-images)
-* [Contributing](#contributing)
+- [Self-Hosted Releases](#self-hosted-releases)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [CI/CD Workflow](#cicd-workflow)
+    - [GitHub Actions Workflow](#github-actions-workflow)
+    - [Docker Image Structure](#docker-image-structure)
+  - [Deployment Process](#deployment-process)
+    - [Installation](#installation)
+    - [Docker Compose Configuration](#docker-compose-configuration)
+  - [Maintenance Features](#maintenance-features)
+    - [Automatic Updates](#automatic-updates)
+    - [Backup and Restore](#backup-and-restore)
+    - [Certificate Renewal](#certificate-renewal)
+  - [Versioning](#versioning)
+  - [Accessing Images](#accessing-images)
+  - [Contributing](#contributing)
 
 
 ## Overview
@@ -27,6 +29,8 @@ ForwardEmail's self-hosted solution uses GitHub Actions to automatically build a
 
 > \[!NOTE]
 > There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+>
+> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
 
 
 ## CI/CD Workflow
