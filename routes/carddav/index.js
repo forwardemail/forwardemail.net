@@ -546,7 +546,12 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       } else if (xmlBody['d:sync-collection']) {
         await handleSyncCollection(ctx, xmlBody, addressBook);
       } else {
-        throw Boom.badRequest(ctx.translateError('UNSUPPORTED_REPORT_TYPE'));
+        const err = Boom.badRequest(
+          ctx.translateError('UNSUPPORTED_REPORT_TYPE')
+        );
+        err.xmlBody = xmlBody;
+        err.requestBody = ctx.request.body;
+        throw err;
       }
 
       break;
