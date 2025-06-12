@@ -278,7 +278,7 @@ test('fetchPrincipalUrl should be able to fetch the url of principal collection'
     },
     headers: t.context.authHeaders
   });
-  t.is(url, `${t.context.serverUrl}/`);
+  t.is(url, `${t.context.serverUrl}/dav/${t.context.username}/`);
 });
 
 test('fetchHomeUrl should be able to fetch the url of home set', async (t) => {
