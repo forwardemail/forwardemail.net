@@ -38,7 +38,7 @@ const {
   HeadBucketCommand,
   HeadObjectCommand
 } = require('@aws-sdk/client-s3');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const { Upload } = require('@aws-sdk/lib-storage');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 

@@ -7,6 +7,8 @@
 // eslint-disable-next-line unicorn/prefer-node-protocol
 const path = require('path');
 
+const errors = require('wildduck/lib/errors');
+
 // eslint-disable-next-line n/prefer-global/process
 const test = process.env.NODE_ENV === 'test';
 
@@ -20,5 +22,14 @@ const env = require('@ladjs/env')({
 
 // always show full stack traces for debugging
 Error.stackTraceLimit = Number.POSITIVE_INFINITY;
+
+// https://github.com/zone-eu/wildduck/issues/768
+errors.setGelf({
+  // emit(...args) {
+  emit() {
+    // do nothing (noop)
+    // TODO: we may want to `logger.debug(...args)` here
+  }
+});
 
 module.exports = env;

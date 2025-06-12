@@ -70,6 +70,7 @@ module.exports = {
     ...sharedCalDAVConfig.rateLimit,
     ...config.rateLimit
   },
+  bodyParser: false,
   removeTrailingSlashes: false,
   passport: false,
   auth: false,

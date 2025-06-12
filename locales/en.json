@@ -9816,5 +9816,7 @@
   "Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you'd like double the level of encryption, then if you have <span class=\"notranslate\">IMAP/POP3/CalDAV/CardDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.": "Our storage is already encrypted using ChaCha20-Poly1305 encryption.  However if you'd like double the level of encryption, then if you have <span class=\"notranslate\">IMAP/POP3/CalDAV/CardDAV</span> enabled and if you also check this, then all future emails stored will also be encrypted with the public key below.",
   "Free Startup and Developer Email Tools List in <span class=\"notranslate\">2025</span>": "Free Startup and Developer Email Tools List in <span class=\"notranslate\">2025</span>",
   "Top Email Hosting and Email Forwarding Setup Tutorials in <span class=\"notranslate\">2025</span>": "Top Email Hosting and Email Forwarding Setup Tutorials in <span class=\"notranslate\">2025</span>",
-  "Address book does not exist.": "Address book does not exist."
+  "Address book does not exist.": "Address book does not exist.",
+  "Contact does not exist.": "Contact does not exist.",
+  "json-sql-enhanced": "json-sql-enhanced"
 }

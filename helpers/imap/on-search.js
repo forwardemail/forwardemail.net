@@ -17,7 +17,7 @@ const { Buffer } = require('node:buffer');
 
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');

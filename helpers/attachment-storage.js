@@ -20,7 +20,7 @@ const ms = require('ms');
 const pRetry = require('p-retry');
 const pify = require('pify');
 const revHash = require('rev-hash');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 
 const WildDuckAttachmentStorage = require('wildduck/lib/attachment-storage');
 const _ = require('#helpers/lodash');

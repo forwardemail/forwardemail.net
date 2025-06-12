@@ -15,7 +15,7 @@
 
 const getStream = require('get-stream');
 const tools = require('wildduck/lib/tools');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 const { imapHandler } = require('wildduck/imap-core');
 const _ = require('#helpers/lodash');

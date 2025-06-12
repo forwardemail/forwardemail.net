@@ -9,12 +9,18 @@ const Router = require('@koa/router');
 const basicAuth = require('basic-auth');
 
 const AddressBooks = require('#models/address-books');
+const CardDAVFilterParser = require('#helpers/carddav-filter-parser');
 const Contacts = require('#models/contacts');
 const config = require('#config');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
 
 // TODO: PROPPATCH
+
+function vcf(id) {
+  if (id.toLowerCase().endsWith('.vcf')) return '';
+  return '.vcf';
+}
 
 async function ensureDefaultAddressBook(ctx) {
   const count = await AddressBooks.countDocuments(
@@ -33,7 +39,7 @@ async function ensureDefaultAddressBook(ctx) {
     instance: ctx.instance,
     session: ctx.state.session,
 
-    // adress book obj
+    // address book obj
 
     // TODO: check how fennel does it
     // TODO: should this be randomUUID() ?
@@ -50,7 +56,7 @@ async function ensureDefaultAddressBook(ctx) {
     // TODO: isn't this automatic (?)
     // TODO: if we need to change /default here (?)
     // TODO: fix port if 443 or 80 then don't render it (?)
-    url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/${ctx.state.session.user.email}/addressbooks/default`,
+    url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.state.session.user.email}/addressbooks/default/`,
     // TODO: isn't this automatic (?)
     prodId: `//forwardemail.net//carddav//EN`
   });
@@ -110,340 +116,11 @@ davRouter.use(async (ctx, next) => {
   return next();
 });
 
-// PROPFIND routes
-davRouter.all('/:user', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
-  if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
-
-  try {
-    // const depth = ctx.request.headers.depth || '0';
-
-    // Parse XML request body
-    // const xmlBody = ctx.request.body
-    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-    //   : null;
-    // const props = xmlHelpers.extractRequestedProps(xmlBody);
-
-    // Create response
-    const responses = [
-      {
-        href: `/dav/${ctx.params.user}`,
-        propstat: [
-          {
-            props: [
-              { name: 'd:displayname', value: ctx.state.session.user.username },
-              {
-                name: 'd:resourcetype',
-                value: '<d:collection/><d:principal/>'
-              },
-              {
-                name: 'd:current-user-principal',
-                value: `<d:href>/dav/${ctx.params.user}</d:href>`
-              },
-              {
-                name: 'card:addressbook-home-set',
-                value: `<d:href>/dav/${ctx.params.user}/addressbooks</d:href>`
-              }
-            ],
-            status: '200 OK'
-          }
-        ]
-      }
-    ];
-
-    const xml = xmlHelpers.getMultistatusXML(responses);
-
-    ctx.type = 'application/xml';
-    ctx.status = 207;
-    ctx.body = xml;
-  } catch (err) {
-    ctx.logger.error(err);
-    throw new TypeError('Error processing PROPFIND request');
-  }
-});
-
-davRouter.all('/:user/addressbooks', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
-  if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
-
-  try {
-    const depth = ctx.request.headers.depth || '0';
-
-    // Parse XML request body
-    // const xmlBody = ctx.request.body
-    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-    //   : null;
-    // const props = xmlHelpers.extractRequestedProps(xmlBody);
-
-    // Create response
-    const responses = [
-      {
-        href: `/dav/${ctx.params.user}/addressbooks`,
-        propstat: [
-          {
-            props: [
-              { name: 'd:displayname', value: 'Address Books' },
-              { name: 'd:resourcetype', value: '<d:collection/>' }
-            ],
-            status: '200 OK'
-          }
-        ]
-      }
-    ];
-
-    // If depth is 1, include address books
-    if (depth === '1') {
-      const addressBooks = await AddressBooks.find(
-        ctx.instance,
-        ctx.state.session,
-        {}
-      );
-
-      for (const addressBook of addressBooks) {
-        responses.push({
-          href: `/dav/${ctx.params.user}/addressbooks/${addressBook.address_book_id}`,
-          propstat: [
-            {
-              props: [
-                { name: 'd:displayname', value: addressBook.name },
-                {
-                  name: 'd:resourcetype',
-                  value: '<d:collection/><card:addressbook/>'
-                },
-                { name: 'd:sync-token', value: addressBook.synctoken },
-                {
-                  name: 'card:addressbook-description',
-                  value: addressBook.description || ''
-                }
-              ],
-              status: '200 OK'
-            }
-          ]
-        });
-      }
-    }
-
-    const xml = xmlHelpers.getMultistatusXML(responses);
-
-    ctx.type = 'application/xml';
-    ctx.status = 207;
-    ctx.body = xml;
-  } catch (err) {
-    ctx.logger.error(err);
-    throw new TypeError('Error processing PROPFIND request');
-  }
-});
-
 // eslint-disable-next-line complexity
-davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
+davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
   if (ctx.params.user !== ctx.state.session.user.username)
     throw Boom.unauthorized();
-  if (!['PROPFIND', 'MKCOL', 'DELETE', 'REPORT'].includes(ctx.method))
-    throw Boom.methodNotAllowed();
 
-  const { addressbook } = ctx.params;
-
-  // Find address book for methods that require it
-  let addressBook;
-  if (ctx.method !== 'MKCOL') {
-    addressBook = await AddressBooks.findOne(ctx.instance, ctx.state.session, {
-      address_book_id: addressbook
-    });
-
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
-  }
-
-  // Handle different methods
-  switch (ctx.method) {
-    case 'PROPFIND': {
-      const depth = ctx.request.headers.depth || '0';
-
-      // Parse XML request body
-      // const xmlBody = ctx.request.body
-      //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
-      //   : null;
-      // const props = xmlHelpers.extractRequestedProps(xmlBody);
-
-      // Create response for address book
-      const responses = [
-        {
-          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}`,
-          propstat: [
-            {
-              props: [
-                { name: 'd:displayname', value: addressBook.name },
-                {
-                  name: 'd:resourcetype',
-                  value: '<d:collection/><card:addressbook/>'
-                },
-                { name: 'd:sync-token', value: addressBook.synctoken },
-                {
-                  name: 'card:addressbook-description',
-                  value: addressBook.description || ''
-                },
-                {
-                  name: 'card:supported-address-data',
-                  value:
-                    '<card:address-data-type content-type="text/vcard" version="3.0"/>'
-                }
-              ],
-              status: '200 OK'
-            }
-          ]
-        }
-      ];
-
-      // If depth is 1, include contacts
-      if (depth === '1') {
-        const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
-          address_book: addressBook._id
-        });
-
-        for (const contact of contacts) {
-          responses.push({
-            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
-            propstat: [
-              {
-                props: [
-                  { name: 'd:getetag', value: contact.etag },
-                  {
-                    name: 'd:getcontenttype',
-                    value: 'text/vcard; charset=utf-8'
-                  },
-                  { name: 'd:resourcetype', value: '' }
-                ],
-                status: '200 OK'
-              }
-            ]
-          });
-        }
-      }
-
-      const xml = xmlHelpers.getMultistatusXML(responses);
-
-      ctx.type = 'application/xml';
-      ctx.status = 207;
-      ctx.body = xml;
-      break;
-    }
-
-    case 'MKCOL': {
-      // Check if address book already exists
-      const existingAddressBook = await AddressBooks.findOne(
-        ctx.instance,
-        ctx.state.session,
-        {
-          address_book_id: addressbook
-        }
-      );
-
-      if (existingAddressBook)
-        throw Boom.conflict(ctx.translateError('ADDRES_BOOK_ALREADY_EXISTS'));
-
-      // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
-
-      // Extract properties
-      let displayName = addressbook;
-      let description = '';
-
-      if (
-        xmlBody &&
-        xmlBody['d:mkcol'] &&
-        xmlBody['d:mkcol']['d:set'] &&
-        xmlBody['d:mkcol']['d:set']['d:prop']
-      ) {
-        const props = xmlBody['d:mkcol']['d:set']['d:prop'];
-
-        if (props['d:displayname']) {
-          displayName = props['d:displayname'];
-        }
-
-        if (props['card:addressbook-description']) {
-          description = props['card:addressbook-description'];
-        }
-      }
-
-      // Create new address book
-      const addressBookCreated = await AddressBooks.create({
-        // db virtual helper
-        instance: ctx.instance,
-        session: ctx.state.session,
-
-        address_book_id: addressbook,
-        name: displayName,
-        description,
-        color: '#0000FF', // Default color
-        synctoken: `${config.urls.web}/ns/sync-token/1`,
-        timezone: ctx.state.session.user.timezone || 'UTC',
-        // TODO: fix port if 443 or 80 then don't render it (?)
-        url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.params.user}/addressbooks/${addressbook}`,
-        prodId: `//forwardemail.net//carddav//EN`
-      });
-      console.log('addressBookCreated', addressBookCreated);
-
-      ctx.status = 201;
-      break;
-    }
-
-    case 'DELETE': {
-      // Delete all contacts in the address book
-      console.log('deleting contacts');
-      await Contacts.deleteMany(ctx.instance, ctx.state.session, {
-        address_book: addressBook._id
-      });
-
-      // Delete address book
-      console.log('deleting address book');
-      await AddressBooks.deleteOne(ctx.instance, ctx.state.session, {
-        _id: addressBook._id
-      });
-      // TODO: define $__remove in sqlite helper
-      // await addressBook.remove();
-      console.log('DELETED ADDRESS BOOK');
-
-      ctx.status = 204;
-      break;
-    }
-
-    case 'REPORT': {
-      // Parse XML request body
-      const xmlBody = ctx.request.body
-        ? await xmlHelpers.parseXML(ctx.request.body.toString())
-        : null;
-
-      if (!xmlBody)
-        throw Boom.badRequest(ctx.translateError('INVALID_XML_REQUEST_BODY'));
-
-      // Handle different report types
-      if (xmlBody['card:addressbook-query']) {
-        await handleAddressbookQuery(ctx, xmlBody, addressBook);
-      } else if (xmlBody['card:addressbook-multiget']) {
-        await handleAddressbookMultiget(ctx, xmlBody, addressBook);
-      } else if (xmlBody['d:sync-collection']) {
-        await handleSyncCollection(ctx, xmlBody, addressBook);
-      } else {
-        throw Boom.badRequest(ctx.translateError('UNSUPPORTED_REPORT_TYPE'));
-      }
-
-      break;
-    }
-
-    default: {
-      throw Boom.methodNotAllowed();
-    }
-  }
-});
-
-// eslint-disable-next-line complexity
-davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
-  if (ctx.params.user !== ctx.state.session.user.username)
-    throw Boom.unauthorized();
   if (!['PROPFIND', 'GET', 'PUT', 'DELETE'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
@@ -460,6 +137,13 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
 
   if (!addressBook)
     throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+
+  // db virtual helper
+  addressBook.instance = ctx.instance;
+  addressBook.session = ctx.state.session;
+
+  // so we can call `save()`
+  addressBook.isNew = false;
 
   switch (ctx.method) {
     case 'PROPFIND': {
@@ -569,12 +253,20 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
             : [{ value: vCard.TEL, type: 'CELL' }];
         }
 
+        // db virtual helper
+        existingContact.instance = ctx.instance;
+        existingContact.session = ctx.state.session;
+
+        // so we can call `save()`
+        existingContact.isNew = false;
+
         await existingContact.save();
 
         // Update address book sync token
         addressBook.synctoken = `${
           config.urls.web
         }/ns/sync-token/${Date.now()}`;
+
         await addressBook.save();
 
         ctx.set('ETag', newEtag);
@@ -667,106 +359,478 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact', async (ctx) => {
   }
 });
 
+// eslint-disable-next-line complexity
+davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
+  if (!['PROPFIND', 'MKCOL', 'DELETE', 'REPORT'].includes(ctx.method))
+    throw Boom.methodNotAllowed();
+
+  const { addressbook } = ctx.params;
+
+  // Find address book for methods that require it
+  let addressBook;
+  if (ctx.method !== 'MKCOL') {
+    addressBook = await AddressBooks.findOne(ctx.instance, ctx.state.session, {
+      address_book_id: addressbook
+    });
+
+    if (!addressBook)
+      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+  }
+
+  // Handle different methods
+  switch (ctx.method) {
+    case 'PROPFIND': {
+      const depth = ctx.request.headers.depth || '0';
+
+      // Parse XML request body
+      // const xmlBody = ctx.request.body
+      //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
+      //   : null;
+      // const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+      // Create response for address book
+      const responses = [
+        {
+          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/`,
+          propstat: [
+            {
+              props: [
+                { name: 'd:displayname', value: addressBook.name },
+                {
+                  name: 'd:resourcetype',
+                  value: '<d:collection/><card:addressbook/>'
+                },
+                { name: 'd:sync-token', value: addressBook.synctoken },
+                {
+                  name: 'card:addressbook-description',
+                  value: addressBook.description || ''
+                },
+                {
+                  name: 'card:supported-address-data',
+                  value:
+                    '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+                }
+              ],
+              status: '200 OK'
+            }
+          ]
+        }
+      ];
+
+      // If depth is 1, include contacts
+      if (depth === '1') {
+        const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
+          address_book: addressBook._id
+        });
+
+        for (const contact of contacts) {
+          responses.push({
+            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+            propstat: [
+              {
+                props: [
+                  { name: 'd:getetag', value: contact.etag },
+                  {
+                    name: 'd:getcontenttype',
+                    value: 'text/vcard; charset=utf-8'
+                  },
+                  { name: 'd:resourcetype', value: '' }
+                ],
+                status: '200 OK'
+              }
+            ]
+          });
+        }
+      }
+
+      const xml = xmlHelpers.getMultistatusXML(responses);
+
+      ctx.type = 'application/xml';
+      ctx.status = 207;
+      ctx.body = xml;
+      break;
+    }
+
+    case 'MKCOL': {
+      // Check if address book already exists
+      const existingAddressBook = await AddressBooks.findOne(
+        ctx.instance,
+        ctx.state.session,
+        {
+          address_book_id: addressbook
+        }
+      );
+
+      if (existingAddressBook)
+        throw Boom.conflict(ctx.translateError('ADDRES_BOOK_ALREADY_EXISTS'));
+
+      // Parse XML request body
+      const xmlBody = ctx.request.body
+        ? await xmlHelpers.parseXML(ctx.request.body.toString())
+        : null;
+
+      // Extract properties
+      let displayName = addressbook;
+      let description = '';
+
+      if (
+        xmlBody &&
+        xmlBody['d:mkcol'] &&
+        xmlBody['d:mkcol']['d:set'] &&
+        xmlBody['d:mkcol']['d:set']['d:prop']
+      ) {
+        const props = xmlBody['d:mkcol']['d:set']['d:prop'];
+
+        if (props['d:displayname']) {
+          displayName = props['d:displayname'];
+        }
+
+        if (props['card:addressbook-description']) {
+          description = props['card:addressbook-description'];
+        }
+      }
+
+      // Create new address book
+      await AddressBooks.create({
+        // db virtual helper
+        instance: ctx.instance,
+        session: ctx.state.session,
+
+        address_book_id: addressbook,
+        name: displayName,
+        description,
+        color: '#0000FF', // Default color
+        synctoken: `${config.urls.web}/ns/sync-token/1`,
+        timezone: ctx.state.session.user.timezone || 'UTC',
+        // TODO: fix port if 443 or 80 then don't render it (?)
+        url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.params.user}/addressbooks/${addressbook}/`,
+        prodId: `//forwardemail.net//carddav//EN`
+      });
+
+      ctx.status = 201;
+      break;
+    }
+
+    case 'DELETE': {
+      // Delete all contacts in the address book
+      await Contacts.deleteMany(ctx.instance, ctx.state.session, {
+        address_book: addressBook._id
+      });
+
+      // Delete address book
+      await AddressBooks.deleteOne(ctx.instance, ctx.state.session, {
+        _id: addressBook._id
+      });
+      // TODO: define $__remove in sqlite helper
+      // await addressBook.remove();
+
+      ctx.status = 204;
+      break;
+    }
+
+    case 'REPORT': {
+      // Parse XML request body
+      const xmlBody = ctx.request.body
+        ? await xmlHelpers.parseXML(ctx.request.body.toString())
+        : null;
+
+      if (!xmlBody)
+        throw Boom.badRequest(ctx.translateError('INVALID_XML_REQUEST_BODY'));
+
+      // const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+      // Handle different report types
+      if (xmlBody['card:addressbook-query']) {
+        await handleAddressbookQuery(ctx, xmlBody, addressBook);
+      } else if (xmlBody['card:addressbook-multiget']) {
+        await handleAddressbookMultiget(ctx, xmlBody, addressBook);
+      } else if (xmlBody['d:sync-collection']) {
+        await handleSyncCollection(ctx, xmlBody, addressBook);
+      } else {
+        throw Boom.badRequest(ctx.translateError('UNSUPPORTED_REPORT_TYPE'));
+      }
+
+      break;
+    }
+
+    default: {
+      throw Boom.methodNotAllowed();
+    }
+  }
+});
+
+davRouter.all('/:user/addressbooks', async (ctx) => {
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
+  if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
+
+  try {
+    const depth = ctx.request.headers.depth || '0';
+
+    // Parse XML request body
+    // const xmlBody = ctx.request.body
+    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
+    //   : null;
+    // const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+    // Create response
+    const responses = [
+      {
+        href: `/dav/${ctx.params.user}/addressbooks/`,
+        propstat: [
+          {
+            props: [
+              { name: 'd:displayname', value: 'Address Books' },
+              { name: 'd:resourcetype', value: '<d:collection/>' }
+            ],
+            status: '200 OK'
+          }
+        ]
+      }
+    ];
+
+    // If depth is 1, include address books
+    if (depth === '1') {
+      const addressBooks = await AddressBooks.find(
+        ctx.instance,
+        ctx.state.session,
+        {}
+      );
+
+      for (const addressBook of addressBooks) {
+        responses.push({
+          href: `/dav/${ctx.params.user}/addressbooks/${addressBook.address_book_id}/`,
+          propstat: [
+            {
+              props: [
+                { name: 'd:displayname', value: addressBook.name },
+                {
+                  name: 'd:resourcetype',
+                  value: '<d:collection/><card:addressbook/>'
+                },
+                { name: 'd:sync-token', value: addressBook.synctoken },
+                {
+                  name: 'card:addressbook-description',
+                  value: addressBook.description || ''
+                }
+              ],
+              status: '200 OK'
+            }
+          ]
+        });
+      }
+    }
+
+    const xml = xmlHelpers.getMultistatusXML(responses);
+
+    ctx.type = 'application/xml';
+    ctx.status = 207;
+    ctx.body = xml;
+  } catch (err) {
+    ctx.logger.error(err);
+    throw new TypeError('Error processing PROPFIND request');
+  }
+});
+
 // Helper functions for REPORT handling
+//
+// TODO: implement the below
+//
+// # CardDAV `addressbook-query` Filters and Testing with `tsdav`
+//
+// To ensure a CardDAV server complies with [RFC 6352](https://tools.ietf.org/html/rfc6352), it must support the `addressbook-query` REPORT for querying address book data, including all specified filters and their combinations. The `tsdav` package, a TypeScript/JavaScript library for WebDAV and CardDAV, provides a convenient way to test these queries using the `addressBookQuery` method. This document outlines the complete set of standard `addressbook-query` filters, provides example XML bodies, and shows how to structure them as arguments for `tsdav`'s `addressBookQuery`. It also includes considerations for testing server compliance.
+//
+// ## Overview of `addressbook-query` Filters
+//
+// Per RFC 6352, Section 8.6, a CardDAV server must support the `addressbook-query` REPORT with these filter elements:
+//
+// - **`<C:prop-filter>`**: Filters vCard objects based on a specific vCard property (e.g., `FN`, `EMAIL`, `TEL`).
+// - **`<C:param-filter>`**: Filters based on parameters of a property (e.g., `TYPE=WORK` for an `EMAIL` property).
+// - **`<C:text-match>`**: Matches text values in properties, with attributes:
+//   - `collation`: At least `i;ascii-casemap` (case-insensitive) must be supported; `i;unicode-casemap` is optional.
+//   - `match-type`: Supports `equals`, `contains`, `starts-with`, `ends-with`.
+//   - `negate-condition`: Optional boolean (`yes` or `no`) to invert the match.
+// - **`<C:is-not-defined>`**: Matches vCards where a property or parameter is absent.
+// - **`<C:filter test="anyof|allof">`**: Combines multiple `<C:prop-filter>` elements logically:
+//   - `anyof`: At least one condition must match.
+//   - `allof`: All conditions must match.
+// - **`<D:prop>`**: Specifies which properties to return (e.g., `D:getetag`, `C:address-data`).
+// - **`<C:address-data>`**: Optionally limits the vCard properties returned (e.g., only `FN` and `EMAIL`).
+//
+// A CardDAV server must handle these filters for common vCard properties (e.g., `FN`, `N`, `EMAIL`, `TEL`, `ADR`, `ORG`) and their parameters (e.g., `TYPE`, `VALUE`). It should also support returning partial vCard data and handle edge cases like empty results or invalid filters.
+//
+// ## Using `tsdav` for Testing
+//
+// The `tsdav` package provides a `DAVClient` with an `addressBookQuery` method to send `addressbook-query` REPORT requests. The method takes an options object with these relevant properties:
+//
+// - `url`: The URL of the address book collection.
+// - `properties`: An array of WebDAV properties to retrieve (e.g., `['{DAV:}getetag', '{urn:ietf:params:xml:ns:carddav}address-data']`).
+// - `filters`: An array of filter objects defining the query criteria.
+// - `headers`: Optional headers for authentication or other purposes.
+// - `depth`: Typically `1` for querying resources in the collection.
+//
+// The `filters` array corresponds to the `<C:filter>` element and can include nested `<C:prop-filter>`, `<C:param-filter>`, `<C:text-match>`, and `<C:is-not-defined>` elements. Below are examples of all supported filter combinations and their `tsdav` equivalents.
+//
+// ## Example Queries and `tsdav` Calls
+//
+// Below are examples of all standard `addressbook-query` filters that a CardDAV server should support, along with their XML representations and corresponding `tsdav` `addressBookQuery` calls. These cover all required filter types and combinations, suitable for testing server compliance.
+//
+// ### 1. Simple `prop-filter` with `text-match`
+//
+// **Purpose**: Search for contacts where the `FN` (Formatted Name) property contains "John".
+//
+// **XML Request**:
+// ```xml
+// <?xml version="1.0" encoding="utf-8" ?>
+// <D:addressbook-query xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:carddav">
+//   <D:prop>
+//     <D:getetag/>
+//     <C:address-data/>
+//   </D:prop>
+//   <C:filter>
+//     <C:prop-filter name="FN">
+//       <C:text-match collation="i;ascii-casemap" match-type="contains">John</C:text-match>
+//     </C:prop-filter>
+//   </C:filter>
+// </D:addressbook-query>
+
+/**
+ * Handle addressbook query with complete RFC 6352 filter support
+ * Updated to work with actual ForwardEmail Contacts model
+ * @param {Object} ctx - Koa context
+ * @param {Object} xmlBody - Parsed XML body
+ * @param {Object} addressBook - Address book object
+ * @returns {Promise<void>}
+ */
 async function handleAddressbookQuery(ctx, xmlBody, addressBook) {
   const { addressbook } = ctx.params;
 
-  // Extract props
-  const props = [];
-  if (xmlBody['card:addressbook-query']['d:prop']) {
-    for (const key of Object.keys(
-      xmlBody['card:addressbook-query']['d:prop']
-    )) {
-      props.push(key);
+  try {
+    // Initialize the filter parser
+    const filterParser = new CardDAVFilterParser();
+
+    // Validate the filter first
+    const validation = xmlHelpers.validateFilter(xmlBody);
+    if (!validation.isValid) {
+      ctx.type = 'application/xml';
+      ctx.status = 400;
+      ctx.body = xmlHelpers.getFilterErrorXML(validation.error);
+      return;
     }
+
+    // Extract requested properties
+    const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+    // Parse the filter and convert to MongoDB query
+    const filterQuery = filterParser.parseFilter(xmlBody);
+
+    // Build the base query using the actual model structure
+    // Note: address_book field is ObjectId reference to AddressBooks
+    const query = {
+      address_book: addressBook._id, // Use the ObjectId from the addressBook document
+      ...filterQuery
+    };
+
+    // Log the generated query for debugging
+    ctx.logger.debug('Generated MongoDB query:', { query });
+
+    // Execute the query using the actual Contacts model
+    const contacts = await Contacts.find(
+      ctx.instance,
+      ctx.state.session,
+      query
+    );
+
+    // Format contacts for response using actual model fields
+    const formattedContacts = contacts.map((contact) => ({
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
+      etag: contact.etag,
+      vcard: contact.content, // Use 'content' field from actual model
+      fullName: contact.fullName, // Available for debugging/logging
+      uid: contact.uid
+    }));
+
+    // Generate XML response
+    const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
+
+    ctx.type = 'application/xml';
+    ctx.status = 207;
+    ctx.body = xml;
+  } catch (err) {
+    ctx.logger.error('Error in handleAddressbookQuery:', err);
+    throw new TypeError('Error processing addressbook query request');
   }
-
-  // Extract filters
-  let filter = {};
-  if (xmlBody['card:addressbook-query']['card:filter']) {
-    filter = xmlBody['card:addressbook-query']['card:filter'];
-  }
-
-  // Query contacts based on filter
-  const query = {
-    address_book: addressBook._id
-  };
-
-  // Apply filters if present
-  if (filter['card:prop-filter']) {
-    const propFilter = filter['card:prop-filter'];
-    if (propFilter.name === 'FN' && propFilter['card:text-match']) {
-      const textMatch = propFilter['card:text-match'];
-      const searchText = textMatch._;
-      query.fullName = { $regex: searchText, $options: 'i' };
-    }
-  }
-
-  const contacts = await Contacts.find(query);
-
-  // Format contacts for response
-  const formattedContacts = contacts.map((contact) => ({
-    href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
-    etag: contact.etag,
-    vcard: contact.content
-  }));
-
-  // Generate XML response
-  const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
-
-  ctx.type = 'application/xml';
-  ctx.status = 207;
-  ctx.body = xml;
 }
 
+/**
+ * Handle addressbook multiget with complete RFC 6352 filter support
+ * Updated to work with actual ForwardEmail Contacts model
+ * @param {Object} ctx - Koa context
+ * @param {Object} xmlBody - Parsed XML body
+ * @param {Object} addressBook - Address book object
+ * @returns {Promise<void>}
+ */
 async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
   const { addressbook } = ctx.params;
 
-  // Extract props
-  const props = [];
-  if (xmlBody['card:addressbook-multiget']['d:prop']) {
-    for (const key of Object.keys(
-      xmlBody['card:addressbook-multiget']['d:prop']
-    )) {
-      props.push(key);
+  try {
+    // Extract requested properties
+    const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+    // Extract hrefs
+    const hrefs = xmlHelpers.extractHrefs(xmlBody);
+
+    if (!hrefs || hrefs.length === 0) {
+      ctx.type = 'application/xml';
+      ctx.status = 207;
+      ctx.body = xmlHelpers.getMultistatusXML([]);
+      return;
     }
+
+    // Get contact IDs from hrefs - preserve .vcf extension
+    const contactIds = hrefs.map((href) => {
+      const parts = href.split('/');
+      return parts[parts.length - 1];
+    });
+
+    // Build query for specific contacts using actual model structure
+    const query = {
+      address_book: addressBook._id, // Use ObjectId reference
+      contact_id: { $in: contactIds } // Use contact_id field from model
+    };
+
+    // Execute the query
+    const contacts = await Contacts.find(
+      ctx.instance,
+      ctx.state.session,
+      query
+    );
+
+    // Format contacts for response
+    const formattedContacts = contacts.map((contact) => ({
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
+      etag: contact.etag,
+      vcard: contact.content, // Use 'content' field from actual model
+      fullName: contact.fullName,
+      uid: contact.uid
+    }));
+
+    // Generate XML response
+    const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
+
+    ctx.type = 'application/xml';
+    ctx.status = 207;
+    ctx.body = xml;
+  } catch (err) {
+    ctx.logger.error('Error in handleAddressbookMultiget:', err);
+    throw new TypeError('Error processing addressbook multiget request');
   }
-
-  // Extract hrefs
-  const hrefs = [];
-  if (xmlBody['card:addressbook-multiget']['d:href']) {
-    if (Array.isArray(xmlBody['card:addressbook-multiget']['d:href'])) {
-      hrefs.push(...xmlBody['card:addressbook-multiget']['d:href']);
-    } else {
-      hrefs.push(xmlBody['card:addressbook-multiget']['d:href']);
-    }
-  }
-
-  // Get contact IDs from hrefs
-  const contactIds = hrefs.map((href) => {
-    const parts = href.split('/');
-    return parts[parts.length - 1];
-  });
-
-  // Fetch contacts
-  const contacts = await Contacts.find({
-    address_book: addressBook._id,
-    contact_id: { $in: contactIds }
-  });
-
-  // Format contacts for response
-  const formattedContacts = contacts.map((contact) => ({
-    href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
-    etag: contact.etag,
-    vcard: contact.content
-  }));
-
-  // Generate XML response
-  const xml = xmlHelpers.getAddressbookQueryXML(formattedContacts, props);
-
-  ctx.type = 'application/xml';
-  ctx.status = 207;
-  ctx.body = xml;
 }
 
 async function handleSyncCollection(ctx, xmlBody, addressBook) {
@@ -792,7 +856,7 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   if (syncToken) {
     // TODO: Implement proper sync token handling
     // For now, just return all contacts
-    const contacts = await Contacts.find({
+    const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
       address_book: addressBook._id
     });
 
@@ -804,7 +868,7 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
     }));
   } else {
     // If no sync token, return all contacts
-    const contacts = await Contacts.find({
+    const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
       address_book: addressBook._id
     });
 
@@ -823,6 +887,59 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   ctx.status = 207;
   ctx.body = xml;
 }
+
+// PROPFIND routes
+davRouter.all('/:user', async (ctx) => {
+  if (ctx.params.user !== ctx.state.session.user.username)
+    throw Boom.unauthorized();
+  if (ctx.method !== 'PROPFIND') throw Boom.methodNotAllowed();
+
+  try {
+    // const depth = ctx.request.headers.depth || '0';
+
+    // Parse XML request body
+    // const xmlBody = ctx.request.body
+    //   ? await xmlHelpers.parseXML(ctx.request.body.toString())
+    //   : null;
+    // const props = xmlHelpers.extractRequestedProps(xmlBody);
+
+    // Create response
+    const responses = [
+      {
+        href: `/dav/${ctx.params.user}/`,
+        propstat: [
+          {
+            props: [
+              { name: 'd:displayname', value: ctx.state.session.user.username },
+              {
+                name: 'd:resourcetype',
+                value: '<d:collection/><d:principal/>'
+              },
+              {
+                name: 'd:current-user-principal',
+                value: `<d:href>/dav/${ctx.params.user}/</d:href>`
+              },
+              {
+                name: 'card:addressbook-home-set',
+                value: `<d:href>/dav/${ctx.params.user}/addressbooks/</d:href>`
+              }
+            ],
+            status: '200 OK'
+          }
+        ]
+      }
+    ];
+
+    const xml = xmlHelpers.getMultistatusXML(responses);
+
+    ctx.type = 'application/xml';
+    ctx.status = 207;
+    ctx.body = xml;
+  } catch (err) {
+    ctx.logger.error(err);
+    throw new TypeError('Error processing PROPFIND request');
+  }
+});
 
 router.use(davRouter.routes());
 

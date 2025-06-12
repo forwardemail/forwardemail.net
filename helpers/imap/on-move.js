@@ -15,7 +15,7 @@
 
 const mongoose = require('mongoose');
 const tools = require('wildduck/lib/tools');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
 

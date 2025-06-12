@@ -27,7 +27,7 @@ const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
 const ms = require('ms');
 const sharedConfig = require('@ladjs/shared-config');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 
 const AttachmentStorage = require('#helpers/attachment-storage');
 const Messages = require('#models/messages');

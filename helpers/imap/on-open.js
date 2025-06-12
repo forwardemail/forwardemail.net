@@ -13,7 +13,7 @@
  *   https://github.com/nodemailer/wildduck
  */
 
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');

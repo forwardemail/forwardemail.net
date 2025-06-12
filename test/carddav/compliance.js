@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+//
+// NOTE: we use `test.serial` here for tests with `sinon.stub`
+//
+
 const { Buffer } = require('node:buffer');
 
 const Redis = require('ioredis-mock');
@@ -234,10 +238,12 @@ test('should respond to OPTIONS request with correct headers', async (t) => {
 });
 
 // Test RFC 6352 compliance - PROPFIND on principal
-test('should respond to PROPFIND on principal with correct properties', async (t) => {
-  // Mock the XML response for principal
-  sinon.stub(xmlHelpers, 'getMultistatusXML')
-    .returns(`<?xml version="1.0" encoding="UTF-8"?>
+test.serial(
+  'should respond to PROPFIND on principal with correct properties',
+  async (t) => {
+    // Mock the XML response for principal
+    sinon.stub(xmlHelpers, 'getMultistatusXML')
+      .returns(`<?xml version="1.0" encoding="UTF-8"?>
 <d:multistatus xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav" xmlns:cs="http://calendarserver.org/ns/">
   <d:response>
     <d:href>/dav/${t.context.username}</d:href>
@@ -253,16 +259,16 @@ test('should respond to PROPFIND on principal with correct properties', async (t
   </d:response>
 </d:multistatus>`);
 
-  const response = await axios({
-    method: 'PROPFIND',
-    // TODO: remove this url: `${t.context.serverUrl}/`,
-    url: `${t.context.serverUrl}/dav/${t.context.username}`,
-    headers: {
-      'Content-Type': 'application/xml',
-      Depth: '0',
-      ...t.context.authHeaders
-    },
-    data: `<?xml version="1.0" encoding="UTF-8"?>
+    const response = await axios({
+      method: 'PROPFIND',
+      // TODO: remove this url: `${t.context.serverUrl}/`,
+      url: `${t.context.serverUrl}/dav/${t.context.username}`,
+      headers: {
+        'Content-Type': 'application/xml',
+        Depth: '0',
+        ...t.context.authHeaders
+      },
+      data: `<?xml version="1.0" encoding="UTF-8"?>
 <d:propfind xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
   <d:prop>
     <d:displayname/>
@@ -271,24 +277,25 @@ test('should respond to PROPFIND on principal with correct properties', async (t
     <card:addressbook-home-set/>
   </d:prop>
 </d:propfind>`
-  });
+    });
 
-  // Verify response status
-  t.is(response.status, 207);
+    // Verify response status
+    t.is(response.status, 207);
 
-  // Verify response contains required properties
-  t.true(response.data.includes('<d:displayname>'));
-  t.true(response.data.includes('<d:resourcetype>'));
-  t.true(response.data.includes('<d:principal/>'));
-  t.true(response.data.includes('<card:addressbook-home-set>'));
-  t.true(response.data.includes(`/dav/${t.context.username}/addressbooks`));
+    // Verify response contains required properties
+    t.true(response.data.includes('<d:displayname>'));
+    t.true(response.data.includes('<d:resourcetype>'));
+    t.true(response.data.includes('<d:principal/>'));
+    t.true(response.data.includes('<card:addressbook-home-set>'));
+    t.true(response.data.includes(`/dav/${t.context.username}/addressbooks`));
 
-  // Restore the stub
-  xmlHelpers.getMultistatusXML.restore();
-});
+    // Restore the stub
+    xmlHelpers.getMultistatusXML.restore();
+  }
+);
 
 // Test RFC 6352 compliance - MKCOL for creating address books
-test('should respond to MKCOL for creating address books', async (t) => {
+test.serial('should respond to MKCOL for creating address books', async (t) => {
   // Mock the AddressBooks.findOne method
   sinon.stub(AddressBooks, 'findOne').resolves(null);
 
@@ -333,56 +340,59 @@ test('should respond to MKCOL for creating address books', async (t) => {
 });
 
 // Test RFC 6352 compliance - Error handling for invalid requests
-test('should handle invalid requests with appropriate error responses', async (t) => {
-  // Test case 1: Non-existent address book
-  try {
-    // Mock the AddressBooks.findOne method to return null
-    sinon.stub(AddressBooks, 'findOne').resolves(null);
+test.serial(
+  'should handle invalid requests with appropriate error responses',
+  async (t) => {
+    // Test case 1: Non-existent address book
+    try {
+      // Mock the AddressBooks.findOne method to return null
+      sinon.stub(AddressBooks, 'findOne').resolves(null);
 
-    await axios({
-      method: 'PROPFIND',
-      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/nonexistent`,
-      headers: {
-        'Content-Type': 'application/xml',
-        Depth: '0',
-        ...t.context.authHeaders
-      },
-      data: `<?xml version="1.0" encoding="UTF-8"?>
+      await axios({
+        method: 'PROPFIND',
+        url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/nonexistent`,
+        headers: {
+          'Content-Type': 'application/xml',
+          Depth: '0',
+          ...t.context.authHeaders
+        },
+        data: `<?xml version="1.0" encoding="UTF-8"?>
 <d:propfind xmlns:d="DAV:">
   <d:prop>
     <d:displayname/>
   </d:prop>
 </d:propfind>`
-    });
+      });
 
-    t.fail('Request to non-existent address book should fail');
-  } catch (err) {
-    t.is(err.response.status, 404);
-    AddressBooks.findOne.restore();
-  }
+      t.fail('Request to non-existent address book should fail');
+    } catch (err) {
+      t.is(err.response.status, 404);
+      AddressBooks.findOne.restore();
+    }
 
-  // Test case 2: Unauthorized access
-  try {
-    await axios({
-      method: 'PROPFIND',
-      url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/test-address-book`,
-      headers: {
-        'Content-Type': 'application/xml',
-        Depth: '0',
-        Authorization: `Basic ${Buffer.from(
-          'invalid@example.com:wrongpassword'
-        ).toString('base64')}`
-      },
-      data: `<?xml version="1.0" encoding="UTF-8"?>
+    // Test case 2: Unauthorized access
+    try {
+      await axios({
+        method: 'PROPFIND',
+        url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/test-address-book`,
+        headers: {
+          'Content-Type': 'application/xml',
+          Depth: '0',
+          Authorization: `Basic ${Buffer.from(
+            'invalid@example.com:wrongpassword'
+          ).toString('base64')}`
+        },
+        data: `<?xml version="1.0" encoding="UTF-8"?>
 <d:propfind xmlns:d="DAV:">
   <d:prop>
     <d:displayname/>
   </d:prop>
 </d:propfind>`
-    });
+      });
 
-    t.fail('Request with invalid credentials should fail');
-  } catch (err) {
-    t.is(err.response.status, 401);
+      t.fail('Request with invalid credentials should fail');
+    } catch (err) {
+      t.is(err.response.status, 401);
+    }
   }
-});
+);

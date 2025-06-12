@@ -7,7 +7,7 @@ const bytes = require('@forwardemail/bytes');
 const checkDiskSpace = require('check-disk-space').default;
 const dayjs = require('dayjs-with-plugins');
 const pify = require('pify');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 
 const getPathToDatabase = require('./get-path-to-database');
 const getTemporaryDatabase = require('./get-temporary-database');

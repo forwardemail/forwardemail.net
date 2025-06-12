@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
+
 const { parseStringPromise } = require('xml2js');
 const xmlbuilder = require('xmlbuilder');
 
@@ -25,14 +27,42 @@ async function parseXML(xmlString) {
 }
 
 /**
- * Extract requested properties from PROPFIND XML
+ * Extract requested properties from PROPFIND XML or CardDAV query XML
+ * Enhanced to handle both PROPFIND and CardDAV addressbook-query/multiget
  * @param {Object} xmlBody - Parsed XML body
  * @returns {Array<string>} - Array of requested property names
  */
 function extractRequestedProps(xmlBody) {
   const props = [];
 
-  if (!xmlBody || !xmlBody['d:propfind'] || !xmlBody['d:propfind']['d:prop']) {
+  // Handle PROPFIND requests (existing functionality)
+  if (xmlBody && xmlBody['d:propfind'] && xmlBody['d:propfind']['d:prop']) {
+    const requestedProps = xmlBody['d:propfind']['d:prop'];
+    props.push(...Object.keys(requestedProps));
+  }
+
+  // Handle addressbook-query requests (new functionality)
+  else if (
+    xmlBody &&
+    xmlBody['card:addressbook-query'] &&
+    xmlBody['card:addressbook-query']['d:prop']
+  ) {
+    const requestedProps = xmlBody['card:addressbook-query']['d:prop'];
+    props.push(...Object.keys(requestedProps));
+  }
+
+  // Handle addressbook-multiget requests (new functionality)
+  else if (
+    xmlBody &&
+    xmlBody['card:addressbook-multiget'] &&
+    xmlBody['card:addressbook-multiget']['d:prop']
+  ) {
+    const requestedProps = xmlBody['card:addressbook-multiget']['d:prop'];
+    props.push(...Object.keys(requestedProps));
+  }
+
+  // Default props if none specified
+  if (props.length === 0) {
     return [
       'd:displayname',
       'd:resourcetype',
@@ -41,18 +71,157 @@ function extractRequestedProps(xmlBody) {
     ];
   }
 
-  const requestedProps = xmlBody['d:propfind']['d:prop'];
-
-  props.push(...Object.keys(requestedProps));
-  // for (const prop in requestedProps) {
-  //   props.push(prop);
-  // }
-
   return props;
 }
 
 /**
- * Generate a multistatus XML response
+ * Extract hrefs from multiget request (NEW FUNCTION)
+ * @param {Object} xmlBody - Parsed XML body
+ * @returns {Array<string>} Array of href values
+ */
+function extractHrefs(xmlBody) {
+  const hrefs = [];
+
+  if (
+    xmlBody &&
+    xmlBody['card:addressbook-multiget'] &&
+    xmlBody['card:addressbook-multiget']['d:href']
+  ) {
+    const hrefData = xmlBody['card:addressbook-multiget']['d:href'];
+
+    if (Array.isArray(hrefData)) {
+      hrefs.push(...hrefData.map((href) => href._ || href));
+    } else {
+      hrefs.push(hrefData._ || hrefData);
+    }
+  }
+
+  return hrefs;
+}
+
+/**
+ * Validate filter structure before processing (NEW FUNCTION)
+ * @param {Object} xmlBody - Parsed XML body
+ * @returns {Object} Validation result with isValid and error
+ */
+// eslint-disable-next-line complexity
+function validateFilter(xmlBody) {
+  try {
+    const addressbookQuery = xmlBody && xmlBody['card:addressbook-query'];
+    if (!addressbookQuery) {
+      return { isValid: true }; // No query is valid (returns all)
+    }
+
+    const filter = addressbookQuery['card:filter'];
+    if (!filter) {
+      return { isValid: true }; // No filter is valid (returns all)
+    }
+
+    // Check for prop-filter elements
+    const propFilters = Array.isArray(filter['card:prop-filter'])
+      ? filter['card:prop-filter']
+      : filter['card:prop-filter']
+      ? [filter['card:prop-filter']]
+      : [];
+
+    for (const propFilter of propFilters) {
+      // Validate prop-filter has name attribute
+      if (!propFilter._attr || !propFilter._attr.name) {
+        return {
+          isValid: false,
+          error: 'prop-filter element must have a name attribute'
+        };
+      }
+
+      // Validate text-match elements
+      const textMatches = Array.isArray(propFilter['card:text-match'])
+        ? propFilter['card:text-match']
+        : propFilter['card:text-match']
+        ? [propFilter['card:text-match']]
+        : [];
+
+      for (const textMatch of textMatches) {
+        if (textMatch._attr) {
+          const matchType = textMatch._attr['match-type'];
+          if (
+            matchType &&
+            !['equals', 'contains', 'starts-with', 'ends-with'].includes(
+              matchType
+            )
+          ) {
+            return {
+              isValid: false,
+              error: `Invalid match-type: ${matchType}`
+            };
+          }
+
+          const { collation } = textMatch._attr;
+          if (
+            collation &&
+            ![
+              'i;ascii-casemap',
+              'i;unicode-casemap',
+              'unicode-casemap'
+            ].includes(collation)
+          ) {
+            return {
+              isValid: false,
+              error: `Invalid collation: ${collation}`
+            };
+          }
+        }
+      }
+
+      // Validate param-filter elements
+      const paramFilters = Array.isArray(propFilter['card:param-filter'])
+        ? propFilter['card:param-filter']
+        : propFilter['card:param-filter']
+        ? [propFilter['card:param-filter']]
+        : [];
+
+      for (const paramFilter of paramFilters) {
+        if (!paramFilter._attr || !paramFilter._attr.name) {
+          return {
+            isValid: false,
+            error: 'param-filter element must have a name attribute'
+          };
+        }
+      }
+    }
+
+    return { isValid: true };
+  } catch (err) {
+    return {
+      isValid: false,
+      error: `Filter validation error: ${err.message}`
+    };
+  }
+}
+
+/**
+ * Generate error response for invalid filters (NEW FUNCTION)
+ * @param {string} errorMessage - Error message
+ * @returns {string} XML error response
+ */
+function getFilterErrorXML(errorMessage) {
+  const xml = xmlbuilder.create('d:multistatus', {
+    version: '1.0',
+    // eslint-disable-next-line unicorn/text-encoding-identifier-case
+    encoding: 'UTF-8'
+  });
+
+  xml.att('xmlns:d', 'DAV:');
+  xml.att('xmlns:card', 'urn:ietf:params:xml:ns:carddav');
+
+  const response = xml.ele('d:response');
+  response.ele('d:status', {}, 'HTTP/1.1 400 Bad Request');
+  response.ele('d:error').ele('card:valid-filter', {}, errorMessage);
+
+  return xml.end({ pretty: true });
+}
+
+/**
+ * Generate a multistatus XML response (EXISTING FUNCTION - PRESERVED)
  * @param {Array<Object>} responses - Array of response objects
  * @returns {string} - XML string
  */
@@ -76,12 +245,16 @@ function getMultistatusXML(responses) {
       const propEl = propstatEl.ele('d:prop');
 
       for (const prop of propstat.props) {
-        if (prop.value.startsWith('<') && prop.value.endsWith('>')) {
+        if (
+          prop.value &&
+          prop.value.startsWith('<') &&
+          prop.value.endsWith('>')
+        ) {
           // Handle XML value
           propEl.ele(prop.name).raw(prop.value);
         } else {
           // Handle text value
-          propEl.ele(prop.name, {}, prop.value);
+          propEl.ele(prop.name, {}, prop.value || '');
         }
       }
 
@@ -93,7 +266,7 @@ function getMultistatusXML(responses) {
 }
 
 /**
- * Generate XML for PROPFIND response for a contact
+ * Generate XML for PROPFIND response for a contact (EXISTING FUNCTION - PRESERVED)
  * @param {Object} contact - Contact object
  * @param {Array<string>} props - Requested properties
  * @returns {string} - XML string
@@ -116,7 +289,10 @@ function getPropfindContactXML(contact, props) {
   for (const prop of props) {
     switch (prop) {
       case 'd:getetag': {
-        propstat.props.push({ name: 'd:getetag', value: contact.etag });
+        propstat.props.push({
+          name: 'd:getetag',
+          value: contact.etag
+        });
         break;
       }
 
@@ -129,7 +305,10 @@ function getPropfindContactXML(contact, props) {
       }
 
       case 'd:resourcetype': {
-        propstat.props.push({ name: 'd:resourcetype', value: '' });
+        propstat.props.push({
+          name: 'd:resourcetype',
+          value: ''
+        });
         break;
       }
 
@@ -152,7 +331,8 @@ function getPropfindContactXML(contact, props) {
 }
 
 /**
- * Generate XML for addressbook-query REPORT response
+ * Generate XML for addressbook-query REPORT response (ENHANCED EXISTING FUNCTION)
+ * Enhanced to handle both 'vcard' and 'content' properties and more property types
  * @param {Array<Object>} contacts - Array of contact objects
  * @param {Array<string>} props - Requested properties
  * @returns {string} - XML string
@@ -176,14 +356,52 @@ function getAddressbookQueryXML(contacts, props) {
     for (const prop of props) {
       switch (prop) {
         case 'd:getetag': {
-          propstat.props.push({ name: 'd:getetag', value: contact.etag });
+          propstat.props.push({
+            name: 'd:getetag',
+            value: contact.etag
+          });
           break;
         }
 
         case 'card:address-data': {
+          // Handle both 'vcard' and 'content' properties for backward compatibility
+          const vcardContent = contact.vcard || contact.content;
           propstat.props.push({
             name: 'card:address-data',
-            value: contact.vcard
+            value: vcardContent
+          });
+          break;
+        }
+
+        case 'd:getcontenttype': {
+          propstat.props.push({
+            name: 'd:getcontenttype',
+            value: 'text/vcard; charset=utf-8'
+          });
+          break;
+        }
+
+        case 'd:resourcetype': {
+          propstat.props.push({
+            name: 'd:resourcetype',
+            value: ''
+          });
+          break;
+        }
+
+        case 'd:getcontentlength': {
+          const vcardContent = contact.vcard || contact.content || '';
+          propstat.props.push({
+            name: 'd:getcontentlength',
+            value: Buffer.byteLength(vcardContent, 'utf8').toString()
+          });
+          break;
+        }
+
+        case 'd:getlastmodified': {
+          propstat.props.push({
+            name: 'd:getlastmodified',
+            value: new Date().toUTCString()
           });
           break;
         }
@@ -202,7 +420,111 @@ function getAddressbookQueryXML(contacts, props) {
 }
 
 /**
- * Generate XML for sync-collection REPORT response
+ * Generate addressbook collection PROPFIND response (NEW FUNCTION)
+ * @param {Object} addressBook - AddressBook object
+ * @param {Array<string>} props - Requested properties
+ * @param {string} href - AddressBook href
+ * @returns {string} XML string
+ */
+function getAddressbookPropfindXML(addressBook, props, href) {
+  const propElements = [];
+
+  for (const prop of props) {
+    switch (prop) {
+      case 'd:resourcetype': {
+        propElements.push({
+          name: 'd:resourcetype',
+          value: '<d:collection/><card:addressbook/>'
+        });
+        break;
+      }
+
+      case 'd:displayname': {
+        propElements.push({
+          name: 'd:displayname',
+          value: addressBook.name
+        });
+        break;
+      }
+
+      case 'card:addressbook-description': {
+        propElements.push({
+          name: 'card:addressbook-description',
+          value: addressBook.description || ''
+        });
+        break;
+      }
+
+      case 'card:supported-address-data': {
+        propElements.push({
+          name: 'card:supported-address-data',
+          value:
+            '<card:address-data-type content-type="text/vcard" version="3.0"/>'
+        });
+        break;
+      }
+
+      case 'card:max-resource-size': {
+        propElements.push({
+          name: 'card:max-resource-size',
+          value: '1048576' // 1MB
+        });
+        break;
+      }
+
+      case 'd:sync-token': {
+        propElements.push({
+          name: 'd:sync-token',
+          value: addressBook.synctoken
+        });
+        break;
+      }
+
+      case 'd:getctag': {
+        propElements.push({
+          name: 'd:getctag',
+          value: addressBook.synctoken
+        });
+        break;
+      }
+
+      default: {
+        // Unknown property - return 404
+        propElements.push({
+          name: prop,
+          status: '404 Not Found'
+        });
+        break;
+      }
+    }
+  }
+
+  const responses = [
+    {
+      href,
+      propstat: [
+        {
+          props: propElements.filter((p) => !p.status),
+          status: '200 OK'
+        }
+      ]
+    }
+  ];
+
+  // Add 404 propstat if there are any unknown properties
+  const notFoundProps = propElements.filter((p) => p.status);
+  if (notFoundProps.length > 0) {
+    responses[0].propstat.push({
+      props: notFoundProps,
+      status: '404 Not Found'
+    });
+  }
+
+  return getMultistatusXML(responses);
+}
+
+/**
+ * Generate XML for sync-collection REPORT response (EXISTING FUNCTION - PRESERVED)
  * @param {Object} addressBook - Address book object
  * @param {Array<Object>} changes - Array of change objects
  * @param {Array<string>} props - Requested properties
@@ -238,7 +560,10 @@ function getSyncCollectionXML(addressBook, changes, props) {
       for (const prop of props) {
         switch (prop) {
           case 'd:getetag': {
-            propstat.props.push({ name: 'd:getetag', value: change.etag });
+            propstat.props.push({
+              name: 'd:getetag',
+              value: change.etag
+            });
             break;
           }
 
@@ -279,12 +604,16 @@ function getSyncCollectionXML(addressBook, changes, props) {
       const propEl = propstatEl.ele('d:prop');
 
       for (const prop of propstat.props) {
-        if (prop.value.startsWith('<') && prop.value.endsWith('>')) {
+        if (
+          prop.value &&
+          prop.value.startsWith('<') &&
+          prop.value.endsWith('>')
+        ) {
           // Handle XML value
           propEl.ele(prop.name).raw(prop.value);
         } else {
           // Handle text value
-          propEl.ele(prop.name, {}, prop.value);
+          propEl.ele(prop.name, {}, prop.value || '');
         }
       }
 
@@ -298,14 +627,13 @@ function getSyncCollectionXML(addressBook, changes, props) {
 }
 
 /**
- * Parse vCard string into a JavaScript object
+ * Parse vCard string into a JavaScript object (EXISTING FUNCTION - PRESERVED)
  * @param {string} vCardString - vCard string to parse
  * @returns {Object} - Parsed vCard as JavaScript object
  */
 function parseVCard(vCardString) {
   const result = {};
   const lines = vCardString.split(/\r\n|\r|\n/);
-
   let currentKey = null;
   let currentValue = null;
 
@@ -335,7 +663,6 @@ function parseVCard(vCardString) {
       const semiIndex = keyPart.indexOf(';');
       currentKey =
         semiIndex > 0 ? keyPart.slice(0, Math.max(0, semiIndex)) : keyPart;
-
       currentValue = valuePart;
 
       // Store in result
@@ -356,7 +683,7 @@ function parseVCard(vCardString) {
 }
 
 /**
- * Generate ETag for a vCard
+ * Generate ETag for a vCard (EXISTING FUNCTION - PRESERVED)
  * @param {string} vCardContent - vCard content
  * @returns {string} - ETag
  */
@@ -365,12 +692,21 @@ function generateETag(vCardContent) {
 }
 
 module.exports = {
+  // Existing functions (preserved)
   parseXML,
-  extractRequestedProps,
   getMultistatusXML,
   getPropfindContactXML,
-  getAddressbookQueryXML,
   getSyncCollectionXML,
   parseVCard,
-  generateETag
+  generateETag,
+
+  // Enhanced existing functions
+  extractRequestedProps,
+  getAddressbookQueryXML,
+
+  // New functions for CardDAV filtering
+  extractHrefs,
+  validateFilter,
+  getFilterErrorXML,
+  getAddressbookPropfindXML
 };

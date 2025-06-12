@@ -16,7 +16,7 @@ const pMapSeries = require('p-map-series');
 const pRetry = require('p-retry');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 
 const AddressBooks = require('#models/address-books');

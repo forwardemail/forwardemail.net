@@ -87,7 +87,7 @@ else if ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent"))
 else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
 if !isBot(ctx.get("User-Agent"))
-  - navbarClasses.unshift("navbar-expand-lg")
+  - navbarClasses.unshift("navbar-expand-lg");
   if ctx.pathWithoutLocale !== '/email-api'
     - navbarClasses.unshift("fixed-top");
 

@@ -16,7 +16,7 @@
 const mongoose = require('mongoose');
 const ms = require('ms');
 const tools = require('wildduck/lib/tools');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const { boolean } = require('boolean');
 
 const Aliases = require('#models/aliases');

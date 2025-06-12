@@ -10,7 +10,7 @@ const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const safeStringify = require('fast-safe-stringify');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const _ = require('#helpers/lodash');
 
 const config = require('#config');

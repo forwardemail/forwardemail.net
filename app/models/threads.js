@@ -20,7 +20,7 @@ const MessageHandler = require('wildduck/lib/message-handler');
 const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const validationErrorTransform = require('mongoose-validation-error-transform');
-const { Builder } = require('json-sql');
+const { Builder } = require('json-sql-enhanced');
 const _ = require('#helpers/lodash');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
