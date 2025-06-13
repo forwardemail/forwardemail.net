@@ -237,6 +237,34 @@ test('should respond to OPTIONS request with correct headers', async (t) => {
   }
 });
 
+// TODO: should respond with <A:multistatus> and <A:sync-token>
+test('iOS REPORT', async (t) => {
+  // REPORT /dav/user@user.com/addressbooks/default
+  const response = await axios({
+    method: 'REPORT',
+    url: `${t.context.serverUrl}/dav/${t.context.username}/addressbooks/default`,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: '<?xml version="1.0" encoding="UTF-8"?>\n<A:sync-collection xmlns:A="DAV:">\n  <A:sync-token>https://forwardemail.net/ns/sync-token/1</A:sync-token>\n  <A:sync-level>1</A:sync-level>\n  <A:prop>\n    <A:getetag/>\n  </A:prop>\n</A:sync-collection>'
+  });
+
+  // <?xml version="1.0" encoding="UTF-8"?>
+  // <d:multistatus xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  //   <d:sync-token>http://example.com:3000/ns/sync-token/1</d:sync-token>
+  // </d:multistatus>
+
+  // Verify response status
+  t.is(response.status, 207);
+
+  // Verify response contains required properties
+  // TODO: xmlns:A="DAV:"
+  t.true(response.data.includes('<d:multistatus xmlns:d="DAV:"'));
+  t.true(response.data.includes('<d:sync-token>'));
+});
+
 // Test RFC 6352 compliance - PROPFIND on principal
 test.serial(
   'should respond to PROPFIND on principal with correct properties',

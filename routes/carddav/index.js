@@ -461,7 +461,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       );
 
       if (existingAddressBook)
-        throw Boom.conflict(ctx.translateError('ADDRES_BOOK_ALREADY_EXISTS'));
+        throw Boom.conflict(ctx.translateError('ADDRESS_BOOK_ALREADY_EXISTS'));
 
       // Parse XML request body
       const xmlBody = ctx.request.body
@@ -474,18 +474,18 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
       if (
         xmlBody &&
-        xmlBody['d:mkcol'] &&
-        xmlBody['d:mkcol']['d:set'] &&
-        xmlBody['d:mkcol']['d:set']['d:prop']
+        xmlBody.mkcol &&
+        xmlBody.mkcol.set &&
+        xmlBody.mkcol.set.prop
       ) {
-        const props = xmlBody['d:mkcol']['d:set']['d:prop'];
+        const props = xmlBody.mkcol.set.prop;
 
-        if (props['d:displayname']) {
-          displayName = props['d:displayname'];
+        if (props.displayname) {
+          displayName = props.displayname;
         }
 
-        if (props['card:addressbook-description']) {
-          description = props['card:addressbook-description'];
+        if (props['addressbook-description']) {
+          description = props['addressbook-description'];
         }
       }
 
@@ -539,11 +539,11 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
       // const props = xmlHelpers.extractRequestedProps(xmlBody);
 
       // Handle different report types
-      if (xmlBody['card:addressbook-query']) {
+      if (xmlBody['addressbook-query']) {
         await handleAddressbookQuery(ctx, xmlBody, addressBook);
-      } else if (xmlBody['card:addressbook-multiget']) {
+      } else if (xmlBody['addressbook-multiget']) {
         await handleAddressbookMultiget(ctx, xmlBody, addressBook);
-      } else if (xmlBody['d:sync-collection']) {
+      } else if (xmlBody['sync-collection']) {
         await handleSyncCollection(ctx, xmlBody, addressBook);
       } else {
         const err = Boom.badRequest(
@@ -635,8 +635,6 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
 });
 
 // Helper functions for REPORT handling
-//
-// TODO: implement the below
 //
 // # CardDAV `addressbook-query` Filters and Testing with `tsdav`
 //
@@ -838,14 +836,14 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
 
   // Extract sync token
   let syncToken = null;
-  if (xmlBody['d:sync-collection']['d:sync-token']) {
-    syncToken = xmlBody['d:sync-collection']['d:sync-token'];
+  if (xmlBody['sync-collection']['sync-token']) {
+    syncToken = xmlBody['sync-collection']['sync-token'];
   }
 
   // Extract props
   const props = [];
-  if (xmlBody['d:sync-collection']['d:prop']) {
-    for (const key of Object.keys(xmlBody['d:sync-collection']['d:prop'])) {
+  if (xmlBody['sync-collection'].prop) {
+    for (const key of Object.keys(xmlBody['sync-collection'].prop)) {
       props.push(key);
     }
   }

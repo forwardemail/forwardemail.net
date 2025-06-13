@@ -1,32 +1,82 @@
 # Forward Email Self-Hosting Installation Guide for Debian
 
+
+## Table of Contents
+
+* [Overview](#overview)
+* [Prerequisites](#prerequisites)
+* [System Requirements](#system-requirements)
+* [Step-by-Step Installation](#step-by-step-installation)
+  * [Step 1: Initial System Setup](#step-1-initial-system-setup)
+  * [Step 2: Configure DNS Resolvers](#step-2-configure-dns-resolvers)
+  * [Step 3: Install System Dependencies](#step-3-install-system-dependencies)
+  * [Step 4: Install and Configure Snapd](#step-4-install-and-configure-snapd)
+  * [Step 5: Install Snap Packages](#step-5-install-snap-packages)
+  * [Step 6: Install Docker](#step-6-install-docker)
+  * [Step 7: Configure Docker Service](#step-7-configure-docker-service)
+  * [Step 8: Install and Configure UFW Firewall](#step-8-install-and-configure-ufw-firewall)
+  * [Step 9: Clone Forward Email Repository](#step-9-clone-forward-email-repository)
+  * [Step 10: Set Up Environment Configuration](#step-10-set-up-environment-configuration)
+  * [Step 11: Configure Your Domain](#step-11-configure-your-domain)
+  * [Step 12: Generate SSL Certificates](#step-12-generate-ssl-certificates)
+  * [Step 13: Generate Encryption Keys](#step-13-generate-encryption-keys)
+  * [Step 14: Update SSL Paths in Configuration](#step-14-update-ssl-paths-in-configuration)
+  * [Step 15: Set Up Basic Authentication](#step-15-set-up-basic-authentication)
+  * [Step 16: Deploy with Docker Compose](#step-16-deploy-with-docker-compose)
+  * [Step 17: Verify Installation](#step-17-verify-installation)
+* [Post-Installation Configuration](#post-installation-configuration)
+  * [DNS Records Setup](#dns-records-setup)
+  * [First Login](#first-login)
+* [Backup Configuration](#backup-configuration)
+  * [Set Up S3-Compatible Backup](#set-up-s3-compatible-backup)
+  * [Set Up Backup Cron Jobs](#set-up-backup-cron-jobs)
+* [Auto-Update Configuration](#auto-update-configuration)
+* [Debian-Specific Considerations](#debian-specific-considerations)
+  * [Package Management Differences](#package-management-differences)
+  * [Service Management](#service-management)
+  * [Network Configuration](#network-configuration)
+* [Maintenance and Monitoring](#maintenance-and-monitoring)
+  * [Log Locations](#log-locations)
+  * [Regular Maintenance Tasks](#regular-maintenance-tasks)
+  * [Certificate Renewal](#certificate-renewal)
+* [Troubleshooting](#troubleshooting)
+  * [Debian-Specific Issues](#debian-specific-issues)
+  * [Common Issues](#common-issues)
+  * [Getting Help](#getting-help)
+* [Security Best Practices](#security-best-practices)
+* [Conclusion](#conclusion)
+
+
 ## Overview
 
 This guide provides step-by-step instructions for installing Forward Email's self-hosted solution on Debian systems. This guide is specifically tailored for Debian 11 (Bullseye) and Debian 12 (Bookworm).
+
 
 ## Prerequisites
 
 Before beginning the installation, ensure you have:
 
-- **Debian Server**: Version 11 (Bullseye) or 12 (Bookworm)
-- **Root Access**: You must be able to run commands as root (sudo access)
-- **Domain Name**: A domain that you control with DNS management access
-- **Clean Server**: Recommended to use a fresh Debian installation
-- **Internet Connection**: Required for downloading packages and Docker images
+* **Debian Server**: Version 11 (Bullseye) or 12 (Bookworm)
+* **Root Access**: You must be able to run commands as root (sudo access)
+* **Domain Name**: A domain that you control with DNS management access
+* **Clean Server**: Recommended to use a fresh Debian installation
+* **Internet Connection**: Required for downloading packages and Docker images
+
 
 ## System Requirements
 
-- **RAM**: Minimum 2GB (4GB recommended for production)
-- **Storage**: Minimum 20GB available space (50GB+ recommended for production)
-- **CPU**: 1 vCPU minimum (2+ vCPUs recommended for production)
-- **Network**: Public IP address with the following ports accessible:
-  - 22 (SSH)
-  - 25 (SMTP)
-  - 80 (HTTP)
-  - 443 (HTTPS)
-  - 465 (SMTPS)
-  - 993 (IMAPS)
-  - 995 (POP3S)
+* **RAM**: Minimum 2GB (4GB recommended for production)
+* **Storage**: Minimum 20GB available space (50GB+ recommended for production)
+* **CPU**: 1 vCPU minimum (2+ vCPUs recommended for production)
+* **Network**: Public IP address with the following ports accessible:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Step-by-Step Installation
 
@@ -272,7 +322,7 @@ DOMAIN="yourdomain.com"
 update_env_file() {
   local key="$1"
   local value="$2"
-  
+
   if grep -qE "^${key}=" "$SELF_HOST_DIR/$ENV_FILE"; then
     sed -i -E "s|^${key}=.*|${key}=${value}|" "$SELF_HOST_DIR/$ENV_FILE"
   else
@@ -486,6 +536,7 @@ curl -I https://$DOMAIN
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
+
 ## Post-Installation Configuration
 
 ### DNS Records Setup
@@ -493,11 +544,13 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 You need to configure the following DNS records for your domain:
 
 #### MX Record
+
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
 #### A Records
+
 ```
 @ A YOUR_SERVER_IP
 mx A YOUR_SERVER_IP
@@ -510,23 +563,28 @@ carddav A YOUR_SERVER_IP
 ```
 
 #### SPF Record
+
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
 #### DKIM Record
+
 Get your DKIM public key:
+
 ```bash
 # Extract DKIM public key
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
 Create DKIM DNS record:
+
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
 #### DMARC Record
+
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ```
@@ -537,6 +595,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 2. Enter the basic authentication credentials you saved earlier
 3. Complete the initial setup wizard
 4. Create your first email account
+
 
 ## Backup Configuration
 
@@ -583,6 +642,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
+
 ## Auto-Update Configuration
 
 Set up automatic updates for your Forward Email installation:
@@ -602,14 +662,15 @@ fi
 crontab -l
 ```
 
+
 ## Debian-Specific Considerations
 
 ### Package Management Differences
 
-- **Snapd**: Not installed by default on Debian, requires manual installation
-- **Docker**: Uses Debian-specific repositories and GPG keys
-- **UFW**: May not be included in minimal Debian installations
-- **systemd**: Behavior may differ slightly from Ubuntu
+* **Snapd**: Not installed by default on Debian, requires manual installation
+* **Docker**: Uses Debian-specific repositories and GPG keys
+* **UFW**: May not be included in minimal Debian installations
+* **systemd**: Behavior may differ slightly from Ubuntu
 
 ### Service Management
 
@@ -639,15 +700,16 @@ ip route show
 nslookup google.com
 ```
 
+
 ## Maintenance and Monitoring
 
 ### Log Locations
 
-- **Docker Compose logs**: Use appropriate docker compose command based on installation
-- **System logs**: `/var/log/syslog`
-- **Backup logs**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-- **Auto-update logs**: `/var/log/autoupdate.log`
-- **Snapd logs**: `journalctl -u snapd`
+* **Docker Compose logs**: Use appropriate docker compose command based on installation
+* **System logs**: `/var/log/syslog`
+* **Backup logs**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Auto-update logs**: `/var/log/autoupdate.log`
+* **Snapd logs**: `journalctl -u snapd`
 
 ### Regular Maintenance Tasks
 
@@ -676,11 +738,13 @@ else
 fi
 ```
 
+
 ## Troubleshooting
 
 ### Debian-Specific Issues
 
 #### 1. Snapd Not Working
+
 ```bash
 # Check snapd status
 systemctl status snapd
@@ -697,6 +761,7 @@ source ~/.bashrc
 ```
 
 #### 2. Docker Compose Command Not Found
+
 ```bash
 # Check which docker compose command is available
 command -v docker-compose
@@ -711,6 +776,7 @@ fi
 ```
 
 #### 3. Package Installation Issues
+
 ```bash
 # Update package cache
 apt update
@@ -725,6 +791,7 @@ apt-mark showhold
 ### Common Issues
 
 #### 1. Docker Service Won't Start
+
 ```bash
 # Check Docker status
 systemctl status docker
@@ -737,20 +804,23 @@ nohup dockerd >/dev/null 2>/dev/null &
 ```
 
 #### 2. Certificate Generation Fails
-- Ensure ports 80 and 443 are accessible
-- Verify DNS records point to your server
-- Check firewall settings with `ufw status`
+
+* Ensure ports 80 and 443 are accessible
+* Verify DNS records point to your server
+* Check firewall settings with `ufw status`
 
 #### 3. Email Delivery Issues
-- Verify MX records are correct
-- Check SPF, DKIM, and DMARC records
-- Ensure port 25 isn't blocked by your hosting provider
+
+* Verify MX records are correct
+* Check SPF, DKIM, and DMARC records
+* Ensure port 25 isn't blocked by your hosting provider
 
 ### Getting Help
 
-- **Documentation**: https://forwardemail.net/self-hosted
-- **GitHub Issues**: https://github.com/forwardemail/forwardemail.net/issues
-- **Debian Documentation**: https://www.debian.org/doc/
+* **Documentation**: <https://forwardemail.net/self-hosted>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Debian Documentation**: <https://www.debian.org/doc/>
+
 
 ## Security Best Practices
 
@@ -761,6 +831,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 5. **Enable Fail2Ban**: Consider installing fail2ban for additional security
 6. **Regular Security Audits**: Periodically review your configuration
 7. **Monitor Snapd**: Keep snap packages updated with `snap refresh`
+
 
 ## Conclusion
 
@@ -775,5 +846,4 @@ Your Forward Email self-hosted installation should now be complete and running o
 
 The main differences from Ubuntu are the snapd installation and Docker repository configuration. Once these are properly set up, the Forward Email application behaves identically on both systems.
 
-For additional configuration options and advanced features, refer to the official Forward Email documentation at https://forwardemail.net/self-hosted#configuration.
-
+For additional configuration options and advanced features, refer to the official Forward Email documentation at <https://forwardemail.net/self-hosted#configuration>.

@@ -1,6 +1,7 @@
 /**
  * CardDAV Filter Parser - Focused on Filter Logic Only
  * All XML handling consolidated into xmlHelpers
+ * Updated to work with normalized tags (without namespace prefixes)
  *
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: BUSL-1.1
@@ -38,26 +39,28 @@ class CardDAVFilterParser {
    * @returns {Object} MongoDB query object
    */
   parseFilter(xmlBody) {
-    const addressbookQuery = xmlBody['card:addressbook-query'];
-    if (!addressbookQuery || !addressbookQuery['card:filter']) {
+    // Updated to work with normalized tags (without namespace prefixes)
+    const addressbookQuery = xmlBody['addressbook-query'];
+    if (!addressbookQuery || !addressbookQuery.filter) {
       return {}; // No filter means return all
     }
 
-    const filter = addressbookQuery['card:filter'];
+    const { filter } = addressbookQuery;
     return this.processFilter(filter);
   }
 
   /**
    * Process a filter element
-   * @param {Object} filter - The card:filter element
+   * @param {Object} filter - The filter element (previously card:filter)
    * @returns {Object} MongoDB query object
    */
   processFilter(filter) {
     const testType = filter._attr?.test || 'anyof';
-    const propFilters = Array.isArray(filter['card:prop-filter'])
-      ? filter['card:prop-filter']
-      : filter['card:prop-filter']
-      ? [filter['card:prop-filter']]
+    // Updated to work with normalized tags (without namespace prefixes)
+    const propFilters = Array.isArray(filter['prop-filter'])
+      ? filter['prop-filter']
+      : filter['prop-filter']
+      ? [filter['prop-filter']]
       : [];
 
     if (propFilters.length === 0) {
@@ -86,7 +89,7 @@ class CardDAVFilterParser {
 
   /**
    * Process a prop-filter element
-   * @param {Object} propFilter - The card:prop-filter element
+   * @param {Object} propFilter - The prop-filter element (previously card:prop-filter)
    * @returns {Object} MongoDB query object
    */
   processPropFilter(propFilter) {
@@ -107,33 +110,33 @@ class CardDAVFilterParser {
 
     const queries = [];
 
-    // Handle is-not-defined
-    if (propFilter['card:is-not-defined']) {
+    // Handle is-not-defined - Updated to work with normalized tags
+    if (propFilter['is-not-defined']) {
       queries.push(
         this.processIsNotDefined(
           propertyName,
           dbField,
-          propFilter['card:is-not-defined']
+          propFilter['is-not-defined']
         )
       );
     }
 
-    // Handle text-match elements
-    const textMatches = Array.isArray(propFilter['card:text-match'])
-      ? propFilter['card:text-match']
-      : propFilter['card:text-match']
-      ? [propFilter['card:text-match']]
+    // Handle text-match elements - Updated to work with normalized tags
+    const textMatches = Array.isArray(propFilter['text-match'])
+      ? propFilter['text-match']
+      : propFilter['text-match']
+      ? [propFilter['text-match']]
       : [];
 
     for (const textMatch of textMatches) {
       queries.push(this.processTextMatch(propertyName, dbField, textMatch));
     }
 
-    // Handle param-filter elements
-    const paramFilters = Array.isArray(propFilter['card:param-filter'])
-      ? propFilter['card:param-filter']
-      : propFilter['card:param-filter']
-      ? [propFilter['card:param-filter']]
+    // Handle param-filter elements - Updated to work with normalized tags
+    const paramFilters = Array.isArray(propFilter['param-filter'])
+      ? propFilter['param-filter']
+      : propFilter['param-filter']
+      ? [propFilter['param-filter']]
       : [];
 
     for (const paramFilter of paramFilters) {
@@ -155,17 +158,17 @@ class CardDAVFilterParser {
 
   /**
    * Process content-based prop-filter (for properties not extracted to fields)
-   * @param {Object} propFilter - The card:prop-filter element
+   * @param {Object} propFilter - The prop-filter element (previously card:prop-filter)
    * @param {string} propertyName - vCard property name
    * @returns {Object} MongoDB query object
    */
   processContentPropFilter(propFilter, propertyName) {
     const queries = [];
 
-    // Handle is-not-defined
-    if (propFilter['card:is-not-defined']) {
+    // Handle is-not-defined - Updated to work with normalized tags
+    if (propFilter['is-not-defined']) {
       const negateCondition =
-        propFilter['card:is-not-defined']._attr?.['negate-condition'] === 'yes';
+        propFilter['is-not-defined']._attr?.['negate-condition'] === 'yes';
       if (negateCondition) {
         // Property must exist in content
         queries.push({
@@ -179,11 +182,11 @@ class CardDAVFilterParser {
       }
     }
 
-    // Handle text-match elements
-    const textMatches = Array.isArray(propFilter['card:text-match'])
-      ? propFilter['card:text-match']
-      : propFilter['card:text-match']
-      ? [propFilter['card:text-match']]
+    // Handle text-match elements - Updated to work with normalized tags
+    const textMatches = Array.isArray(propFilter['text-match'])
+      ? propFilter['text-match']
+      : propFilter['text-match']
+      ? [propFilter['text-match']]
       : [];
 
     for (const textMatch of textMatches) {
@@ -197,11 +200,11 @@ class CardDAVFilterParser {
       );
     }
 
-    // Handle param-filter elements
-    const paramFilters = Array.isArray(propFilter['card:param-filter'])
-      ? propFilter['card:param-filter']
-      : propFilter['card:param-filter']
-      ? [propFilter['card:param-filter']]
+    // Handle param-filter elements - Updated to work with normalized tags
+    const paramFilters = Array.isArray(propFilter['param-filter'])
+      ? propFilter['param-filter']
+      : propFilter['param-filter']
+      ? [propFilter['param-filter']]
       : [];
 
     for (const paramFilter of paramFilters) {
@@ -224,7 +227,7 @@ class CardDAVFilterParser {
    * Process an is-not-defined element
    * @param {string} propertyName - vCard property name
    * @param {string} dbField - Database field name
-   * @param {Object} isNotDefined - The card:is-not-defined element
+   * @param {Object} isNotDefined - The is-not-defined element (previously card:is-not-defined)
    * @returns {Object} MongoDB query object
    */
   processIsNotDefined(propertyName, dbField, isNotDefined) {
@@ -263,7 +266,7 @@ class CardDAVFilterParser {
    * Process a text-match element
    * @param {string} propertyName - vCard property name
    * @param {string} dbField - Database field name
-   * @param {Object} textMatch - The card:text-match element
+   * @param {Object} textMatch - The text-match element (previously card:text-match)
    * @returns {Object} MongoDB query object
    */
   processTextMatch(propertyName, dbField, textMatch) {
@@ -310,7 +313,7 @@ class CardDAVFilterParser {
    * Process a param-filter element
    * @param {string} propertyName - vCard property name
    * @param {string} dbField - Database field name
-   * @param {Object} paramFilter - The card:param-filter element
+   * @param {Object} paramFilter - The param-filter element (previously card:param-filter)
    * @returns {Object} MongoDB query object
    */
   processParamFilter(propertyName, dbField, paramFilter) {
@@ -327,11 +330,10 @@ class CardDAVFilterParser {
     const paramFieldName =
       this.parameterMap[paramName] || paramName.toLowerCase();
 
-    // Handle is-not-defined for parameter
-    if (paramFilter['card:is-not-defined']) {
+    // Handle is-not-defined for parameter - Updated to work with normalized tags
+    if (paramFilter['is-not-defined']) {
       const negateCondition =
-        paramFilter['card:is-not-defined']._attr?.['negate-condition'] ===
-        'yes';
+        paramFilter['is-not-defined']._attr?.['negate-condition'] === 'yes';
       if (negateCondition) {
         // Parameter must exist
         return {
@@ -360,8 +362,8 @@ class CardDAVFilterParser {
       };
     }
 
-    // Handle text-match for parameter
-    const textMatch = paramFilter['card:text-match'];
+    // Handle text-match for parameter - Updated to work with normalized tags
+    const textMatch = paramFilter['text-match'];
     if (textMatch) {
       const searchValue = textMatch._ || textMatch;
       const collation = textMatch._attr?.collation || 'i;unicode-casemap';
@@ -393,12 +395,13 @@ class CardDAVFilterParser {
   /**
    * Process parameter filter for content-based properties
    * @param {string} propertyName - vCard property name
-   * @param {Object} paramFilter - The card:param-filter element
+   * @param {Object} paramFilter - The param-filter element (previously card:param-filter)
    * @returns {Object} MongoDB query object
    */
   processContentParamFilter(propertyName, paramFilter) {
     const paramName = paramFilter._attr?.name;
-    const textMatch = paramFilter['card:text-match'];
+    // Updated to work with normalized tags
+    const textMatch = paramFilter['text-match'];
 
     if (!textMatch) {
       return {};

@@ -5,22 +5,20 @@ This section documents the CI/CD workflow for ForwardEmail's self-hosted solutio
 
 ## Table of Contents
 
-- [Self-Hosted Releases](#self-hosted-releases)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [CI/CD Workflow](#cicd-workflow)
-    - [GitHub Actions Workflow](#github-actions-workflow)
-    - [Docker Image Structure](#docker-image-structure)
-  - [Deployment Process](#deployment-process)
-    - [Installation](#installation)
-    - [Docker Compose Configuration](#docker-compose-configuration)
-  - [Maintenance Features](#maintenance-features)
-    - [Automatic Updates](#automatic-updates)
-    - [Backup and Restore](#backup-and-restore)
-    - [Certificate Renewal](#certificate-renewal)
-  - [Versioning](#versioning)
-  - [Accessing Images](#accessing-images)
-  - [Contributing](#contributing)
+* [Overview](#overview)
+* [CI/CD Workflow](#cicd-workflow)
+  * [GitHub Actions Workflow](#github-actions-workflow)
+  * [Docker Image Structure](#docker-image-structure)
+* [Deployment Process](#deployment-process)
+  * [Installation](#installation)
+  * [Docker Compose Configuration](#docker-compose-configuration)
+* [Maintenance Features](#maintenance-features)
+  * [Automatic Updates](#automatic-updates)
+  * [Backup and Restore](#backup-and-restore)
+  * [Certificate Renewal](#certificate-renewal)
+* [Versioning](#versioning)
+* [Accessing Images](#accessing-images)
+* [Contributing](#contributing)
 
 
 ## Overview

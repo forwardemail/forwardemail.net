@@ -1,32 +1,76 @@
 # Forward Email Self-Hosting Installation Guide for Ubuntu
 
+
+## Table of Contents
+
+* [Overview](#overview)
+* [Prerequisites](#prerequisites)
+* [System Requirements](#system-requirements)
+* [Step-by-Step Installation](#step-by-step-installation)
+  * [Step 1: Initial System Setup](#step-1-initial-system-setup)
+  * [Step 2: Configure DNS Resolvers](#step-2-configure-dns-resolvers)
+  * [Step 3: Install System Dependencies](#step-3-install-system-dependencies)
+  * [Step 4: Install Snap Packages](#step-4-install-snap-packages)
+  * [Step 5: Install Docker](#step-5-install-docker)
+  * [Step 6: Configure Docker Service](#step-6-configure-docker-service)
+  * [Step 7: Configure Firewall](#step-7-configure-firewall)
+  * [Step 8: Clone Forward Email Repository](#step-8-clone-forward-email-repository)
+  * [Step 9: Set Up Environment Configuration](#step-9-set-up-environment-configuration)
+  * [Step 10: Configure Your Domain](#step-10-configure-your-domain)
+  * [Step 11: Generate SSL Certificates](#step-11-generate-ssl-certificates)
+  * [Step 12: Generate Encryption Keys](#step-12-generate-encryption-keys)
+  * [Step 13: Update SSL Paths in Configuration](#step-13-update-ssl-paths-in-configuration)
+  * [Step 14: Set Up Basic Authentication](#step-14-set-up-basic-authentication)
+  * [Step 15: Deploy with Docker Compose](#step-15-deploy-with-docker-compose)
+  * [Step 16: Verify Installation](#step-16-verify-installation)
+* [Post-Installation Configuration](#post-installation-configuration)
+  * [DNS Records Setup](#dns-records-setup)
+  * [First Login](#first-login)
+* [Backup Configuration](#backup-configuration)
+  * [Set Up S3-Compatible Backup](#set-up-s3-compatible-backup)
+  * [Set Up Backup Cron Jobs](#set-up-backup-cron-jobs)
+* [Auto-Update Configuration](#auto-update-configuration)
+* [Maintenance and Monitoring](#maintenance-and-monitoring)
+  * [Log Locations](#log-locations)
+  * [Regular Maintenance Tasks](#regular-maintenance-tasks)
+  * [Certificate Renewal](#certificate-renewal)
+* [Troubleshooting](#troubleshooting)
+  * [Common Issues](#common-issues)
+  * [Getting Help](#getting-help)
+* [Security Best Practices](#security-best-practices)
+* [Conclusion](#conclusion)
+
+
 ## Overview
 
 This guide provides step-by-step instructions for installing Forward Email's self-hosted solution on Ubuntu systems. This guide is specifically tailored for Ubuntu 20.04, 22.04, and 24.04 LTS versions.
+
 
 ## Prerequisites
 
 Before beginning the installation, ensure you have:
 
-- **Ubuntu Server**: 20.04, 22.04, or 24.04 LTS
-- **Root Access**: You must be able to run commands as root (sudo access)
-- **Domain Name**: A domain that you control with DNS management access
-- **Clean Server**: Recommended to use a fresh Ubuntu installation
-- **Internet Connection**: Required for downloading packages and Docker images
+* **Ubuntu Server**: 20.04, 22.04, or 24.04 LTS
+* **Root Access**: You must be able to run commands as root (sudo access)
+* **Domain Name**: A domain that you control with DNS management access
+* **Clean Server**: Recommended to use a fresh Ubuntu installation
+* **Internet Connection**: Required for downloading packages and Docker images
+
 
 ## System Requirements
 
-- **RAM**: Minimum 2GB (4GB recommended for production)
-- **Storage**: Minimum 20GB available space (50GB+ recommended for production)
-- **CPU**: 1 vCPU minimum (2+ vCPUs recommended for production)
-- **Network**: Public IP address with the following ports accessible:
-  - 22 (SSH)
-  - 25 (SMTP)
-  - 80 (HTTP)
-  - 443 (HTTPS)
-  - 465 (SMTPS)
-  - 993 (IMAPS)
-  - 995 (POP3S)
+* **RAM**: Minimum 2GB (4GB recommended for production)
+* **Storage**: Minimum 20GB available space (50GB+ recommended for production)
+* **CPU**: 1 vCPU minimum (2+ vCPUs recommended for production)
+* **Network**: Public IP address with the following ports accessible:
+  * 22 (SSH)
+  * 25 (SMTP)
+  * 80 (HTTP)
+  * 443 (HTTPS)
+  * 465 (SMTPS)
+  * 993 (IMAPS)
+  * 995 (POP3S)
+
 
 ## Step-by-Step Installation
 
@@ -234,7 +278,7 @@ DOMAIN="yourdomain.com"
 update_env_file() {
   local key="$1"
   local value="$2"
-  
+
   if grep -qE "^${key}=" "$SELF_HOST_DIR/$ENV_FILE"; then
     sed -i -E "s|^${key}=.*|${key}=${value}|" "$SELF_HOST_DIR/$ENV_FILE"
   else
@@ -428,6 +472,7 @@ curl -I https://$DOMAIN
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
+
 ## Post-Installation Configuration
 
 ### DNS Records Setup
@@ -435,11 +480,13 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 You need to configure the following DNS records for your domain:
 
 #### MX Record
+
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
 #### A Records
+
 ```
 @ A YOUR_SERVER_IP
 mx A YOUR_SERVER_IP
@@ -452,23 +499,28 @@ carddav A YOUR_SERVER_IP
 ```
 
 #### SPF Record
+
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
 #### DKIM Record
+
 Get your DKIM public key:
+
 ```bash
 # Extract DKIM public key
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
 Create DKIM DNS record:
+
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
 #### DMARC Record
+
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ```
@@ -479,6 +531,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 2. Enter the basic authentication credentials you saved earlier
 3. Complete the initial setup wizard
 4. Create your first email account
+
 
 ## Backup Configuration
 
@@ -525,6 +578,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
+
 ## Auto-Update Configuration
 
 Set up automatic updates for your Forward Email installation:
@@ -540,14 +594,15 @@ DOCKER_UPDATE_CMD="docker compose -f $DOCKER_COMPOSE_FILE pull && docker compose
 crontab -l
 ```
 
+
 ## Maintenance and Monitoring
 
 ### Log Locations
 
-- **Docker Compose logs**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-- **System logs**: `/var/log/syslog`
-- **Backup logs**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-- **Auto-update logs**: `/var/log/autoupdate.log`
+* **Docker Compose logs**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **System logs**: `/var/log/syslog`
+* **Backup logs**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Auto-update logs**: `/var/log/autoupdate.log`
 
 ### Regular Maintenance Tasks
 
@@ -572,11 +627,13 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
 
+
 ## Troubleshooting
 
 ### Common Issues
 
 #### 1. Docker Service Won't Start
+
 ```bash
 # Check Docker status
 systemctl status docker
@@ -586,25 +643,29 @@ nohup dockerd >/dev/null 2>/dev/null &
 ```
 
 #### 2. Certificate Generation Fails
-- Ensure ports 80 and 443 are accessible
-- Verify DNS records point to your server
-- Check firewall settings
+
+* Ensure ports 80 and 443 are accessible
+* Verify DNS records point to your server
+* Check firewall settings
 
 #### 3. Email Delivery Issues
-- Verify MX records are correct
-- Check SPF, DKIM, and DMARC records
-- Ensure port 25 isn't blocked by your hosting provider
+
+* Verify MX records are correct
+* Check SPF, DKIM, and DMARC records
+* Ensure port 25 isn't blocked by your hosting provider
 
 #### 4. Web Interface Not Accessible
-- Check firewall settings: `ufw status`
-- Verify SSL certificates: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-- Check basic auth credentials
+
+* Check firewall settings: `ufw status`
+* Verify SSL certificates: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
+* Check basic auth credentials
 
 ### Getting Help
 
-- **Documentation**: https://forwardemail.net/self-hosted
-- **GitHub Issues**: https://github.com/forwardemail/forwardemail.net/issues
-- **Community Support**: Check the project's GitHub discussions
+* **Documentation**: <https://forwardemail.net/self-hosted>
+* **GitHub Issues**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Community Support**: Check the project's GitHub discussions
+
 
 ## Security Best Practices
 
@@ -614,6 +675,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. **Use Strong Passwords**: Generate strong passwords for all accounts
 5. **Enable Fail2Ban**: Consider installing fail2ban for additional security
 6. **Regular Security Audits**: Periodically review your configuration
+
 
 ## Conclusion
 
@@ -625,5 +687,4 @@ Your Forward Email self-hosted installation should now be complete and running o
 4. Monitor your system regularly
 5. Keep your installation updated
 
-For additional configuration options and advanced features, refer to the official Forward Email documentation at https://forwardemail.net/self-hosted#configuration.
-
+For additional configuration options and advanced features, refer to the official Forward Email documentation at <https://forwardemail.net/self-hosted#configuration>.

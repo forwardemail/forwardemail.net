@@ -6,7 +6,7 @@
 const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 
-const { parseStringPromise } = require('xml2js');
+const { parseStringPromise, processors } = require('xml2js');
 const xmlbuilder = require('xmlbuilder');
 
 /**
@@ -21,7 +21,8 @@ async function parseXML(xmlString) {
     trim: true,
     attrkey: '_attr',
     charkey: '_',
-    normalizeTags: false
+    normalizeTags: true,
+    tagNameProcessors: [processors.stripPrefix]
   });
   return result;
 }
@@ -36,39 +37,34 @@ function extractRequestedProps(xmlBody) {
   const props = [];
 
   // Handle PROPFIND requests (existing functionality)
-  if (xmlBody && xmlBody['d:propfind'] && xmlBody['d:propfind']['d:prop']) {
-    const requestedProps = xmlBody['d:propfind']['d:prop'];
+  if (xmlBody && xmlBody.propfind && xmlBody.propfind.prop) {
+    const requestedProps = xmlBody.propfind.prop;
     props.push(...Object.keys(requestedProps));
   }
 
   // Handle addressbook-query requests (new functionality)
   else if (
     xmlBody &&
-    xmlBody['card:addressbook-query'] &&
-    xmlBody['card:addressbook-query']['d:prop']
+    xmlBody['addressbook-query'] &&
+    xmlBody['addressbook-query'].prop
   ) {
-    const requestedProps = xmlBody['card:addressbook-query']['d:prop'];
+    const requestedProps = xmlBody['addressbook-query'].prop;
     props.push(...Object.keys(requestedProps));
   }
 
   // Handle addressbook-multiget requests (new functionality)
   else if (
     xmlBody &&
-    xmlBody['card:addressbook-multiget'] &&
-    xmlBody['card:addressbook-multiget']['d:prop']
+    xmlBody['addressbook-multiget'] &&
+    xmlBody['addressbook-multiget'].prop
   ) {
-    const requestedProps = xmlBody['card:addressbook-multiget']['d:prop'];
+    const requestedProps = xmlBody['addressbook-multiget'].prop;
     props.push(...Object.keys(requestedProps));
   }
 
   // Default props if none specified
   if (props.length === 0) {
-    return [
-      'd:displayname',
-      'd:resourcetype',
-      'd:getetag',
-      'card:address-data'
-    ];
+    return ['displayname', 'resourcetype', 'getetag', 'address-data'];
   }
 
   return props;
@@ -84,10 +80,10 @@ function extractHrefs(xmlBody) {
 
   if (
     xmlBody &&
-    xmlBody['card:addressbook-multiget'] &&
-    xmlBody['card:addressbook-multiget']['d:href']
+    xmlBody['addressbook-multiget'] &&
+    xmlBody['addressbook-multiget'].href
   ) {
-    const hrefData = xmlBody['card:addressbook-multiget']['d:href'];
+    const hrefData = xmlBody['addressbook-multiget'].href;
 
     if (Array.isArray(hrefData)) {
       hrefs.push(...hrefData.map((href) => href._ || href));
@@ -107,21 +103,21 @@ function extractHrefs(xmlBody) {
 // eslint-disable-next-line complexity
 function validateFilter(xmlBody) {
   try {
-    const addressbookQuery = xmlBody && xmlBody['card:addressbook-query'];
+    const addressbookQuery = xmlBody && xmlBody['addressbook-query'];
     if (!addressbookQuery) {
       return { isValid: true }; // No query is valid (returns all)
     }
 
-    const filter = addressbookQuery['card:filter'];
+    const { filter } = addressbookQuery;
     if (!filter) {
       return { isValid: true }; // No filter is valid (returns all)
     }
 
     // Check for prop-filter elements
-    const propFilters = Array.isArray(filter['card:prop-filter'])
-      ? filter['card:prop-filter']
-      : filter['card:prop-filter']
-      ? [filter['card:prop-filter']]
+    const propFilters = Array.isArray(filter['prop-filter'])
+      ? filter['prop-filter']
+      : filter['prop-filter']
+      ? [filter['prop-filter']]
       : [];
 
     for (const propFilter of propFilters) {
@@ -134,10 +130,10 @@ function validateFilter(xmlBody) {
       }
 
       // Validate text-match elements
-      const textMatches = Array.isArray(propFilter['card:text-match'])
-        ? propFilter['card:text-match']
-        : propFilter['card:text-match']
-        ? [propFilter['card:text-match']]
+      const textMatches = Array.isArray(propFilter['text-match'])
+        ? propFilter['text-match']
+        : propFilter['text-match']
+        ? [propFilter['text-match']]
         : [];
 
       for (const textMatch of textMatches) {
@@ -173,10 +169,10 @@ function validateFilter(xmlBody) {
       }
 
       // Validate param-filter elements
-      const paramFilters = Array.isArray(propFilter['card:param-filter'])
-        ? propFilter['card:param-filter']
-        : propFilter['card:param-filter']
-        ? [propFilter['card:param-filter']]
+      const paramFilters = Array.isArray(propFilter['param-filter'])
+        ? propFilter['param-filter']
+        : propFilter['param-filter']
+        ? [propFilter['param-filter']]
         : [];
 
       for (const paramFilter of paramFilters) {
@@ -288,7 +284,7 @@ function getPropfindContactXML(contact, props) {
 
   for (const prop of props) {
     switch (prop) {
-      case 'd:getetag': {
+      case 'getetag': {
         propstat.props.push({
           name: 'd:getetag',
           value: contact.etag
@@ -296,7 +292,7 @@ function getPropfindContactXML(contact, props) {
         break;
       }
 
-      case 'd:getcontenttype': {
+      case 'getcontenttype': {
         propstat.props.push({
           name: 'd:getcontenttype',
           value: 'text/vcard; charset=utf-8'
@@ -304,7 +300,7 @@ function getPropfindContactXML(contact, props) {
         break;
       }
 
-      case 'd:resourcetype': {
+      case 'resourcetype': {
         propstat.props.push({
           name: 'd:resourcetype',
           value: ''
@@ -312,7 +308,7 @@ function getPropfindContactXML(contact, props) {
         break;
       }
 
-      case 'card:address-data': {
+      case 'address-data': {
         propstat.props.push({
           name: 'card:address-data',
           value: contact.content
@@ -355,7 +351,7 @@ function getAddressbookQueryXML(contacts, props) {
 
     for (const prop of props) {
       switch (prop) {
-        case 'd:getetag': {
+        case 'getetag': {
           propstat.props.push({
             name: 'd:getetag',
             value: contact.etag
@@ -363,7 +359,7 @@ function getAddressbookQueryXML(contacts, props) {
           break;
         }
 
-        case 'card:address-data': {
+        case 'address-data': {
           // Handle both 'vcard' and 'content' properties for backward compatibility
           const vcardContent = contact.vcard || contact.content;
           propstat.props.push({
@@ -373,7 +369,7 @@ function getAddressbookQueryXML(contacts, props) {
           break;
         }
 
-        case 'd:getcontenttype': {
+        case 'getcontenttype': {
           propstat.props.push({
             name: 'd:getcontenttype',
             value: 'text/vcard; charset=utf-8'
@@ -381,7 +377,7 @@ function getAddressbookQueryXML(contacts, props) {
           break;
         }
 
-        case 'd:resourcetype': {
+        case 'resourcetype': {
           propstat.props.push({
             name: 'd:resourcetype',
             value: ''
@@ -389,7 +385,7 @@ function getAddressbookQueryXML(contacts, props) {
           break;
         }
 
-        case 'd:getcontentlength': {
+        case 'getcontentlength': {
           const vcardContent = contact.vcard || contact.content || '';
           propstat.props.push({
             name: 'd:getcontentlength',
@@ -398,7 +394,7 @@ function getAddressbookQueryXML(contacts, props) {
           break;
         }
 
-        case 'd:getlastmodified': {
+        case 'getlastmodified': {
           propstat.props.push({
             name: 'd:getlastmodified',
             value: new Date().toUTCString()
@@ -431,7 +427,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
 
   for (const prop of props) {
     switch (prop) {
-      case 'd:resourcetype': {
+      case 'resourcetype': {
         propElements.push({
           name: 'd:resourcetype',
           value: '<d:collection/><card:addressbook/>'
@@ -439,7 +435,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'd:displayname': {
+      case 'displayname': {
         propElements.push({
           name: 'd:displayname',
           value: addressBook.name
@@ -447,7 +443,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'card:addressbook-description': {
+      case 'addressbook-description': {
         propElements.push({
           name: 'card:addressbook-description',
           value: addressBook.description || ''
@@ -455,7 +451,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'card:supported-address-data': {
+      case 'supported-address-data': {
         propElements.push({
           name: 'card:supported-address-data',
           value:
@@ -464,7 +460,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'card:max-resource-size': {
+      case 'max-resource-size': {
         propElements.push({
           name: 'card:max-resource-size',
           value: '1048576' // 1MB
@@ -472,7 +468,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'd:sync-token': {
+      case 'sync-token': {
         propElements.push({
           name: 'd:sync-token',
           value: addressBook.synctoken
@@ -480,7 +476,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
         break;
       }
 
-      case 'd:getctag': {
+      case 'getctag': {
         propElements.push({
           name: 'd:getctag',
           value: addressBook.synctoken
@@ -559,7 +555,7 @@ function getSyncCollectionXML(addressBook, changes, props) {
 
       for (const prop of props) {
         switch (prop) {
-          case 'd:getetag': {
+          case 'getetag': {
             propstat.props.push({
               name: 'd:getetag',
               value: change.etag
@@ -567,7 +563,7 @@ function getSyncCollectionXML(addressBook, changes, props) {
             break;
           }
 
-          case 'card:address-data': {
+          case 'address-data': {
             propstat.props.push({
               name: 'card:address-data',
               value: change.vcard
