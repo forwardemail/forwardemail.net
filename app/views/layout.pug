@@ -104,7 +104,7 @@ html.h-100.no-js(
         )
       else
         link(
-          rel="icon",
+          rel="alternate icon",
           type="image/png",
           href=manifest("img/favicon-32x32.png"),
           sizes="32x32",
@@ -112,11 +112,18 @@ html.h-100.no-js(
           crossorigin="anonymous"
         )
         link(
-          rel="icon",
+          rel="alternate icon",
           type="image/png",
           href=manifest("img/favicon-16x16.png"),
           sizes="16x16",
           integrity=manifest("img/favicon-16x16.png", "integrity"),
+          crossorigin="anonymous"
+        )
+        link(
+          rel="icon",
+          type="image/svg+xml",
+          href=manifest("img/favicon.svg"),
+          integrity=manifest("img/favicon.svg", "integrity"),
           crossorigin="anonymous"
         )
       //- href=manifest("site.webmanifest"),
