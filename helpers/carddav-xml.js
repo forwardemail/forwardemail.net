@@ -10,12 +10,40 @@ const { parseStringPromise, processors } = require('xml2js');
 const xmlbuilder = require('xmlbuilder');
 
 /**
- * Parse XML string into a JavaScript object
+ * Parse XML string into a JavaScript object with security protections
  * @param {string} xmlString - XML string to parse
  * @returns {Promise<Object>} - Parsed XML as JavaScript object
  */
 async function parseXML(xmlString) {
-  const result = await parseStringPromise(xmlString, {
+  // Validate input
+  if (typeof xmlString !== 'string') {
+    throw new TypeError('XML input must be a string');
+  }
+
+  // Check XML size limit (1MB)
+  if (xmlString.length > 1024 * 1024) {
+    throw new Error('XML input too large');
+  }
+
+  // Check for XML bomb patterns
+  if (xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE')) {
+    throw new Error('XML entities and DOCTYPE declarations are not allowed');
+  }
+
+  // Check for excessive nesting (simple depth check)
+  const openTags = (xmlString.match(/</g) || []).length;
+  const closeTags = (xmlString.match(/>/g) || []).length;
+  if (openTags > 50 || closeTags > 50) {
+    throw new Error('XML structure too complex');
+  }
+
+  // Create timeout promise
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('XML parsing timeout')), 5000);
+  });
+
+  // Parse with security options
+  const parsePromise = parseStringPromise(xmlString, {
     explicitArray: false,
     explicitCharkey: false,
     trim: true,
@@ -24,6 +52,8 @@ async function parseXML(xmlString) {
     normalizeTags: true,
     tagNameProcessors: [processors.stripPrefix]
   });
+
+  const result = await Promise.race([parsePromise, timeoutPromise]);
   return result;
 }
 

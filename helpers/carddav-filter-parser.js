@@ -31,14 +31,34 @@ class CardDAVFilterParser {
       TYPE: 'type',
       PREF: 'pref'
     };
+
+    // Whitelist of allowed property names for security
+    this.allowedProperties = new Set([
+      'FN',
+      'EMAIL',
+      'TEL',
+      'UID',
+      'ORG',
+      'TITLE',
+      'NOTE',
+      'ADR',
+      'URL',
+      'BDAY',
+      'NICKNAME'
+    ]);
   }
 
   /**
-   * Parse CardDAV filter into MongoDB query
+   * Parse CardDAV filter into MongoDB query with input validation
    * @param {Object} xmlBody - Parsed XML body
    * @returns {Object} MongoDB query object
    */
   parseFilter(xmlBody) {
+    // Validate input
+    if (!xmlBody || typeof xmlBody !== 'object') {
+      throw new Error('Invalid filter input');
+    }
+
     // Updated to work with normalized tags (without namespace prefixes)
     const addressbookQuery = xmlBody['addressbook-query'];
     if (!addressbookQuery || !addressbookQuery.filter) {
@@ -46,15 +66,26 @@ class CardDAVFilterParser {
     }
 
     const { filter } = addressbookQuery;
-    return this.processFilter(filter);
+    return this.processFilter(filter, 0);
   }
 
   /**
-   * Process a filter element
+   * Process a filter element with depth validation
    * @param {Object} filter - The filter element (previously card:filter)
+   * @param {number} depth - Current recursion depth
    * @returns {Object} MongoDB query object
    */
-  processFilter(filter) {
+  processFilter(filter, depth = 0) {
+    // Validate filter depth to prevent stack overflow
+    if (depth > 10) {
+      throw new Error('Filter nesting too deep');
+    }
+
+    // Validate filter structure
+    if (!filter || typeof filter !== 'object') {
+      throw new Error('Invalid filter structure');
+    }
+
     const testType = filter._attr?.test || 'anyof';
     // Updated to work with normalized tags (without namespace prefixes)
     const propFilters = Array.isArray(filter['prop-filter'])
@@ -88,13 +119,21 @@ class CardDAVFilterParser {
   }
 
   /**
-   * Process a prop-filter element
+   * Process a prop-filter element with property validation
    * @param {Object} propFilter - The prop-filter element (previously card:prop-filter)
    * @returns {Object} MongoDB query object
    */
   processPropFilter(propFilter) {
     const propertyName = propFilter._attr?.name;
     if (!propertyName) {
+      return {};
+    }
+
+    // Validate property name against whitelist
+    if (!this.allowedProperties.has(propertyName)) {
+      console.warn(
+        `Filter parsing security violation: Invalid or disallowed property name: ${propertyName}`
+      );
       return {};
     }
 

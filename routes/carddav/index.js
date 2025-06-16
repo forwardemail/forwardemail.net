@@ -85,8 +85,7 @@ router.all('(.*)', async (ctx, next) => {
   if (creds) {
     try {
       ctx.logger.debug('authenticate', {
-        username: creds.name,
-        password: creds.pass
+        username: creds.name
       });
       await setupAuthSession.call(ctx.instance, ctx, creds.name, creds.pass);
     } catch (err) {
