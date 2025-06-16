@@ -343,7 +343,7 @@ specifiers:
   through2: 4.0.2
   titleize: 2.1.0
   tlds: 1.259.0
-  tsdav: 2.1.4
+  tsdav: 2.1.2
   twilio: 4.23.0
   typed.js: 2.1.0
   uncaught: 0.0.5
@@ -620,7 +620,7 @@ dependencies:
   tangerine: 1.6.0_undici@6.20.1
   titleize: 2.1.0
   tlds: 1.259.0
-  tsdav: 2.1.4
+  tsdav: 2.1.2
   twilio: 4.23.0
   typed.js: 2.1.0
   uncaught: 0.0.5
@@ -12250,8 +12250,8 @@ packages:
       - encoding
     dev: false
 
-  /cross-fetch/4.1.0:
-    resolution: {integrity: sha512-uKm5PU+MHTootlWEY+mZ4vvXoCn4fLQxT9dSc1sXVMSFkINTJVN8cAQROpwcKm8bJ/c7rgZVIBWzH5T78sNZZw==}
+  /cross-fetch/4.0.0:
+    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
     dependencies:
       node-fetch: 2.7.0
     transitivePeerDependencies:
@@ -31932,13 +31932,13 @@ packages:
       strip-bom: 3.0.0
     dev: true
 
-  /tsdav/2.1.4:
-    resolution: {integrity: sha512-yNF2VHw2neaRbbpSioOqa26i81RT8x2AghLWUgS4bUY47Nb8zlOGV8bDuXULb2NRx+LFU+Z6JgkuMn48fRjQjw==}
+  /tsdav/2.1.2:
+    resolution: {integrity: sha512-+2VCH2TxCRqp8o2HxNnUpy+bbAaQBQfSl9Zwbxxl5qpDlyBWoPF8bhsaeLmIXvxtfkVANoJFj8dK3iSb10OAaw==}
     engines: {node: '>=10'}
     dependencies:
       base-64: 1.0.0
-      cross-fetch: 4.1.0
-      debug: 4.4.0
+      cross-fetch: 4.0.0
+      debug: 4.3.7
       xml-js: 1.6.11
     transitivePeerDependencies:
       - encoding
