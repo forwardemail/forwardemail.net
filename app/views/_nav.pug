@@ -91,6 +91,9 @@ if !isBot(ctx.get("User-Agent"))
   if ctx.pathWithoutLocale !== '/email-api'
     - navbarClasses.unshift("fixed-top");
 
+if ctx.pathWithoutLocale === "/email-api"
+  - isContainerFluid = true;
+
 //- these locales require decreased font-size in navbar <a class="btn"> tags
 if ['da', 'de', 'es', 'fi', 'fr', 'he', 'pt', 'sv', 'tr', 'vi'].includes(ctx.locale)
   - navbarClasses.unshift("navbar-small");
