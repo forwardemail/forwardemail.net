@@ -30,7 +30,7 @@ block body
     .row
       .col-12.text-center
         h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
-        p!= meta.description
+        //- p!= meta.description
         include ../../_author
   .container.pb-5
     .row
