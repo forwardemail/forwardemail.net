@@ -3751,8 +3751,8 @@ packages:
     resolution: {integrity: sha512-M0T3s7TC2JepoWPMZQn1W6eYhFh06OXwpMqL+8c5wMVpvnCKNsPgpu9u7WyCI03xVQti8JAeAy4RzUa6SYlJLA==}
     dev: false
 
-  /@hyperjump/json-schema/1.15.1_@hyperjump+browser@1.3.1:
-    resolution: {integrity: sha512-/NtriODPtJ+4nqewSksw3YtcINXy1C2TraFuhah/IfSdwgBUas0XNCHJz9mXcniR7/2nCUSFMZg9A3wKo3i0iQ==}
+  /@hyperjump/json-schema/1.16.0_@hyperjump+browser@1.3.1:
+    resolution: {integrity: sha512-7tAcnxrsfmu8JFH2oFzk+AEvp74VQh7sb2DfDl3HSxFE880tJIsKlnC0nBiIfLeeIyg4LsjgjL2PDS63foWULQ==}
     peerDependencies:
       '@hyperjump/browser': ^1.1.0
     dependencies:
@@ -6441,7 +6441,7 @@ packages:
     engines: {node: '>=20'}
     dependencies:
       '@hyperjump/browser': 1.3.1
-      '@hyperjump/json-schema': 1.15.1_@hyperjump+browser@1.3.1
+      '@hyperjump/json-schema': 1.16.0_@hyperjump+browser@1.3.1
       '@scalar/helpers': 0.0.2
       '@scalar/object-utils': 1.2.1
       '@scalar/openapi-types': 0.3.2
@@ -10499,7 +10499,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001723
-      electron-to-chromium: 1.5.167
+      electron-to-chromium: 1.5.168
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3_browserslist@4.25.0
 
@@ -13835,8 +13835,8 @@ packages:
     resolution: {integrity: sha512-mbacwySuVD3Ad6F2hTkjSTvJt59bcVv2l/TmBerp4xZnLak8tPtA4AScUn4DL42c1ksTiAO6sGhJZ52P/1Qgew==}
     dev: false
 
-  /electron-to-chromium/1.5.167:
-    resolution: {integrity: sha512-LxcRvnYO5ez2bMOFpbuuVuAI5QNeY1ncVytE/KXaL6ZNfzX1yPlAO0nSOyIHx2fVAuUprMqPs/TdVhUFZy7SIQ==}
+  /electron-to-chromium/1.5.168:
+    resolution: {integrity: sha512-RUNQmFLNIWVW6+z32EJQ5+qx8ci6RGvdtDC0Ls+F89wz6I2AthpXF0w0DIrn2jpLX0/PU9ZCo+Qp7bg/EckJmA==}
 
   /elkjs/0.9.3:
     resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
@@ -25795,7 +25795,7 @@ packages:
       async: 3.2.6
       debug: 4.4.1
       pidusage: 2.0.21
-      systeminformation: 5.27.1
+      systeminformation: 5.27.2
       tx2: 1.0.5
     transitivePeerDependencies:
       - supports-color
@@ -31155,8 +31155,8 @@ packages:
       acorn-node: 1.8.2
     dev: true
 
-  /systeminformation/5.27.1:
-    resolution: {integrity: sha512-FgkVpT6GgATtNvADgtEzDxI/SVaBisfnQ4fmgQZhCJ4335noTgt9q6O81ioHwzs9HgnJaaFSdHSEMIkneZ55iA==}
+  /systeminformation/5.27.2:
+    resolution: {integrity: sha512-Xsv9p3pU0QPpWl+VWVxXnc017Ld7yEcWSJz56ydoyJ1XULrne37PEFq/J2JcLE+ll2Fr1U5IdhPT0Cyx28OupA==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true

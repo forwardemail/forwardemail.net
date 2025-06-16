@@ -187,7 +187,7 @@ We don't impose artificial limits on domains, aliases, or email addresses like m
 
 ### 6. Trusted by Major Organizations
 
-Our service is used by over 500,000 domains, including notable organizations like Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), Ubuntu, Disney Ad Sales, and many others.
+Our service is used by over 500,000 domains, including notable organizations like [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales, and many others.
 
 
 ## Common Use Cases for Email Forwarding

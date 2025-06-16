@@ -110,6 +110,7 @@ You can compare us to 56+ other email service providers on [our Email Comparison
 
 We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
+* [U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant)
 * [Canonical](/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * Netflix
 * [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study)
