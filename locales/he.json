@@ -11880,5 +11880,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "הגדר דוא&quot;ל קדמי מאוחסן עצמית בדביאן בשנת <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "הגדרת דוא\"ל המשך באחסון עצמי במערכת ההפעלה דביאן.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "הגדר דוא&quot;ל העברת דוא&quot;ל באחסון עצמי באובונטו בשנת <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "הגדרת דוא\"ל המשך באחסון עצמי במערכת הפעלה אובונטו."
+  "Setting up self-hosted forward email on Ubuntu OS.": "הגדרת דוא\"ל המשך באחסון עצמי במערכת הפעלה אובונטו.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "נמעני העברה כינויים לא יכולים להיות שווים ל- <strong class=\"notranslate\">%s</strong> - אחרת תתרחש העברה רקורסיבית. אנא שנה או הסר את נמען ההעברה של <strong class=\"notranslate\">%s</strong> כדי להמשיך.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "אנא <a href=\"%s\" class=\"font-weight-bold\">לחץ כאן</a> כדי להיכנס עם חשבון Ubuntu One שלך ולהפעיל את הכינוי שלך."
 }

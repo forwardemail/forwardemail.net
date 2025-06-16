@@ -10870,5 +10870,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Opsæt selvhostet videresendt e-mail på Debian i <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Opsætning af selvhostet videresendelse af e-mail på Debian OS.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Opsæt selvhostet videresendt e-mail på Ubuntu i <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Opsætning af selvhostet videresendelse af e-mail på Ubuntu OS."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Opsætning af selvhostet videresendelse af e-mail på Ubuntu OS.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Alias for videresendelsesmodtagere kan ikke være lig med <strong class=\"notranslate\">%s</strong> – ellers ville der forekomme rekursiv videresendelse. Skift eller fjern videresendelsesmodtageren <strong class=\"notranslate\">%s</strong> for at fortsætte.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "<a href=\"%s\" class=\"font-weight-bold\">Klik her</a> for at logge ind med din Ubuntu One-konto og aktivere dit alias."
 }

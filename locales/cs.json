@@ -9180,5 +9180,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Nastavení vlastního hostování pro přeposílání e-mailů na Debianu v <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Nastavení samoobslužného přeposílání e-mailů v operačním systému Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Nastavení vlastního hostování pro přesměrování e-mailů na Ubuntu v <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Nastavení samoobslužného přeposílání e-mailů v operačním systému Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Nastavení samoobslužného přeposílání e-mailů v operačním systému Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Alias příjemců přeposílání nemůže být roven <strong class=\"notranslate\">%s</strong> – jinak by docházelo k rekurzivnímu přeposílání. Chcete-li pokračovat, změňte nebo odeberte příjemce přeposílání <strong class=\"notranslate\">%s</strong> .",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "<a href=\"%s\" class=\"font-weight-bold\">Klikněte sem</a> pro přihlášení pomocí účtu Ubuntu One a aktivaci aliasu."
 }

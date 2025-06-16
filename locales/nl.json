@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Zelf-gehoste doorstuur-e-mail instellen op Debian in <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Zelf-gehoste doorstuur-e-mail instellen op Debian OS.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Zelf-gehoste doorstuur-e-mail instellen op Ubuntu in <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Zelf-gehoste doorstuur-e-mail instellen op Ubuntu OS."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Zelf-gehoste doorstuur-e-mail instellen op Ubuntu OS.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Alias-doorstuurontvangers mogen niet gelijk zijn aan <strong class=\"notranslate\">%s</strong> , anders vindt er recursieve doorsturing plaats. Wijzig of verwijder de doorstuurontvanger van <strong class=\"notranslate\">%s</strong> om door te gaan.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "<a href=\"%s\" class=\"font-weight-bold\">Klik hier</a> om u aan te melden met uw Ubuntu One-account om uw alias te activeren."
 }

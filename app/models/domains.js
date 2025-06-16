@@ -1006,6 +1006,36 @@ Domains.pre('validate', function (next) {
 });
 
 //
+// If the domain isNew and it's one of the ubuntu domains
+// then prevent creating it if one already exists
+// and instead, throw an error that informs the user to
+// sign in with their Ubuntu SSO account
+//
+Domains.pre('save', async function (next) {
+  if (!this.isNew) return next();
+
+  if (!Object.keys(config.ubuntuTeamMapping).includes(this.name)) return next();
+
+  // lookup the domain to see if it exists
+  const exists = await this.constructor.exists({
+    name: this.name,
+    plan: 'team',
+    has_txt_record: true
+  });
+
+  if (exists)
+    throw Boom.badRequest(
+      i18n.translateError(
+        'UBUNTU_LOGIN_REQUIRED',
+        this.locale,
+        `${config.urls.web}/ubuntu`
+      )
+    );
+
+  next();
+});
+
+//
 // Prevent `bounce_webhook` from being localhost or private IP
 //
 // NOTE: this similar logic is also in MX server to prevent local-like webhooks in MX

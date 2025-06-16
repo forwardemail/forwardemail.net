@@ -66,6 +66,12 @@ module.exports = {
   RATE_LIMITED: 'You have been rate limited, please try again later.',
   SMTP_RATE_LIMIT_EXCEEDED:
     'You have exceeded your daily SMTP outbound rate limit.',
+
+  ALIAS_MUST_NOT_MATCH_RECIPIENT:
+    'Alias forwarding recipients cannot be equal to <strong class="notranslate">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class="notranslate">%s</strong> to continue.',
+
+  UBUNTU_LOGIN_REQUIRED:
+    'Please <a href="%s" class="font-weight-bold">click here</a> to sign in with your Ubuntu One account to activate your alias.',
   UBUNTU_NOT_ALLOWED_EMAIL:
     'You cannot use that email address as a forwarding recipient.',
   UBUNTU_PERMISSIONS:

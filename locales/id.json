@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Menyiapkan Email Penerusan yang Dihosting Sendiri di Debian pada <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Menyiapkan penerusan email yang dihosting sendiri pada OS Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Menyiapkan Email Penerusan yang Dihosting Sendiri di Ubuntu pada <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Menyiapkan penerusan email yang dihosting sendiri pada OS Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Menyiapkan penerusan email yang dihosting sendiri pada OS Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Penerima penerusan alias tidak boleh sama dengan <strong class=\"notranslate\">%s</strong> – jika tidak, penerusan rekursif akan terjadi. Harap ubah atau hapus penerima penerusan <strong class=\"notranslate\">%s</strong> untuk melanjutkan.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Silakan <a href=\"%s\" class=\"font-weight-bold\">klik di sini</a> untuk masuk dengan akun Ubuntu One Anda untuk mengaktifkan alias Anda."
 }

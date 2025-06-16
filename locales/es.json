@@ -13828,5 +13828,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Configurar un correo electrónico de reenvío autoalojado en Debian en <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Configuración de correo electrónico de reenvío autohospedado en el sistema operativo Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Configurar el reenvío de correo electrónico autoalojado en Ubuntu <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Configuración de correo electrónico de reenvío autohospedado en el sistema operativo Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Configuración de correo electrónico de reenvío autohospedado en el sistema operativo Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Los destinatarios de reenvío de alias no pueden ser iguales a <strong class=\"notranslate\">%s</strong> ; de lo contrario, se produciría un reenvío recursivo. Cambie o elimine el destinatario de reenvío de <strong class=\"notranslate\">%s</strong> para continuar.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Haga <a href=\"%s\" class=\"font-weight-bold\">clic aquí</a> para iniciar sesión con su cuenta de Ubuntu One para activar su alias."
 }

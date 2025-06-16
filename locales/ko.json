@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> 데비안에서 셀프호스팅 이메일 전달 설정",
   "Setting up self-hosted forward email on Debian OS.": "Debian OS에서 셀프호스팅 이메일 전달 설정하기.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> Ubuntu에서 셀프 호스팅 전달 이메일 설정",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu OS에서 셀프호스팅 이메일 전달 설정하기."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu OS에서 셀프호스팅 이메일 전달 설정하기.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "별칭 전달 수신자는 <strong class=\"notranslate\">%s</strong> 와 같을 수 없습니다. 그렇지 않으면 재귀적 전달이 발생합니다. 계속하려면 <strong class=\"notranslate\">%s</strong> 의 전달 수신자를 변경하거나 제거하세요.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "별칭을 활성화하려면 <a href=\"%s\" class=\"font-weight-bold\">여기를 클릭하여</a> Ubuntu One 계정으로 로그인하세요."
 }

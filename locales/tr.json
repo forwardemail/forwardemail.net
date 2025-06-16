@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> Debian&#39;da Kendi Kendine Barındırılan Yönlendirme E-postası Kurulumu",
   "Setting up self-hosted forward email on Debian OS.": "Debian işletim sisteminde kendi kendine barındırılan yönlendirme e-postasının kurulumu.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span> Ubuntu&#39;da Kendi Kendine Barındırılan Yönlendirme E-postasını Kurun",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu işletim sisteminde kendi kendine barındırılan yönlendirme e-postasını ayarlama."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu işletim sisteminde kendi kendine barındırılan yönlendirme e-postasını ayarlama.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Takma ad yönlendirme alıcıları <strong class=\"notranslate\">%s</strong> eşit olamaz – aksi takdirde yinelemeli yönlendirme gerçekleşir. Devam etmek için lütfen <strong class=\"notranslate\">%s</strong> yönlendirme alıcısını değiştirin veya kaldırın.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Lütfen takma adınızı etkinleştirmek için Ubuntu One hesabınızla oturum açmak üzere <a href=\"%s\" class=\"font-weight-bold\">buraya tıklayın</a> ."
 }

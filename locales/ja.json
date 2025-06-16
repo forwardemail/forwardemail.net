@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>にDebianでセルフホスト転送メールをセットアップする",
   "Setting up self-hosted forward email on Debian OS.": "Debian OS 上で自己ホスト転送メールを設定する。",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "<span class=\"notranslate\">2025</span>にUbuntuでセルフホスト転送メールを設定する",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu OS で自己ホスト転送メールを設定する。"
+  "Setting up self-hosted forward email on Ubuntu OS.": "Ubuntu OS で自己ホスト転送メールを設定する。",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "エイリアス転送の受信者を<strong class=\"notranslate\">%s</strong>と同じにすることはできません。同じにすると再帰転送が発生します。続行するには、 <strong class=\"notranslate\">%s</strong>の転送受信者を変更または削除してください。",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "エイリアスを有効にするには、<a href=\"%s\" class=\"font-weight-bold\">ここをクリックして</a>Ubuntu One アカウントでサインインしてください。"
 }

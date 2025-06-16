@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Настройка собственной пересылки электронной почты на Debian в <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Настройка собственной пересылки электронной почты в ОС Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Настройте собственную пересылку электронной почты на Ubuntu в <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Настройка собственной пересылки электронной почты в ОС Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Настройка собственной пересылки электронной почты в ОС Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Псевдоним получателя пересылки не может быть равен <strong class=\"notranslate\">%s</strong> – в противном случае произойдет рекурсивная пересылка. Пожалуйста, измените или удалите получателя пересылки <strong class=\"notranslate\">%s</strong> , чтобы продолжить.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "<a href=\"%s\" class=\"font-weight-bold\">Нажмите здесь</a> , чтобы войти в свою учетную запись Ubuntu One и активировать свой псевдоним."
 }

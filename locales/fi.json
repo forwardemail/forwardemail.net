@@ -13677,5 +13677,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Asenna itse isännöity sähköpostin edelleenlähetys Debianissa vuonna <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Itse isännöidyn sähköpostin edelleenlähetyksen määrittäminen Debian-käyttöjärjestelmässä.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Asenna itse isännöity sähköpostin edelleenlähetys Ubuntuun vuonna <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Itse isännöidyn sähköpostin edelleenlähetyksen määrittäminen Ubuntu-käyttöjärjestelmässä."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Itse isännöidyn sähköpostin edelleenlähetyksen määrittäminen Ubuntu-käyttöjärjestelmässä.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Alias-välitysvastaanottajat eivät voi olla yhtä suuret kuin <strong class=\"notranslate\">%s</strong> – muuten tapahtuu rekursiivista edelleenlähetystä. Vaihda tai poista <strong class=\"notranslate\">%s</strong> n edelleenlähetysvastaanottaja jatkaaksesi.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Kirjaudu sisään Ubuntu One -tililläsi napsauttamalla <a href=\"%s\" class=\"font-weight-bold\">tästä</a> ja aktivoi aliaksesi."
 }

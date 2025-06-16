@@ -804,6 +804,30 @@ Aliases.pre('save', async function (next) {
       throw err;
     }
 
+    //
+    // prevent forwarding recipients that are recursive
+    // if and only if the alias is enabled
+    // (otherwise user's would just be recursively forwarding)
+    //
+    if (
+      alias.is_enabled &&
+      alias.name !== '*' &&
+      !alias.name.startsWith('/') &&
+      Array.isArray(alias.recipients) &&
+      alias.recipients.length >= 0 &&
+      alias.recipients.some(
+        (r) => r.toLowerCase().trim() === `${alias.name}@${domain.name}`
+      )
+    )
+      throw Boom.badRequest(
+        i18n.translateError(
+          'ALIAS_MUST_NOT_MATCH_RECIPIENT',
+          alias.locale,
+          `${alias.name}@${domain.name}`,
+          `${alias.name}@${domain.name}`
+        )
+      );
+
     // domain must be on a paid plan in order to require verification
     if (domain.plan === 'free' && alias.has_recipient_verification)
       throw Boom.badRequest(

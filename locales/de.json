@@ -12875,5 +12875,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Richten Sie <span class=\"notranslate\">2025</span> eine selbstgehostete E-Mail-Weiterleitung auf Debian ein",
   "Setting up self-hosted forward email on Debian OS.": "Einrichten einer selbst gehosteten E-Mail-Weiterleitung unter Debian OS.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Richten Sie <span class=\"notranslate\">2025</span> eine selbstgehostete E-Mail-Weiterleitung auf Ubuntu ein",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Einrichten einer selbst gehosteten E-Mail-Weiterleitung unter Ubuntu OS."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Einrichten einer selbst gehosteten E-Mail-Weiterleitung unter Ubuntu OS.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Alias-Weiterleitungsempfänger dürfen nicht mit <strong class=\"notranslate\">%s</strong> identisch sein – andernfalls erfolgt eine rekursive Weiterleitung. Bitte ändern oder entfernen Sie den Weiterleitungsempfänger von <strong class=\"notranslate\">%s</strong> , um fortzufahren.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "<a href=\"%s\" class=\"font-weight-bold\">Klicken Sie hier,</a> um sich mit Ihrem Ubuntu One-Konto anzumelden und Ihren Alias zu aktivieren."
 }

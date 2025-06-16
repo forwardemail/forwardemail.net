@@ -11392,5 +11392,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Thiết lập Email Chuyển tiếp Tự lưu trữ trên Debian vào <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Thiết lập chuyển tiếp email tự lưu trữ trên hệ điều hành Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Thiết lập Email Chuyển tiếp Tự lưu trữ trên Ubuntu vào <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Thiết lập chuyển tiếp email tự lưu trữ trên hệ điều hành Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Thiết lập chuyển tiếp email tự lưu trữ trên hệ điều hành Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Người nhận chuyển tiếp bí danh không thể bằng <strong class=\"notranslate\">%s</strong> – nếu không, chuyển tiếp đệ quy sẽ xảy ra. Vui lòng thay đổi hoặc xóa người nhận chuyển tiếp của <strong class=\"notranslate\">%s</strong> để tiếp tục.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Vui lòng <a href=\"%s\" class=\"font-weight-bold\">nhấp vào đây</a> để đăng nhập bằng tài khoản Ubuntu One của bạn để kích hoạt bí danh của bạn."
 }

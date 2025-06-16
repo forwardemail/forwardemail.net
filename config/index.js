@@ -669,7 +669,8 @@ const config = {
     'kubuntu.org': '~kubuntu-members',
     'lubuntu.me': '~lubuntu-members',
     'edubuntu.org': '~edubuntu-members',
-    'ubuntustudio.com': '~ubuntustudio-core',
+    // not being used
+    // 'ubuntustudio.com': '~ubuntustudio-core',
     'ubuntu.net': '~ubuntu-smtp-test'
   },
   LOCK_ERRORS: new Set([

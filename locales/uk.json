@@ -13830,5 +13830,7 @@
   "Setup Self-hosted Forward Email on Debian in <span class=\"notranslate\">2025</span>": "Налаштування самостійно розміщеної переадресації електронної пошти на Debian у <span class=\"notranslate\">2025</span>",
   "Setting up self-hosted forward email on Debian OS.": "Налаштування самостійної переадресації електронної пошти в ОС Debian.",
   "Setup Self-hosted Forward Email on Ubuntu in <span class=\"notranslate\">2025</span>": "Налаштування самостійно розміщеної переадресації електронної пошти в Ubuntu у <span class=\"notranslate\">2025</span>",
-  "Setting up self-hosted forward email on Ubuntu OS.": "Налаштування самостійної переадресації електронної пошти в ОС Ubuntu."
+  "Setting up self-hosted forward email on Ubuntu OS.": "Налаштування самостійної переадресації електронної пошти в ОС Ubuntu.",
+  "Alias forwarding recipients cannot be equal to <strong class=\"notranslate\">%s</strong> &ndash; otherwise recursive forwarding would occur.  Please change or remove the forwarding recipient of <strong class=\"notranslate\">%s</strong> to continue.": "Псевдонім одержувачів пересилання не може дорівнювати <strong class=\"notranslate\">%s</strong> – інакше відбудеться рекурсивне пересилання. Будь ласка, змініть або видаліть одержувача пересилання <strong class=\"notranslate\">%s</strong> , щоб продовжити.",
+  "Please <a href=\"%s\" class=\"font-weight-bold\">click here</a> to sign in with your Ubuntu One account to activate your alias.": "Будь ласка, <a href=\"%s\" class=\"font-weight-bold\">натисніть тут</a> , щоб увійти за допомогою свого облікового запису Ubuntu One та активувати свій псевдонім."
 }
