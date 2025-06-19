@@ -30,20 +30,8 @@ async function parseXML(xmlString) {
     throw new Error('XML entities and DOCTYPE declarations are not allowed');
   }
 
-  // Check for excessive nesting (simple depth check)
-  const openTags = (xmlString.match(/</g) || []).length;
-  const closeTags = (xmlString.match(/>/g) || []).length;
-  if (openTags > 50 || closeTags > 50) {
-    throw new Error('XML structure too complex');
-  }
-
-  // Create timeout promise
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('XML parsing timeout')), 5000);
-  });
-
   // Parse with security options
-  const parsePromise = parseStringPromise(xmlString, {
+  return parseStringPromise(xmlString, {
     explicitArray: false,
     explicitCharkey: false,
     trim: true,
@@ -52,9 +40,6 @@ async function parseXML(xmlString) {
     normalizeTags: true,
     tagNameProcessors: [processors.stripPrefix]
   });
-
-  const result = await Promise.race([parsePromise, timeoutPromise]);
-  return result;
 }
 
 /**
