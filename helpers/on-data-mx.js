@@ -1423,7 +1423,16 @@ async function forward(recipient, headers, session, body) {
         const domainName = parseHostFromDomainOrAddress(a);
         const rootDomain = parseRootDomain(domainName);
         const normal = `${parseUsername(a)}@${domainName}`;
+        const isRestricted = config.restrictedDomains.some(
+          (ext) =>
+            rootDomain === ext ||
+            rootDomain.endsWith(`.${ext}`) ||
+            rootDomain === `nic.${ext}`
+        );
+        // TODO: other enterprise customers, e.g. linux foundation
         if (
+          !isRestricted &&
+          !Object.keys(config.ubuntuTeamMapping).includes(rootDomain) &&
           !config.ignoredSelfTestDomains.has(rootDomain) &&
           isSANB(session.envelope.mailFrom.address) &&
           normal === checkSRS(session.envelope.mailFrom.address).toLowerCase()
