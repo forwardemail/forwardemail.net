@@ -714,6 +714,7 @@ const config = {
   maxRecipients: env.MAX_RECIPIENTS,
   paidPrefix: `${env.TXT_RECORD_PREFIX}-site-verification=`,
   freePrefix: `${env.TXT_RECORD_PREFIX}=`,
+  breeHost: env.BREE_HOST,
   webHost: env.WEB_HOST,
   // TODO: clean this config up everywhere for `previewEmailOptions`
   previewEmailOptions: {
@@ -1609,6 +1610,7 @@ config.views.locals.config = _.pick(config, [
   'webHost',
   'appColor',
   'appName',
+  'breeHost',
   'env',
   'turnstileEnabled',
   'turnstileSiteKey',

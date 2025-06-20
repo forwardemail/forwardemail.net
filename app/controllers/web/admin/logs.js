@@ -7,6 +7,7 @@ const Boom = require('@hapi/boom');
 const paginate = require('koa-ctx-paginate');
 const _ = require('#helpers/lodash');
 
+const env = require('#config/env');
 const getMongoQuery = require('#helpers/get-mongo-query');
 const { Logs } = require('#models');
 
@@ -15,7 +16,7 @@ async function list(ctx) {
 
   // TODO: $query should be filtered for partial indices only
 
-  let [logs, itemCount, uniqueHosts] = await Promise.all([
+  let [logs, itemCount, uniqueHosts, uniqueJobNames] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Logs.find(query)
       .limit(ctx.query.limit)
@@ -36,11 +37,16 @@ async function list(ctx) {
     Logs.aggregate(
       [{ $group: { _id: '$meta.app.hostname' } }, { $unwind: '$_id' }],
       { hint: { 'meta.app.hostname': 1 } }
-    )
+    ),
+    Logs.distinct('meta.app.worker_threads.workerData.job.name', {
+      'meta.app.hostname': env.BREE_HOST
+    })
   ]);
 
   // flatten unique hosts
   uniqueHosts = uniqueHosts.map((doc) => doc._id);
+
+  const jobNames = uniqueJobNames.filter(Boolean).sort();
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
@@ -50,6 +56,7 @@ async function list(ctx) {
       pageCount,
       itemCount,
       uniqueHosts,
+      jobNames,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
