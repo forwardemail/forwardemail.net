@@ -4,6 +4,7 @@
  */
 
 const { promisify } = require('node:util');
+const { setTimeout } = require('node:timers/promises');
 
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
@@ -187,6 +188,9 @@ async function processEvent(ctx) {
       let user = await Users.findOne({
         [config.userFields.paypalSubscriptionID]: res.body.id
       });
+
+      // if no user yet, then wait 5m since the user could still be redirecting post checkout
+      if (!user) await setTimeout(ms('5m'));
 
       //
       // NOTE: if there is no user then we can assume that they didn't
