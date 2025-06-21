@@ -46,5 +46,18 @@ block body
                       i.fa.fa-filter
                       = " "
                       = host
+        if jobNames && jobNames.length > 0
+          .card.mb-3
+            .card-body
+              .h5.card-title= t("Quick filter by job name")
+              ul.list-inline.mb-0
+                each jobName in jobNames
+                  li.list-inline-item
+                    a.btn.btn-primary.btn-sm(
+                      href=`${ctx.path}?mongodb_query={ 'meta.app.hostname': '${config.breeHost}', 'meta.app.worker_threads.workerData.job.name': '${jobName}' }`
+                    )
+                      i.fa.fa-cog
+                      = " "
+                      = jobName
         #table-logs
           include ./_table
