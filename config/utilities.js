@@ -350,6 +350,118 @@ const NS_PROVIDERS = {
     '',
     '',
     true
+  ],
+  'akamai.com': [
+    'akamai',
+    'Akamai Edge DNS',
+    // <https://techdocs.akamai.com/edge-dns/docs>
+    'https://control.akamai.com/',
+    false,
+    ''
+  ],
+  'cdnetworks.com': [
+    'cdnetworks',
+    'CDNetworks',
+    // <https://www.cdnetworks.com/dns/>
+    'https://www.cdnetworks.com/',
+    false,
+    ''
+  ],
+  'dyn.com': [
+    'dyn',
+    'Dyn (Oracle)',
+    // <https://help.dyn.com/dns-api/>
+    'https://account.dyn.com/',
+    false,
+    ''
+  ],
+  'dynu.com': [
+    'dynu',
+    'Dynu',
+    // <https://www.dynu.com/en-US/ControlPanel/DNS>
+    'https://www.dynu.com/en-US/ControlPanel/Login',
+    false,
+    ''
+  ],
+  'easydns.com': [
+    'easydns',
+    'easyDNS',
+    // <https://cp.easydns.com/manage/dns/>
+    'https://cp.easydns.com/',
+    false,
+    ''
+  ],
+  'googleapis.com': [
+    'google-cloud-dns',
+    'Google Cloud DNS',
+    // <https://cloud.google.com/dns/docs>
+    'https://console.cloud.google.com/net-services/dns/',
+    false,
+    ''
+  ],
+  'glauca.digital': [
+    'glauca-digital',
+    'Glauca Digital',
+    // <https://dns.glauca.digital/>
+    'https://dns.glauca.digital/',
+    false,
+    ''
+  ],
+  'he.net': [
+    'hurricane-electric',
+    'Hurricane Electric',
+    // <https://dns.he.net/>
+    'https://dns.he.net/',
+    false,
+    ''
+  ],
+  'namesilo.com': [
+    'namesilo',
+    'NameSilo',
+    // <https://www.namesilo.com/support/v2/articles/dns-manager>
+    'https://www.namesilo.com/account_home.php',
+    false,
+    ''
+  ],
+  'no-ip.com': [
+    'no-ip',
+    'No-IP',
+    // <https://www.noip.com/support/knowledgebase/managing-dns-records/>
+    'https://www.noip.com/login',
+    false,
+    ''
+  ],
+  'oraclecloud.com': [
+    'oracle-cloud-dns',
+    'Oracle Cloud DNS',
+    // <https://docs.oracle.com/en-us/iaas/Content/DNS/Concepts/dnszonemanagement.htm>
+    'https://cloud.oracle.com/',
+    false,
+    ''
+  ],
+  'plesk.com': [
+    'plesk',
+    'Plesk',
+    // <https://docs.plesk.com/en-US/obsidian/administrator-guide/website-management/dns-settings.74383/>
+    'https://www.plesk.com/',
+    false,
+    ''
+  ],
+  'telindus.com': [
+    'telindus',
+    'Telindus',
+    // <https://www.telindus.com/>
+    'https://www.telindus.com/',
+    false,
+    ''
+  ],
+  ultradns: [
+    'ultradns',
+    'UltraDNS',
+    // <https://docs.ultradns.com/>
+    'https://portal.ultradns.com/',
+    false,
+    ''
   ]
 };
 
