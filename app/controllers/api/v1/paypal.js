@@ -189,8 +189,20 @@ async function processEvent(ctx) {
         [config.userFields.paypalSubscriptionID]: res.body.id
       });
 
-      // if no user yet, then wait 5m since the user could still be redirecting post checkout
-      if (!user) await setTimeout(ms('5m'));
+      // attempt to find user with paypal payer id
+      if (!user) {
+        // attempt to find the user by their paypal payer id
+        user = await Users.findOne({
+          [config.userFields.paypalPayerID]: res.body.subscriber.payer_id,
+          [config.userFields.paypalSubscriptionID]: { $exists: false }
+        });
+        // save user's subscription ID if not set
+        if (user) {
+          if (!user[config.userFields.paypalSubscriptionID])
+            user[config.userFields.paypalSubscriptionID] = res.body.id;
+          await user.save();
+        }
+      }
 
       //
       // NOTE: if there is no user then we can assume that they didn't
@@ -200,7 +212,8 @@ async function processEvent(ctx) {
         // attempt to find the user by their email address
         user = await Users.findOne({
           email: res.body.subscriber.email_address.toLowerCase(),
-          [config.userFields.paypalSubscriptionID]: { $exists: false }
+          [config.userFields.paypalSubscriptionID]: { $exists: false },
+          [config.userFields.paypalPayerID]: { $exists: false }
         });
         // save user's subscription ID and payer ID to their account
         if (user) {
@@ -208,6 +221,14 @@ async function processEvent(ctx) {
           user[config.userFields.paypalPayerID] = res.body.subscriber.payer_id;
           await user.save();
         }
+      }
+
+      // if no user yet, then wait 5m since the user could still be redirecting post checkout
+      if (!user && !ctx.isProcessed) {
+        await setTimeout(ms('5m'));
+        ctx.isProcessed = true;
+        await processEvent(ctx);
+        return;
       }
 
       if (!user) {
