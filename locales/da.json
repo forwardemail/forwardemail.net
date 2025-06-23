@@ -11291,7 +11291,7 @@
   "Automatically restarts failed processes": "Genstarter automatisk mislykkede processer",
   "Prevents restart loops": "Forhindrer genstartsløkker",
   "through intelligent health checking": "gennem intelligent sundhedstjek",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITISK]\nFor bedste praksis for Node.js-produktionsimplementering kræver vi 15+ minutters oppetid, før en proces betragtes som sund, for at undgå genstartsløkker. Dette forhindrer kaskadefejl, når processer kæmper med hukommelse eller andre problemer.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITISK]\nFor bedste praksis for Node.js-produktionsimplementering kræver vi 15+ minutters oppetid, før en proces betragtes som sund, for at undgå genstartsløkker. Dette forhindrer kaskadefejl, når processer kæmper med hukommelse eller andre problemer.",
   "Our ecosystem setup:": "Vores økosystemopsætning:",
   "Study our server startup files for Node.js production environment setup:": "Undersøg vores serveropstartsfiler til opsætning af Node.js produktionsmiljø:",
   "Web server": "Webserver",

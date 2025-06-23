@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "失敗したプロセスを自動的に再起動します",
   "Prevents restart loops": "再起動ループを防ぐ",
   "through intelligent health checking": "インテリジェントな健康チェックを通じて",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nNode.jsの本番環境へのデプロイのベストプラクティスとして、再起動ループを回避するため、プロセスが正常であると判断するまでに15分以上の稼働時間が必要です。これにより、プロセスがメモリ不足などの問題を抱えている場合に、連鎖的な障害が発生するのを防ぎます。",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nNode.jsの本番環境へのデプロイのベストプラクティスとして、再起動ループを回避するため、プロセスが正常であると判断するまでに15分以上の稼働時間が必要です。これにより、プロセスがメモリ不足などの問題を抱えている場合に、連鎖的な障害が発生するのを防ぎます。",
   "Our ecosystem setup:": "私たちのエコシステムの設定：",
   "Study our server startup files for Node.js production environment setup:": "Node.js の実稼働環境のセットアップについては、サーバー起動ファイルを参照してください。",
   "Web server": "ウェブサーバー",

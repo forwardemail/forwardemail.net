@@ -14098,7 +14098,7 @@
   "Automatically restarts failed processes": "Käynnistää epäonnistuneet prosessit automaattisesti uudelleen",
   "Prevents restart loops": "Estää uudelleenkäynnistyssilmukat",
   "through intelligent health checking": "älykkään terveystarkastuksen avulla",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITTINEN]\nNode.js:n tuotantokäyttöönoton parhaiden käytäntöjen mukaisesti vaadimme vähintään 15 minuutin käyttöaikaa ennen kuin prosessia pidetään terveenä, jotta vältetään uudelleenkäynnistyssilmukat. Tämä estää virheiden kaskadoitumisen, kun prosessit kamppailevat muistin tai muiden ongelmien kanssa.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITTINEN]\nNode.js:n tuotantokäyttöönoton parhaiden käytäntöjen mukaisesti vaadimme vähintään 15 minuutin käyttöaikaa ennen kuin prosessia pidetään terveenä, jotta vältetään uudelleenkäynnistyssilmukat. Tämä estää virheiden kaskadoitumisen, kun prosessit kamppailevat muistin tai muiden ongelmien kanssa.",
   "Our ecosystem setup:": "Ekosysteemimme kokoonpano:",
   "Study our server startup files for Node.js production environment setup:": "Tutustu palvelimen käynnistystiedostoihimme Node.js-tuotantoympäristön asennusta varten:",
   "Web server": "Web-palvelin",

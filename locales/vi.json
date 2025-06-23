@@ -11813,7 +11813,7 @@
   "Automatically restarts failed processes": "Tự động khởi động lại các tiến trình bị lỗi",
   "Prevents restart loops": "Ngăn chặn vòng lặp khởi động lại",
   "through intelligent health checking": "thông qua kiểm tra sức khỏe thông minh",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nĐối với các biện pháp triển khai sản xuất Node.js tốt nhất, chúng tôi yêu cầu thời gian hoạt động 15+ phút trước khi xem xét một quy trình lành mạnh để tránh vòng lặp khởi động lại. Điều này ngăn ngừa lỗi liên tiếp khi các quy trình đang gặp vấn đề về bộ nhớ hoặc các vấn đề khác.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nĐối với các biện pháp triển khai sản xuất Node.js tốt nhất, chúng tôi yêu cầu thời gian hoạt động 15+ phút trước khi xem xét một quy trình lành mạnh để tránh vòng lặp khởi động lại. Điều này ngăn ngừa lỗi liên tiếp khi các quy trình đang gặp vấn đề về bộ nhớ hoặc các vấn đề khác.",
   "Our ecosystem setup:": "Thiết lập hệ sinh thái của chúng tôi:",
   "Study our server startup files for Node.js production environment setup:": "Nghiên cứu các tệp khởi động máy chủ của chúng tôi để thiết lập môi trường sản xuất Node.js:",
   "Web server": "Máy chủ web",

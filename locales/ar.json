@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "إعادة تشغيل العمليات الفاشلة تلقائيًا",
   "Prevents restart loops": "يمنع حلقات إعادة التشغيل",
   "through intelligent health checking": "من خلال الفحص الصحي الذكي",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\n\nلأفضل ممارسات نشر Node.js في الإنتاج، نحتاج إلى وقت تشغيل لا يقل عن 15 دقيقة قبل اعتبار العملية سليمة لتجنب تكرار إعادة التشغيل. هذا يمنع تكرار الأعطال عند مواجهة العمليات مشاكل في الذاكرة أو غيرها من المشاكل.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\n\nلأفضل ممارسات نشر Node.js في الإنتاج، نحتاج إلى وقت تشغيل لا يقل عن 15 دقيقة قبل اعتبار العملية سليمة لتجنب تكرار إعادة التشغيل. هذا يمنع تكرار الأعطال عند مواجهة العمليات مشاكل في الذاكرة أو غيرها من المشاكل.",
   "Our ecosystem setup:": "إعداد النظام البيئي الخاص بنا:",
   "Study our server startup files for Node.js production environment setup:": "قم بدراسة ملفات بدء تشغيل الخادم الخاصة بنا لإعداد بيئة إنتاج Node.js:",
   "Web server": "خادم الويب",

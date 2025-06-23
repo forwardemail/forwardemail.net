@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "Başarısız olan işlemleri otomatik olarak yeniden başlatır",
   "Prevents restart loops": "Yeniden başlatma döngülerini önler",
   "through intelligent health checking": "akıllı sağlık kontrolü yoluyla",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nNode.js üretim dağıtımı en iyi uygulamaları için, yeniden başlatma döngülerinden kaçınmak için bir işlemin sağlıklı olduğunu düşünmeden önce 15+ dakikalık bir çalışma süresine ihtiyacımız var. Bu, işlemler bellek veya diğer sorunlarla mücadele ettiğinde ardışık arızaları önler.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nNode.js üretim dağıtımı en iyi uygulamaları için, yeniden başlatma döngülerinden kaçınmak için bir işlemin sağlıklı olduğunu düşünmeden önce 15+ dakikalık bir çalışma süresine ihtiyacımız var. Bu, işlemler bellek veya diğer sorunlarla mücadele ettiğinde ardışık arızaları önler.",
   "Our ecosystem setup:": "Ekosistem kurulumumuz:",
   "Study our server startup files for Node.js production environment setup:": "Node.js üretim ortamı kurulumu için sunucu başlangıç dosyalarımızı inceleyin:",
   "Web server": "Web sunucusu",

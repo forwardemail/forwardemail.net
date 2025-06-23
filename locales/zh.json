@@ -13947,7 +13947,7 @@
   "Automatically restarts failed processes": "自动重启失败的进程",
   "Prevents restart loops": "防止重启循环",
   "through intelligent health checking": "通过智能健康检查",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\n根据 Node.js 生产部署的最佳实践，我们要求进程正常运行时间至少为 15 分钟，以避免出现重启循环。这可以防止进程在遇到内存或其他问题时引发连锁故障。",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\n根据 Node.js 生产部署的最佳实践，我们要求进程正常运行时间至少为 15 分钟，以避免出现重启循环。这可以防止进程在遇到内存或其他问题时引发连锁故障。",
   "Our ecosystem setup:": "我们的生态系统设置：",
   "Study our server startup files for Node.js production environment setup:": "研究我们的服务器启动文件以进行 Node.js 生产环境设置：",
   "Web server": "Web 服务器",

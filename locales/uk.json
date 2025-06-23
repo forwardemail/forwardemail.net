@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "Автоматично перезапускає процеси, що завершилися невдачею",
   "Prevents restart loops": "Запобігає перезапуску циклів",
   "through intelligent health checking": "через інтелектуальну перевірку стану здоров'я",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!КРИТИЧНО]\nЩодо найкращих практик розгортання Node.js у продакшені, ми вимагаємо понад 15 хвилин безвідмовної роботи, перш ніж процес вважається справним, щоб уникнути циклів перезапуску. Це запобігає каскадним збоям, коли процеси мають проблеми з пам'яттю або інші проблеми.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!КРИТИЧНО]\nЩодо найкращих практик розгортання Node.js у продакшені, ми вимагаємо понад 15 хвилин безвідмовної роботи, перш ніж процес вважається справним, щоб уникнути циклів перезапуску. Це запобігає каскадним збоям, коли процеси мають проблеми з пам'яттю або інші проблеми.",
   "Our ecosystem setup:": "Налаштування нашої екосистеми:",
   "Study our server startup files for Node.js production environment setup:": "Вивчіть файли запуску нашого сервера для налаштування робочого середовища Node.js:",
   "Web server": "Веб-сервер",

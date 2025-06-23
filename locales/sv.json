@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "Startar automatiskt om misslyckade processer",
   "Prevents restart loops": "Förhindrar omstartsloopar",
   "through intelligent health checking": "genom intelligent hälsokontroll",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITISK]\nFör bästa praxis för Node.js-produktionsdistribution kräver vi 15+ minuters drifttid innan vi betraktar en process som felfri för att undvika omstartsloopar. Detta förhindrar kaskadfel när processer kämpar med minne eller andra problem.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITISK]\nFör bästa praxis för Node.js-produktionsdistribution kräver vi 15+ minuters drifttid innan vi betraktar en process som felfri för att undvika omstartsloopar. Detta förhindrar kaskadfel när processer kämpar med minne eller andra problem.",
   "Our ecosystem setup:": "Vårt ekosystems uppbyggnad:",
   "Study our server startup files for Node.js production environment setup:": "Studera våra serverstartfiler för installation av Node.js produktionsmiljö:",
   "Web server": "Webbserver",

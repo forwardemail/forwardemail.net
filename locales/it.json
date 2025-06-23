@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "Riavvia automaticamente i processi non riusciti",
   "Prevents restart loops": "Previene i cicli di riavvio",
   "through intelligent health checking": "attraverso un controllo sanitario intelligente",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nPer le best practice di distribuzione in produzione di Node.js, richiediamo un tempo di attività di oltre 15 minuti prima di considerare un processo funzionante, per evitare loop di riavvio. Questo impedisce errori a cascata quando i processi hanno problemi di memoria o altri problemi.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nPer le best practice di distribuzione in produzione di Node.js, richiediamo un tempo di attività di oltre 15 minuti prima di considerare un processo funzionante, per evitare loop di riavvio. Questo impedisce errori a cascata quando i processi hanno problemi di memoria o altri problemi.",
   "Our ecosystem setup:": "La configurazione del nostro ecosistema:",
   "Study our server startup files for Node.js production environment setup:": "Studia i nostri file di avvio del server per la configurazione dell'ambiente di produzione Node.js:",
   "Web server": "Server web",

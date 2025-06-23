@@ -12301,7 +12301,7 @@
   "Automatically restarts failed processes": "מפעיל מחדש אוטומטית תהליכים שנכשלו",
   "Prevents restart loops": "מונע לולאות הפעלה מחדש",
   "through intelligent health checking": "באמצעות בדיקת בריאות חכמה",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nעבור שיטות עבודה מומלצות לפריסת Node.js בייצור, אנו דורשים זמן פעולה של 15+ דקות לפני שאנו קובעים שתהליך תקין, כדי למנוע לולאות הפעלה מחדש. זה מונע כשלים מדורגים כאשר תהליכים מתקשים בזיכרון או בבעיות אחרות.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nעבור שיטות עבודה מומלצות לפריסת Node.js בייצור, אנו דורשים זמן פעולה של 15+ דקות לפני שאנו קובעים שתהליך תקין, כדי למנוע לולאות הפעלה מחדש. זה מונע כשלים מדורגים כאשר תהליכים מתקשים בזיכרון או בבעיות אחרות.",
   "Our ecosystem setup:": "מבנה המערכת האקולוגית שלנו:",
   "Study our server startup files for Node.js production environment setup:": "למד את קבצי האתחול של השרת שלנו עבור הגדרת סביבת הייצור של Node.js:",
   "Web server": "שרת אינטרנט",

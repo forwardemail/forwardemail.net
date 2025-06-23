@@ -10401,7 +10401,7 @@
   "Automatically restarts failed processes": "Automatically restarts failed processes",
   "Prevents restart loops": "Prevents restart loops",
   "through intelligent health checking": "through intelligent health checking",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.",
   "Our ecosystem setup:": "Our ecosystem setup:",
   "Study our server startup files for Node.js production environment setup:": "Study our server startup files for Node.js production environment setup:",
   "Web server": "Web server",

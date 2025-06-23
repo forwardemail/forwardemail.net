@@ -14251,7 +14251,7 @@
   "Automatically restarts failed processes": "Automatikusan újraindítja a sikertelen folyamatokat",
   "Prevents restart loops": "Megakadályozza az újraindítási ciklusokat",
   "through intelligent health checking": "intelligens egészségügyi ellenőrzésen keresztül",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITIKUS]\nA Node.js éles telepítési ajánlott gyakorlataihoz legalább 15 perc üzemidő szükséges ahhoz, hogy egy folyamatot egészségesnek tekintsünk, hogy elkerüljük az újraindítási ciklusokat. Ez megakadályozza a kaszkádos hibákat, amikor a folyamatok memóriaproblémákkal vagy egyéb problémákkal küzdenek.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITIKUS]\nA Node.js éles telepítési ajánlott gyakorlataihoz legalább 15 perc üzemidő szükséges ahhoz, hogy egy folyamatot egészségesnek tekintsünk, hogy elkerüljük az újraindítási ciklusokat. Ez megakadályozza a kaszkádos hibákat, amikor a folyamatok memóriaproblémákkal vagy egyéb problémákkal küzdenek.",
   "Our ecosystem setup:": "Az ökoszisztémánk felépítése:",
   "Study our server startup files for Node.js production environment setup:": "Tanulmányozd a Node.js éles környezet beállításához szükséges szerverindító fájljainkat:",
   "Web server": "Webszerver",

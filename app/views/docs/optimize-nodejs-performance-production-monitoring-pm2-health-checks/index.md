@@ -216,7 +216,7 @@ Our Node.js production monitoring with PM2 health checks includes:
 * **Automatically restarts failed processes**
 * **Prevents restart loops** through intelligent health checking
 
-> \[!CRITICAL]
+> \[!CAUTION]
 > For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
 
 ### Our PM2 Production Configuration

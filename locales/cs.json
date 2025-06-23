@@ -9640,7 +9640,7 @@
   "Automatically restarts failed processes": "Automaticky restartuje neúspěšné procesy",
   "Prevents restart loops": "Zabraňuje restartovacím smyčkám",
   "through intelligent health checking": "prostřednictvím inteligentní kontroly stavu",
-  "[!CRITICAL]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITICKÉ]\nV rámci osvědčených postupů pro nasazení Node.js v produkčním prostředí požadujeme alespoň 15 minut provozuschopnosti, než proces považujeme za v pořádku, abychom se vyhnuli smyčkám restartování. Tím se zabrání kaskádovým selháním, když procesy mají potíže s pamětí nebo jiné problémy.",
+  "[!CAUTION]\nFor Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.": "[!KRITICKÉ]\nV rámci osvědčených postupů pro nasazení Node.js v produkčním prostředí požadujeme alespoň 15 minut provozuschopnosti, než proces považujeme za v pořádku, abychom se vyhnuli smyčkám restartování. Tím se zabrání kaskádovým selháním, když procesy mají potíže s pamětí nebo jiné problémy.",
   "Our ecosystem setup:": "Nastavení našeho ekosystému:",
   "Study our server startup files for Node.js production environment setup:": "Prostudujte si naše spouštěcí soubory serveru pro nastavení produkčního prostředí Node.js:",
   "Web server": "Webový server",
