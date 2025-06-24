@@ -1,12 +1,11 @@
 # Forward Email: Your Section 889 Compliant Email Forwarding Solution
 
-At Forward Email, we believe in simple, secure, and private email forwarding for everyone. We know that for many organizations, especially those working with the US government, compliance isn't just a buzzword – it's a necessity. Ensuring adherence to **federal regulations for email** is crucial. That's why we're proud to confirm our **secure email forwarding** service is built to meet stringent federal requirements, including [Section 889](https://www.acquisition.gov/Section-889-Policies) of the [National Defense Authorization Act (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
-
-Our commitment to **government email compliance** was recently put into practice when the **US Naval Academy** approached **Forward Email**. They required **secure email forwarding** services and needed documentation confirming our adherence to federal regulations, including **Section 889 compliance**. This experience serves as a valuable case study, demonstrating our readiness and capability to support government-funded organizations and meet their stringent requirements. This dedication extends to all our users seeking a reliable, **privacy-focused email** solution.
+<img src="/img/articles/federal.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
 
+* [Foreword](#foreword)
 * [Understanding Section 889 Compliance](#understanding-section-889-compliance)
 * [How Forward Email Achieves Section 889 Compliance](#how-forward-email-achieves-section-889-compliance)
   * [Cloudflare's Commitment](#cloudflares-commitment)
@@ -16,6 +15,13 @@ Our commitment to **government email compliance** was recently put into practice
 * [Why This Matters for You](#why-this-matters-for-you)
 * [Secure, Compliant Email Forwarding Starts Here](#secure-compliant-email-forwarding-starts-here)
 * [References](#references)
+
+
+## Foreword
+
+At Forward Email, we believe in simple, secure, and private email forwarding for everyone. We know that for many organizations, especially those working with the US government, compliance isn't just a buzzword – it's a necessity. Ensuring adherence to **federal regulations for email** is crucial. That's why we're proud to confirm our **secure email forwarding** service is built to meet stringent federal requirements, including [Section 889](https://www.acquisition.gov/Section-889-Policies) of the [National Defense Authorization Act (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
+
+Our commitment to **government email compliance** was recently put into practice when the **US Naval Academy** approached **Forward Email**. They required **secure email forwarding** services and needed documentation confirming our adherence to federal regulations, including **Section 889 compliance**. This experience serves as a valuable case study, demonstrating our readiness and capability to support government-funded organizations and meet their stringent requirements. This dedication extends to all our users seeking a reliable, **privacy-focused email** solution.
 
 
 ## Understanding Section 889 Compliance

@@ -1,6 +1,6 @@
 # GDPR Compliance
 
-Forward Email is a privacy-focused company committed to protecting your data.
+<img src="/img/articles/gdpr.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
@@ -13,6 +13,8 @@ Forward Email is a privacy-focused company committed to protecting your data.
 
 
 ## Foreword
+
+Forward Email is a privacy-focused company committed to protecting your data.
 
 The [General Data Protection Regulation](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") governs the transfer of data outside of the EU and EEA, and its goals are to enhance your control and rights over your personal information.  Fortunately we do not sell any data we process, store, and/or transfer – nor do we use such data for any other purpose than to provide our services to you.
 

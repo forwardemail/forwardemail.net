@@ -1,10 +1,11 @@
 # Case Study: How Canonical Powers Ubuntu Email Management with Forward Email's Open-Source Enterprise Solution
 
-In the world of open-source software, few names carry as much weight as [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)), the company behind [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), one of the most popular Linux distributions globally. With a vast ecosystem spanning multiple distributions including Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu), and others, Canonical faced unique challenges in managing email addresses across their numerous domains. This case study explores how Canonical partnered with Forward Email to create a seamless, secure, and privacy-focused enterprise email management solution that aligns perfectly with their open-source values.
+<img src="/img/articles/canonical.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
 
+* [Foreword](#foreword)
 * [The Challenge: Managing a Complex Email Ecosystem](#the-challenge-managing-a-complex-email-ecosystem)
 * [Key Takeaways](#key-takeaways)
 * [Why Forward Email](#why-forward-email)
@@ -22,6 +23,11 @@ In the world of open-source software, few names carry as much weight as [Canonic
 * [Supporting Enterprise Clients](#supporting-enterprise-clients)
   * [Get in Touch](#get-in-touch)
   * [About Forward Email](#about-forward-email)
+
+
+## Foreword
+
+In the world of open-source software, few names carry as much weight as [Canonical](https://en.wikipedia.org/wiki/Canonical_\(company\)), the company behind [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), one of the most popular Linux distributions globally. With a vast ecosystem spanning multiple distributions including Ubuntu, [Kubuntu](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu), and others, Canonical faced unique challenges in managing email addresses across their numerous domains. This case study explores how Canonical partnered with Forward Email to create a seamless, secure, and privacy-focused enterprise email management solution that aligns perfectly with their open-source values.
 
 
 ## The Challenge: Managing a Complex Email Ecosystem

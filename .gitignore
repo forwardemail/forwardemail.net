@@ -94,3 +94,4 @@ temp/
 .dkim-key
 redis-data
 mongodb-backups
+assets/api-spec-en.json

@@ -1,0 +1,3726 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Forward Email API",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />مرحبًا بك في توثيق واجهة برمجة التطبيقات الشاملة لإعادة توجيه البريد الإلكتروني. تتيح لك هذه الواجهة إدارة إعادة توجيه البريد الإلكتروني، والنطاقات، والأسماء المستعارة، ورسائل البريد الإلكتروني الصادرة، والمزيد برمجيًا.\n\n## الميزات الرئيسية\n* **إدارة النطاقات:** إنشاء النطاقات، واسترجاعها، وتحديثها، وحذفها، والتحقق منها.\n* **إدارة الأسماء المستعارة:** إدارة أسماء البريد الإلكتروني المستعارة، بما في ذلك الإنشاء، والتحديثات، وإدارة المستلمين.\n* **بروتوكول SMTP الصادر:** إرسال رسائل البريد الإلكتروني عبر SMTP، وإدارة الحدود، وتتبع رسائل البريد الإلكتروني المرسلة.\n* **الحساب والسجلات:** إدارة تفاصيل حسابك وتنزيل سجلات النشاط.\n* **الأمان:** تشفير سجلات TXT وإدارة أعضاء/دعوات النطاق.\n* **قريبًا:** ميزات مثل جهات اتصال CardDAV، وتقويمات CalDAV، وإدارة رسائل/مجلدات IMAP/POP3 مُخطط لها.\n\n## المصادقة\nتتطلب معظم نقاط النهاية المصادقة باستخدام **مفتاح واجهة برمجة التطبيقات**. أدخل مفتاح واجهة برمجة التطبيقات كـ \"اسم المستخدم\" في ترويسة المصادقة الأساسية، مع ترك كلمة المرور فارغة.\n\n```http\nالتفويض: أساسي QVBJX1RPS0VOOg==\n```\n(استبدل `API_TOKEN` بمفتاحك الفعلي قبل ترميز Base64)\n\nستستخدم نقاط النهاية المرتبطة بـ **جهات الاتصال والتقويمات والرسائل والمجلدات البديلة** (المُعلَّمة حاليًا باسم \"قريبًا\") اسم مستخدم وكلمة مرور بديلين مُولَّدين للمصادقة الأساسية.\n\n## الأخطاء\nتستخدم واجهة برمجة التطبيقات رموز حالة HTTP القياسية للإشارة إلى النجاح أو الفشل. تتضمن استجابات الأخطاء نص JSON مع حقل \"رسالة\" يُفصِّل الخطأ.\n\n| رمز الحالة | المعنى |\n|-------------|---------------------|\n| 200 | موافق |\n| ٤٠٠ | طلب خاطئ |\n| ٤٠١ | غير مُصرَّح به |\n| ٤٠٣ | ممنوع |\n| ٤٠٤ | غير موجود |\n| ٤٢٩ | طلبات كثيرة جدًا |\n| ٥٠٠ | خطأ داخلي في الخادم |\n| ٥٠١ | غير مُنفَّذ |\n| ٥٠٢ | بوابة خاطئة |\n| ٥٠٣ | الخدمة غير متاحة |\n| ٥٠٤ | انتهاء مهلة البوابة |\n\n*إذا واجهتَ خطأ `5xx`، يُرجى التواصل مع [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## الترجمة\nتُترجم استجابات واجهة برمجة التطبيقات بناءً على الإعدادات المحلية التي اكتشفها المستخدم أو ترويسة `Accept-Language`. يدعم الموقع أكثر من ٢٥ لغة.\n\n## ترقيم الصفحات\nتدعم نقاط النهاية التي تُرجع القوائم ترقيم الصفحات عبر معلمات الاستعلام.\n\n| المعلمة | النوع | اختياري | الوصف | الافتراضي | القيود |\n|--------------|----------|------------|---------------------------------------------------------------------------|---------|--------------------|\n| `page` | عدد صحيح | نعم | رقم الصفحة المطلوب استرجاعها. | 1 | `>= 1` |\n| `limit` | عدد صحيح | نعم | عدد النتائج في الصفحة. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | نعم | الاشتراك في سلوك ترقيم الصفحات (مطلوب قبل 1 نوفمبر 2024 لبعض نقاط النهاية). | false | |\n\n**رؤوس ترقيم الصفحات:**\n* `X-Page-Count`: إجمالي عدد الصفحات.\n* `X-Page-Current`: رقم الصفحة الحالية.\n* `X-Page-Size`: عدد العناصر في الصفحة الحالية.\n* `X-Item-Count`: إجمالي عدد العناصر في جميع الصفحات.\n* `Link`: روابط التنقل (السابق، التالي، الأول، الأخير).\n\n**مثال:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## المكتبات الموصى بها\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (يُدار بواسطة إعادة توجيه البريد الإلكتروني)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Forward Email Support",
+      "url": "https://forwardemail.net",
+      "email": "api@forwardemail.net"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.forwardemail.net",
+      "description": "خادم API لإعادة توجيه البريد الإلكتروني"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "استخدم مفتاح واجهة برمجة التطبيقات (API) كاسم مستخدم للمصادقة الأساسية. اترك حقل كلمة المرور فارغًا.\n\nمثال: إذا كان مفتاح واجهة برمجة التطبيقات (API) الخاص بك هو `YOUR_API_KEY`، فإن قيمة Base64 المُرمَّزة لرأس `Authorization` ستكون `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+      },
+      "AliasAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "استخدم **اسم المستخدم وكلمة المرور المستعارين** المُولَّدين للمصادقة الأساسية. ينطبق هذا على نقاط النهاية ضمن:\n* جهات اتصال مستعارة (CardDAV)\n* تقويمات مستعارة (CalDAV)\n* رسائل مستعارة (IMAP/POP3)\n* مجلدات مستعارة (IMAP/POP3)\n\n*(ملاحظة: هذه الميزات مُعلَّمة حاليًا بأنها \"قريبًا\")*\n\n**مثال:**\nإذا كان اسم المستخدم المستعار هو `alias@domain.com` وكلمة المرور هي `GENERATED_PASSWORD`، فستكون قيمة Base64 المُرمَّزة هي `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nالتفويض: أساسي YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "رسالة الخطأ"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "plan",
+          "object"
+        ],
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "has_newsletter": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string",
+            "example": "free"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "max_quota_per_alias": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "full_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "otp_enabled": {
+            "type": "boolean"
+          },
+          "last_locale": {
+            "type": "string"
+          },
+          "address_country": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "user"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address_html": {
+            "type": "string"
+          },
+          "api_token": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "example": {
+          "sessions": [],
+          "has_newsletter": true,
+          "plan": "free",
+          "email": "test1@test1.com",
+          "max_quota_per_alias": 10737418240,
+          "full_email": "test1@test1.com",
+          "display_name": "test1@test1.com",
+          "otp_enabled": false,
+          "last_locale": "en",
+          "address_country": "None",
+          "id": "683fb2e81cc5d449a0d4cd9d",
+          "object": "user",
+          "locale": "en",
+          "created_at": "2025-06-04T02:43:52.646Z",
+          "updated_at": "2025-06-04T02:43:55.350Z",
+          "address_html": "",
+          "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Email": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "status",
+          "alias",
+          "domain",
+          "user"
+        ],
+        "properties": {
+          "is_redacted": {
+            "type": "boolean"
+          },
+          "hard_bounces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "soft_bounces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_bounce": {
+            "type": "boolean"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "example": "sent"
+          },
+          "is_locked": {
+            "type": "boolean"
+          },
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "format": "email"
+              },
+              "to": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "accepted": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "email"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "example": {
+          "is_redacted": true,
+          "hard_bounces": [],
+          "soft_bounces": [],
+          "is_bounce": false,
+          "alias": "67a180fxxxxxxxe46a3f0edf",
+          "domain": "5efae85dxxxxxxxf4bb53c7a",
+          "user": "5efabd3907xxxxxxx12890b8",
+          "status": "sent",
+          "is_locked": false,
+          "envelope": {
+            "from": "test@test.com",
+            "to": [
+              "test@test1.com"
+            ]
+          },
+          "messageId": "1a04fee3-5230-4a85-9111-a2c376835885@shaunwarman.com",
+          "date": "2025-06-04T03:32:19.000Z",
+          "subject": "testing",
+          "accepted": [
+            "test@test1.com"
+          ],
+          "id": "683fbe4d5baef1b583a1xxxx",
+          "object": "email",
+          "created_at": "2025-06-04T03:32:29.138Z",
+          "updated_at": "2025-06-04T03:32:33.847Z",
+          "link": "https://forwardemail.net/my-account/emails/683fbe4d5baef1b583a11e54"
+        }
+      },
+      "EmailList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "SMTP": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني للمرسل (يجب أن يكون موجودًا كاسم مستعار للنطاق)."
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لعنوان \"إلى\"."
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لعنوان \"نسخة إلى\"."
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "قائمة مفصولة بفاصلة أو مجموعة من المستلمين لعنوان \"Bcc\"."
+          },
+          "subject": {
+            "type": "string",
+            "description": "موضوع البريد الإلكتروني."
+          },
+          "text": {
+            "type": "string",
+            "description": "النسخة النصية العادية للرسالة."
+          },
+          "html": {
+            "type": "string",
+            "description": "النسخة HTML من الرسالة."
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "مجموعة من كائنات المرفقات (انظر الحقول المشتركة في Nodemailer)."
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني لرأس \"المرسل\"."
+          },
+          "replyTo": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني لعنوان \"الرد على\"."
+          },
+          "inReplyTo": {
+            "type": "string",
+            "description": "معرف الرسالة التي يتم الرد عليها."
+          },
+          "references": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "قائمة مفصولة بمسافة أو مجموعة من معرفات الرسائل."
+          },
+          "attachDataUrls": {
+            "type": "boolean",
+            "description": "إذا كانت هذه القيمة صحيحة، فسيتم تحويل البيانات: الصور الموجودة في محتوى HTML إلى مرفقات مضمنة."
+          },
+          "watchHtml": {
+            "type": "string",
+            "description": "إصدار HTML للرسالة خاص بـ Apple Watch."
+          },
+          "amp": {
+            "type": "string",
+            "description": "إصدار HTML خاص بـ AMP4EMAIL من الرسالة."
+          },
+          "icalEvent": {
+            "type": "object",
+            "description": "حدث iCalendar كمحتوى رسالة بديل."
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "مجموعة من محتوى الرسائل البديلة."
+          },
+          "encoding": {
+            "type": "string",
+            "description": "ترميز النص وسلاسل HTML (على سبيل المثال، 'utf-8'، 'hex'، 'base64')."
+          },
+          "raw": {
+            "type": "string",
+            "description": "رسالة مخصصة بتنسيق RFC822 (بدلاً من استخدام إنشاء Nodemailer)."
+          },
+          "textEncoding": {
+            "type": "string",
+            "enum": [
+              "quoted-printable",
+              "base64"
+            ],
+            "description": "ترميز إجباري للاستخدام لقيم النص."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal",
+              "low"
+            ],
+            "description": "مستوى الأولوية للبريد الإلكتروني."
+          },
+          "headers": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            ],
+            "description": "كائن أو مجموعة من حقول الرأس الإضافية."
+          },
+          "messageId": {
+            "type": "string",
+            "description": "معرف رسالة اختياري لعنوان \"معرف الرسالة\"."
+          },
+          "date": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "عنوان تاريخ اختياري. لا يمكن أن يتجاوز 30 يومًا في المستقبل."
+          },
+          "list": {
+            "type": "object",
+            "description": "كائن اختياري من عناوين List-*."
+          }
+        }
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "has_newsletter": {
+            "type": "boolean"
+          },
+          "ignore_mx_check": {
+            "type": "boolean"
+          },
+          "retention_days": {
+            "type": "integer"
+          },
+          "has_regex": {
+            "type": "boolean"
+          },
+          "has_catchall": {
+            "type": "boolean"
+          },
+          "allowlist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "denylist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "restricted_alias_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "has_adult_content_protection": {
+            "type": "boolean"
+          },
+          "has_phishing_protection": {
+            "type": "boolean"
+          },
+          "has_executable_protection": {
+            "type": "boolean"
+          },
+          "has_virus_protection": {
+            "type": "boolean"
+          },
+          "is_catchall_regex_disabled": {
+            "type": "boolean"
+          },
+          "has_smtp": {
+            "type": "boolean"
+          },
+          "is_smtp_suspended": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "max_recipients_per_alias": {
+            "type": "integer"
+          },
+          "smtp_port": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "has_mx_record": {
+            "type": "boolean"
+          },
+          "has_txt_record": {
+            "type": "boolean"
+          },
+          "has_dkim_record": {
+            "type": "boolean"
+          },
+          "has_return_path_record": {
+            "type": "boolean"
+          },
+          "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
+          "has_custom_verification": {
+            "type": "boolean"
+          },
+          "verification_record": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "domain"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_used": {
+            "type": "integer"
+          },
+          "storage_used_by_aliases": {
+            "type": "integer"
+          },
+          "storage_quota": {
+            "type": "integer"
+          },
+          "smtp_dns_records": {
+            "type": "object",
+            "properties": {
+              "dkim": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "return_path": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "dmarc": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "example": [
+          {
+            "has_newsletter": false,
+            "ignore_mx_check": false,
+            "retention_days": 0,
+            "has_regex": false,
+            "has_catchall": true,
+            "allowlist": [],
+            "denylist": [],
+            "restricted_alias_names": [],
+            "has_adult_content_protection": true,
+            "has_phishing_protection": true,
+            "has_executable_protection": true,
+            "has_virus_protection": true,
+            "is_catchall_regex_disabled": false,
+            "has_smtp": false,
+            "is_smtp_suspended": false,
+            "plan": "team",
+            "max_recipients_per_alias": 10,
+            "smtp_port": "25",
+            "name": "test.com",
+            "has_mx_record": false,
+            "has_txt_record": false,
+            "has_dkim_record": false,
+            "has_return_path_record": false,
+            "has_dmarc_record": false,
+            "has_recipient_verification": false,
+            "has_custom_verification": false,
+            "verification_record": "kcjg6vrO8Q",
+            "id": "683f1172c4bad2524410b857",
+            "object": "domain",
+            "created_at": "2025-06-03T15:14:59.000Z",
+            "updated_at": "2025-06-03T15:14:59.254Z",
+            "storage_used": 0,
+            "storage_used_by_aliases": 0,
+            "storage_quota": 10737418240,
+            "smtp_dns_records": {
+              "dkim": {
+                "name": "fe-ebf3212716._domainkey",
+                "value": "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcG+YBDPhyH8bLmyflmU9w1klYDeWpEufIlVqyWqly9lC+J/ntkKn4gum28EeE6vR+55x4JFCR8qSaw0YO1eCRwBgpFB0kKzbELHh2i2TKKwrqB3gPLXp4q4lbcGX2eD6fPCRwckTHqmiOzMhX8GD60zVlEvabok4LJ1i/BOyh6wIDAQAB;"
+              },
+              "return_path": {
+                "name": "fe-bounces",
+                "value": "forwardemail.net"
+              },
+              "dmarc": {
+                "name": "_dmarc",
+                "value": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-683f1172c4bad2524410b857@localhost;"
+              }
+            },
+            "link": "http://localhost:3000/my-account/domains/test.com"
+          }
+        ]
+      },
+      "CreateDomainInput": {
+        "type": "object",
+        "required": [
+          "domain"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "اسم المجال المؤهل بالكامل (FQDN) أو عنوان IP"
+          },
+          "team_domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "التعيين للفريق نفسه من نطاق آخر؛ يمكن أن يكون معرف نطاق أو اسم نطاق مؤهل بالكامل. استخدم \"لا شيء\" لتعطيله صراحةً."
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "enhanced_protection",
+              "team"
+            ],
+            "description": "نوع الخطة (الافتراضي هو \"مجاني\" أو الخطة المدفوعة الحالية للمستخدم)"
+          },
+          "catchall": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "description": "قائمة محددة من عناوين البريد الإلكتروني (مفصولة بفاصلة أو مسافة أو سطر جديد)"
+              }
+            ],
+            "description": "إنشاء اسم مستعار افتراضي شامل (الافتراضي هو true)"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "تمكين حماية محتوى البالغين من Spam Scanner"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "تمكين الحماية من التصيد الاحتيالي من خلال Spam Scanner"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "تمكين حماية الملفات القابلة للتنفيذ لـ Spam Scanner"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "تمكين الحماية من الفيروسات من خلال Spam Scanner"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "مطالبة مستلمي الأسماء المستعارة بالنقر فوق رابط التحقق من البريد الإلكتروني"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "تجاهل فحص سجل MX لإعدادات توجيه البريد المتقدمة"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "عدد الأيام للاحتفاظ بسجلات SMTP الصادرة (0–30، الافتراضي: 0)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "description": "عنوان URL لـ Webhook لتلقي أحداث الارتداد"
+              },
+              {
+                "type": "boolean",
+                "enum": [
+                  false
+                ],
+                "description": "تعطيل خطاف الويب المرتد"
+              }
+            ]
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "الحد الأقصى لحصة التخزين لكل اسم مستعار (على سبيل المثال '1 جيجابايت')"
+          }
+        }
+      },
+      "UpdateDomainInput": {
+        "type": "object",
+        "properties": {
+          "smtp_port": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "منفذ مخصص لتكوين إعادة توجيه SMTP (الافتراضي هو '25')"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تمكين حماية محتوى البالغين من Spam Scanner على هذا المجال"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تمكين حماية Spam Scanner من التصيد الاحتيالي على هذا المجال"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تمكين حماية الملفات القابلة للتنفيذ من Spam Scanner على هذا المجال"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تمكين الحماية من الفيروسات من خلال Spam Scanner على هذا المجال"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "النطاق العالمي الافتراضي لمعرفة ما إذا كان يجب على مستلمي الأسماء المستعارة النقر فوق رابط التحقق من البريد الإلكتروني لتدفق رسائل البريد الإلكتروني"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تجاهل فحص سجل MX على النطاق للتحقق (خاصةً لإعدادات توجيه MX المتقدمة)"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "عدد الأيام اللازمة لتخزين رسائل البريد الإلكتروني SMTP الصادرة (0 = الإزالة فورًا)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            ],
+            "description": "عنوان URL لـ Webhook لتلقي إشعارات الارتداد، أو False لتعطيله"
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "حصة التخزين لكل اسم مستعار (على سبيل المثال \"1 جيجابايت\"، مقسمة إلى بايتات)"
+          }
+        }
+      },
+      "Alias": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "email",
+              "display_name",
+              "id"
+            ]
+          },
+          "domain": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "id"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_enabled": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
+          "verified_recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "pending_recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "alias"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_location": {
+            "type": "string"
+          },
+          "has_imap": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "user",
+          "domain",
+          "name",
+          "labels",
+          "is_enabled",
+          "has_recipient_verification",
+          "verified_recipients",
+          "pending_recipients",
+          "recipients",
+          "id",
+          "object",
+          "created_at",
+          "updated_at",
+          "storage_location",
+          "has_imap"
+        ],
+        "example": {
+          "user": {
+            "email": "test@test.com",
+            "display_name": "test@test.com",
+            "id": "5efabd39xxxxxxx4512890b8"
+          },
+          "domain": {
+            "name": "mailsire.com",
+            "id": "5e3c0550xxxxxxx09b7ba023"
+          },
+          "name": "abc123",
+          "labels": [],
+          "is_enabled": true,
+          "has_recipient_verification": false,
+          "verified_recipients": [],
+          "pending_recipients": [],
+          "recipients": [
+            "abc@test1.com"
+          ],
+          "id": "62fa3dcxxxxxxx79dda83ff2",
+          "object": "alias",
+          "created_at": "2022-08-15T12:36:26.593Z",
+          "updated_at": "2022-08-15T12:36:26.593Z",
+          "storage_location": "storage_loc",
+          "has_imap": false
+        }
+      },
+      "AliasInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "اسم مستعار (إذا لم يتم توفيره أو إذا كان فارغًا، فسيتم إنشاء اسم مستعار عشوائي)"
+          },
+          "recipients": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "سلسلة من عناوين البريد الإلكتروني الصالحة، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين IP، أو عناوين URL لشبكة الويب، مفصولة بفاصل/مسافة/فواصل"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "مجموعة من المستلمين الصالحين"
+              }
+            ],
+            "description": "قائمة المستلمين. إذا لم تُقدّم أو كانت فارغة، فسيتمّ اختيار عنوان البريد الإلكتروني لمقدّم الطلب افتراضيًا."
+          },
+          "description": {
+            "type": "string",
+            "description": "وصف الاسم المستعار"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "سلسلة من العلامات مفصولة بفاصل/مسافة/فاصلة"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "مجموعة من العلامات"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (الافتراضي هو إعداد المجال)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "ما إذا كان سيتم تمكين هذا الاسم المستعار أو تعطيله"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [
+              250,
+              421,
+              550
+            ],
+            "description": "رمز الخطأ في حال تعطيل الاسم المستعار. القيمة الافتراضية ٢٥٠"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل تخزين IMAP لهذا الاسم المستعار"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل تشفير OpenPGP لهذا الاسم المستعار"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "مفتاح OpenPGP العام بتنسيق ASCII Armor"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "الحد الأقصى لحصة التخزين (على سبيل المثال \"1 جيجابايت\")"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل الرد التلقائي"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "تاريخ البدء (على سبيل المثال 'YYYY-MM-DD') لمستجيب الإجازة"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "تاريخ الانتهاء (على سبيل المثال 'YYYY-MM-DD') لمستجيب الإجازة"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "موضوع نص عادي للإجابة على الإجازة"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "رسالة نصية عادية للرد على المكالمات أثناء الإجازة"
+          }
+        }
+      },
+      "AliasUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "الاسم المستعار"
+          },
+          "recipients": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "سلسلة من عناوين البريد الإلكتروني الصالحة، أو أسماء النطاقات المؤهلة بالكامل، أو عناوين IP، أو عناوين URL لشبكة الويب، مفصولة بفاصل/مسافة/فواصل"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "مجموعة من المستلمين الصالحين"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "وصف الاسم المستعار"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "سلسلة من العلامات مفصولة بفاصل/مسافة/فاصلة"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "مجموعة من العلامات"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (يتم تعيينه افتراضيًا على إعداد المجال)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل الاسم المستعار"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [
+              250,
+              421,
+              550
+            ],
+            "description": "رمز الخطأ الذي يجب استخدامه إذا تم تعطيل الاسم المستعار (القيمة الافتراضية هي 250)"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل تخزين IMAP"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل تشفير OpenPGP"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "مفتاح OpenPGP العام بتنسيق ASCII Armor"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "الحد الأقصى لحصة التخزين (على سبيل المثال، '1 جيجابايت')"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "تمكين أو تعطيل الرد التلقائي"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "تاريخ بدء الاستجابة للعطلة (على سبيل المثال YYYY-MM-DD)"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "تاريخ انتهاء الرد التلقائي (على سبيل المثال YYYY-MM-DD)"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "موضوع نص عادي للإجابة على الإجازة"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "رسالة نصية عادية من المجيب الإجازي"
+          }
+        }
+      },
+      "GenerateAliasPasswordInput": {
+        "type": "object",
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "description": "كلمة المرور الجديدة المخصصة لك لاستخدامها في الاسم المستعار"
+          },
+          "password": {
+            "type": "string",
+            "description": "كلمة المرور الحالية للاسم المستعار لتغييرها دون حذف مساحة تخزين صندوق البريد"
+          },
+          "is_override": {
+            "type": "boolean",
+            "description": "تجاوز كلمة المرور الحالية وحذف تخزين IMAP (استخدم بحذر)"
+          },
+          "emailed_instructions": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني لإرسال كلمة المرور المستعارة وتعليمات الإعداد"
+          }
+        }
+      },
+      "EmailLimit": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "العدد الحالي للرسائل الإلكترونية المرسلة"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "الحد الأقصى لعدد رسائل البريد الإلكتروني المسموح بها"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف العضو"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني للعضو"
+          },
+          "role": {
+            "type": "string",
+            "description": "دور العضو"
+          }
+        }
+      },
+      "Invite": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني المدعو"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "description": "صفحة النتائج المطلوب إرجاعها. إذا لم تُحدَّد القيمة، فستكون ١. يجب أن يكون الرقم أكبر من أو يساوي ١.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "عدد النتائج المعروضة في كل صفحة. افتراضيًا، ١٠ نتائج في حال عدم تحديدها. يجب أن يكون العدد أكبر من أو يساوي ١، وأصغر من أو يساوي ٥٠.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 10
+        }
+      },
+      "pagination": {
+        "name": "pagination",
+        "in": "query",
+        "description": "الاشتراك في الترقيم قبل 1 نوفمبر 2024",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "domainId": {
+        "name": "domain_id",
+        "in": "path",
+        "required": true,
+        "description": "معرف المجال",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "aliasId": {
+        "name": "alias_id",
+        "in": "path",
+        "required": true,
+        "description": "أسماء مستعارة للمعرفات",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "memberId": {
+        "name": "member_id",
+        "in": "path",
+        "required": true,
+        "description": "معرف العضو",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "emailId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "معرف البريد الإلكتروني",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotImplemented": {
+        "description": "Not Implemented",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "Bad Gateway",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "GatewayTimeout": {
+        "description": "Gateway Time-out",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/account": {
+      "post": {
+        "summary": "إنشاء حساب",
+        "description": "إنشاء حساب مستخدم جديد",
+        "tags": [
+          "حساب"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "عنوان البريد الإلكتروني"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "كلمة المرور"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "get": {
+        "summary": "استرداد الحساب",
+        "description": "استرداد معلومات حساب المستخدم الحالي",
+        "tags": [
+          "حساب"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث الحساب",
+        "description": "تحديث معلومات حساب المستخدم الحالي",
+        "tags": [
+          "حساب"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "عنوان البريد الإلكتروني"
+                  },
+                  "given_name": {
+                    "type": "string",
+                    "description": "الاسم الأول"
+                  },
+                  "family_name": {
+                    "type": "string",
+                    "description": "اسم العائلة"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "description": "رابط لصورة الرمزية"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/logs/download": {
+      "get": {
+        "summary": "تنزيل السجلات",
+        "description": "**تنزيل السجلات**\n\nالوصف: تتيح لك واجهة برمجة التطبيقات (API) الخاصة بنا تنزيل سجلات حسابك برمجيًا. سيؤدي إرسال طلب إلى هذه النقطة النهائية إلى معالجة جميع سجلات حسابك وإرسالها إليك عبر البريد الإلكتروني كمرفق (ملف جدول بيانات CSV مضغوط بتنسيق Gzip) بمجرد اكتماله.\n\nيتيح لك هذا إنشاء مهام خلفية باستخدام مهمة Cron أو باستخدام برنامج Bree لجدولة مهام Node.js لتلقي السجلات وقتما تشاء. يُرجى العلم أن هذه النقطة النهائية محدودة بـ \"10\" طلبات يوميًا.\n\nالمرفق هو الشكل الصغير لـ \"email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz\"، ويحتوي البريد الإلكتروني نفسه على ملخص موجز للسجلات المسترجعة.",
+        "tags": [
+          "السجلات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "تصفية السجلات حسب النطاق المؤهل بالكامل (\"FQDN\"). في حال عدم توفيره، سيتم استرجاع جميع السجلات عبر جميع النطاقات.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "ابحث عن السجلات حسب البريد الإلكتروني أو المجال أو الاسم المستعار أو عنوان IP أو التاريخ (تنسيق M/Y، M/D/YY، M-D، M-D-YY، أو M.D.YY).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bounce_category",
+            "in": "query",
+            "description": "ابحث عن السجلات حسب فئة الارتداد المحددة (على سبيل المثال \"قائمة الحظر\").",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_code",
+            "in": "query",
+            "description": "ابحث عن السجلات حسب رمز استجابة الخطأ المحدد (على سبيل المثال 421 أو 550).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs will be emailed as an attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logs will be emailed to you shortly"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/emails": {
+      "get": {
+        "summary": "قائمة رسائل البريد الإلكتروني الصادرة SMTP",
+        "description": "**قائمة رسائل SMTP الصادرة**\n\nيرجى ملاحظة أن هذه النقطة النهائية لا تُرجع قيم خصائص \"message\" أو \"headers\" أو \"rejectedErrors\" في البريد الإلكتروني.\n\nلإرجاع هذه الخصائص وقيمها، يُرجى استخدام نقطة النهاية [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) مع مُعرّف بريد إلكتروني.",
+        "tags": [
+          "رسائل البريد الإلكتروني"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "البحث عن رسائل البريد الإلكتروني عن طريق البيانات الوصفية.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "البحث عن رسائل البريد الإلكتروني حسب اسم المجال.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز في الاتجاه المعاكس لذلك الحقل). افتراضيًا، يتم تعيين created_at إذا لم يتم ضبطه.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of outbound SMTP emails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Email"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء بريد إلكتروني SMTP صادر",
+        "description": "واجهة برمجة التطبيقات (API) الخاصة بنا لإنشاء رسائل البريد الإلكتروني مستوحاة من إعدادات خيارات الرسائل في Nodemailer وتستفيد منها. يُرجى الرجوع إلى إعدادات رسائل Nodemailer (https://nodemailer.com/message/) لجميع معلمات النص أدناه.\n\nيرجى ملاحظة أنه باستثناء \"المغلف\" و\"dkim\" (لأننا نضبطهما تلقائيًا)، فإننا ندعم جميع خيارات Nodemailer. نضبط تلقائيًا خياري \"disableFileAccess\" و\"disableUrlAccess\" على \"true\" لأغراض أمنية.\n\nيجب عليك إما تمرير خيار \"raw\" المفرد مع رسالتك الإلكترونية الخام الكاملة بما في ذلك العناوين، أو تمرير خيارات معلمات النص الفردية أدناه.\n\nستقوم نقطة نهاية واجهة برمجة التطبيقات هذه بترميز الرموز التعبيرية تلقائيًا عند وجودها في العناوين (على سبيل المثال، سطر موضوع \"الموضوع: 🤓 مرحبًا\" يُحوّل تلقائيًا إلى \"الموضوع: =?UTF-8?Q?=F0=9F=A4=93?= مرحبًا\"). كان هدفنا إنشاء واجهة برمجة تطبيقات بريد إلكتروني سهلة الاستخدام للغاية للمطورين ومقاومة للأخطاء البرمجية.",
+        "tags": [
+          "رسائل البريد الإلكتروني"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SMTP"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email sent successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/emails/limit": {
+      "get": {
+        "summary": "الحصول على حد البريد الإلكتروني الصادر SMTP",
+        "description": "هذه نقطة نهاية بسيطة تقوم بإرجاع كائن JSON يحتوي على \"count\" و\"limit\" لعدد رسائل SMTP الصادرة اليومية على أساس كل حساب.",
+        "tags": [
+          "رسائل البريد الإلكتروني"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email limit information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/emails/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/emailId"
+        }
+      ],
+      "get": {
+        "summary": "استرداد البريد الإلكتروني الصادر SMTP",
+        "description": "استرداد بريد إلكتروني SMTP صادر محدد.",
+        "tags": [
+          "رسائل البريد الإلكتروني"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف البريد الإلكتروني الصادر SMTP",
+        "description": "سيؤدي حذف البريد الإلكتروني إلى ضبط الحالة إلى \"مرفوض\" (ومن ثم عدم معالجته في قائمة الانتظار) فقط إذا كانت الحالة الحالية إحدى الحالات التالية: \"معلق\" أو \"في قائمة الانتظار\" أو \"مؤجل\". قد نقوم بحذف رسائل البريد الإلكتروني تلقائيًا بعد 30 يومًا من إنشائها و/أو إرسالها، لذا يُرجى الاحتفاظ بنسخة من رسائل SMTP الصادرة في عميلك أو قاعدة بياناتك أو تطبيقك. يمكنك الرجوع إلى قيمة معرف البريد الإلكتروني في قاعدة بياناتك إذا رغبت في ذلك، حيث يتم إرجاع هذه القيمة من نقطتي النهاية [إنشاء بريد إلكتروني](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) و[استرداد البريد الإلكتروني](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "tags": [
+          "رسائل البريد الإلكتروني"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains": {
+      "get": {
+        "summary": "قائمة المجالات",
+        "description": "> [!NOTE]\n>اعتبارًا من 1 نوفمبر 2024، سيتم ضبط نقاط نهاية واجهة برمجة التطبيقات (API) لنطاقات القائمة وأسماء نطاقات القائمة المستعارة افتراضيًا على 1000 نتيجة كحد أقصى لكل صفحة. إذا كنت ترغب في تفعيل هذا السلوك مبكرًا، يمكنك تمرير ?paginate=true كمعامل سلسلة استعلام إضافي إلى عنوان URL لاستعلام نقطة النهاية. راجع قسم \"الترقيم\" لمزيد من المعلومات.",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "البحث عن المجالات حسب البيانات الوصفية.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "البحث عن المجالات حسب اسم المجال.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز في الاتجاه المعاكس لذلك الحقل). افتراضيًا، يتم تعيين created_at إذا لم يتم ضبطه.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "راجع الترقيم الصفحي لمزيد من المعلومات.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Domain"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء المجال",
+        "description": "يُنشئ نطاقًا جديدًا في النظام. تتيح لك هذه النقطة النهائية تسجيل اسم نطاق مؤهل بالكامل (FQDN) أو عنوان IP للاستخدام مع المنصة.\n\nتشمل خيارات التكوين الاختيارية تعيين النطاق لفريق موجود، وتحديد نوع الخطة (مثلًا: مجانية، أو حماية مُحسّنة، أو فريق)، وتكوين حماية متقدمة مثل تصفية البريد العشوائي، وفحص الفيروسات، والتحقق من المستلم. يمكنك أيضًا تكوين ما إذا كان يجب إنشاء اسم مستعار شامل افتراضيًا، وتعيين عنوان URL مخصص لخطاف الويب المرتد في حالات فشل SMTP، وتحديد حدود حصة التخزين لعناوين البريد الإلكتروني البديلة على هذا النطاق. تُجري هذه النقطة النهائية التحقق من صحة النطاق وتوفيره. في حال تفعيل خيار \"ignore_mx_check\"، يتم تخطي التحقق من سجل MX (يُوصى به فقط لإعدادات التوجيه المتقدمة). ستتضمن الاستجابة تفاصيل كاملة عن كائن النطاق المُنشأ، بما في ذلك سجلات DNS اللازمة للتكوين.",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDomainInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "استرجاع المجال",
+        "description": "استرجاع نطاق معين",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث المجال",
+        "description": "تحديث مجال معين.",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDomainInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف المجال",
+        "description": "حذف مجال معين.",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Domain deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/verify-records": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "التحقق من سجلات المجال",
+        "description": "التحقق من سجلات DNS لنطاق معين.",
+        "tags": [
+          "المجالات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DNS records successfully verified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Domain's DNS records have been verified."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/verify-smtp": {
+      "get": {
+        "summary": "التحقق من سجلات SMTP للمجال",
+        "description": "يتحقق من سجلات DNS المرتبطة بـ SMTP للنطاق المحدد.",
+        "operationId": "verifySmtpRecords",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "اسم المجال المؤهل بالكامل (FQDN) للتحقق",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMTP records successfully verified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/catch-all-passwords": {
+      "post": {
+        "summary": "إنشاء كلمة مرور شاملة على مستوى المجال",
+        "description": "يُنشئ كلمة مرور شاملة على مستوى النطاق. في حال عدم وجود كلمة مرور، سيتم إنشاء كلمة مرور عشوائية آمنة.",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "اسم المجال لإنشاء كلمة المرور الشاملة لـ"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_password": {
+                    "type": "string",
+                    "description": "كلمة مرورك الجديدة المُخصصة لاستخدامها في كلمة مرور النطاق الشاملة. اتركها فارغة لإنشاء كلمة مرور قوية."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "الوصف لأغراض التنظيم فقط."
+                  }
+                }
+              },
+              "example": {
+                "new_password": "myCustomStrongPassword123!",
+                "description": "Password for team-wide access"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a catch-all password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "ID of the created catch-all password"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the catch-all password"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description"
+                  ]
+                },
+                "example": {
+                  "id": "6841ec462bd583c73d0632dd",
+                  "username": "*@quas.com",
+                  "password": "6Yq14XhAUaupdZE",
+                  "description": "foo bar"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "قائمة كلمات المرور الشاملة على مستوى المجال",
+        "description": "يقوم بإرجاع قائمة بكلمات المرور الشاملة على مستوى المجال والتي تم تكوينها حاليًا للمجال المحدد.",
+        "operationId": "listCatchAllPasswords",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "اسم المجال المؤهل بالكامل (FQDN) الذي سيتم إدراج كلمات المرور الشاملة له",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain-wide catch-all passwords",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the item",
+                        "example": "6841ec442bd583c73d0632d0"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the item",
+                        "example": "foo bar"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "description"
+                    ]
+                  },
+                  "example": [
+                    {
+                      "id": "6841ec442bd583c73d0632d0",
+                      "description": ""
+                    },
+                    {
+                      "id": "6841ec462bd583c73d0632dd",
+                      "description": "foo bar"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
+      "delete": {
+        "summary": "إزالة كلمة المرور الشاملة على مستوى المجال",
+        "description": "يقوم بحذف كلمة مرور شاملة على مستوى المجال باستخدام معرف الرمز المقدم.",
+        "tags": [
+          "المجالات"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "اسم المجال المرتبط بكلمة المرور الشاملة"
+          },
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "معرف الرمز المميز لكلمة المرور الشاملة على مستوى المجال المراد حذفها"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catch-all password successfully removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Catch-all password deleted successfully."
+                    }
+                  },
+                  "example": {
+                    "id": "6841ec442bd583c73d0632d0",
+                    "description": ""
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "قبول دعوة النطاق",
+        "description": "قبول دعوة إلى المجال.",
+        "tags": [
+          "دعوات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite accepted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء دعوة للمجال",
+        "description": ">[!IMPORTANT]\n>إذا كان المستخدم المدعو عضوًا مقبولًا في أي نطاق آخر ينتمي إليه المسؤول الذي دعاه، فسيتم قبول الدعوة تلقائيًا ولن يتم إرسال بريد إلكتروني.",
+        "tags": [
+          "دعوات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "عنوان البريد الإلكتروني للدعوة إلى قائمة أعضاء المجال"
+                  },
+                  "group": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "المجموعة التي سيتم إضافة المستخدم إليها إلى عضوية المجال (يمكن أن تكون واحدة من \"admin\" أو \"user\"\")"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "summary": "إزالة دعوة النطاق",
+        "description": "إزالة دعوة إلى المجال.",
+        "tags": [
+          "دعوات"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "عنوان البريد الإلكتروني المراد إزالته من قائمة أعضاء المجال"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/members/{member_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/memberId"
+        }
+      ],
+      "put": {
+        "summary": "تحديث عضو المجال",
+        "description": "تحديث عضو المجال.",
+        "tags": [
+          "أعضاء"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "group": {
+                    "required": true,
+                    "type": "string",
+                    "description": "المجموعة التي تقوم بتحديث المستخدم إلى عضوية المجال مع (يمكن أن تكون واحدة من \"admin\" أو \"user\"\")"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain member updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "إزالة عضو المجال",
+        "description": "إزالة عضو المجال.",
+        "tags": [
+          "أعضاء"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain member removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Member removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
+      "post": {
+        "summary": "إنشاء كلمة مرور مستعارة",
+        "description": "إنشاء كلمة مرور للاسم المستعار. إذا لم يُقدَّم `emailed_instructions`، فستتضمن الاستجابة اسم المستخدم وكلمة المرور المُولَّدَين.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "اسم النطاق المؤهل بالكامل (FQDN)"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "معرف فريد للاسم المستعار"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAliasPasswordInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alias credentials returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string",
+                      "example": "alias@yourdomain.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "some-generated-password"
+                    }
+                  },
+                  "required": [
+                    "username",
+                    "password"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "قائمة أسماء النطاقات المستعارة",
+        "description": ">[!NOTE]\n>اعتبارًا من 1 نوفمبر 2024، سيتم ضبط نقاط نهاية واجهة برمجة التطبيقات (API) لـ \"قائمة النطاقات\" و\"قائمة أسماء النطاقات المستعارة\" افتراضيًا على \"1000\" نتيجة كحد أقصى لكل صفحة. إذا كنت ترغب في تفعيل هذا السلوك مبكرًا، يمكنك تمرير \"?paginate=true\" كمعامل سلسلة استعلام إضافي إلى عنوان URL لاستعلام نقطة النهاية. راجع \"الترقيم\" لمزيد من المعلومات.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم أو التسمية أو المستلم (يدعم RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب الاسم (يدعم RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipient",
+            "in": "query",
+            "description": "البحث عن الأسماء المستعارة في المجال حسب المستلم (يدعم RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "فرز حسب حقل محدد (بادئة بواصلة واحدة - للفرز العكسي). الإعداد الافتراضي هو created_at.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain aliases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alias"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء اسم نطاق مستعار جديد",
+        "description": "إنشاء اسم مستعار جديد لنطاق محدد.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AliasInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/aliasId"
+        }
+      ],
+      "get": {
+        "summary": "استرداد اسم النطاق المستعار",
+        "description": "استرجاع اسم مستعار محدد لنطاق.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث اسم النطاق المستعار",
+        "description": "تحديث اسم مستعار محدد لنطاق.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AliasUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف اسم النطاق المستعار",
+        "description": "حذف اسم مستعار محدد لنطاق ما.",
+        "tags": [
+          "أسماء مستعارة"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Alias deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/encrypt": {
+      "post": {
+        "summary": "تشفير سجل TXT",
+        "description": "نسمح لك بتشفير السجلات حتى في الخطة المجانية دون أي تكلفة. الخصوصية ليست ميزة، بل يجب أن تكون جزءًا لا يتجزأ من جميع جوانب المنتج. بناءً على طلبنا الملحّ في [مناقشة أدلة الخصوصية](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) وفي [مشكلاتنا على GitHub](https://github.com/forwardemail/forwardemail.net/issues/254)، أضفنا هذه الميزة.",
+        "tags": [
+          "تشفير"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "input": {
+                    "required": true,
+                    "type": "string",
+                    "description": "أي سجل نص عادي صالح لإعادة توجيه البريد الإلكتروني"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Text encrypted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encrypted": {
+                      "type": "string",
+                      "description": "Encrypted text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (50 requests for 'encrypt')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "summary": "قائمة جهات الاتصال",
+        "description": "قائمة بجميع جهات الاتصال (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "جهات اتصال مستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء جهة اتصال",
+        "description": "أنشئ جهة اتصال جديدة (CardDAV). ستتوفر هذه النقطة قريبًا.",
+        "tags": [
+          "جهات اتصال مستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "معرف جهة الاتصال",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "استرجاع جهة الاتصال",
+        "description": "استرداد جهة اتصال محددة (CardDAV). ستتوفر هذه النقطة قريبًا.",
+        "tags": [
+          "جهات اتصال مستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث جهة الاتصال",
+        "description": "تحديث جهة اتصال محددة (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "جهات اتصال مستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف جهة الاتصال",
+        "description": "حذف جهة اتصال محددة (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "جهات اتصال مستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "summary": "قائمة التقويمات",
+        "description": "قائمة بجميع التقويمات (CalDAV). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "تقويمات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء التقويم",
+        "description": "أنشئ تقويمًا جديدًا (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
+        "tags": [
+          "تقويمات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "معرف التقويم",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "استرجاع التقويم",
+        "description": "استرداد تقويم مُحدد (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
+        "tags": [
+          "تقويمات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث التقويم",
+        "description": "تحديث تقويم مُحدد (CalDAV). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "تقويمات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف التقويم",
+        "description": "احذف تقويمًا محددًا (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
+        "tags": [
+          "تقويمات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "summary": "قائمة الرسائل والبحث عنها",
+        "description": "قائمة الرسائل والبحث عنها (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "رسائل الاسم المستعار"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء رسالة",
+        "description": "أنشئ رسالة جديدة (IMAP/POP3). لن يؤدي هذا إلى إرسال بريد إلكتروني، بل سيضيف الرسالة إلى مجلد صندوق بريدك (كما هو الحال مع أمر IMAP APPEND). ستتوفر هذه الميزة قريبًا.",
+        "tags": [
+          "رسائل الاسم المستعار"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "معرف الرسالة",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "استرجاع الرسالة",
+        "description": "استرجاع رسالة محددة (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
+        "tags": [
+          "رسائل الاسم المستعار"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث الرسالة",
+        "description": "تحديث رسالة محددة (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "رسائل الاسم المستعار"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف الرسالة",
+        "description": "احذف رسالة محددة (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
+        "tags": [
+          "رسائل الاسم المستعار"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "summary": "قائمة المجلدات",
+        "description": "قائمة بجميع المجلدات (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "إنشاء مجلد",
+        "description": "أنشئ مجلدًا جديدًا (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "معرف المجلد",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "استرجاع المجلد",
+        "description": "استرجاع مجلد محدد (IMAP/POP3). هذه الخدمة متاحة قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "تحديث المجلد",
+        "description": "تحديث مجلد محدد (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "حذف المجلد",
+        "description": "احذف مجلدًا محددًا (IMAP/POP3). ستتوفر هذه الميزة قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/copy": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "معرف المجلد",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "نسخ المجلد",
+        "description": "انسخ مجلدًا محددًا (IMAP/POP3). ستتوفر هذه الميزة قريبًا.",
+        "tags": [
+          "مجلدات الأسماء المستعارة"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "حساب",
+      "description": "نقاط نهاية إدارة الحسابات"
+    },
+    {
+      "name": "السجلات",
+      "description": "نقاط نهاية إدارة السجلات"
+    },
+    {
+      "name": "رسائل البريد الإلكتروني",
+      "description": "نقاط نهاية إدارة البريد الإلكتروني"
+    },
+    {
+      "name": "المجالات",
+      "description": "> [!TIP]\n> نقاط نهاية النطاق التي تحمل اسم النطاق <code>/v1/domains/:domain\\_name</code> كنقطة نهاية لها، يمكن استخدامها مع مُعرّف النطاق <code>:domain\\_id</code>. هذا يعني أنه يمكنك الإشارة إلى النطاق إما باستخدام قيمة <code>name</code> أو <code>id</code>."
+    },
+    {
+      "name": "دعوات",
+      "description": "نقاط نهاية إدارة دعوة النطاق"
+    },
+    {
+      "name": "أعضاء",
+      "description": "نقاط نهاية إدارة أعضاء المجال"
+    },
+    {
+      "name": "أسماء مستعارة",
+      "description": "نقاط نهاية إدارة أسماء النطاق المستعارة"
+    },
+    {
+      "name": "تشفير",
+      "description": "نقاط نهاية التشفير"
+    },
+    {
+      "name": "جهات اتصال مستعارة",
+      "description": "نقاط نهاية إدارة جهات اتصال الأسماء المستعارة (CardDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط مصادقة \"اسم المستخدم\" مساويًا لاسم المستخدم و\"كلمة المرور\" مساوية لكلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المؤمل إصداره (إن شاء الله) في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام عميل IMAP من القائمة المنسدلة \"التطبيقات\" في شريط التنقل بموقعنا الإلكتروني."
+    },
+    {
+      "name": "تقويمات الأسماء المستعارة",
+      "description": "نقاط نهاية إدارة تقويمات الأسماء المستعارة (CalDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المؤمل إصداره (إن شاء الله) في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من القائمة المنسدلة \"التطبيقات\" في شريط التنقل بموقعنا الإلكتروني."
+    },
+    {
+      "name": "رسائل الاسم المستعار",
+      "description": "نقاط نهاية إدارة رسائل الأسماء المستعارة (IMAP/POP3)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط [مصادقة](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n> [!WARNING]\n> هذا القسم من نقاط النهاية قيد التطوير، ومن المؤمل إصداره في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من قائمة \"التطبيقات\" المنسدلة في شريط التنقل بموقعنا الإلكتروني.\n\nيرجى التأكد من اتباع تعليمات الإعداد الخاصة بنطاقك.\n\nيمكنك العثور على هذه التعليمات في قسم الأسئلة الشائعة [هل تدعم استلام البريد الإلكتروني عبر IMAP؟](/faq#do-you-support-receiving-email-with-imap)."
+    },
+    {
+      "name": "مجلدات الأسماء المستعارة",
+      "description": "نقاط نهاية إدارة مجلدات الأسماء المستعارة (IMAP/POP3)\n\n>[!TIP]\n> نقاط نهاية المجلدات التي يكون مسارها <code>/v1/folders/:path</code> نقطة نهاية لها قابلة للتبادل مع معرف المجلد <code>:id</code>. هذا يعني أنه يمكنك الإشارة إلى المجلد إما باستخدام قيمة <code>path</code> أو <code>id</code>.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المأمول إصداره في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من قائمة \"التطبيقات\" المنسدلة في شريط التنقل بموقعنا الإلكتروني."
+    }
+  ]
+}

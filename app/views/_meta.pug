@@ -1,0 +1,166 @@
+meta(charset="utf-8")
+meta(http-equiv="x-ua-compatible", content="ie=edge")
+if meta && meta.title
+  title= striptags(convert(meta.title))
+if meta && meta.description
+  meta(name="description", content=striptags(convert(meta.description)))
+meta(name="viewport", content="width=device-width, initial-scale=1")
+
+//- Add preconnect for key domains to establish early connections
+link(rel="preconnect", href="https://www.youtube-nocookie.com")
+link(rel="preconnect", href=config.urls.web)
+link(rel="preconnect", href="https://challenges.cloudflare.com")
+link(rel="dns-prefetch", href="https://challenges.cloudflare.com")
+
+//- search
+//- <https://stackoverflow.com/q/44189748>
+link(
+  rel="search",
+  type="application/opensearchdescription+xml",
+  title="Forward Email",
+  href="/opensearch.xml"
+)
+
+//- canonical
+link(
+  rel="canonical",
+  href=canonical ? canonical : `${config.urls.web}${ctx.path}`
+)
+
+//- feeds
+link(
+  rel="alternate",
+  href=`${config.urls.web}/blog/feed/atom`,
+  type="application/atom+xml",
+  title="Atom 1.0"
+)
+link(
+  rel="alternate",
+  href=`${config.urls.web}/blog/feed/rss`,
+  type="application/rss+xml",
+  title="RSS 2.0"
+)
+link(
+  rel="alternate",
+  href=`${config.urls.web}/blog/feed/json`,
+  type="application/json",
+  title="JSON Feed 1.0"
+)
+
+//- languages supported
+//- <https://support.google.com/webmasters/answer/189077?hl=en>
+//- <https://support.google.com/webmasters/answer/182192?hl=en>
+//- <https://webmasters.stackexchange.com/questions/126514/should-en-and-x-default-be-included-on-the-same-page-for-hreflang-tags>
+//- <https://www.searchviu.com/en/multiple-hreflang-tags-one-url/>
+//- <https://twitter.com/JohnMu/status/837326127089729536>
+link(
+  rel="alternate",
+  href=`${config.urls.web}/${defaultLocale}${ctx.pathWithoutLocale === '/' ? '' : ctx.pathWithoutLocale}`,
+  hreflang="x-default"
+)
+if availableLanguages
+  each language in availableLanguages
+    link(
+      rel="alternate",
+      href=`${config.urls.web}/${language.locale}${ctx.pathWithoutLocale === '/' ? '' : ctx.pathWithoutLocale}`,
+      hreflang=language.locale
+    )
+
+//- generated with https://realfavicongenerator.net
+link(
+  rel="apple-touch-icon",
+  sizes="152x152",
+  href=manifest("img/apple-touch-icon.png"),
+  integrity=manifest("img/apple-touch-icon.png", "integrity"),
+  crossorigin="anonymous"
+)
+if (domain && domain.name && config && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ['/ubuntu','/kubuntu','/lubuntu','/edubuntu','/ubuntu-studio'].includes(ctx.pathWithoutLocale)
+  link(
+    rel="icon",
+    type="image/png",
+    href=manifest("img/ubuntu-one-favicon-32x32.png"),
+    sizes="32x32",
+    integrity=manifest("img/ubuntu-one-favicon-32x32.png", "integrity"),
+    crossorigin="anonymous"
+  )
+  link(
+    rel="icon",
+    type="image/png",
+    href=manifest("img/ubuntu-one-favicon-16x16.png"),
+    sizes="16x16",
+    integrity=manifest("img/ubuntu-one-favicon-16x16.png", "integrity"),
+    crossorigin="anonymous"
+  )
+else
+  link(
+    rel="alternate icon",
+    type="image/png",
+    href=manifest("img/favicon-32x32.png"),
+    sizes="32x32",
+    integrity=manifest("img/favicon-32x32.png", "integrity"),
+    crossorigin="anonymous"
+  )
+  link(
+    rel="alternate icon",
+    type="image/png",
+    href=manifest("img/favicon-16x16.png"),
+    sizes="16x16",
+    integrity=manifest("img/favicon-16x16.png", "integrity"),
+    crossorigin="anonymous"
+  )
+  link(
+    rel="icon",
+    type="image/svg+xml",
+    href=manifest("img/favicon.svg"),
+    integrity=manifest("img/favicon.svg", "integrity"),
+    crossorigin="anonymous"
+  )
+//- href=manifest("site.webmanifest"),
+//- integrity=manifest("site.webmanifest", "integrity"),
+link(rel="manifest", href="/site.webmanifest", crossorigin="anonymous")
+meta(name="apple-mobile-web-app-title", content=config.appName)
+meta(name="application-name", content=config.appName)
+meta(name="msapplication-TileColor", content=config.appColor)
+meta(name="theme-color", content="#ffffff")
+
+//- <https://stackoverflow.com/questions/76791110/how-to-resolve-error-with-permissions-policy-header-origin-trial-controlled-fea>
+//- <https://github.com/orgs/community/discussions/52356>
+//-.
+  meta(
+    http-equiv="Permissions-Policy",
+    content="interest-cohort=(), user-id=()"
+  )
+
+//- Inline critical JS with minimal impact on FCP
+script(nonce=nonce).
+  (function () {
+    // Execute after first paint using requestAnimationFrame
+    requestAnimationFrame(function () {
+      document.documentElement.className = document.documentElement.className.replace("no-js", "").replace(/\s+/g, " ").trim();
+    });
+  })();
+
+script(nonce=nonce).
+  // Load animations after LCP
+  window.addEventListener("load", function () {
+    // Function to show deferred animations
+    function showDeferredAnimations() {
+      // Show rocket animation
+      var rocket = document.getElementById("rocket");
+      if (rocket) {
+        rocket.classList.add("loaded");
+      }
+
+      // Show freddy image (static -> gif)
+      var waving = document.getElementById("waving");
+      if (waving) {
+        waving.classList.add("loaded");
+      }
+    }
+
+    // Delay animations to improve LCP
+    setTimeout(showDeferredAnimations, 3000);
+  });
+
+if isBot(ctx.get('User-Agent'))
+  style(nonce=nonce)= ".is-bot { display: none !important; }"

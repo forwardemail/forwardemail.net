@@ -1,10 +1,11 @@
 # A Decade of Impact: How Our npm Packages Hit 1 Billion Downloads and Shaped JavaScript
 
-In the [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js) world, some packages are essential—downloaded millions of times daily and powering apps worldwide. Behind these tools are developers focused on open source quality. Today, we're showing how our team helps build and maintain npm packages that have become key parts of the JavaScript ecosystem.
+<img src="/img/articles/npm.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
 
+* [Foreword](#foreword)
 * [The Pioneers Who Trust Us: Isaac Z. Schlueter and Forward Email](#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email)
   * [From npm's Creation to Node.js Leadership](#from-npms-creation-to-nodejs-leadership)
 * [The Architect Behind the Code: Nick Baugh's Journey](#the-architect-behind-the-code-nick-baughs-journey)
@@ -51,6 +52,11 @@ In the [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](http
 * [Enterprise Impact: From Open Source to Mission-Critical Solutions](#enterprise-impact-from-open-source-to-mission-critical-solutions)
   * [Case Studies in Mission-Critical Email Infrastructure](#case-studies-in-mission-critical-email-infrastructure)
 * [A Decade of Open Source: Looking Forward](#a-decade-of-open-source-looking-forward)
+
+
+## Foreword
+
+In the [JavaScript](https://en.wikipedia.org/wiki/JavaScript) and [Node.js](https://en.wikipedia.org/wiki/Node.js) world, some packages are essential—downloaded millions of times daily and powering apps worldwide. Behind these tools are developers focused on open source quality. Today, we're showing how our team helps build and maintain npm packages that have become key parts of the JavaScript ecosystem.
 
 
 ## The Pioneers Who Trust Us: Isaac Z. Schlueter and Forward Email

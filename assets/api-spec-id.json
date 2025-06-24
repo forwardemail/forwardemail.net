@@ -1,0 +1,3726 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Forward Email API",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Selamat datang di dokumentasi API yang komprehensif untuk Forward Email. API ini memungkinkan Anda mengelola penerusan email, domain, alias, email keluar, dan lainnya secara terprogram.\n\n## Fitur Utama\n* **Manajemen Domain:** Membuat, mengambil, memperbarui, menghapus, dan memverifikasi domain.\n* **Manajemen Alias:** Mengelola alias email, termasuk pembuatan, pembaruan, dan manajemen penerima.\n* **SMTP Keluar:** Mengirim email melalui SMTP, mengelola batasan, dan melacak email yang terkirim.\n* **Akun & Log:** Mengelola detail akun Anda dan mengunduh log aktivitas.\n* **Keamanan:** Mengenkripsi rekaman TXT dan mengelola anggota/undangan domain.\n* **Segera Hadir:** Fitur-fitur seperti kontak CardDAV, kalender CalDAV, dan manajemen pesan/folder IMAP/POP3 direncanakan.\n\n## Autentikasi\nSebagian besar titik akhir memerlukan autentikasi menggunakan **Kunci API** Anda. Berikan Kunci API sebagai `nama pengguna` di header Autentikasi Dasar, biarkan kata sandi kosong.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Ganti `API_TOKEN` dengan kunci Anda yang sebenarnya sebelum pengodean Base64)\n\nTitik akhir yang terkait dengan **Alias Kontak, Kalender, Pesan, dan Folder** (saat ini ditandai sebagai \"Segera Hadir\") akan menggunakan nama pengguna dan kata sandi alias yang dibuat untuk Autentikasi Dasar.\n\n## Kesalahan\nAPI menggunakan kode status HTTP standar untuk menunjukkan keberhasilan atau kegagalan. Respons kesalahan menyertakan badan JSON dengan bidang `pesan` yang merinci kesalahan.\n\n| Kode Status | Arti |\n|-------------|---------------------|\n| 200 | Oke |\n| 400 | Permintaan Buruk |\n| 401 | Tidak Resmi |\n| 403 | Dilarang |\n| 404 | Tidak Ditemukan |\n| 429 | Terlalu Banyak Permintaan |\n| 500 | Kesalahan Server Internal|\n| 501 | Tidak Diimplementasikan |\n| 502 | Gateway Buruk |\n| 503 | Layanan Tidak Tersedia |\n| 504 | Gateway Habis Waktu |\n\n*Jika Anda mengalami kesalahan `5xx`, silakan hubungi [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisasi\nRespons API diterjemahkan berdasarkan lokal yang terdeteksi pengguna atau header `Accept-Language`. Lebih dari 25 bahasa didukung.\n\n## Paginasi\nTitik akhir yang mengembalikan daftar mendukung paginasi melalui parameter kueri.\n\n| Parameter | Tipe | Opsional | Deskripsi | Default | Batasan |\n|--------------|---------|----------|----------------------------------------------------------------------------------|---------|--------------------|\n| `page` | Integer | Ya | Nomor halaman yang akan diambil. | 1 | `>= 1` |\n| `limit` | Integer | Ya | Jumlah hasil per halaman. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Ya | Pilih perilaku pagination (diperlukan sebelum 1 November 2024 untuk beberapa titik akhir). | false | |\n\n**Header Pagination:**\n* `X-Page-Count`: Jumlah total halaman.\n* `X-Page-Current`: Nomor halaman saat ini.\n* `X-Page-Size`: Jumlah item pada halaman saat ini.\n* `X-Item-Count`: Jumlah total item di semua halaman.\n* `Link`: Tautan navigasi (sebelumnya, berikutnya, pertama, terakhir).\n\n**Contoh:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Pustaka yang Direkomendasikan\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Dipelihara oleh Forward Email)\n* **Go:** `bersih/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Forward Email Support",
+      "url": "https://forwardemail.net",
+      "email": "api@forwardemail.net"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.forwardemail.net",
+      "description": "Server API Email Teruskan"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "\nGunakan Kunci API Anda sebagai **nama pengguna** untuk Autentikasi Dasar. Kosongkan kolom kata sandi.\n\n**Contoh:**\nJika Kunci API Anda adalah `YOUR_API_KEY`, nilai yang dikodekan Base64 untuk header `Authorization` akan menjadi `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+      },
+      "AliasAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "\nGunakan **nama pengguna dan kata sandi** yang dihasilkan untuk Autentikasi Dasar. Ini berlaku untuk titik akhir di bawah:\n* Kontak Alias (CardDAV)\n* Kalender Alias (CalDAV)\n* Pesan Alias (IMAP/POP3)\n* Folder Alias (IMAP/POP3)\n\n*(Catatan: Fitur-fitur ini saat ini ditandai sebagai \"Segera Hadir\")*\n\n**Contoh:**\nJika nama pengguna alias adalah `alias@domain.com` dan kata sandi adalah `GENERATED_PASSWORD`, nilai yang dikodekan Base64 akan menjadi `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Pesan kesalahan"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "plan",
+          "object"
+        ],
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "has_newsletter": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string",
+            "example": "free"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "max_quota_per_alias": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "full_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "otp_enabled": {
+            "type": "boolean"
+          },
+          "last_locale": {
+            "type": "string"
+          },
+          "address_country": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "user"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "address_html": {
+            "type": "string"
+          },
+          "api_token": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "example": {
+          "sessions": [],
+          "has_newsletter": true,
+          "plan": "free",
+          "email": "test1@test1.com",
+          "max_quota_per_alias": 10737418240,
+          "full_email": "test1@test1.com",
+          "display_name": "test1@test1.com",
+          "otp_enabled": false,
+          "last_locale": "en",
+          "address_country": "None",
+          "id": "683fb2e81cc5d449a0d4cd9d",
+          "object": "user",
+          "locale": "en",
+          "created_at": "2025-06-04T02:43:52.646Z",
+          "updated_at": "2025-06-04T02:43:55.350Z",
+          "address_html": "",
+          "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Email": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "status",
+          "alias",
+          "domain",
+          "user"
+        ],
+        "properties": {
+          "is_redacted": {
+            "type": "boolean"
+          },
+          "hard_bounces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "soft_bounces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_bounce": {
+            "type": "boolean"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "example": "sent"
+          },
+          "is_locked": {
+            "type": "boolean"
+          },
+          "envelope": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "format": "email"
+              },
+              "to": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            }
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "accepted": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "example": "email"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "example": {
+          "is_redacted": true,
+          "hard_bounces": [],
+          "soft_bounces": [],
+          "is_bounce": false,
+          "alias": "67a180fxxxxxxxe46a3f0edf",
+          "domain": "5efae85dxxxxxxxf4bb53c7a",
+          "user": "5efabd3907xxxxxxx12890b8",
+          "status": "sent",
+          "is_locked": false,
+          "envelope": {
+            "from": "test@test.com",
+            "to": [
+              "test@test1.com"
+            ]
+          },
+          "messageId": "1a04fee3-5230-4a85-9111-a2c376835885@shaunwarman.com",
+          "date": "2025-06-04T03:32:19.000Z",
+          "subject": "testing",
+          "accepted": [
+            "test@test1.com"
+          ],
+          "id": "683fbe4d5baef1b583a1xxxx",
+          "object": "email",
+          "created_at": "2025-06-04T03:32:29.138Z",
+          "updated_at": "2025-06-04T03:32:33.847Z",
+          "link": "https://forwardemail.net/my-account/emails/683fbe4d5baef1b583a11e54"
+        }
+      },
+      "EmailList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Email"
+        }
+      },
+      "SMTP": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email pengirim (harus ada sebagai alias domain)."
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Daftar yang dipisahkan koma atau serangkaian penerima untuk tajuk 'Kepada'."
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Daftar yang dipisahkan koma atau serangkaian penerima untuk header 'Cc'."
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Daftar yang dipisahkan koma atau serangkaian penerima untuk tajuk 'Bcc'."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Subjek email."
+          },
+          "text": {
+            "type": "string",
+            "description": "Versi teks biasa dari pesan tersebut."
+          },
+          "html": {
+            "type": "string",
+            "description": "Versi HTML dari pesan."
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Serangkaian objek lampiran (lihat bidang umum Nodemailer)."
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email untuk header 'Pengirim'."
+          },
+          "replyTo": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email untuk header 'Balas-Ke'."
+          },
+          "inReplyTo": {
+            "type": "string",
+            "description": "Message-ID tempat pesan tersebut dibalas."
+          },
+          "references": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Daftar yang dipisahkan spasi atau larik ID Pesan."
+          },
+          "attachDataUrls": {
+            "type": "boolean",
+            "description": "Jika benar, mengonversi data: gambar dalam konten HTML ke lampiran yang disematkan."
+          },
+          "watchHtml": {
+            "type": "string",
+            "description": "Versi HTML pesan khusus Apple Watch."
+          },
+          "amp": {
+            "type": "string",
+            "description": "Versi HTML spesifik AMP4EMAIL dari pesan tersebut."
+          },
+          "icalEvent": {
+            "type": "object",
+            "description": "Acara iCalendar sebagai konten pesan alternatif."
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Serangkaian konten pesan alternatif."
+          },
+          "encoding": {
+            "type": "string",
+            "description": "Pengkodean untuk teks dan string HTML (misalnya, 'utf-8', 'hex', 'base64')."
+          },
+          "raw": {
+            "type": "string",
+            "description": "Pesan berformat RFC822 yang dibuat khusus (bukan menggunakan pembuatan Nodemailer)."
+          },
+          "textEncoding": {
+            "type": "string",
+            "enum": [
+              "quoted-printable",
+              "base64"
+            ],
+            "description": "Pengkodean dipaksa digunakan untuk nilai teks."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal",
+              "low"
+            ],
+            "description": "Tingkat prioritas untuk email."
+          },
+          "headers": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            ],
+            "description": "Objek atau larik bidang header tambahan."
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Message-ID opsional untuk header 'Message-ID'."
+          },
+          "date": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "Header Tanggal opsional. Tidak boleh lebih dari 30 hari ke depan."
+          },
+          "list": {
+            "type": "object",
+            "description": "Objek opsional dari header List-*"
+          }
+        }
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "has_newsletter": {
+            "type": "boolean"
+          },
+          "ignore_mx_check": {
+            "type": "boolean"
+          },
+          "retention_days": {
+            "type": "integer"
+          },
+          "has_regex": {
+            "type": "boolean"
+          },
+          "has_catchall": {
+            "type": "boolean"
+          },
+          "allowlist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "denylist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "restricted_alias_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "has_adult_content_protection": {
+            "type": "boolean"
+          },
+          "has_phishing_protection": {
+            "type": "boolean"
+          },
+          "has_executable_protection": {
+            "type": "boolean"
+          },
+          "has_virus_protection": {
+            "type": "boolean"
+          },
+          "is_catchall_regex_disabled": {
+            "type": "boolean"
+          },
+          "has_smtp": {
+            "type": "boolean"
+          },
+          "is_smtp_suspended": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "max_recipients_per_alias": {
+            "type": "integer"
+          },
+          "smtp_port": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "has_mx_record": {
+            "type": "boolean"
+          },
+          "has_txt_record": {
+            "type": "boolean"
+          },
+          "has_dkim_record": {
+            "type": "boolean"
+          },
+          "has_return_path_record": {
+            "type": "boolean"
+          },
+          "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
+          "has_custom_verification": {
+            "type": "boolean"
+          },
+          "verification_record": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "domain"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_used": {
+            "type": "integer"
+          },
+          "storage_used_by_aliases": {
+            "type": "integer"
+          },
+          "storage_quota": {
+            "type": "integer"
+          },
+          "smtp_dns_records": {
+            "type": "object",
+            "properties": {
+              "dkim": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "return_path": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "dmarc": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "link": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "example": [
+          {
+            "has_newsletter": false,
+            "ignore_mx_check": false,
+            "retention_days": 0,
+            "has_regex": false,
+            "has_catchall": true,
+            "allowlist": [],
+            "denylist": [],
+            "restricted_alias_names": [],
+            "has_adult_content_protection": true,
+            "has_phishing_protection": true,
+            "has_executable_protection": true,
+            "has_virus_protection": true,
+            "is_catchall_regex_disabled": false,
+            "has_smtp": false,
+            "is_smtp_suspended": false,
+            "plan": "team",
+            "max_recipients_per_alias": 10,
+            "smtp_port": "25",
+            "name": "test.com",
+            "has_mx_record": false,
+            "has_txt_record": false,
+            "has_dkim_record": false,
+            "has_return_path_record": false,
+            "has_dmarc_record": false,
+            "has_recipient_verification": false,
+            "has_custom_verification": false,
+            "verification_record": "kcjg6vrO8Q",
+            "id": "683f1172c4bad2524410b857",
+            "object": "domain",
+            "created_at": "2025-06-03T15:14:59.000Z",
+            "updated_at": "2025-06-03T15:14:59.254Z",
+            "storage_used": 0,
+            "storage_used_by_aliases": 0,
+            "storage_quota": 10737418240,
+            "smtp_dns_records": {
+              "dkim": {
+                "name": "fe-ebf3212716._domainkey",
+                "value": "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcG+YBDPhyH8bLmyflmU9w1klYDeWpEufIlVqyWqly9lC+J/ntkKn4gum28EeE6vR+55x4JFCR8qSaw0YO1eCRwBgpFB0kKzbELHh2i2TKKwrqB3gPLXp4q4lbcGX2eD6fPCRwckTHqmiOzMhX8GD60zVlEvabok4LJ1i/BOyh6wIDAQAB;"
+              },
+              "return_path": {
+                "name": "fe-bounces",
+                "value": "forwardemail.net"
+              },
+              "dmarc": {
+                "name": "_dmarc",
+                "value": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-683f1172c4bad2524410b857@localhost;"
+              }
+            },
+            "link": "http://localhost:3000/my-account/domains/test.com"
+          }
+        ]
+      },
+      "CreateDomainInput": {
+        "type": "object",
+        "required": [
+          "domain"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Nama domain yang sepenuhnya memenuhi syarat (FQDN) atau alamat IP"
+          },
+          "team_domain": {
+            "type": "string",
+            "nullable": true,
+            "description": "Tetapkan ke tim yang sama dari domain lain; dapat berupa ID domain atau FQDN. Gunakan \"none\" untuk menonaktifkan secara eksplisit."
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "enhanced_protection",
+              "team"
+            ],
+            "description": "Jenis paket (default-nya adalah 'gratis' atau paket berbayar pengguna saat ini)"
+          },
+          "catchall": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "description": "Daftar alamat email yang dibatasi (dipisahkan dengan koma, spasi, atau baris baru)"
+              }
+            ],
+            "description": "Buat alias catch-all default (default-nya adalah true)"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "Aktifkan perlindungan konten dewasa Spam Scanner"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "Aktifkan perlindungan phishing Pemindai Spam"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "Aktifkan perlindungan yang dapat dieksekusi Spam Scanner"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "Aktifkan perlindungan virus Spam Scanner"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Memerlukan penerima alias untuk mengklik tautan verifikasi email"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "Abaikan pemeriksaan catatan MX untuk pengaturan perutean email tingkat lanjut"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "Jumlah hari untuk menyimpan log SMTP keluar (0–30, default: 0)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri",
+                "description": "URL webhook untuk menerima peristiwa pentalan"
+              },
+              {
+                "type": "boolean",
+                "enum": [
+                  false
+                ],
+                "description": "Nonaktifkan webhook bounce"
+              }
+            ]
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "Kuota penyimpanan maksimum per alias (misalnya '1 GB')"
+          }
+        }
+      },
+      "UpdateDomainInput": {
+        "type": "object",
+        "properties": {
+          "smtp_port": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Port khusus untuk dikonfigurasi untuk penerusan SMTP (default adalah '25')"
+          },
+          "has_adult_content_protection": {
+            "type": "boolean",
+            "description": "Apakah akan mengaktifkan perlindungan konten dewasa Spam Scanner di domain ini"
+          },
+          "has_phishing_protection": {
+            "type": "boolean",
+            "description": "Apakah akan mengaktifkan perlindungan phishing Spam Scanner pada domain ini"
+          },
+          "has_executable_protection": {
+            "type": "boolean",
+            "description": "Apakah akan mengaktifkan perlindungan eksekusi Spam Scanner pada domain ini"
+          },
+          "has_virus_protection": {
+            "type": "boolean",
+            "description": "Apakah akan mengaktifkan perlindungan virus Spam Scanner pada domain ini"
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Domain global default untuk mengharuskan penerima alias mengklik tautan verifikasi email agar email dapat mengalir"
+          },
+          "ignore_mx_check": {
+            "type": "boolean",
+            "description": "Apakah akan mengabaikan pemeriksaan catatan MX pada domain untuk verifikasi (terutama untuk pengaturan perutean MX tingkat lanjut)"
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "Jumlah hari untuk menyimpan email SMTP keluar (0 = segera hapus)"
+          },
+          "bounce_webhook": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
+            ],
+            "description": "URL webhook untuk menerima pemberitahuan pantulan, atau false untuk menonaktifkan"
+          },
+          "max_quota_per_alias": {
+            "type": "string",
+            "description": "Kuota penyimpanan per alias (misalnya '1 GB', diurai menjadi byte)"
+          }
+        }
+      },
+      "Alias": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "email",
+              "display_name",
+              "id"
+            ]
+          },
+          "domain": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "id"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_enabled": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
+          "verified_recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "pending_recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "alias"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_location": {
+            "type": "string"
+          },
+          "has_imap": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "user",
+          "domain",
+          "name",
+          "labels",
+          "is_enabled",
+          "has_recipient_verification",
+          "verified_recipients",
+          "pending_recipients",
+          "recipients",
+          "id",
+          "object",
+          "created_at",
+          "updated_at",
+          "storage_location",
+          "has_imap"
+        ],
+        "example": {
+          "user": {
+            "email": "test@test.com",
+            "display_name": "test@test.com",
+            "id": "5efabd39xxxxxxx4512890b8"
+          },
+          "domain": {
+            "name": "mailsire.com",
+            "id": "5e3c0550xxxxxxx09b7ba023"
+          },
+          "name": "abc123",
+          "labels": [],
+          "is_enabled": true,
+          "has_recipient_verification": false,
+          "verified_recipients": [],
+          "pending_recipients": [],
+          "recipients": [
+            "abc@test1.com"
+          ],
+          "id": "62fa3dcxxxxxxx79dda83ff2",
+          "object": "alias",
+          "created_at": "2022-08-15T12:36:26.593Z",
+          "updated_at": "2022-08-15T12:36:26.593Z",
+          "storage_location": "storage_loc",
+          "has_imap": false
+        }
+      },
+      "AliasInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nama alias (jika tidak diberikan atau kosong, maka alias acak akan dibuat)"
+          },
+          "recipients": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "String berisi alamat email, FQDN, IP, atau URL webhook yang valid yang dipisahkan dengan jeda baris/spasi/koma"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "Rangkaian penerima yang valid"
+              }
+            ],
+            "description": "Daftar penerima. Jika tidak tersedia atau kosong, akan menggunakan email pemohon secara default"
+          },
+          "description": {
+            "type": "string",
+            "description": "Deskripsi alias"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Rangkaian label yang dipisahkan oleh jeda baris/spasi/koma"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Rangkaian label"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Meminta penerima untuk mengklik tautan verifikasi (default pada pengaturan domain)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Apakah akan mengaktifkan atau menonaktifkan alias ini"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [
+              250,
+              421,
+              550
+            ],
+            "description": "Kode kesalahan jika alias dinonaktifkan. Nilai default adalah 250"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan penyimpanan IMAP untuk alias ini"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "Aktifkan atau nonaktifkan enkripsi OpenPGP untuk alias ini"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "Kunci publik OpenPGP dalam format ASCII Armor"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "Kuota penyimpanan maksimum (misalnya '1 GB')"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan penjawab saat liburan"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "Tanggal mulai (misalnya 'YYYY-MM-DD') untuk penjawab saat libur"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "Tanggal akhir (misalnya 'YYYY-MM-DD') untuk penjawab saat libur"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "Subjek teks biasa untuk responden liburan"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "Pesan teks biasa untuk penjawab saat liburan"
+          }
+        }
+      },
+      "AliasUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nama alias"
+          },
+          "recipients": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "String berisi alamat email, FQDN, IP, atau URL webhook yang valid yang dipisahkan dengan jeda baris/spasi/koma"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "description": "Rangkaian penerima yang valid"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "Deskripsi alias"
+          },
+          "labels": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Rangkaian label yang dipisahkan oleh jeda baris/spasi/koma"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Rangkaian label"
+              }
+            ]
+          },
+          "has_recipient_verification": {
+            "type": "boolean",
+            "description": "Meminta penerima untuk mengklik tautan verifikasi (default pada pengaturan domain)"
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan alias"
+          },
+          "error_code_if_disabled": {
+            "type": "number",
+            "enum": [
+              250,
+              421,
+              550
+            ],
+            "description": "Kode kesalahan untuk digunakan jika alias dinonaktifkan (defaultnya 250)"
+          },
+          "has_imap": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan penyimpanan IMAP"
+          },
+          "has_pgp": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan enkripsi OpenPGP"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "Kunci publik OpenPGP dalam format ASCII Armor"
+          },
+          "max_quota": {
+            "type": "string",
+            "description": "Kuota penyimpanan maksimum (misalnya, '1 GB')"
+          },
+          "vacation_responder_is_enabled": {
+            "type": "boolean",
+            "description": "Mengaktifkan atau menonaktifkan penjawab saat liburan"
+          },
+          "vacation_responder_start_date": {
+            "type": "string",
+            "description": "Tanggal mulai penjawab saat libur (misalnya YYYY-MM-DD)"
+          },
+          "vacation_responder_end_date": {
+            "type": "string",
+            "description": "Tanggal akhir penjawab liburan (misalnya YYYY-MM-DD)"
+          },
+          "vacation_responder_subject": {
+            "type": "string",
+            "description": "Subjek teks biasa dari responden yang sedang berlibur"
+          },
+          "vacation_responder_message": {
+            "type": "string",
+            "description": "Pesan teks biasa dari responden yang sedang berlibur"
+          }
+        }
+      },
+      "GenerateAliasPasswordInput": {
+        "type": "object",
+        "properties": {
+          "new_password": {
+            "type": "string",
+            "description": "Kata sandi baru khusus Anda untuk digunakan untuk alias"
+          },
+          "password": {
+            "type": "string",
+            "description": "Kata sandi yang ada untuk alias untuk mengubahnya tanpa menghapus penyimpanan kotak surat"
+          },
+          "is_override": {
+            "type": "boolean",
+            "description": "Ganti kata sandi yang ada dan hapus penyimpanan IMAP (gunakan dengan hati-hati)"
+          },
+          "emailed_instructions": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email untuk mengirim alias kata sandi dan petunjuk pengaturan"
+          }
+        }
+      },
+      "EmailLimit": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Jumlah email yang terkirim saat ini"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Jumlah maksimum email yang diizinkan"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID Anggota"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email anggota"
+          },
+          "role": {
+            "type": "string",
+            "description": "Peran anggota"
+          }
+        }
+      },
+      "Invite": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Alamat email yang diundang"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "description": "Halaman hasil yang akan ditampilkan. Jika tidak ditentukan, nilainya adalah 1. Harus berupa angka yang lebih besar atau sama dengan 1.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Jumlah hasil yang akan ditampilkan per halaman. Nilai default adalah 10 jika tidak ditentukan. Harus berupa angka yang lebih besar dari atau sama dengan 1, dan kurang dari atau sama dengan 50.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 10
+        }
+      },
+      "pagination": {
+        "name": "pagination",
+        "in": "query",
+        "description": "Berlangganan halaman sebelum 1 November 2024",
+        "schema": {
+          "type": "boolean"
+        }
+      },
+      "domainId": {
+        "name": "domain_id",
+        "in": "path",
+        "required": true,
+        "description": "ID Domain",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "aliasId": {
+        "name": "alias_id",
+        "in": "path",
+        "required": true,
+        "description": "Alias ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "memberId": {
+        "name": "member_id",
+        "in": "path",
+        "required": true,
+        "description": "ID Anggota",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "emailId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID Email",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotImplemented": {
+        "description": "Not Implemented",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "Bad Gateway",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "GatewayTimeout": {
+        "description": "Gateway Time-out",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/account": {
+      "post": {
+        "summary": "Buat akun",
+        "description": "Buat akun pengguna baru",
+        "tags": [
+          "Akun"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Alamat email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Kata sandi"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "get": {
+        "summary": "Ambil kembali akun",
+        "description": "Ambil informasi akun pengguna saat ini",
+        "tags": [
+          "Akun"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui akun",
+        "description": "Perbarui informasi akun pengguna saat ini",
+        "tags": [
+          "Akun"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Alamat email"
+                  },
+                  "given_name": {
+                    "type": "string",
+                    "description": "Nama depan"
+                  },
+                  "family_name": {
+                    "type": "string",
+                    "description": "Nama belakang"
+                  },
+                  "avatar_url": {
+                    "type": "string",
+                    "description": "Tautan ke gambar avatar"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/logs/download": {
+      "get": {
+        "summary": "Unduh log",
+        "description": "**Unduh log**\n\nDeskripsi: API kami secara terprogram memungkinkan Anda mengunduh log untuk akun Anda. Mengirimkan permintaan ke titik akhir ini akan memproses semua log untuk akun Anda dan mengirimkannya melalui email kepada Anda sebagai lampiran (file spreadsheet CSV terkompresi Gzip) setelah selesai.\n\nIni memungkinkan Anda membuat pekerjaan latar belakang dengan pekerjaan Cron atau menggunakan perangkat lunak penjadwalan pekerjaan Node.js Bree untuk menerima log kapan pun Anda inginkan. Perhatikan bahwa titik akhir ini dibatasi hingga `10` permintaan per hari.\n\nLampiran adalah bentuk huruf kecil dari `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` dan email itu sendiri berisi ringkasan singkat dari log yang diambil.",
+        "tags": [
+          "Catatan"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Filter log berdasarkan domain yang memenuhi syarat (\"FQDN\"). Jika tidak diberikan, semua log di semua domain akan diambil.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Cari log berdasarkan email, domain, nama alias, alamat IP, atau tanggal (format M/Y, M/D/YY, M-D, M-D-YY, atau M.D.YY).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bounce_category",
+            "in": "query",
+            "description": "Cari log berdasarkan kategori pentalan tertentu (misalnya \"daftar blokir\").",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "response_code",
+            "in": "query",
+            "description": "Cari log berdasarkan kode respons kesalahan tertentu (misalnya 421 atau 550).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs will be emailed as an attachment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logs will be emailed to you shortly"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/emails": {
+      "get": {
+        "summary": "Daftar email SMTP keluar",
+        "description": "**Daftar email SMTP keluar**\n\nPerlu diketahui bahwa titik akhir ini tidak mengembalikan nilai properti untuk `message`, `headers`, maupun `rejectedErrors` email.\n\nUntuk mengembalikan properti dan nilainya, gunakan titik akhir [Ambil email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) dengan ID email.",
+        "tags": [
+          "Surel"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Cari email berdasarkan metadata.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Cari email berdasarkan nama domain.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Urutkan berdasarkan kolom tertentu (awalan dengan satu tanda hubung - untuk mengurutkan dalam arah yang berlawanan dengan kolom tersebut). Defaultnya adalah created_at jika tidak ditetapkan.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Lihat Pagination untuk wawasan lebih dalam.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Lihat Pagination untuk wawasan lebih dalam.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of outbound SMTP emails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Email"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat email SMTP keluar",
+        "description": "API kami untuk membuat email terinspirasi oleh dan memanfaatkan konfigurasi opsi pesan Nodemailer. Harap rujuk ke [konfigurasi pesan Nodemailer](https://nodemailer.com/message/) untuk semua parameter isi di bawah ini.\n\nPerhatikan bahwa dengan pengecualian `envelope` dan `dkim` (karena kami menyetelnya secara otomatis untuk Anda), kami mendukung semua opsi Nodemailer. Kami menyetel opsi `disableFileAccess` dan `disableUrlAccess` secara otomatis ke `true` untuk tujuan keamanan.\n\nAnda harus meneruskan opsi tunggal `raw` dengan email lengkap raw Anda termasuk header atau meneruskan opsi parameter isi individual di bawah ini.\n\nTitik akhir API ini akan secara otomatis mengodekan emoji untuk Anda jika ditemukan di header (misalnya baris subjek `Subject: 🤓 Hello` akan diubah menjadi `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` secara otomatis). Sasaran kami adalah membuat API email yang sangat mudah digunakan oleh pengembang dan anti-palsu.",
+        "tags": [
+          "Surel"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SMTP"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email sent successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/emails/limit": {
+      "get": {
+        "summary": "Dapatkan batas email SMTP keluar",
+        "description": "Ini adalah titik akhir sederhana yang mengembalikan objek JSON berisi `jumlah` dan `batas` untuk jumlah pesan keluar SMTP harian per akun.",
+        "tags": [
+          "Surel"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email limit information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailLimit"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/emails/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/emailId"
+        }
+      ],
+      "get": {
+        "summary": "Ambil email SMTP keluar",
+        "description": "Mengambil email SMTP keluar tertentu.",
+        "tags": [
+          "Surel"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus email SMTP keluar",
+        "description": "Penghapusan email akan menetapkan status ke `\"ditolak\"` (dan selanjutnya tidak memprosesnya dalam antrean) jika dan hanya jika status saat ini adalah `\"tertunda\"`, `\"dalam antrean\"`, atau `\"ditangguhkan\"`. Kami dapat menghapus email secara otomatis setelah 30 hari sejak email dibuat dan/atau dikirim – oleh karena itu Anda harus menyimpan salinan email SMTP keluar di klien, basis data, atau aplikasi Anda. Anda dapat merujuk nilai ID email kami di basis data Anda jika diinginkan – nilai ini dikembalikan dari titik akhir [Buat email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) dan [Ambil email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "tags": [
+          "Surel"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains": {
+      "get": {
+        "summary": "Daftar domain",
+        "description": "> [!NOTE]\n>Sejak 1 November 2024, titik akhir API untuk Daftar domain dan alias domain Daftar akan secara default menghasilkan `1000` hasil maksimal per halaman. Jika Anda ingin ikut serta dalam perilaku ini lebih awal, Anda dapat meneruskan `?paginate=true` sebagai parameter querystring tambahan ke URL untuk kueri titik akhir. Lihat Pagination untuk wawasan lebih lanjut.",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Cari domain berdasarkan metadata.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "description": "Cari domain berdasarkan nama domain.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Urutkan berdasarkan kolom tertentu (awalan dengan satu tanda hubung - untuk mengurutkan dalam arah yang berlawanan dengan kolom tersebut). Defaultnya adalah created_at jika tidak ditetapkan.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Lihat Pagination untuk wawasan lebih dalam.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Lihat Pagination untuk wawasan lebih dalam.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Domain"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat domain",
+        "description": "Membuat domain baru di sistem. Titik akhir ini memungkinkan Anda mendaftarkan nama domain yang sepenuhnya memenuhi syarat (FQDN) atau alamat IP untuk digunakan dengan platform.\n\nOpsi konfigurasi opsional meliputi penetapan domain ke tim yang sudah ada, pengaturan jenis paket (misalnya, gratis, perlindungan yang ditingkatkan, atau tim), dan konfigurasi perlindungan tingkat lanjut seperti penyaringan spam, pemindaian virus, dan verifikasi penerima. Anda juga dapat mengonfigurasi apakah alias catch-all harus dibuat secara default, menetapkan URL webhook bounce kustom untuk kegagalan SMTP, dan menentukan batas kuota penyimpanan untuk alias email di domain ini. Titik akhir ini melakukan validasi dan penyediaan tingkat domain. Jika opsi `ignore_mx_check` diaktifkan, verifikasi rekaman MX dilewati (hanya disarankan untuk pengaturan perutean tingkat lanjut). Respons akan berisi detail lengkap objek domain yang dibuat, termasuk rekaman DNS yang diperlukan untuk konfigurasi.",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDomainInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Ambil kembali domain",
+        "description": "Ambil domain tertentu",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui domain",
+        "description": "Perbarui domain tertentu.",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDomainInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus domain",
+        "description": "Hapus domain tertentu.",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Domain deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/verify-records": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Verifikasi catatan domain",
+        "description": "Verifikasi catatan DNS untuk domain tertentu.",
+        "tags": [
+          "Domain"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DNS records successfully verified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Domain's DNS records have been verified."
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/verify-smtp": {
+      "get": {
+        "summary": "Verifikasi catatan SMTP domain",
+        "description": "Memverifikasi catatan DNS terkait SMTP untuk domain yang ditentukan.",
+        "operationId": "verifySmtpRecords",
+        "tags": [
+          "Domain"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Nama domain yang sepenuhnya memenuhi syarat (FQDN) untuk memverifikasi",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SMTP records successfully verified",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "You have successfully configured and verified DNS records for outbound SMTP."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/catch-all-passwords": {
+      "post": {
+        "summary": "Buat kata sandi penampung semua domain",
+        "description": "Membuat kata sandi yang dapat digunakan di seluruh domain. Jika tidak ada kata sandi yang diberikan, kata sandi acak yang aman akan dibuat.",
+        "tags": [
+          "Domain"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Nama domain untuk membuat kata sandi umum untuk"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "new_password": {
+                    "type": "string",
+                    "description": "Kata sandi baru khusus Anda untuk digunakan sebagai kata sandi umum di seluruh domain. Kosongkan untuk membuat kata sandi yang kuat."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Deskripsi hanya untuk tujuan organisasi."
+                  }
+                }
+              },
+              "example": {
+                "new_password": "myCustomStrongPassword123!",
+                "description": "Password for team-wide access"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created a catch-all password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "ID of the created catch-all password"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description of the catch-all password"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "description"
+                  ]
+                },
+                "example": {
+                  "id": "6841ec462bd583c73d0632dd",
+                  "username": "*@quas.com",
+                  "password": "6Yq14XhAUaupdZE",
+                  "description": "foo bar"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Daftar kata sandi yang dapat digunakan di seluruh domain",
+        "description": "Mengembalikan daftar kata sandi penampung-semua domain yang saat ini dikonfigurasi untuk domain yang ditentukan.",
+        "operationId": "listCatchAllPasswords",
+        "tags": [
+          "Domain"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "description": "Nama domain yang sepenuhnya memenuhi syarat (FQDN) untuk mencantumkan kata sandi umum",
+            "schema": {
+              "type": "string",
+              "format": "hostname"
+            }
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain-wide catch-all passwords",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the item",
+                        "example": "6841ec442bd583c73d0632d0"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Description of the item",
+                        "example": "foo bar"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "description"
+                    ]
+                  },
+                  "example": [
+                    {
+                      "id": "6841ec442bd583c73d0632d0",
+                      "description": ""
+                    },
+                    {
+                      "id": "6841ec462bd583c73d0632dd",
+                      "description": "foo bar"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
+      "delete": {
+        "summary": "Hapus kata sandi penangkap-semua di seluruh domain",
+        "description": "Menghapus kata sandi umum di seluruh domain menggunakan ID token yang disediakan.",
+        "tags": [
+          "Domain"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Nama domain yang dikaitkan dengan kata sandi catch-all"
+          },
+          {
+            "name": "token_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID token dari kata sandi penampung semua domain yang akan dihapus"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catch-all password successfully removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Catch-all password deleted successfully."
+                    }
+                  },
+                  "example": {
+                    "id": "6841ec442bd583c73d0632d0",
+                    "description": ""
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/invites": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Terima undangan domain",
+        "description": "Terima undangan ke domain.",
+        "tags": [
+          "Mengundang"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain invite accepted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite accepted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat undangan domain",
+        "description": ">[!IMPORTANT]\n>Jika pengguna yang diundang sudah menjadi anggota yang diterima dari domain lain tempat admin yang mengundang mereka menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan dikirimi email.",
+        "tags": [
+          "Mengundang"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Alamat email untuk mengundang ke daftar anggota domain"
+                  },
+                  "group": {
+                    "type": "string",
+                    "format": "string",
+                    "description": "Grup untuk menambahkan pengguna ke keanggotaan domain (bisa berupa salah satu dari `\"admin\"` atau `\"user\"`)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Invite"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus undangan domain",
+        "description": "Hapus undangan ke domain.",
+        "tags": [
+          "Mengundang"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Alamat email yang akan dihapus dari daftar anggota domain"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain invite removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invite removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/members/{member_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/memberId"
+        }
+      ],
+      "put": {
+        "summary": "Perbarui anggota domain",
+        "description": "Perbarui anggota domain.",
+        "tags": [
+          "Anggota"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "group": {
+                    "required": true,
+                    "type": "string",
+                    "description": "Grup untuk memperbarui pengguna ke keanggotaan domain dengan (bisa berupa salah satu dari `\"admin\"` atau `\"user\"`)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain member updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus anggota domain",
+        "description": "Hapus anggota domain.",
+        "tags": [
+          "Anggota"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain member removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Member removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
+      "post": {
+        "summary": "Hasilkan kata sandi alias",
+        "description": "Buat kata sandi untuk alias. Jika `emailed_instructions` tidak diberikan, respons akan berisi nama pengguna dan kata sandi yang dibuat.",
+        "tags": [
+          "Alias"
+        ],
+        "parameters": [
+          {
+            "name": "domain_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Nama domain berkualifikasi penuh (FQDN)"
+          },
+          {
+            "name": "alias_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pengidentifikasi unik alias"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAliasPasswordInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alias credentials returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string",
+                      "example": "alias@yourdomain.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "some-generated-password"
+                    }
+                  },
+                  "required": [
+                    "username",
+                    "password"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        }
+      ],
+      "get": {
+        "summary": "Daftar alias domain",
+        "description": ">[!NOTE]\n>Sejak 1 November 2024, titik akhir API untuk `Daftar domain` dan `Daftar alias domain` akan secara default menghasilkan `1000` hasil maksimal per halaman. Jika Anda ingin ikut serta dalam perilaku ini lebih awal, Anda dapat meneruskan `?paginate=true` sebagai parameter querystring tambahan ke URL untuk kueri titik akhir. Lihat Pagination untuk wawasan lebih lanjut.",
+        "tags": [
+          "Alias"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Mencari alias di domain berdasarkan nama, label, atau penerima (mendukung RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Mencari alias di domain berdasarkan nama (mendukung RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipient",
+            "in": "query",
+            "description": "Mencari alias di domain berdasarkan penerima (mendukung RegExp)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Urutkan berdasarkan kolom tertentu (awalan dengan satu tanda hubung - untuk mengurutkan secara terbalik). Defaultnya adalah created_at.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of domain aliases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alias"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat alias domain baru",
+        "description": "Buat alias baru untuk domain tertentu.",
+        "tags": [
+          "Alias"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AliasInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain_id}/aliases/{alias_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/domainId"
+        },
+        {
+          "$ref": "#/components/parameters/aliasId"
+        }
+      ],
+      "get": {
+        "summary": "Ambil alias domain",
+        "description": "Ambil alias spesifik untuk suatu domain.",
+        "tags": [
+          "Alias"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui alias domain",
+        "description": "Perbarui alias spesifik untuk domain.",
+        "tags": [
+          "Alias"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AliasUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain alias updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alias"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus alias domain",
+        "description": "Hapus alias tertentu untuk domain.",
+        "tags": [
+          "Alias"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Domain alias deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Alias deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/encrypt": {
+      "post": {
+        "summary": "Enkripsi Catatan TXT",
+        "description": "Kami mengizinkan Anda mengenkripsi data bahkan pada paket gratis tanpa biaya. Privasi seharusnya bukan fitur, melainkan sudah menjadi bagian dari semua aspek produk. Seperti yang sangat diminta dalam [diskusi Panduan Privasi](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) dan pada [masalah GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) kami, kami telah menambahkan ini.",
+        "tags": [
+          "Enkripsi"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text"
+                ],
+                "properties": {
+                  "input": {
+                    "required": true,
+                    "type": "string",
+                    "description": "Setiap rekaman TXT plaintext Email Terusan yang valid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Text encrypted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encrypted": {
+                      "type": "string",
+                      "description": "Encrypted text"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "description": "Rate limit exceeded (50 requests for 'encrypt')",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "summary": "Daftar kontak",
+        "description": "Daftar semua kontak (CardDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Alias Kontak"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat kontak",
+        "description": "Buat kontak baru (CardDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Alias Kontak"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID Kontak",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Ambil kembali kontak",
+        "description": "Ambil kontak tertentu (CardDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Alias Kontak"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui kontak",
+        "description": "Memperbarui kontak tertentu (CardDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Alias Kontak"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus kontak",
+        "description": "Hapus kontak tertentu (CardDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Alias Kontak"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "summary": "Daftar kalender",
+        "description": "Daftar semua kalender (CalDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Kalender Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat kalender",
+        "description": "Buat kalender baru (CalDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Kalender Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID Kalender",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Ambil kalender",
+        "description": "Ambil kalender tertentu (CalDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Kalender Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui kalender",
+        "description": "Memperbarui kalender tertentu (CalDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Kalender Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus kalender",
+        "description": "Hapus kalender tertentu (CalDAV). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Kalender Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "summary": "Daftar dan cari pesan",
+        "description": "Daftar dan cari pesan (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Pesan Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat pesan",
+        "description": "Buat pesan baru (IMAP/POP3). Ini TIDAK akan mengirim email – ini hanya akan menambahkan pesan ke folder kotak surat Anda (mirip dengan perintah IMAP APPEND). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Pesan Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID Pesan",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Ambil pesan",
+        "description": "Ambil pesan tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Pesan Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui pesan",
+        "description": "Memperbarui pesan tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Pesan Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus pesan",
+        "description": "Hapus pesan tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Pesan Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "summary": "Daftar folder",
+        "description": "Daftar semua folder (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Buat folder",
+        "description": "Buat folder baru (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID Folder",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Ambil kembali folder",
+        "description": "Ambil folder tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Perbarui folder",
+        "description": "Perbarui folder tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Hapus folder",
+        "description": "Hapus folder tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}/copy": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID Folder",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Salin folder",
+        "description": "Salin folder tertentu (IMAP/POP3). Titik akhir ini akan segera hadir.",
+        "tags": [
+          "Folder Alias"
+        ],
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "responses": {
+          "501": {
+            "description": "Not Implemented - This feature is coming soon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Akun",
+      "description": "Titik akhir manajemen akun"
+    },
+    {
+      "name": "Catatan",
+      "description": "Titik akhir manajemen log"
+    },
+    {
+      "name": "Surel",
+      "description": "Titik akhir manajemen email"
+    },
+    {
+      "name": "Domain",
+      "description": "> [!TIP]\n> Titik akhir domain dengan nama domain <code>/v1/domains/:domain\\_name</code> sebagai titik akhirnya dapat dipertukarkan dengan ID domain <code>:domain\\_id</code>. Ini berarti Anda dapat merujuk ke domain dengan nilai <code>name</code> atau <code>id</code>."
+    },
+    {
+      "name": "Mengundang",
+      "description": "Titik akhir manajemen undangan domain"
+    },
+    {
+      "name": "Anggota",
+      "description": "Titik akhir manajemen anggota domain"
+    },
+    {
+      "name": "Alias",
+      "description": "Titik akhir manajemen alias domain"
+    },
+    {
+      "name": "Enkripsi",
+      "description": "Titik akhir enkripsi"
+    },
+    {
+      "name": "Alias Kontak",
+      "description": "Titik akhir manajemen kontak alias (CardDAV)\n\n>[!NOTE]\n>Tidak seperti titik akhir API lainnya, ini memerlukan Autentikasi \"nama pengguna\" yang sama dengan nama pengguna alias dan \"kata sandi\" yang sama dengan kata sandi yang dihasilkan alias sebagai tajuk Otorisasi Dasar.\n\n>[!WARNING]\n>Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2025. Sementara itu, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami."
+    },
+    {
+      "name": "Kalender Alias",
+      "description": "Titik akhir manajemen kalender alias (CalDAV)\n\n>[!NOTE]\n> Tidak seperti titik akhir API lainnya, titik akhir ini memerlukan [Authentication](#description/authentication) \"nama pengguna\" yang sama dengan alias nama pengguna dan \"kata sandi\" yang sama dengan alias kata sandi yang dihasilkan sebagai header Otorisasi Dasar.\n\n>[!WARNING]\n> Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2025. Sementara itu, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami."
+    },
+    {
+      "name": "Pesan Alias",
+      "description": "Titik akhir manajemen pesan alias (IMAP/POP3)\n\n>[!NOTE]\n> Tidak seperti titik akhir API lainnya, titik akhir ini memerlukan [Authentication](#description/authentication) \"username\" yang sama dengan alias username dan \"password\" yang sama dengan alias password yang dihasilkan sebagai header Otorisasi Dasar.\n\n> [!WARNING]\n> Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2025. Untuk sementara, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami.\nPastikan Anda telah mengikuti petunjuk penyiapan untuk domain Anda.\nPetunjuk ini dapat ditemukan di bagian Tanya Jawab Umum kami [Apakah Anda mendukung penerimaan email dengan IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+    },
+    {
+      "name": "Folder Alias",
+      "description": "Titik akhir pengelolaan folder alias (IMAP/POP3)\n\n>[!TIP]\n> Titik akhir folder dengan jalur folder <code>/v1/folders/:path</code> sebagai titik akhirnya dapat dipertukarkan dengan ID folder <code>:id</code>. Ini berarti Anda dapat merujuk ke folder dengan nilai <code>path</code> atau <code>id</code>.\n\n>[!WARNING]\n> Bagian titik akhir ini masih dalam tahap pengerjaan dan akan dirilis (semoga) pada tahun 2025. Untuk sementara, harap gunakan klien IMAP dari menu tarik-turun \"Aplikasi\" di navigasi situs web kami."
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Privacy Policy
 
+<img src="/img/articles/privacy.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

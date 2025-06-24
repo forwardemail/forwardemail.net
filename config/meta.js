@@ -55,12 +55,14 @@ module.exports = function (config, isSitemap = false) {
       'Setup encrypted email, free email forwarding, custom domains, private business email, and more with support for outbound SMTP, IMAP, and POP3. Set up free email forwarding for your custom domain in minutes.'
     ],
     '/about': [
-      'Free Email Forwarder for Custom Domains',
-      `Learn more about ${config.appName} and the history of our service.`
+      'History of Forward Email',
+      `Learn more about ${config.appName} and the history of our service.`,
+      'img/articles/about.webp'
     ],
     '/press': [
       'Press & Media Kit',
-      'Learn more about Forward Email for journalists and the press, and download Forward Email graphics, branding, and media kit.'
+      'Learn more about Forward Email for journalists and the press, and download Forward Email graphics, branding, and media kit.',
+      'img/articles/press.png'
     ],
     ...(isSitemap ? [] : useCases),
     '/private-business-email': [
@@ -69,11 +71,13 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/tti': [
       'Time to Inbox Monitoring & Deliverability',
-      'Time to inbox ("TTI") is the duration it takes from when an email is sent until it is delivered to the user\'s mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).'
+      'Time to inbox ("TTI") is the duration it takes from when an email is sent until it is delivered to the user\'s mailbox.  We publicly measure and compare our deliverability and timings for both email forwarding and direct outbound SMTP across all major email providers (including Gmail, Outlook/Hotmail, Apple iCloud, and Yahoo/AOL).',
+      'img/articles/tti.webp'
     ],
     '/faq': [
-      'Frequently Asked Questions About Email',
-      'How to configure email for custom domain names, outbound SMTP service, and more.'
+      'Frequently Asked Questions',
+      'How to configure email for custom domain names, outbound SMTP service, and more.',
+      'img/articles/faq.png'
     ],
     '/encrypt': [
       'Encrypt Plaintext TXT Record',
@@ -81,7 +85,8 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/email-api': [
       'Developer Email API for Custom Domains and Webhooks',
-      'Developers love our RESTful email forwarding API for custom domains.'
+      'Developers love our RESTful email forwarding API for custom domains.',
+      'img/articles/email-api.webp'
     ],
     '/free-email-webhooks': [
       'Free Email Webhooks for Developers and Custom Domains',
@@ -93,26 +98,38 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/terms': [
       'Terms of Service',
-      'Read our terms and conditions of use for our email forwarding service.'
+      'Read our terms and conditions of use for our email forwarding service.',
+      'img/articles/terms.png'
     ],
-    '/gdpr': ['GDPR Compliance', 'Read how our service is GDPR compliant.'],
+    '/gdpr': [
+      'GDPR Compliance',
+      'Read how our service is GDPR compliant.',
+      'img/articles/gdpr.png'
+    ],
     '/security': [
       'Security Practices',
       "We've implemented comprehensive security measures to protect your email communications and personal data."
     ],
     '/dpa': [
       'Data Processing Agreement',
-      'Read our data processing agreement, terms of service, and how our service is GDPR compliant.'
+      'Read our data processing agreement, terms of service, and how our service is GDPR compliant.',
+      'img/articles/dpa.png'
     ],
     '/report-abuse': [
       'Report Abuse',
-      'Information on how to report abuse for the general public and law enforcement.'
+      'Information on how to report abuse for the general public and law enforcement.',
+      'img/articles/report-abuse.png'
     ],
     '/privacy': [
       'Privacy Policy',
-      'Read our privacy policy for our email forwarding service.'
+      'Read our privacy policy for our email forwarding service.',
+      'img/articles/privacy.png'
     ],
-    '/help': ['Help', 'Ask a question and get support from our team.'],
+    '/help': [
+      'Help',
+      'Ask a question and get support from our team.',
+      'img/articles/help.webp'
+    ],
     '/denylist': [
       'Denylist Removal',
       'Submit your email, domain, or IP address for DNS denylist removal.'
@@ -222,7 +239,8 @@ module.exports = function (config, isSitemap = false) {
     ],
     '/my-account/security': [
       'My Security',
-      `Manage your ${config.appName} security.`
+      `Manage your ${config.appName} security.`,
+      'img/articles/security.webp'
     ],
     '/admin': [`Admin ${lad}`, `Access your ${config.appName} admin.`],
     '/forgot-password': [

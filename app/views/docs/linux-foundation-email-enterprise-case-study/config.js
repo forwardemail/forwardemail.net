@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Case Study: Linux Foundation',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/linux-foundation.png'
 };

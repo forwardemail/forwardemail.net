@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'The Future of Email',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/open-source.png'
 };

@@ -25,11 +25,11 @@ block body
             .card.rounded-lg
               noscript
                 img.card-img-top.img-fluid(
-                  src=l(`${doc.slug}.png`),
+                  src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
                   alt=striptags(t(doc.title))
                 )
               img.lazyload.card-img-top.img-fluid(
-                src=l(`${doc.slug}.png`),
+                src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
                 alt=striptags(t(doc.title))
               )
               .card-body

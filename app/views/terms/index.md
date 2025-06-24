@@ -1,10 +1,6 @@
 # Terms
 
-By accessing this web site, you are agreeing to be bound by these Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
-
-You must be at least eighteen (18) years of age, or between thirteen (13) and seventeen (17) years of age and using the Service with parental or legal guardian consent and supervision.
-
-<u>**If you do not agree with any of these terms or any of the terms below, you are prohibited from using or accessing this site.**</u>
+<img src="/img/articles/terms.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
@@ -27,6 +23,12 @@ You must be at least eighteen (18) years of age, or between thirteen (13) and se
 
 
 ## Disclaimer
+
+By accessing this web site, you are agreeing to be bound by these Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.
+
+You must be at least eighteen (18) years of age, or between thirteen (13) and seventeen (17) years of age and using the Service with parental or legal guardian consent and supervision.
+
+<u>**If you do not agree with any of these terms or any of the terms below, you are prohibited from using or accessing this site.**</u>
 
 The materials on Forward Email's web site and related services ("Service") are provided "as is".
 

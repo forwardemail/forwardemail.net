@@ -1,0 +1,202 @@
+/* FAQ Sidebar - Fixed Sticky Positioning */
+
+/* Ensure no overflow issues on parent containers */
+.container-fluid,
+.row {
+  overflow: visible !important;
+}
+
+/* Sidebar wrapper - must not have overflow hidden */
+.sidebar-wrapper {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* The actual sticky sidebar */
+.sidebar-nav {
+  position: sticky !important;
+  top: 60px; /* Adjust to match your navbar height */
+  height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  z-index: 100;
+  width: 100%;
+}
+
+/* Ensure sticky works by removing any conflicting styles */
+.sidebar-nav * {
+  position: static;
+}
+
+/* Custom scrollbar */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Sidebar header */
+.sidebar-header {
+  background-color: #e9ecef;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar-header h6 {
+  // font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Compact navigation links */
+.sidebar-nav .nav-link.compact {
+  // padding: 0.25rem 0.75rem;
+  // font-size: 0.85rem;
+  line-height: 1.3;
+  color: #495057;
+  font-weight: 500;
+  border-radius: 0;
+  transition: all 0.2s ease-in-out;
+  display: block;
+  text-decoration: none;
+}
+
+.sidebar-nav .nav-link.compact:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  text-decoration: none;
+}
+
+.sidebar-nav .nav-link.compact.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Sub-navigation links */
+.sidebar-nav .nav-link.compact.sub {
+  // padding: 0.2rem 0.5rem 0.2rem 2rem;
+  // font-size: 0.75rem;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+.sidebar-nav .nav-link.compact.sub:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  color: #007bff;
+}
+
+.sidebar-nav .nav-link.compact.sub.active {
+  background-color: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  font-weight: 500;
+}
+
+/* Icons */
+.sidebar-nav .nav-link i {
+  // font-size: 0.75rem;
+  width: 14px;
+  text-align: center;
+}
+
+// TODO: do we need this?
+/* Scroll offset for sections */
+// section,
+// .content-section,
+// [id] {
+//   scroll-margin-top: 100px;
+// }
+
+// TODO: do we need this?
+/* Alternative approach using position: fixed if sticky doesn't work */
+@supports not (position: sticky) {
+  .sidebar-nav {
+    position: fixed !important;
+    top: 60px;
+    left: 0;
+    width: 280px;
+    height: calc(100vh - 60px);
+  }
+
+  .sidebar-wrapper {
+    width: 280px;
+  }
+
+  .col-md-9.col-lg-10 {
+    margin-left: 280px;
+  }
+}
+
+/* Force sticky behavior - override any Bootstrap interference */
+@media (min-width: 768px) {
+  .sidebar-nav {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 60px !important;
+  }
+}
+
+/* Hide on mobile */
+@media (max-width: 767.98px) {
+  .sidebar-wrapper {
+    display: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .sidebar-nav {
+    background-color: #343a40;
+    border-right-color: #495057;
+  }
+
+  .sidebar-header {
+    background-color: #495057;
+    border-bottom-color: #495057;
+  }
+
+  .sidebar-header h6 {
+    color: #ced4da;
+  }
+
+  .sidebar-nav .nav-link.compact {
+    color: #ced4da;
+  }
+
+  .sidebar-nav .nav-link.compact:hover {
+    color: #a6d0ff;
+  }
+
+  .sidebar-nav .nav-link.compact.sub {
+    color: #adb5bd;
+  }
+
+  .sidebar-nav .nav-link.compact.sub:hover {
+    color: #a6d0ff;
+  }
+
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar-wrapper,
+  .sidebar-nav {
+    display: none;
+  }
+}
+

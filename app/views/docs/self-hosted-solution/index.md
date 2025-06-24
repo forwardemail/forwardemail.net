@@ -1,5 +1,7 @@
 # Self-Hosted Email: Commitment to Open Source
 
+<img src="/img/articles/self-hosted.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

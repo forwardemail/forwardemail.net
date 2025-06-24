@@ -2,8 +2,9 @@ extends layout
 
 block body
   .min-vh-80.d-flex.flex-column
-    .container.text-center.py-3.py-md-4.py-lg-5.my-auto
+    .container-fluid.text-center.py-3.py-md-4.py-lg-5.my-auto
       h1= t("Page not found")
       p.lead.text-muted= t("We're sorry, but the page you requested could not be found.")
-      form(action="/", type="GET")
+      form.mb-3.mb-md-4.mb-lg-5(action="/", type="GET")
         button.btn.btn-outline-primary.btn-lg(type="submit")= t("Go to homepage")
+      .markdown-body: img.rounded-lg(src=manifest("img/articles/404.webp"), alt="")

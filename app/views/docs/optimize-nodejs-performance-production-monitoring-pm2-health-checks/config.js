@@ -11,5 +11,7 @@ module.exports = {
   icon: 'fab fa-fw fa-node-js',
   published: true,
   ogBtnText: 'Optimize Node.js for Production',
-  notCodeExample: true
+  notCodeExample: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/nodejs-performance.png'
 };

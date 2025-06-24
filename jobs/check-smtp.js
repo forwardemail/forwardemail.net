@@ -175,7 +175,7 @@ async function mapper(id) {
           template: 'alert',
           message: {
             to,
-            bcc: config.email.message.from,
+            // bcc: config.email.message.from,
             subject
           },
           locals: {

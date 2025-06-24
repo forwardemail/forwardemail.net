@@ -40,6 +40,7 @@ const gulpXo = require('gulp-xo');
 const isCI = require('is-ci');
 const lr = require('gulp-livereload');
 const makeDir = require('make-dir');
+const ms = require('ms');
 const nested = require('postcss-nested');
 const order = require('gulp-order');
 const postcss = require('gulp-postcss');
@@ -54,6 +55,7 @@ const pugLinter = require('gulp-pug-linter');
 const pump = require('pump');
 const purgeFromPug = require('purgecss-from-pug');
 const purgecss = require('gulp-purgecss');
+const pWaitFor = require('p-wait-for');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const reporter = require('postcss-reporter');
@@ -78,11 +80,11 @@ const DEV = config.env === 'development';
 const TEST = config.env === 'test';
 
 // dynamically import file-type
-// let imagemin;
+let imagemin;
 
-// import('gulp-imagemin').then((obj) => {
-//   imagemin = obj.default;
-// });
+import('gulp-imagemin').then((obj) => {
+  imagemin = obj.default;
+});
 
 // inspired by postcss-remove-selectors
 function removeClasses(regex) {
@@ -287,7 +289,9 @@ const purgeCssOptions = {
       'pt-md-5',
       // reduced navbar for certain locales
       // (manually curated, see `app/views/_nav.pug`)
-      'navbar-small'
+      'navbar-small',
+      // sidebar
+      /^sidebar/
     ])
   ]
 };
@@ -318,22 +322,22 @@ function pug() {
 }
 
 async function img() {
-  // if (!imagemin)
-  //   await pWaitFor(() => Boolean(imagemin), { timeout: ms('15s') });
+  if (!imagemin)
+    await pWaitFor(() => Boolean(imagemin), { timeout: ms('15s') });
   let stream = src('assets/img/**/*', {
     base: config.assetsBase,
     since: lastRun(img)
   })
-    // .pipe(
-    //   // <https://github.com/sindresorhus/gulp-imagemin/tree/main#custom-plugin-options>
-    //   // progressive: true,
-    //   // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
-    //   imagemin()
-    // )
+    .pipe(
+      // <https://github.com/sindresorhus/gulp-imagemin/tree/main#custom-plugin-options>
+      // progressive: true,
+      // svgoPlugins: [{ removeViewBox: false }, { cleanupIDs: false }],
+      imagemin()
+    )
     // .pipe(dest(config.assetsBase));
     .pipe(dest(config.buildBase));
 
-  // if (DEV) stream = stream.pipe(lr(config.livereload));
+  if (DEV) stream = stream.pipe(lr(config.livereload));
 
   // convert to conventional stream
   stream = stream.pipe(through2.obj((chunk, enc, cb) => cb()));

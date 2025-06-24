@@ -1,5 +1,7 @@
 # How Forward Email Protects Your Privacy, Domain, and Security: The Technical Deep Dive
 
+<img src="/img/articles/email-forwarding.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Email Privacy Deep Dive',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/email-forwarding.png'
 };

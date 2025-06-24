@@ -1,5 +1,7 @@
 # Security Practices
 
+<img src="/img/articles/security.webp" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

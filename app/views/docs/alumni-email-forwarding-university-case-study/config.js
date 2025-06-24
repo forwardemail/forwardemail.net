@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Case Study: Alumni Email',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/alumni.png'
 };

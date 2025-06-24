@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const path = require('node:path');
+
 const I18N = require('@ladjs/i18n');
 const isSANB = require('is-string-and-not-blank');
+const manifestRev = require('manifest-rev');
 const { parse } = require('node-html-parser');
 
 const phrases = require('#config/phrases');
@@ -12,6 +15,11 @@ const i18nConfig = require('#config/i18n');
 const logger = require('#helpers/logger');
 const markdown = require('#helpers/markdown');
 const env = require('#config/env');
+
+const manifest = manifestRev({
+  prepend: '/',
+  manifest: path.join(__dirname, '..', 'build', 'sri-manifest.json')
+});
 
 const WEB_URL = env.WEB_URL.toLowerCase();
 const API_URL = env.API_URL.toLowerCase();
@@ -82,6 +90,16 @@ function fixTableOfContents(content, options) {
     content = root.toString();
   }
 
+  // replace all <img>'s that start with "/img" with manifest rev versions
+  for (const img of root.querySelectorAll('img')) {
+    const src = img.getAttribute('src');
+    if (src.startsWith('/img/')) {
+      img.setAttribute('src', manifest(src.replace('/img/', 'img/')));
+    } else if (src.startsWith('img/')) {
+      img.setAttribute('src', manifest(src));
+    }
+  }
+
   //
   // go through all <a> anchor tags
   // - if the link contains `http://` then rewrite the link to `https://`
@@ -149,6 +167,83 @@ function fixTableOfContents(content, options) {
   }
 
   //
+  // sidebar (desktop/tablet)
+  // h2
+  //    h3
+  //    h3
+  //    h3
+  //
+  //
+  let sidebar;
+  if (options.hasSidebar) {
+    const navPillsContainer = parse(
+      '<div class="nav nav-pills flex-column p-1"></div>'
+    );
+
+    for (const h2 of root.querySelectorAll('h2')) {
+      const a = h2.querySelector('a');
+      if (!a) continue;
+      if (
+        h2.getAttribute('id') === 'table-of-contents' ||
+        a.getAttribute('href') === '#table-of-contents'
+      ) {
+        continue;
+      }
+
+      // eslint-disable-next-line unicorn/prefer-dom-node-append
+      navPillsContainer.appendChild(
+        // <a href="${a.getAttribute('href')}" class="nav-link compact">${
+        parse(`
+        <a href="${a.getAttribute(
+          'href'
+        )}" class="nav-link lead compact font-weight-bold">${h2.text}</a>
+      `)
+      );
+      const navPillsHTML = [];
+      let node = h2;
+      while (
+        node.nextElementSibling &&
+        node.nextElementSibling.rawTagName !== 'h2'
+      ) {
+        if (node.rawTagName === 'h3') {
+          const a = node.querySelector('a');
+          if (!a) continue;
+          navPillsHTML.push(
+            `<a class="nav-link compact sub" href="${a.getAttribute('href')}">${
+              node.text
+            }</a>`
+          );
+        }
+
+        node = node.nextElementSibling;
+      }
+
+      if (navPillsHTML.length > 0) {
+        // eslint-disable-next-line unicorn/prefer-dom-node-append
+        navPillsContainer.appendChild(
+          parse(`
+          <div class="nav nav-pills flex-column ml-1">
+            ${navPillsHTML.join('\n')}
+          </div>
+        `)
+        );
+      }
+    }
+
+    sidebar = parse(`
+      <nav id="sidebar-scrollspy" class="sidebar-nav rounded-lg">
+        <div class="sidebar-header p-2 border-bottom">
+          <strong>${i18n.api.t({
+            phrase: 'Table of Contents',
+            locale: (options && options.locale) || i18n.config.defaultLocale
+          })}</strong>
+        </div>
+        ${navPillsContainer.toString()}
+      </nav>
+    `);
+  }
+
+  //
   // NOTE: we need to keep this because `mandarin` does not normalize in the
   //       same way that #helpers/markdown normalizes with github-like headings
   //       (and this also gives us the opportunity to fix the aria-hidden issue below)
@@ -192,7 +287,10 @@ function fixTableOfContents(content, options) {
       })
     );
 
-    if (lis.length > MAX_SECTIONS && header.rawTagName === 'h2') {
+    if (
+      (options.hasSidebar || lis.length > MAX_SECTIONS) &&
+      header.rawTagName === 'h2'
+    ) {
       // eslint-disable-next-line unicorn/prefer-dom-node-dataset
       anchor.setAttribute('data-toggle', 'collapse');
       anchor.setAttribute('role', 'button');
@@ -215,6 +313,7 @@ function fixTableOfContents(content, options) {
     // (similar to this example: <https://stackoverflow.com/a/7968463>)
     //
     if (
+      !options.hasSidebar &&
       !options.isDocs &&
       lis.length > MAX_SECTIONS &&
       header.rawTagName === 'h2' &&
@@ -238,9 +337,10 @@ function fixTableOfContents(content, options) {
       // eslint-disable-next-line unicorn/prefer-dom-node-append
       header.appendChild(
         parse(
-          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
-            options.isFAQ && !lastChildRawText.endsWith('?') ? '?' : ''
-          }</a>`
+          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}</a>`
+          // `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
+          //   options.hasSidebar && !lastChildRawText.endsWith('?') ? '?' : ''
+          // }</a>`
         )
       );
 
@@ -306,6 +406,7 @@ function fixTableOfContents(content, options) {
   )
     h2s[h2s.length - 1].remove();
 
+  // table of contents footer (mainly for mobile)
   for (const li of lis) {
     const a = li.querySelector('a');
     if (!a) continue;
@@ -330,9 +431,9 @@ function fixTableOfContents(content, options) {
     a.setAttribute('data-toggle', 'collapse');
     a.setAttribute('class', 'list-group-item list-group-item-action');
     // add a question mark
-    a.firstChild._rawText = `${a.firstChild._rawText}${
-      options.isFAQ && !a.firstChild._rawText.endsWith('?') ? '?' : ''
-    }`;
+    // a.firstChild._rawText = `${a.firstChild._rawText}${
+    //   options.hasSidebar && !a.firstChild._rawText.endsWith('?') ? '?' : ''
+    // }`;
     for (const h of h2s) {
       const anchor = h.querySelector('a');
       if (!anchor) continue;
@@ -358,11 +459,10 @@ function fixTableOfContents(content, options) {
   h2.remove();
   ul.remove();
 
-  if (!options.isDocs && lis.length <= MAX_SECTIONS)
+  if (!options.isDocs && !options.hasSidebar && lis.length <= MAX_SECTIONS)
     return `<div class="markdown-body">${root.toString()}</div>`;
 
-  return `
-    <div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js d-print-none">
+  const topPart = `<div class="fixed-bottom bg-dark border-top border-themed p-2 text-center is-bot no-js d-print-none">
       <ul class="list-inline mb-0">
         <li class="list-inline-item">
           <a data-toggle="modal-anchor" role="button" data-target="#modal-table-of-contents" class="btn btn-success">
@@ -381,7 +481,23 @@ function fixTableOfContents(content, options) {
           <div class="modal-body">${ulStr}</div>
         </div>
       </div>
-    </div>
+    </div>`;
+
+  if (options.hasSidebar) {
+    // <div class="col-md-8 col-lg-10 px-md-4">
+    return `
+      ${topPart.replace('fixed-bottom', 'fixed-bottom d-block d-md-none')}
+      <div class="col-md-3 sidebar-wrapper">
+        ${sidebar.toString()}
+      </div>
+      <div class="col-md-9 flex-grow-1">
+        <div class="markdown-body">${root.toString()}</div>
+      </div>
+    `;
+  }
+
+  return `
+    ${topPart}
     <div class="markdown-body">${root.toString()}</div>
   `;
 }
@@ -428,24 +544,29 @@ function fixFootnoteReferences(markdownText) {
 
 module.exports = {
   md(string, options) {
-    //
-    // NOTE: this is not needed as v0.3.2 patched the issue
-    // <https://github.com/antfu/markdown-it-github-alerts/issues/8>
-    // `> \[!` -> `> [!`
-    // string = string.replaceAll('> \\[!', '> [!');
-    //
+    try {
+      //
+      // NOTE: this is not needed as v0.3.2 patched the issue
+      // <https://github.com/antfu/markdown-it-github-alerts/issues/8>
+      // `> \[!` -> `> [!`
+      // string = string.replaceAll('> \\[!', '> [!');
+      //
 
-    // replace footnote escaped chars
-    string = fixFootnoteReferences(string);
+      // replace footnote escaped chars
+      string = fixFootnoteReferences(string);
 
-    if (typeof options !== 'object' || !isSANB(options.locale))
-      return fixTableOfContents(markdown.render(string), options);
-    return fixTableOfContents(
-      i18n.api.t({
-        phrase: markdown.render(string),
-        locale: (options && options.locale) || i18n.config.defaultLocale
-      }),
-      options
-    );
+      if (typeof options !== 'object' || !isSANB(options.locale))
+        return fixTableOfContents(markdown.render(string), options);
+      return fixTableOfContents(
+        i18n.api.t({
+          phrase: markdown.render(string),
+          locale: (options && options.locale) || i18n.config.defaultLocale
+        }),
+        options
+      );
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 };

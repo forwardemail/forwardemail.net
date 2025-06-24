@@ -12,5 +12,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Crypto Supported Email',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/crypto-payments.png'
 };

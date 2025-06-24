@@ -1,5 +1,7 @@
 # Introducing Crypto Payments: Enhanced Privacy for Your Email Service
 
+<img src="/img/articles/crypto-payments.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

@@ -1,5 +1,7 @@
 # Press & Media Kit
 
+<img src="/img/articles/press.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 
@@ -12,7 +14,7 @@
 
 ## About Forward Email
 
-Forward Email is the only 100% open-source email hosting service focused on security and privacy.
+Forward Email is the only 100% open-source email hosting service focused on security and privacy.  Learn more about our history on [our About page](/about).
 
 Our service was founded in 2017 and powers email for over 500,000 domains – including notable users such as [The U.S. Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix, [The Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [several universities](/blog/docs/alumni-email-forwarding-university-case-study) and governments, and more.
 

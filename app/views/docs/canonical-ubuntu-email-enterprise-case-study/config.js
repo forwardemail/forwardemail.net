@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Case Study: Ubuntu Email',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/canonical.png'
 };

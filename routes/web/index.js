@@ -52,6 +52,11 @@ const filePath = path.join(config.views.root, '_tti.pug');
 
 const router = new Router();
 
+function hasSidebar(ctx, next) {
+  ctx.state.hasSidebar = true;
+  return next();
+}
+
 router
   // status page crawlers often send `HEAD /` requests
   .get('/', (ctx, next) => {
@@ -248,7 +253,7 @@ localeRouter
     web.onboard
   )
 
-  .get('/tti', async (ctx) => {
+  .get('/tti', hasSidebar, async (ctx) => {
     // get TTI stats for footer (v1 rudimentary approach)
     ctx.state.tti = false;
     try {
@@ -322,6 +327,7 @@ localeRouter
   )
   .get(
     '/faq',
+    hasSidebar,
     async (ctx, next) => {
       // FAQ takes 30s+ to render in dev/test
       // (we need to rewrite and optimize it)
@@ -368,9 +374,9 @@ localeRouter
     rateLimit(3, 'help'),
     web.help
   )
-  .get('/about', render('about'))
-  .get('/press', render('press'))
-  .get('/security', render('security'))
+  .get('/about', hasSidebar, render('about'))
+  .get('/press', hasSidebar, render('press'))
+  .get('/security', hasSidebar, render('security'))
   .get(
     '/domain-registration',
     web.myAccount.retrieveDomains,
@@ -454,11 +460,11 @@ localeRouter
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));
   })
-  .get('/terms', render('terms'))
-  .get('/gdpr', render('gdpr'))
-  .get('/dpa', render('dpa'))
-  .get('/report-abuse', render('report-abuse'))
-  .get('/privacy', render('privacy'))
+  .get('/terms', hasSidebar, render('terms'))
+  .get('/gdpr', hasSidebar, render('gdpr'))
+  .get('/dpa', hasSidebar, render('dpa'))
+  .get('/report-abuse', hasSidebar, render('report-abuse'))
+  .get('/privacy', hasSidebar, render('privacy'))
   .get('/open-startup', (ctx) => {
     ctx.status = 301;
     ctx.redirect(ctx.state.l('/'));
@@ -550,7 +556,15 @@ for (const doc of developerDocs) {
     ctx.status = 301;
     ctx.redirect(ctx.state.l(doc.slug));
   });
-  localeRouter.get(doc.slug, render(doc.slug.replace('/blog/', '')));
+  localeRouter.get(
+    doc.slug,
+    (ctx, next) => {
+      if (doc.hasSidebar) ctx.state.hasSidebar = true;
+      if (doc.ogImage) ctx.state.ogImage = ctx.state.manifest(doc.ogImage);
+      return next();
+    },
+    render(doc.slug.replace('/blog/', ''))
+  );
 }
 
 localeRouter.get('/docs/nodejs-spam-filter-contact-form', (ctx) => {

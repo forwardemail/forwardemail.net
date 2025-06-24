@@ -1,5 +1,7 @@
 # Why Open-Source Email is the Future: The Forward Email Advantage
 
+<img src="/img/articles/open-source.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

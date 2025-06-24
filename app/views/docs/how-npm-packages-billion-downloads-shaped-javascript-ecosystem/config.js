@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'A Decade of Open-Source Impact',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/npm.png'
 };

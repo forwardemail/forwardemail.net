@@ -14468,5 +14468,502 @@
   "Alumni Email Systems": "أنظمة البريد الإلكتروني للخريجين",
   "How to Optimize Node.js Production Infrastructure: Best Practices in <span class=\"notranslate\">2025</span>": "كيفية تحسين البنية التحتية لإنتاج Node.js: أفضل الممارسات في <span class=\"notranslate\">2025</span>",
   "Node.js production deployment best practices from our battle-tested infrastructure that handles millions of requests daily.": "أفضل ممارسات نشر إنتاج Node.js من البنية الأساسية التي تم اختبارها والتي تتعامل مع ملايين الطلبات يوميًا.",
-  "Optimize Node.js for Production": "Optimize Node.js for Production"
+  "Optimize Node.js for Production": "تحسين Node.js للإنتاج",
+  "Founder and Mission": "المؤسس والرسالة",
+  "Timeline": "الجدول الزمني",
+  "2017 - Founding and Launch": "2017 - التأسيس والإطلاق",
+  "2018 - Infrastructure and Integration": "2018 - البنية التحتية والتكامل",
+  "2019 - Performance Revolution": "2019 - ثورة الأداء",
+  "2020 - Privacy and Security Focus": "2020 - التركيز على الخصوصية والأمان",
+  "2021 - Platform Modernization": "2021 - تحديث المنصة",
+  "2023 - Infrastructure and Feature Expansion": "2023 - توسيع البنية التحتية والميزات",
+  "2024 - Service Optimization and Advanced Features": "2024 - تحسين الخدمة والميزات المتقدمة",
+  "2025 - Continued Innovation": "2025 - الابتكار المستمر",
+  "Core Principles": "المبادئ الأساسية",
+  "Current Status": "الحالة الحالية",
+  "[!TIP]\nFor technical details about our architecture, security implementations, and roadmap, see the": "[!TIP]\nللحصول على تفاصيل تقنية حول بنيتنا التحتية، وتطبيقات الأمان، وخارطة الطريق، يُرجى الاطلاع على",
+  ". What began as a simple email forwarding solution in 2017 has evolved into a comprehensive email platform offering unlimited custom domain names, unlimited email addresses and aliases, unlimited disposable email addresses, spam and phishing protection, encrypted mailbox storage, and numerous advanced features.": "ما بدأ كحل بسيط لإعادة توجيه البريد الإلكتروني في عام 2017 تطور إلى منصة بريد إلكتروني شاملة تقدم عددًا غير محدود من أسماء النطاقات المخصصة وعناوين البريد الإلكتروني والأسماء المستعارة غير المحدودة وعناوين البريد الإلكتروني المؤقتة غير المحدودة وحماية من البريد العشوائي والتصيد الاحتيالي وتخزين صندوق البريد المشفر والعديد من الميزات المتقدمة.",
+  "The service is maintained and owned by its original founding team of designers and developers. It is built with 100% open-source software using": "الخدمة مملوكة ومدارة من قِبل فريقها المؤسس الأصلي من المصممين والمطورين. صُممت باستخدام برنامج مفتوح المصدر 100% باستخدام",
+  "Forward Email was founded by": "تأسست شركة Forward Email على يد",
+  "Nicholas Baugh": "نيكولاس باو",
+  "in 2017. According to the": "في عام 2017. وفقًا لـ",
+  "Forward Email Technical Whitepaper": "ورقة بيضاء فنية حول إعادة توجيه البريد الإلكتروني",
+  ", Baugh was initially searching for a cost-effective and simple solution for enabling email on domain names for his side-projects. After researching available options, he began coding his own solution and purchased the domain": "كان باو يبحث في البداية عن حل بسيط واقتصادي لتمكين البريد الإلكتروني على أسماء النطاقات لمشاريعه الجانبية. بعد البحث في الخيارات المتاحة، بدأ في برمجة حله الخاص واشترى النطاق.",
+  "on October 2, 2017.": "في 2 أكتوبر 2017.",
+  "Forward Email's mission extends beyond providing email services—it aims to transform how the industry approaches email privacy and security. The company's core values include transparency, user control, and privacy protection through technical implementation rather than just policy promises.": "تتجاوز مهمة شركة Forward Email تقديم خدمات البريد الإلكتروني، بل تهدف إلى تغيير طريقة تعامل القطاع مع خصوصية البريد الإلكتروني وأمانه. تشمل قيم الشركة الأساسية الشفافية، وتحكم المستخدم، وحماية الخصوصية من خلال التنفيذ التقني، وليس مجرد وعود بالسياسات.",
+  "October 2, 2017": "2 أكتوبر 2017",
+  ": Nicholas Baugh purchased the domain": ":اشترى نيكولاس باوغ المجال",
+  "after researching cost-effective email solutions for his side-projects.": "بعد البحث عن حلول بريد إلكتروني فعالة من حيث التكلفة لمشاريعه الجانبية.",
+  "November 5, 2017": "5 نوفمبر 2017",
+  ": Baugh created a 634-line JavaScript file using": ": قام Baugh بإنشاء ملف JavaScript مكون من 634 سطرًا باستخدام",
+  "to forward emails for any custom domain name. This initial implementation was published as open-source to": "لإعادة توجيه رسائل البريد الإلكتروني لأي اسم نطاق مخصص. نُشر هذا التنفيذ الأولي كمصدر مفتوح لـ",
+  "and the service was launched using GitHub Pages.": "وتم إطلاق الخدمة باستخدام صفحات GitHub.",
+  "November 2017": "نوفمبر 2017",
+  ": Forward Email officially launched after an initial release. The early version was purely DNS-based with no account registration or sign-up process—simply a README file written in Markdown with instructions. Users could set up email forwarding by configuring MX records to point to": ": أُطلقت خدمة إعادة توجيه البريد الإلكتروني رسميًا بعد إصدار أولي. كانت النسخة الأولية تعتمد كليًا على نظام أسماء النطاقات (DNS) دون الحاجة إلى تسجيل حساب أو عملية تسجيل - مجرد ملف README مكتوب بلغة Markdown مع التعليمات. يمكن للمستخدمين إعداد إعادة توجيه البريد الإلكتروني عن طريق تكوين سجلات MX للإشارة إلى",
+  ", and adding a TXT record with": "، وإضافة سجل TXT مع",
+  "The simplicity and effectiveness of this solution attracted attention from prominent developers, including": "لقد جذبت بساطة وفعالية هذا الحل انتباه المطورين البارزين، بما في ذلك",
+  "(creator of Ruby on Rails), who continues to use Forward Email on his domain": "(منشئ Ruby on Rails)، الذي يواصل استخدام البريد الإلكتروني المباشر على نطاقه",
+  "to this day.": "حتى يومنا هذا.",
+  "April 2018": "أبريل 2018",
+  ": When": ": متى",
+  ", Forward Email switched from using": ", تم تحويل البريد الإلكتروني إلى الأمام من استخدام",
+  "lookups, demonstrating the company's commitment to privacy-focused infrastructure choices.": "عمليات البحث، مما يدل على التزام الشركة باختيارات البنية التحتية التي تركز على الخصوصية.",
+  "October 2018": "أكتوبر 2018",
+  ": Forward Email allowed users to \"Send Mail As\" with": ":تسمح ميزة إعادة توجيه البريد الإلكتروني للمستخدمين بـ \"إرسال البريد باسم\" مع",
+  ", expanding integration capabilities with popular email providers.": "، توسيع قدرات التكامل مع موفري البريد الإلكتروني المشهورين.",
+  "May 2019": "مايو 2019",
+  ": Forward Email released v2, which represented a major rewrite from the initial versions. This update focused on": ": تم إصدار الإصدار الثاني من Forward Email، والذي مثّل إعادة صياغة شاملة للإصدارات الأولية. ركّز هذا التحديث على",
+  "improvements through the use of": "التحسينات من خلال استخدام",
+  ", establishing the foundation for the platform's scalability.": "، مما يضع الأساس لإمكانية توسيع نطاق المنصة.",
+  "February 2020": "فبراير 2020",
+  ": Forward Email released the Enhanced Privacy Protection plan, allowing users to switch off setting public DNS record entries with their email forwarding configuration aliases. Through this plan, a user's email alias information is hidden from being publicly searchable over the Internet. The company also released a feature to enable or disable specific aliases while still allowing them to appear as valid email addresses and return successful": "أطلقت شركة Forward Email خطة حماية الخصوصية المُحسّنة، التي تُتيح للمستخدمين إيقاف تشغيل إدخالات سجلات DNS العامة باستخدام أسماء البريد الإلكتروني المستعارة الخاصة بهم. من خلال هذه الخطة، تُخفي هذه المعلومات اسم البريد الإلكتروني المستعار للمستخدم عن إمكانية البحث العام عبر الإنترنت. كما أطلقت الشركة ميزة لتمكين أو تعطيل أسماء بريد إلكتروني مُحددة مع السماح لها بالظهور كعناوين بريد إلكتروني صالحة وإرجاع النتائج بنجاح.",
+  "SMTP status codes": "رموز حالة SMTP",
+  ", with emails being immediately discarded (similar to piping output to": "، مع التخلص من رسائل البريد الإلكتروني على الفور (على غرار إخراج الأنابيب إلى",
+  "April 2020": "أبريل 2020",
+  ": After hitting countless roadblocks with existing spam-detection solutions that didn't honor Forward Email's privacy policy, the company released their initial alpha version of Spam Scanner. This completely free and open-source": "بعد مواجهة العديد من العقبات مع حلول كشف البريد العشوائي الحالية التي لم تلتزم بسياسة خصوصية Forward Email، أصدرت الشركة النسخة التجريبية الأولية من Spam Scanner. هذا البرنامج مجاني ومفتوح المصدر تمامًا.",
+  "solution uses a": "الحل يستخدم",
+  "Naive Bayes spam filter": "مرشح البريد العشوائي Naive Bayes",
+  "approach combined with": "النهج جنبا إلى جنب مع",
+  "protection. Forward Email also released": "الحماية. تم إصدار خدمة إعادة توجيه البريد الإلكتروني أيضًا",
+  "(2FA) using": "(2FA) باستخدام",
+  "one-time passwords": "كلمات مرور لمرة واحدة",
+  "May 2020": "مايو 2020",
+  ": Forward Email allowed custom": ":إعادة توجيه البريد الإلكتروني مسموح به حسب الطلب",
+  "as a workaround for users to circumvent port blocking by their": "كحل مؤقت للمستخدمين للالتفاف على حظر المنفذ بواسطة",
+  ". The company also released their": ". كما أصدرت الشركة أيضًا",
+  "with complete documentation and real-time request and response examples, along with support for webhooks.": "مع توثيق كامل وأمثلة للطلبات والاستجابة في الوقت الفعلي، بالإضافة إلى دعم خطافات الويب.",
+  "August 2020": "أغسطس 2020",
+  ": Forward Email added support for the": ":أضافت ميزة إعادة توجيه البريد الإلكتروني الدعم لـ",
+  "(\"ARC\") email authentication system, further strengthening email security and deliverability.": "نظام مصادقة البريد الإلكتروني (\"ARC\")، مما يعزز من أمان البريد الإلكتروني وإمكانية تسليمه.",
+  "November 23, 2020": "23 نوفمبر 2020",
+  ": Forward Email publicly launched out of their beta program, marking a significant milestone in the platform's development.": ":تم إطلاق Forward Email علنًا من خلال برنامجها التجريبي، مما يمثل معلمًا مهمًا في تطوير المنصة.",
+  "February 2021": "فبراير 2021",
+  ": Forward Email refactored their codebase to remove all": ":أعادت شركة Forward Email صياغة قاعدة الكود الخاصة بها لإزالة جميع",
+  "dependencies, allowing their stack to become 100%": "التبعيات، مما يسمح لمكدسها بأن يصبح 100%",
+  ". This architectural decision aligned with the company's commitment to maintaining a consistent, open-source technology stack.": "يتوافق هذا القرار المعماري مع التزام الشركة بالحفاظ على مجموعة متسقة من التقنيات مفتوحة المصدر.",
+  "September 27, 2021": "27 سبتمبر 2021",
+  ": Forward Email": ":إعادة توجيه البريد الإلكتروني",
+  "added support": "تمت إضافة الدعم",
+  ", providing users with more sophisticated email routing capabilities.": "، مما يوفر للمستخدمين إمكانيات توجيه البريد الإلكتروني أكثر تطوراً.",
+  "January 2023": "يناير 2023",
+  ": Forward Email launched a re-designed and page-speed optimized website, improving user experience and performance.": ":أطلقت شركة Forward Email موقعًا إلكترونيًا تم إعادة تصميمه وتحسين سرعة الصفحات فيه، مما أدى إلى تحسين تجربة المستخدم والأداء.",
+  "February 2023": "فبراير 2023",
+  ": The company added support for": ":أضافت الشركة الدعم لـ",
+  "and implemented a": "ونفذت",
+  "website color scheme, responding to user preferences and accessibility needs.": "مخطط ألوان الموقع الإلكتروني، يستجيب لتفضيلات المستخدم واحتياجات إمكانية الوصول.",
+  "March 2023": "مارس 2023",
+  ": Forward Email released": ":تم إصدار البريد الإلكتروني الأمامي",
+  "and integrated it throughout their infrastructure, enabling the use of": "ودمجها في جميع أنحاء البنية التحتية الخاصة بهم، مما يتيح استخدامها",
+  "(\"DoH\") at the application layer. The company also added support for": "(\"DoH\") في طبقة التطبيقات. كما أضافت الشركة دعمًا لـ",
+  "and switched from": "وتحولت من",
+  "April 2023": "أبريل 2023",
+  ": Forward Email implemented and automated entirely new infrastructure. The entire service began running on globally load-balanced and proximity-based DNS with health checks and failover using": ": قامت شركة Forward Email بتنفيذ بنية تحتية جديدة بالكامل وأتمتتها. بدأت الخدمة تعمل بنظام DNS متوازن الحمل عالميًا ومبني على القرب، مع فحوصات سلامة وتجاوز الأعطال باستخدام",
+  ", replacing the previous round-robin DNS approach. The company switched to": "، لتحل محل نهج DNS الدوري السابق. تحولت الشركة إلى",
+  "across multiple providers, including": "عبر مقدمي خدمات متعددين، بما في ذلك",
+  ", both SOC 2 Type 1 compliant providers. MongoDB and Redis databases were moved to clustered configurations with primary and standby nodes for high availability, end-to-end SSL encryption, encryption-at-rest, and point-in-time recovery (PITR).": "، كلاهما متوافق مع معيار SOC 2 من النوع 1. تم نقل قواعد بيانات MongoDB وRedis إلى تكوينات مجمعة مع عقد أساسية واحتياطية لتحقيق توافر عالٍ، وتشفير SSL شامل، وتشفير في حالة السكون، واستعادة البيانات في وقت محدد (PITR).",
+  "May 2023": "مايو 2023",
+  ": Forward Email launched their": ":أطلقت شركة Forward Email",
+  "requests. This feature includes built-in safeguards to ensure high deliverability, a modern and robust queue and retry system, and": "الطلبات. تتضمن هذه الميزة إجراءات حماية مدمجة لضمان قابلية توصيل عالية، ونظامًا حديثًا وقويًا للانتظار وإعادة المحاولة، و",
+  "November 2023": "نوفمبر 2023",
+  ", representing a significant advancement in email privacy and security.": "، وهو ما يمثل تقدمًا كبيرًا في خصوصية البريد الإلكتروني وأمانه.",
+  "December 2023": "ديسمبر 2023",
+  ": The company": ":الشركة",
+  "February 2024": "فبراير 2024",
+  "added calendar (CalDAV) support": "تمت إضافة دعم التقويم (CalDAV)",
+  ", expanding the platform's capabilities beyond email to include calendar synchronization.": "، توسيع قدرات المنصة إلى ما هو أبعد من البريد الإلكتروني لتشمل مزامنة التقويم.",
+  "March to July 2024": "مارس إلى يوليو 2024",
+  ": Forward Email released major optimizations and improvements to their IMAP, POP3, and CalDAV services, with the goal of making their service as fast as, if not faster than, alternatives.": ":أصدرت شركة Forward Email تحسينات وتحسينات رئيسية لخدمات IMAP وPOP3 وCalDAV، بهدف جعل خدمتها سريعة مثل البدائل، إن لم تكن أسرع منها.",
+  "July 2024": "يوليو 2024",
+  "added iOS Push support": "تمت إضافة دعم iOS Push",
+  "to address Apple Mail on iOS's lack of IMAP": "لمعالجة مشكلة عدم وجود بروتوكول IMAP في تطبيق Apple Mail على نظام التشغيل iOS",
+  "command support, enabling real-time notifications for Apple iOS devices. Forward Email also added time to inbox (\"TTI\") monitoring for their own service and Yahoo/AOL, and began allowing users to encrypt their entire DNS TXT record even on the free plan. As requested in": "دعم الأوامر، مما يتيح إرسال إشعارات فورية لأجهزة Apple iOS. كما أضافت خدمة Forward Email وقتًا لمراقبة البريد الوارد (\"TTI\") لخدمتها الخاصة وYahoo/AOL، وبدأت تسمح للمستخدمين بتشفير سجل DNS TXT الخاص بهم بالكامل حتى في الباقة المجانية. كما هو مطلوب في",
+  "Privacy Guides discussions": "مناقشات أدلة الخصوصية",
+  "GitHub issues": "مشاكل GitHub",
+  ", the company added the ability for aliases to either quietly reject": "أضافت الشركة القدرة على رفض الأسماء المستعارة بهدوء",
+  "when disabled.": "عند تعطيله.",
+  "August 2024": "أغسطس 2024",
+  ": Forward Email added support for exporting mailboxes as": ":أضافت ميزة إعادة توجيه البريد الإلكتروني دعمًا لتصدير صناديق البريد الإلكتروني كـ",
+  "formats (in addition to the existing": "التنسيقات (بالإضافة إلى التنسيقات الموجودة",
+  "export format).": "(تنسيق التصدير).",
+  "Webhook signature support was added": "تمت إضافة دعم توقيع Webhook",
+  ", and the company began allowing users to send newsletters, announcements, and email marketing through their outbound SMTP service. Domain-wide and alias-specific storage quotas for IMAP/POP3/CalDAV were also implemented.": "وبدأت الشركة بالسماح للمستخدمين بإرسال النشرات الإخبارية والإعلانات والتسويق عبر البريد الإلكتروني عبر خدمة SMTP الصادرة. كما طُبّقت حصص تخزين خاصة بالنطاق والاسم المستعار لبروتوكولات IMAP/POP3/CalDAV.",
+  "September 2024 to January 2025": "من سبتمبر 2024 إلى يناير 2025",
+  "added a highly-requested vacation responder feature and OpenPGP/WKD encryption for email forwarding": "تمت إضافة ميزة الرد التلقائي المطلوبة بشدة وتشفير OpenPGP/WKD لإعادة توجيه البريد الإلكتروني",
+  ", building upon their already implemented encrypted mailbox storage capabilities.": "، بناءً على قدرات تخزين صندوق البريد المشفر التي تم تنفيذها بالفعل.",
+  "January 21, 2025": "21 يناير 2025",
+  ": The founder's best friend \"Jack\", his loyal canine companion, peacefully passed away at the age of nearly 11. Jack": ":لقد توفي صديق المؤسس المقرب \"جاك\"، رفيقه الكلب المخلص، بسلام عن عمر يناهز 11 عامًا. جاك",
+  "will always be remembered": "سوف نتذكره دائما",
+  "for his unwavering companionship that supported the creation of Forward Email. The": "لرفقته الثابتة التي دعمت إنشاء Forward Email.",
+  "is dedicated to Jack, acknowledging his role in the service's development.": "مخصص لجاك، تقديرًا لدوره في تطوير الخدمة.",
+  "February 2025": "فبراير 2025",
+  ": Forward Email switched to": ":إعادة توجيه البريد الإلكتروني تم تحويله إلى",
+  "as their new primary data center provider, implementing custom, performance-focused, bare-metal hardware to further enhance service reliability and speed.": "باعتبارها مزود مركز البيانات الرئيسي الجديد الخاص بهم، تقوم بتنفيذ أجهزة مخصصة تركز على الأداء لتعزيز موثوقية الخدمة وسرعتها بشكل أكبر.",
+  "Since its inception, Forward Email has maintained a steadfast commitment to privacy and security principles:": "منذ إنشائها، حافظت شركة Forward Email على التزامها الراسخ بمبادئ الخصوصية والأمان:",
+  "100% Open-Source Philosophy": "فلسفة مفتوحة المصدر 100%",
+  ": Unlike competitors who only open-source their frontends while keeping backends closed, Forward Email has made its entire codebase—both frontend and backend—available for public scrutiny on": ":على عكس المنافسين الذين يجعلون واجهاتهم الأمامية مفتوحة المصدر فقط مع إبقاء واجهاتهم الخلفية مغلقة، فإن Forward Email قد جعلت قاعدة الكود الخاصة بها بالكامل - الواجهة الأمامية والخلفية - متاحة للتدقيق العام على",
+  "Privacy-First Design": "تصميم يضع الخصوصية أولاً",
+  ": From day one, Forward Email implemented a unique in-memory processing approach that avoids writing emails to disk, setting it apart from conventional email services that store messages in databases or file systems.": ":منذ اليوم الأول، نفذت Forward Email نهجًا فريدًا للمعالجة في الذاكرة يتجنب كتابة رسائل البريد الإلكتروني على القرص، مما يميزها عن خدمات البريد الإلكتروني التقليدية التي تخزن الرسائل في قواعد البيانات أو أنظمة الملفات.",
+  "Continuous Innovation": "الابتكار المستمر",
+  ": The service has evolved from a simple email forwarding solution to a comprehensive email platform with features like encrypted mailboxes, quantum-resistant encryption, and support for standard protocols including SMTP, IMAP, POP3, and CalDAV.": ":تطورت الخدمة من حل بسيط لإعادة توجيه البريد الإلكتروني إلى منصة بريد إلكتروني شاملة مع ميزات مثل صناديق البريد المشفرة، والتشفير المقاوم للكم، ودعم البروتوكولات القياسية بما في ذلك SMTP و IMAP و POP3 و CalDAV.",
+  "Transparency": "الشفافية",
+  ": Making all code open-source and available for inspection, ensuring users can verify privacy claims rather than simply trusting marketing statements.": ":جعل جميع التعليمات البرمجية مفتوحة المصدر ومتاحة للتفتيش، مما يضمن للمستخدمين القدرة على التحقق من ادعاءات الخصوصية بدلاً من الاعتماد فقط على بيانات التسويق.",
+  "User Control": "التحكم بالمستخدم",
+  ": Empowering users with options, including the ability to self-host the entire platform if desired.": ":تمكين المستخدمين من الخيارات، بما في ذلك القدرة على استضافة المنصة بأكملها ذاتيًا إذا رغبوا في ذلك.",
+  "As of 2025, Forward Email serves over 500,000 domains worldwide, including notable organizations and industry leaders such as:": "اعتبارًا من عام 2025، تخدم Forward Email أكثر من 500000 نطاق حول العالم، بما في ذلك المنظمات البارزة وقادة الصناعة مثل:",
+  "Technology Companies": "شركات التكنولوجيا",
+  ": Canonical (Ubuntu), Netflix, The Linux Foundation, The PHP Foundation, jQuery, LineageOS": ": Canonical (Ubuntu)، Netflix، مؤسسة Linux، مؤسسة PHP، jQuery، LineageOS",
+  "Media Organizations": "المنظمات الإعلامية",
+  ": Fox News Radio, Disney Ad Sales": ":راديو فوكس نيوز، مبيعات إعلانات ديزني",
+  ": The University of Cambridge, The University of Maryland, The University of Washington, Tufts University, Swarthmore College": ":جامعة كامبريدج، جامعة ماريلاند، جامعة واشنطن، جامعة تافتس، كلية سوارثمور",
+  "Government Entities": "الجهات الحكومية",
+  ": Government of South Australia, Government of Dominican Republic": ":حكومة جنوب أستراليا، حكومة جمهورية الدومينيكان",
+  "Other Organizations": "منظمات أخرى",
+  ": RCD Hotels, International Correspondence Chess Federation, Flyio": ": فنادق RCD، الاتحاد الدولي للشطرنج بالمراسلة، Flyio",
+  "Notable Developers": "المطورين البارزين",
+  ": Isaac Z. Schlueter (npm creator), David Heinemeier Hansson (Ruby on Rails creator)": ": إسحاق ز. شلويتر (منشئ npm)، ديفيد هاينماير هانسون (مبتكر روبي أون ريلز)",
+  "The platform continues to evolve with regular feature releases and infrastructure improvements, maintaining its position as the only 100% open-source, encrypted, privacy-focused, transparent, and quantum-resistant email service available today.": "تستمر المنصة في التطور مع إصدارات منتظمة للميزات وتحسينات البنية التحتية، مما يحافظ على مكانتها باعتبارها خدمة البريد الإلكتروني الوحيدة مفتوحة المصدر بنسبة 100% والمشفرة والموجهة نحو الخصوصية والشفافة والمقاومة للكم المتاحة اليوم.",
+  "Quick Start": "البدء السريع",
+  "Who uses Forward Email": "من يستخدم إعادة توجيه البريد الإلكتروني؟",
+  "What is Forward Email's history": "ما هو تاريخ Forward Email؟",
+  "Email Clients": "عملاء البريد الإلكتروني",
+  "Microsoft Outlook": "مايكروسوفت أوتلوك",
+  "Mobile Devices": "الأجهزة المحمولة",
+  "Advanced Gmail Routing Configuration": "تكوين توجيه Gmail المتقدم",
+  "Advanced Outlook Routing Configuration": "تكوين التوجيه المتقدم لبرنامج Outlook",
+  "Data Management": "إدارة البيانات",
+  "Where are your servers located": "أين تقع خوادمك؟",
+  "Email Configuration": "تكوين البريد الإلكتروني",
+  "Advanced Features": "الميزات المتقدمة",
+  "Postfix SMTP Relay Configuration": "تكوين Postfix SMTP Relay",
+  "Advanced Server Hardening Techniques": "تقنيات تقوية الخادم المتقدمة",
+  "System and Technical Details": "تفاصيل النظام والتقنية",
+  "Account and Billing": "الحساب والفواتير",
+  "To get started with Forward Email:": "للبدء في إعادة توجيه البريد الإلكتروني:",
+  "Create an account": "إنشاء حساب",
+  "forwardemail.net/register": "forwardemail.net/register",
+  "Add and verify your domain": "أضف نطاقك وتحقق منه",
+  "Add and configure email aliases/mailboxes": "إضافة وتكوين أسماء مستعارة/صناديق بريد إلكتروني",
+  "→ Aliases": "→ الأسماء المستعارة",
+  "Test your setup": "اختبار الإعداد الخاص بك",
+  "by sending an email to one of your new aliases": "عن طريق إرسال بريد إلكتروني إلى أحد الأسماء المستعارة الجديدة لديك",
+  "[!TIP]\nDNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.": "[!TIP]\nقد تستغرق تغييرات DNS ما يصل إلى 24-48 ساعة لتنتشر عالميًا، إلا أنها غالبًا ما تُفعّل قبل ذلك بكثير.",
+  "[!IMPORTANT]\nFor enhanced deliverability, we recommend setting up": "[!هام]\nلتحسين إمكانية التسليم، نوصي بإعداد",
+  "[!NOTE]\nForward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.": "[!NOTE]\nخدمة Forward Email مثالية للأفراد والشركات الصغيرة والمطورين الذين يرغبون في عناوين بريد إلكتروني احترافية دون الحاجة إلى تكلفة وصيانة حلول استضافة البريد الإلكتروني الشاملة.",
+  "It's the only free and open-source service, and lets you use custom domain email addresses without the complexity of setting up and maintaining your own email server.": "إنها الخدمة الوحيدة المجانية والمفتوحة المصدر، وتتيح لك استخدام عناوين البريد الإلكتروني للمجال المخصص دون تعقيد إعداد وصيانة خادم البريد الإلكتروني الخاص بك.",
+  "Our service forwards emails sent to your custom domain to your existing email account – and you can even use us as your dedicated email hosting provider.": "تعمل خدمتنا على إعادة توجيه رسائل البريد الإلكتروني المرسلة إلى المجال المخصص الخاص بك إلى حساب البريد الإلكتروني الحالي لديك - ويمكنك حتى استخدامنا كمزود استضافة بريد إلكتروني مخصص لك.",
+  "Key features of Forward Email:": "الميزات الرئيسية لخدمة إعادة توجيه البريد الإلكتروني:",
+  ": Use professional email addresses with your own domain name": ":استخدم عناوين البريد الإلكتروني الاحترافية مع اسم المجال الخاص بك",
+  "Free Tier": "الطبقة المجانية",
+  ": Basic email forwarding at no cost": ":إعادة توجيه البريد الإلكتروني الأساسي بدون تكلفة",
+  "Enhanced Privacy": "الخصوصية المحسنة",
+  ": We don't read your emails or sell your data": ":نحن لا نقرأ رسائل البريد الإلكتروني الخاصة بك أو نبيع بياناتك",
+  ": Our entire codebase is available on GitHub": ":قاعدة الكود الخاصة بنا بأكملها متاحة على GitHub",
+  "SMTP, IMAP, and POP3 Support": "دعم SMTP وIMAP وPOP3",
+  ": Full email sending and receiving capabilities": ":إمكانية إرسال واستقبال البريد الإلكتروني بالكامل",
+  ": Support for OpenPGP/MIME": ":دعم OpenPGP/MIME",
+  "Custom Catch-All Aliases": "أسماء مستعارة مخصصة لجميع الفئات",
+  ": Create unlimited email aliases": ":إنشاء عدد غير محدود من عناوين البريد الإلكتروني البديلة",
+  "[!TIP]\nLearn more about Forward Email by reading our free 📄": "[نصيحة!]\nتعرّف على المزيد حول إعادة توجيه البريد الإلكتروني من خلال قراءة دليلنا المجاني 📄",
+  "Case Study": "دراسة الحالة",
+  "📄 Case Study": "📄 دراسة الحالة",
+  "Fly": "سافر",
+  "io": "هذا",
+  "[!NOTE]\nOur system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.": "[ملاحظة!]\n\nصُمم نظامنا لضمان السرعة والموثوقية، مع خوادم احتياطية متعددة لضمان وصول رسائل البريد الإلكتروني الخاصة بك في أسرع وقت.",
+  "Forward Email delivers messages with minimal delay, typically within seconds of receipt.": "توفر خدمة Forward Email إمكانية تسليم الرسائل بأقل قدر من التأخير، عادةً في غضون ثوانٍ من استلامها.",
+  "Performance metrics:": "مقاييس الأداء:",
+  "Average Delivery Time": "متوسط وقت التسليم",
+  ": Less than 5-10 seconds from receipt to forwarding (": ": أقل من 5-10 ثواني من الاستلام إلى إعادة التوجيه (",
+  "see our Time to Inbox \"TTI\" monitoring page": "راجع صفحة مراقبة وقت الوصول إلى البريد الوارد \"TTI\"",
+  "Uptime": "وقت التشغيل",
+  ": 99.9%+ service availability": ": 99.9٪ + توفر الخدمة",
+  "Global Infrastructure": "البنية التحتية العالمية",
+  ": Servers strategically located for optimal routing": ":خوادم تقع في مواقع استراتيجية للتوجيه الأمثل",
+  "Automatic Scaling": "التوسع التلقائي",
+  ": Our system scales during peak email periods": ":يتطور نظامنا خلال فترات الذروة للبريد الإلكتروني",
+  "We operate in real-time, unlike other providers which rely upon delayed queues.": "نحن نعمل في الوقت الحقيقي، على عكس مقدمي الخدمات الآخرين الذين يعتمدون على طوابير الانتظار المتأخرة.",
+  "Create a new alias and generate a password in your Forward Email dashboard": "إنشاء اسم مستعار جديد وإنشاء كلمة مرور في لوحة معلومات إعادة توجيه البريد الإلكتروني",
+  "Open Thunderbird and go to": "افتح Thunderbird وانتقل إلى",
+  "Edit → Account Settings → Account Actions → Add Mail Account": "تحرير → إعدادات الحساب → إجراءات الحساب → إضافة حساب بريد",
+  "Enter your name, Forward Email address, and password": "أدخل اسمك وعنوان البريد الإلكتروني وكلمة المرور",
+  "Configure manually": "تكوين يدويا",
+  "and enter:": "وأدخل:",
+  "Incoming: IMAP,": "وارد: IMAP،",
+  ", port 993, SSL/TLS": "، المنفذ 993، SSL/TLS",
+  "Outgoing: SMTP,": "الصادر: SMTP،",
+  ", port 587, STARTTLS": "، المنفذ 587، STARTTLS",
+  "Done": "منتهي",
+  "File → Add Account": "ملف → إضافة حساب",
+  "Enter your Forward Email address and click": "أدخل عنوان بريدك الإلكتروني لإعادة التوجيه وانقر فوق",
+  "Connect": "يتصل",
+  "Choose": "يختار",
+  "Advanced options": "خيارات متقدمة",
+  "and select": "وحدد",
+  "Let me set up my account manually": "دعني أقوم بإعداد حسابي يدويًا",
+  "Select": "يختار",
+  "Incoming:": "وارد:",
+  ", port 993, SSL": "، المنفذ 993، SSL",
+  "Outgoing:": "الصادر:",
+  ", port 587, TLS": "، المنفذ 587، TLS",
+  "Username: Your full email address": "اسم المستخدم: عنوان بريدك الإلكتروني الكامل",
+  "Password: Your generated password": "كلمة المرور: كلمة المرور التي تم إنشاؤها",
+  "Mail → Preferences → Accounts → +": "البريد → التفضيلات → الحسابات → +",
+  "Other Mail Account": "حساب بريد آخر",
+  "For server settings, enter:": "لإعدادات الخادم، أدخل:",
+  "Sign In": "تسجيل الدخول",
+  "For iOS:": "بالنسبة لنظام iOS:",
+  "Settings → Mail → Accounts → Add Account → Other": "الإعدادات ← البريد ← الحسابات ← إضافة حساب ← أخرى",
+  "Tap": "مقبض",
+  "Add Mail Account": "إضافة حساب بريد إلكتروني",
+  "and enter your details": "وأدخل تفاصيلك",
+  "For server settings, use the same IMAP and SMTP settings as above": "بالنسبة لإعدادات الخادم، استخدم نفس إعدادات IMAP وSMTP المذكورة أعلاه",
+  "For Android:": "للاندرويد:",
+  "Settings → Accounts → Add Account → Personal (IMAP)": "الإعدادات ← الحسابات ← إضافة حساب ← شخصي (IMAP)",
+  "Enter your Forward Email address and password": "أدخل عنوان بريدك الإلكتروني وكلمة المرور",
+  "15-30 minutes": "15-30 دقيقة",
+  "If you want to set up advanced routing in Gmail so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges, follow these steps:": "إذا كنت تريد إعداد التوجيه المتقدم في Gmail بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني في Forward Email، فاتبع الخطوات التالية:",
+  "Log in to your Google Admin console at": "قم بتسجيل الدخول إلى وحدة تحكم مسؤول Google على",
+  "admin.google.com": "admin.google.com",
+  "Apps → Google Workspace → Gmail → Routing": "التطبيقات → Google Workspace → Gmail → التوجيه",
+  "Add Route": "إضافة مسار",
+  "and configure the following settings:": "وتكوين الإعدادات التالية:",
+  "Single Recipient Settings:": "إعدادات المستلم الفردي:",
+  "Select \"Change envelope recipient\" and enter your primary Gmail address": "حدد \"تغيير مستلم الظرف\" وأدخل عنوان Gmail الأساسي الخاص بك",
+  "Check \"Add X-Gm-Original-To header with original recipient\"": "حدد \"إضافة رأس X-Gm-Original-To مع المستلم الأصلي\"",
+  "Envelope Recipient Patterns:": "أنماط مستلمي المظاريف:",
+  "Add a pattern that matches all non-existent mailboxes (e.g.,": "أضف نمطًا يتطابق مع جميع صناديق البريد غير الموجودة (على سبيل المثال،",
+  "Email Server Settings:": "إعدادات خادم البريد الإلكتروني:",
+  "Select \"Route to host\" and enter": "حدد \"الطريق إلى المضيف\" وأدخل",
+  "as the primary server": "كخادم أساسي",
+  "as the backup server": "كخادم احتياطي",
+  "Set port to 25": "ضبط المنفذ إلى 25",
+  "Select \"Require TLS\" for security": "حدد \"يتطلب TLS\" للأمان",
+  "to create the route": "لإنشاء الطريق",
+  "This configuration will only work for Google Workspace accounts with custom domains, not for regular Gmail accounts.": "سيعمل هذا التكوين فقط لحسابات Google Workspace ذات النطاقات المخصصة، وليس لحسابات Gmail العادية.",
+  "For Microsoft 365 (formerly Office 365) users who want to set up advanced routing so that aliases that don't match a mailbox will forward to Forward Email's mail exchanges:": "بالنسبة لمستخدمي Microsoft 365 (المعروف سابقًا باسم Office 365) الذين يرغبون في إعداد التوجيه المتقدم بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني الخاصة بـ Forward Email:",
+  "Log in to the Microsoft 365 admin center at": "قم بتسجيل الدخول إلى مركز إدارة Microsoft 365 على",
+  "admin.microsoft.com": "admin.microsoft.com",
+  "Exchange → Mail flow → Rules": "التبادل → تدفق البريد → القواعد",
+  "Add a rule": "إضافة قاعدة",
+  "Create a new rule": "إنشاء قاعدة جديدة",
+  "Name your rule (e.g., \"Forward non-existent mailboxes to Forward Email\")": "قم بتسمية القاعدة الخاصة بك (على سبيل المثال، \"إعادة توجيه صناديق البريد غير الموجودة إلى إعادة توجيه البريد الإلكتروني\")",
+  "Under": "تحت",
+  "Apply this rule if": "طبق هذه القاعدة إذا",
+  ", select:": "، يختار:",
+  "\"The recipient address matches...\"": "\"عنوان المستلم يتطابق مع...\"",
+  "Enter a pattern that matches all addresses at your domain (e.g.,": "أدخل نمطًا يتطابق مع جميع العناوين في نطاقك (على سبيل المثال،",
+  "Do the following": "قم بما يلي",
+  "\"Redirect the message to...\"": "\"إعادة توجيه الرسالة إلى...\"",
+  "Choose \"The following mail server\"": "اختر \"خادم البريد التالي\"",
+  "Enter": "يدخل",
+  "and port 25": "والمنفذ 25",
+  "as a backup server": "كخادم احتياطي",
+  "Except if": "إلا إذا",
+  "\"The recipient is...\"": "\"المستلم هو...\"",
+  "Add all your existing mailboxes that should not be forwarded": "أضف جميع صناديق البريد الموجودة لديك والتي لا ينبغي إعادة توجيهها",
+  "Set the rule priority to ensure it runs after other mail flow rules": "تعيين أولوية القاعدة للتأكد من تشغيلها بعد قواعد تدفق البريد الأخرى",
+  "to activate the rule": "لتفعيل القاعدة",
+  "Emails can land in spam folders for several reasons:": "يمكن أن تصل رسائل البريد الإلكتروني إلى مجلدات البريد العشوائي لعدة أسباب:",
+  "Missing Authentication": "المصادقة مفقودة",
+  ": Set up": ": يثبت",
+  "Domain Reputation": "سمعة المجال",
+  ": New domains often have neutral reputation until they establish a sending history.": ":غالبًا ما تتمتع المجالات الجديدة بسمعة محايدة حتى يتم إنشاء سجل الإرسال.",
+  "Content Triggers": "محفزات المحتوى",
+  ": Certain words or phrases can trigger spam filters.": ":قد تؤدي بعض الكلمات أو العبارات إلى تشغيل مرشحات البريد العشوائي.",
+  "Sending Patterns": "أنماط الإرسال",
+  ": Sudden increases in email volume can look suspicious.": ":قد تبدو الزيادة المفاجئة في حجم البريد الإلكتروني مثيرة للريبة.",
+  "Tool Name": "اسم الأداة",
+  "https://radar.cloudflare.com/domains/feedback": "https://radar.cloudflare.com/domains/feedback",
+  "Categorization": "التصنيف",
+  "https://check.spamhaus.org/": "https://check.spamhaus.org/",
+  "https://talosintelligence.com/reputation_center": "https://talosintelligence.com/reputation_center",
+  "Reputation": "سمعة",
+  "https://www.barracudacentral.org/lookups/lookup-reputation": "https://www.barracudacentral.org/lookups/lookup-reputation",
+  "https://mxtoolbox.com/blacklists.aspx": "https://mxtoolbox.com/blacklists.aspx",
+  "Blacklist": "القائمة السوداء",
+  "https://www.gmail.com/postmaster/": "https://www.gmail.com/postmaster/",
+  "https://multirbl.valli.org/lookup/": "https://multirbl.valli.org/lookup/",
+  "https://senderscore.org/act/blocklist-remover/": "https://senderscore.org/act/blocklist-remover/",
+  "https://www.invaluement.com/lookup/": "https://www.invaluement.com/lookup/",
+  "https://www.surbl.org/": "https://www.surbl.org/",
+  "https://ipcheck.proofpoint.com/": "https://ipcheck.proofpoint.com/",
+  "Removal": "إزالة",
+  "https://csi.cloudmark.com/en/reset/": "https://csi.cloudmark.com/en/reset/",
+  "https://www.spamcop.net/bl.shtml": "https://www.spamcop.net/bl.shtml",
+  "https://www.uceprotect.net/en/rblcheck.php": "https://www.uceprotect.net/en/rblcheck.php",
+  "https://www.backscatterer.org/": "https://www.backscatterer.org/",
+  "Backscatter Protection": "حماية التشتت الخلفي",
+  "https://www.whitelisted.org/": "https://www.whitelisted.org/",
+  "AOL/Verizon (e.g.": "AOL/Verizon (على سبيل المثال",
+  "Cox Communications": "شركة كوكس للاتصالات",
+  "t-online.de (German/T-Mobile)": "t-online.de (الألمانية/T-Mobile)",
+  "[!TIP]\nStart with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.": "[نصيحة!]\nابدأ بإرسال عدد قليل من رسائل البريد الإلكتروني عالية الجودة لبناء سمعة إيجابية قبل إرسال عدد أكبر من الرسائل.",
+  "[!IMPORTANT]\nIf your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.": "[هام!]\nإذا كان نطاقك مدرجًا في القائمة السوداء، فلكل قائمة سوداء إجراءاتها الخاصة لإزالة النطاق. راجع مواقعها الإلكترونية للاطلاع على التعليمات.",
+  "[!TIP]\nIf you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please": "[نصيحة!]\nإذا كنت بحاجة إلى مساعدة إضافية أو وجدت أن بريدنا مُدرج كبريد عشوائي من قِبل مزود خدمة بريد إلكتروني مُعين، يُرجى",
+  "[!TIP]\nWe may soon announce our EU datacenter location hosted under": "[!TIP]\nقد نعلن قريبًا عن موقع مركز بياناتنا في الاتحاد الأوروبي المُستضاف تحت",
+  "forwardemail.eu": "forwardemail.eu",
+  ".  Subscribe to the discussion at": ". اشترك في المناقشة على",
+  "https://github.com/orgs/forwardemail/discussions/336": "https://github.com/orgs/forwardemail/discussions/336",
+  "for updates.": "للحصول على التحديثات.",
+  "Our servers are located primarily in Denver, Colorado – see": "تقع خوادمنا بشكل أساسي في دنفر، كولورادو - راجع",
+  "for our complete list of IP addresses.": "للحصول على قائمتنا الكاملة لعناوين IP.",
+  "You can learn about our subprocessors on our": "يمكنك التعرف على المعالجات الفرعية لدينا على موقعنا",
+  "pages.": "الصفحات.",
+  "You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.": "يمكنك تهيئة Postfix لإعادة توجيه رسائل البريد الإلكتروني عبر خوادم SMTP التابعة لـ Forward Email. هذا مفيد لتطبيقات الخادم التي تحتاج إلى إرسال رسائل بريد إلكتروني.",
+  "Less than 15 minutes": "أقل من 15 دقيقة",
+  "This requires a paid plan with SMTP access enabled.": "يتطلب هذا خطة مدفوعة مع تمكين الوصول إلى SMTP.",
+  "Install Postfix on your server:": "تثبيت Postfix على الخادم الخاص بك:",
+  "During installation, select \"Internet Site\" when prompted for configuration type.": "أثناء التثبيت، حدد \"موقع الإنترنت\" عند مطالبتك بنوع التكوين.",
+  "Edit the main Postfix configuration file:": "تعديل ملف تكوين Postfix الرئيسي:",
+  "Add or modify these settings:": "إضافة أو تعديل هذه الإعدادات:",
+  "Create the SASL password file:": "إنشاء ملف كلمة مرور SASL:",
+  "Add your Forward Email credentials:": "أضف بيانات اعتماد إعادة توجيه البريد الإلكتروني الخاصة بك:",
+  "Secure and hash the password file:": "تأمين ملف كلمة المرور وتجزئته:",
+  "Restart Postfix:": "إعادة تشغيل Postfix:",
+  "Test your configuration by sending a test email:": "اختبر تكوينك عن طريق إرسال بريد إلكتروني اختباري:",
+  "[!TIP]\nLearn more about our security infrastructure on": "[نصيحة!]\nتعرّف على المزيد حول بنيتنا التحتية الأمنية على",
+  "our Security page": "صفحتنا الأمنية",
+  "Forward Email implements numerous server hardening techniques to ensure the security of our infrastructure and your data:": "تطبق Forward Email العديد من تقنيات تقوية الخادم لضمان أمان البنية التحتية لدينا وبياناتك:",
+  "IP tables firewall with strict rules": "جدار حماية جداول IP بقواعد صارمة",
+  "Fail2ban for brute force protection": "Fail2ban للحماية من القوة الغاشمة",
+  "VPN-only administrative access": "الوصول الإداري عبر VPN فقط",
+  "System Hardening": "تقوية النظام",
+  "Minimal package installation": "تثبيت الحزمة البسيطة",
+  "Regular security updates": "تحديثات أمنية منتظمة",
+  "SELinux in enforcing mode": "SELinux في وضع التنفيذ",
+  "Disabled root SSH access": "تم تعطيل الوصول إلى الجذر SSH",
+  "Key-based authentication only": "المصادقة القائمة على المفتاح فقط",
+  "Application Security": "أمان التطبيق",
+  "Content Security Policy (CSP) headers": "عناوين سياسة أمان المحتوى (CSP)",
+  "HTTPS Strict Transport Security (HSTS)": "أمان النقل الصارم HTTPS (HSTS)",
+  "XSS protection headers": "رؤوس حماية XSS",
+  "Frame options and referrer policy headers": "خيارات الإطار ورؤوس سياسة المرجع",
+  "Regular dependency audits": "عمليات تدقيق التبعية المنتظمة",
+  "Full disk encryption with LUKS": "تشفير القرص الكامل باستخدام LUKS",
+  "Secure key management": "إدارة المفاتيح الآمنة",
+  "Regular backups with encryption": "النسخ الاحتياطي المنتظم مع التشفير",
+  "Data minimization practices": "ممارسات تقليل البيانات",
+  "Monitoring and Response": "المراقبة والاستجابة",
+  "Real-time intrusion detection": "كشف التطفل في الوقت الحقيقي",
+  "Centralized logging and analysis": "التسجيل والتحليل المركزي",
+  "Incident response procedures": "إجراءات الاستجابة للحوادث",
+  "[!IMPORTANT]\nOur security practices are continuously updated to address emerging threats and vulnerabilities.": "[هام!]\nنُحدِّث ممارساتنا الأمنية باستمرار لمواجهة التهديدات والثغرات الأمنية الناشئة.",
+  "[!TIP]\nFor maximum security, we recommend using our service with end-to-end encryption via OpenPGP.": "[!TIP]\nللحصول على أقصى درجات الأمان، نوصي باستخدام خدمتنا مع التشفير الشامل عبر OpenPGP.",
+  "Forward Email offers a free tier through a combination of open-source development, efficient infrastructure, and optional paid plans that support the service.": "يقدم Forward Email طبقة مجانية من خلال مجموعة من التطوير مفتوح المصدر والبنية الأساسية الفعالة والخطط المدفوعة الاختيارية التي تدعم الخدمة.",
+  "Our free tier is supported by:": "يتم دعم المستوى المجاني لدينا بواسطة:",
+  "Open Source Development": "تطوير مفتوح المصدر",
+  ": Our codebase is open source, allowing community contributions and transparent operation.": ":قاعدة الكود الخاصة بنا مفتوحة المصدر، مما يسمح بمساهمات المجتمع والتشغيل الشفاف.",
+  "Efficient Infrastructure": "البنية التحتية الفعالة",
+  ": We've optimized our systems to handle email forwarding with minimal resources.": "لقد قمنا بتحسين أنظمتنا للتعامل مع إعادة توجيه البريد الإلكتروني باستخدام الحد الأدنى من الموارد.",
+  "Paid Premium Plans": "خطط مميزة مدفوعة",
+  ": Users who need additional features like SMTP sending, IMAP receiving, or enhanced privacy options subscribe to our paid plans.": ":يمكن للمستخدمين الذين يحتاجون إلى ميزات إضافية مثل إرسال SMTP أو استقبال IMAP أو خيارات الخصوصية المحسنة الاشتراك في خططنا المدفوعة.",
+  "Reasonable Usage Limits": "حدود الاستخدام المعقولة",
+  ": The free tier has fair usage policies to prevent abuse.": ":تتمتع الطبقة المجانية بسياسات الاستخدام العادل لمنع إساءة الاستخدام.",
+  "[!NOTE]\nWe're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.": "[!ملاحظة]\nنلتزم بتوفير خدمة إعادة توجيه البريد الإلكتروني الأساسية مجانًا مع توفير ميزات مميزة للمستخدمين ذوي الاحتياجات المتقدمة.",
+  "[!TIP]\nIf you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.": "[نصيحة!]\nإذا وجدت خدمتنا قيّمة، ففكّر في الترقية إلى خطة مدفوعة لدعم التطوير والصيانة المستمرة.",
+  "Forward Email accepts the following one-time or monthly/quarterly/yearly payment methods:": "تقبل خدمة Forward Email طرق الدفع التالية لمرة واحدة أو شهرية/ربع سنوية/سنوية:",
+  "Credit/Debit Cards/Bank Transfers": "بطاقات الائتمان/الخصم/التحويلات المصرفية",
+  ": Visa, Mastercard, American Express, Discover, JCB, Diners Club, etc.": ":Visa، Mastercard، American Express، Discover، JCB، Diners Club، إلخ.",
+  ": Connect your PayPal account for easy payments": ":قم بربط حساب PayPal الخاص بك لتسهيل عمليات الدفع",
+  "Cryptocurrency": "العملات المشفرة",
+  ": We accept payments via Stripe's stablecoin payments on Ethereum, Polygon, and Solana networks": ":نحن نقبل المدفوعات عبر مدفوعات العملة المستقرة الخاصة بـ Stripe على شبكات Ethereum وPolygon وSolana",
+  "[!NOTE]\nWe store limited payment information on our servers, which only includes payment identifiers and references to": "[ملاحظة!]\nنخزن معلومات دفع محدودة على خوادمنا، والتي تتضمن فقط معرفات الدفع والمراجع إلى",
+  "transaction, customer, subscription, and payment ID's.": "معرفات المعاملات والعملاء والاشتراكات والدفع.",
+  "[!TIP]\nFor maximum privacy, consider using cryptocurrency payments.": "[نصيحة!]\nللحصول على أقصى قدر من الخصوصية، فكّر في استخدام مدفوعات العملات المشفرة.",
+  "All payments are processed securely through Stripe or PayPal. Your payment details are never stored on our servers.": "تتم معالجة جميع المدفوعات بأمان عبر Stripe أو PayPal. لا يتم تخزين بيانات دفعك على خوادمنا.",
+  "[!TIP]\nOur articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.": "[!نصيحة]\nنُحدَّث مقالاتنا أدناه بانتظام بأدلة ونصائح ومعلومات تقنية جديدة. تابعونا باستمرار للاطلاع على أحدث المحتوى.",
+  "Case Studies & Developer Documentation": "دراسات الحالة ووثائق المطورين",
+  "Forward Email is the only 100% open-source email hosting service focused on security and privacy.  Learn more about our history on": "Forward Email هي خدمة استضافة البريد الإلكتروني الوحيدة مفتوحة المصدر 100%، والتي تُركز على الأمان والخصوصية. تعرّف على المزيد حول تاريخنا على",
+  "Our Evaluation Process": "عملية التقييم لدينا",
+  "Recommended Security Audit Companies": "شركات التدقيق الأمني الموصى بها",
+  "Company Comparison": "مقارنة الشركات",
+  "Selection Criteria": "معايير الاختيار",
+  "Forward Email has been actively evaluating cybersecurity research companies to conduct comprehensive audits of our open-source codebase on": "لقد قامت شركة Forward Email بتقييم شركات أبحاث الأمن السيبراني بشكل نشط لإجراء عمليات تدقيق شاملة لقاعدة بياناتنا مفتوحة المصدر",
+  "and server infrastructure. After extensive research and evaluation over the past few years, we have identified several exceptional security audit firms that consistently demonstrate high-quality work, technical expertise, and alignment with our privacy-focused values.": "بعد بحث وتقييم مكثفين على مدار السنوات القليلة الماضية، حددنا العديد من شركات التدقيق الأمني المتميزة التي تُثبت باستمرار جودة عملها وخبرتها الفنية والتزامها بقيمنا التي تُركز على الخصوصية.",
+  "This document represents our findings and recommendations for organizations seeking professional security audit services. The companies listed here have all shown exceptional capabilities in penetration testing, code review, infrastructure assessment, and security research.": "تُمثّل هذه الوثيقة نتائجنا وتوصياتنا للمؤسسات التي تبحث عن خدمات تدقيق أمني احترافية. وقد أظهرت جميع الشركات المدرجة هنا قدرات استثنائية في اختبار الاختراق، ومراجعة الأكواد البرمجية، وتقييم البنية التحتية، وأبحاث الأمن.",
+  "Our evaluation process focused on several key factors that are critical for organizations requiring thorough security assessments. We examined each company's track record, technical expertise, transparency in reporting, and commitment to open-source principles. The companies featured in this guide have all demonstrated consistent excellence during our multi-year evaluation period.": "ركزت عملية التقييم لدينا على عدة عوامل رئيسية بالغة الأهمية للمؤسسات التي تتطلب تقييمات أمنية شاملة. فحصنا سجل كل شركة، وخبرتها التقنية، وشفافيتها في إعداد التقارير، والتزامها بمبادئ المصادر المفتوحة. وقد أظهرت جميع الشركات المذكورة في هذا الدليل تميزًا مستمرًا خلال فترة التقييم التي امتدت لسنوات عديدة.",
+  "It is important to note that the companies listed below are not ranked in any particular order. Each organization brings unique strengths and specializations to the cybersecurity field, and the best choice depends on specific project requirements, budget considerations, and organizational needs.": "من المهم ملاحظة أن الشركات المدرجة أدناه غير مُرتبة حسب أي ترتيب مُحدد. لكل مؤسسة نقاط قوة وتخصصات فريدة في مجال الأمن السيبراني، ويعتمد الخيار الأمثل على متطلبات المشروع المُحددة، واعتبارات الميزانية، واحتياجات المؤسسة.",
+  ": Berlin, Germany": ":برلين، ألمانيا",
+  "Specialization": "التخصص",
+  ": \"Fine penetration tests for fine websites\"": "\"اختبارات اختراق دقيقة لمواقع الويب الدقيقة\"",
+  "Cure53 is a German cybersecurity firm renowned for their meticulous approach to web application security testing and penetration testing. Based in Berlin, they have established themselves as leaders in the field through their comprehensive testing methodologies and detailed reporting practices.": "Cure53 شركة ألمانية متخصصة في الأمن السيبراني، تشتهر بمنهجها الدقيق في اختبار أمان تطبيقات الويب واختبار الاختراق. وقد رسخت مكانتها، انطلاقًا من برلين، كرائدة في هذا المجال بفضل منهجيات الاختبار الشاملة وممارسات إعداد التقارير المفصلة.",
+  "The company has built an impressive portfolio of security assessments for high-profile clients and open-source projects. Their work demonstrates a deep understanding of modern web technologies, cryptographic implementations, and infrastructure security. Cure53's reports are particularly notable for their technical depth and actionable recommendations.": "لقد بنت الشركة محفظةً رائعةً من تقييمات الأمان لعملاء بارزين ومشاريع مفتوحة المصدر. يُظهر عملهم فهمًا عميقًا لتقنيات الويب الحديثة، وتطبيقات التشفير، وأمن البنية التحتية. وتتميز تقارير Cure53 بعمقها التقني وتوصياتها العملية.",
+  "Notable Publications and Reports": "المنشورات والتقارير البارزة",
+  "Mullvad Servers Security Assessment 2024": "تقييم أمان خوادم Mullvad لعام 2024",
+  "- Comprehensive infrastructure security evaluation": "- تقييم شامل لأمن البنية التحتية",
+  "Mullvad Apps/API Security Assessment 2020": "تقييم أمان تطبيقات/واجهات برمجة التطبيقات Mullvad لعام ٢٠٢٠",
+  "- Application and API security analysis": "- تحليل أمان التطبيقات وواجهات برمجة التطبيقات",
+  "Mullvad Servers Security Assessment 2021": "تقييم أمان خوادم Mullvad لعام 2021",
+  "- Follow-up infrastructure assessment": "- متابعة تقييم البنية التحتية",
+  ": Amsterdam, The Netherlands": ":أمستردام، هولندا",
+  ": \"Non-Profit Computer Security Consultancy\"": ": \"استشارات أمن الكمبيوتر غير الربحية\"",
+  "Radically Open Security (ROS) operates as a unique non-profit computer security consultancy that aligns perfectly with open-source principles and transparency values. Based in Amsterdam, ROS has pioneered an innovative approach to security consulting by making their methodologies and findings publicly available whenever possible.": "شركة راديكالي أوبن سيكيوريتي (ROS) هي شركة استشارية فريدة غير ربحية في مجال أمن الحاسوب، تتوافق تمامًا مع مبادئ المصادر المفتوحة وقيم الشفافية. وقد رسّخت ROS، ومقرها أمستردام، نهجًا مبتكرًا في الاستشارات الأمنية من خلال إتاحة منهجياتها ونتائجها للجمهور كلما أمكن.",
+  "Their non-profit model allows them to focus purely on security outcomes rather than profit maximization, which often results in more thorough assessments and genuine recommendations. ROS has particular expertise in privacy-focused technologies, VPN services, and applications that handle sensitive user data.": "يتيح لهم نموذجهم غير الربحي التركيز على نتائج الأمن فقط بدلاً من تعظيم الأرباح، مما يؤدي غالبًا إلى تقييمات أكثر شمولاً وتوصيات فعّالة. تتمتع ROS بخبرة خاصة في التقنيات التي تُركز على الخصوصية، وخدمات الشبكات الافتراضية الخاصة (VPN)، والتطبيقات التي تتعامل مع بيانات المستخدمين الحساسة.",
+  "Droid2Tracking Security Assessment": "تقييم أمان Droid2Tracking",
+  "- Mobile tracking analysis": "- تحليل تتبع الهاتف المحمول",
+  "Tauri Programme Security Assessment 2022": "تقييم أمن برنامج تاوري 2022",
+  "- Cross-platform application framework evaluation": "- تقييم إطار عمل التطبيقات متعددة الأنظمة الأساسية",
+  "Mullvad VPN Security Assessment 2022": "تقييم أمان Mullvad VPN لعام ٢٠٢٢",
+  "- VPN service security analysis": "- تحليل أمان خدمة VPN",
+  ": Gothenburg, Sweden": ":جوتنبرج، السويد",
+  ": \"Experts in technical cybersecurity\"": ":\"خبراء في الأمن السيبراني التقني\"",
+  "Assured AB is a Swedish cybersecurity consultancy that has established itself as a leader in technical cybersecurity assessments. Based in Gothenburg, they bring deep technical expertise to complex security challenges, particularly in areas involving email infrastructure, DNS security, and API assessments.": "Assured AB شركة استشارات سويدية في مجال الأمن السيبراني، رسخت مكانتها كشركة رائدة في مجال تقييمات الأمن السيبراني التقنية. يقع مقرها في غوتنبرغ، وتتميز بخبرة تقنية عميقة في مواجهة تحديات أمنية معقدة، لا سيما في مجالات البنية التحتية للبريد الإلكتروني، وأمن نظام أسماء النطاقات (DNS)، وتقييمات واجهات برمجة التطبيقات (API).",
+  "The company's approach emphasizes thorough technical analysis combined with practical, implementable recommendations. Their reports demonstrate exceptional attention to detail and a comprehensive understanding of modern security threats and mitigation strategies.": "يركز نهج الشركة على التحليل الفني الشامل، إلى جانب توصيات عملية وقابلة للتنفيذ. وتُظهر تقاريرها اهتمامًا استثنائيًا بالتفاصيل وفهمًا شاملًا للتهديدات الأمنية الحديثة واستراتيجيات التخفيف منها.",
+  "Mullvad Email Servers Security Audit 2024": "تدقيق أمان خوادم البريد الإلكتروني Mullvad لعام 2024",
+  "- Email infrastructure security assessment": "- تقييم أمن البنية التحتية للبريد الإلكتروني",
+  "Mullvad API Security Audit 2022": "تدقيق أمان Mullvad API 2022",
+  "- API security evaluation": "- تقييم أمان واجهة برمجة التطبيقات",
+  "Mullvad DNS Server Security Audit 2022": "تدقيق أمان خادم Mullvad DNS لعام 2022",
+  "- DNS infrastructure assessment": "- تقييم البنية التحتية لنظام أسماء النطاقات",
+  ": New York, New York, United States": ":نيويورك، نيويورك، الولايات المتحدة",
+  ": \"We don't just fix bugs, we fix software.\"": "\"نحن لا نقوم فقط بإصلاح الأخطاء، بل نقوم بإصلاح البرامج.\"",
+  "Trail of Bits is a prominent American cybersecurity firm that has earned recognition for their innovative approach to software security. Based in New York, they have developed cutting-edge tools and methodologies that have advanced the entire cybersecurity field. Their motto, \"We don't just fix bugs, we fix software,\" reflects their commitment to addressing systemic security issues rather than just surface-level vulnerabilities.": "تريل أوف بيتس شركة أمريكية رائدة في مجال الأمن السيبراني، نالت تقديرًا كبيرًا لنهجها المبتكر في أمن البرمجيات. تتخذ الشركة من نيويورك مقرًا لها، وقد طورت أدوات ومنهجيات متطورة ساهمت في تطوير مجال الأمن السيبراني بأكمله. شعارها \"لا نصلح الأخطاء فحسب، بل نصلح البرمجيات\" يعكس التزامها بمعالجة مشاكل الأمن النظامية، بدلًا من مجرد الثغرات الأمنية السطحية.",
+  "The company has particular expertise in blockchain security, cryptographic implementations, and complex software systems. Trail of Bits is also known for their contributions to open-source security tools and their thought leadership in emerging security domains.": "تتمتع الشركة بخبرة متخصصة في أمن تقنية البلوك تشين، وتطبيقات التشفير، وأنظمة البرمجيات المعقدة. كما تشتهر شركة Trail of Bits بمساهماتها في تطوير أدوات الأمن مفتوحة المصدر، وريادتها الفكرية في مجالات الأمن الناشئة.",
+  "Homebrew Security Review 2023": "مراجعة أمان Homebrew لعام 2023",
+  "- Package manager security assessment": "- تقييم أمان مدير الحزم",
+  "Hey Security Review": "مراجعة Hey Security",
+  "- Email service security evaluation": "- تقييم أمان خدمة البريد الإلكتروني",
+  "cURL Security Review 2022": "مراجعة أمان cURL لعام 2022",
+  "- Network library security analysis": "- تحليل أمان مكتبة الشبكة",
+  "Focus Area": "مجال التركيز",
+  "Notable Strengths": "نقاط القوة البارزة",
+  "Public Reports": "التقارير العامة",
+  "Web Application Security": "أمان تطبيقات الويب",
+  "Detailed penetration testing, comprehensive reporting": "اختبار الاختراق التفصيلي، والتقارير الشاملة",
+  "3+ Mullvad assessments": "3+ تقييمات Mullvad",
+  "Amsterdam, Netherlands": "أمستردام، هولندا",
+  "Privacy & Open Source": "الخصوصية والمصدر المفتوح",
+  "Non-profit model, transparency, VPN expertise": "نموذج غير ربحي، شفافية، خبرة في الشبكات الافتراضية الخاصة",
+  "Public methodology sharing": "مشاركة المنهجية العامة",
+  "Technical Infrastructure": "البنية التحتية التقنية",
+  "Email/DNS security, API assessments": "أمان البريد الإلكتروني/DNS، تقييمات واجهة برمجة التطبيقات",
+  "Specialized server audits": "عمليات تدقيق الخادم المتخصصة",
+  "New York, USA": "نيويورك، الولايات المتحدة الأمريكية",
+  "Software Security": "أمن البرمجيات",
+  "Blockchain, cryptography, security tooling": "سلسلة الكتل، التشفير، أدوات الأمن",
+  "Open-source contributions": "مساهمات مفتوحة المصدر",
+  "When evaluating these security audit companies, we considered several critical factors that organizations should assess when selecting a security partner:": "عند تقييم شركات التدقيق الأمني هذه، أخذنا في الاعتبار العديد من العوامل الحاسمة التي ينبغي على المؤسسات تقييمها عند اختيار شريك أمني:",
+  "Technical Expertise": "الخبرة الفنية",
+  ": All recommended companies demonstrate deep technical knowledge across multiple domains including web application security, infrastructure assessment, cryptographic implementations, and emerging technologies.": ":تظهر جميع الشركات الموصى بها معرفة تقنية عميقة في مجالات متعددة بما في ذلك أمان تطبيقات الويب وتقييم البنية التحتية وتنفيذات التشفير والتقنيات الناشئة.",
+  "Transparency and Reporting": "الشفافية والتقارير",
+  ": Each firm provides comprehensive, actionable reports that clearly communicate findings, risk assessments, and remediation strategies. Many also contribute to the broader security community through public research and open-source tools.": "تُقدّم كل شركة تقارير شاملة وقابلة للتنفيذ، تُفصّل النتائج وتقييمات المخاطر واستراتيجيات المعالجة بوضوح. كما يُساهم العديد منها في مجتمع الأمن الأوسع من خلال الأبحاث العامة وأدوات مفتوحة المصدر.",
+  "Track Record": "سجل الأداء",
+  ": The companies listed have established proven track records with high-profile clients and complex security challenges. Their public reports demonstrate consistent quality and thoroughness.": "تتمتع الشركات المدرجة بسجل حافل من النجاحات مع عملاء بارزين وتحديات أمنية معقدة. وتُظهر تقاريرها العامة جودةً ودقةً متسقتين.",
+  "Alignment with Values": "التوافق مع القيم",
+  ": For organizations prioritizing privacy, open-source principles, and transparency, these companies have shown commitment to these values through their work and business practices.": ":بالنسبة للمنظمات التي تعطي الأولوية للخصوصية ومبادئ المصدر المفتوح والشفافية، فقد أظهرت هذه الشركات التزامها بهذه القيم من خلال عملها وممارساتها التجارية.",
+  ": All recommended firms stay current with evolving threat landscapes and emerging technologies, ensuring their assessments remain relevant and comprehensive.": ":تحرص جميع الشركات الموصى بها على مواكبة التطورات في مشهد التهديدات والتقنيات الناشئة، مما يضمن أن تظل تقييماتها ذات صلة وشاملة.",
+  "The security audit landscape continues to evolve, and we recommend organizations conduct their own evaluation based on specific needs, budget constraints, and project requirements. However, any of these companies would provide exceptional security assessment services for organizations serious about protecting their infrastructure and user data.": "يشهد مجال تدقيق الأمن تطورًا مستمرًا، ونوصي المؤسسات بإجراء تقييمها الخاص بناءً على احتياجاتها الخاصة، وقيود الميزانية، ومتطلبات المشروع. ومع ذلك، ستوفر أيٌّ من هذه الشركات خدمات تقييم أمن استثنائية للمؤسسات التي تسعى جاهدةً لحماية بنيتها التحتية وبيانات مستخدميها.",
+  "History of Forward Email": "تاريخ إعادة توجيه البريد الإلكتروني",
+  "Carnegie Mellon University": "جامعة كارنيجي ميلون",
+  "img/articles/about.webp": "img/articles/about.webp",
+  "img/articles/press.png": "img/articles/press.png",
+  "img/articles/tti.webp": "img/articles/tti.webp",
+  "img/articles/faq.png": "img/articles/faq.png",
+  "img/articles/email-api.webp": "img/articles/email-api.webp",
+  "img/articles/terms.png": "img/articles/terms.png",
+  "img/articles/gdpr.png": "img/articles/gdpr.png",
+  "img/articles/dpa.png": "img/articles/dpa.png",
+  "img/articles/report-abuse.png": "img/articles/report-abuse.png",
+  "img/articles/privacy.png": "img/articles/privacy.png",
+  "img/articles/help.webp": "img/articles/help.webp",
+  "img/articles/security.webp": "img/articles/security.webp"
 }

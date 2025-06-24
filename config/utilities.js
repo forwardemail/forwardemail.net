@@ -144,13 +144,15 @@ const NS_PROVIDERS = {
     '',
     true
   ],
+  // NOTE: Squarespace acquired Google Domains
   'googledomains.com': [
     'google-domains',
     'Google Domains',
-    'https://domains.google.com/registrar/',
+    // 'https://domains.google.com/registrar/',
+    'https://account.squarespace.com/project-picker?client_id=helpcenter&redirect_url=%2Fsettings%2Fdomains',
     'google',
-    '',
-    'https://www.youtube.com/watch?v=01iHjbIN5CQ'
+    '@'
+    // 'https://www.youtube.com/watch?v=01iHjbIN5CQ'
   ],
   dnspod: [
     'tencent-cloud-dnspod',

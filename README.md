@@ -809,7 +809,7 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
 
 ##
 
-<a href="#"><img src="https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/media/footer.png" alt="#" /></a>
+<div align="center"><a href="#"><img src="https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg" alt="#" /></a></div>
 
 [ansible]: https://github.com/ansible/ansible
 

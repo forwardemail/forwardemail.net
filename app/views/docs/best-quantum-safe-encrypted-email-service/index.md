@@ -1,5 +1,7 @@
 # Quantum Resistant Email: How we use encrypted SQLite mailboxes to keep your email safe
 
+<img src="/img/articles/quantum.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

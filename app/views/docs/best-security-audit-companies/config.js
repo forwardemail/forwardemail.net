@@ -10,5 +10,7 @@ module.exports = {
   icon: 'fa fa-fw fa-user-secret',
   published: true,
   ogBtnText: 'Security Audits',
-  notCodeExample: true
+  notCodeExample: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/security-audit.png'
 };

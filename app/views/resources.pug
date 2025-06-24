@@ -13,21 +13,21 @@ block body
             include _author
       .row.mt-3.no-search
         - const tools = [];
-        - const list = ["/blog/docs/best-quantum-safe-encrypted-email-service", "/guides", "/blogs/docs", "/private-business-email", "/faq", "/help", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
+        - const list = ["/faq", "/help", "/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/blog/docs/best-quantum-safe-encrypted-email-service", "/guides", "/blogs/docs", "/private-business-email", "/disposable-addresses", "/domain-registration", "/reserved-email-addresses", "/denylist"];
         each item in list
           - const match = config.meta[item];
           if match
-            - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item });
+            - tools.push({ title: match[0].replace(config.metaTitleAffix, ""), description: match[1], slug: item, image: match[2] });
         each tool in tools
           .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
             .card.rounded-lg.position-relative
               noscript
                 img.card-img-top.img-fluid(
-                  src=l(`${tool.slug}.png`),
+                  src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
                   alt=striptags(t(tool.title))
                 )
               img.lazyload.card-img-top.img-fluid(
-                src=l(`${tool.slug}.png`),
+                src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
                 alt=striptags(t(tool.title))
               )
               .card-body

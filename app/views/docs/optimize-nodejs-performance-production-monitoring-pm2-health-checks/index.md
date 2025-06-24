@@ -1,10 +1,11 @@
 # How to Optimize Node.js Production Infrastructure: Best Practices
 
-At Forward Email, we've spent years perfecting our Node.js production environment setup. This comprehensive guide shares our battle-tested Node.js production deployment best practices, focusing on performance optimization, monitoring, and the lessons we've learned scaling Node.js applications to handle millions of daily transactions.
+<img src="/img/articles/nodejs-performance.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
 
+* [Foreword](#foreword)
 * [Our 573% Single Core Performance Optimization Revolution](#our-573-single-core-performance-optimization-revolution)
   * [Why Single Core Performance Optimization Matters for Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
   * [Related Content](#related-content)
@@ -59,6 +60,11 @@ At Forward Email, we've spent years perfecting our Node.js production environmen
   * [Our Infrastructure Automation](#our-infrastructure-automation)
   * [Our Technical Blog Posts](#our-technical-blog-posts)
   * [Our Enterprise Case Studies](#our-enterprise-case-studies)
+
+
+## Foreword
+
+At Forward Email, we've spent years perfecting our Node.js production environment setup. This comprehensive guide shares our battle-tested Node.js production deployment best practices, focusing on performance optimization, monitoring, and the lessons we've learned scaling Node.js applications to handle millions of daily transactions.
 
 
 ## Our 573% Single Core Performance Optimization Revolution

@@ -13,5 +13,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Ultimate Email Forwarding Guide',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/email-privacy.png'
 };

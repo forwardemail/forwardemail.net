@@ -37,7 +37,7 @@ include ../../_pagination
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(colspan=passport && passport.otp ? "11" : "10")= t("No users exist for that search.")
+        td.alert.alert-info(colspan=passport && passport.otp ? "14" : "13")= t("No users exist for that search.")
       else
         each user in users
           tr
@@ -53,7 +53,9 @@ include ../../_pagination
               = "("
               code.text-muted= user.id
               = ")"
-            td.align-middle= user.domain_count
+            td.align-middle: a(
+              href=l(`/admin/domains?name=${encodeURIComponent(user.email)}`)
+            )= user.domain_count
             td.align-middle= user.alias_count
             td.align-middle= titleize(humanize(user.plan))
             td.align-middle= titleize(humanize(user.group))

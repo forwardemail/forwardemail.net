@@ -1,5 +1,7 @@
 # Report Abuse
 
+<img src="/img/articles/report-abuse.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

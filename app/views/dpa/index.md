@@ -2,6 +2,8 @@
 
 <!-- v1.0 from <https://github.com/CommonPaper/DPA> -->
 
+<img src="/img/articles/dpa.png" alt="" class="rounded-lg" />
+
 
 ## Table of Contents
 

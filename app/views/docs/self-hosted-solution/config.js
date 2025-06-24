@@ -12,5 +12,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Self-Hosted Email',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/self-hosted.png'
 };

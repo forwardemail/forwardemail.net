@@ -10,5 +10,7 @@ module.exports = {
   icon: 'fa fa-fw fa-lock',
   published: true,
   ogBtnText: 'Quantum Resistant Email',
-  notCodeExample: true
+  notCodeExample: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/quantum.png'
 };

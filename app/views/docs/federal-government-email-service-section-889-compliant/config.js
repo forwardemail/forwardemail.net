@@ -12,5 +12,7 @@ module.exports = {
   published: true,
   ogBtnText: 'Case Study: Gov/Federal Email Compliance',
   notCodeExample: true,
-  noYearAffix: true
+  noYearAffix: true,
+  hasSidebar: true,
+  ogImage: 'img/articles/federal.png'
 };

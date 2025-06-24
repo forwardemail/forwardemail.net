@@ -1,13 +1,13 @@
 # Case Study: How Forward Email Powers Alumni Email Solutions for Top Universities
 
-We've built the world's most secure, private, and flexible email forwarding service for prestigious universities and their alumni.
+<img src="/img/articles/alumni.png" alt="" class="rounded-lg" />
 
 
 ## Table of Contents
 
+* [Foreword](#foreword)
 * [Dramatic Cost Savings with Stable Pricing](#dramatic-cost-savings-with-stable-pricing)
   * [Real-World University Savings](#real-world-university-savings)
-* [Foreword](#foreword)
 * [The University Alumni Email Challenge](#the-university-alumni-email-challenge)
   * [The Value of Alumni Email Identity](#the-value-of-alumni-email-identity)
   * [Traditional Solutions Fall Short](#traditional-solutions-fall-short)
@@ -42,6 +42,17 @@ We've built the world's most secure, private, and flexible email forwarding serv
 * [Conclusion](#conclusion)
 
 
+## Foreword
+
+We've built the world's most secure, private, and flexible email forwarding service for prestigious universities and their alumni.
+
+In the competitive landscape of higher education, maintaining lifelong connections with alumni is not just a matter of tradition—it's a strategic imperative. One of the most tangible ways universities foster these connections is through alumni email addresses, providing graduates with a digital identity that reflects their academic heritage.
+
+At Forward Email, we've partnered with some of the world's most prestigious educational institutions to revolutionize how they manage alumni email services. Our enterprise-grade email forwarding solution now powers the alumni email systems for the [University of Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), the [University of Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,_College_Park), [Tufts University](https://en.wikipedia.org/wiki/Tufts_University), and [Swarthmore College](https://en.wikipedia.org/wiki/Swarthmore_College), collectively serving thousands of alumni worldwide.
+
+This blog post explores how our [open-source](https://en.wikipedia.org/wiki/Open-source_software), privacy-focused email forwarding service has become the preferred solution for these institutions, the technical implementations that make it possible, and the transformative impact it's had on both administrative efficiency and alumni satisfaction.
+
+
 ## Dramatic Cost Savings with Stable Pricing
 
 The financial benefits of our solution are substantial, especially when compared to the continuously increasing prices of traditional email providers:
@@ -73,15 +84,6 @@ Here's how much our partner universities save annually by choosing Forward Email
 > Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
 
 This represents a significant cost reduction compared to traditional email hosting solutions—funds that universities can redirect to scholarships, research, or other mission-critical activities. According to a 2023 analysis by Email Vendor Selection, educational institutions are increasingly seeking cost-effective alternatives to traditional email providers as prices continue to rise with the integration of AI features ([Email Vendor Selection, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
-
-
-## Foreword
-
-In the competitive landscape of higher education, maintaining lifelong connections with alumni is not just a matter of tradition—it's a strategic imperative. One of the most tangible ways universities foster these connections is through alumni email addresses, providing graduates with a digital identity that reflects their academic heritage.
-
-At Forward Email, we've partnered with some of the world's most prestigious educational institutions to revolutionize how they manage alumni email services. Our enterprise-grade email forwarding solution now powers the alumni email systems for the [University of Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), the [University of Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,_College_Park), [Tufts University](https://en.wikipedia.org/wiki/Tufts_University), and [Swarthmore College](https://en.wikipedia.org/wiki/Swarthmore_College), collectively serving thousands of alumni worldwide.
-
-This blog post explores how our [open-source](https://en.wikipedia.org/wiki/Open-source_software), privacy-focused email forwarding service has become the preferred solution for these institutions, the technical implementations that make it possible, and the transformative impact it's had on both administrative efficiency and alumni satisfaction.
 
 
 ## The University Alumni Email Challenge

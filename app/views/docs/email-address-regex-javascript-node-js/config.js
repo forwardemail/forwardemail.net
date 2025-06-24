@@ -9,5 +9,6 @@ module.exports = {
     'Email address regex matching pattern for JavaScript and Node.js. Works in Node v14+ and browsers.',
   icon: 'fas fa-fw fa-flag',
   published: true,
-  ogBtnText: 'Email Address Regex'
+  ogBtnText: 'Email Address Regex',
+  ogImage: 'img/articles/email-address-regex.png'
 };
