@@ -77,7 +77,7 @@ html.h-100.no-js(
     role="document",
     data-spy=hasSidebar ? "scroll" : false,
     data-target=hasSidebar ? "#sidebar-scrollspy" : false,
-    data-offset=hasSidebar ? "60" : false,
+    data-offset=hasSidebar ? "80" : false,
     onload=isBot(ctx.get("User-Agent")) ? "if (typeof lazyload === 'function') { lazyload(); }" : false,
     data-ignore-hash-change=ctx.pathWithoutLocale === "/" ? true : false,
     class=(domain && domain.name && config.ubuntuTeamMapping && Object.keys(config.ubuntuTeamMapping).includes(domain.name)) || ["/ubuntu", "/kubuntu", "/lubuntu", "/edubuntu", "/ubuntu-studio"].includes(ctx.pathWithoutLocale) ? "ubuntu-font" : ""
