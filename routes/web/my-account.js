@@ -121,6 +121,11 @@ router
     rateLimit(100, 'create domain billing'),
     web.myAccount.createDomainBilling
   )
+  .post(
+    '/billing/upgrade-request',
+    web.myAccount.ensureUpgradedPlan,
+    web.myAccount.upgradeBillingRequest
+  )
   .get(
     '/billing/upgrade',
     web.myAccount.setConversionAndRefundStateHelpers,

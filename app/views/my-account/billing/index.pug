@@ -157,6 +157,127 @@ block body
               data-toggle="modal",
               data-target="#modal-change-plan"
             )= t("Change Plan")
+    //- STORAGE UPGRADE SECTION
+    .container
+      .row
+        .col
+          h3.text-center.mb-3= t("Add-ons")
+    .container.py-3.mb-2
+      .row.justify-content-center
+        .col-lg-6
+          .card.shadow-sm
+            .card-header.bg-light
+              h5.card-title.mb-1
+                p.mb-3= t("Storage Upgrade")
+              p.card-subtitle.text-muted.mb-0= t("Increase overall email storage")
+
+            .card-body
+              p.mb-3
+                = t("Current: ")
+                strong #{ bytes(user.max_quota_per_alias) }
+
+              form.ajax-form.confirm-prompt(
+                method="POST",
+                action=l("/my-account/billing/upgrade-request"),
+                data-confirm-prompt-title=t("Upgrade Request: Storage"),
+                data-confirm-prompt-html=t("We will review your request and reach out shortly via email. Once approved, we’ll send you a secure payment link to complete your upgrade. Ready to proceed?")
+              )
+                input(type="hidden", name="kind", value="storage_limit")
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+
+                .row
+                  .col-lg-8
+                    .form-group
+                      label(for="storage_upgrade_option")= t("Storage Upgrade Amount:")
+                      select#storage_upgrade_option.form-control(
+                        name="upgrade_option",
+                        required
+                      )
+                        option(value="", disabled, selected)= t("Choose your storage upgrade...")
+                        option(value="+10 GB")
+                          | +10 GB
+                          |
+                          | —
+                          = t("$3")
+                        option(value="+20 GB")
+                          | +20 GB
+                          |
+                          | —
+                          = t("$6")
+                        option(value="+30 GB")
+                          | +30 GB
+                          |
+                          | —
+                          = t("$9")
+                        option(value="+40 GB")
+                          | +40 GB
+                          |
+                          | —
+                          = t("$12")
+                        option(value="+50 GB")
+                          | +50 GB
+                          |
+                          | —
+                          = t("$15")
+                        option(value="Other")= t("Other (we’ll follow up)")
+                .row
+                  .col-lg-6
+                    button.btn.btn-primary.w-100(type="submit")
+                      = t("Request Storage Upgrade")
+
+    //- SMTP UPGRADE SECTION
+    .container.py-3.mb-5
+      .row.justify-content-center
+        .col-lg-6
+          .card.shadow-sm
+            .card-header.bg-light
+              h5.card-title.mb-1
+                p.mb-3= t("SMTP Upgrade")
+              p.card-subtitle.text-muted.mb-0= t("Request additional outbound email capacity")
+
+            .card-body
+              p.mb-3
+                = t("Current (per day): ")
+                strong #{ smtpLimit }
+
+              form.ajax-form.confirm-prompt(
+                method="POST",
+                action=l("/my-account/billing/upgrade-request"),
+                data-confirm-prompt-title=t("Upgrade Request: SMTP"),
+                data-confirm-prompt-html=t("We’ll review your request and reach out shortly via email. Once approved, we’ll send you a secure payment link to complete your upgrade. Ready to proceed?")
+              )
+                input(type="hidden", name="kind", value="smtp_limit")
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+
+                .row
+                  .col-lg-8
+                    .form-group
+                      label(for="smtp_upgrade_option")= t("SMTP Upgrade Amount:")
+                      select#smtp_upgrade_option.form-control(
+                        name="upgrade_option",
+                        required
+                      )
+                        option(value="", disabled, selected)= t("Choose an SMTP upgrade...")
+                        option(value="+1000 emails daily (+$30/mo)")
+                          | +1000 emails daily
+                          |
+                          | —
+                          = t("$30/month")
+                        option(value="+2000 emails daily (+$60/mo)")
+                          | +2000 emails daily
+                          |
+                          | —
+                          = t("$60/month")
+                        option(value="+3000 emails daily (+$90/mo)")
+                          | +3000 emails daily
+                          |
+                          | —
+                          = t("$90/month")
+                        option(value="Other")= t("Other (we’ll follow up)")
+                .row
+                  .col-lg-6
+                    button.btn.btn-primary.w-100(type="submit")
+                      = t("Request SMTP Upgrade")
     if payments.length > 0
       .container
         .row
