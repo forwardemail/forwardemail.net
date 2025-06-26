@@ -31,6 +31,13 @@ const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const setupAuthSession = require('#helpers/setup-auth-session');
 
+const exdateRegex =
+  /^(?:(?:TZID=[\w/+=-]+:)|(?:VALUE=DATE:))?(\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?)$/;
+
+function isValidExdate(str) {
+  return exdateRegex.test(str);
+}
+
 //
 // Reminders (DEFAULT_TASK_CALENDAR_NAME)
 //
@@ -1722,7 +1729,7 @@ class CalDAV extends API {
 
       let match = false;
       for (const vevent of vevents) {
-        const lines = [];
+        let lines = [];
         // start = dtstart
         // end = dtend
         let dtstart = vevent.getFirstPropertyValue('dtstart');
@@ -1756,7 +1763,33 @@ class CalDAV extends API {
           continue;
         }
 
-        const rruleSet = rrulestr(lines.join('\n'));
+        let rruleSet;
+        try {
+          rruleSet = rrulestr(lines.join('\n'));
+        } catch (err) {
+          if (err.message.includes('Unsupported RFC prop EXDATE in EXDATE')) {
+            try {
+              lines = _.compact(
+                lines.map((line) => {
+                  if (line.includes('EXDATE')) {
+                    return isValidExdate(line) ? line : null;
+                  }
+
+                  return line;
+                })
+              );
+              rruleSet = rrulestr(lines.join('\n'));
+            } catch (err) {
+              err.isCodeBug = true;
+              ctx.logger.fatal(err);
+              throw err;
+            }
+          } else {
+            err.isCodeBug = true;
+            ctx.logger.fatal(err);
+            throw err;
+          }
+        }
 
         // check queried date range (if both start and end specified)
         if (start && end) {
