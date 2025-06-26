@@ -45,6 +45,7 @@ const updateCard = require('./update-card');
 const updateDomain = require('./update-domain');
 const updateMember = require('./update-member');
 const updateProfile = require('./update-profile');
+const upgradeBillingRequest = require('./upgrade-billing-request');
 const validateAlias = require('./validate-alias');
 const validateDomain = require('./validate-domain');
 const verifyRecords = require('./verify-records');
@@ -112,6 +113,7 @@ module.exports = {
   updateDomain,
   updateMember,
   updateProfile,
+  upgradeBillingRequest,
   validateAlias,
   validateDomain,
   verifyRecords,
