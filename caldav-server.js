@@ -32,7 +32,7 @@ const isEmail = require('#helpers/is-email');
 const setupAuthSession = require('#helpers/setup-auth-session');
 
 const exdateRegex =
-  /^(?:(?:TZID=[\w/+=-]+:)|(?:VALUE=DATE:))?(\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?)$/;
+  /^EXDATE(?:;TZID=[\w/+=-]+|;VALUE=DATE)?:\d{8}(?:T\d{6}(?:\.\d{1,3})?Z?)?$/;
 
 function isValidExdate(str) {
   return exdateRegex.test(str);
