@@ -28,7 +28,8 @@ block body
                   src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
                   alt=striptags(t(doc.title))
                 )
-              img.lazyload.card-img-top.img-fluid(
+              img.card-img-top.img-fluid(
+                loading="lazy",
                 src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
                 alt=striptags(t(doc.title))
               )

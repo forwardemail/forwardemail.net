@@ -15,5 +15,5 @@ module.exports = {
   notCodeExample: true,
   noYearAffix: true,
   hasSidebar: true,
-  ogImage: 'img/articles/npm.png'
+  ogImage: 'img/articles/npm.webp'
 };

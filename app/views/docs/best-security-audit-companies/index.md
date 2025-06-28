@@ -1,6 +1,6 @@
 # Best Security Audit Companies
 
-<img src="/img/articles/security-audit.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

@@ -55,7 +55,8 @@ mixin renderCard(alternative)
           data-title=alternative.name,
           data-footer=t("Screenshot by Forward Email")
         )
-          img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+          img.img-fluid.img-thumbnail.max-height-300px(
+            loading="lazy",
             src=manifest(alternative.img),
             alt=striptags(str)
           )
@@ -285,7 +286,9 @@ block body
                         data-title=alternatives[0].name,
                         data-footer=t("Screenshot by Forward Email")
                       )
-                        img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+                        img.img-fluid.img-thumbnail.max-height-300px(
+                          loading="lazy"
+                        )(
                           src=manifest(alternatives[0].img),
                           alt=striptags(t(alternatives[0].description))
                         )
@@ -341,7 +344,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[0].hardenize_pass ? "Pass" : "Fail"}-${alternatives[0].hardenize_pass ? "green" : "red"}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Hardenize Test"),
                             width=128,
                             height=20,
@@ -368,7 +372,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[0].internetnl_site_value}/100-${color1a}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Internet.nl Site Test"),
                             width=170,
                             height=20,
@@ -395,7 +400,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[0].internetnl_mail_value}/100-${color2a}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Internet.nl Mail Test"),
                             width=172,
                             height=20,
@@ -417,7 +423,8 @@ block body
                               width=162,
                               height=20
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Mozilla HTTP Observatory Grade"),
                             data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[0].root_domain}`,
                             width=162,
@@ -445,7 +452,8 @@ block body
                               width=164,
                               height=20
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Qualys SSL Labs SSL Server Test"),
                             data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[0].ssl_labs}_Grade-${colora}`,
                             width=164,
@@ -490,7 +498,9 @@ block body
                         data-title=alternatives[1].name,
                         data-footer=t("Screenshot by Forward Email")
                       )
-                        img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+                        img.img-fluid.img-thumbnail.max-height-300px(
+                          loading="lazy"
+                        )(
                           src=manifest(alternatives[1].img),
                           alt=striptags(t(alternatives[1].description))
                         )
@@ -546,7 +556,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Hardenize_Test-${alternatives[1].hardenize_pass ? "Pass" : "Fail"}-${alternatives[1].hardenize_pass ? "green" : "red"}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Hardenize Test"),
                             width=128,
                             height=20,
@@ -573,7 +584,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternatives[1].internetnl_site_value}/100-${color1}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Internet.nl Site Test"),
                             width=170,
                             height=20,
@@ -600,7 +612,8 @@ block body
                               height=20,
                               src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternatives[1].internetnl_mail_value}/100-${color2}`
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Internet.nl Mail Test"),
                             width=172,
                             height=20,
@@ -622,7 +635,8 @@ block body
                               width=162,
                               height=20
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Mozilla HTTP Observatory Grade"),
                             data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[1].root_domain}`,
                             width=162,
@@ -650,7 +664,8 @@ block body
                               width=164,
                               height=20
                             )
-                          img.lazyload(
+                          img(
+                            loading="lazy",
                             alt=t("Qualys SSL Labs SSL Server Test"),
                             data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[1].ssl_labs}_Grade-${color}`,
                             width=164,
@@ -1045,7 +1060,8 @@ block body
                           height=20,
                           src=`https://img.shields.io/badge/Hardenize_Test-${alternative.hardenize_pass ? "Pass" : "Fail"}-${alternative.hardenize_pass ? "green" : "red"}`
                         )
-                      img.lazyload(
+                      img(
+                        loading="lazy",
                         alt=t("Hardenize Test"),
                         width=128,
                         height=20,
@@ -1072,7 +1088,8 @@ block body
                           height=20,
                           src=`https://img.shields.io/badge/Internet.nl_Site_Test-${alternative.internetnl_site_value}/100-${color1}`
                         )
-                      img.lazyload(
+                      img(
+                        loading="lazy",
                         alt=t("Internet.nl Site Test"),
                         width=170,
                         height=20,
@@ -1099,7 +1116,8 @@ block body
                           height=20,
                           src=`https://img.shields.io/badge/Internet.nl_Mail_Test-${alternative.internetnl_mail_value}/100-${color2}`
                         )
-                      img.lazyload(
+                      img(
+                        loading="lazy",
                         alt=t("Internet.nl Mail Test"),
                         width=172,
                         height=20,
@@ -1121,7 +1139,8 @@ block body
                           width=162,
                           height=20
                         )
-                      img.lazyload(
+                      img(
+                        loading="lazy",
                         alt=t("Mozilla HTTP Observatory Grade"),
                         data-src=`https://img.shields.io/mozilla-observatory/grade-score/${alternative.root_domain}`,
                         width=162,
@@ -1149,7 +1168,8 @@ block body
                           width=164,
                           height=20
                         )
-                      img.lazyload(
+                      img(
+                        loading="lazy",
                         alt=t("Qualys SSL Labs SSL Server Test"),
                         data-src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternative.ssl_labs}_Grade-${color}`,
                         width=164,

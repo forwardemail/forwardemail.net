@@ -10,5 +10,5 @@ module.exports = {
   icon: 'fas fa-fw fa-flag',
   published: true,
   ogBtnText: 'Email Address Regex',
-  ogImage: 'img/articles/email-address-regex.png'
+  ogImage: 'img/articles/email-address-regex.webp'
 };

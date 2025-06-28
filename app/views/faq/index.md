@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-<img src="/img/articles/faq.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

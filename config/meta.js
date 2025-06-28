@@ -53,6 +53,7 @@ module.exports = function (config, isSitemap = false) {
     '/': [
       'Free Email Forwarding for Custom Domains',
       'Get free email forwarding for your custom domain. Send & receive as you@yourdomain.com with unlimited aliases, 10GB storage & 100% open-source security.'
+      // TODO: 'img/articles/faq.webp'
     ],
     '/about': [
       'History of Forward Email',
@@ -62,7 +63,7 @@ module.exports = function (config, isSitemap = false) {
     '/press': [
       'Press & Media Kit',
       'Learn more about Forward Email for journalists and the press, and download Forward Email graphics, branding, and media kit.',
-      'img/articles/press.png'
+      'img/articles/press.webp'
     ],
     '/private-business-email': [
       'Private Business Email for Custom Domains',
@@ -76,7 +77,7 @@ module.exports = function (config, isSitemap = false) {
     '/faq': [
       'Frequently Asked Questions',
       'How to configure email for custom domain names, outbound SMTP service, and more.',
-      'img/articles/faq.png'
+      'img/articles/faq.webp'
     ],
     '/encrypt': [
       'Encrypt Plaintext TXT Record',
@@ -98,12 +99,12 @@ module.exports = function (config, isSitemap = false) {
     '/terms': [
       'Terms of Service',
       'Read our terms and conditions of use for our email forwarding service.',
-      'img/articles/terms.png'
+      'img/articles/terms.webp'
     ],
     '/gdpr': [
       'GDPR Compliance',
       'Read how our service is GDPR compliant.',
-      'img/articles/gdpr.png'
+      'img/articles/gdpr.webp'
     ],
     '/security': [
       'Security Practices',
@@ -112,17 +113,17 @@ module.exports = function (config, isSitemap = false) {
     '/dpa': [
       'Data Processing Agreement',
       'Read our data processing agreement, terms of service, and how our service is GDPR compliant.',
-      'img/articles/dpa.png'
+      'img/articles/dpa.webp'
     ],
     '/report-abuse': [
       'Report Abuse',
       'Information on how to report abuse for the general public and law enforcement.',
-      'img/articles/report-abuse.png'
+      'img/articles/report-abuse.webp'
     ],
     '/privacy': [
       'Privacy Policy',
       'Read our privacy policy for our email forwarding service.',
-      'img/articles/privacy.png'
+      'img/articles/privacy.webp'
     ],
     '/help': [
       'Help',

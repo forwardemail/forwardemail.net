@@ -84,7 +84,8 @@ mixin renderCard(platform, provider)
           data-title=provider.name,
           data-footer=t(provider.attribution)
         )
-          img.lazyload.img-fluid.img-thumbnail.max-height-300px(
+          img.img-fluid.img-thumbnail.max-height-300px(
+            loading="lazy",
             src=manifest(provider.img),
             alt=striptags(str)
           )
@@ -379,7 +380,8 @@ block body
                     src=l(`${tool.slug}.png`),
                     alt=striptags(t(tool.title))
                   )
-                img.lazyload.card-img-top.img-fluid(
+                img.card-img-top.img-fluid(
+                  loading="lazy",
                   src=l(`${tool.slug}.png`),
                   alt=striptags(t(tool.title))
                 )

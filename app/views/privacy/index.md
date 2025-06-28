@@ -1,6 +1,6 @@
 # Privacy Policy
 
-<img src="/img/articles/privacy.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

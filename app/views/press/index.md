@@ -1,6 +1,6 @@
 # Press & Media Kit
 
-<img src="/img/articles/press.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

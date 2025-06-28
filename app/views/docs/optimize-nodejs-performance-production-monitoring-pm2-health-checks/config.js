@@ -13,5 +13,5 @@ module.exports = {
   ogBtnText: 'Optimize Node.js for Production',
   notCodeExample: true,
   hasSidebar: true,
-  ogImage: 'img/articles/nodejs-performance.png'
+  ogImage: 'img/articles/nodejs-performance.webp'
 };

@@ -15,5 +15,5 @@ module.exports = {
   notCodeExample: true,
   noYearAffix: true,
   hasSidebar: true,
-  ogImage: 'img/articles/linux-foundation.png'
+  ogImage: 'img/articles/linux-foundation.webp'
 };

@@ -1,6 +1,6 @@
 # Forward Email: Your Section 889 Compliant Email Forwarding Solution
 
-<img src="/img/articles/federal.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

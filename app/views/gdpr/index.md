@@ -1,6 +1,6 @@
 # GDPR Compliance
 
-<img src="/img/articles/gdpr.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

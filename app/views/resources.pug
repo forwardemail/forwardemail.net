@@ -26,7 +26,8 @@ block body
                   src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
                   alt=striptags(t(tool.title))
                 )
-              img.lazyload.card-img-top.img-fluid(
+              img.card-img-top.img-fluid(
+                loading="lazy",
                 src=tool.image ? manifest(tool.image) : l(`${tool.slug}.png`),
                 alt=striptags(t(tool.title))
               )

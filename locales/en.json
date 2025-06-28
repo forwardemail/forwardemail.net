@@ -11457,5 +11457,6 @@
   "Email for Tech People": "Email for Tech People",
   "Email for Your Business": "Email for Your Business",
   "All-in-one Email Solution": "All-in-one Email Solution",
-  "Privacy-focused email hosting, forwarding, newsletters, and API": "Privacy-focused email hosting, forwarding, newsletters, and API"
+  "Privacy-focused email hosting, forwarding, newsletters, and API": "Privacy-focused email hosting, forwarding, newsletters, and API",
+  "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations": "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations"
 }

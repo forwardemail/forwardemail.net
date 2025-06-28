@@ -12,5 +12,5 @@ module.exports = {
   ogBtnText: 'Security Audits',
   notCodeExample: true,
   hasSidebar: true,
-  ogImage: 'img/articles/security-audit.png'
+  ogImage: 'img/articles/security-audit.webp'
 };

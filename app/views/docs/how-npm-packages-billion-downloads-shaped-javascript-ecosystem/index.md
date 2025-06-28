@@ -1,6 +1,6 @@
 # A Decade of Impact: How Our npm Packages Hit 1 Billion Downloads and Shaped JavaScript
 
-<img src="/img/articles/npm.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

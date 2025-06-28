@@ -1,6 +1,6 @@
 # Case Study: How Forward Email Powers Alumni Email Solutions for Top Universities
 
-<img src="/img/articles/alumni.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

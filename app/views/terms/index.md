@@ -1,6 +1,6 @@
 # Terms
 
-<img src="/img/articles/terms.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

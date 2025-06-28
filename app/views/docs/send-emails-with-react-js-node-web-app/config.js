@@ -10,5 +10,5 @@ module.exports = {
   icon: 'fab fa-fw fa-react',
   published: true,
   ogBtnText: 'React Email',
-  ogImage: 'img/articles/react.png'
+  ogImage: 'img/articles/react.webp'
 };

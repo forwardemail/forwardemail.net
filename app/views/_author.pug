@@ -7,7 +7,8 @@
         src=manifest("img/art/group.svg"),
         alt=config.appName + " " + t("Team")
       )
-    img.lazyload(
+    img(
+      loading="lazy",
       width=92,
       height=50,
       data-src=manifest("img/art/group.svg"),
@@ -28,7 +29,8 @@
               height=20,
               alt="Verified"
             )
-          img.lazyload.ml-1.mb-1(
+          img.ml-1.mb-1(
+            loading="lazy",
             data-src=manifest("img/testimonials/twitter-verified.svg"),
             width=20,
             height=20,

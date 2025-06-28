@@ -10,5 +10,5 @@ module.exports = {
   icon: 'fas fa-fw fa-flag',
   published: true,
   ogBtnText: 'URL Regex',
-  ogImage: 'img/articles/url-regex.png'
+  ogImage: 'img/articles/url-regex.webp'
 };

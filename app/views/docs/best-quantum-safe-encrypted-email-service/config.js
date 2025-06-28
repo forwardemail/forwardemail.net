@@ -12,5 +12,5 @@ module.exports = {
   ogBtnText: 'Quantum Resistant Email',
   notCodeExample: true,
   hasSidebar: true,
-  ogImage: 'img/articles/quantum.png'
+  ogImage: 'img/articles/quantum.webp'
 };

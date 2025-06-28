@@ -1,6 +1,7 @@
 # Report Abuse
+      'img/articles/faq.webp'
 
-<img src="/img/articles/report-abuse.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 
 ## Table of Contents

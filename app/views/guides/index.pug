@@ -37,7 +37,8 @@ block body
                   src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
                   alt=striptags(str)
                 )
-              img.lazyload.card-img-top.img-fluid(
+              img.card-img-top.img-fluid(
+                loading="lazy",
                 src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
                 alt=striptags(str)
               )

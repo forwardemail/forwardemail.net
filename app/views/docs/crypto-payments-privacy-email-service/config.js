@@ -14,5 +14,5 @@ module.exports = {
   notCodeExample: true,
   noYearAffix: true,
   hasSidebar: true,
-  ogImage: 'img/articles/crypto-payments.png'
+  ogImage: 'img/articles/crypto-payments.webp'
 };
