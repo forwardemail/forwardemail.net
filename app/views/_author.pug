@@ -1,17 +1,10 @@
 .d-inline-block.mx-auto.text-left.small.align-middle.no-search
   .d-flex.align-items-center
-    noscript
-      img(
-        width=92,
-        height=50,
-        src=manifest("img/art/group.svg"),
-        alt=config.appName + " " + t("Team")
-      )
     img(
       loading="lazy",
       width=92,
       height=50,
-      data-src=manifest("img/art/group.svg"),
+      src=manifest("img/art/group.svg"),
       alt=config.appName + " " + t("Team")
     )
     .d-flex.flex-column.ml-2.font-weight-bold
@@ -22,16 +15,9 @@
           span.d-none.d-md-inline
             = " "
             = t("Team")
-          noscript
-            img.ml-1(
-              src=manifest("img/testimonials/twitter-verified.svg"),
-              width=20,
-              height=20,
-              alt="Verified"
-            )
           img.ml-1.mb-1(
             loading="lazy",
-            data-src=manifest("img/testimonials/twitter-verified.svg"),
+            src=manifest("img/testimonials/twitter-verified.svg"),
             width=20,
             height=20,
             alt="Verified"

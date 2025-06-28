@@ -30,11 +30,10 @@ $shadows-big: multiple-box-shadow(100);
   margin-top: -60px;
 
   height: 100%;
-  // background:
-  //   radial-gradient(ellipse at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-  //   radial-gradient(ellipse at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
-  //   radial-gradient(ellipse at 40% 40%, #1a237e 0%, #0d1421 40%, #000510 100%);
-  background-color: #000510;
+
+  background-image: url('b64---../img/articles/galaxy.webp---');
+  background-size: cover;
+  background-position: 50% 50%;
 
   #stars {
     z-index: 0;

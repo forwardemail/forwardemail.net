@@ -1806,6 +1806,7 @@ const obj = {
     'A'
   ],
   // Sendinblue is now Brevo (see above)
+  /*
   Skiff: [
     // description
     'Privacy-first end-to-end encrypted email (NOTE: this company is no longer in business and shutting down service in August 2024)',
@@ -1850,6 +1851,7 @@ const obj = {
     // ssl_labs
     'A+'
   ],
+  */
   // SparkPost is now MessageBird
   Startmail: [
     // description

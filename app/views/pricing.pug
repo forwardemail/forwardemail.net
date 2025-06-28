@@ -52,10 +52,9 @@ block body
                 i.fa.fa-search-plus
 
   if (!user && !boolean(ctx.query.pricing)) || isBot(ctx.get('User-Agent'))
-    section.min-vh-100.bg-dark.bg-fixed.lazyload.d-flex.flex-column.pb-5.text-white(
+    section.min-vh-100.bg-dark.d-flex.flex-column.pb-5.text-white(
       data-ignore-hash-change,
-      id=!isPDF && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
-      data-src=manifest("img/articles/galaxy.webp")
+      id=!isPDF && !isBot(ctx.get("User-Agent")) ? "freddy" : ""
     )
       if !isPDF
         //- #stars
