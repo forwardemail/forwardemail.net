@@ -262,7 +262,7 @@ module.exports = (redis) => ({
                   ? []
                   : ['https://www.sandbox.paypal.com'])
               ],
-              'report-uri': reportUri || null,
+              'report-uri': null, // reportUri || null,
               'base-uri': ["'self'"],
               'form-action': [
                 "'self'",
