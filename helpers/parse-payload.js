@@ -881,13 +881,19 @@ async function parsePayload(data, ws) {
                 storage_location: alias.storage_location
               });
               const spaceRequired = byteLength * 2; // 2x to account for syncing
-              const diskSpace = await checkDiskSpace(storagePath);
-              if (diskSpace.free < spaceRequired)
-                throw new TypeError(
-                  `Needed ${bytes(spaceRequired)} but only ${bytes(
-                    diskSpace.free
-                  )} was available`
-                );
+              try {
+                const diskSpace = await checkDiskSpace(storagePath);
+                if (diskSpace.free < spaceRequired)
+                  throw new TypeError(
+                    `Needed ${bytes(spaceRequired)} but only ${bytes(
+                      diskSpace.free
+                    )} was available`
+                  );
+              } catch (err) {
+                err.isCodeBug = true;
+                err.storagePath = storagePath;
+                logger.fatal(err);
+              }
 
               // we should only use in-memory database is if was connected (IMAP session open)
               if (
@@ -1301,7 +1307,6 @@ async function parsePayload(data, ws) {
           id: payload.session.user.alias_id,
           storage_location: payload.session.user.storage_location
         });
-        const diskSpace = await checkDiskSpace(storagePath);
 
         const maxQuotaPerAlias = await Domains.getMaxQuota(
           payload.session.user.domain_id,
@@ -1311,12 +1316,19 @@ async function parsePayload(data, ws) {
         // slight 2x overhead for backups
         const spaceRequired = maxQuotaPerAlias * 2;
 
-        if (diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${bytes(spaceRequired)} but only ${bytes(
-              diskSpace.free
-            )} was available`
-          );
+        try {
+          const diskSpace = await checkDiskSpace(storagePath);
+          if (diskSpace.free < spaceRequired)
+            throw new TypeError(
+              `Needed ${bytes(spaceRequired)} but only ${bytes(
+                diskSpace.free
+              )} was available`
+            );
+        } catch (err) {
+          err.isCodeBug = true;
+          err.storagePath = storagePath;
+          logger.fatal(err);
+        }
 
         // TODO: this should not fix database
         db = await getDatabase(
@@ -1561,7 +1573,7 @@ async function parsePayload(data, ws) {
           id: payload.session.user.alias_id,
           storage_location: payload.session.user.storage_location
         });
-        const diskSpace = await checkDiskSpace(storagePath);
+
         const maxQuotaPerAlias = await Domains.getMaxQuota(
           payload.session.user.domain_id,
           payload.session.user.alias_id
@@ -1586,12 +1598,19 @@ async function parsePayload(data, ws) {
           stats && stats.size > 0 ? stats.size * 2 : 0
         );
 
-        if (diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${bytes(spaceRequired)} but only ${bytes(
-              diskSpace.free
-            )} was available`
-          );
+        try {
+          const diskSpace = await checkDiskSpace(storagePath);
+          if (diskSpace.free < spaceRequired)
+            throw new TypeError(
+              `Needed ${bytes(spaceRequired)} but only ${bytes(
+                diskSpace.free
+              )} was available`
+            );
+        } catch (err) {
+          err.isCodeBug = true;
+          err.storagePath = storagePath;
+          logger.fatal(err);
+        }
 
         // only allow one reset/rekey at a time
         const cache = await this.client.get(
@@ -1661,7 +1680,6 @@ async function parsePayload(data, ws) {
           id: payload.session.user.alias_id,
           storage_location: payload.session.user.storage_location
         });
-        const diskSpace = await checkDiskSpace(storagePath);
 
         // slight 2x overhead for backups
         const maxQuotaPerAlias = await Domains.getMaxQuota(
@@ -1670,12 +1688,19 @@ async function parsePayload(data, ws) {
         );
         const spaceRequired = maxQuotaPerAlias * 2;
 
-        if (config.env !== 'development' && diskSpace.free < spaceRequired)
-          throw new TypeError(
-            `Needed ${bytes(spaceRequired)} but only ${bytes(
-              diskSpace.free
-            )} was available`
-          );
+        try {
+          const diskSpace = await checkDiskSpace(storagePath);
+          if (config.env !== 'development' && diskSpace.free < spaceRequired)
+            throw new TypeError(
+              `Needed ${bytes(spaceRequired)} but only ${bytes(
+                diskSpace.free
+              )} was available`
+            );
+        } catch (err) {
+          err.isCodeBug = true;
+          err.storagePath = storagePath;
+          logger.fatal(err);
+        }
 
         try {
           await fs.promises.rm(storagePath, {
