@@ -140,27 +140,5 @@ script(nonce=nonce).
     });
   })();
 
-script(nonce=nonce).
-  // Load animations after LCP
-  window.addEventListener("load", function () {
-    // Function to show deferred animations
-    function showDeferredAnimations() {
-      // Show rocket animation
-      var rocket = document.getElementById("rocket");
-      if (rocket) {
-        rocket.classList.add("loaded");
-      }
-
-      // Show freddy image (static -> gif)
-      var waving = document.getElementById("waving");
-      if (waving) {
-        waving.classList.add("loaded");
-      }
-    }
-
-    // Delay animations to improve LCP
-    setTimeout(showDeferredAnimations, 3000);
-  });
-
 if isBot(ctx.get('User-Agent'))
   style(nonce=nonce)= ".is-bot { display: none !important; }"

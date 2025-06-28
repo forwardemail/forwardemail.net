@@ -24,12 +24,13 @@ const env = require('@ladjs/env')({
 Error.stackTraceLimit = Number.POSITIVE_INFINITY;
 
 // https://github.com/zone-eu/wildduck/issues/768
-errors.setGelf({
-  // emit(...args) {
-  emit() {
-    // do nothing (noop)
-    // TODO: we may want to `logger.debug(...args)` here
-  }
-});
+if (errors)
+  errors.setGelf({
+    // emit(...args) {
+    emit() {
+      // do nothing (noop)
+      // TODO: we may want to `logger.debug(...args)` here
+    }
+  });
 
 module.exports = env;

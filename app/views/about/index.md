@@ -133,11 +133,11 @@ Since its inception, Forward Email has maintained a steadfast commitment to priv
 
 As of 2025, Forward Email serves over 500,000 domains worldwide, including notable organizations and industry leaders such as:
 
-* **Technology Companies**: Canonical (Ubuntu), Netflix, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
+* **Technology Companies**: Canonical (Ubuntu), Netflix Games, The Linux Foundation, The PHP Foundation, jQuery, LineageOS
 * **Media Organizations**: Fox News Radio, Disney Ad Sales
 * **Educational Institutions**: The University of Cambridge, The University of Maryland, The University of Washington, Tufts University, Swarthmore College
 * **Government Entities**: Government of South Australia, Government of Dominican Republic
-* **Other Organizations**: RCD Hotels, International Correspondence Chess Federation, Flyio
+* **Other Organizations**: RCD Hotels, Fly<span>.</span>io
 * **Notable Developers**: Isaac Z. Schlueter (npm creator), David Heinemeier Hansson (Ruby on Rails creator)
 
 The platform continues to evolve with regular feature releases and infrastructure improvements, maintaining its position as the only 100% open-source, encrypted, privacy-focused, transparent, and quantum-resistant email service available today.

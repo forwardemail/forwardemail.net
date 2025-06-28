@@ -50,9 +50,6 @@ async function listBilling(ctx) {
     )
   );
 
-  ctx.state.smtpLimit =
-    ctx.state.user[config.userFields.smtpLimit] || config.smtpLimitMessages;
-
   //
   // set HTTP headers for pagination
   // <https://forwardemail.net/email-api#description/pagination>

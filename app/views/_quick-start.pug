@@ -1,0 +1,40 @@
+a.btn.btn-primary.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3.px-5.py-3(
+  href=l("/faq#quick-start")
+)
+  = t("Quick Start")
+  = " "
+  i.fa.fa-angle-right
+br
+ul.list-inline
+  li.list-inline-item
+    a.btn.btn-light.btn-sm.font-weight-bold.mb-3(
+      href="/technical-whitepaper.pdf",
+      target="_blank"
+    )
+      i.fa.fas.fa-book
+      = " "
+      = t("Whitepaper")
+  li.list-inline-item
+    a.btn.btn-light.btn-sm.font-weight-bold.mb-3(
+      href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study"),
+      target="_blank"
+    )
+      i.fa.fas.fa-briefcase
+      = " "
+      = t("Enterprise")
+  li.list-inline-item
+    a.btn.btn-light.btn-sm.font-weight-bold.mb-3(
+      href=l("/blog/docs/alumni-email-forwarding-university-case-study"),
+      target="_blank"
+    )
+      i.fa.fas.fa-user-graduate
+      = " "
+      = t("Education")
+  li.list-inline-item
+    a.btn.btn-light.btn-sm.font-weight-bold.mb-3(
+      href=l("/blog/docs/federal-government-email-service-section-889-compliant"),
+      target="_blank"
+    )
+      i.fa.fas.fa-landmark
+      = " "
+      = t("Government")

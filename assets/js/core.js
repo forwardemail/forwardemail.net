@@ -8,7 +8,6 @@ const Clipboard = require('clipboard');
 const Lazyload = require('lazyload');
 const Popper = require('popper.js');
 const Swal = require('sweetalert2/dist/sweetalert2.js');
-const Typed = require('typed.js');
 const URLParse = require('url-parse');
 const base64url = require('base64url');
 const lazyframe = require('lazyframe');
@@ -33,9 +32,6 @@ window.jQuery = $;
 
 // required for bootstrap (we could use the bundle but this is cleaner)
 window.Popper = Popper;
-
-// bind Typed to window namespace for specific pages
-window.Typed = Typed;
 
 require('bootstrap');
 
@@ -507,7 +503,6 @@ if ($btnPrint.length > 0)
   });
 
 const $nav = $('.navbar.fixed-top');
-const el = document.querySelector('#freddy');
 
 function navbarScroll() {
   if (
@@ -532,7 +527,7 @@ function navbarScroll() {
   }
 }
 
-if (el && $nav.length > 0) {
+if ($nav.length > 0) {
   navbarScroll();
   $(window).scroll(debounce(navbarScroll, 125));
   $('#navbar-header')

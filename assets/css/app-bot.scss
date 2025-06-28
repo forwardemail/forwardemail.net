@@ -89,6 +89,7 @@ $question: theme-color('light');
 @import 'custom';
 
 .bot-detected {
+  /*
   @media (prefers-color-scheme: light) {
     @include media-breakpoint-up(md) {
       .bg-fixed {
@@ -106,6 +107,7 @@ $question: theme-color('light');
       }
     }
   }
+  */
 
   body.app {
     padding-top: 0 !important;

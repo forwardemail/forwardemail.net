@@ -11,9 +11,9 @@
 // https://codepen.io/sarazond/pen/LYGbwj
 // n is number of stars required
 @function multiple-box-shadow($n) {
-  $value: '#{random(2000)}px #{random(2000)}px #421bcc';
+  $value: '#{random(2000)}px #{random(2000)}px rgba(225, 255, 255, 0.5)';
   @for $i from 2 through $n {
-    $value: '#{$value} , #{random(2000)}px #{random(2000)}px #421bcc';
+    $value: '#{$value} , #{random(2000)}px #{random(2000)}px rgba(255, 255, 255, 0.5)';
   }
   @return unquote($value);
 }
@@ -30,8 +30,11 @@ $shadows-big: multiple-box-shadow(100);
   margin-top: -60px;
 
   height: 100%;
-  background: radial-gradient(ellipse at bottom, #010843 0%, #04155e 100%);
-  background-color: #010843;
+  // background:
+  //   radial-gradient(ellipse at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+  //   radial-gradient(ellipse at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+  //   radial-gradient(ellipse at 40% 40%, #1a237e 0%, #0d1421 40%, #000510 100%);
+  background-color: #000510;
 
   #stars {
     z-index: 0;
@@ -98,111 +101,6 @@ $shadows-big: multiple-box-shadow(100);
       transform: translateY(-2000px);
     }
   }
-
-  /*
-  #stars {
-    position: absolute;
-    // background-color: #000000;
-    top: -60px;
-    z-index: -3;
-    width: 100%;
-    bottom: 0;
-    background-color: #000033;
-    background-size: 40vmin;
-    background-image: url('b64---../img/art/planet.svg---');
-    background-repeat: no-repeat;
-    background-position: 110% 110%;
-  }
-  */
-  #rocket {
-    transition: all 1.5s linear;
-    animation-name: rocket;
-    animation-delay: 5s;
-    animation-duration: 20s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    z-index: 1;
-    position: absolute;
-    background-size: 99.9%;
-    background-repeat: no-repeat;
-    background-image: none;
-    width: 0px;
-    height: 0px;
-    &.loaded {
-      background-image: url('b64---../img/art/rocket.gif---');
-      width: 83.5px;
-      height: 65.5px;
-    }
-    left: -50%;
-    top: -50%;
-  }
-  #waving {
-    z-index: 2;
-    position: absolute;
-    background-size: 99.9%;
-    background-repeat: no-repeat;
-    background-image: url('b64---../img/art/freddy.png---');
-    &.loaded {
-      background-image: url('b64---../img/art/freddy.gif---');
-    }
-    width: 57.7px;
-    height: 79.65px;
-    right: 5%;
-    bottom: 30%;
-  }
-  @include media-breakpoint-up(sm) {
-    #waving {
-      right: 10%;
-      width: 75.6px;
-      height: 106.2px;
-    }
-  }
-  @include media-breakpoint-up(md) {
-    /*
-    #stars {
-      background-size: 40vmin, 50vmin, 110%;
-      background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
-      background-repeat: no-repeat, repeat, no-repeat;
-      background-position: 110% 110%, 50% 50%, 100% 100%;
-      // background-size: 45vmin;
-    }
-    */
-    #waving {
-      right: 15%;
-      width: 94.5px;
-      height: 132.75px;
-    }
-  }
-  @include media-breakpoint-up(lg) {
-    /*
-    #stars {
-      background-image: url('b64---../img/art/planet.svg---'), url('b64---../img/art/purple-stars.svg---'), url('b64---../img/art/glow.svg---');
-      background-size: 50vmin, 50vmin, 110%;
-      // background-size: 50vmin;
-    }
-    */
-    #waving {
-      width: 126px;
-      height: 177px;
-    }
-  }
-  @include media-breakpoint-up(xl) {
-    /*
-    #stars {
-      background-size: 60vmin, 50vmin, 110%;
-      // background-size: 60vmin;
-    }
-    */
-  }
-}
-
-.floating-animation {
-  transition: all 1s ease-out;
-  animation-name: floating;
-  animation-duration: 5s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -177,8 +177,10 @@ const purgeCssOptions = {
       'col-12',
       'col-6',
       'col-lg-6',
+      'col-md-3',
       'col-md-6',
       'col-md-8',
+      'col-md-9',
       'col-sm-12',
       'collapse',
       'confirm-prompt',
@@ -263,7 +265,6 @@ const purgeCssOptions = {
       /-themed-/,
       /^hljs/,
       /^language-/,
-      'floating-animation',
       /^progress-bar/,
       'collapse',
       'navbar-collapse',
@@ -280,7 +281,6 @@ const purgeCssOptions = {
       'fixed-top',
       'card-columns-2',
       /swal2/,
-      /^typed-/,
       'component-frame',
       // bootstrap-table icons for bs4
       'fa-minus',
@@ -291,7 +291,10 @@ const purgeCssOptions = {
       // (manually curated, see `app/views/_nav.pug`)
       'navbar-small',
       // sidebar
-      /^sidebar/
+      /^sidebar/,
+      'nav',
+      'nav-pills',
+      'flex-column'
     ])
   ]
 };

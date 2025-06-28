@@ -4,30 +4,6 @@ block append stylesheets
   if freddyCss
     style(nonce=nonce)!= freddyCss
 
-block append scripts
-  if !isBot(ctx.get("User-Agent"))
-    //- <https://github.com/mattboldt/typed.js/issues/592>
-    script(defer, nonce=nonce).
-      window.addEventListener(
-        "load",
-        function load() {
-          if (!window.Typed) return setTimeout(load, 2000);
-          if ($("#typed-home").length === 0 || $("#typed-home-strings").length === 0) return;
-          setTimeout(function () {
-            const typed = new window.Typed("#typed-home", {
-              stringsElement: "#typed-home-strings",
-              smartBackspace: true,
-              typeSpeed: 70,
-              backSpeed: 70,
-              startDelay: 2000,
-              backDelay: 2000,
-              autoInsertCss: false,
-            });
-          }, 3000);
-        },
-        false
-      );
-
 block body
   include _modal-storage
   //- modal watch video
@@ -41,7 +17,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-watch-video-title.h4.d-inline-block.ml-4= t("Product Tour")
+            #modal-watch-video-title.h4.d-inline-block.ml-4= t("See How It Works")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -64,7 +40,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email Forwarding for Creators")
+            #modal-for-creators-title.h4.d-inline-block.ml-4= t("Email for Content Creators")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -86,7 +62,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email Forwarding for Developers")
+            #modal-for-developers-title.h4.d-inline-block.ml-4= t("Email for Tech People")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -108,7 +84,7 @@ block body
       .modal-dialog.modal-lg(role="document")
         .modal-content
           .modal-header.text-center.d-block
-            #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email Forwarding for Businesses")
+            #modal-for-businesses-title.h4.d-inline-block.ml-4= t("Email for Your Business")
             button.close(
               type="button",
               data-dismiss="modal",
@@ -121,216 +97,60 @@ block body
               data-vendor="youtube_nocookie",
               data-src="https://www.youtube-nocookie.com/embed/--p9LdmVSAw?autoplay=0"
             )
-  .min-vh-100.d-flex.flex-column.pb-5(
+  .min-vh-100.bg-dark.bg-fixed.text-white.lazyload.d-flex.flex-column.pb-5.text-white.text-center(
     data-ignore-hash-change,
     id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : "",
-    class=isBot(ctx.get("User-Agent")) ? "" : "text-white"
+    data-src=manifest("img/articles/galaxy.png")
   )
-    - const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ctx.get("User-Agent"));
-    if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email') && !isBot(ctx.get('User-Agent')))
-      #stars
+    if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email'))
+      //- #stars
       #stars2
       #stars3
-      if !isSafari
-        #rocket.d-none.user-select-none(data-ignore-hash-change)
-      #waving.user-select-none(
-        class=isSafari ? "" : "floating-animation",
-        data-ignore-hash-change
-      )
     .container.my-auto.pt-5
-      .row
-        if !isBot(ctx.get("User-Agent"))
-          #typed-home-strings.d-none(data-ignore-hash-change)
-            div!= t("Email for enterprise")
-            div!= t("Email for education")
-            div!= t("Email for startups")
-            div!= t("Email for stores")
-            div!= t("Email for designers")
-            div!= t("Email for developers")
-            div!= t("Email for marketing")
-            div!= t("Email for sales")
-            div!= t("Email for you")
+      .row.mb-3
         .col-12(
           class=["en"].includes(locale) ? "col-md-9 col-lg-8 col-xl-6" : "col-lg-9"
         )
-        .col-12.text-center
-          if isBot(ctx.get("User-Agent"))
-            h1.mb-3.text-sans-serif(data-ignore-hash-change)= t("Free Email Forwarding for Custom Domains")
+        .col-12
+          if isBot(ctx.get('User-Agent'))
+            h1.mb-1.display-4.font-weight-normal= t("Free Email Forwarding for Custom Domains")
           else
-            h1#typed-home-header.mb-3(data-ignore-hash-change)
-              span#typed-home.text-sans-serif(data-ignore-hash-change)
-                != t("Email for everyone")
-          if isBot(ctx.get("User-Agent"))
-            p
-              != t('For <span class="notranslate">%d</span> years and counting, we are the go-to email service for hundreds of thousands of creators, developers, and businesses.', dayjs().endOf("year").diff(dayjs("1/1/17", "M-D/YY"), "year"))
-              = " "
-              != t('Send and receive email as <span class="notranslate font-weight-bold text-nowrap">you@yourdomain.com</span> with your custom domain for free. Set up custom domain email forwarding in minutes!')
-          if !isBot(ctx.get("User-Agent"))
-            a.btn.btn-success.btn-lg.font-weight-bold.text-uppercase.mt-3.mb-3(
-              href=l("/register"),
-              data-toggle="modal-anchor",
-              data-target="#modal-sign-up"
-            )
-              = t("Sign up free")
-            br
-            a.btn.btn-light.btn-sm.font-weight-bold.mb-3.mb-md-5(
-              href="/technical-whitepaper.pdf",
-              target="_blank"
-            )
-              i.fa.fas.fa-book
-              = " "
-              = t("Technical Whitepaper")
-
-          if isBot(ctx.get("User-Agent"))
-            ul.list-inline
-              li.list-inline-item.d-block.d-md-inline
-                a.btn.mb-3(
-                  class=isBot(ctx.get("User-Agent")) ? "btn-dark" : "btn-light",
-                  href=isBot(ctx.get("User-Agent")) ? l("/private-business-email") : l("/private-business-email?pricing=true")
-                )
-                  i.fa.fa-fw.fa-layer-group
-                  = " "
-                  != t("Features")
-              //- Product Tour
-              if !isBot(ctx.get('User-Agent'))
-                li.list-inline-item.d-block.d-md-inline
-                  a.btn.btn-light.mb-3(
-                    role="button",
-                    data-toggle="modal",
-                    data-target="#modal-watch-video",
-                    href="https://www.youtube.com/watch?v=N6zjv40zuIY",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fab.fa-youtube.text-danger
-                    = " "
-                    = t("Tour")
-              //- Developers
-              li.list-inline-item.d-block.d-md-inline
-                if isBot(ctx.get('User-Agent'))
-                  a.btn.btn-dark.mb-3(href=l("/blog/docs"))
-                    i.fa.fa-code
-                    = " "
-                    = t("Transactional Email API")
-                else
-                  a.btn.btn-light.mb-3(href=l("/blog/docs"))
-                    i.fa.fa-code
-                    = " "
-                    = t("Developers")
-
-    if !isBot(ctx.get('User-Agent'))
-      a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
-        href="#learn-more"
-      )
-        i.fa.fa-angle-double-down
-        = " "
-        = t("Learn more")
-        = " "
-        i.fa.fa-angle-double-down
-  #learn-more.py-3.d-block.overflow-hidden.no-search(data-ignore-hash-change)
-    .container.text-center
-      include _marketing
+            h1.mb-1.display-3.font-weight-normal!= t("All-in-one Email Solution")
+      if isBot(ctx.get('User-Agent'))
+        .row.mb-3
+          each phrase in ['Private business email', 'Custom domain email hosting', 'Open-source email hosting service']
+            .col-md-4
+              h2.h5.font-weight-normal.mb-3: a.text-white(
+                href=l("/" + slug(phrase)),
+                target="_blank",
+                rel="noopener noreferrer"
+              )= t(phrase)
+      else
+        .row.mb-3
+          .col-12
+            h2.h3.font-weight-normal.mb-3!= t("Privacy-focused email hosting, forwarding, newsletters, and API")
+      .row
+        .col-12
+          include _quick-start
+    //-.
+      if !isBot(ctx.get('User-Agent'))
+        a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-white.mx-auto.bounce-animation(
+          href="#learn-more"
+        )
+          i.fa.fa-angle-double-down
+          = " "
+          = t("Learn more")
+          = " "
+          i.fa.fa-angle-double-down
+  #learn-more.d-block.overflow-hidden.no-search(data-ignore-hash-change)
+    include _marketing
   a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.text-themed.mx-auto.bounce-animation(
     href="#testimonials"
   )
     i.fa.fa-angle-double-down
     = " "
-    = t("Testimonials")
+    = t("Happy Customers")
     = " "
     i.fa.fa-angle-double-down
   include _testimonials
   include _tti
-  .bg-dark.py-3.py-md-5.d-block
-    .container
-      .row
-        .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-3
-            if isBot(ctx.get('User-Agent'))
-              = t("Open-source custom domain email forwarding")
-            else
-              = t("Open-source")
-      .row
-        .col-12.col-md-9.col-lg-8
-          p.lead.text-white.mb-3.mb-md-5
-            != t('Unlike other services, we <strong class="font-weight-bold">do not store logs</strong> (with the exception of <a href="%s" class="text-themed font-weight-bold" target="_blank">errors</a> and <a href="%s" class="text-themed font-weight-bold" target="_blank">outbound SMTP</a>) and are <strong class="font-weight-bold">100% open-source</strong>.', l("/faq#do-you-store-error-logs"), l("/faq#do-you-support-sending-email-with-smtp"))
-            = " "
-            != t('We\'re the <strong class= border-bottom">only</strong> service that <strong class="font-weight-bold">never stores nor writes to disk</strong> any emails &ndash; it\'s all done in-memory.')
-          ul.list-inline
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/security"))
-                = t("Security")
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(href=l("/privacy"))
-                = t("Privacy")
-            li.list-inline-item
-              a.btn.btn-outline-light.btn-lg.mb-md-5(
-                href="https://github.com/forwardemail",
-                target="_blank",
-                rel="noopener noreferrer"
-              )
-                = t("Source Code")
-        .d-flex.col-md-3.col-lg-4.pt-3.text-center
-          noscript.ml-auto.mr-auto.mr-md-none
-            img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-              src=manifest("img/github-logo-white.svg"),
-              width=200,
-              height=200,
-              alt=""
-            )
-          img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-            data-src=manifest("img/github-logo-white.svg"),
-            width=200,
-            height=200,
-            alt=""
-          )
-  #enterprise-grade.bg-dark.py-3.py-md-5.d-block.overflow-hidden(
-    data-ignore-hash-change
-  )
-    .container
-      .row
-        .col-12
-          h2.display-3.font-weight-bold.text-white.my-3.my-md-5= t("Enterprise-grade")
-      .row
-        .col-12.col-lg-8
-          p.lead.text-white
-            != t("We're <strong>email security</strong> and <strong>deliverability experts</strong>.")
-          ul.list-unstyled.text-white.text-left.d-inline-block.mb-3.mb-md-5
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Protection against phishing, malware, viruses, and spam.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Industry standard checks for DMARC, SPF, DKIM, SRS, ARC, and MTA-STS.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              //- != t("SOC 2 Type 2 compliant bare metal servers from DataPacket and Digital Ocean.")
-              != t("SOC 2 Type 2 compliant bare metal servers from DataPacket, Vultr, and Digital Ocean.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Unlike other services, we use 100% open-source software.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t("Backscatter prevention, denylists, and rate limiting.")
-            li
-              i.fa.fa-fw.fa-check-circle.text-success
-              = " "
-              != t('Global load balancers and application-level DNS over HTTPS ("DoH").')
-        .d-flex.col-12.col-lg-4.pt-3.text-center
-          noscript
-            img.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-              src=manifest("img/art/group.svg"),
-              width=369,
-              height=200,
-              alt=""
-            )
-          img.lazyload.mt-auto.mx-auto.mx-md-0.ml-md-auto.flex-shrink-0.mb-3.mb-md-0.img-fluid(
-            data-src=manifest("img/art/group.svg"),
-            width=369,
-            height=200,
-            alt=""
-          )

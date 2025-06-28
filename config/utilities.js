@@ -28,6 +28,7 @@ const pluralize = require('pluralize');
 const prettyMilliseconds = require('pretty-ms');
 const shortID = require('mongodb-short-id');
 const splitLines = require('split-lines');
+const slug = require('speakingurl');
 const striptags = require('striptags');
 const titleize = require('titleize');
 const toEmoji = require('gemoji/name-to-emoji');
@@ -1221,6 +1222,10 @@ const useCases = {
     'Custom Domain Email Hosting for Microsoft Outlook 365',
     "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for custom domains using Microsoft Outlook 365."
   ],
+  '/custom-domain-email-hosting': [
+    'Custom Domain Email Hosting',
+    "Set up custom domain email hosting in seconds with Forward Email. Get access to email hosting, forwarding, API's, IMAP, POP3, mailboxes, calendars, and more."
+  ],
   '/custom-domain-email-hosting-apple-mail': [
     'Custom Domain Email Hosting for Apple Mail',
     "We provide email forwarding and hosting, API's, IMAP, POP3, mailboxes, calendars, and more for custom domains using Apple Mail."
@@ -1236,6 +1241,676 @@ const useCases = {
   '/privacy-focused-email-service': [
     'Privacy Focused Email Service',
     'We are a secure and privacy focused email service that provides email hosting, forwarding, IMAP, POP3, calendar, mailboxes, and more.'
+  ],
+  // Core Email Forwarding & Setup (20 pages)
+  '/how-to-setup-custom-domain-email': [
+    'How to Set Up Custom Domain Email in 5 Minutes',
+    'Step-by-step guide to create professional email addresses with your domain. Free setup with unlimited aliases and secure forwarding.'
+  ],
+  '/free-business-email-without-google': [
+    'Free Business Email Without Google - Privacy-First Alternative',
+    'Get professional business email without Google tracking. 100% open-source email forwarding with custom domains and unlimited aliases.'
+  ],
+  '/email-forwarding-vs-email-hosting': [
+    'Email Forwarding vs Email Hosting: Complete Comparison Guide',
+    'Compare email forwarding and hosting solutions. Learn which option saves money while providing professional email for your business.'
+  ],
+  '/gmail-custom-domain-alternative': [
+    'Gmail Custom Domain Alternative - No Google Workspace Fees',
+    'Skip expensive Google Workspace fees. Get custom domain email that works with Gmail, Outlook, and all email clients for free.'
+  ],
+  '/nonprofit-organization-email-setup': [
+    'Free Email Setup for Nonprofit Organizations',
+    'Professional email addresses for nonprofits and charities. Free custom domain email with unlimited forwarding and secure storage.'
+  ],
+  '/startup-company-email-solution': [
+    'Startup Email Solution - Professional Addresses on Any Budget',
+    'Cost-effective email solution for startups. Get you@yourcompany.com addresses with enterprise features at startup-friendly prices.'
+  ],
+  '/freelancer-professional-email-address': [
+    'Professional Email Address for Freelancers and Consultants',
+    'Build credibility with clients using custom domain email. Free professional email setup that works with your existing email client.'
+  ],
+  '/small-business-email-hosting-free': [
+    'Free Email Hosting for Small Business - No Monthly Fees',
+    'Professional small business email without monthly hosting fees. Custom domain email with unlimited addresses and secure forwarding.'
+  ],
+  '/secure-email-forwarding-privacy': [
+    'Secure Email Forwarding with Complete Privacy Protection',
+    'Privacy-focused email forwarding with no tracking or data collection. Open-source security for sensitive business communications.'
+  ],
+  '/unlimited-email-aliases-custom-domain': [
+    'Unlimited Email Aliases for Your Custom Domain',
+    'Create unlimited email addresses for your domain. Perfect for organizing business communications with catch-all forwarding.'
+  ],
+  '/email-forwarding-multiple-domains': [
+    'Email Forwarding for Multiple Domains - Centralized Management',
+    'Manage email for multiple domains from one account. Ideal for agencies, investors, and multi-brand businesses.'
+  ],
+  '/protonmail-alternative-open-source': [
+    'Open Source ProtonMail Alternative - Free Email Privacy',
+    "Privacy-focused email without ProtonMail's limitations. Free open-source email forwarding with custom domains and unlimited storage."
+  ],
+  '/improvmx-alternative-better-features': [
+    'ImprovMX Alternative with Better Free Features',
+    'More features than ImprovMX free plan. Unlimited domains, better security, and open-source transparency for email forwarding.'
+  ],
+  '/professional-email-address-cheap': [
+    'Cheap Professional Email Address - Free Custom Domain Setup',
+    'Get professional email addresses without expensive hosting. Free custom domain email that looks professional and works everywhere.'
+  ],
+  '/email-forwarding-catch-all-setup': [
+    'Catch-All Email Forwarding Setup Guide',
+    'Set up catch-all email forwarding to never miss messages. Complete guide for custom domain email with wildcard forwarding.'
+  ],
+  '/business-email-without-office365': [
+    'Business Email Without Office 365 - Free Alternative',
+    'Professional business email without Microsoft Office 365 costs. Custom domain email with all the features at zero monthly cost.'
+  ],
+  '/ecommerce-store-email-setup': [
+    'Email Setup for Ecommerce Stores - Professional Customer Service',
+    'Professional email addresses for online stores. Set up support@, sales@, and info@ addresses with secure forwarding.'
+  ],
+  '/agency-client-email-management': [
+    'Email Management for Agencies and Client Domains',
+    'Manage email for multiple client domains efficiently. White-label email forwarding solution for digital agencies and consultants.'
+  ],
+  '/personal-domain-email-free': [
+    'Free Personal Domain Email - Own Your Email Address',
+    'Take control of your email with personal domain addresses. Free email forwarding that you own and control forever.'
+  ],
+  '/email-forwarding-gmail-integration': [
+    'Email Forwarding with Gmail Integration - Best Setup Guide',
+    'Perfect integration between custom domain forwarding and Gmail. Send and receive from your domain while using Gmail interface.'
+  ],
+
+  // Open Source Email Hosting & Services (10 NEW pages)
+  '/open-source-email-hosting-service': [
+    'Open Source Email Hosting Service',
+    '100% open-source email hosting with full transparency. Self-hosted email infrastructure with enterprise features and complete source code access.'
+  ],
+  '/open-source-email-server-hosting': [
+    'Open Source Email Server Hosting',
+    'Deploy open-source email servers with professional hosting. Transparent email infrastructure you can audit, modify, and trust completely.'
+  ],
+  '/open-source-business-email-service': [
+    'Open Source Business Email Service',
+    'Professional business email powered by open-source technology. Transparent, auditable email service with enterprise features and privacy protection.'
+  ],
+  '/open-source-email-provider-alternative': [
+    'Open Source Email Provider Alternative',
+    'Switch to the only 100% open-source email provider. Transparent email service with no vendor lock-in and complete source code visibility.'
+  ],
+  '/open-source-email-forwarding-service': [
+    'Open Source Email Forwarding Service',
+    'Transparent email forwarding with open-source technology. Audit every line of code handling your email communications.'
+  ],
+  '/open-source-secure-email-hosting': [
+    'Open Source Secure Email Hosting',
+    'Security-first open-source email hosting with end-to-end encryption. Transparent security you can verify and trust.'
+  ],
+  '/open-source-enterprise-email-solution': [
+    'Open Source Enterprise Email Solution',
+    'Enterprise-grade email powered by open-source technology. Scalable, transparent email infrastructure for large organizations.'
+  ],
+  '/open-source-email-infrastructure': [
+    'Open Source Email Infrastructure',
+    'Build email infrastructure on open-source foundations. Transparent, auditable email systems with enterprise reliability.'
+  ],
+  '/open-source-email-platform': [
+    'Open Source Email Platform',
+    'Complete open-source email platform for businesses. Transparent email solution with full source code access and customization.'
+  ],
+  '/open-source-email-hosting-provider': [
+    'Open Source Email Hosting Provider',
+    'The only email hosting provider with 100% open-source technology. Transparent email hosting you can audit and trust.'
+  ],
+
+  // Postmark Alternatives (5 NEW pages)
+  '/postmark-alternative-open-source': [
+    'Postmark Alternative - Open Source Email Service',
+    'Open-source alternative to Postmark with better transparency. Reliable transactional email without vendor lock-in or hidden algorithms.'
+  ],
+  '/postmark-alternative-cheaper': [
+    'Cheaper Postmark Alternative with More Features',
+    'Cost-effective alternative to Postmark with unlimited domains. Better pricing, more features, and 100% open-source transparency.'
+  ],
+  '/postmark-alternative-transactional-email': [
+    'Transactional Email Alternative to Postmark',
+    'Reliable transactional email service as Postmark alternative. Better deliverability, lower costs, and complete source code transparency.'
+  ],
+
+  // Gmail Alternatives (5 NEW pages)
+  '/gmail-alternative-open-source': [
+    'Open Source Gmail Alternative',
+    'Privacy-focused Gmail alternative with open-source transparency. Custom domain email without Google tracking or data collection.'
+  ],
+  '/gmail-alternative-business-email': [
+    'Gmail Alternative for Business Email',
+    'Professional Gmail alternative with custom domains. Better privacy, lower costs, and 100% open-source email infrastructure.'
+  ],
+  '/gmail-alternative-privacy-focused': [
+    'Privacy-Focused Gmail Alternative',
+    'Escape Gmail surveillance with privacy-first email. Open-source Gmail alternative with custom domains and zero tracking.'
+  ],
+  '/gmail-workspace-alternative-cheaper': [
+    'Cheaper Google Workspace Alternative',
+    'Cost-effective alternative to Google Workspace with better privacy. Professional email without Google tracking or monthly fees.'
+  ],
+  '/gmail-custom-domain-alternative-free': [
+    'Free Gmail Custom Domain Alternative',
+    'Free alternative to Gmail custom domain service. Professional email addresses without Google Workspace costs or tracking.'
+  ],
+
+  // Outlook/Office 365 Alternatives (5 NEW pages)
+  '/outlook-alternative-open-source': [
+    'Open Source Outlook Alternative',
+    'Open-source alternative to Microsoft Outlook email. Professional email service with transparency and privacy protection.'
+  ],
+  '/office365-alternative-cheaper': [
+    'Cheaper Office 365 Alternative',
+    'Cost-effective alternative to Microsoft Office 365 email. Professional business email without expensive monthly subscriptions.'
+  ],
+  '/microsoft-email-alternative': [
+    'Microsoft Email Alternative - Open Source',
+    'Privacy-focused alternative to Microsoft email services. Open-source email hosting without vendor lock-in or data collection.'
+  ],
+  '/outlook-business-email-alternative': [
+    'Outlook Business Email Alternative',
+    'Professional alternative to Outlook business email. Better privacy, lower costs, and 100% open-source transparency.'
+  ],
+  '/exchange-server-alternative': [
+    'Exchange Server Alternative - Cloud Email',
+    'Modern alternative to Microsoft Exchange Server. Cloud-based email hosting with open-source transparency and better security.'
+  ],
+
+  // Other Major Provider Alternatives (5 NEW pages)
+  '/yahoo-mail-alternative-business': [
+    'Yahoo Mail Alternative for Business',
+    'Professional alternative to Yahoo Mail with custom domains. Business email hosting with better security and privacy protection.'
+  ],
+  '/icloud-email-alternative': [
+    'iCloud Email Alternative with Custom Domains',
+    'Alternative to iCloud email with custom domain support. Professional email hosting that works with all devices and email clients.'
+  ],
+  '/zoho-mail-alternative-open-source': [
+    'Open Source Zoho Mail Alternative',
+    'Transparent alternative to Zoho Mail with open-source technology. Professional email hosting with complete source code visibility.'
+  ],
+  '/fastmail-alternative-cheaper': [
+    'Cheaper FastMail Alternative',
+    'Cost-effective alternative to FastMail with more features. Professional email hosting with better pricing and open-source transparency.'
+  ],
+  '/protonmail-alternative-features': [
+    'ProtonMail Alternative with More Features',
+    'Feature-rich alternative to ProtonMail with custom domains. Better functionality, lower costs, and 100% open-source email service.'
+  ],
+
+  // Technical Infrastructure & Enterprise (25 pages)
+  '/smtp-relay-service-configuration': [
+    'SMTP Relay Service Configuration Guide',
+    'Configure SMTP relay for high-volume email delivery. Step-by-step setup guide for secure email routing with authentication and encryption.'
+  ],
+  '/mx-record-hosting-setup': [
+    'MX Record Hosting Setup for Custom Domains',
+    'Professional MX record hosting with DNS management. Configure mail exchange records for reliable email delivery to your custom domain.'
+  ],
+  '/postfix-email-forwarding-configuration': [
+    'Postfix Email Forwarding Configuration Service',
+    'Expert Postfix configuration for email forwarding and relay. Secure mail server setup with custom domain integration and SMTP authentication.'
+  ],
+  '/email-authentication-spf-dkim-dmarc-setup': [
+    'Email Authentication Setup - SPF, DKIM, DMARC Configuration',
+    'Complete email authentication setup service. Configure SPF, DKIM, and DMARC records to improve deliverability and prevent email spoofing.'
+  ],
+  '/email-api-integration-developers': [
+    'Email API Integration for Developers',
+    'RESTful email API for seamless integration. Send transactional emails, webhooks, and notifications with comprehensive developer documentation.'
+  ],
+  '/webhook-email-notifications-service': [
+    'Webhook Email Notifications Service',
+    'Real-time email event webhooks for your applications. Track opens, clicks, bounces, and deliveries with instant HTTP POST notifications.'
+  ],
+  '/transactional-email-service-developers': [
+    'Transactional Email Service for Developers',
+    'Reliable transactional email delivery with high deliverability rates. Perfect for password resets, receipts, and automated notifications.'
+  ],
+  '/email-deliverability-testing-tools': [
+    'Email Deliverability Testing Tools',
+    'Test email deliverability before sending campaigns. Check spam scores, authentication, and inbox placement across major email providers.'
+  ],
+  '/email-deliverability-optimization-service': [
+    'Email Deliverability Optimization Service',
+    'Professional email deliverability optimization and consulting. Improve inbox placement rates with expert analysis and recommendations.'
+  ],
+  '/email-infrastructure-consulting-service': [
+    'Email Infrastructure Consulting Service',
+    'Expert email infrastructure consulting and architecture design. Scalable email solutions for enterprise organizations.'
+  ],
+  '/enterprise-email-hosting-solutions': [
+    'Enterprise Email Hosting Solutions',
+    'Scalable enterprise email hosting with advanced security and compliance features. Custom solutions for large organizations and government.'
+  ],
+  '/edge-email-processing-service': [
+    'Edge Email Processing Service',
+    'Distributed email processing at network edge locations. Reduced latency and improved performance for global email delivery.'
+  ],
+  '/email-server-migration-service': [
+    'Email Server Migration Service',
+    'Seamless email server migration with zero downtime. Migrate from any email provider to secure, reliable email hosting.'
+  ],
+  '/email-backup-archiving-solution': [
+    'Email Backup and Archiving Solution',
+    'Secure email backup and long-term archiving service. Compliance-ready email storage with instant search and retrieval capabilities.'
+  ],
+  '/email-encryption-service-end-to-end': [
+    'End-to-End Email Encryption Service',
+    'Military-grade email encryption with zero-knowledge architecture. Secure email communication that even we cannot decrypt.'
+  ],
+  '/email-load-balancing-service': [
+    'Email Load Balancing Service',
+    'Distribute email traffic across multiple servers for high availability. Redundant email infrastructure with automatic failover.'
+  ],
+  '/email-performance-monitoring-service': [
+    'Email Performance Monitoring Service',
+    'Real-time email performance monitoring and analytics. Track delivery times, server performance, and user engagement metrics.'
+  ],
+  '/email-security-assessment-service': [
+    'Email Security Assessment Service',
+    'Professional email security assessment and penetration testing. Identify vulnerabilities and strengthen email defenses.'
+  ],
+  '/email-disaster-recovery-service': [
+    'Email Disaster Recovery Service',
+    'Complete email disaster recovery with geo-redundant backups. Ensure business continuity with rapid email service restoration.'
+  ],
+  '/distributed-email-system-architecture': [
+    'Distributed Email System Architecture',
+    'Scalable distributed email infrastructure design. Multi-region email processing with automatic failover and load balancing.'
+  ],
+  '/low-latency-email-delivery-service': [
+    'Low-Latency Email Delivery Service',
+    'Ultra-fast email delivery using edge computing. Optimized routing and processing for time-critical email communications.'
+  ],
+  '/edge-email-security-platform': [
+    'Edge Email Security Platform',
+    'Distributed email security processing at network edges. Real-time threat detection and filtering closer to email sources.'
+  ],
+  '/localized-email-services-edge': [
+    'Localized Email Services at the Edge',
+    'Region-specific email processing and compliance. Local data residency and regulatory compliance through edge computing.'
+  ],
+  '/email-capacity-planning-service': [
+    'Email Capacity Planning Service',
+    'Email infrastructure capacity planning and scaling. Optimize email server resources for growing email volumes.'
+  ],
+  '/email-monitoring-alerting-service': [
+    'Email Monitoring and Alerting Service',
+    '24/7 email system monitoring with intelligent alerting. Proactive issue detection and automated incident response.'
+  ],
+
+  // Compliance & Government (15 pages)
+  '/hipaa-compliant-email-hosting': [
+    'HIPAA Compliant Email Hosting Service',
+    'HIPAA-compliant email hosting for healthcare organizations. Encrypted email storage and transmission with business associate agreements.'
+  ],
+  '/soc2-compliant-email-service': [
+    'SOC 2 Compliant Email Service',
+    'SOC 2 Type II compliant email hosting with enterprise security controls. Audit-ready email infrastructure for regulated industries.'
+  ],
+  '/government-email-hosting-secure': [
+    'Secure Government Email Hosting',
+    'Government-grade email hosting with advanced security and compliance. FedRAMP ready email solutions for federal agencies.'
+  ],
+  '/email-compliance-auditing-service': [
+    'Email Compliance Auditing Service',
+    'Comprehensive email compliance auditing for regulatory requirements. GDPR, HIPAA, and SOX compliance reporting.'
+  ],
+  '/email-governance-framework-implementation': [
+    'Email Governance Framework Implementation',
+    'Comprehensive email governance and policy management. Automated policy enforcement and compliance monitoring systems.'
+  ],
+  '/automated-compliance-reporting-email': [
+    'Automated Email Compliance Reporting',
+    'Automated generation of compliance reports for email systems. Real-time monitoring and reporting for regulatory requirements.'
+  ],
+  '/email-policy-enforcement-system': [
+    'Email Policy Enforcement System',
+    'Automated enforcement of email policies and procedures. Real-time policy compliance monitoring and violation prevention.'
+  ],
+  '/regulatory-email-monitoring-service': [
+    'Regulatory Email Monitoring Service',
+    '24/7 monitoring for regulatory compliance violations. Automated detection and reporting of non-compliant email activities.'
+  ],
+  '/email-audit-trail-system': [
+    'Email Audit Trail System',
+    'Comprehensive audit trails for all email activities. Immutable logging and forensic analysis capabilities for email systems.'
+  ],
+  '/email-data-loss-prevention': [
+    'Email Data Loss Prevention Service',
+    'Prevent sensitive data leaks through email. Automated content inspection and policy enforcement for compliance.'
+  ],
+  '/email-retention-policy-management': [
+    'Email Retention Policy Management',
+    'Automated email retention and deletion policies. Compliance-ready email lifecycle management with legal hold capabilities.'
+  ],
+  '/banking-email-security-protocols': [
+    'Banking Email Security Protocols Implementation',
+    'Enterprise-grade email security for banking institutions. Multi-layered protection against phishing, fraud, and data breaches.'
+  ],
+  '/financial-email-encryption-standards': [
+    'Financial Services Email Encryption Standards',
+    'Industry-standard email encryption for financial communications. Protect sensitive financial data with regulatory-compliant encryption.'
+  ],
+
+  // Email Marketing & Analytics (20 pages)
+  '/email-marketing-automation-platform': [
+    'Email Marketing Automation Platform',
+    'Advanced email marketing automation with behavioral triggers. Create sophisticated email campaigns with personalized customer journeys.'
+  ],
+  '/email-template-management-service': [
+    'Email Template Management Service',
+    'Centralized email template management with version control. Brand-consistent email templates with dynamic content insertion.'
+  ],
+  '/email-analytics-reporting-service': [
+    'Email Analytics and Reporting Service',
+    'Advanced email analytics with custom reporting dashboards. Track email performance, user behavior, and system metrics.'
+  ],
+  '/email-campaign-optimization-service': [
+    'Email Campaign Optimization Service',
+    'Optimize email campaigns for maximum engagement and conversion. Data-driven insights and automated optimization recommendations.'
+  ],
+  '/email-ab-testing-service': [
+    'Email A/B Testing Service',
+    'Comprehensive email A/B testing platform with statistical significance. Optimize subject lines, content, and send times.'
+  ],
+  '/email-personalization-service': [
+    'Email Personalization Service',
+    'Advanced email personalization with machine learning. Dynamic content optimization based on recipient behavior and preferences.'
+  ],
+  '/email-segmentation-service': [
+    'Email Segmentation Service',
+    'Intelligent email list segmentation for targeted campaigns. Behavioral segmentation and automated audience management.'
+  ],
+  '/email-automation-workflow-service': [
+    'Email Automation Workflow Service',
+    'Create complex email automation workflows with visual builders. Trigger-based email sequences and conditional logic.'
+  ],
+  '/email-drip-campaign-automation': [
+    'Email Drip Campaign Automation',
+    'Automated drip email campaigns for lead nurturing. Set up sophisticated email sequences that convert prospects into customers.'
+  ],
+  '/email-list-management-service': [
+    'Email List Management Service',
+    'Professional email list management with advanced segmentation. Clean, organize, and optimize your email subscriber database.'
+  ],
+  '/email-engagement-optimization': [
+    'Email Engagement Optimization Service',
+    'Improve email open rates, click-through rates, and conversions. Expert optimization strategies for better email performance.'
+  ],
+  '/email-deliverability-analytics': [
+    'Email Deliverability Analytics',
+    'Comprehensive email deliverability analytics and reporting. Monitor inbox placement, sender reputation, and delivery metrics.'
+  ],
+  '/email-subscriber-analytics': [
+    'Email Subscriber Analytics',
+    'Deep insights into subscriber behavior and preferences. Track engagement patterns and optimize email content accordingly.'
+  ],
+  '/email-conversion-tracking': [
+    'Email Conversion Tracking',
+    'Track email conversions and ROI with advanced analytics. Measure the impact of email campaigns on business goals.'
+  ],
+  '/email-heat-map-analytics': [
+    'Email Heat Map Analytics',
+    'Visual email analytics with click heat maps. Understand how recipients interact with your email content.'
+  ],
+  '/email-send-time-optimization': [
+    'Email Send Time Optimization',
+    'Optimize email send times for maximum engagement. AI-powered timing recommendations based on recipient behavior.'
+  ],
+  '/email-subject-line-optimization': [
+    'Email Subject Line Optimization',
+    'Optimize email subject lines for better open rates. A/B testing and AI-powered subject line recommendations.'
+  ],
+  '/email-content-optimization': [
+    'Email Content Optimization Service',
+    'Optimize email content for engagement and conversions. Expert copywriting and design optimization for better results.'
+  ],
+  '/email-frequency-optimization': [
+    'Email Frequency Optimization',
+    'Optimize email sending frequency to reduce unsubscribes. Find the perfect balance between engagement and fatigue.'
+  ],
+  '/email-roi-analytics': [
+    'Email ROI Analytics',
+    'Measure email marketing return on investment with detailed analytics. Track revenue attribution and campaign profitability.'
+  ],
+
+  // Security & Authentication (15 pages)
+  '/multi-factor-email-authentication': [
+    'Multi-Factor Email Authentication Service',
+    'Enhanced email security with multi-factor authentication. Biometric, hardware token, and SMS-based email access control.'
+  ],
+  '/zero-trust-email-architecture': [
+    'Zero-Trust Email Architecture Implementation',
+    'Zero-trust security model for email infrastructure. Continuous verification and least-privilege access for email systems.'
+  ],
+  '/email-threat-protection-service': [
+    'Email Threat Protection Service',
+    'Advanced email threat protection against phishing, malware, and ransomware. Real-time threat detection and response.'
+  ],
+  '/email-phishing-protection': [
+    'Email Phishing Protection Service',
+    'Advanced phishing protection with machine learning detection. Protect your organization from sophisticated email attacks.'
+  ],
+  '/email-malware-scanning-service': [
+    'Email Malware Scanning Service',
+    'Real-time email malware and virus scanning. Protect your organization with enterprise-grade email security filtering.'
+  ],
+  '/email-spam-filtering-service': [
+    'Advanced Email Spam Filtering Service',
+    'Intelligent spam filtering with machine learning. Reduce spam while ensuring legitimate emails reach their destination.'
+  ],
+  '/email-content-filtering-service': [
+    'Email Content Filtering Service',
+    'Advanced email content filtering with machine learning. Block spam, malware, and phishing attempts before they reach inboxes.'
+  ],
+  '/email-attachment-scanning-service': [
+    'Email Attachment Scanning Service',
+    'Scan email attachments for viruses and malware. Secure file transfer with sandboxed attachment processing.'
+  ],
+  '/email-link-protection-service': [
+    'Email Link Protection Service',
+    'Protect against malicious links in emails. Real-time URL scanning and safe browsing protection for email recipients.'
+  ],
+  '/email-sandbox-analysis': [
+    'Email Sandbox Analysis Service',
+    'Advanced email threat analysis in secure sandbox environments. Detect zero-day threats and sophisticated attacks.'
+  ],
+  '/email-incident-response-service': [
+    'Email Security Incident Response',
+    'Rapid response to email security incidents. Expert investigation and remediation of email-based cyber attacks.'
+  ],
+  '/email-security-training-service': [
+    'Email Security Training Service',
+    'Comprehensive email security awareness training. Educate employees about phishing, social engineering, and email threats.'
+  ],
+  '/email-forensics-investigation-service': [
+    'Email Forensics Investigation Service',
+    'Professional email forensics and investigation services. Digital evidence collection and analysis for legal proceedings.'
+  ],
+  '/passwordless-email-access-system': [
+    'Passwordless Email Access System',
+    'Eliminate passwords with modern authentication methods. FIDO2, WebAuthn, and certificate-based email authentication.'
+  ],
+  '/certificate-based-email-authentication': [
+    'Certificate-Based Email Authentication',
+    'PKI certificate authentication for enterprise email. Digital certificates for secure email access and message signing.'
+  ],
+
+  // Performance & Optimization (15 pages)
+  '/email-delivery-optimization-service': [
+    'Email Delivery Optimization Service',
+    'Optimize email delivery routes and timing for maximum performance. AI-driven delivery optimization and reputation management.'
+  ],
+  '/email-bounce-handling-service': [
+    'Email Bounce Handling Service',
+    'Automated email bounce management with detailed analytics. Handle hard bounces, soft bounces, and improve sender reputation automatically.'
+  ],
+  '/email-reputation-monitoring-service': [
+    'Email Reputation Monitoring Service',
+    'Monitor your email sender reputation across all major ISPs. Track blacklist status, sender score, and deliverability metrics in real-time.'
+  ],
+  '/email-blacklist-monitoring-service': [
+    'Email Blacklist Monitoring Service',
+    'Monitor your IP and domain across 100+ blacklists. Instant alerts and automated delisting requests for blocked senders.'
+  ],
+  '/email-warm-up-service-deliverability': [
+    'Email Warm-up Service for Better Deliverability',
+    'Automated email warm-up to improve inbox placement. Gradually increase sending volume and build positive sender reputation.'
+  ],
+  '/email-list-validation-service': [
+    'Email List Validation Service',
+    'Clean and validate email lists with 99% accuracy. Remove invalid emails, spam traps, and improve deliverability rates instantly.'
+  ],
+  '/email-suppression-list-management': [
+    'Email Suppression List Management',
+    'Centralized suppression list management across all email campaigns. Automatically honor unsubscribes and bounce suppressions.'
+  ],
+  '/email-feedback-loop-management': [
+    'Email Feedback Loop Management',
+    'Automated feedback loop processing for major ISPs. Handle spam complaints and maintain sender reputation automatically.'
+  ],
+  '/email-rate-limiting-configuration': [
+    'Email Rate Limiting Configuration Service',
+    'Configure email rate limiting to prevent spam and improve deliverability. Smart throttling based on recipient domains and reputation.'
+  ],
+  '/email-queue-management-service': [
+    'Email Queue Management Service',
+    'Advanced email queue management with priority routing. Ensure critical emails are delivered first with intelligent queuing.'
+  ],
+  '/email-header-analysis-service': [
+    'Email Header Analysis Service',
+    'Detailed email header analysis for deliverability troubleshooting. Identify authentication issues and routing problems.'
+  ],
+  '/bandwidth-efficient-email-service': [
+    'Bandwidth-Efficient Email Service',
+    'Optimized email delivery for low-bandwidth environments. Compression and intelligent routing for efficient email transmission.'
+  ],
+  '/email-compression-service': [
+    'Email Compression Service',
+    'Advanced email compression for faster delivery. Reduce email size while maintaining quality and compatibility.'
+  ],
+  '/email-caching-solutions': [
+    'Email Caching Solutions',
+    'Intelligent email caching for improved performance. Distributed caching systems for faster email access and delivery.'
+  ],
+  '/email-cdn-service': [
+    'Email CDN Service',
+    'Content delivery network for email attachments and media. Global distribution of email content for faster access worldwide.'
+  ],
+
+  // Quantum-Safe Email Technologies (8 pages)
+  '/quantum-safe-email-hosting': [
+    'Quantum-Safe Email Hosting Service',
+    'Future-proof email hosting with quantum-resistant encryption. Protect your communications against quantum computer attacks with NIST-approved algorithms.'
+  ],
+  '/quantum-resistant-email-service': [
+    'Quantum-Resistant Email Service',
+    'Email service protected against quantum computing threats. Advanced post-quantum cryptography ensures your emails remain secure in the quantum era.'
+  ],
+  '/post-quantum-cryptography-email': [
+    'Post-Quantum Cryptography Email Service',
+    'Email encryption using NIST-standardized post-quantum algorithms. Secure your communications against future quantum computer attacks.'
+  ],
+  '/quantum-proof-email-encryption': [
+    'Quantum-Proof Email Encryption',
+    'Military-grade quantum-proof email encryption service. Advanced cryptographic protection that remains secure even against quantum computers.'
+  ],
+  '/nist-approved-email-encryption': [
+    'NIST-Approved Email Encryption Service',
+    'Email service using NIST-approved post-quantum cryptographic standards. Compliance-ready quantum-resistant email protection for enterprises.'
+  ],
+  '/quantum-secure-business-email': [
+    'Quantum-Secure Business Email',
+    'Business email service with quantum-resistant security. Protect sensitive corporate communications with future-proof encryption technology.'
+  ],
+  '/post-quantum-email-infrastructure': [
+    'Post-Quantum Email Infrastructure',
+    'Email infrastructure built with post-quantum cryptography. Scalable, quantum-resistant email systems for enterprise organizations.'
+  ],
+  '/quantum-resistant-email-forwarding': [
+    'Quantum-Resistant Email Forwarding',
+    'Email forwarding service with quantum-safe encryption. Future-proof email routing that protects against quantum computing threats.'
+  ],
+
+  // Advanced Email Authentication & Security (7 pages)
+  '/mta-sts-email-security-implementation': [
+    'MTA-STS Email Security Implementation',
+    'Implement MTA-STS for enhanced email transport security. Prevent man-in-the-middle attacks with SMTP MTA Strict Transport Security.'
+  ],
+  '/tls-rpt-email-reporting-service': [
+    'TLS-RPT Email Reporting Service',
+    'TLS Reporting for email security monitoring. Track email transport security failures and improve email delivery with detailed TLS reports.'
+  ],
+  '/bimi-email-brand-indicators': [
+    'BIMI Email Brand Indicators Implementation',
+    'Implement Brand Indicators for Message Identification (BIMI). Display your brand logo in email clients with verified email authentication.'
+  ],
+  '/arc-email-authentication-service': [
+    'ARC Email Authentication Service',
+    'Authenticated Received Chain (ARC) implementation for email forwarding. Preserve email authentication through intermediary email services.'
+  ],
+  '/dane-email-security-implementation': [
+    'DANE Email Security Implementation',
+    'DNS-based Authentication of Named Entities (DANE) for email. Enhance email security with DNS-based certificate validation.'
+  ],
+  '/smtp-sts-policy-management': [
+    'SMTP STS Policy Management Service',
+    'Manage SMTP Strict Transport Security policies for email domains. Enforce encrypted email transmission with automated policy management.'
+  ],
+  '/email-certificate-transparency-monitoring': [
+    'Email Certificate Transparency Monitoring',
+    'Monitor email certificates with Certificate Transparency logs. Detect unauthorized certificates and protect against email interception.'
+  ],
+
+  // Compliance & Regulatory Requirements (5 pages)
+  '/fips-140-2-compliant-email-service': [
+    'FIPS 140-2 Compliant Email Service',
+    'FIPS 140-2 validated email encryption for government and enterprise. Cryptographic modules meeting federal security requirements.'
+  ],
+  '/common-criteria-email-security': [
+    'Common Criteria Email Security Evaluation',
+    'Email security solutions evaluated under Common Criteria standards. Independently verified security for high-assurance environments.'
+  ],
+  // TODO: FedRAMP authorization
+  // '/fedramp-authorized-email-service': [
+  //   'FedRAMP Authorized Email Service',
+  //   'FedRAMP authorized email hosting for federal agencies. Cloud email services meeting government security and compliance requirements.'
+  // ],
+  '/itar-compliant-email-hosting': [
+    'ITAR Compliant Email Hosting',
+    'ITAR-compliant email hosting for defense contractors. Secure email communications meeting International Traffic in Arms Regulations.'
+  ],
+  '/cjis-compliant-email-service': [
+    'CJIS Compliant Email Service',
+    'CJIS-compliant email hosting for law enforcement. Secure email communications meeting Criminal Justice Information Services requirements.'
+  ],
+
+  // Advanced Technical Email Features (5 pages)
+  '/zero-knowledge-email-architecture': [
+    'Zero-Knowledge Email Architecture',
+    'Zero-knowledge email service where even we cannot access your data. End-to-end encrypted email with client-side encryption keys.'
+  ],
+  '/homomorphic-encryption-email-service': [
+    'Homomorphic Encryption Email Service',
+    'Email service with homomorphic encryption capabilities. Process encrypted emails without decrypting sensitive content.'
+  ],
+  '/forward-secrecy-email-encryption': [
+    'Forward Secrecy Email Encryption',
+    'Email encryption with perfect forward secrecy. Protect past communications even if encryption keys are compromised in the future.'
+  ],
+  '/email-air-gap-security-solution': [
+    'Email Air-Gap Security Solution',
+    'Air-gapped email security for isolated networks. Secure email processing in environments requiring complete network isolation.'
   ]
 };
 
@@ -1391,5 +2066,6 @@ module.exports = {
   useCases,
   decrypt,
   punycode,
-  bytes
+  bytes,
+  slug
 };

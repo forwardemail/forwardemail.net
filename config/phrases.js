@@ -722,6 +722,8 @@ module.exports = {
   SMTP: 'smtp',
   STORAGE: 'storage',
   SUCCESS: 'success',
+  UPGRADE_REQUEST_ALREADY_SENT:
+    'You recently sent an upgrade request, please try again later or contact us.',
   UPGRADE_REQUEST: 'Upgrade Request',
   UPGRADE_REQUEST_NOTIFICATION:
     'Our team has been notified and will follow up shortly by email.',

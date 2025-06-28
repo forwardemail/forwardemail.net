@@ -154,7 +154,7 @@ body.app {
 }
 
 @include media-breakpoint-down(md) {
-  .bg-fixed {
+  .bg-md-down-none {
     background-image: none !important;
   }
 }
@@ -239,20 +239,6 @@ pre {
   }
 }
 
-// TODO: fix this later
-/*
-#typed-home-header {
-  min-height: 3.75em;
-  line-height: 1.25em;
-}
-
-@include media-breakpoint-up(sm) {
-  #typed-home-header {
-    min-height: 2.5em;
-  }
-}
-*/
-
 // render fullscreen (see @ladjs/assets since it does Swal.fire immediately)
 // (e.g. this is so generated password modals render above everything else and instantly)
 .swal2-grow-fullscreen {
@@ -309,25 +295,6 @@ a, .markdown-body a {
 
 .max-height-300px {
   max-height: 300px;
-}
-
-// <https://github.com/mattboldt/typed.js/issues/592>
-.typed-cursor{
-  opacity: 1;
-}
-.typed-cursor.typed-cursor--blink {
-  -webkit-animation: typedjsBlink 0.7s infinite;
-  animation: typedjsBlink 0.7s infinite;
-}
-
-@keyframes typedjsBlink {
-  50% { opacity: 0.0; }
-}
-
-@-webkit-keyframes typedjsBlink {
-  0% { opacity: 1; }
-  50% { opacity: 0.0; }
-  100% { opacity: 1; }
 }
 
 .min-width-25 {

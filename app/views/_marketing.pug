@@ -1,107 +1,172 @@
-.row
-  .col-12
-    h2.display-5.font-weight-bold.mt-5.mb-3
-      if isBot(ctx.get("User-Agent"))
-        = t("Free Email Forwarding Service")
-      else
-        = t("All-in-one alternative to Gmail + Mailchimp + Sendgrid")
-    p.lead!= t("Since 2017, we provide email service to 500,000+ domains and these notable users:")
-    ul.list-inline.lead
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/federal-government-email-service-section-889-compliant")
-      )= t("U.S. Naval Academy")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")
-      )= t("Canonical")
-      li.list-inline-item.badge.bg-white.text-dark= t("Netflix")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/linux-foundation-email-enterprise-case-study")
-      )= t("The Linux Foundation")
-      li.list-inline-item.badge.bg-white.text-dark= t("The PHP Foundation")
-      li.list-inline-item.badge.bg-white.text-dark= t("Fox News Radio")
-      li.list-inline-item.badge.bg-white.text-dark= t("Disney Ad Sales")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/linux-foundation-email-enterprise-case-study")
-      )= t("jQuery")
-      li.list-inline-item.badge.bg-white.text-dark= t("LineageOS")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")
-      )= t("Ubuntu")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")
-      )= t("Kubuntu")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/canonical-ubuntu-email-enterprise-case-study")
-      )= t("Lubuntu")
-      li.list-inline-item.badge.bg-white.text-dark= t("Carnegie Mellon University")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/alumni-email-forwarding-university-case-study")
-      )= t("The University of Cambridge")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/alumni-email-forwarding-university-case-study")
-      )= t("The University of Maryland")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/alumni-email-forwarding-university-case-study")
-      )= t("The University of Washington")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/alumni-email-forwarding-university-case-study")
-      )= t("Tufts University")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/alumni-email-forwarding-university-case-study")
-      )= t("Swarthmore College")
-      li.list-inline-item.badge.bg-white.text-dark= t("Government of South Australia")
-      li.list-inline-item.badge.bg-white.text-dark= t("Government of Dominican Republic")
-      li.list-inline-item.badge.bg-white.text-dark= t("Fly.io")
-      li.list-inline-item.badge.bg-white.text-dark= t("RCD Hotels")
-      li.list-inline-item.badge.bg-white.text-dark= t("International Correspondence Chess Federation")
-      li.list-inline-item: a.badge.bg-white.text-dark(
-        href=l("/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem")
-      )!= t('Isaac Z. Schlueter (<span class="notranslate">npm</span>)')
-      li.list-inline-item.badge.bg-white.text-dark= t("David Heinemeier Hansson (Ruby on Rails)")
-hr
-.row
-  .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xl-6
-    h2.display-5.font-weight-bold.my-3
-      if isBot(ctx.get("User-Agent"))
-        = t("Custom Domain Email Hosting")
-      else
-        = t("Features")
-    .lead.text-left
-      include _feature-list
-  .col-xs-12.col-sm-12.col-md-6.col-lg-6.col-xl-6
-    h2.display-5.font-weight-bold.my-3
-      if isBot(ctx.get("User-Agent"))
-        = t("Open-source Email Hosting Service")
-      else
-        = t("Compared to others")
-    .lead.text-left
-      ul.list-unstyled.mb-3
-        li.mb-3
-          i.fa.fa-fw.fa-check-circle.text-success
-          = " "
-          != t('We\'re <strong class="text-decoration-underline">the only 100% open-source provider</strong>')
-          = " "
-          = t("(we're transparent and focused on privacy and security)")
-        li.mb-3
-          i.fa.fa-fw.fa-check-circle.text-success
-          = " "
-          = t("We don't rely on any third parties (we don't use Amazon SES or an alternative like others)")
-        li.mb-3
-          i.fa.fa-fw.fa-check-circle.text-success
-          = " "
-          = t("Our pricing allows you to scale cost effectively (we don't charge per user and you can pay as you go for storage)")
-        li.mb-3
-          i.fa.fa-fw.fa-check-circle.text-success
-          = " "
-          = t("Unlike others, your email with us is not stored in a shared relational database alongside everyone else")
-        li
-          i.fa.fa-fw.fa-check-circle.text-success
-          = " "
-          != t("We're the world's first and only email service to use <strong>quantum-resistant</strong> and <strong>individually encrypted SQLite mailboxes</strong>")
-    a.btn.btn-success.font-weight-bold.text-uppercase.text-white(
-      href=l("/blog/best-email-service"),
-      target="_blank"
-    )
-      != t("Read Email Service Comparison")
-      = " "
-      i.fa.fa-angle-right.align-middle
+// First Hero Section - Professional Email Solutions
+section.d-flex.py-5.bg-themed.min-vh-100.align-items-center.text-center
+  .container.flex-grow-1
+    .row
+      .col
+        h1.display-3.mb-4= t("Custom domain email hosting")
+        h2.h4.text-sans-serif.mb-5
+          = t("Free email forwarding and custom domain hosting that works everywhere.")
+        .row.text-left
+          .col-md-6.mb-4
+            .d-flex.align-items-start
+              i.fas.fa-check-circle.text-success.mr-3.mt-1.fa-2x
+              div
+                h2.h4.font-weight-bold.text-sans-serif= t("Custom Domain Email Address")
+                p.lead= t("Establish credibility with you@yourdomain.com – professional email addresses that build trust.")
+
+          .col-md-6.mb-4
+            .d-flex.align-items-start
+              i.fas.fa-check-circle.text-success.mr-3.mt-1.fa-2x
+              div
+                h2.h4.font-weight-bold.text-sans-serif= t("Unlimited Email Accounts")
+                p.lead= t("Create as many domain names and email addresses as your team needs, without extra costs.")
+
+          .col-md-6.mb-4
+            .d-flex.align-items-start
+              i.fas.fa-check-circle.text-success.mr-3.mt-1.fa-2x
+              div
+                h2.h4.font-weight-bold.text-sans-serif= t("Generous 10 GB Email Storage")
+                p.lead= t("Ample space for all your important communications and attachments. Pay as you go.")
+
+          .col-md-6.mb-4
+            .d-flex.align-items-start
+              i.fas.fa-check-circle.text-success.mr-3.mt-1.fa-2x
+              div
+                h2.h4.font-weight-bold.text-sans-serif= t("Seamless Compatibility & Deliverability")
+                p.lead= t("Works flawlessly with Gmail, Yahoo, Outlook, and adheres to all 2024 email standards for optimal deliverability.")
+
+// Second Hero Section - Universal Access & Device Compatibility
+section.bg-dark.bg-fixed.lazyload.py-5.text-white(
+  data-src=manifest("img/articles/atmosphere.webp")
+)
+  .container.d-flex.min-vh-100.align-items-center.justify-content-center
+    .row.justify-content-center.text-center
+      .col
+        h1.display-3.mb-4= t("Access your email anywhere")
+        p.lead.mb-5= t("Our professional email solution offers universal compatibility, ensuring you stay connected from anywhere.")
+        .row.text-center.mb-5
+          .col-md-3.col-6.mb-3
+            .p-3
+              i.fab.fa-apple.display-4.mb-2
+              h2.h5.text-sans-serif= t("iPhone & macOS")
+
+          .col-md-3.col-6.mb-3
+            .p-3
+              i.fab.fa-android.display-4.mb-2
+              h2.h5.text-sans-serif= t("Android")
+
+          .col-md-3.col-6.mb-3
+            .p-3
+              i.fab.fa-windows.display-4.mb-2
+              h2.h5.text-sans-serif= t("Windows")
+
+          .col-md-3.col-6.mb-3
+            .p-3
+              i.fas.fa-desktop.display-4.mb-2
+              h2.h5.text-sans-serif= t("Any Email Client")
+
+// Third Section - Comprehensive Features & Advanced Security
+section.py-5.bg-dark.text-white
+  .container.d-flex.min-vh-100.align-items-center
+    .row.justify-content-center.text-center
+      .col-md-8
+        h2.h3.display-4.mb-4= t("All-inclusive features")
+        p.lead.mb-5= t("No additional fees for must-have features.")
+        ul.list-inline.lead.mb-5
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("100% Open-Source Software")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Quantum-Resistant Encryption")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Advanced Email Security")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Reliable Email Sending & Receiving")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Email Archiving & Download")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Integrated Calendars & Contacts")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Bounce & Web Alert Notifications")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Developer-Friendly Email API")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Robust Email Encryption & Message Signing")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Intelligent Spam & Phishing Protection")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Email Standards Compliance")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Forwarding & Secure Delivery")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Safe Web Lookups & Data Protection")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Sandboxed Mailboxes")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Self-Hosted Docker Email")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("Zero-Knowledge Architecture")
+          li.list-inline-item.mr-3.mb-3
+            i.fas.fa-check.text-success
+            = " "
+            = t("99.99% Uptime")
+
+include _pricing-table
+
+// Fourth Section - Trusted by Leading Organizations
+section.py-5
+  .container.d-flex.min-vh-100.align-items-center.justify-content-center
+    .row.justify-content-center.text-center
+      .col
+        h1.display-3.mb-4= t("Trusted by millions")
+        p.lead.mb-5= t("Leading organizations and businesses worldwide rely on our secure and reliable email service.")
+        .row.text-center.mb-3
+          .col-12.col-md-6.col-lg-3.mb-3
+            .p-3
+              i.fas.fa-landmark.display-4.mb-2
+              h2.h5.font-weight-normal= t("US Naval Academy, Government of South Australia, Government of Dominican Republic")
+          .col-12.col-md-6.col-lg-3.mb-3
+            .p-3
+              i.fas.fa-briefcase.display-4.mb-2
+              h2.h5.font-weight-normal= t("Netflix Games, Disney Ad Sales, Fox News Radio, RCD Hotels")
+          .col-12.col-md-6.col-lg-3.mb-3
+            .p-3
+              i.fas.fa-code.display-4.mb-2
+              h2.h5.font-weight-normal= t("The Linux Foundation, jQuery, Ubuntu, LineageOS, Canonical")
+          .col-12.col-md-6.col-lg-3.mb-3
+            .p-3
+              i.fas.fa-user-graduate.display-4.mb-2
+              h2.h5.font-weight-normal= t("Carnegie Mellon, Cambridge, UMD, UW, Tufts, Swarthmore")
+        p.mb-3= t("Ready to join these organizations?")
+        include _quick-start

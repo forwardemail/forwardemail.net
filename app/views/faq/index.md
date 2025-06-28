@@ -68,6 +68,21 @@
   * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
 * [Security](#security)
   * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
+  * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
+  * [Do you use TLS encryption for email forwarding](#do-you-use-tls-encryption-for-email-forwarding)
+  * [Do you preserve email authentication headers](#do-you-preserve-email-authentication-headers)
+  * [Do you preserve original email headers and prevent spoofing](#do-you-preserve-original-email-headers-and-prevent-spoofing)
+  * [How do you protect against spam and abuse](#how-do-you-protect-against-spam-and-abuse)
+  * [Do you store email content on disk](#do-you-store-email-content-on-disk)
+  * [Can email content be exposed during system crashes](#can-email-content-be-exposed-during-system-crashes)
+  * [Who has access to your email infrastructure](#who-has-access-to-your-email-infrastructure)
+  * [What infrastructure providers do you use](#what-infrastructure-providers-do-you-use)
+  * [Do you offer a Data Processing Agreement (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
+  * [How do you handle data breach notifications](#how-do-you-handle-data-breach-notifications)
+  * [Do you offer a test environment](#do-you-offer-a-test-environment)
+  * [Do you provide monitoring and alerting tools](#do-you-provide-monitoring-and-alerting-tools)
+  * [How do you ensure high availability](#how-do-you-ensure-high-availability)
+  * [Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
 * [System and Technical Details](#system-and-technical-details)
   * [Do you store emails and their contents](#do-you-store-emails-and-their-contents)
   * [How does your email forwarding system work](#how-does-your-email-forwarding-system-work)
@@ -165,38 +180,37 @@ Key features of Forward Email:
 You can compare us to 56+ other email service providers on [our Email Comparison page](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free :page\_facing\_up: [Technical Whitepaper](/technical-whitepaper.pdf)
+> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
 
 ### Who uses Forward Email
 
 We provide email hosting and email forwarding service to 500,000+ domains and these notable users:
 
-| Customer                                      | Case Study                                                                                               |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| U.S. Naval Academy                            | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant)         |
-| Canonical                                     | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
-| Netflix                                       |                                                                                                          |
-| The Linux Foundation                          | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
-| The PHP Foundation                            |                                                                                                          |
-| Fox News Radio                                |                                                                                                          |
-| Disney Ad Sales                               |                                                                                                          |
-| jQuery                                        | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
-| LineageOS                                     |                                                                                                          |
-| Ubuntu                                        | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
-| Kubuntu                                       | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
-| Lubuntu                                       | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
-| The University of Cambridge                   | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
-| The University of Maryland                    | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
-| The University of Washington                  | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
-| Tufts University                              | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
-| Swarthmore College                            | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
-| Government of South Australia                 |                                                                                                          |
-| Government of Dominican Republic              |                                                                                                          |
-| Fly<span>.</span>io                           |                                                                                                          |
-| RCD Hotels                                    |                                                                                                          |
-| International Correspondence Chess Federation |                                                                                                          |
-| Isaac Z. Schlueter (npm)                      | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
-| David Heinemeier Hansson (Ruby on Rails)      |                                                                                                          |
+| Customer                                 | Case Study                                                                                               |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| U.S. Naval Academy                       | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant)         |
+| Canonical                                | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Netflix Games                            |                                                                                                          |
+| The Linux Foundation                     | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| The PHP Foundation                       |                                                                                                          |
+| Fox News Radio                           |                                                                                                          |
+| Disney Ad Sales                          |                                                                                                          |
+| jQuery                                   | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study)                   |
+| LineageOS                                |                                                                                                          |
+| Ubuntu                                   | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Kubuntu                                  | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| Lubuntu                                  | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study)                   |
+| The University of Cambridge              | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| The University of Maryland               | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| The University of Washington             | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Tufts University                         | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Swarthmore College                       | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study)                  |
+| Government of South Australia            |                                                                                                          |
+| Government of Dominican Republic         |                                                                                                          |
+| Fly<span>.</span>io                      |                                                                                                          |
+| RCD Hotels                               |                                                                                                          |
+| Isaac Z. Schlueter (npm)                 | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
+| David Heinemeier Hansson (Ruby on Rails) |                                                                                                          |
 
 ### What is Forward Email's history
 
@@ -2712,6 +2726,323 @@ Forward Email implements numerous server hardening techniques to ensure the secu
 
 > \[!TIP]
 > For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+
+### Do you have SOC 2 or ISO 27001 certifications
+
+> \[!NOTE]
+> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+
+Forward Email does not directly hold SOC 2 Type II or ISO 27001 certifications. However, the service operates on infrastructure provided by certified subprocessors:
+
+* **DigitalOcean**: SOC 2 Type II and SOC 3 Type II certified (audited by Schellman & Company LLC), ISO 27001 certified at multiple data centers. Details: <https://www.digitalocean.com/trust/certification-reports>
+
+* **Vultr**: SOC 2+ (HIPAA) certified, ISO/IEC certifications: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Details: <https://www.vultr.com/legal/compliance/>
+
+* **DataPacket**: SOC 2 compliant (contact DataPacket directly to obtain certification), enterprise-grade infrastructure provider (Denver location). Details: <https://www.datapacket.com/datacenters/denver>
+
+Forward Email follows industry best practices for security audits and regularly engages with independent security researchers. Source: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+
+### Do you use TLS encryption for email forwarding
+
+Yes. Forward Email strictly enforces TLS 1.2+ for all connections (HTTPS, SMTP, IMAP, POP3) and implements MTA-STS for enhanced TLS support. The implementation includes:
+
+* TLS 1.2+ enforcement for all email connections
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) key exchange for perfect forward secrecy
+* Modern cipher suites with regular security updates
+* HTTP/2 support for improved performance and security
+* HSTS (HTTP Strict Transport Security) with preloading in major browsers
+* **MTA-STS (Mail Transfer Agent Strict Transport Security)** for strict TLS enforcement
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+
+**MTA-STS Implementation**: Forward Email implements strict MTA-STS enforcement in the codebase. When TLS errors occur and MTA-STS is enforced, the system returns 421 SMTP status codes to ensure emails are retried later rather than being delivered insecurely. Implementation details:
+
+* TLS error detection: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
+* MTA-STS enforcement in send-email helper: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+
+Third-party validation: <https://www.hardenize.com/report/forwardemail.net/1750312779> shows "Good" ratings for all TLS and transport security measures.
+
+### Do you preserve email authentication headers
+
+Yes. Forward Email comprehensively implements and preserves email authentication headers:
+
+* **SPF (Sender Policy Framework)**: Properly implemented and preserved
+* **DKIM (DomainKeys Identified Mail)**: Full support with proper key management
+* **DMARC**: Policy enforcement for emails that fail SPF or DKIM validation
+* **ARC**: While not explicitly detailed, the service's perfect compliance scores suggest comprehensive authentication header handling
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+
+Validation: Internet.nl Mail Test shows 100/100 score specifically for "SPF, DKIM, and DMARC" implementation. Hardenize assessment confirms "Good" ratings for SPF and DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+
+### Do you preserve original email headers and prevent spoofing
+
+> \[!TIP]
+> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+
+Forward Email preserves original email headers while implementing comprehensive anti-spoofing protection through the MX codebase:
+
+* **Header Preservation**: Original authentication headers are maintained during forwarding
+* **Anti-Spoofing**: DMARC policy enforcement prevents header spoofing by rejecting emails that fail SPF or DKIM validation
+* **Header Injection Prevention**: Input validation and sanitization using striptags library
+* **Advanced Protection**: Sophisticated phishing detection with spoofing detection, impersonation prevention, and user notification systems
+
+**MX Implementation Details**: The core email processing logic is handled by the MX server codebase, specifically:
+
+* Main MX data handler: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+* Arbitrary email filtering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
+
+The `isArbitrary` helper implements sophisticated anti-spoofing rules including detection of domain impersonation, blocked phrases, and various phishing patterns.
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+
+### How do you protect against spam and abuse
+
+Forward Email implements comprehensive multi-layer protection:
+
+* **Rate Limiting**: Applied to authentication attempts, API endpoints, and SMTP connections
+* **Resource Isolation**: Between users to prevent impact from high-volume users
+* **DDoS Protection**: Multi-layer protection through DataPacket's Shield system and Cloudflare
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Abuse Prevention**: User-specific abuse prevention checks and hash-based blocking for malicious content
+* **Email Authentication**: SPF, DKIM, DMARC protocols with advanced phishing detection
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=18>
+* <https://www.datapacket.com/datacenters/denver> (DDoS protection details)
+* <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
+
+### Do you store email content on disk
+
+> \[!IMPORTANT]
+> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+
+* **Zero-Knowledge Architecture**: Individually encrypted SQLite mailboxes mean Forward Email cannot access email content
+* **In-Memory Processing**: Email processing occurs entirely in memory, avoiding disk storage
+* **No Content Logging**: "We do not log or store email content or metadata to disk"
+* **Sandboxed Encryption**: Encryption keys are never stored on disk in plaintext
+
+**MX Codebase Evidence**: The MX server processes emails entirely in memory without writing content to disk. The main email processing handler demonstrates this in-memory approach: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstract)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-knowledge details)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandboxed encryption)
+
+### Can email content be exposed during system crashes
+
+No. Forward Email implements comprehensive safeguards against crash-related data exposure:
+
+* **Core Dumps Disabled**: Prevents memory exposure during crashes
+* **Swap Memory Disabled**: Completely disabled to prevent sensitive data extraction from swap files
+* **In-Memory Architecture**: Email content exists only in volatile memory during processing
+* **Encryption Key Protection**: Keys are never stored on disk in plaintext
+* **Physical Security**: LUKS v2 encrypted disks prevent physical access to data
+* **USB Storage Disabled**: Prevents unauthorized data extraction
+
+**Error Handling for System Issues**: Forward Email uses helper functions `isCodeBug` and `isTimeoutError` to ensure that if any database connectivity issues, DNS network/blocklist issues, or upstream connectivity issues occur, the system returns 421 SMTP status codes to ensure emails will be retried later rather than being lost or exposed.
+
+Implementation details:
+
+* Error classification: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
+* Timeout error handling in MX processing: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+
+Source: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+
+### Who has access to your email infrastructure
+
+Forward Email implements comprehensive access controls for its minimal 2-3 person engineering team access with strict 2FA requirements:
+
+* **Role-Based Access Control**: For team accounts with resource-based permissions
+* **Least Privilege Principle**: Applied throughout all systems
+* **Segregation of Duties**: Between operational roles
+* **User Management**: Separate deploy and devops users with distinct permissions
+* **Root Login Disabled**: Forces access through properly authenticated accounts
+* **Strict 2FA**: No SMS-based 2FA due to risk of MiTM attacks - only app-based or hardware tokens
+* **Comprehensive Audit Logging**: With sensitive data redaction
+* **Automated Anomaly Detection**: For unusual access patterns
+* **Regular Security Reviews**: Of access logs
+* **Evil Maid Attack Prevention**: USB storage disabled and other physical security measures
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Authorization Controls)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Network Security)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Evil maid attack prevention)
+
+### What infrastructure providers do you use
+
+> \[!IMPORTANT]
+> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+
+Complete details are available on our GDPR compliance page: <https://forwardemail.net/gdpr>
+
+**Primary Infrastructure Subprocessors:**
+
+| Provider         | Data Privacy Framework Certified | GDPR Compliance Page                            |
+| ---------------- | -------------------------------- | ----------------------------------------------- |
+| **Cloudflare**   | ✅ Yes                            | <https://www.cloudflare.com/trust-hub/gdpr/>    |
+| **DataPacket**   | ❌ No                             | <https://www.datapacket.com/privacy-policy>     |
+| **DigitalOcean** | ❌ No                             | <https://www.digitalocean.com/legal/gdpr>       |
+| **Vultr**        | ❌ No                             | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+
+**Detailed Certifications:**
+
+**DigitalOcean**
+
+* SOC 2 Type II & SOC 3 Type II (audited by Schellman & Company LLC)
+* ISO 27001 certified at multiple data centers
+* PCI-DSS compliant
+* CSA STAR Level 1 certified
+* APEC CBPR PRP certified
+* Details: <https://www.digitalocean.com/trust/certification-reports>
+
+**Vultr**
+
+* SOC 2+ (HIPAA) certified
+* PCI Merchant compliant
+* CSA STAR Level 1 certified
+* ISO/IEC 20000-1:2018, 27001:2022, 27017:2015, 27018:2019
+* Details: <https://www.vultr.com/legal/compliance/>
+
+**DataPacket**
+
+* SOC 2 compliant (contact DataPacket directly to obtain certification)
+* Enterprise-grade infrastructure (Denver location)
+* DDoS protection through Shield cybersecurity stack
+* 24/7 technical support
+* Global network across 58 data centers
+* Details: <https://www.datapacket.com/datacenters/denver>
+
+**Payment Processors:**
+
+* **Stripe**: Data Privacy Framework certified - <https://stripe.com/legal/privacy-center>
+* **PayPal**: Not DPF certified - <https://www.paypal.com/uk/legalhub/privacy-full>
+
+### Do you offer a Data Processing Agreement (DPA)
+
+Yes, Forward Email offers a comprehensive Data Processing Agreement (DPA) that can be signed with our enterprise agreement. A copy of our DPA is available at: <https://forwardemail.net/dpa>
+
+**DPA Details:**
+
+* Covers GDPR compliance and EU-US/Swiss-US Privacy Shield frameworks
+* Automatically accepted when agreeing to our Terms of Service
+* No separate signature required for standard DPA
+* Custom DPA arrangements available through Enterprise License
+
+**GDPR Compliance Framework:**
+Our DPA details compliance with GDPR as well as international data transfer requirements. Complete information is available at: <https://forwardemail.net/gdpr>
+
+For enterprise customers requiring custom DPA terms or specific contractual arrangements, these can be addressed through our **Enterprise License ($250/month)** program.
+
+### How do you handle data breach notifications
+
+> \[!NOTE]
+> Forward Email's zero-knowledge architecture significantly limits breach impact.
+
+* **Limited Data Exposure**: Cannot access encrypted email content due to zero-knowledge architecture
+* **Minimal Data Collection**: Only basic subscriber information and limited IP logs for security
+* **Subprocessor Frameworks**: DigitalOcean and Vultr maintain GDPR-compliant incident response procedures
+
+**GDPR Representative Information:**
+Forward Email has appointed GDPR representatives in accordance with Article 27:
+
+**EU Representative:**
+Osano International Compliance Services Limited
+ATTN: LFHC
+3 Dublin Landings, North Wall Quay
+Dublin 1, D01C4E0
+
+**UK Representative:**
+Osano UK Compliance LTD
+ATTN: LFHC
+42-46 Fountain Street, Belfast
+Antrim, BT1 - 5EF
+
+For enterprise customers requiring specific breach notification SLAs, these should be discussed as part of an **Enterprise License** agreement.
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59>
+* <https://forwardemail.net/gdpr>
+
+### Do you offer a test environment
+
+Forward Email's technical documentation does not explicitly describe a dedicated sandbox mode. However, potential testing approaches include:
+
+* **Self-Hosting Option**: Comprehensive self-hosting capabilities for creating test environments
+* **API Interface**: Potential for programmatic testing of configurations
+* **Open Source**: 100% open-source code allows customers to examine forwarding logic
+* **Multiple Domains**: Support for multiple domains could enable test domain creation
+
+For enterprise customers requiring formal sandbox capabilities, this should be discussed as part of an **Enterprise License** arrangement.
+
+Source: <https://github.com/forwardemail/forwardemail.net> (Development environment details)
+
+### Do you provide monitoring and alerting tools
+
+Forward Email provides real-time monitoring with some limitations:
+
+**Available:**
+
+* **Real-Time Delivery Monitoring**: Publicly visible performance metrics for major email providers
+* **Automatic Alerting**: Engineering team alerted when delivery times exceed 10 seconds
+* **Transparent Monitoring**: 100% open-source monitoring systems
+* **Infrastructure Monitoring**: Automated anomaly detection and comprehensive audit logging
+
+**Limitations:**
+
+* Customer-facing webhooks or API-based delivery status notifications are not explicitly documented
+
+For enterprise customers requiring detailed delivery status webhooks or custom monitoring integrations, these capabilities may be available through **Enterprise License** arrangements.
+
+Sources:
+
+* <https://forwardemail.net> (Real-time monitoring display)
+* <https://github.com/forwardemail/forwardemail.net> (Monitoring implementation)
+
+### How do you ensure high availability
+
+> \[!IMPORTANT]
+> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+
+* **Distributed Infrastructure**: Multiple providers (DigitalOcean, Vultr, DataPacket) across geographic regions
+* **Geographic Load Balancing**: Cloudflare-based geo-located load balancing with automatic failover
+* **Automatic Scaling**: Dynamic resource adjustment based on demand
+* **Multi-Layer DDoS Protection**: Through DataPacket's Shield system and Cloudflare
+* **Server Redundancy**: Multiple servers per region with automatic failover
+* **Database Replication**: Real-time data synchronization across multiple locations
+* **Monitoring and Alerting**: 24/7 monitoring with automatic incident response
+
+**Uptime Commitment**: 99.9%+ service availability with transparent monitoring available at <https://forwardemail.net>
+
+Sources:
+
+* <https://forwardemail.net/technical-whitepaper.pdf#page=18>
+* <https://www.datapacket.com/datacenters/denver>
+
+### Are you compliant with Section 889 of the National Defense Authorization Act (NDAA)
+
+> \[!IMPORTANT]
+> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+
+Yes, Forward Email is **Section 889 compliant**. Section 889 of the National Defense Authorization Act (NDAA) prohibits government agencies from using or contracting with entities that use telecommunications and video surveillance equipment from specific companies (Huawei, ZTE, Hikvision, Dahua, and Hytera).
+
+**How Forward Email Achieves Section 889 Compliance:**
+
+Forward Email relies exclusively on two key infrastructure providers, neither of which uses Section 889 prohibited equipment:
+
+1. **Cloudflare**: Our primary partner for network services and email security
+2. **DataPacket**: Our primary provider for server infrastructure (using Arista Networks and Cisco equipment exclusively)
+3. **Backup Providers**: Our backup providers of Digital Ocean and Vultr are additionally confirmed in writing as being Section 889 compliant.
+
+**Cloudflare's Commitment**: Cloudflare explicitly states in their Third Party Code of Conduct that they do not use telecommunications equipment, video surveillance products, or services from any Section 889 prohibited entities.
+
+**Government Use Case**: Our Section 889 compliance was validated when the **US Naval Academy** selected Forward Email for their secure email forwarding needs, requiring documentation of our federal compliance standards.
+
+For complete details about our government compliance framework, including broader federal regulations, read our comprehensive case study: [Federal Government Email Service Section 889 Compliant](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 
 ## System and Technical Details

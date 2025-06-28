@@ -297,15 +297,15 @@ nav.navbar(class=navbarClasses.join(" "))
               )
                 = t("Upgrade")
 
-          //- Pricing
-          - let hasPricingLink = false;
+          //- FAQ
+          - let hasFAQLink = false;
           if !isBot(ctx.get('User-Agent')) && (!user || user.plan === 'free')
-            - hasPricingLink = true;
+            - hasFAQLink = true;
             li.nav-item
               a.btn.btn-link.d-block.text-left(
-                href=l("/private-business-email?pricing=true"),
-                class=ctx.pathWithoutLocale === "/private-business-email" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-              )= t("Pricing")
+                href=l("/faq"),
+                class=ctx.pathWithoutLocale === "/faq" ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+              )= t("FAQ")
 
           //- Apps
           - const isApps = ["/blog/open-source/apple-email-clients", "/blog/open-source/windows-email-clients", "/blog/open-source/android-email-clients", "/blog/open-source/linux-email-clients", "/blog/open-source/terminal-email-clients", "/blog/open-source/web-email-clients"].includes(ctx.pathWithoutLocale);

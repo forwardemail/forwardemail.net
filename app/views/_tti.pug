@@ -1,5 +1,5 @@
 #tti
-  if tti
+  if tti && ctx.pathWithoutLocale !== '/' || (tti && tti.providers && tti.providers.every(p => p.forwardingMs && p.directMs < 10000))
     .container.text-center.mb-3
       .row
         .col
