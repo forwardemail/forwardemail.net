@@ -412,104 +412,6 @@ nav.navbar(class=navbarClasses.join(" "))
                       class=ctx.pathWithoutLocale === useCase ? "active" : ""
                     )
                       != t(useCases[useCase][0])
-          //- Company
-          if !isBot(ctx.get('User-Agent'))
-            - const companyPages = ["/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
-            - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
-            li.nav-item.dropdown.no-js
-              form.mb-0
-                a#navbar-dropdown-company.btn.dropdown-toggle.d-block.text-left.no-js(
-                  href=l("/about"),
-                  data-toggle="dropdown",
-                  data-boundary="window",
-                  aria-haspopup="true",
-                  aria-expanded="false",
-                  class=isCompanyPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
-                )
-                  = t("Company")
-                .dropdown-menu(aria-labelledby="navbar-dropdown-company")
-                  each companyPage in companyPages
-                    a.dropdown-item(
-                      href=l(companyPage),
-                      class=ctx.pathWithoutLocale === companyPage ? "active" : ""
-                    )
-                      if companyPage === '/gdpr'
-                        = t("GDPR")
-                      else if companyPage === '/dpa'
-                        = t("DPA")
-                      else
-                        = t(titleize(humanize(companyPage.replace("/", ""))))
-                  a.dropdown-item(
-                    href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
-                    target="_blank",
-                    rel="noopener noreferrer",
-                    data-toggle="tooltip",
-                    data-title=t("Send us an email"),
-                    data-placement="bottom"
-                  )= t("Careers")
-                  if !isBot(ctx.get('User-Agent'))
-                    a.dropdown-item(
-                      href="https://status.forwardemail.net/",
-                      target="_blank",
-                      rel="noopener noreferrer",
-                      data-toggle="tooltip",
-                      data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
-                      data-placement="bottom"
-                    )
-                      = t("Status Page")
-                      = " "
-                      if statusOutage
-                        span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
-                      else
-                        span.badge.badge-pill.badge-success.text-monospace= t("100%")
-                  hr.dropdown-divider
-                  h6.dropdown-header= t("Community")
-                  a.dropdown-item(
-                    href=l("/my-account/profile?newsletter=true")
-                  )
-                    i.fa.fa-fw.fas.fa-newspaper
-                    = " "
-                    = t("Newsletter")
-                  a.dropdown-item(
-                    href="https://github.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-fw.fa-github
-                    = " "
-                    = "GitHub"
-                  a.dropdown-item(
-                    href="https://x.com/fwdemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa.fa-fw.fa-twitter-x
-                    = " "
-                    = "@fwdemail"
-                  a.dropdown-item(
-                    href="https://matrix.to/#/#forwardemail:matrix.org",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa-fw.fa.fa-comment
-                    = " "
-                    = "Matrix"
-                  a.dropdown-item(
-                    href="https://youtube.com/forwardemail",
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fab.fa-fw.fa-youtube
-                    = " "
-                    = "YouTube"
-                  a.dropdown-item(
-                    href=`${config.urls.web}/blog/feed/atom`,
-                    target="_blank",
-                    rel="noopener noreferrer"
-                  )
-                    i.fa-fw.fas.fa-rss
-                    = " "
-                    = "RSS Feed"
           //- Resources
           if !isBot(ctx.get('User-Agent'))
             //- - const resourcePages = ["/private-business-email", "/email-analytics", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
@@ -745,6 +647,105 @@ nav.navbar(class=navbarClasses.join(" "))
                         title=striptags(t(tool.title)),
                         class=ctx.pathWithoutLocale === tool.slug ? "active" : ""
                       )!= t(tool.title)
+
+          //- Company
+          if !isBot(ctx.get('User-Agent'))
+            - const companyPages = ["/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
+            - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
+            li.nav-item.dropdown.no-js
+              form.mb-0
+                a#navbar-dropdown-company.btn.dropdown-toggle.d-block.text-left.no-js(
+                  href=l("/about"),
+                  data-toggle="dropdown",
+                  data-boundary="window",
+                  aria-haspopup="true",
+                  aria-expanded="false",
+                  class=isCompanyPage ? `btn-link ${user ? "text-white" : "text-themed"} text-decoration-underline` : `btn-link ${user ? "text-white" : "text-themed"}`
+                )
+                  = t("Company")
+                .dropdown-menu(aria-labelledby="navbar-dropdown-company")
+                  each companyPage in companyPages
+                    a.dropdown-item(
+                      href=l(companyPage),
+                      class=ctx.pathWithoutLocale === companyPage ? "active" : ""
+                    )
+                      if companyPage === '/gdpr'
+                        = t("GDPR")
+                      else if companyPage === '/dpa'
+                        = t("DPA")
+                      else
+                        = t(titleize(humanize(companyPage.replace("/", ""))))
+                  a.dropdown-item(
+                    href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
+                    target="_blank",
+                    rel="noopener noreferrer",
+                    data-toggle="tooltip",
+                    data-title=t("Send us an email"),
+                    data-placement="bottom"
+                  )= t("Careers")
+                  if !isBot(ctx.get('User-Agent'))
+                    a.dropdown-item(
+                      href="https://status.forwardemail.net/",
+                      target="_blank",
+                      rel="noopener noreferrer",
+                      data-toggle="tooltip",
+                      data-title=statusOutage ? t("Issue Detected") : t("100% Systems Online"),
+                      data-placement="bottom"
+                    )
+                      = t("Status Page")
+                      = " "
+                      if statusOutage
+                        span.badge.badge-pill.badge-warning.text-monospace= t("Issue")
+                      else
+                        span.badge.badge-pill.badge-success.text-monospace= t("100%")
+                  hr.dropdown-divider
+                  h6.dropdown-header= t("Community")
+                  a.dropdown-item(
+                    href=l("/my-account/profile?newsletter=true")
+                  )
+                    i.fa.fa-fw.fas.fa-newspaper
+                    = " "
+                    = t("Newsletter")
+                  a.dropdown-item(
+                    href="https://github.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-fw.fa-github
+                    = " "
+                    = "GitHub"
+                  a.dropdown-item(
+                    href="https://x.com/fwdemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa.fa-fw.fa-twitter-x
+                    = " "
+                    = "@fwdemail"
+                  a.dropdown-item(
+                    href="https://matrix.to/#/#forwardemail:matrix.org",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa-fw.fa.fa-comment
+                    = " "
+                    = "Matrix"
+                  a.dropdown-item(
+                    href="https://youtube.com/forwardemail",
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fab.fa-fw.fa-youtube
+                    = " "
+                    = "YouTube"
+                  a.dropdown-item(
+                    href=`${config.urls.web}/blog/feed/atom`,
+                    target="_blank",
+                    rel="noopener noreferrer"
+                  )
+                    i.fa-fw.fas.fa-rss
+                    = " "
+                    = "RSS Feed"
 
           //- links that show only if you're logged in
           if user
