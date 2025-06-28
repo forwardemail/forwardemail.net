@@ -161,9 +161,9 @@ const defaultSrc = isSANB(process.env.WEB_HOST)
     ]
   : null;
 
-const reportUri = isSANB(process.env.WEB_URL)
-  ? `${process.env.WEB_URL}/report`
-  : null;
+// const reportUri = isSANB(process.env.WEB_URL)
+//   ? `${process.env.WEB_URL}/report`
+//   : null;
 
 const sharedWebConfig = sharedConfig('WEB');
 
@@ -262,7 +262,7 @@ module.exports = (redis) => ({
                   ? []
                   : ['https://www.sandbox.paypal.com'])
               ],
-              'report-uri': reportUri || null,
+              // 'report-uri': reportUri || null,
               'base-uri': ["'self'"],
               'form-action': [
                 "'self'",
