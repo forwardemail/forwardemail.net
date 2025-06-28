@@ -7,15 +7,29 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const QRCode = require('qrcode');
+const RE2 = require('re2');
+const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
-const shortID = require('mongodb-short-id');
-
 const ms = require('ms');
+const shortID = require('mongodb-short-id');
+const titleize = require('titleize');
+
 const Aliases = require('#models/aliases');
 const config = require('#config');
+const env = require('#config/env');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+
+//
+// (this punctuation stuff is borrowed from our work with `spamscanner`)
+// punctuation characters
+// (need stripped from tokenization)
+// <https://github.com/regexhq/punctuation-regex>
+// NOTE: we prepended a normal "-" hyphen since it was missing
+const PUNCTUATION_REGEX = new RE2(
+  /[-‒–—―|$&~=\\/⁄@+*!?({[\]})<>‹›«».;:^‘’“”'",،、`·•†‡°″¡¿※#№÷×%‰−‱¶′‴§_‖¦]/g
+);
 
 async function retrieveQRCode(ctx) {
   const redirectTo = ctx.state.l(
@@ -89,6 +103,8 @@ async function retrieveQRCode(ctx) {
       margin: 0,
       width: 200
     });
+
+    /*
     const k9Link = `${
       config.urls.web
     }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${encrypt(
@@ -98,6 +114,29 @@ async function retrieveQRCode(ctx) {
       margin: 0,
       width: 200
     });
+    */
+
+    const name = titleize(humanize(alias.name.replace(PUNCTUATION_REGEX, ' ')));
+
+    // <https://gist.github.com/titanism/4a1a2816e0b57a5fa930f449256b75f6>
+    //
+    // 3 = TLS/SSL connection security
+    // if (env.IMAP_PORT === 993 || env.IMAP_PORT === 2993) = 3
+    // if (!env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production') = 3
+    // otherwise 1 or 2 (probably 2)
+    //
+    // 1 = Password (cleartext) authentication
+    //
+    const imapTLS = env.IMAP_PORT === 993 || env.IMAP_PORT === 2993 ? 3 : 2;
+    const smtpTLS =
+      !env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production' ? 3 : 2;
+    const thunderbirdQRCode = await QRCode.toDataURL(
+      `[1,[1,1],[0,"${env.IMAP_HOST}",${env.IMAP_PORT},${imapTLS},1,"${username}","${username}","${ctx.request.body.password}"],[[[0,"${env.SMTP_HOST}",${env.SMTP_PORT},${smtpTLS},1,"${username}","${ctx.request.body.password}"],["${username}","${name}"]]]]`,
+      {
+        margin: 0,
+        width: 200
+      }
+    );
 
     const html = ctx.translate(
       'ALIAS_GENERATED_PASSWORD',
@@ -108,9 +147,10 @@ async function retrieveQRCode(ctx) {
       appleImgSrc,
       appleLink,
       `${username}.mobileconfig`,
-      k9ImgSrc,
-      k9Link,
-      `${username}.k9s`
+      thunderbirdQRCode
+      // k9ImgSrc,
+      // k9Link,
+      // `${username}.k9s`
     );
 
     const swal = {

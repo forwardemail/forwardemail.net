@@ -19,6 +19,70 @@ for (const key of Object.keys(statuses.message)) {
   STATUSES[key.toString()] = statuses.message[key];
 }
 
+const ALIAS_GENERATED_PASSWORD = `
+<div class="container mt-4">
+  <div class="alert alert-danger small font-weight-bold d-inline-block mb-4">
+    You must copy and store the password below somewhere before closing this pop-up – we do not store it; it cannot be recovered if lost.
+  </div>
+
+  <div class="mb-4">
+    <strong>Username:</strong>
+    <code class="notranslate">%s</code>
+    <button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark">
+      <i class="fa fa-clipboard"></i> Copy
+    </button>
+  </div>
+
+  <div class="mb-4">
+    <strong>Password:</strong>
+    <code class="notranslate">%s</code>
+    <button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark">
+      <i class="fa fa-clipboard"></i> Copy
+    </button>
+  </div>
+
+  <div class="alert alert-primary small font-weight-bold d-inline-block mb-4">
+    Scan the QR codes below and open them to easily set up your account.
+  </div>
+
+  <div class="row mt-3 mb-0">
+    <div class="col-12 col-md-6">
+      <strong>Apple Mail (macOS/iOS)</strong>
+      <div class="d-flex justify-content-center">
+        <ol class="small text-left mb-4 mt-3">
+          <li>Scan the QR Code</li>
+          <li>Open the <span class="notranslate">.mobileconfig</span> file</li>
+          <li>Allow the Profile Download</li>
+          <li>Open Settings > General > VPN & Device Management</li>
+          <li>Review and Install the Profile</li>
+          <li>Open the Mail app to verify</li>
+        </ol>
+      </div>
+      <img alt="Apple Mail QR Code" src="%s" class="bg-white p-3 mb-3" />
+      <br />
+      <a href="%s" download="%s" target="_blank" class="btn btn-success">Download</a>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <strong>Thunderbird Mobile (Android)</strong>
+      <div class="d-flex justify-content-center">
+        <ol class="text-left mb-4 mt-3">
+          <li>Open Thunderbird Mobile</li>
+          <li>Go to Settings</li>
+          <li>Select Import Settings</li>
+          <li>Tap Scan QR Code</li>
+        </ol>
+      </div>
+      <br />
+      <img alt="Thunderbird QR Code" src="%s" class="bg-white p-3" />
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>
+  </div>
+</div>`.trim();
+
 module.exports = {
   ABUSE_PREVENTION_DELETE_ACCOUNT:
     'You cannot perform this deletion until 5 days after your first payment was made. This is an abuse prevention measure to mitigate fraud and spam, and it is noted in our privacy policy.',
@@ -190,8 +254,7 @@ module.exports = {
   CANNOT_CREATE_TOKEN_FOR_REGEX: 'Cannot create token for regex alias.',
   ALIAS_PASSWORD_EMAIL:
     '<p><span class="notranslate text-monospace font-weight-bold">%s</span> has sent you a password to use for <span class="notranslate text-monospace font-weight-bold">%s</span>.</p><p><a href="%s" rel="noopener noreferrer" class="font-weight-bold text-decoration-underline" target="_blank">Click this link</a> and immediately follow the instructions.</p>',
-  ALIAS_GENERATED_PASSWORD:
-    '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered if lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><small class="alert alert-primary d-inline-block font-weight-bold">Scan the QR codes below and open them to easily setup your account.</small><ul class="list-inline mt-3 mb-0"><li class="list-inline-item"><strong>Apple Mail (macOS/iOS)</strong><br /><br /><img alt="" src="%s" class="bg-white p-3" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li><li class="list-inline-item ml-md-5"><strong>Thunderbird Mobile (Android)</strong><br /><br /><img alt="" src="%s" class="p-3 bg-white" /><br /><br /><a href="%s" download="%s" target="_blank" class="btn btn-success mb-3">Download</a></li></ul><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
+  ALIAS_GENERATED_PASSWORD,
   ALIAS_GENERATED_PASSWORD_NO_MOBILE_CONFIG:
     '<br /><div class="mt-3 alert alert-danger small font-weight-bold d-inline-block">You must copy and store the password below somewhere before closing this pop-up &ndash; we do not store it; it cannot be recovered it lost.</div><br /><br /><strong>Username:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong>Password:</strong> <code class="notranslate">%s</code><button type="button" data-toggle="clipboard" data-clipboard-text="%s" class="notranslate ml-3 btn btn-dark"><i class="fa fa-clipboard"></i> Copy</button><br /><br /><strong class="text-danger">This pop-up will automatically close in 10 minutes.</strong>',
   FASTEST_EMAIL: 'The Fastest Email Service',

@@ -7,23 +7,37 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 const QRCode = require('qrcode');
+const RE2 = require('re2');
+const humanize = require('humanize-string');
 const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const sanitizeHtml = require('sanitize-html');
 const shortID = require('mongodb-short-id');
+const titleize = require('titleize');
 const { boolean } = require('boolean');
-const ms = require('ms');
-const _ = require('#helpers/lodash');
-const isEmail = require('#helpers/is-email');
 
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const email = require('#helpers/email');
+const env = require('#config/env');
 const i18n = require('#helpers/i18n');
+const isEmail = require('#helpers/is-email');
 const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 const isValidPassword = require('#helpers/is-valid-password');
 const { encrypt } = require('#helpers/encrypt-decrypt');
+
+//
+// (this punctuation stuff is borrowed from our work with `spamscanner`)
+// punctuation characters
+// (need stripped from tokenization)
+// <https://github.com/regexhq/punctuation-regex>
+// NOTE: we prepended a normal "-" hyphen since it was missing
+const PUNCTUATION_REGEX = new RE2(
+  /[-‒–—―|$&~=\\/⁄@+*!?({[\]})<>‹›«».;:^‘’“”'",،、`·•†‡°″¡¿※#№÷×%‰−‱¶′‴§_‖¦]/g
+);
 
 // eslint-disable-next-line complexity
 async function generateAliasPassword(ctx) {
@@ -402,6 +416,7 @@ async function generateAliasPassword(ctx) {
       margin: 0,
       width: 200
     });
+    /*
     const k9Link = `${
       config.urls.web
     }/c/${username}.k9s?a=${shortID.longToShort(alias.id)}&p=${encrypt(pass)}`;
@@ -409,6 +424,29 @@ async function generateAliasPassword(ctx) {
       margin: 0,
       width: 200
     });
+    */
+
+    const name = titleize(humanize(alias.name.replace(PUNCTUATION_REGEX, ' ')));
+
+    // <https://gist.github.com/titanism/4a1a2816e0b57a5fa930f449256b75f6>
+    //
+    // 3 = TLS/SSL connection security
+    // if (env.IMAP_PORT === 993 || env.IMAP_PORT === 2993) = 3
+    // if (!env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production') = 3
+    // otherwise 1 or 2 (probably 2)
+    //
+    // 1 = Password (cleartext) authentication
+    //
+    const imapTLS = env.IMAP_PORT === 993 || env.IMAP_PORT === 2993 ? 3 : 2;
+    const smtpTLS =
+      !env.SMTP_ALLOW_INSECURE_AUTH || config.env === 'production' ? 3 : 2;
+    const thunderbirdQRCode = await QRCode.toDataURL(
+      `[1,[1,1],[0,"${env.IMAP_HOST}",${env.IMAP_PORT},${imapTLS},1,"${username}","${username}","${pass}"],[[[0,"${env.SMTP_HOST}",${env.SMTP_PORT},${smtpTLS},1,"${username}","${pass}"],["${username}","${name}"]]]]`,
+      {
+        margin: 0,
+        width: 200
+      }
+    );
 
     const html = emailedInstructions
       ? ctx.translate('ALIAS_PASSWORD_INSTRUCTIONS', emailedInstructions)
@@ -421,9 +459,9 @@ async function generateAliasPassword(ctx) {
           appleImgSrc,
           appleLink,
           `${username}.mobileconfig`,
-          k9ImgSrc,
-          k9Link,
-          `${username}.k9s`
+          thunderbirdQRCode
+          // k9Link,
+          // `${username}.k9s`
         );
 
     if (ctx.api) {

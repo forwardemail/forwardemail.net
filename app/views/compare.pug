@@ -1164,16 +1164,16 @@ block body
     .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
       data-ignore-hash-change
     )
-      .container.text-center
-        include _marketing
-        .row.mb-3
-          .col-12
-            a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
-              href="#testimonials"
-            )
-              i.fa.fa-angle-double-down
-              = " "
-              = t("Testimonials")
-              = " "
-              i.fa.fa-angle-double-down
+      include _marketing
+    .container.text-center
+      .row.mb-3
+        .col-12
+          a.text-decoration-none.pt-1.pb-4.pt-lg-4.text-uppercase.mx-auto.text-white(
+            href="#testimonials"
+          )
+            i.fa.fa-angle-double-down
+            = " "
+            = t("Testimonials")
+            = " "
+            i.fa.fa-angle-double-down
     include _testimonials
