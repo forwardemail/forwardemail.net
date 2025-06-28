@@ -9,13 +9,45 @@ const isErrorConstructorName = require('./is-error-constructor-name');
 const isMongoError = require('./is-mongo-error');
 const isRedisError = require('./is-redis-error');
 
+const SYSCALLS = new Set([
+  'spawn',
+  'exec',
+  'execve',
+  'fork',
+  'kill',
+  'waitpid',
+  'getpriority',
+  'setpriority',
+  'getuid',
+  'setuid',
+  'geteuid',
+  'seteuid',
+  'getgid',
+  'setgid',
+  'getegid',
+  'setegid',
+  'getrlimit',
+  'setrlimit',
+  'getpgid',
+  'setpgid',
+  'getsid',
+  'setsid'
+]);
+
+// eslint-disable-next-line complexity
 function isCodeBug(err) {
   const bool = boolean(
     // it was already marked as a code bug
     err.isCodeBug === true ||
       // syscalls
       // <https://github.com/Alex-D/check-disk-space/issues/33>
-      typeof err.syscall === 'string' ||
+      (typeof err.syscall === 'string' && SYSCALLS.has(err.syscall)) ||
+      err.code === 'EACCES' ||
+      err.code === 'E2BIG' ||
+      err.code === 'ESRCH' ||
+      err.code === 'EPERM' ||
+      err.code === 'EMFILE' ||
+      err.code === 'ENOMEM' ||
       // pug related
       err.babylonError ||
       err.component ||
