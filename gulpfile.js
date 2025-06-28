@@ -578,7 +578,7 @@ async function bundle() {
 
     // lazyload
     fs.promises.copyFile(
-      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.js'),
+      path.join(__dirname, 'node_modules', 'lazyload', 'lazyload.min.js'),
       path.join(config.buildBase, 'js', 'lazyload.js')
     ),
     // ekko-lightbox
@@ -588,7 +588,7 @@ async function bundle() {
         'node_modules',
         'ekko-lightbox',
         'dist',
-        'ekko-lightbox.js'
+        'ekko-lightbox.min.js'
       ),
       path.join(config.buildBase, 'js', 'ekko-lightbox.js')
     ),
@@ -599,7 +599,7 @@ async function bundle() {
         'node_modules',
         'bootstrap-table',
         'dist',
-        'bootstrap-table.js'
+        'bootstrap-table.min.js'
       ),
       path.join(config.buildBase, 'js', 'bootstrap-table.js')
     ),

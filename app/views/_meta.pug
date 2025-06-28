@@ -7,10 +7,11 @@ if meta && meta.description
 meta(name="viewport", content="width=device-width, initial-scale=1")
 
 //- Add preconnect for key domains to establish early connections
-link(rel="preconnect", href="https://www.youtube-nocookie.com")
-link(rel="preconnect", href=config.urls.web)
-link(rel="preconnect", href="https://challenges.cloudflare.com")
-link(rel="dns-prefetch", href="https://challenges.cloudflare.com")
+//- link(rel="preconnect", href="https://www.youtube-nocookie.com")
+//- link(rel="preconnect", href=config.urls.web)
+if ctx.pathWithoutLocale === '/register' || ctx.pathWithoutLocale === '/login' || ctx.pathWithoutLocale === '/forgot-password' || ctx.pathWithoutLocale === '/reset-password' || ctx.pathWithoutLocale === '/help' || ctx.pathWithoutLocale === '/denylist'
+  link(rel="preconnect", href="https://challenges.cloudflare.com")
+  link(rel="dns-prefetch", href="https://challenges.cloudflare.com")
 
 //- search
 //- <https://stackoverflow.com/q/44189748>
