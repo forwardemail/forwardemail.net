@@ -143,14 +143,12 @@ body.app {
   }
 }
 
-@include media-breakpoint-up(md) {
-  .bg-fixed {
-    min-height: 100%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
-  }
+.bg-fixed {
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 50% 50%;
 }
 
 @include media-breakpoint-down(md) {
