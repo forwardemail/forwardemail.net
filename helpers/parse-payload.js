@@ -12,7 +12,6 @@ const { randomUUID } = require('node:crypto');
 const { Headers, Splitter, Joiner } = require('mailsplit');
 
 const bytes = require('@forwardemail/bytes');
-const checkDiskSpace = require('check-disk-space').default;
 const dayjs = require('dayjs-with-plugins');
 const getStream = require('get-stream');
 const intoStream = require('into-stream');
@@ -36,6 +35,7 @@ const Domains = require('#models/domains');
 const SMTPError = require('#helpers/smtp-error');
 const TemporaryMessages = require('#models/temporary-messages');
 const config = require('#config');
+const checkDiskSpace = require('#helpers/check-disk-space');
 const email = require('#helpers/email');
 const encryptMessage = require('#helpers/encrypt-message');
 const env = require('#config/env');
@@ -881,19 +881,13 @@ async function parsePayload(data, ws) {
                 storage_location: alias.storage_location
               });
               const spaceRequired = byteLength * 2; // 2x to account for syncing
-              try {
-                const diskSpace = await checkDiskSpace(storagePath);
-                if (diskSpace.free < spaceRequired)
-                  throw new TypeError(
-                    `Needed ${bytes(spaceRequired)} but only ${bytes(
-                      diskSpace.free
-                    )} was available`
-                  );
-              } catch (err) {
-                err.isCodeBug = true;
-                err.storagePath = storagePath;
-                logger.fatal(err);
-              }
+              const diskSpace = await checkDiskSpace(storagePath);
+              if (diskSpace.free < spaceRequired)
+                throw new TypeError(
+                  `Needed ${bytes(spaceRequired)} but only ${bytes(
+                    diskSpace.free
+                  )} was available`
+                );
 
               // we should only use in-memory database is if was connected (IMAP session open)
               if (
@@ -1316,19 +1310,13 @@ async function parsePayload(data, ws) {
         // slight 2x overhead for backups
         const spaceRequired = maxQuotaPerAlias * 2;
 
-        try {
-          const diskSpace = await checkDiskSpace(storagePath);
-          if (diskSpace.free < spaceRequired)
-            throw new TypeError(
-              `Needed ${bytes(spaceRequired)} but only ${bytes(
-                diskSpace.free
-              )} was available`
-            );
-        } catch (err) {
-          err.isCodeBug = true;
-          err.storagePath = storagePath;
-          logger.fatal(err);
-        }
+        const diskSpace = await checkDiskSpace(storagePath);
+        if (diskSpace.free < spaceRequired)
+          throw new TypeError(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
+              diskSpace.free
+            )} was available`
+          );
 
         // TODO: this should not fix database
         db = await getDatabase(
@@ -1598,19 +1586,13 @@ async function parsePayload(data, ws) {
           stats && stats.size > 0 ? stats.size * 2 : 0
         );
 
-        try {
-          const diskSpace = await checkDiskSpace(storagePath);
-          if (diskSpace.free < spaceRequired)
-            throw new TypeError(
-              `Needed ${bytes(spaceRequired)} but only ${bytes(
-                diskSpace.free
-              )} was available`
-            );
-        } catch (err) {
-          err.isCodeBug = true;
-          err.storagePath = storagePath;
-          logger.fatal(err);
-        }
+        const diskSpace = await checkDiskSpace(storagePath);
+        if (diskSpace.free < spaceRequired)
+          throw new TypeError(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
+              diskSpace.free
+            )} was available`
+          );
 
         // only allow one reset/rekey at a time
         const cache = await this.client.get(
@@ -1688,19 +1670,13 @@ async function parsePayload(data, ws) {
         );
         const spaceRequired = maxQuotaPerAlias * 2;
 
-        try {
-          const diskSpace = await checkDiskSpace(storagePath);
-          if (config.env !== 'development' && diskSpace.free < spaceRequired)
-            throw new TypeError(
-              `Needed ${bytes(spaceRequired)} but only ${bytes(
-                diskSpace.free
-              )} was available`
-            );
-        } catch (err) {
-          err.isCodeBug = true;
-          err.storagePath = storagePath;
-          logger.fatal(err);
-        }
+        const diskSpace = await checkDiskSpace(storagePath);
+        if (config.env !== 'development' && diskSpace.free < spaceRequired)
+          throw new TypeError(
+            `Needed ${bytes(spaceRequired)} but only ${bytes(
+              diskSpace.free
+            )} was available`
+          );
 
         try {
           await fs.promises.rm(storagePath, {

@@ -20,7 +20,6 @@ const Redis = require('@ladjs/redis');
 const archiver = require('archiver');
 const archiverZipEncrypted = require('archiver-zip-encrypted');
 const bytes = require('@forwardemail/bytes');
-const checkDiskSpace = require('check-disk-space').default;
 const dashify = require('dashify');
 const getStream = require('get-stream');
 const hasha = require('hasha');
@@ -50,6 +49,7 @@ const Messages = require('#models/messages');
 const Indexer = require('#helpers/indexer');
 const ServerShutdownError = require('#helpers/server-shutdown-error');
 const asctime = require('#helpers/asctime');
+const checkDiskSpace = require('#helpers/check-disk-space');
 const closeDatabase = require('#helpers/close-database');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -162,13 +162,13 @@ async function rekey(payload) {
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
 
-    // const diskSpace = await checkDiskSpace(storagePath);
-    // if (diskSpace.free < spaceRequired)
-    //   throw new TypeError(
-    //     `Needed ${bytes(spaceRequired)} but only ${bytes(
-    //       diskSpace.free
-    //     )} was available`
-    //   );
+    const diskSpace = await checkDiskSpace(storagePath);
+    if (diskSpace.free < spaceRequired)
+      throw new TypeError(
+        `Needed ${bytes(spaceRequired)} but only ${bytes(
+          diskSpace.free
+        )} was available`
+      );
 
     //
     // ensure that we have the space required available in memory
@@ -486,13 +486,13 @@ async function backup(payload) {
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
 
-    // const diskSpace = await checkDiskSpace(storagePath);
-    //if (diskSpace.free < spaceRequired)
-    //  throw new TypeError(
-    //    `Needed ${bytes(spaceRequired)} but only ${bytes(
-    //      diskSpace.free
-    //    )} was available`
-    //  );
+    const diskSpace = await checkDiskSpace(storagePath);
+    if (diskSpace.free < spaceRequired)
+      throw new TypeError(
+        `Needed ${bytes(spaceRequired)} but only ${bytes(
+          diskSpace.free
+        )} was available`
+      );
 
     //
     // ensure that we have the space required available in memory

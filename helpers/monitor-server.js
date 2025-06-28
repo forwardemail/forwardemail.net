@@ -21,12 +21,12 @@ const {
 // });
 
 const bytes = require('@forwardemail/bytes');
-const checkDiskSpace = require('check-disk-space').default;
 // const dayjs = require('dayjs-with-plugins');
 const ip = require('ip');
 const ms = require('ms');
 const osu = require('node-os-utils');
 
+const checkDiskSpace = require('#helpers/check-disk-space');
 const env = require('#config/env');
 const logger = require('#helpers/logger');
 

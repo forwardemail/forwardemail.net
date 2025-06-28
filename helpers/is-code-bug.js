@@ -13,6 +13,9 @@ function isCodeBug(err) {
   const bool = boolean(
     // it was already marked as a code bug
     err.isCodeBug === true ||
+      // syscalls
+      // <https://github.com/Alex-D/check-disk-space/issues/33>
+      typeof err.syscall === 'string' ||
       // pug related
       err.babylonError ||
       err.component ||

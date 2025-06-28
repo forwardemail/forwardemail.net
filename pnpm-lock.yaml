@@ -108,7 +108,6 @@ specifiers:
   cabin: 14.0.0
   caldav-adapter: 8.2.1
   capitalize: 2.0.4
-  check-disk-space: 3.4.0
   chnl: 1.2.0
   clipboard: 2.0.11
   codemirror: 5.65.19
@@ -124,6 +123,7 @@ specifiers:
   dayjs-with-plugins: 1.0.4
   dedent: 0.7.0
   del: 6.1.1
+  diskusage: 1.2.0
   ekko-lightbox: 5.3.0
   email-addresses: 5.0.0
   email-regex-safe: 4.0.0
@@ -450,7 +450,6 @@ dependencies:
   cabin: 14.0.0_axe@13.0.0
   caldav-adapter: 8.2.1
   capitalize: 2.0.4
-  check-disk-space: 3.4.0
   chnl: 1.2.0
   clipboard: 2.0.11
   codemirror: 5.65.19
@@ -464,6 +463,7 @@ dependencies:
   dayjs: 1.11.13
   dayjs-with-plugins: 1.0.4_dayjs@1.11.13
   dedent: 0.7.0
+  diskusage: 1.2.0
   ekko-lightbox: 5.3.0
   email-addresses: 5.0.0
   email-regex-safe: 4.0.0_re2@1.22.1
@@ -11700,11 +11700,6 @@ packages:
     resolution: {integrity: sha512-syedaZ9cPe7r3hoQA9twWYKu5AIyCswN5+szkmPBe9ccdLrj4bYaCnLVPTLd2kgVRc7+zoX4tyPgRnFKCj5YjQ==}
     dev: false
 
-  /check-disk-space/3.4.0:
-    resolution: {integrity: sha512-drVkSqfwA+TvuEhFipiR1OC9boEGZL5RrWvVsOthdcvQNXyCCuKkEiTOTXZ7qxSf/GLwq4GvzfrQD/Wz325hgw==}
-    engines: {node: '>=16'}
-    dev: false
-
   /cheerio-select/2.1.0:
     resolution: {integrity: sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g==}
     dependencies:
@@ -14071,6 +14066,14 @@ packages:
     resolution: {integrity: sha512-c68LpLbO+7kP/b1Hr1qs8/BJ09F5khZGTxqxZuhzxpmwJKOgRFHJWIb9/KmqnqHhLdO55aOxFH/EGBvUQbL/RQ==}
     dev: false
 
+  /diskusage/1.2.0:
+    resolution: {integrity: sha512-2u3OG3xuf5MFyzc4MctNRUKjjwK+UkovRYdD2ed/NZNZPrt0lqHnLKxGhlFVvAb4/oufIgQG3nWgwmeTbHOvXA==}
+    requiresBuild: true
+    dependencies:
+      es6-promise: 4.2.8
+      nan: 2.22.2
+    dev: false
+
   /display-notification/2.0.0:
     resolution: {integrity: sha512-TdmtlAcdqy1NU+j7zlkDdMnCL878zriLaBmoD9quOoq1ySSSGv03l0hXK5CvIFZlIfFI/hizqdQuW+Num7xuhw==}
     engines: {node: '>=4'}
@@ -14786,6 +14789,10 @@ packages:
       d: 1.0.2
       es5-ext: 0.10.64
       es6-symbol: 3.1.4
+
+  /es6-promise/4.2.8:
+    resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
+    dev: false
 
   /es6-symbol/3.1.4:
     resolution: {integrity: sha512-U9bFFjX8tFiATgtkJ1zg25+KviIXpgRvRHS8sau3GfhVzThRQrOeksPeT0BWW2MNZs1OEWJ1DPXOQMn0KKRkvg==}
