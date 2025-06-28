@@ -337,7 +337,7 @@ function fixTableOfContents(content, options) {
       // eslint-disable-next-line unicorn/prefer-dom-node-append
       header.appendChild(
         parse(
-          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}</a>`
+          `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}</a>`
           // `<a class="dropdown-toggle text-wrap btn btn-link btn-block text-left text-themed font-weight-bold p-0" href="#${id}" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-${id}" data-target="#collapse-${id}">${lastChildRawText}${
           //   options.hasSidebar && !lastChildRawText.endsWith('?') ? '?' : ''
           // }</a>`

@@ -22,7 +22,8 @@
   font-family: $font-family-sans-serif !important;
 
   h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: $font-family-sans-serif !important;
+    font-family: $headings-font-family !important;
+    font-weight: 400 !important;
   }
 
   @for $index from 1 through 6 {
