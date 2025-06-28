@@ -162,13 +162,13 @@ async function rekey(payload) {
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
 
-    const diskSpace = await checkDiskSpace(storagePath);
-    if (diskSpace.free < spaceRequired)
-      throw new TypeError(
-        `Needed ${bytes(spaceRequired)} but only ${bytes(
-          diskSpace.free
-        )} was available`
-      );
+    // const diskSpace = await checkDiskSpace(storagePath);
+    // if (diskSpace.free < spaceRequired)
+    //   throw new TypeError(
+    //     `Needed ${bytes(spaceRequired)} but only ${bytes(
+    //       diskSpace.free
+    //     )} was available`
+    //   );
 
     //
     // ensure that we have the space required available in memory
@@ -468,7 +468,6 @@ async function backup(payload) {
       id: payload.session.user.alias_id,
       storage_location: payload.session.user.storage_location
     });
-    const diskSpace = await checkDiskSpace(storagePath);
     tmp = path.join(
       path.dirname(storagePath),
       `${payload.id}-backup.${extension}`
@@ -487,12 +486,13 @@ async function backup(payload) {
     // we calculate size of db x 2 (backup + tarball)
     const spaceRequired = stats.size * 2;
 
-    if (diskSpace.free < spaceRequired)
-      throw new TypeError(
-        `Needed ${bytes(spaceRequired)} but only ${bytes(
-          diskSpace.free
-        )} was available`
-      );
+    // const diskSpace = await checkDiskSpace(storagePath);
+    //if (diskSpace.free < spaceRequired)
+    //  throw new TypeError(
+    //    `Needed ${bytes(spaceRequired)} but only ${bytes(
+    //      diskSpace.free
+    //    )} was available`
+    //  );
 
     //
     // ensure that we have the space required available in memory
