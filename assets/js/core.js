@@ -800,7 +800,7 @@ function getProviderColor(providerName) {
 
   switch (providerName) {
     case 'Forward Email': {
-      color = '#0066ff';
+      color = '#00FF00'; // green so it sticks out vs. '#0066ff';
       break;
     }
 
