@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "Sağlayıcıya Göre 24 Saatlik Performans",
   "Delivery times for each email provider (Direct vs Forwarding)": "Her e-posta sağlayıcısı için teslimat süreleri (Doğrudan ve Yönlendirme)",
   "Average delivery times for each email provider": "Her e-posta sağlayıcısı için ortalama teslimat süreleri",
-  "Current Delivery Times": "Mevcut Teslimat Süreleri"
+  "Current Delivery Times": "Mevcut Teslimat Süreleri",
+  "Email Encryption & Message Signing": "E-posta Şifreleme ve Mesaj İmzalama",
+  "Encrypted PGP Forwarding": "Şifrelenmiş PGP Yönlendirme"
 }

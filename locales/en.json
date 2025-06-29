@@ -11467,5 +11467,7 @@
   "24-Hour Performance by Provider": "24-Hour Performance by Provider",
   "Delivery times for each email provider (Direct vs Forwarding)": "Delivery times for each email provider (Direct vs Forwarding)",
   "Average delivery times for each email provider": "Average delivery times for each email provider",
-  "Current Delivery Times": "Current Delivery Times"
+  "Current Delivery Times": "Current Delivery Times",
+  "Email Encryption & Message Signing": "Email Encryption & Message Signing",
+  "Encrypted PGP Forwarding": "Encrypted PGP Forwarding"
 }

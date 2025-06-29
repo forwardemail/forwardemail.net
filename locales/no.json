@@ -15663,5 +15663,7 @@
   "24-Hour Performance by Provider": "24-timers ytelse fra leverandør",
   "Delivery times for each email provider (Direct vs Forwarding)": "Leveringstider for hver e-postleverandør (direkte vs. videresending)",
   "Average delivery times for each email provider": "Gjennomsnittlige leveringstider for hver e-postleverandør",
-  "Current Delivery Times": "Nåværende leveringstider"
+  "Current Delivery Times": "Nåværende leveringstider",
+  "Email Encryption & Message Signing": "E-postkryptering og meldingssignering",
+  "Encrypted PGP Forwarding": "Kryptert PGP-videresending"
 }

@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "24-uurs prestatie door provider",
   "Delivery times for each email provider (Direct vs Forwarding)": "Levertijden voor elke e-mailprovider (Direct vs. Forwarding)",
   "Average delivery times for each email provider": "Gemiddelde levertijden voor elke e-mailprovider",
-  "Current Delivery Times": "Huidige levertijden"
+  "Current Delivery Times": "Huidige levertijden",
+  "Email Encryption & Message Signing": "E-mailversleuteling en berichtondertekening",
+  "Encrypted PGP Forwarding": "Gecodeerde PGP-doorsturing"
 }

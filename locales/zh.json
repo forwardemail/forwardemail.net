@@ -15354,5 +15354,7 @@
   "24-Hour Performance by Provider": "供应商的 24 小时表现",
   "Delivery times for each email provider (Direct vs Forwarding)": "每个电子邮件提供商的递送时间（直接与转发）",
   "Average delivery times for each email provider": "每个电子邮件提供商的平均递送时间",
-  "Current Delivery Times": "当前交货时间"
+  "Current Delivery Times": "当前交货时间",
+  "Email Encryption & Message Signing": "电子邮件加密和消息签名",
+  "Encrypted PGP Forwarding": "加密 PGP 转发"
 }

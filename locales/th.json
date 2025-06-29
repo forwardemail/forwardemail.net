@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "การดำเนินงานตลอด 24 ชั่วโมงโดยผู้ให้บริการ",
   "Delivery times for each email provider (Direct vs Forwarding)": "ระยะเวลาการจัดส่งสำหรับผู้ให้บริการอีเมลแต่ละราย (โดยตรงหรือส่งต่อ)",
   "Average delivery times for each email provider": "ระยะเวลาการจัดส่งโดยเฉลี่ยสำหรับผู้ให้บริการอีเมลแต่ละราย",
-  "Current Delivery Times": "เวลาจัดส่งปัจจุบัน"
+  "Current Delivery Times": "เวลาจัดส่งปัจจุบัน",
+  "Email Encryption & Message Signing": "การเข้ารหัสอีเมลและการลงนามข้อความ",
+  "Encrypted PGP Forwarding": "การส่งต่อ PGP แบบเข้ารหัส"
 }

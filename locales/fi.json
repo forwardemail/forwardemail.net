@@ -15505,5 +15505,7 @@
   "24-Hour Performance by Provider": "Palveluntarjoajan 24 tunnin suorituskyky",
   "Delivery times for each email provider (Direct vs Forwarding)": "Kunkin sähköpostipalveluntarjoajan toimitusajat (suora vs. edelleenlähetys)",
   "Average delivery times for each email provider": "Kunkin sähköpostipalveluntarjoajan keskimääräiset toimitusajat",
-  "Current Delivery Times": "Nykyiset toimitusajat"
+  "Current Delivery Times": "Nykyiset toimitusajat",
+  "Email Encryption & Message Signing": "Sähköpostin salaus ja viestien allekirjoitus",
+  "Encrypted PGP Forwarding": "Salattu PGP-edelleenlähetys"
 }

@@ -244,7 +244,8 @@ $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
 // Adjust the hash of the page as you scroll down
 // (e.g. if you scroll past a section "Section A" to "Section B"
 // then the URL bar will update to #section-b
-$(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 250));
+if (!navigator || !navigator.userAgentData || !navigator.userAgentData.mobile)
+  $(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 1000));
 
 // Handle hash change when user clicks on links
 $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);
@@ -889,6 +890,8 @@ function createTTIChartOptions(data) {
     }
   }
 
+  const { timeZone } = new Intl.DateTimeFormat().resolvedOptions();
+
   return {
     series,
     chart: {
@@ -929,6 +932,8 @@ function createTTIChartOptions(data) {
       type: 'datetime',
       labels: {
         format: 'h TT',
+        datetimeUTC: false,
+        timezone: timeZone,
         style: {
           fontSize: '11px'
         }

@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "أداء على مدار 24 ساعة حسب مقدم الخدمة",
   "Delivery times for each email provider (Direct vs Forwarding)": "أوقات التسليم لكل مزود بريد إلكتروني (المباشر مقابل إعادة التوجيه)",
   "Average delivery times for each email provider": "متوسط أوقات التسليم لكل مزود بريد إلكتروني",
-  "Current Delivery Times": "مواعيد التسليم الحالية"
+  "Current Delivery Times": "مواعيد التسليم الحالية",
+  "Email Encryption & Message Signing": "تشفير البريد الإلكتروني وتوقيع الرسائل",
+  "Encrypted PGP Forwarding": "إعادة توجيه PGP المشفرة"
 }

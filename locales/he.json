@@ -13709,5 +13709,7 @@
   "24-Hour Performance by Provider": "ביצועים 24 שעות ביממה לפי ספק",
   "Delivery times for each email provider (Direct vs Forwarding)": "זמני אספקה עבור כל ספק דוא\"ל (דיוור ישיר לעומת העברה)",
   "Average delivery times for each email provider": "זמני אספקה ממוצעים עבור כל ספק דוא\"ל",
-  "Current Delivery Times": "זמני אספקה נוכחיים"
+  "Current Delivery Times": "זמני אספקה נוכחיים",
+  "Email Encryption & Message Signing": "הצפנת דוא\"ל וחתימת הודעות",
+  "Encrypted PGP Forwarding": "העברת PGP מוצפנת"
 }

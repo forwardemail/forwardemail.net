@@ -13221,5 +13221,7 @@
   "24-Hour Performance by Provider": "Hiệu suất 24 giờ của Nhà cung cấp",
   "Delivery times for each email provider (Direct vs Forwarding)": "Thời gian gửi email cho từng nhà cung cấp (Trực tiếp so với Chuyển tiếp)",
   "Average delivery times for each email provider": "Thời gian gửi trung bình cho mỗi nhà cung cấp email",
-  "Current Delivery Times": "Thời gian giao hàng hiện tại"
+  "Current Delivery Times": "Thời gian giao hàng hiện tại",
+  "Email Encryption & Message Signing": "Mã hóa Email & Ký tin nhắn",
+  "Encrypted PGP Forwarding": "Chuyển tiếp PGP được mã hóa"
 }

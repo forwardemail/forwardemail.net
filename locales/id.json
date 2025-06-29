@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "Kinerja 24 Jam oleh Penyedia",
   "Delivery times for each email provider (Direct vs Forwarding)": "Waktu pengiriman untuk setiap penyedia email (Langsung vs Penerusan)",
   "Average delivery times for each email provider": "Rata-rata waktu pengiriman untuk setiap penyedia email",
-  "Current Delivery Times": "Waktu Pengiriman Saat Ini"
+  "Current Delivery Times": "Waktu Pengiriman Saat Ini",
+  "Email Encryption & Message Signing": "Enkripsi Email & Penandatanganan Pesan",
+  "Encrypted PGP Forwarding": "Penerusan PGP Terenkripsi"
 }

@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "プロバイダーによる24時間のパフォーマンス",
   "Delivery times for each email provider (Direct vs Forwarding)": "各メールプロバイダーの配信時間（直接 vs 転送）",
   "Average delivery times for each email provider": "各メールプロバイダーの平均配信時間",
-  "Current Delivery Times": "現在の配送時間"
+  "Current Delivery Times": "現在の配送時間",
+  "Email Encryption & Message Signing": "メールの暗号化とメッセージ署名",
+  "Encrypted PGP Forwarding": "暗号化されたPGP転送"
 }

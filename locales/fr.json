@@ -13217,5 +13217,7 @@
   "24-Hour Performance by Provider": "Performances sur 24 heures par fournisseur",
   "Delivery times for each email provider (Direct vs Forwarding)": "Délais de livraison pour chaque fournisseur de messagerie (direct ou transfert)",
   "Average delivery times for each email provider": "Délais de livraison moyens pour chaque fournisseur de messagerie",
-  "Current Delivery Times": "Délais de livraison actuels"
+  "Current Delivery Times": "Délais de livraison actuels",
+  "Email Encryption & Message Signing": "Cryptage des e-mails et signature des messages",
+  "Encrypted PGP Forwarding": "Transfert PGP crypté"
 }

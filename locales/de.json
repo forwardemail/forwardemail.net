@@ -14704,5 +14704,7 @@
   "24-Hour Performance by Provider": "24-Stunden-Leistung durch Anbieter",
   "Delivery times for each email provider (Direct vs Forwarding)": "Lieferzeiten für jeden E-Mail-Anbieter (Direkt vs. Weiterleitung)",
   "Average delivery times for each email provider": "Durchschnittliche Lieferzeiten für jeden E-Mail-Anbieter",
-  "Current Delivery Times": "Aktuelle Lieferzeiten"
+  "Current Delivery Times": "Aktuelle Lieferzeiten",
+  "Email Encryption & Message Signing": "E-Mail-Verschlüsselung und Nachrichtensignierung",
+  "Encrypted PGP Forwarding": "Verschlüsselte PGP-Weiterleitung"
 }

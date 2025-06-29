@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "24-годинна продуктивність постачальника",
   "Delivery times for each email provider (Direct vs Forwarding)": "Терміни доставки для кожного постачальника електронної пошти (пряма доставка чи переадресація)",
   "Average delivery times for each email provider": "Середній час доставки для кожного постачальника послуг електронної пошти",
-  "Current Delivery Times": "Поточні терміни доставки"
+  "Current Delivery Times": "Поточні терміни доставки",
+  "Email Encryption & Message Signing": "Шифрування електронної пошти та підписування повідомлень",
+  "Encrypted PGP Forwarding": "Зашифроване пересилання PGP"
 }

@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "24 órás teljesítmény a szolgáltató által",
   "Delivery times for each email provider (Direct vs Forwarding)": "Kézbesítési idők az egyes e-mail szolgáltatóknál (közvetlen vs. továbbítás)",
   "Average delivery times for each email provider": "Átlagos kézbesítési idők az egyes e-mail szolgáltatóknál",
-  "Current Delivery Times": "Jelenlegi szállítási idők"
+  "Current Delivery Times": "Jelenlegi szállítási idők",
+  "Email Encryption & Message Signing": "E-mail titkosítás és üzenetaláírás",
+  "Encrypted PGP Forwarding": "Titkosított PGP továbbítás"
 }

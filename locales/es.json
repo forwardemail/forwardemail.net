@@ -15656,5 +15656,7 @@
   "24-Hour Performance by Provider": "Rendimiento del proveedor las 24 horas",
   "Delivery times for each email provider (Direct vs Forwarding)": "Tiempos de entrega para cada proveedor de correo electrónico (Directo vs Reenvío)",
   "Average delivery times for each email provider": "Tiempos de entrega promedio para cada proveedor de correo electrónico",
-  "Current Delivery Times": "Tiempos de entrega actuales"
+  "Current Delivery Times": "Tiempos de entrega actuales",
+  "Email Encryption & Message Signing": "Cifrado de correo electrónico y firma de mensajes",
+  "Encrypted PGP Forwarding": "Reenvío de PGP cifrado"
 }

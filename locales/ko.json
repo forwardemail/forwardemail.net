@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "공급업체별 24시간 성과",
   "Delivery times for each email provider (Direct vs Forwarding)": "각 이메일 제공업체의 배달 시간(직접 대 전달)",
   "Average delivery times for each email provider": "각 이메일 제공업체의 평균 배달 시간",
-  "Current Delivery Times": "현재 배송 시간"
+  "Current Delivery Times": "현재 배송 시간",
+  "Email Encryption & Message Signing": "이메일 암호화 및 메시지 서명",
+  "Encrypted PGP Forwarding": "암호화된 PGP 전달"
 }

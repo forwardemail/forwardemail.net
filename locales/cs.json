@@ -11091,5 +11091,7 @@
   "24-Hour Performance by Provider": "24hodinový výkon podle poskytovatele",
   "Delivery times for each email provider (Direct vs Forwarding)": "Dodací lhůty pro každého poskytovatele e-mailu (přímé vs. přesměrování)",
   "Average delivery times for each email provider": "Průměrné doby doručení u jednotlivých poskytovatelů e-mailových služeb",
-  "Current Delivery Times": "Aktuální dodací lhůty"
+  "Current Delivery Times": "Aktuální dodací lhůty",
+  "Email Encryption & Message Signing": "Šifrování e-mailů a podepisování zpráv",
+  "Encrypted PGP Forwarding": "Šifrované přesměrování PGP"
 }

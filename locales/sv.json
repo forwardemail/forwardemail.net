@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "24-timmars prestanda per leverantör",
   "Delivery times for each email provider (Direct vs Forwarding)": "Leveranstider för varje e-postleverantör (Direkt vs. Vidarebefordran)",
   "Average delivery times for each email provider": "Genomsnittliga leveranstider för varje e-postleverantör",
-  "Current Delivery Times": "Nuvarande leveranstider"
+  "Current Delivery Times": "Nuvarande leveranstider",
+  "Email Encryption & Message Signing": "E-postkryptering och meddelandesignering",
+  "Encrypted PGP Forwarding": "Krypterad PGP-vidarebefordran"
 }

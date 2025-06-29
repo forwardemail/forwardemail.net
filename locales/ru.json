@@ -15658,5 +15658,7 @@
   "24-Hour Performance by Provider": "Круглосуточная работа поставщика",
   "Delivery times for each email provider (Direct vs Forwarding)": "Время доставки для каждого поставщика услуг электронной почты (прямая или переадресация)",
   "Average delivery times for each email provider": "Среднее время доставки для каждого поставщика услуг электронной почты",
-  "Current Delivery Times": "Текущие сроки доставки"
+  "Current Delivery Times": "Текущие сроки доставки",
+  "Email Encryption & Message Signing": "Шифрование электронной почты и подпись сообщений",
+  "Encrypted PGP Forwarding": "Зашифрованная пересылка PGP"
 }
