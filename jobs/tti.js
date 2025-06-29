@@ -62,6 +62,7 @@ setInterval(async () => {
           await imapClient.mailboxOpen('INBOX');
           imapClients.set(provider.name, imapClient);
         } catch (err) {
+          err.provider = provider;
           err.isCodeBug = true;
           await logger.fatal(err);
         }
@@ -95,6 +96,7 @@ const graceful = new Graceful({
           try {
             await client.logout();
           } catch (err) {
+            err.client = client;
             err.isCodeBug = true;
             await logger.fatal(err);
           }
@@ -373,6 +375,7 @@ Forward Email
           directMs = results[0];
           forwardingMs = results[1];
         } catch (err) {
+          err.provider = provider;
           err.isCodeBug = true;
           logger.fatal(err);
         }
@@ -382,6 +385,8 @@ Forward Email
           try {
             await imapClient.messageDelete({ all: true });
           } catch (err) {
+            err.provider = provider;
+            err.client = imapClient;
             err.isCodeBug = true;
             logger.fatal(err);
           }
