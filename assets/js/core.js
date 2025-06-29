@@ -81,7 +81,7 @@ const {
   handleHashChange,
   handleHashOnLoad,
   modalAnchor,
-  resizeNavbarPadding,
+  // resizeNavbarPadding,
   returnTo,
   jumpTo
 } = require('@ladjs/assets');
@@ -91,9 +91,9 @@ const logger = require('./logger');
 const sendRequest = require('./send-request');
 
 // Resize navbar padding on load, window resize, and navbar collapse/show
-$(window).on('load', () => {
-  resizeNavbarPadding($);
-});
+// $(window).on('load', () => {
+//  resizeNavbarPadding($);
+// });
 
 // highlight.js
 // const hljs = require('highlight.js');
@@ -108,12 +108,12 @@ flash();
 // Handle hashes when page loads
 // <http://stackoverflow.com/a/29853395>
 handleHashOnLoad();
-$(window).on('resize.resizeNavbarPadding', () => {
-  resizeNavbarPadding($);
-});
-$('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
-  resizeNavbarPadding($);
-});
+// $(window).on('resize.resizeNavbarPadding', () => {
+//   resizeNavbarPadding($);
+// });
+// $('.navbar-collapse').on('hidden.bs.collapse shown.bs.collapse', () => {
+//   resizeNavbarPadding($);
+// });
 
 // Add calc to min-vh-100
 const $navbarFixedTop = $('.navbar.fixed-top');
