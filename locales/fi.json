@@ -15496,5 +15496,14 @@
   "79 Best Email Services in <span class=\"notranslate\">2025</span>": "79 parasta sähköpostipalvelua vuonna <span class=\"notranslate\">2025</span>",
   "13 Best Private Email Services in <span class=\"notranslate\">2025</span>": "13 parasta yksityistä sähköpostipalvelua vuonna <span class=\"notranslate\">2025</span>",
   "5 Best Open-Source Email Services in <span class=\"notranslate\">2025</span>": "5 parasta avoimen lähdekoodin sähköpostipalvelua vuonna <span class=\"notranslate\">2025</span>",
-  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Arvosteluja, vertailuja, kuvakaappauksia ja paljon muuta viidelle parhaalle avoimen lähdekoodin sähköpostipalvelulle."
+  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Arvosteluja, vertailuja, kuvakaappauksia ja paljon muuta viidelle parhaalle avoimen lähdekoodin sähköpostipalvelulle.",
+  "Historical Timeline": "Historiallinen aikajana",
+  "View historical Time to Inbox performance over the past 24 hours across all providers.": "Näytä kaikkien palveluntarjoajien postilaatikkoon saapumisajan historia viimeisten 24 tunnin ajalta.",
+  "24-Hour Performance Overview": "24 tunnin suorituskyvyn yleiskatsaus",
+  "Average delivery times across all email providers": "Keskimääräiset toimitusajat kaikilla sähköpostipalveluntarjoajilla",
+  "View historical Time to Inbox performance over the past 24 hours for each provider.": "Näytä kunkin palveluntarjoajan historiallinen postilaatikkoon saapumisaika viimeisten 24 tunnin ajalta.",
+  "24-Hour Performance by Provider": "Palveluntarjoajan 24 tunnin suorituskyky",
+  "Delivery times for each email provider (Direct vs Forwarding)": "Kunkin sähköpostipalveluntarjoajan toimitusajat (suora vs. edelleenlähetys)",
+  "Average delivery times for each email provider": "Kunkin sähköpostipalveluntarjoajan keskimääräiset toimitusajat",
+  "Current Delivery Times": "Nykyiset toimitusajat"
 }

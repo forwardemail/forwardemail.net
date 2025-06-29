@@ -416,7 +416,7 @@ nav.navbar(class=navbarClasses.join(" "))
           if !isBot(ctx.get('User-Agent'))
             //- - const resourcePages = ["/private-business-email", "/email-analytics", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
             - const resourcePages = ["/private-business-email", "/faq", "/tti", "/help", "/disposable-addresses", "/domain-registration", "/encrypt", "/reserved-email-addresses", "/denylist"];
-            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && ctx.query && !boolean(ctx.query.pricing)))
+            - const isResourcesPage = Boolean(ctx.pathWithoutLocale === "/resources" || (resourcePages.includes(ctx.pathWithoutLocale) && ctx.query && !boolean(ctx.query.pricing)));
             li.nav-item.dropdown.no-js
               form.mb-0
                 a#navbar-dropdown-resources.btn.dropdown-toggle.d-block.text-left.no-js(

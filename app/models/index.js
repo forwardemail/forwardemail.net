@@ -23,6 +23,7 @@ const Calendars = require('./calendars');
 const CalendarEvents = require('./calendar-events');
 const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
+const TTI = require('./tti');
 
 module.exports = {
   Attachments,
@@ -44,5 +45,6 @@ module.exports = {
   Calendars,
   CalendarEvents,
   AddressBooks,
-  Contacts
+  Contacts,
+  TTI
 };

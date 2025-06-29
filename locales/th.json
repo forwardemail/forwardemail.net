@@ -15649,5 +15649,14 @@
   "79 Best Email Services in <span class=\"notranslate\">2025</span>": "บริการอีเมลที่ดีที่สุด 79 อันดับใน <span class=\"notranslate\">2025</span>",
   "13 Best Private Email Services in <span class=\"notranslate\">2025</span>": "บริการอีเมลส่วนตัวที่ดีที่สุด 13 อันดับใน <span class=\"notranslate\">2025</span>",
   "5 Best Open-Source Email Services in <span class=\"notranslate\">2025</span>": "บริการอีเมลโอเพ่นซอร์สที่ดีที่สุด 5 อันดับแรกใน <span class=\"notranslate\">2025</span>",
-  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "บทวิจารณ์ การเปรียบเทียบ ภาพหน้าจอ และอื่นๆ อีกมากมายสำหรับบริการอีเมลโอเพ่นซอร์สที่ดีที่สุด 5 อันดับ"
+  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "บทวิจารณ์ การเปรียบเทียบ ภาพหน้าจอ และอื่นๆ อีกมากมายสำหรับบริการอีเมลโอเพ่นซอร์สที่ดีที่สุด 5 อันดับ",
+  "Historical Timeline": "ไทม์ไลน์ประวัติศาสตร์",
+  "View historical Time to Inbox performance over the past 24 hours across all providers.": "ดูประวัติประสิทธิภาพเวลาในการส่ง Inbox ในช่วง 24 ชั่วโมงที่ผ่านมาของผู้ให้บริการทั้งหมด",
+  "24-Hour Performance Overview": "ภาพรวมประสิทธิภาพการทำงานตลอด 24 ชั่วโมง",
+  "Average delivery times across all email providers": "ระยะเวลาการจัดส่งโดยเฉลี่ยสำหรับผู้ให้บริการอีเมลทั้งหมด",
+  "View historical Time to Inbox performance over the past 24 hours for each provider.": "ดูประวัติระยะเวลาในการเข้าถึงกล่องจดหมายในช่วง 24 ชั่วโมงที่ผ่านมาสำหรับผู้ให้บริการแต่ละราย",
+  "24-Hour Performance by Provider": "การดำเนินงานตลอด 24 ชั่วโมงโดยผู้ให้บริการ",
+  "Delivery times for each email provider (Direct vs Forwarding)": "ระยะเวลาการจัดส่งสำหรับผู้ให้บริการอีเมลแต่ละราย (โดยตรงหรือส่งต่อ)",
+  "Average delivery times for each email provider": "ระยะเวลาการจัดส่งโดยเฉลี่ยสำหรับผู้ให้บริการอีเมลแต่ละราย",
+  "Current Delivery Times": "เวลาจัดส่งปัจจุบัน"
 }

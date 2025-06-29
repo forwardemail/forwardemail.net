@@ -31,7 +31,7 @@ const bree = new Bree({
       // (so it never exits, but this is just in case it does)
       // time to inbox monitoring
       name: 'tti',
-      interval: '1m',
+      interval: '10m',
       timeout: 0
     }
   ]

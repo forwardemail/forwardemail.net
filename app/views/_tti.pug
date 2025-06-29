@@ -3,18 +3,21 @@
     .container.text-center.mb-3
       .row
         .col
-          h2.h1.mt-3.mt-md-5
+          h1.display-4.mt-3.mt-md-5
             = t("Time to Inbox")
-      .row
+      .row.mb-5
         .col-xs-12.col-sm-12.col-md-8.offset-md-2
           .small.text-muted.mb-3
             != t('Last updated on <span class="dayjs" data-time="%d">%s</span>', tti.created_at.getTime(), dayjs(tti.created_at).format("M/D/YY h:mm A z"))
-          p.small
+          p.small.mb-0
             = t("We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.")
             = " "
             = t("This monitoring helps us to ensure high-quality IP reputation and email deliverability.")
             = " "
             = t("Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.")
+      .row
+        .col
+          h2.text-center= t("Current Delivery Times")
       .row
         .col
           .d-flex.flex-row.align-content-between.flex-wrap.align-items-stretch.justify-content-center.flex-grow-1.mt-3
@@ -23,7 +26,7 @@
               if i === tti.providers.length - 1
                 - providerClass = "";
               .col-12.col-sm-6.col-lg-4(class=providerClass)
-                p.lead.font-weight-bold= provider.name
+                h3.mb-3= provider.name
                 ul.list-inline.mb-0
                   li.list-inline-item.mr-3.border.p-3.rounded-lg
                     - let directClass = "text-success";
@@ -49,12 +52,34 @@
                       else
                         = prettyMilliseconds(provider.forwardingMs)
                     .small= t("Forwarding")
-          if ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/tti'
-            .alert.alert-success.d-inline-block.mb-0.small.mt-3
-              strong= t("Did you know?")
-              = " "
-              != t("We are the only email service with 100% open-source and transparent monitoring.")
-              = " "
-              != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer" class="alert-link">available on GitHub</a>.')
+
+          // Historical TTI Timeline Charts
+          .row
+            .col.mt-5
+              h2.text-center.mb-4= t("Historical Timeline")
+
+              // Chart data embedded for client-side rendering
+              if ttiChartData
+                #chart-data(
+                  data-json=JSON.stringify(ttiChartData),
+                  style="display: none"
+                )
+
+              // Single chart container for all providers
+              .row.justify-content-center
+                .col-lg-12
+                  .card
+                    .card-header
+                      h5.card-title.mb-0.text-center= t("24-Hour Performance by Provider")
+                      p.card-text.small.text-muted.text-center.mb-0
+                        = t("Average delivery times for each email provider")
+                    .card-body
+                      #tti-timeline-chart
+          .alert.alert-success.d-inline-block.mb-0.small.my-5
+            strong= t("Did you know?")
+            = " "
+            != t("We are the only email service with 100% open-source and transparent monitoring.")
+            = " "
+            != t('Source code is <a href="https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js" target="_blank" rel="noopener noreferrer" class="alert-link">available on GitHub</a>.')
           // if ctx.pathWithoutLocale === '/tti'
           //   .markdown-body: img.rounded-lg(src=manifest("img/articles/tti.webp"), alt="")

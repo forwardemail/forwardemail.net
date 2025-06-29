@@ -11458,5 +11458,14 @@
   "Email for Your Business": "Email for Your Business",
   "All-in-one Email Solution": "All-in-one Email Solution",
   "Privacy-focused email hosting, forwarding, newsletters, and API": "Privacy-focused email hosting, forwarding, newsletters, and API",
-  "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations": "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations"
+  "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations": "For <a href=\"%s\" class=\"text-themed font-weight-bold\">education</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">universities</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">alumni</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">healthcare</a>, <a href=\"%s\" class=\"text-themed font-weight-bold\">government</a>, and custom implementations",
+  "Historical Timeline": "Historical Timeline",
+  "View historical Time to Inbox performance over the past 24 hours across all providers.": "View historical Time to Inbox performance over the past 24 hours across all providers.",
+  "24-Hour Performance Overview": "24-Hour Performance Overview",
+  "Average delivery times across all email providers": "Average delivery times across all email providers",
+  "View historical Time to Inbox performance over the past 24 hours for each provider.": "View historical Time to Inbox performance over the past 24 hours for each provider.",
+  "24-Hour Performance by Provider": "24-Hour Performance by Provider",
+  "Delivery times for each email provider (Direct vs Forwarding)": "Delivery times for each email provider (Direct vs Forwarding)",
+  "Average delivery times for each email provider": "Average delivery times for each email provider",
+  "Current Delivery Times": "Current Delivery Times"
 }

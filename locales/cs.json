@@ -11075,5 +11075,21 @@
   "13 Best Private Email Services in <span class=\"notranslate\">2025</span>": "13 nejlepších soukromých e-mailových služeb v <span class=\"notranslate\">2025</span>",
   "Reviews, comparison, screenshots and more for the 13 best private email services.": "Recenze, srovnání, snímky obrazovky a další informace o 13 nejlepších soukromých e-mailových službách.",
   "5 Best Open-Source Email Services in <span class=\"notranslate\">2025</span>": "5 nejlepších open-source e-mailových služeb v <span class=\"notranslate\">2025</span>",
-  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Recenze, srovnání, snímky obrazovky a další informace o 5 nejlepších open-source e-mailových službách."
+  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Recenze, srovnání, snímky obrazovky a další informace o 5 nejlepších open-source e-mailových službách.",
+  "Last updated on <span class=\"dayjs\" data-time=\"%d\">%s</span>": "Naposledy aktualizováno <span class=\"dayjs\" data-time=\"%d\">%s</span>",
+  "We monitor how long it takes for emails sent by our service to be delivered to test inboxes at major email service providers.": "Sledujeme, jak dlouho trvá, než se e-maily odeslané naší službou doručí do testovacích schránek u hlavních poskytovatelů e-mailových služeb.",
+  "This monitoring helps us to ensure high-quality IP reputation and email deliverability.": "Toto monitorování nám pomáhá zajistit vysoce kvalitní reputaci IP adres a doručitelnost e-mailů.",
+  "Our team of engineers are automatically alerted if any of these timers exceed 10 seconds.": "Náš tým techniků je automaticky upozorněn, pokud některý z těchto časovačů překročí 10 sekund.",
+  "Direct": "Řídit",
+  "We are the only email service with 100% open-source and transparent monitoring.": "Jsme jediná e-mailová služba se 100% otevřeným zdrojovým kódem a transparentním monitoringem.",
+  "Source code is <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">available on GitHub</a>.": "Zdrojový kód je <a href=\"https://github.com/forwardemail/forwardemail.net/blob/master/jobs/tti.js\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"alert-link\">k dispozici na GitHubu</a> .",
+  "Historical Timeline": "Historická časová osa",
+  "View historical Time to Inbox performance over the past 24 hours across all providers.": "Zobrazit historii doby doručení pošty za posledních 24 hodin u všech poskytovatelů.",
+  "24-Hour Performance Overview": "24hodinový přehled výkonu",
+  "Average delivery times across all email providers": "Průměrné doby doručení u všech poskytovatelů e-mailových služeb",
+  "View historical Time to Inbox performance over the past 24 hours for each provider.": "Zobrazit historii doby doručení za posledních 24 hodin u každého poskytovatele.",
+  "24-Hour Performance by Provider": "24hodinový výkon podle poskytovatele",
+  "Delivery times for each email provider (Direct vs Forwarding)": "Dodací lhůty pro každého poskytovatele e-mailu (přímé vs. přesměrování)",
+  "Average delivery times for each email provider": "Průměrné doby doručení u jednotlivých poskytovatelů e-mailových služeb",
+  "Current Delivery Times": "Aktuální dodací lhůty"
 }

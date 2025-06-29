@@ -32,8 +32,9 @@ const admin = require('./admin');
 const auth = require('./auth');
 const myAccount = require('./my-account');
 const otp = require('./otp');
-const _ = require('#helpers/lodash');
 
+const TTI = require('#models/tti');
+const _ = require('#helpers/lodash');
 const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
@@ -256,14 +257,27 @@ localeRouter
   .get('/tti', hasSidebar, async (ctx) => {
     // get TTI stats for footer (v1 rudimentary approach)
     ctx.state.tti = false;
+    ctx.state.ttiChartData = null;
+
     try {
       const tti = await Promise.race([
-        ctx.client.get('tti'),
-        setTimeout(ms('3s'))
+        TTI.findOne().sort({ created_at: -1 }).lean(),
+        setTimeout(ms('10s'))
       ]);
       if (tti) {
-        ctx.state.tti = JSON.parse(tti);
-        ctx.state.tti.created_at = new Date(ctx.state.tti.created_at);
+        ctx.state.tti = tti;
+      }
+
+      // Always get historical data for charts when on TTI page
+      if (ctx.pathWithoutLocale === '/tti') {
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const chartData = await TTI.find({
+          created_at: { $gte: twentyFourHoursAgo }
+        })
+          .sort({ created_at: 1 })
+          .lean(); // Sort ascending for chronological order
+
+        ctx.state.ttiChartData = chartData;
       }
     } catch (err) {
       ctx.logger.error(err);
@@ -284,6 +298,7 @@ localeRouter
             : ctx.pathWithoutLocale
       }
     });
+
     ctx.body = html;
   })
 

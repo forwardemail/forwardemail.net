@@ -1,5 +1,4 @@
 # Report Abuse
-      'img/articles/faq.webp'
 
 <img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 

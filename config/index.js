@@ -504,24 +504,24 @@ if (env.TTI_GMAIL_IMAP_USER && env.TTI_GMAIL_IMAP_PASS)
 //
 // NOTE: temporarily removing because Outlook is trash, their captcha codes nonsense, blocking VPN, slow to load, and blocking valid logins
 //
-// if (env.TTI_OUTLOOK_IMAP_USER && env.TTI_OUTLOOK_IMAP_PASS)
-//   imapConfigurations.push({
-//     name: 'Outlook/Hotmail',
-//     forwarder: env.TTI_OUTLOOK_FORWARDER,
-//     config: {
-//       host:
-//         typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
-//         env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
-//           ? 'imap-mail.outlook.com'
-//           : 'outlook.office365.com',
-//       port: 993,
-//       secure: true,
-//       auth: {
-//         user: env.TTI_OUTLOOK_IMAP_USER,
-//         pass: env.TTI_OUTLOOK_IMAP_PASS
-//       }
-//     }
-//   });
+if (env.TTI_OUTLOOK_IMAP_USER && env.TTI_OUTLOOK_IMAP_PASS)
+  imapConfigurations.push({
+    name: 'Outlook/Hotmail',
+    forwarder: env.TTI_OUTLOOK_FORWARDER,
+    config: {
+      host:
+        typeof env.TTI_OUTLOOK_IMAP_USER === 'string' &&
+        env.TTI_OUTLOOK_IMAP_USER.endsWith('@hotmail.com')
+          ? 'imap-mail.outlook.com'
+          : 'outlook.office365.com',
+      port: 993,
+      secure: true,
+      auth: {
+        user: env.TTI_OUTLOOK_IMAP_USER,
+        pass: env.TTI_OUTLOOK_IMAP_PASS
+      }
+    }
+  });
 
 // iCloud/Me
 // <https://support.apple.com/en-us/102525>

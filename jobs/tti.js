@@ -19,7 +19,6 @@ const ip = require('ip');
 const mongoose = require('mongoose');
 const ms = require('ms');
 const prettyMilliseconds = require('pretty-ms');
-const safeStringify = require('fast-safe-stringify');
 const sharedConfig = require('@ladjs/shared-config');
 const { dkimSign } = require('mailauth/lib/dkim/sign');
 const { ImapFlow } = require('imapflow');
@@ -37,6 +36,7 @@ const logger = require('#helpers/logger');
 const sendEmail = require('#helpers/send-email');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+const TTI = require('#models/tti');
 
 monitorServer();
 
@@ -119,34 +119,30 @@ graceful.listen();
 })();
 
 async function checkTTI() {
-  // TODO: dashboard with chart for admin
   try {
     // check existing (within past 5 mins don't run)
-    let tti = await client.get('tti');
-    if (tti) {
-      tti = JSON.parse(tti);
-      tti.created_at = new Date(tti.created_at);
-      // if created_at of existing tti was < 5 minutes ago
+    const tti = await TTI.findOne().sort({ created_at: -1 }).lean();
+    if (
+      tti && // if created_at of existing tti was < 5 minutes ago
       // and if all had values <= 10s then return early
-      if (
-        tti.created_at.getTime() > Date.now() - ms('5m') &&
-        tti.providers.every(
-          (p) =>
-            p.directMs !== 0 &&
-            p.directMs <= 10000 &&
-            p.forwardingMs !== 0 &&
-            p.forwardingMs <= 10000
-        )
-      ) {
-        setTimeout(
-          () =>
-            checkTTI()
-              .then()
-              .catch((err) => logger.fatal(err)),
-          ms('1m')
-        );
-        return;
-      }
+
+      tti.created_at.getTime() > Date.now() - ms('5m') &&
+      tti.providers.every(
+        (p) =>
+          p.directMs !== 0 &&
+          p.directMs <= 10000 &&
+          p.forwardingMs !== 0 &&
+          p.forwardingMs <= 10000
+      )
+    ) {
+      setTimeout(
+        () =>
+          checkTTI()
+            .then()
+            .catch((err) => logger.fatal(err)),
+        ms('1m')
+      );
+      return;
     }
 
     // check if there is an existing lock
@@ -400,13 +396,11 @@ Forward Email
       })
     );
 
-    await client.set(
-      'tti',
-      safeStringify({
-        created_at: new Date(),
-        providers
-      })
-    );
+    // Save TTI data to MongoDB
+    const ttiDocument = new TTI({
+      providers
+    });
+    await ttiDocument.save();
 
     // if some providers did not receive mail or
     // if some have >= 10s delay then email admins

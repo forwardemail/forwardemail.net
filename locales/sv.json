@@ -15649,5 +15649,14 @@
   "79 Best Email Services in <span class=\"notranslate\">2025</span>": "79 bästa e-posttjänsterna år <span class=\"notranslate\">2025</span>",
   "13 Best Private Email Services in <span class=\"notranslate\">2025</span>": "13 bästa privata e-posttjänster år <span class=\"notranslate\">2025</span>",
   "5 Best Open-Source Email Services in <span class=\"notranslate\">2025</span>": "5 bästa e-posttjänster med öppen källkod <span class=\"notranslate\">2025</span>",
-  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Recensioner, jämförelser, skärmdumpar och mer för de 5 bästa e-posttjänsterna med öppen källkod."
+  "Reviews, comparison, screenshots and more for the 5 best open-source email services.": "Recensioner, jämförelser, skärmdumpar och mer för de 5 bästa e-posttjänsterna med öppen källkod.",
+  "Historical Timeline": "Historisk tidslinje",
+  "View historical Time to Inbox performance over the past 24 hours across all providers.": "Visa historisk prestanda för tid till inkorg under de senaste 24 timmarna för alla leverantörer.",
+  "24-Hour Performance Overview": "24-timmars prestandaöversikt",
+  "Average delivery times across all email providers": "Genomsnittliga leveranstider för alla e-postleverantörer",
+  "View historical Time to Inbox performance over the past 24 hours for each provider.": "Visa historisk prestanda för tid till inkorg under de senaste 24 timmarna för varje leverantör.",
+  "24-Hour Performance by Provider": "24-timmars prestanda per leverantör",
+  "Delivery times for each email provider (Direct vs Forwarding)": "Leveranstider för varje e-postleverantör (Direkt vs. Vidarebefordran)",
+  "Average delivery times for each email provider": "Genomsnittliga leveranstider för varje e-postleverantör",
+  "Current Delivery Times": "Nuvarande leveranstider"
 }
