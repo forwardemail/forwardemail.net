@@ -473,6 +473,7 @@ object[fields.ubuntuUsername] = {
   type: String,
   index: true
 };
+object.last_ubuntu_sync = Date;
 
 object[fields.otpEnabled] = {
   type: Boolean,
@@ -994,7 +995,9 @@ Users.pre('save', async function (next) {
 
   try {
     await syncUbuntuUser(this);
+    this.last_ubuntu_sync = new Date();
   } catch (err) {
+    this.last_ubuntu_sync = new Date();
     logger.fatal(err);
   }
 
@@ -1064,7 +1067,7 @@ Users.post('save', async (user, next) => {
       template: 'alert',
       message: {
         to,
-        // bcc: config.email.message.from,
+        bcc: config.email.message.from,
         subject: `🎉 ~${
           user[fields.ubuntuUsername]
         } signed into Forward Email with Launchpad!`

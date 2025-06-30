@@ -72,7 +72,7 @@ const $body = $('body');
 
 const {
   ajaxForm,
-  changeHashOnScroll,
+  // changeHashOnScroll,
   clipboard,
   confirmPrompt,
   customFileInput,
@@ -241,11 +241,15 @@ renderDayjs();
 // Handle modals on anchor tags with data-target specified (preserve href)
 $('a[data-toggle="modal-anchor"]').on('click.modalAnchor', modalAnchor);
 
+//
+// NOTE: we completely disabled this since it's kind of buggy and may be
+//       unwanted by the user for their URL to be changing
+//
 // Adjust the hash of the page as you scroll down
 // (e.g. if you scroll past a section "Section A" to "Section B"
 // then the URL bar will update to #section-b
-if (!navigator || !navigator.userAgentData || !navigator.userAgentData.mobile)
-  $(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 1000));
+// if (!navigator || !navigator.userAgentData || !navigator.userAgentData.mobile)
+//   $(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 1000));
 
 // Handle hash change when user clicks on links
 $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);

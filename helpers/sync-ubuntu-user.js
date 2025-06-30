@@ -39,6 +39,17 @@ class InvalidUbuntuUserError extends TypeError {
   }
 }
 
+function renderDebug(map, stack) {
+  return `<pre><code>${JSON.stringify(
+    {
+      map: Object.fromEntries(map),
+      stack
+    },
+    null,
+    2
+  )}</code></pre>`;
+}
+
 function getKeyPrefix(user, domain) {
   return `sync_ubuntu_error:${revHash([user.id, domain.id].join(':'))}`;
 }
@@ -103,6 +114,18 @@ async function syncUbuntuUser(user, map) {
 
     if (map.size === 0)
       throw new TypeError('Map supplied was missing or empty');
+
+    //
+    // if the user's last sync was AFTER the mapping was created
+    // then exit early so we get a fresh sync
+    // (this will NEVER happen for when user hooks are run since it always gets a fresh mapping)
+    //
+    const date = map.get(Symbol.for('createdAt'));
+    if (
+      _.isDate(user.last_ubuntu_sync) &&
+      new Date(user.last_ubuntu_sync).getTime() > date.getTime()
+    )
+      throw new TypeError('Mapping outdated');
 
     // safeguard to ensure every key exists
     if (
@@ -295,19 +318,18 @@ async function syncUbuntuUser(user, map) {
                     message: {
                       to: user.email,
                       cc: adminEmailsForDomain,
-                      // bcc: config.email.message.from,
+                      bcc: config.email.message.from,
                       subject: `${emoji('warning')} ${user[
                         fields.ubuntuUsername
                       ].toLowerCase()}@${domain.name} could not be created`
                     },
                     locals: {
-                      message: `<p>${user[
-                        fields.ubuntuUsername
-                      ].toLowerCase()}@${
-                        domain.name
-                      } could not be created as a member of ${teamName} due to the following reason:</p><p>${
-                        err.message
-                      }</p>`
+                      message:
+                        `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
+                          domain.name
+                        } could not be created as a member of ${teamName} due to the following reason:</p><p>${
+                          err.message
+                        }</p>` + renderDebug(map, new Error('null').stack)
                     }
                   });
                   await client.set(key, true, 'PX', ms('30d'));
@@ -331,7 +353,7 @@ async function syncUbuntuUser(user, map) {
                   template: 'alert',
                   message: {
                     to: adminEmailsForDomain,
-                    // bcc: config.email.message.from,
+                    bcc: config.email.message.from,
                     subject: isEqual
                       ? `${emoji('warning')} ${alias.name}@${
                           domain.name
@@ -339,13 +361,14 @@ async function syncUbuntuUser(user, map) {
                       : `${emoji('tada')} ${alias.name}@${domain.name} created`
                   },
                   locals: {
-                    message: `${alias.name}@${
-                      domain.name
-                    } was created since they are a member of ${teamName}${
-                      isEqual
-                        ? ', yet it was disabled due to matching addresses.'
-                        : '.'
-                    }`
+                    message:
+                      `${alias.name}@${
+                        domain.name
+                      } was created since they are a member of ${teamName}${
+                        isEqual
+                          ? ', yet it was disabled due to matching addresses.'
+                          : '.'
+                      }` + renderDebug(map, new Error('null').stack)
                   }
                 });
               } catch (err) {
@@ -405,15 +428,17 @@ async function syncUbuntuUser(user, map) {
               template: 'alert',
               message: {
                 to: adminEmailsForDomain,
-                // bcc: config.email.message.from,
+                bcc: config.email.message.from,
                 subject: `${emoji('wastebasket')} ${user[
                   fields.ubuntuUsername
                 ].toLowerCase()}@${domain.name} removed`
               },
               locals: {
-                message: `${user[fields.ubuntuUsername].toLowerCase()}@${
-                  domain.name
-                } was removed since they are no longer a member of ${teamName}.`
+                message:
+                  `${user[fields.ubuntuUsername].toLowerCase()}@${
+                    domain.name
+                  } was removed since they are no longer a member of ${teamName}.` +
+                  renderDebug(map, new Error('null').stack)
               }
             });
           } catch (err) {
@@ -560,7 +585,7 @@ async function syncUbuntuUser(user, map) {
                     message: {
                       to: user.email,
                       cc: adminEmailsForDomain,
-                      // bcc: config.email.message.from,
+                      bcc: config.email.message.from,
                       subject: `${emoji('wastebasket')} ${user[
                         fields.ubuntuUsername
                       ].toLowerCase()}@${domain.name} ${
@@ -568,13 +593,14 @@ async function syncUbuntuUser(user, map) {
                       } due to invalidity`
                     },
                     locals: {
-                      message: `<p>${user[
-                        fields.ubuntuUsername
-                      ].toLowerCase()}@${domain.name} was ${
-                        isMember ? 'removed' : 'not added'
-                      } for the following invalidity reason from ${teamName}:</p><p>${
-                        err.message
-                      }</p>`
+                      message:
+                        `<p>${user[fields.ubuntuUsername].toLowerCase()}@${
+                          domain.name
+                        } was ${
+                          isMember ? 'removed' : 'not added'
+                        } for the following invalidity reason from ${teamName}:</p><p>${
+                          err.message
+                        }</p>` + renderDebug(map, new Error('null').stack)
                     }
                   });
                   await client.set(key, true, 'PX', ms('30d'));

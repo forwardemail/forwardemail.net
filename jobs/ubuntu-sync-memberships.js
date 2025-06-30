@@ -77,7 +77,14 @@ const resolver = createTangerine(client, logger);
           if (!user) return;
 
           await syncUbuntuUser(user, map);
+          await Users.findByIdAndUpdate(user._id, {
+            $set: {
+              last_ubuntu_sync: new Date()
+            }
+          });
         } catch (err) {
+          if (err.message === 'Mapping outdated') throw err; // short circuit so job will retry
+
           err.isCodeBug = true;
           await logger.fatal(err);
         }

@@ -53,6 +53,9 @@ function addToSet(entries, set) {
 async function getUbuntuMembersMap(resolver) {
   const map = new Map();
 
+  // set a date so we can use it for cache checks
+  map.set(Symbol.for('createdAt'), new Date());
+
   await pMapSeries(Object.keys(config.ubuntuTeamMapping), async (name) => {
     const set = new Set();
     //
@@ -124,6 +127,9 @@ async function getUbuntuMembersMap(resolver) {
     logger.debug(`setting ${name}`, { set: [...set] });
     map.set(name, set);
   });
+
+  // if the map was completely empty then it's an error
+  if (map.size === 0) throw new TypeError('Map size was empty');
 
   return map;
 }
