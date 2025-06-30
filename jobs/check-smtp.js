@@ -293,7 +293,7 @@ async function mapper(id) {
 
     logger.info('checking domains', { count: ids.length });
 
-    await pMap(ids, mapper, { concurrency: 100 });
+    await pMap(ids, mapper, { concurrency: 25 });
   } catch (err) {
     await logger.error(err);
   }
