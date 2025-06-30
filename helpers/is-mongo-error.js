@@ -5,23 +5,59 @@
 
 const isErrorConstructorName = require('./is-error-constructor-name');
 
+const constructorNames = [
+  'DivergentArrayError',
+  'DocumentNotFoundError',
+  'MissingSchemaError',
+  'MongoAPIError',
+  'MongoBatchReExecutionError',
+  'MongoBulkWriteError',
+  'MongoCompatibilityError',
+  'MongoCursorExhaustedError',
+  'MongoCursorInUseError',
+  'MongoError',
+  'MongoExpiredSessionError',
+  'MongoInvalidArgumentError',
+  'MongoMissingCredentialsError',
+  'MongoMissingDependencyError',
+  'MongoNetworkError',
+  'MongoNetworkTimeoutError',
+  'MongoNotConnectedError',
+  'MongoParseError',
+  'MongoPoolClearedError',
+  'MongoRuntimeError',
+  'MongoServerClosedError',
+  'MongoServerError',
+  'MongoTailableCursorError',
+  'MongoTopologyClosedError',
+  'MongoTransactionError',
+  'MongoWriteConcernError',
+  'MongoWriteError',
+  'MongooseBulkSaveIncompleteError',
+  'MongooseServerSelectionError',
+  'ObjectExpectedError',
+  'ObjectParameterError',
+  'OverwriteModelError',
+  'ParallelSaveError',
+  'PoolClearedOnNetworkError',
+  'StrictModeError',
+  'StrictPopulateError',
+  'ValidatorError',
+  'VersionError'
+];
+
 function isMongoError(err) {
   if (typeof err !== 'object') return false;
   if (
-    (isErrorConstructorName(err, 'MongooseError') &&
-      !isErrorConstructorName(err, 'ValidationError')) ||
-    isErrorConstructorName(err, 'MongoError') ||
-    isErrorConstructorName(err, 'MongoServerError') ||
-    isErrorConstructorName(err, 'MongoRuntimeError') ||
-    isErrorConstructorName(err, 'MongoBulkWriteError') ||
-    isErrorConstructorName(err, 'MongoNetworkError') ||
-    isErrorConstructorName(err, 'MongoNotConnectedError') ||
-    isErrorConstructorName(err, 'MongoNetworkTimeoutError') ||
-    isErrorConstructorName(err, 'PoolClearedOnNetworkError') ||
-    isErrorConstructorName(err, 'MongoPoolClearedError') ||
-    isErrorConstructorName(err, 'MongooseServerSelectionError')
+    isErrorConstructorName(err, 'MongooseError') &&
+    !isErrorConstructorName(err, 'ValidationError')
   )
     return true;
+
+  for (const constructorName of constructorNames) {
+    if (isErrorConstructorName(err, constructorName)) return true;
+  }
+
   return false;
 }
 

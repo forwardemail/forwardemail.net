@@ -15,7 +15,14 @@ function isRedisError(err) {
     err.message === CONNECTION_CLOSED_ERROR_MSG
   )
     return true;
-  if (isErrorConstructorName(err, 'RedisError')) return true;
+  if (
+    isErrorConstructorName(err, 'RedisError') ||
+    isErrorConstructorName(err, 'ReplyError') ||
+    isErrorConstructorName(err, 'ParserError') ||
+    isErrorConstructorName(err, 'MaxRetriesPerRequestError') ||
+    isErrorConstructorName(err, 'ClusterAllFailedError')
+  )
+    return true;
   return false;
 }
 
