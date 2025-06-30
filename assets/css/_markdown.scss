@@ -18,7 +18,7 @@
   // <https://github.com/sindresorhus/github-markdown-css/blob/bedb4b771f5fa1ae117df597c79993fd1eb4dff0/github-markdown-light.css#L1051-L1056>
   .markdown-alert {
     .markdown-alert-title {
-      font-weight: 700;
+      font-weight: 700 !important;
     }
   }
 
