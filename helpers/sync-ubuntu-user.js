@@ -129,7 +129,11 @@ async function syncUbuntuUser(user, map) {
 
     // safeguard to ensure every key exists
     if (
-      ![...map.keys()].every((name) => Boolean(config.ubuntuTeamMapping[name]))
+      ![...map.keys()].every(
+        (name) =>
+          name === Symbol.for('createdAt') ||
+          name === Boolean(config.ubuntuTeamMapping[name])
+      )
     )
       throw new TypeError('Map supplied had invalid team names');
 
@@ -207,6 +211,7 @@ async function syncUbuntuUser(user, map) {
 
       // eslint-disable-next-line complexity
       async (name) => {
+        if (name === Symbol.for('createdAt')) return;
         try {
           const domain = await Domains.findOne({
             name,
@@ -518,6 +523,7 @@ async function syncUbuntuUser(user, map) {
       await pMap(
         [...map.keys()],
         async (name) => {
+          if (name === Symbol.for('createdAt')) return;
           try {
             const teamName = config.ubuntuTeamMapping[name];
 
