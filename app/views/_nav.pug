@@ -84,6 +84,10 @@ if user
   - navbarClasses.push("navbar-dark", "bg-dark", "border-bottom");
 else if ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent"))
   - navbarClasses.push("text-white");
+  //- used by core.js JavaScript file
+  //- (purely for `hasClass('text-white-required')` check
+  //- (hacky but we can clean this up later)
+  - navbarClasses.push("text-white-required");
 else
   - navbarClasses.push("bg-white", "navbar-themed", "bg-themed", "border-bottom");
 if !isBot(ctx.get("User-Agent"))

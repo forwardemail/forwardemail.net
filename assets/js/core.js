@@ -542,12 +542,13 @@ function navbarScroll() {
       .addClass('text-dark')
       .removeClass('text-white');
   } else {
+    const isTextWhiteRequired = $nav.hasClass('text-white-required');
     $nav
-      .addClass('text-white')
+      .addClass(isTextWhiteRequired ? 'text-white' : '')
       .removeClass('bg-white navbar-themed bg-themed border-bottom');
     $nav
       .find('.navbar-toggler')
-      .addClass('text-white')
+      .addClass(isTextWhiteRequired ? 'text-white' : '')
       .removeClass('text-dark');
   }
 }

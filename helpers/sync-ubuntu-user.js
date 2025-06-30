@@ -120,7 +120,7 @@ async function syncUbuntuUser(user, map) {
     // then exit early so we get a fresh sync
     // (this will NEVER happen for when user hooks are run since it always gets a fresh mapping)
     //
-    const date = map.get(Symbol.for('createdAt'));
+    const date = map[Symbol.for('createdAt')];
     if (
       _.isDate(user.last_ubuntu_sync) &&
       new Date(user.last_ubuntu_sync).getTime() > date.getTime()
@@ -130,9 +130,7 @@ async function syncUbuntuUser(user, map) {
     // safeguard to ensure every key exists
     if (
       ![...map.keys()].every(
-        (name) =>
-          name === Symbol.for('createdAt') ||
-          name === Boolean(config.ubuntuTeamMapping[name])
+        (name) => name === Boolean(config.ubuntuTeamMapping[name])
       )
     )
       throw new TypeError('Map supplied had invalid team names');
@@ -211,7 +209,6 @@ async function syncUbuntuUser(user, map) {
 
       // eslint-disable-next-line complexity
       async (name) => {
-        if (name === Symbol.for('createdAt')) return;
         try {
           const domain = await Domains.findOne({
             name,
@@ -523,7 +520,6 @@ async function syncUbuntuUser(user, map) {
       await pMap(
         [...map.keys()],
         async (name) => {
-          if (name === Symbol.for('createdAt')) return;
           try {
             const teamName = config.ubuntuTeamMapping[name];
 

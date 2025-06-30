@@ -54,7 +54,7 @@ async function getUbuntuMembersMap(resolver) {
   const map = new Map();
 
   // set a date so we can use it for cache checks
-  map.set(Symbol.for('createdAt'), new Date());
+  map[Symbol.for('createdAt')] = new Date();
 
   await pMapSeries(Object.keys(config.ubuntuTeamMapping), async (name) => {
     const set = new Set();

@@ -13,6 +13,15 @@
 .markdown-body {
   background-color: transparent !important;
 
+  // override since font weight is a little off due to our fonts used
+  // (e.g. we don't have a semibold)
+  // <https://github.com/sindresorhus/github-markdown-css/blob/bedb4b771f5fa1ae117df597c79993fd1eb4dff0/github-markdown-light.css#L1051-L1056>
+  .markdown-alert {
+    .markdown-alert-title {
+      font-weight: 700;
+    }
+  }
+
   img {
     background-color: transparent !important;
   }
