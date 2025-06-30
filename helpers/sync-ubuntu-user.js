@@ -40,9 +40,14 @@ class InvalidUbuntuUserError extends TypeError {
 }
 
 function renderDebug(map, stack) {
+  // Convert Map with Sets to a plain object with arrays
+  const mapWithArrays = Object.fromEntries(
+    [...map.entries()].map(([key, set]) => [key, [...set]])
+  );
+
   return `<pre><code>${JSON.stringify(
     {
-      map: Object.fromEntries(map),
+      map: mapWithArrays,
       stack
     },
     null,
