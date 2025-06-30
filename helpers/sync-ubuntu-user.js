@@ -129,9 +129,7 @@ async function syncUbuntuUser(user, map) {
 
     // safeguard to ensure every key exists
     if (
-      ![...map.keys()].every(
-        (name) => name === Boolean(config.ubuntuTeamMapping[name])
-      )
+      ![...map.keys()].every((name) => Boolean(config.ubuntuTeamMapping[name]))
     )
       throw new TypeError('Map supplied had invalid team names');
 
