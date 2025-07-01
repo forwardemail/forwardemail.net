@@ -22,6 +22,7 @@ const toObject = require('./to-object');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
 const { encoder, decoder } = require('./encoder-decoder');
 const { paypalAgent, paypal } = require('./paypal');
+const { paypalAgentLegacy } = require('./paypal-legacy');
 // TODO: create an npm package for this and then add it in smtp code too
 const combineErrors = require('./combine-errors');
 const ThresholdError = require('./threshold-error');
@@ -160,6 +161,7 @@ module.exports = {
   parseLoginSuccessRedirect,
   paypal,
   paypalAgent,
+  paypalAgentLegacy,
   policies,
   rateLimit,
   refund,

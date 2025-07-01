@@ -244,6 +244,7 @@ const Payments = new mongoose.Schema({
   },
   is_apple_pay: { type: Boolean, default: false },
   is_google_pay: { type: Boolean, default: false },
+  is_legacy_paypal: { type: Boolean, default: false, index: true },
   method: {
     default: 'unknown',
     type: String,

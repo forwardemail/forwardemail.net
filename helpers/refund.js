@@ -6,6 +6,7 @@
 const Stripe = require('stripe');
 
 const { paypalAgent } = require('./paypal');
+const { paypalAgentLegacy } = require('./paypal-legacy');
 const env = require('#config/env');
 const { Payments } = require('#models');
 
@@ -34,7 +35,9 @@ async function refund(id) {
   // - paypal_transaction_id
   //
   if (payment.paypal_transaction_id) {
-    const agent = await paypalAgent();
+    const agent = payment.is_legacy_paypal
+      ? await paypalAgentLegacy()
+      : await paypalAgent();
     // <https://developer.paypal.com/docs/api/payments/v2/#captures_refund>
     await agent.post(
       `/v2/payments/captures/${payment.paypal_transaction_id}/refund`

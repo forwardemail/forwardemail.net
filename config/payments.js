@@ -165,6 +165,12 @@ const paypalRestSdkConfig = {
   client_secret: env.PAYPAL_SECRET
 };
 
+const paypalRestSdkConfigLegacy = {
+  mode: env.NODE_ENV === 'production' ? 'live' : 'sandbox',
+  client_id: env.PAYPAL_CLIENT_ID_LEGACY,
+  client_secret: env.PAYPAL_SECRET_LEGACY
+};
+
 module.exports = {
   STRIPE_MAPPING,
   STRIPE_PRODUCTS,
@@ -172,5 +178,6 @@ module.exports = {
   PAYPAL_MAPPING,
   PAYPAL_PLAN_MAPPING,
   PAYPAL_ENDPOINT,
-  paypalRestSdkConfig
+  paypalRestSdkConfig,
+  paypalRestSdkConfigLegacy
 };
