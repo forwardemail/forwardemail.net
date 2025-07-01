@@ -61,6 +61,7 @@
 * [How We Build Email Infrastructure That Actually Works](#how-we-build-email-infrastructure-that-actually-works)
   * [Our Anti-Startup Approach](#our-anti-startup-approach)
   * [What Makes Us Different](#what-makes-us-different)
+  * [Email Service Provider Comparison: Growth Through Proven Protocols](#email-service-provider-comparison-growth-through-proven-protocols)
   * [The Technical Timeline](#the-technical-timeline)
   * [Why We Succeed Where Others Fail](#why-we-succeed-where-others-fail)
   * [The Cost Reality Check](#the-cost-reality-check)
@@ -316,8 +317,11 @@ graph LR
 
 * **[Mailspring](https://getmailspring.com/)**: 500MB+ for basic email
 * **Nylas Mail**: 1GB+ memory usage before shutdown
-* **[Postbox](https://www.postbox-inc.com/)**: [300MB+ idle memory](https://www.postbox-inc.com/support/memory-usage)
+* **[Postbox](https://www.postbox-inc.com/)**: 300MB+ idle memory
 * **[Canary Mail](https://canarymail.io/)**: Frequent crashes due to memory issues
+
+> \[!WARNING]
+> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
 
 **Battery Drain**: Constant syncing and inefficient code:
 
@@ -426,6 +430,9 @@ Adding "AI" doesn't solve email's fundamental non-problems:
 * **[ProtonMail](https://proton.me/)**: Privacy-focused, sustainable growth
 * **[Zoho Mail](https://www.zoho.com/mail/)**: Part of larger business suite
 * **We**: 7+ years, profitable, growing
+
+> \[!WARNING]
+> **The JMAP Distraction**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with little to no adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that users actually want. JMAP is bloat and a broken chaotic API that adds complexity without solving real problems, while the email client ecosystem remains in chaos with basic IMAP/SMTP issues still unresolved.
 
 > \[!TIP]
 > **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
@@ -587,6 +594,9 @@ While other companies burn millions trying to reinvent email, we focus on buildi
 > \[!TIP]
 > **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
 
+> \[!NOTE]
+> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+
 **Technical Stack Comparison**:
 
 ```mermaid
@@ -622,6 +632,28 @@ graph TD
 > **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
 
 **Technical Documentation**: For comprehensive details on our approach, architecture, and security implementation, see our [technical whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and extensive technical documentation.
+
+### Email Service Provider Comparison: Growth Through Proven Protocols
+
+> \[!SUCCESS]
+> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+
+| Provider            | Domain Names (2024 via [SecurityTrails](https://securitytrails.com/)) | Domain Names (2025 via [ViewDNS](https://viewdns.info/reversemx/)) | Percentage Change | MX Record                      |
+| ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
+| **Forward Email**   | 418,477                                                               | 506,653                                                            | **+21.1%**        | `mx1.forwardemail.net`         |
+| **Proton Mail**     | 253,977                                                               | 334,909                                                            | **+31.9%**        | `mail.protonmail.ch`           |
+| **Fastmail**        | 168,433                                                               | 192,075                                                            | **+14%**          | `in1-smtp.messagingengine.com` |
+| **Mailbox**         | 38,659                                                                | 43,337                                                             | **+12.1%**        | `mxext1.mailbox.org`           |
+| **Tuta**            | 18,781                                                                | 21,720                                                             | **+15.6%**        | `mail.tutanota.de`             |
+| **Skiff (defunct)** | 7,504                                                                 | 3,361                                                              | **-55.2%**        | `inbound-smtp.skiff.com`       |
+
+**Key Insights**:
+
+* **Forward Email** shows strong growth (+21.1%) with over 500K domains using our MX records
+* **Proven infrastructure wins**: Services with reliable IMAP/SMTP show consistent domain adoption
+* **JMAP irrelevance**: Fastmail's JMAP investment shows slower growth (+14%) compared to providers focusing on standard protocols
+* **Skiff's collapse**: The defunct startup lost 55.2% of domains, demonstrating the failure of "revolutionary" email approaches
+* **Market validation**: Domain count growth reflects real user adoption, not marketing metrics
 
 ### The Technical Timeline
 
@@ -740,6 +772,9 @@ The lesson isn't that email can't be improved. It's that:
 2. **Infrastructure matters**: Reliability beats features
 3. **Enhancement beats replacement**: Work with email, don't fight it
 4. **Sustainability beats growth**: Profitable businesses outlast VC-funded ones
+
+> \[!TIP]
+> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
 
 > \[!SUCCESS]
 > **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
