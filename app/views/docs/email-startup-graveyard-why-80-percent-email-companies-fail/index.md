@@ -21,7 +21,6 @@
   * [The Setup](#the-setup)
   * [The Acquisition](#the-acquisition)
   * [The Reality](#the-reality)
-  * [The Cycle Continues](#the-cycle-continues)
 * [Case Study: When Email Infrastructure Goes Wrong](#case-study-when-email-infrastructure-goes-wrong)
   * [Resend's Security Meltdown](#resends-security-meltdown)
   * [ActiveCampaign's Postmark Acquisition: A Cautionary Tale](#activecampaigns-postmark-acquisition-a-cautionary-tale)
@@ -160,10 +159,6 @@ Skiff perfectly exemplifies everything wrong with email startups.
 * **Immediate shutdown**: [Skiff shut down within months](https://www.reddit.com/r/ProtonMail/comments/1ap3wqf/skiff_is_shutting_down_how_to_migrate_to_proton/)
 * **Founder exodus**: [Skiff founders left Notion and joined Cursor](https://x.com/skeptrune/status/1939763513695903946)
 * **User abandonment**: Thousands of users forced to migrate
-
-### The Cycle Continues
-
-Meanwhile, other entrepreneurs keep building identical solutions. Jonathan Unikowski ([@jnnnthnn](https://x.com/jnnnthnn)) recently [announced yet another email app called "Net"](https://x.com/jnnnthnn/status/1935393947272233209) - proving that people don't learn from the graveyard.
 
 
 ## Case Study: When Email Infrastructure Goes Wrong
