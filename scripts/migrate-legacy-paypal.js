@@ -22,7 +22,7 @@ const Payments = require('#models/payments');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const { paypalAgentLegacy } = require('#helpers/paypal');
+const { paypalAgentLegacy } = require('#helpers/paypal-legacy');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const graceful = new Graceful({
