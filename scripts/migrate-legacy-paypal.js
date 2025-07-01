@@ -15,7 +15,6 @@ require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
 const pMapSeries = require('p-map-series');
-const dayjs = require('dayjs-with-plugins');
 
 const mongoose = require('mongoose');
 const Users = require('#models/users');
@@ -34,7 +33,7 @@ const graceful = new Graceful({
 graceful.listen();
 
 // July 1, 2025 cutoff date
-const CUTOFF_DATE = new Date('2025-07-01T00:00:00.000Z');
+const CUTOFF_DATE = Date.now();
 
 async function migratePayments() {
   try {
