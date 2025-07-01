@@ -105,19 +105,19 @@
 
 Here's every major email startup failure we could find, organized by accelerator, funding, and outcome:
 
-| Company           | Year | Accelerator | Funding                                                                                                                                                                                                            | Outcome                                                                                  | Status    | Key Issue                                                                                                                  |
-| ----------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------- |
-| **Skiff**         | 2024 | -           | [$14.2M total](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)                                                                                                                             | Acquired by Notion → Shutdown                                                            | 😵 Dead   | [Founders left Notion for Cursor](https://x.com/skeptrune/status/1939763513695903946)                                      |
-| **Sparrow**       | 2012 | -           | [$247K seed](https://tracxn.com/d/companies/sparrow/__LsNDTN1nTTj_nLjwLREPeSvD-RXwRJEMKfafgEEhxO8), [<$25M acquisition](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Acquired by Google → Shutdown                                                            | 😵 Dead   | [Talent acquisition only](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm)                   |
-| **Email Copilot** | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                        | Acquired → Shutdown                                                                      | 😵 Dead   | [Now redirects to Validity](https://www.validity.com/everest/returnpath/)                                                  |
-| **ReplySend**     | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                        | Failed                                                                                   | 😵 Dead   | [Vague value proposition](https://www.crunchbase.com/organization/replysend)                                               |
-| **Nveloped**      | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                        | Failed                                                                                   | 😵 Dead   | ["Easy. Secure. Email"](https://www.crunchbase.com/organization/nveloped)                                                  |
-| **Jumble**        | 2015 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                        | Failed                                                                                   | 😵 Dead   | [Email encryption](https://www.crunchbase.com/organization/jumble/technology)                                              |
-| **InboxFever**    | 2011 | Techstars   | ~$118K (Techstars 2011)                                                                                                                                                                                            | Failed                                                                                   | 😵 Dead   | [API for email apps](https://www.crunchbase.com/organization/inboxfever)                                                   |
-| **Emailio**       | 2014 | YC          | ~$120K (YC standard)                                                                                                                                                                                               | Pivoted                                                                                  | 🧟 Zombie | [Mobile email → "wellness"](https://www.ycdb.co/company/emailio)                                                           |
-| **MailTime**      | 2016 | YC          | ~$120K (YC standard)                                                                                                                                                                                               | Pivoted                                                                                  | 🧟 Zombie | [Email client → analytics](https://www.ycdb.co/company/mailtime)                                                           |
-| **reMail**        | 2009 | YC          | ~$20K (YC 2009)                                                                                                                                                                                                    | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Shutdown | 😵 Dead   | [iPhone email search](https://www.ycombinator.com/companies/remail)                                                        |
-| **Mailhaven**     | 2016 | 500 Global  | ~$100K (500 standard)                                                                                                                                                                                              | Exited                                                                                   | Unknown   | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06) |
+| Company           | Year | Accelerator | Funding                                                                                                                                                                                                      | Outcome                                                                                  | Status    | Key Issue                                                                                                                             |
+| ----------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Skiff**         | 2024 | -           | [$14.2M total](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)                                                                                                                       | Acquired by Notion → Shutdown                                                            | 😵 Dead   | [Founders left Notion for Cursor](https://x.com/skeptrune/status/1939763513695903946)                                                 |
+| **Sparrow**       | 2012 | -           | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [<$25M acquisition](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Acquired by Google → Shutdown                                                            | 😵 Dead   | [Talent acquisition only](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm)                              |
+| **Email Copilot** | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                  | Acquired → Shutdown                                                                      | 😵 Dead   | [Now redirects to Validity](https://www.validity.com/blog/validity-return-path-announcement/)                                         |
+| **ReplySend**     | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                  | Failed                                                                                   | 😵 Dead   | [Vague value proposition](https://www.f6s.com/company/replysend)                                                                      |
+| **Nveloped**      | 2012 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                  | Failed                                                                                   | 😵 Dead   | ["Easy. Secure. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/)                                                  |
+| **Jumble**        | 2015 | Techstars   | ~$120K (Techstars standard)                                                                                                                                                                                  | Failed                                                                                   | 😵 Dead   | [Email encryption](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
+| **InboxFever**    | 2011 | Techstars   | ~$118K (Techstars 2011)                                                                                                                                                                                      | Failed                                                                                   | 😵 Dead   | [API for email apps](https://twitter.com/inboxfever)                                                                                  |
+| **Emailio**       | 2014 | YC          | ~$120K (YC standard)                                                                                                                                                                                         | Pivoted                                                                                  | 🧟 Zombie | [Mobile email → "wellness"](https://www.ycdb.co/company/emailio)                                                                      |
+| **MailTime**      | 2016 | YC          | ~$120K (YC standard)                                                                                                                                                                                         | Pivoted                                                                                  | 🧟 Zombie | [Email client → analytics](https://www.ycdb.co/company/mailtime)                                                                      |
+| **reMail**        | 2009 | YC          | ~$20K (YC 2009)                                                                                                                                                                                              | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Shutdown | 😵 Dead   | [iPhone email search](https://www.ycombinator.com/companies/remail)                                                                   |
+| **Mailhaven**     | 2016 | 500 Global  | ~$100K (500 standard)                                                                                                                                                                                        | Exited                                                                                   | Unknown   | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06)            |
 
 
 ## The Infrastructure Reality Check
@@ -186,14 +186,14 @@ Email's network effect is absolute:
 
 * **Everyone has email**: [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023
 * **Cross-platform**: Works between all providers seamlessly
-* **Business critical**: [99% of businesses use email daily](https://www.campaignmonitor.com/resources/guides/email-marketing-new-rules/) for operations
+* **Business critical**: [99% of businesses use email daily](https://blog.hubspot.com/marketing/email-marketing-stats) for operations
 * **Switching cost**: Changing email addresses breaks everything connected to it
 
 ### 3. They're Solving Non-Problems
 
 Most email startups target imaginary issues:
 
-* **"Email is too complex"**: It's not. Send, receive, organize - [the same workflow since 1971](https://www.computerhistory.org/timeline/)
+* **"Email is too complex"**: It's not. Send, receive, organize - [the same workflow since 1971](https://en.wikipedia.org/wiki/History_of_email)
 * **"Email needs AI"**: [Gmail already has smart features](https://support.google.com/mail/answer/9116836) like Smart Reply and Priority Inbox
 * **"Email needs better security"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), and [DMARC](https://tools.ietf.org/html/rfc7489) work fine
 * **"Email needs a new interface"**: [Outlook](https://outlook.com/) and [Gmail](https://gmail.com/) interfaces are optimized through decades of user research
@@ -202,7 +202,7 @@ Most email startups target imaginary issues:
 
 Building real email infrastructure requires:
 
-* **SMTP servers**: Complex delivery and [reputation management](https://postmarkapp.com/guides/email-reputation)
+* **SMTP servers**: Complex delivery and [reputation management](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
 * **Spam filtering**: Constantly evolving [threat landscape](https://www.spamhaus.org/)
 * **Storage systems**: Reliable [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) implementation
 * **Authentication**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617) compliance
@@ -315,10 +315,11 @@ graph LR
 
 **Memory Bloat**: Most email apps are Electron-based web apps that consume massive amounts of RAM:
 
-* **[Mailspring](https://getmailspring.com/)**: 500MB+ for basic email
-* **Nylas Mail**: 1GB+ memory usage before shutdown
-* **[Postbox](https://www.postbox-inc.com/)**: 300MB+ idle memory
-* **[Canary Mail](https://canarymail.io/)**: Frequent crashes due to memory issues
+* **[Mailspring](https://getmailspring.com/)**: [500MB+ for basic email](https://github.com/Foundry376/Mailspring/issues/1758)
+* **Nylas Mail**: [1GB+ memory usage](https://github.com/nylas/nylas-mail/issues/3501) before shutdown
+* **[Postbox](https://www.postbox-inc.com/)**: [300MB+ idle memory](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
+* **[Canary Mail](https://canarymail.io/)**: [Frequent crashes due to memory issues](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
+* **[Thunderbird](https://www.thunderbird.net/)**: [High RAM usage up to 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to_90/) of system memory
 
 > \[!WARNING]
 > **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
@@ -351,7 +352,7 @@ flowchart TD
 
 ### Recent Examples
 
-* **[Mailbox → Dropbox → Shutdown](https://techcrunch.com/2015/12/07/dropbox-shutters-mailbox-and-carousel/)** (2013-2015)
+* **Mailbox → Dropbox → Shutdown** (2013-2015)
 * **[Sparrow → Google → Shutdown](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Shutdown](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
 * **[Skiff → Notion → Shutdown](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
@@ -733,6 +734,7 @@ The email industry continues to evolve its security practices:
 * **Authentication protocols**: Improving [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), and [DMARC](https://tools.ietf.org/html/rfc7489)
 * **Threat detection**: Developing better spam and phishing filters
 * **Infrastructure hardening**: Securing servers and databases
+* **Domain reputation management**: Dealing with [unprecedented spam from Microsoft's onmicrosoft.com domain](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) requiring [arbitrary blocking rules](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c)
 
 These challenges require ongoing investment and expertise from all providers in the space.
 
@@ -794,11 +796,11 @@ Google, despite owning [Gmail](https://gmail.com/), has killed multiple email pr
 
 ### The Serial Failure: Newton Mail's Three Deaths
 
-[Newton Mail](https://en.wikipedia.org/wiki/Newton_Mail) died **three times**:
+[Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) died **three times**:
 
-1. **[CloudMagic](https://en.wikipedia.org/wiki/Newton_Mail)** (2013-2016): Email client acquired by Newton
+1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Email client acquired by Newton
 2. **Newton Mail** (2016-2018): Rebranded, subscription model failed
-3. **[Newton Mail Revival](https://en.wikipedia.org/wiki/Newton_Mail)** (2019-2020): Attempted comeback, failed again
+3. **[Newton Mail Revival](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Attempted comeback, failed again
 
 **Lesson**: Email clients can't sustain subscription models.
 
@@ -807,14 +809,14 @@ Google, despite owning [Gmail](https://gmail.com/), has killed multiple email pr
 Many email startups died before launching:
 
 * **Tempo** (2014): Calendar-email integration, shut down pre-launch
-* **[Mailstrom](https://techcrunch.com/2011/12/13/mailstrom-acquired-by-whitepages/)** (2011): Email management tool, acquired before release
+* **[Mailstrom](https://mailstrom.co/)** (2011): Email management tool, acquired before release
 * **Fluent** (2013): Email client, development stopped
 
 ### The Acquisition-to-Shutdown Pattern
 
 * **[Sparrow → Google → Shutdown](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Shutdown](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Mailbox → Dropbox → Shutdown](https://techcrunch.com/2015/12/07/dropbox-shutters-mailbox-and-carousel/)** (2013-2015)
+* **Mailbox → Dropbox → Shutdown** (2013-2015)
 * **[Accompli → Microsoft → Shutdown](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (became Outlook Mobile)
 * **[Acompli → Microsoft → Integrated](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (rare success)
 
@@ -829,14 +831,14 @@ Many email startups died before launching:
 
 ### Nylas Mail → Mailspring: The Fork That Couldn't
 
-* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://github.com/nylas/nylas-mail)
-* **[Mailspring](https://getmailspring.com/)**: Community fork, struggling with maintenance
+* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://github.com/nylas/nylas-mail) due to [massive memory usage issues](https://github.com/nylas/nylas-mail/issues/3501)
+* **[Mailspring](https://getmailspring.com/)**: Community fork, struggling with maintenance and [high RAM usage issues](https://github.com/Foundry376/Mailspring/issues/1758)
 * **Reality**: Open-source email clients can't compete with native apps
 
 ### Eudora: The 18-Year Death March
 
 * **1988-2006**: Dominant email client for Mac/Windows
-* **2006**: [Qualcomm stopped development](https://www.eudora.com/archive/)
+* **2006**: [Qualcomm stopped development](https://en.wikipedia.org/wiki/Eudora_\(email_client\))
 * **2007**: Open-sourced as "Eudora OSE"
 * **2010**: Project abandoned
 * **Lesson**: Even successful email clients eventually die
@@ -909,7 +911,7 @@ The email industry has consolidated dramatically:
 
 [Microsoft Outlook](https://outlook.com/), despite being a "survivor," has constant issues:
 
-* **Memory leaks**: Outlook consumes gigabytes of RAM
+* **Memory leaks**: [Outlook consumes gigabytes of RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) and [requires frequent restarts](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **Sync problems**: Emails disappear and reappear randomly
 * **Performance issues**: Slow startup, frequent crashes
 * **Compatibility problems**: Breaks with third-party email providers
@@ -947,13 +949,13 @@ After [ActiveCampaign's acquisition](https://postmarkapp.com/blog/postmark-and-d
 
 Not all email companies fail. Here are the ones that actually work:
 
-**[Mailmodo](https://www.mailmodo.com/)**: [Y Combinator success story](https://www.ycombinator.com/companies/mailmodo) that raised [$2M from Sequoia's Surge](https://techcrunch.com/2021/09/07/mailmodo-raises-2m-to-bring-interactive-emails-to-marketers/) by focusing on interactive email campaigns.
+**[Mailmodo](https://www.mailmodo.com/)**: [Y Combinator success story](https://www.ycombinator.com/companies/mailmodo), [$2M from Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) by focusing on interactive email campaigns.
 
 **[Mixmax](https://mixmax.com/)**: Raised [$13.3M total funding](https://www.mixmax.com/about) and continues operating as a successful sales engagement platform.
 
-**[Outreach.io](https://www.outreach.io/)**: Reached [$1.33B+ valuation](https://techcrunch.com/2021/04/20/outreach-raises-65m-series-f/) and is preparing for potential IPO as a sales engagement platform.
+**[Outreach.io](https://www.outreach.io/)**: Reached [$4.4B+ valuation](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) and is preparing for potential IPO as a sales engagement platform.
 
-**[Apollo.io](https://www.apollo.io/)**: Achieved [$1.6B valuation](https://techcrunch.com/2023/03/28/apollo-raises-100m-series-d/) with $100M Series D in 2023 for their sales intelligence platform.
+**[Apollo.io](https://www.apollo.io/)**: Achieved [$1.6B valuation](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) with $100M Series D in 2023 for their sales intelligence platform.
 
 **[GMass](https://www.gmass.co/)**: Bootstrap success story generating [$140K/month](https://www.indiehackers.com/product/gmass) as a Gmail extension for email marketing.
 
@@ -967,3 +969,6 @@ Not all email companies fail. Here are the ones that actually work:
 
 > \[!TIP]
 > **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight. We've analyzed and compared 79 different email services to help you make the best choice for your needs.
+
+> \[!TIP]
+> **Don't see a provider you know of mentioned here?** Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight (e.g. Posteo, Mailbox.org, Migadu, etc.).
