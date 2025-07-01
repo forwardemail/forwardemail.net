@@ -59,6 +59,7 @@ const markdownItmermaid = (md) => {
               media="(prefers-color-scheme: dark)"
             />
             <img
+              loading="lazy"
               class="max-height-300px"
               src="/mermaid.png?code=${code}&theme=default"
               alt="${alt}"

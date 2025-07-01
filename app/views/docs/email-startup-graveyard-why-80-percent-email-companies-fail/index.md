@@ -381,6 +381,10 @@ flowchart TD
 * **[reMail → Google → Shutdown](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
 * **[Skiff → Notion → Shutdown](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
 
+**Notable Exception**:
+
+* **[Superhuman → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): Successful acquisition with strategic integration into productivity platform
+
 **Infrastructure Successes**:
 
 * **[SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019): $3B acquisition, continued growth
@@ -428,9 +432,9 @@ Every email startup gets the same comments on [Hacker News](https://news.ycombin
 
 ### The Latest Wave
 
-2024 brought a new wave of "AI-powered email" startups:
+2024 brought a new wave of "AI-powered email" startups, with the first major successful exit already happening:
 
-* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), AI features on top of Gmail
+* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), [successfully acquired by Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - a rare successful client app exit
 * **[Shortwave](https://www.shortwave.com/)**: Gmail wrapper with AI summaries
 * **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually works, but not revolutionary)
 
@@ -901,7 +905,7 @@ Open-source email projects fail because:
 
 2024's AI email startups:
 
-* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), AI features on Gmail
+* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), [acquired by Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
 * **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
 * **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually profitable)
 * **[Boomerang](https://www.boomeranggmail.com/)**: AI scheduling and responses
@@ -927,9 +931,10 @@ VCs are throwing money at "AI + Email":
 
 ### The Inevitable Outcome
 
-* **2025-2026**: Most AI email startups will pivot or shut down
-* **2027**: Survivors will be acquired and shut down
-* **2028**: "Blockchain email" will be the next trend
+* **2025**: [Superhuman successfully acquired by Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - a rare successful exit for an email client
+* **2025-2026**: Most remaining AI email startups will pivot or shut down
+* **2027**: Survivors will be acquired, with mixed outcomes
+* **2028**: "Blockchain email" or the next trend will emerge
 
 
 ## The Consolidation Catastrophe: When "Survivors" Become Disasters
