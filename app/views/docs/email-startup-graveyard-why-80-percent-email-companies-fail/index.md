@@ -831,7 +831,7 @@ Many email startups died before launching:
 
 ### Nylas Mail → Mailspring: The Fork That Couldn't
 
-* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://github.com/nylas/nylas-mail) due to [massive memory usage issues](https://github.com/nylas/nylas-mail/issues/3501)
+* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://github.com/nylas/nylas-mail) and had [massive memory usage issues](https://github.com/nylas/nylas-mail/issues/3501)
 * **[Mailspring](https://getmailspring.com/)**: Community fork, struggling with maintenance and [high RAM usage issues](https://github.com/Foundry376/Mailspring/issues/1758)
 * **Reality**: Open-source email clients can't compete with native apps
 
