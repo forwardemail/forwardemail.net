@@ -22,7 +22,7 @@ const Payments = require('#models/payments');
 const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const { paypalAgent } = require('#helpers/paypal');
+const { paypalAgentLegacy } = require('#helpers/paypal');
 const setupMongoose = require('#helpers/setup-mongoose');
 
 const graceful = new Graceful({
@@ -74,7 +74,7 @@ async function migratePayments() {
         // Try to cancel the PayPal subscription
         let subscriptionCancelled = false;
         try {
-          const agent = await paypalAgent();
+          const agent = await paypalAgentLegacy();
           await agent.post(
             `/v1/billing/subscriptions/${subscriptionId}/cancel`
           );
