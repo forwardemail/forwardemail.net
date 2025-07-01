@@ -635,7 +635,7 @@ graph TD
 
 ### Email Service Provider Comparison: Growth Through Proven Protocols
 
-> \[!SUCCESS]
+> \[!NOTE]
 > **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
 
 | Provider            | Domain Names (2024 via [SecurityTrails](https://securitytrails.com/)) | Domain Names (2025 via [ViewDNS](https://viewdns.info/reversemx/)) | Percentage Change | MX Record                      |
@@ -776,7 +776,7 @@ The lesson isn't that email can't be improved. It's that:
 > \[!TIP]
 > **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
 
-> \[!SUCCESS]
+> \[!NOTE]
 > **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
 
 If you're thinking about building an email startup, consider building email infrastructure instead. The world needs better email servers, not more email apps.
