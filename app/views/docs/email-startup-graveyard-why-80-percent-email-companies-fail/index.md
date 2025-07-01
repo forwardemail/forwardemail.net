@@ -212,7 +212,7 @@ Resend, the "developer-focused email platform," had a catastrophic security inci
 
 From [YCDB.co](https://www.ycdb.co/) research:
 
-**Emailio (W14)**: Started as ["Mobile email app"](https://www.ycdb.co/company/emailio), now pivoted to ["Email built for wellness"](http://www.emailio.com/) - classic failure pivot.
+**Emailio (W14)**: Started as ["Mobile email app"](https://www.ycdb.co/company/emailio), now pivoted to ["Email built for wellness"](http://www.emailio.com/) - appears to have pivoted.
 
 **MailTime (W16)**: Began as email client, now ["turns transactional email receipts into actionable consumer insights"](https://www.ycdb.co/company/mailtime) - completely abandoned original vision.
 
