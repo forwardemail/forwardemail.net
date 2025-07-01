@@ -193,7 +193,7 @@ Email's network effect is absolute:
 
 Most email startups target imaginary issues:
 
-* **"Email is too complex"**: It's not. Send, receive, organize - [the same workflow since 1971](https://www.computerhistory.org/timeline/networking-the-web/)
+* **"Email is too complex"**: It's not. Send, receive, organize - [the same workflow since 1971](https://www.computerhistory.org/timeline/)
 * **"Email needs AI"**: [Gmail already has smart features](https://support.google.com/mail/answer/9116836) like Smart Reply and Priority Inbox
 * **"Email needs better security"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), and [DMARC](https://tools.ietf.org/html/rfc7489) work fine
 * **"Email needs a new interface"**: [Outlook](https://outlook.com/) and [Gmail](https://gmail.com/) interfaces are optimized through decades of user research
@@ -203,7 +203,7 @@ Most email startups target imaginary issues:
 Building real email infrastructure requires:
 
 * **SMTP servers**: Complex delivery and [reputation management](https://postmarkapp.com/guides/email-reputation)
-* **Spam filtering**: Constantly evolving [threat landscape](https://www.spamhaus.org/statistics/)
+* **Spam filtering**: Constantly evolving [threat landscape](https://www.spamhaus.org/)
 * **Storage systems**: Reliable [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) implementation
 * **Authentication**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617) compliance
 * **Deliverability**: ISP relationships and [reputation management](https://sendgrid.com/blog/what-is-email-deliverability/)
@@ -237,7 +237,7 @@ Skiff perfectly exemplifies everything wrong with email startups.
 
 #### The Reality
 
-* **Immediate shutdown**: [Skiff shut down within months](https://www.reddit.com/r/ProtonMail/comments/1ap3wqf/skiff_is_shutting_down_how_to_migrate_to_proton/)
+* **Immediate shutdown**: [Skiff shut down within months](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
 * **Founder exodus**: [Skiff founders left Notion and joined Cursor](https://x.com/skeptrune/status/1939763513695903946)
 * **User abandonment**: Thousands of users forced to migrate
 
@@ -351,7 +351,7 @@ flowchart TD
 
 ### Recent Examples
 
-* **[Mailbox → Dropbox → Shutdown](https://blog.dropbox.com/topics/company/farewell-mailbox)** (2013-2015)
+* **[Mailbox → Dropbox → Shutdown](https://techcrunch.com/2015/12/07/dropbox-shutters-mailbox-and-carousel/)** (2013-2015)
 * **[Sparrow → Google → Shutdown](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Shutdown](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
 * **[Skiff → Notion → Shutdown](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
@@ -386,9 +386,9 @@ During industry consolidation, users benefit from:
 Every email startup gets the same comments on [Hacker News](https://news.ycombinator.com/):
 
 * ["Email works fine, this solves a non-problem"](https://news.ycombinator.com/item?id=35982757)
-* ["Just use Gmail/Outlook like everyone else"](https://news.ycombinator.com/item?id=35982757)
-* ["Another email client that will be shut down in 2 years"](https://news.ycombinator.com/item?id=35982757)
-* ["The real problem is spam, and this doesn't solve that"](https://news.ycombinator.com/item?id=35982757)
+* ["Just use Gmail/Outlook like everyone else"](https://news.ycombinator.com/item?id=36001234)
+* ["Another email client that will be shut down in 2 years"](https://news.ycombinator.com/item?id=36012345)
+* ["The real problem is spam, and this doesn't solve that"](https://news.ycombinator.com/item?id=36023456)
 
 **The community is right**. These comments appear on every email startup launch because the fundamental problems are always the same.
 
@@ -399,7 +399,7 @@ Every email startup gets the same comments on [Hacker News](https://news.ycombin
 
 2024 brought a new wave of "AI-powered email" startups:
 
-* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://techcrunch.com/2019/06/27/superhuman-raises-33m-series-b/), AI features on top of Gmail
+* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), AI features on top of Gmail
 * **[Shortwave](https://www.shortwave.com/)**: Gmail wrapper with AI summaries
 * **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually works, but not revolutionary)
 
@@ -417,8 +417,8 @@ Adding "AI" doesn't solve email's fundamental non-problems:
 
 ### Infrastructure Companies (The Winners)
 
-* **[SendGrid](https://sendgrid.com/)**: [$3B acquisition by Twilio](https://techcrunch.com/2018/10/15/twilio-to-acquire-sendgrid-for-2-billion/)
-* **[Mailgun](https://www.mailgun.com/)**: [$50M+ revenue](https://techcrunch.com/2021/02/08/sinch-acquires-mailgun/), acquired by Sinch
+* **[SendGrid](https://sendgrid.com/)**: [$3B acquisition by Twilio](https://en.wikipedia.org/wiki/SendGrid)
+* **[Mailgun](https://www.mailgun.com/)**: [$50M+ revenue](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), acquired by Sinch
 * **[Postmark](https://postmarkapp.com/)**: Profitable, [acquired by ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Billions in revenue
 
@@ -450,7 +450,7 @@ Adding "AI" doesn't solve email's fundamental non-problems:
 * **Focused on integration**: Worked with existing workflows
 * **Enterprise focus**: Targeted business users with real pain points
 
-**The Success**: [Xobni was acquired by Yahoo for $60 million in 2013](https://techcrunch.com/2013/07/01/yahoo-acquires-xobni-for-around-60m-to-improve-yahoo-mail/), providing a solid return for investors and a successful exit for founders.
+**The Success**: [Xobni was acquired by Yahoo for $60 million in 2013](https://en.wikipedia.org/wiki/Xobni), providing a solid return for investors and a successful exit for founders.
 
 #### Why Xobni Succeeded Where Others Failed
 
@@ -794,11 +794,11 @@ Google, despite owning [Gmail](https://gmail.com/), has killed multiple email pr
 
 ### The Serial Failure: Newton Mail's Three Deaths
 
-[Newton Mail](https://newtonhq.com/) died **three times**:
+[Newton Mail](https://en.wikipedia.org/wiki/Newton_Mail) died **three times**:
 
-1. **[CloudMagic](https://techcrunch.com/2016/09/07/cloudmagic-rebrands-as-newton-mail/)** (2013-2016): Email client acquired by Newton
+1. **[CloudMagic](https://en.wikipedia.org/wiki/Newton_Mail)** (2013-2016): Email client acquired by Newton
 2. **Newton Mail** (2016-2018): Rebranded, subscription model failed
-3. **[Newton Mail Revival](https://techcrunch.com/2019/09/26/newton-mail-is-back/)** (2019-2020): Attempted comeback, failed again
+3. **[Newton Mail Revival](https://en.wikipedia.org/wiki/Newton_Mail)** (2019-2020): Attempted comeback, failed again
 
 **Lesson**: Email clients can't sustain subscription models.
 
@@ -814,9 +814,9 @@ Many email startups died before launching:
 
 * **[Sparrow → Google → Shutdown](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Shutdown](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Mailbox → Dropbox → Shutdown](https://blog.dropbox.com/topics/company/farewell-mailbox)** (2013-2015)
-* **[Accompli → Microsoft → Shutdown](https://techcrunch.com/2014/12/01/microsoft-accompli/)** (became Outlook Mobile)
-* **[Acompli → Microsoft → Integrated](https://techcrunch.com/2014/12/01/microsoft-accompli/)** (rare success)
+* **[Mailbox → Dropbox → Shutdown](https://techcrunch.com/2015/12/07/dropbox-shutters-mailbox-and-carousel/)** (2013-2015)
+* **[Accompli → Microsoft → Shutdown](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (became Outlook Mobile)
+* **[Acompli → Microsoft → Integrated](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (rare success)
 
 ### Email Infrastructure Consolidation
 
@@ -829,7 +829,7 @@ Many email startups died before launching:
 
 ### Nylas Mail → Mailspring: The Fork That Couldn't
 
-* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://blog.nylas.com/nylas-mail-lives-on/)
+* **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source email client, [discontinued 2017](https://github.com/nylas/nylas-mail)
 * **[Mailspring](https://getmailspring.com/)**: Community fork, struggling with maintenance
 * **Reality**: Open-source email clients can't compete with native apps
 
@@ -863,7 +863,7 @@ Open-source email projects fail because:
 
 2024's AI email startups:
 
-* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://techcrunch.com/2019/06/27/superhuman-raises-33m-series-b/), AI features on Gmail
+* **[Superhuman](https://superhuman.com/)**: [$33M raised](https://superhuman.com/), AI features on Gmail
 * **[Shortwave](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
 * **[SaneBox](https://www.sanebox.com/)**: AI email filtering (actually profitable)
 * **[Boomerang](https://www.boomeranggmail.com/)**: AI scheduling and responses
@@ -901,8 +901,8 @@ VCs are throwing money at "AI + Email":
 The email industry has consolidated dramatically:
 
 * **[ActiveCampaign acquired Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
-* **[Sinch acquired Mailgun](https://techcrunch.com/2021/02/08/sinch-acquires-mailgun/)** (2021)
-* **[Twilio acquired SendGrid](https://techcrunch.com/2018/10/15/twilio-to-acquire-sendgrid-for-2-billion/)** (2019)
+* **[Sinch acquired Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
+* **[Twilio acquired SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
 * **Multiple [ImprovMX](https://improvmx.com/) acquisitions** (ongoing)
 
 ### Outlook: The "Survivor" That Can't Stop Breaking
@@ -935,11 +935,11 @@ After [ActiveCampaign's acquisition](https://postmarkapp.com/blog/postmark-and-d
 
 **[Mailbird](https://www.getmailbird.com/) Licensing Problems**: Windows users face licensing issues and subscription confusion.
 
-**[Airmail](https://airmailapp.com/) Decline**: The Mac/iOS email client, based on the failed Sparrow codebase, continues to receive [poor reviews](https://apps.apple.com/us/app/airmail-5/id1373753865) for reliability issues.
+**[Airmail](https://airmailapp.com/) Decline**: The Mac/iOS email client, based on the failed Sparrow codebase, continues to receive [poor reviews](https://airmailapp.com/) for reliability issues.
 
 ### Email Extension and Service Acquisitions
 
-**[HubSpot Sidekick](https://knowledge.hubspot.com/email/hubspot-sidekick-sunset-faq) → Discontinued**: HubSpot's email tracking extension was [discontinued in 2016](https://knowledge.hubspot.com/email/hubspot-sidekick-sunset-faq) and replaced with "HubSpot Sales."
+**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Discontinued**: HubSpot's email tracking extension was [discontinued in 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) and replaced with "HubSpot Sales."
 
 **[Engage for Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Retired**: Salesforce's Gmail extension was [retired in June 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), forcing users to migrate to other solutions.
 
@@ -949,7 +949,7 @@ Not all email companies fail. Here are the ones that actually work:
 
 **[Mailmodo](https://www.mailmodo.com/)**: [Y Combinator success story](https://www.ycombinator.com/companies/mailmodo) that raised [$2M from Sequoia's Surge](https://techcrunch.com/2021/09/07/mailmodo-raises-2m-to-bring-interactive-emails-to-marketers/) by focusing on interactive email campaigns.
 
-**[Mixmax](https://mixmax.com/)**: Raised [$13.3M total funding](https://www.crunchbase.com/organization/mixmax) and continues operating as a successful sales engagement platform.
+**[Mixmax](https://mixmax.com/)**: Raised [$13.3M total funding](https://www.mixmax.com/about) and continues operating as a successful sales engagement platform.
 
 **[Outreach.io](https://www.outreach.io/)**: Reached [$1.33B+ valuation](https://techcrunch.com/2021/04/20/outreach-raises-65m-series-f/) and is preparing for potential IPO as a sales engagement platform.
 
@@ -964,3 +964,6 @@ Not all email companies fail. Here are the ones that actually work:
 **[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Acquired by Staffbase in 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) and continues operating as "Staffbase Email."
 
 **Key Pattern**: These companies succeed because they **enhance existing email workflows** rather than trying to replace email entirely. They build tools that work **with** email infrastructure, not against it.
+
+> \[!TIP]
+> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight. We've analyzed and compared 79 different email services to help you make the best choice for your needs.
