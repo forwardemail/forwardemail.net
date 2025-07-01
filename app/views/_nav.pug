@@ -654,7 +654,7 @@ nav.navbar(class=navbarClasses.join(" "))
 
           //- Company
           if !isBot(ctx.get('User-Agent'))
-            - const companyPages = ["/about", "/press", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse"];
+            - const companyPages = ["/about", "/security", "/privacy", "/terms", "/gdpr", "/dpa", "/report-abuse", "/press"];
             - const isCompanyPage = companyPages.includes(ctx.pathWithoutLocale);
             li.nav-item.dropdown.no-js
               form.mb-0

@@ -494,11 +494,13 @@ footer.mt-auto(aria-label=t("Footer"))
             h2.h5.mb-2= t("Company")
             ul.list-unstyled.mb-0.mb-lg-3
               li: a.d-block.text-white.py-2.py-md-0(href=l("/about"))= t("About")
-              li: a.d-block.text-white.py-2.py-md-0(href=l("/press"))= t("Press")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/security"))= t("Security")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/privacy"))= t("Privacy")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/terms"))= t("Terms")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/gdpr"))= t("GDPR")
               li: a.d-block.text-white.py-2.py-md-0(href=l("/dpa"))= t("DPA")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
+              li: a.d-block.text-white.py-2.py-md-0(href=l("/press"))= t("Press")
               li: a.d-block.text-white.py-2.py-md-0(
                 href=`mailto:careers@${config.supportEmail.split('@')[1]}`,
                 target="_blank",
@@ -507,8 +509,6 @@ footer.mt-auto(aria-label=t("Footer"))
                 data-title=t("Send us an email"),
                 data-placement="bottom"
               )= t("Careers")
-              li: a.d-block.text-white.py-2.py-md-0(href=l("/security"))= t("Security")
-              li: a.d-block.text-white.py-2.py-md-0(href=l("/report-abuse"))= t("Report Abuse")
               if !isBot(ctx.get('User-Agent')) && config.env !== 'test'
                 li: a.d-block.text-white.py-2.py-md-0(
                   href="https://status.forwardemail.net/",
