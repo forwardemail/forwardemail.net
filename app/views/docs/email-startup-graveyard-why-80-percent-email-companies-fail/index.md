@@ -2,7 +2,7 @@
 
 <img loading="lazy" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">While countless email startups have burned through millions solving non-existent problems, we at [Forward Email](https://forwardemail.net) have quietly built actual email infrastructure from scratch since 2017—proving that sustainable email services require engineering, not just venture capital.  This is an exhaustive analysis of email startup failures, acquisitions, and the fundamental misunderstanding of what email actually is.</p>
+<p class="lead mt-3">While countless email startups have burned through millions solving non-existent problems, we at <a href="https://forwardemail.net">Forward Email</a> have quietly built actual email infrastructure from scratch since 2017—proving that sustainable email services require engineering, not just venture capital.  This is an exhaustive analysis of email startup failures, acquisitions, and the fundamental misunderstanding of what email actually is.</p>
 
 > \[!WARNING]
 > **TL;DR**: Stop building email apps. Email isn't broken. This post documents why 80%+ of email startups fail and why you shouldn't be the next one.
