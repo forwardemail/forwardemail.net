@@ -528,6 +528,10 @@ if ($btnPrint.length > 0)
   });
 
 const $nav = $('.navbar.fixed-top');
+const $toggler = $nav.find('.navbar-toggler');
+const isTextWhiteRequired = $nav.hasClass('text-white-required');
+const togglerIsDark = $toggler.hasClass('text-themed');
+const navbarIsDark = $nav.hasClass('navbar-dark');
 
 function navbarScroll() {
   if (
@@ -537,23 +541,18 @@ function navbarScroll() {
     $nav
       .addClass('bg-white navbar-themed bg-themed border-bottom')
       .removeClass('text-white');
-    $nav
-      .find('.navbar-toggler')
-      .addClass('text-dark')
-      .removeClass('text-white');
+    $toggler.addClass('text-dark').removeClass('text-white');
   } else {
-    const isTextWhiteRequired = $nav.hasClass('text-white-required');
     $nav
       .addClass(isTextWhiteRequired ? 'text-white' : '')
       .removeClass('bg-white navbar-themed bg-themed border-bottom');
-    $nav
-      .find('.navbar-toggler')
+    $toggler
       .addClass(isTextWhiteRequired ? 'text-white' : '')
-      .removeClass('text-dark');
+      .removeClass(togglerIsDark ? '' : 'text-dark');
   }
 }
 
-if ($nav.length > 0) {
+if ($nav.length > 0 && !navbarIsDark) {
   navbarScroll();
   $(window).scroll(debounce(navbarScroll, 125));
   $('#navbar-header')
