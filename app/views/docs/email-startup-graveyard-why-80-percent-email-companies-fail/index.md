@@ -739,14 +739,11 @@ These challenges require ongoing investment and expertise from all providers in 
 
 ## Conclusion: Stop Building Email Apps
 
-> \[!WARNING]
-> **Final Warning**: After analyzing hundreds of email startups, the evidence is overwhelming - 80%+ fail completely. Email isn't broken, and trying to "fix" it is a guaranteed path to failure.
-
 ### The Evidence Is Overwhelming
 
 After analyzing hundreds of email startups:
 
-* **[80%+ failure rate](https://www.techstars.com/portfolio)**: Most email startups fail completely
+* **[80%+ failure rate](https://www.techstars.com/portfolio)**: Most email startups fail completely (this figure is likely WAY higher than 80%; we're being nice)
 * **Acquisition = shutdown**: Being acquired usually means death
 * **VC funding = pressure**: Venture capital creates unrealistic expectations
 * **Technical debt = unsustainable**: Building email infrastructure is harder than it looks
@@ -857,7 +854,7 @@ Open-source email projects fail because:
 * **Complexity**: Email protocols are complex to implement correctly
 * **Security**: Constant security updates required
 * **Compatibility**: Must work with all email providers
-* **Resources**: Volunteer developers can't sustain enterprise-level software
+* **Resources**: Volunteer developers burnout
 
 
 ## The AI Email Startup Surge: History Repeating with "Intelligence"
