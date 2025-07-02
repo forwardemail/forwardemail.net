@@ -53,7 +53,11 @@ async function checkSubscriptionWithAgent(subscriptionId, agent, agentType) {
 
     console.error(
       `Error checking subscription ${subscriptionId} with ${agentType} agent:`,
-      err.message
+      {
+        status: err.status,
+        message: err.message,
+        response: err.response ? err.response.text : 'No response text'
+      }
     );
     return null;
   }
@@ -75,7 +79,11 @@ async function checkPaymentWithAgent(transactionId, agent, agentType) {
 
     console.error(
       `Error checking transaction ${transactionId} with ${agentType} agent:`,
-      err.message
+      {
+        status: err.status,
+        message: err.message,
+        response: err.response ? err.response.text : 'No response text'
+      }
     );
     return null;
   }
