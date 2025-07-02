@@ -31,6 +31,7 @@ delete url.query.session_id;
 
 let button;
 
+// paypal mapping
 const PAYPAL_MAPPING = {
   enhanced_protection: {
     '30d': process.env.PAYPAL_ENHANCED_PLAN_30D,
