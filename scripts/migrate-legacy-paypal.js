@@ -59,19 +59,22 @@ async function checkSubscriptionWithAgent(subscriptionId, agent, agentType) {
   }
 }
 
-async function checkPaymentWithAgent(paymentId, agent, agentType) {
+async function checkPaymentWithAgent(transactionId, agent, agentType) {
   try {
-    const response = await agent.get(`/v1/payments/payment/${paymentId}`);
-    console.log(`Payment ${paymentId} found with ${agentType} agent`);
+    // For PayPal, transaction IDs are actually capture IDs, so we use the captures endpoint
+    const response = await agent.get(`/v2/payments/captures/${transactionId}`);
+    console.log(`Transaction ${transactionId} found with ${agentType} agent`);
     return response.body;
   } catch (err) {
     if (err.status === 404) {
-      console.log(`Payment ${paymentId} not found with ${agentType} agent`);
+      console.log(
+        `Transaction ${transactionId} not found with ${agentType} agent`
+      );
       return null;
     }
 
     console.error(
-      `Error checking payment ${paymentId} with ${agentType} agent:`,
+      `Error checking transaction ${transactionId} with ${agentType} agent:`,
       err.message
     );
     return null;
@@ -106,17 +109,17 @@ async function isUserOnNewPayPal(user) {
     .limit(10);
 
   for (const payment of userPayments) {
-    if (payment.paypal_payment_id) {
-      // Check if this payment exists with new PayPal agent
+    if (payment.paypal_transaction_id) {
+      // Check if this transaction exists with new PayPal agent
       // eslint-disable-next-line no-await-in-loop
-      const paymentWithNew = await checkPaymentWithAgent(
-        payment.paypal_payment_id,
+      const transactionWithNew = await checkPaymentWithAgent(
+        payment.paypal_transaction_id,
         newAgent,
         'new'
       );
-      if (paymentWithNew) {
+      if (transactionWithNew) {
         console.log(
-          `User ${user.email} has payment ${payment.paypal_payment_id} with new PayPal agent`
+          `User ${user.email} has transaction ${payment.paypal_transaction_id} with new PayPal agent`
         );
         return true;
       }
@@ -153,28 +156,28 @@ async function migratePayments() {
           `Checking payment ${payment._id} with transaction ID ${transactionId}`
         );
 
-        // First check if payment exists with new PayPal agent
-        const paymentWithNew = await checkPaymentWithAgent(
+        // First check if transaction exists with new PayPal agent
+        const transactionWithNew = await checkPaymentWithAgent(
           transactionId,
           newAgent,
           'new'
         );
 
-        if (paymentWithNew) {
+        if (transactionWithNew) {
           console.log(
             `Payment ${payment._id} found with new PayPal agent - skipping legacy flag`
           );
           return;
         }
 
-        // Check if payment exists with legacy PayPal agent
-        const paymentWithLegacy = await checkPaymentWithAgent(
+        // Check if transaction exists with legacy PayPal agent
+        const transactionWithLegacy = await checkPaymentWithAgent(
           transactionId,
           legacyAgent,
           'legacy'
         );
 
-        if (paymentWithLegacy) {
+        if (transactionWithLegacy) {
           console.log(
             `Payment ${payment._id} confirmed as legacy - setting flag`
           );
