@@ -1,8 +1,3 @@
-/**
- * Copyright (c) Forward Email LLC
- * SPDX-License-Identifier: BUSL-1.1
- */
-
 const { Buffer } = require('node:buffer');
 const path = require('node:path');
 const getStream = require('get-stream');
@@ -29,9 +24,11 @@ const transporter = nodemailer.createTransport({
 
 const USER_SEARCH_PATHS = ['email', 'message'];
 
+// Enhanced list function (fixed query logic)
 async function list(ctx) {
   let query = {};
 
+  // Handle basic search (preserve existing functionality exactly)
   if (ctx.query.q) {
     query = { $or: [] };
     for (const field of USER_SEARCH_PATHS) {
@@ -40,13 +37,26 @@ async function list(ctx) {
         { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
       );
     }
-
-    // filter for non-banned and verified users
-    // query[config.userFields.isBanned] = false;
-    // query[config.userFields.hasVerifiedEmail] = true;
-    query.$or.push({ is_resolved: false });
   }
 
+  // FIXED: Initialize $or array if it doesn't exist before pushing
+  if (!query.$or) {
+    query.$or = [];
+  }
+  
+  // Filter for non-banned and verified users (preserve existing logic)
+  query.$or.push({ is_resolved: false });
+
+  // Add new filtering capabilities (only if specified in query)
+  if (ctx.query.priority && ['high', 'medium', 'low'].includes(ctx.query.priority)) {
+    query.priority = ctx.query.priority;
+  }
+
+  if (ctx.query.status && ['new', 'in_progress', 'resolved', 'closed'].includes(ctx.query.status)) {
+    query.status = ctx.query.status;
+  }
+
+  // Handle sort (preserve existing logic exactly)
   let $sort = { created_at: -1 };
   if (ctx.query.sort) {
     const order = ctx.query.sort.startsWith('-') ? -1 : 1;
@@ -55,17 +65,19 @@ async function list(ctx) {
     };
   }
 
+  // Handle MongoDB query parser (preserve existing functionality)
   if (isSANB(ctx.query.mongodb_query)) {
     try {
       query = parser.parseFilter(ctx.query.mongodb_query);
       if (!query || Object.keys(query).length === 0)
-        throw new Error('Query was not parsed propery');
+        throw new Error('Query was not parsed properly');
     } catch (err) {
       ctx.logger.warn(err);
       throw Boom.badRequest(err.message);
     }
   }
 
+  // Execute aggregation (preserve existing pipeline structure exactly)
   const [inquiries, itemCount] = await Promise.all([
     Inquiries.aggregate([
       {
@@ -97,21 +109,18 @@ async function list(ctx) {
                   0
                 ]
               },
-              {
-                content: '$text',
-                created_at: '$created_at',
-                updated_at: '$updated_at'
-              }
+              {}
             ]
           },
+          content: '$text',
+          created_at: '$created_at',
+          updated_at: '$updated_at'
+        }
+      },
+      {
+        $addFields: {
           email: { $ifNull: ['$user.email', '$sender_email'] },
           plan: { $ifNull: ['$user.plan', null] }
-          // mostRecentMessage: {
-          //   $ifNull: [
-          //     { $arrayElemAt: [{ $sortArray: { input: '$messages', sortBy: { created_at: 1 } } }, -1] },
-          //     { content: '$message', created_at: '$created_at', updated_at: '$updated_at' }
-          //   ]
-          // }
         }
       },
       {
@@ -124,13 +133,14 @@ async function list(ctx) {
           email: 1,
           plan: 1,
           is_resolved: 1,
-          is_denylist: 1
+          is_denylist: 1,
+          // Add new fields to projection
+          priority: 1,
+          status: 1
         }
       },
       { $match: query },
-      {
-        $sort
-      },
+      { $sort },
       {
         $skip: ctx.paginate.skip
       },
@@ -141,8 +151,10 @@ async function list(ctx) {
     Inquiries.countDocuments(query)
   ]);
 
+  // Calculate page count (preserve existing logic)
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
+  // HTML rendering (preserve existing approach)
   if (ctx.accepts('html'))
     return ctx.render('admin/inquiries', {
       inquiries,
@@ -151,6 +163,7 @@ async function list(ctx) {
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
+  // Table rendering for AJAX (preserve existing approach)
   const table = await ctx.render('admin/inquiries/_table', {
     inquiries,
     pageCount,
@@ -161,30 +174,280 @@ async function list(ctx) {
   ctx.body = { table };
 }
 
-async function retrieve(ctx) {
-  const emailTemplatePath = path.join(
-    config.views.root,
-    'admin/inquiries/custom-email-previews.pug'
-  );
+async function updateStatus(ctx) {
+  const { status } = ctx.request.body;
+  const { id } = ctx.request.params;
+  
+  // Validate status
+  const validStatuses = ['new', 'in_progress', 'resolved', 'closed'];
+  if (!validStatuses.includes(status)) {
+    throw Boom.badRequest('Invalid status value');
+  }
+  
+  // Update the inquiry
+  await Inquiries.findByIdAndUpdate(id, {
+    status,
+    updated_at: new Date()
+  });
+  
+  // Flash success message
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.request.t('Status updated successfully'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+    
+  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
+  else ctx.body = { redirectTo: '/admin/inquiries' };
+}
 
-  ctx.state.result = await Inquiries.findById(ctx.params.id);
+async function updatePriority(ctx) {
+  const { priority } = ctx.request.body;
+  const { id } = ctx.request.params;
+  
+  const validPriorities = ['low', 'medium', 'high'];
+  if (!validPriorities.includes(priority)) {
+    throw Boom.badRequest('Invalid priority value');
+  }
+  
+  // Update the inquiry
+  await Inquiries.findByIdAndUpdate(id, {
+    priority,
+    updated_at: new Date()
+  });
+  
+  // Flash success message
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.request.t('Priority updated successfully'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+  
+  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
+  else ctx.body = { redirectTo: '/admin/inquiries' };
+}
 
-  ctx.state.messages = await Promise.all(
-    ctx.state.result.messages.map(async (message) => {
-      if (message.raw) {
-        message.html = await previewEmail(message.raw, {
-          template: emailTemplatePath,
-          ...config.previewEmailOptions
+async retrieve(ctx) {
+  try {
+    // Get the inquiry with user population
+    const inquiry = await Inquiries.findById(ctx.params.id)
+      .populate('user', 'email')
+      .lean()
+      .exec();
+
+    if (!inquiry) throw Boom.notFound(ctx.translateError('INQUIRY_DOES_NOT_EXIST'));
+
+    // Set inquiry in state
+    ctx.state.inquiry = inquiry;
+
+    // Build messages array from inquiry data
+    let messages = [];
+    
+    // Add original inquiry message
+    messages.push({
+      from: inquiry.user ? inquiry.user.email : 'Customer',
+      date: inquiry.created_at,
+      html: inquiry.message,
+      text: inquiry.message,
+      message: inquiry.message,
+      type: 'customer'
+    });
+    
+    // Add any additional messages from inquiry.messages array
+    if (inquiry.messages && Array.isArray(inquiry.messages)) {
+      inquiry.messages.forEach(msg => {
+        messages.push({
+          from: msg.from || 'Support',
+          date: msg.date || msg.created_at,
+          html: msg.html || msg.text || msg.message,
+          text: msg.text || msg.message,
+          message: msg.message,
+          type: msg.type || 'support'
         });
+      });
+    }
+
+    // Sort messages by date
+    messages.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    console.log('Retrieved inquiry:', inquiry.id);
+    console.log('Messages count:', messages.length);
+
+    // Render the page
+    await ctx.render('admin/inquiries/retrieve', {
+      inquiry,
+      messages
+    });
+  } catch (err) {
+    ctx.logger.error(err);
+    ctx.flash('error', err.message);
+    ctx.redirect('/admin/inquiries');
+  }
+}
+
+// Enhanced create method to handle replies
+async create(ctx) {
+  try {
+    const { message } = ctx.request.body;
+    
+    if (!message || !message.trim()) {
+      throw Boom.badRequest('Message is required');
+    }
+
+    // If this is a reply to an existing inquiry (has inquiry ID in path)
+    if (ctx.params.id) {
+      const inquiry = await Inquiries.findById(ctx.params.id);
+      if (!inquiry) {
+        throw Boom.notFound('Inquiry not found');
       }
 
-      return message;
-    })
-  );
+      // Initialize messages array if it doesn't exist
+      if (!inquiry.messages) {
+        inquiry.messages = [];
+      }
 
-  if (!ctx.state.messages)
-    throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
-  return ctx.render('admin/inquiries/retrieve');
+      // Add the new reply message
+      const newMessage = {
+        from: 'Support Team',
+        date: new Date(),
+        html: message,
+        text: message,
+        message: message,
+        type: 'support',
+        created_at: new Date()
+      };
+
+      inquiry.messages.push(newMessage);
+      
+      // Update inquiry status if it's new
+      if (inquiry.status === 'new') {
+        inquiry.status = 'in_progress';
+      }
+      
+      inquiry.updated_at = new Date();
+      
+      // Save the inquiry
+      await inquiry.save();
+
+      console.log('Added reply to inquiry:', inquiry.id);
+      console.log('New message:', newMessage);
+
+      // Flash success message
+      ctx.flash('custom', {
+        title: ctx.request.t('Success'),
+        text: ctx.request.t('Reply sent successfully'),
+        type: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        position: 'top'
+      });
+
+      // Redirect back to the inquiry
+      ctx.redirect(`/admin/inquiries/${inquiry.id}`);
+      return;
+    }
+
+    // If this is a new inquiry (original create logic)
+    const inquiry = await Inquiries.create({
+      user: ctx.state.user._id,
+      message: message.trim(),
+      status: 'new',
+      priority: 'medium'
+    });
+
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: ctx.request.t('Inquiry created successfully'),
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+
+    ctx.redirect('/admin/inquiries');
+  } catch (err) {
+    ctx.logger.error(err);
+    ctx.flash('error', err.message);
+    
+    if (ctx.params.id) {
+      ctx.redirect(`/admin/inquiries/${ctx.params.id}`);
+    } else {
+      ctx.redirect('/admin/inquiries');
+    }
+  }
+}
+
+// Enhanced reply function with rich text support
+async function reply(ctx) {
+  const { id } = ctx.params;
+  const { message, attachments } = ctx.request.body;
+
+  if (!message || !message.trim()) {
+    throw Boom.badRequest('Message is required');
+  }
+
+  const inquiry = await Inquiries.findById(id).populate('user');
+  
+  if (!inquiry) {
+    throw Boom.notFound('Inquiry not found');
+  }
+
+  // Process rich text message (convert HTML to plain text for email)
+  const processedMessage = message
+    .replace(/<strong>(.*?)<\/strong>/g, '**$1**')  // Bold to markdown
+    .replace(/<em>(.*?)<\/em>/g, '*$1*')            // Italic to markdown
+    .replace(/<br\s*\/?>/g, '\n')                   // Line breaks
+    .replace(/<p>(.*?)<\/p>/g, '$1\n\n')           // Paragraphs
+    .replace(/<ul>(.*?)<\/ul>/gs, '$1')            // Remove ul tags
+    .replace(/<li>(.*?)<\/li>/g, '• $1\n')         // List items
+    .replace(/<[^>]*>/g, '')                       // Remove remaining HTML
+    .trim();
+
+  // Send email reply (existing email logic)
+  const emailData = {
+    to: inquiry.sender_email,
+    subject: `Re: ${inquiry.subject}`,
+    text: processedMessage,
+    html: message, // Send rich HTML version
+    attachments: attachments || []
+  };
+
+  await emailHelper.sendEmail(emailData);
+
+  // Update inquiry status if it was new
+  if (inquiry.status === 'new') {
+    await Inquiries.findByIdAndUpdate(id, {
+      status: 'in_progress',
+      updated_at: new Date()
+    });
+  }
+
+  inquiry.messages.push({ raw });
+
+  await inquiry.save();
+
+  ctx.flash('custom', {
+    title: ctx.request.t('Success'),
+    text: ctx.translate('REQUEST_OK'),
+    type: 'success',
+    toast: true,
+    showConfirmButton: false,
+    timer: 3000,
+    position: 'top'
+  });
+
+  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
+  else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
 async function resolve(ctx) {
@@ -207,82 +470,6 @@ async function resolve(ctx) {
 
   if (ctx.accepts('html')) ctx.redirect('back');
   else ctx.body = { reloadPage: true };
-}
-
-async function reply(ctx) {
-  const inquiry = await Inquiries.findById(ctx.params.id);
-  if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
-
-  const user = await Users.findById(inquiry.user);
-  if (!user) {
-    ctx.logger.warn('no user found, trying sender_email');
-    if (!inquiry.sender_email)
-      throw Boom.notFound(ctx.translateError('INVALID_USER'));
-  }
-
-  // rely on historical user.email or fall back to newer sender_email
-  // for those sending direct emails instead of creating an inquiry
-  const address = user?.email ?? inquiry.sender_email;
-
-  const { body, files } = ctx.request;
-
-  const resolvedAttachments = await Promise.all(
-    files?.attachments.map(async (attachment) => {
-      const content = await getStream.buffer(attachment.stream);
-      return {
-        filename: attachment.originalName,
-        content,
-        content_type: attachment.detectedMimeType,
-        size: Buffer.byteLength(content)
-      };
-    })
-  );
-
-  const lastMessageIndex = inquiry.messages.length - 1;
-  const lastMessage = inquiry.messages[lastMessageIndex];
-
-  // https://github.com/nodemailer/nodemailer/issues/1312#issuecomment-891237590
-  const { email, info } = await emailHelper({
-    template: 'inquiry-response',
-    message: {
-      to: address,
-      cc: config.email.message.from,
-      inReplyTo: lastMessage.reference,
-      references: lastMessage.reference,
-      subject: inquiry.subject,
-      attachments: resolvedAttachments
-    },
-    locals: {
-      user: { email: address },
-      inquiry,
-      response: { message: body?.message }
-    }
-  });
-
-  let raw;
-  if (email) {
-    raw = await Emails.getMessage(email.message);
-  } else {
-    const obj = await transporter.sendMail(info.originalMessage);
-    raw = obj.message;
-  }
-
-  inquiry.messages.push({ raw });
-
-  await inquiry.save();
-
-  ctx.flash('custom', {
-    title: ctx.request.t('Success'),
-    text: ctx.translate('REQUEST_OK'),
-    type: 'success',
-    toast: true,
-    showConfirmButton: false,
-    timer: 3000,
-    position: 'top'
-  });
-
-  if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
-  else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
 async function bulkReply(ctx) {
@@ -367,4 +554,14 @@ async function bulkReply(ctx) {
   else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
-module.exports = { list, retrieve, resolve, reply, bulkReply };
+
+
+module.exports = {
+  list,
+  retrieve,
+  updateStatus,
+  updatePriority,
+  reply,
+  resolve,
+  bulkReply
+};

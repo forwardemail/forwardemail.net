@@ -1,47 +1,241 @@
 extends ../../layout
 
 block body
-  .container.py-3
+  .container-fluid.py-3
     .row.mt-1
       .col
         include ../../_breadcrumbs
-        each message in messages
-          iframe.bg-white.border-dark(
-            sandbox="allow-downloads allow-scripts",
-            referrerpolicy="no-referrer",
-            seamless="seamless",
-            srcdoc=`<base target='_top'>${message.html}`,
-            height="400px",
-            width="100%"
+        
+        //- Debug info
+        script.
+          console.log('Page loaded, inquiry ID:', '#{inquiry.id}');
+        
+        //- Add data attribute for inquiry ID
+        div(data-inquiry-id=inquiry.id)
+        
+        //- Inquiry Header
+        .card.mb-3
+          .card-header
+            .row.align-items-center
+              .col
+                h4.mb-0
+                  i.fa.fa-envelope.mr-2
+                  = t("Inquiry Details")
+              .col-auto
+                a.btn.btn-outline-primary.btn-sm(href="/admin/inquiries")
+                  i.fa.fa-arrow-left.mr-1
+                  = t("Back to Inquiries")
+          
+          .card-body
+            .row
+              .col-md-3
+                strong= t("Created:")
+                br
+                = moment(inquiry.created_at).format('MMMM Do YYYY, h:mm:ss a')
+              .col-md-3
+                strong= t("User:")
+                br
+                if inquiry.user && inquiry.user.email
+                  = inquiry.user.email
+                else
+                  span.text-muted= t("Unknown")
+              .col-md-3
+                strong= t("Status:")
+                br
+                - const status = inquiry.status || 'new'
+                case status
+                  when 'new'
+                    span.badge.badge-primary= t("New")
+                  when 'in_progress'
+                    span.badge.badge-warning= t("In Progress")
+                  when 'resolved'
+                    span.badge.badge-success= t("Resolved")
+                  when 'closed'
+                    span.badge.badge-secondary= t("Closed")
+                  default
+                    span.badge.badge-light= t("Unknown")
+              .col-md-3
+                strong= t("Priority:")
+                br
+                - const priority = inquiry.priority || 'medium'
+                case priority
+                  when 'high'
+                    span.badge.badge-danger= t("High")
+                  when 'medium'
+                    span.badge.badge-warning= t("Medium")
+                  when 'low'
+                    span.badge.badge-success= t("Low")
+                  default
+                    span.badge.badge-secondary= t("Medium")
+        
+        //- Messages Display
+        .card.mb-3
+          .card-header
+            h5.mb-0
+              i.fa.fa-comments.mr-2
+              = t("Conversation History")
+          .card-body
+            if messages && messages.length > 0
+              each message, index in messages
+                .mb-3.pb-3(class=index === messages.length - 1 ? '' : 'border-bottom')
+                  .row
+                    .col-auto
+                      .bg-primary.text-white.rounded-circle.d-flex.align-items-center.justify-content-center(
+                        style="width: 40px; height: 40px;"
+                      )
+                        i.fa.fa-user
+                    .col
+                      .d-flex.justify-content-between.mb-2
+                        .font-weight-bold
+                          if message.from
+                            = message.from
+                          else if inquiry.user && inquiry.user.email
+                            = inquiry.user.email
+                          else
+                            = t("Unknown Sender")
+                        .text-muted.small
+                          if message.date
+                            = moment(message.date).format('MMM D, YYYY h:mm A')
+                          else
+                            = moment(inquiry.created_at).format('MMM D, YYYY h:mm A')
+                      
+                      .bg-light.p-3.rounded
+                        if message.html
+                          != message.html
+                        else if message.text
+                          = message.text
+                        else if message.message
+                          = message.message
+                        else
+                          = inquiry.message || t("No message content")
+            else
+              .text-center.py-4
+                .text-muted
+                  i.fa.fa-inbox.fa-2x.mb-2
+                  br
+                  = t("No messages found")
+        
+        //- Reply Form
+        .card
+          .card-header
+            h5.mb-0
+              i.fa.fa-reply.mr-2
+              = t("Send Reply")
+          
+          form.confirm-prompt(
+            action=ctx.path,
+            method="POST",
+            enctype="multipart/form-data"
           )
-          hr
-        form.confirm-prompt(
-          action=ctx.path,
-          method="POST",
-          enctype="multipart/form-data"
-        )
-          .card.border-themed.card-custom
             .card-body
-              .form-group.floating-label
-                label.read-only-message.text-muted= result.message || result.text
-              .form-group.floating-label
+              .form-group
+                .row.align-items-center.mb-2
+                  .col
+                    label.font-weight-bold(for="input-message")= t("Your Response")
+                  .col-auto
+                    #save-indicator.text-muted.small Auto-saving...
+                
+                //- Toolbar
+                .mb-2
+                  .btn-group.btn-group-sm(role="group")
+                    button.btn.btn-outline-secondary(
+                      type="button",
+                      onclick="insertBold()",
+                      title="Bold"
+                    )
+                      i.fa.fa-bold
+                    button.btn.btn-outline-secondary(
+                      type="button",
+                      onclick="insertItalic()",
+                      title="Italic"
+                    )
+                      i.fa.fa-italic
+                    button.btn.btn-outline-secondary(
+                      type="button",
+                      onclick="insertLink()",
+                      title="Link"
+                    )
+                      i.fa.fa-link
+                    button.btn.btn-outline-secondary(
+                      type="button",
+                      onclick="insertList()",
+                      title="List"
+                    )
+                      i.fa.fa-list-ul
+                  
+                  button.btn.btn-outline-primary.btn-sm.ml-2(
+                    type="button",
+                    onclick="showPreview()",
+                    title="Preview"
+                  )
+                    i.fa.fa-eye.mr-1
+                    = t("Preview")
+                  
+                  button.btn.btn-outline-info.btn-sm.ml-1(
+                    type="button",
+                    onclick="debugCodeMirror()",
+                    title="Debug"
+                  )
+                    i.fa.fa-bug
+                
+                //- Textarea that CodeMirror will replace
                 textarea#input-message.form-control(
+                  name="message",
                   rows="8",
                   required,
-                  maxlength=config.supportRequestMaxLength,
-                  name="message",
-                  placeholder=t("Write your response")
+                  placeholder="Write your response in markdown..."
                 )
-                label(for="input-message")= t("Reply")
+                
+                //- Character count
+                .mt-2
+                  #character-count.text-muted.small 0 characters, 0 words
+              
               .form-group
-                input#input-attachments.form-control(
+                label.font-weight-bold(for="input-attachments")= t("Attachments")
+                input#input-attachments.form-control-file(
                   type="file",
                   name="attachments",
                   multiple
                 )
+            
             .card-footer
-              button.btn.btn-block.btn-primary.btn-lg(
-                type="submit",
-                data-toggle="tooltip",
-                data-placement="bottom"
-              )= t("Send reply")
+              .row.align-items-center
+                .col-md-6
+                  small.text-muted
+                    i.fa.fa-info-circle.mr-1
+                    = t("Drafts are automatically saved")
+                .col-md-6.text-right
+                  button.btn.btn-secondary.mr-2(
+                    type="button",
+                    onclick="history.back()"
+                  )
+                    i.fa.fa-arrow-left.mr-1
+                    = t("Back")
+                  button.btn.btn-outline-primary.mr-2(
+                    type="button",
+                    onclick="showPreview()"
+                  )
+                    i.fa.fa-eye.mr-1
+                    = t("Preview")
+                  button.btn.btn-primary(
+                    type="submit"
+                  )
+                    i.fa.fa-paper-plane.mr-1
+                    = t("Send Reply")
+
+//- Asset loading
+block append scripts
+  script(
+    defer,
+    src=manifest("js/inquiries.js"),
+    integrity=manifest("js/inquiries.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block append stylesheets
+  link(
+    rel="stylesheet",
+    href=manifest("css/codemirror.css"),
+    integrity=manifest("css/codemirror.css", "integrity"),
+    crossorigin="anonymous"
+  )

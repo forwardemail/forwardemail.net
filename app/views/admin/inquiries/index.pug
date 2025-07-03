@@ -17,10 +17,10 @@ block body
           action=ctx.path,
           method="GET",
           data-table="#table-inquiries",
-          data-search-params="mongodb_query,q"
+          data-search-params="mongodb_query,q,priority,status"
         )
           .card-body
-            .h5.card-title= t("Search for inquiries")
+            h5.card-title= t("Search for inquiries")
             .form-group
               label(for="textarea-mongodb-query") MongoDB query
               textarea#textarea-mongodb-query.form-control(
@@ -28,7 +28,7 @@ block body
                 rows=3,
                 placeholder="MongoDB query"
               )= ctx.query.mongodb_query || ""
-              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
+              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser">query-parser</a> for syntax.')
             .form-group
               label(for="input-keyword-search")= t("Basic search")
               input#input-keyword-search.form-control(
@@ -37,6 +37,28 @@ block body
                 name="q",
                 placeholder=t("Search by email")
               )
+            
+            //- New filter fields using form-control (matching current pattern)
+            .row
+              .col-md-4
+                .form-group
+                  label(for="select-priority")= t("Priority")
+                  select#select-priority.form-control(name="priority")
+                    option(value="", selected=!ctx.query.priority)= t("All Priorities")
+                    option(value="high", selected=ctx.query.priority === "high")= t("High")
+                    option(value="medium", selected=ctx.query.priority === "medium")= t("Medium")
+                    option(value="low", selected=ctx.query.priority === "low")= t("Low")
+              
+              .col-md-4
+                .form-group
+                  label(for="select-status")= t("Status")
+                  select#select-status.form-control(name="status")
+                    option(value="", selected=!ctx.query.status)= t("All Statuses")
+                    option(value="new", selected=ctx.query.status === "new")= t("New")
+                    option(value="in_progress", selected=ctx.query.status === "in_progress")= t("In Progress")
+                    option(value="resolved", selected=ctx.query.status === "resolved")= t("Resolved")
+                    option(value="closed", selected=ctx.query.status === "closed")= t("Closed")
+            
             button.btn.btn-success(type="submit")= t("Search")
         #table-inquiries
           include ./_table

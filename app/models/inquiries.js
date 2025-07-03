@@ -15,15 +15,27 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const config = require('#config');
 
 const Messages = new mongoose.Schema({
-  raw: {
-    type: Buffer,
-    required: true
-  },
-  text: {
-    type: String,
-    required: true
-  }
-});
+    from: {
+      type: String,
+      default: 'Support'
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    },
+    html: String,
+    text: String,
+    message: String,
+    type: {
+      type: String,
+      enum: ['customer', 'support'],
+      default: 'support'
+    },
+    created_at: {
+      type: Date,
+      default: Date.now
+    }
+  });
 
 Messages.plugin(mongooseCommonPlugin, {
   object: 'messages',
@@ -57,7 +69,8 @@ const Inquiries = new mongoose.Schema({
     index: true
   },
   is_denylist: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   is_resolved: {
     type: Boolean,
@@ -65,7 +78,19 @@ const Inquiries = new mongoose.Schema({
     default: false,
     index: true
   },
-  messages: [Messages]
+  messages: [Messages],
+  status: {
+    type: String,
+    enum: ['new', 'in_progress', 'resolved', 'closed'],
+    default: 'new',
+    index: true
+  },
+  priority: {
+    type: String,
+    enum: ['high', 'medium', 'low'],
+    default: 'medium',
+    index: true
+  }
 });
 
 Inquiries.plugin(mongooseCommonPlugin, {
@@ -82,6 +107,12 @@ Inquiries.pre('validate', async function (next) {
   } catch (err) {
     next(err);
   }
+});
+
+Inquiries.pre('save', function(next) {
+  // Sync is_resolved with status for backward compatibility
+  this.is_resolved = ['resolved', 'closed'].includes(this.status);
+  next();
 });
 
 function getFirstMessage() {

@@ -3,6 +3,60 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+.inquiry-header {
+  background: linear-gradient(135deg, #0066FF 0%, #9DE5F9 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.inquiry-meta-card {
+  border: 2px solid #0066FF;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.inquiry-meta-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+}
+
+.priority-high { border-left: 4px solid #dc3545; }
+.priority-medium { border-left: 4px solid #ffc107; }
+.priority-low { border-left: 4px solid #6c757d; }
+
+.status-new { border-left: 4px solid #007bff; }
+.status-in_progress { border-left: 4px solid #17a2b8; }
+.status-resolved { border-left: 4px solid #28a745; }
+.status-closed { border-left: 4px solid #6c757d; }
+
+.message-container {
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid #0066FF;
+}
+
+.reply-editor {
+  min-height: 200px;
+  border: 2px solid #e9ecef;
+  border-radius: 0.5rem;
+}
+
+.reply-editor:focus-within {
+  border-color: #0066FF;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.25);
+}
+
+.action-buttons {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 // https://github.com/twbs/bootstrap/issues/24374
 .min-vh-80 {
   min-height: 80vh !important;
@@ -337,4 +391,59 @@ a, .markdown-body a {
 
 #modal-reply-to-email-list li:last-child {
   border-bottom: none;
+}
+
+.card.bg-primary,
+.card.bg-info,
+.card.bg-warning {
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.card.bg-primary:hover,
+.card.bg-info:hover,
+.card.bg-warning:hover {
+  transform: translateY(-2px);
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--fe-primary);
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.25);
+}
+
+.message-content {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .btn-group-sm .btn {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.6875rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.875rem;
+  }
 }

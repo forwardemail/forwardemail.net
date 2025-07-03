@@ -12,7 +12,9 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('plan', null, '#table-inquiries')
         th(scope="col")
-          +sortHeader('reference', Reference, '#table-inquiries')
+          +sortHeader('reference', 'Reference', '#table-inquiries')
+        th.text-center.align-middle(scope="col")= t("Priority")
+        th.text-center.align-middle(scope="col")= t("Status")
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-inquiries')
         th(scope="col")
@@ -34,7 +36,7 @@ include ../../_pagination
                 )
             td.align-middle
               a(
-                href=l(`/admin/users?mongodb_query={ email: "${inquiry.email}" }`),
+                href=`/admin/users?mongodb_query={ email: "${inquiry.email}" }`,
                 target="_blank",
                 rel="noopener noreferrer"
               )= inquiry.email
@@ -44,60 +46,107 @@ include ../../_pagination
               = titleize(humanize(inquiry.plan || "none"))
             td.align-middle
               = inquiry.reference || "none"
+            
+            //- New priority column following current pattern
+            td.align-middle.text-center
+              case inquiry.priority
+                when 'high'
+                  span.badge.badge-danger= t("High")
+                when 'medium'
+                  span.badge.badge-warning= t("Medium")
+                when 'low'
+                  span.badge.badge-secondary= t("Low")
+                default
+                  span.text-muted= t("Medium")
+            
+            //- New status column following current pattern
+            td.align-middle.text-center
+              case inquiry.status
+                when 'new'
+                  span.badge.badge-primary= t("New")
+                when 'in_progress'
+                  span.badge.badge-info= t("In Progress")
+                when 'resolved'
+                  span.badge.badge-success= t("Resolved")
+                when 'closed'
+                  span.badge.badge-secondary= t("Closed")
+                default
+                  span.text-muted= t("New")
+            
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
-            )= dayjs(inquiry.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+            )= dayjs(inquiry.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY")
             td.align-middle.dayjs(
               data-time=new Date(inquiry.updated_at).getTime()
-            )= dayjs(inquiry.updated_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+            )= dayjs(inquiry.updated_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY")
             td.align-middle
               .btn-group(role="group", aria-label=t("Actions"))
                 a.btn.btn-primary(
-                  href=l(`/admin/inquiries/${inquiry.id}`),
+                  href=`/admin/inquiries/${inquiry.id}`,
                   data-toggle="tooltip",
                   data-title=t("Reply")
                 ): i.fa.fa-fw.fa-edit
-                form.ajax-form.confirm-prompt.btn-group(
-                  action=l(`/admin/inquiries/${inquiry.id}`),
-                  method="POST",
-                  autocomplete="off"
-                )
-                  input(type="hidden", name="_method", value="PUT")
-                  button.btn.btn-secondary(
-                    type="submit",
-                    data-toggle="tooltip",
-                    data-title=t("Resolve")
-                  ): i.fa.fa-fw.fa-regular.fa-check-circle
-  button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
-  #bulk-reply-modal.modal.fade(
-    tabindex="-1",
-    role="dialog",
-    aria-labelledby="modal-bulk-reply-title",
-    aria-hidden="true"
-  )
-    .modal-dialog(role="document")
-      .modal-content
-        .modal-header.text-center.d-block
-          h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          .form-group
-            h5= t("Replying to")
-            #modal-reply-to-email-list
-          .text-center
-            form.form-group
-              label(for="textarea-bulk-reply-message")
-                h5= t("Message")
-                  = " "
-              textarea#textarea-bulk-reply-message.form-control(
-                name="bulk-reply-message",
-                rows=8
-              )
-              button#submit-bulk-reply.btn.btn-lg.btn-block.btn-primary.mt-3(
-                type="button"
-              )
-                i.fa.fa-edit
-                = " "
-                = t("Submit Bulk Reply")
+                
+                //- Enhanced resolve button with status awareness
+                if inquiry.status !== 'resolved' && inquiry.status !== 'closed'
+                  form.ajax-form.confirm-prompt.btn-group(
+                    action=`/admin/inquiries/${inquiry.id}/status`,
+                    method="POST",
+                    autocomplete="off"
+                  )
+                    input(type="hidden", name="status", value="resolved")
+                    button.btn.btn-secondary(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Resolve")
+                    ): i.fa.fa-fw.fa-regular.fa-check-circle
+                
+                //- Quick priority toggle for high priority items
+                if inquiry.priority === 'high'
+                  form.ajax-form.confirm-prompt.btn-group(
+                    action=`/admin/inquiries/${inquiry.id}/priority`,
+                    method="POST",
+                    autocomplete="off"
+                  )
+                    input(type="hidden", name="priority", value="medium")
+                    button.btn.btn-warning.btn-sm(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Lower Priority")
+                    ): i.fa.fa-fw.fa-arrow-down
+
+        //- Maintain current bulk reply functionality
+        button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
+        #bulk-reply-modal.modal.fade(
+          tabindex="-1",
+          role="dialog",
+          aria-labelledby="modal-bulk-reply-title",
+          aria-hidden="true"
+        )
+          .modal-dialog(role="document")
+            .modal-content
+              .modal-header.text-center.d-block
+                h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
+                button.close(type="button", data-dismiss="modal", aria-label="Close")
+                  span(aria-hidden="true") &times;
+              .modal-body
+                .form-group
+                  h5= t("Replying to")
+                  #modal-reply-to-email-list
+                .text-center
+                  form.form-group
+                    label(for="textarea-bulk-reply-message")
+                    h5= t("Message")
+                    = ""
+                    textarea#textarea-bulk-reply-message.form-control(
+                      name="bulk-reply-message",
+                      rows=8
+                    )
+                    button#submit-bulk-reply.btn.btn-lg.btn-block.btn-primary.mt-3(
+                      type="button"
+                    )
+                      i.fa.fa-edit
+                      = " "
+                      = t("Submit Bulk Reply")
+
 +paginate('#table-inquiries')
