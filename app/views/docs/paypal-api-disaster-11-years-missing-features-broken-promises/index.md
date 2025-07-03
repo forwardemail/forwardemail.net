@@ -40,7 +40,6 @@
 * [July 2025: The Final Straw](#july-2025-the-final-straw)
 * [Why We Can't Just Drop PayPal](#why-we-cant-just-drop-paypal)
 * [The Community Workaround](#the-community-workaround)
-* [PayPal's Response: More Overengineering](#paypals-response-more-overengineering)
 * [Blocking PayPal Templates Due to Phishing](#blocking-paypal-templates-due-to-phishing)
   * [The Real Problem: PayPal's Templates Look Like Scams](#the-real-problem-paypals-templates-look-like-scams)
   * [Our Implementation](#our-implementation)
@@ -196,6 +195,11 @@ When we explained the simple need for a subscription listing endpoint, his respo
 > Thanks Nick, we are in the process of creating a single subscription api with full SDK (supports full error handling, event-based subscription tracking, robust uptime) where billing is also split out as a separate API for merchants to go to rather than having to orchestrate across multiple endpoints to get a single response.
 
 This is exactly the wrong approach. We don't need months of complex architecture. We need one simple REST endpoint that lists subscriptions - something that should have existed since 2014.
+
+```http
+GET /v1/billing/subscriptions
+Authorization: Bearer {access_token}
+```
 
 ### The "Simple CRUD" Contradiction
 
@@ -460,22 +464,6 @@ Despite all these issues, we can't completely abandon PayPal because some custom
 Since PayPal won't provide basic subscription listing functionality, the developer community has built workarounds. We created a script that helps manage PayPal subscriptions: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
 This script references a [community gist](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) where developers share solutions. Users are actually [thanking us](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) for providing what PayPal should have built years ago.
-
-
-## PayPal's Response: More Overengineering
-
-When we finally escalated this publicly through GitHub, PayPal's response from Marty Brodbeck was telling:
-
-> Thanks Nick, we are in the process of creating a single subscription api with full SDK (supports full error handling, event-based subscription tracking, robust uptime) where billing is also split out as a separate API for merchants to go to rather than having to orchestrate across multiple endpoints to get a single response.
-
-This is exactly the wrong approach. We don't need months of complex architecture. We need one simple REST endpoint:
-
-```http
-GET /v1/billing/subscriptions
-Authorization: Bearer {access_token}
-```
-
-That's it. One endpoint that returns a list of subscriptions. **Something that should have existed since 2014.**
 
 
 ## Blocking PayPal Templates Due to Phishing
