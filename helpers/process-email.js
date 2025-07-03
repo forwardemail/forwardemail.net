@@ -1339,14 +1339,15 @@ async function processEmail({ email, port = 25, resolver, client }) {
         async (error) => {
           try {
             //
-            // if it was a soft bounce and within 1 hour of email's date then return early
+            // if it was a soft bounce and within 15 mins of email's date then return early
             // (we don't want to send bounces until we try 5-6x within first hour of queue)
             //
             const code = getErrorCode(error);
 
             if (
               code < 500 &&
-              Date.now() < dayjs(email.date).add(1, 'hour').toDate().getTime()
+              Date.now() <
+                dayjs(email.date).add(15, 'minutes').toDate().getTime()
             )
               return;
 
