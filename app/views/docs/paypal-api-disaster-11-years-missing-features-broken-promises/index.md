@@ -325,7 +325,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   PayPal's UI is so broken you can't even dismiss notifications
   </div></figcaption>
-  <video loading="lazy" width="640" height="360" controls>
+  <video loading="lazy" controls>
     <source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -335,7 +335,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   The developer dashboard literally makes you drag a slider then logs you out after 60 seconds
   </div></figcaption>
-  <video loading="lazy" width="640" height="360" controls>
+  <video loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -345,7 +345,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   More UI disasters in the PayPal developer interface showing broken workflows
   </div></figcaption>
-  <video loading="lazy" width="640" height="360" controls>
+  <video loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
