@@ -537,7 +537,7 @@ This creates an impossible situation: legitimate PayPal emails and spam both hav
 
 PayPal, a company that should be leading the fight against financial fraud, has email templates so poorly designed that they trigger anti-phishing systems. We're forced to block legitimate PayPal emails because they're indistinguishable from scams.
 
-This is documented in security research: [Beware PayPal new address fraud](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-fraud/) - showing how PayPal's own systems are exploited for fraud.
+This is documented in security research: [Beware PayPal new address fraud](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - showing how PayPal's own systems are exploited for fraud.
 
 ### Real-World Impact: Novel PayPal Scams
 
