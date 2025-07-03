@@ -541,7 +541,7 @@ This is documented in security research: [Beware PayPal new address fraud](https
 
 ### Real-World Impact: Novel PayPal Scams
 
-The problem extends beyond just poor template design. PayPal's invoice system is so easily exploited that scammers regularly abuse it to send legitimate-looking fraudulent invoices. Security researcher Chris Anderegg documented [A Novel PayPal Scam](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) where scammers send real PayPal invoices that pass all authentication checks:
+The problem extends beyond just poor template design. PayPal's invoice system is so easily exploited that scammers regularly abuse it to send legitimate-looking fraudulent invoices. Security researcher Gavin Anderegg documented [A Novel PayPal Scam](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) where scammers send real PayPal invoices that pass all authentication checks:
 
 > "Inspecting the source, the email looked like it actually came from PayPal (SPF, DKIM, and DMARC all passed). The button also linked to what looked like a legitimate PayPal URL... It took a second to dawn on me that it was a legit email. I had just been sent a random 'invoice' from a scammer."
 
