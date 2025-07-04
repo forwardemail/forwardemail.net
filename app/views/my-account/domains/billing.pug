@@ -144,15 +144,14 @@ block body
                         data-confirm-prompt-html=t("We accept Crypto, Visa, Mastercard, American Express, Discover, Diners Club, JCB, China UnionPay, Alipay, Apple Pay, Google Pay, Amazon Pay, Cash App, Link, Bancontact, EPS, giropay, iDEAL, Przelewy24, Sofort, Affirm, Afterpay / Clearpay, Klarna, SEPA Direct Debit, Canadian pre-authorized debits, ACH Direct Debit, and Bank Transfer.")
                       )
                         i.fa.fa-info-circle
-                  //-
-                    .form-check.form-check-inline.mr-0.no-js
-                      input#input-payment-method-paypal.form-check-input(
-                        type="radio",
-                        required,
-                        name="payment_method",
-                        value="paypal"
-                      )
-                      label.form-check-label(for="input-payment-method-paypal")= t("PayPal")
+                  .form-check.form-check-inline.mr-0.no-js
+                    input#input-payment-method-paypal.form-check-input(
+                      type="radio",
+                      required,
+                      name="payment_method",
+                      value="paypal"
+                    )
+                    label.form-check-label(for="input-payment-method-paypal")= t("PayPal")
 
                 //- Payment Type
                 //- TODO: default to last one used

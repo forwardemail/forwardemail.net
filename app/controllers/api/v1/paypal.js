@@ -192,21 +192,6 @@ async function processEvent(ctx) {
         [config.userFields.paypalSubscriptionID]: res.body.id
       });
 
-      // attempt to find user with paypal payer id
-      if (!user) {
-        // attempt to find the user by their paypal payer id
-        user = await Users.findOne({
-          [config.userFields.paypalPayerID]: res.body.subscriber.payer_id,
-          [config.userFields.paypalSubscriptionID]: { $exists: false }
-        });
-        // save user's subscription ID if not set
-        if (user) {
-          if (!user[config.userFields.paypalSubscriptionID])
-            user[config.userFields.paypalSubscriptionID] = res.body.id;
-          await user.save();
-        }
-      }
-
       //
       // NOTE: if there is no user then we can assume that they didn't
       //       get redirected post-checkout and so their subscription isn't assigned to them yet
