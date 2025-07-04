@@ -4,7 +4,6 @@
 
 <p class="lead mt-3">At Forward Email, we've been dealing with PayPal's broken APIs for over a decade. What started as minor frustrations has turned into a complete disaster that forced us to build our own workarounds, block their phishing templates, and ultimately halt all PayPal payments during a critical account migration.</p>
 <p class="lead mt-3">This is the story of 11 years of PayPal ignoring basic developer needs while we tried everything to make their platform work.</p>
-<p class="lead mt-3">If anyone at PayPal is reading this, please resolve #PP-L-555681076245, #5438494065044876800, and case #15607630 because clearly nobody is paying attention.</p>
 
 
 ## Table of Contents
@@ -325,7 +324,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   PayPal's UI is so broken you can't even dismiss notifications
   </div></figcaption>
-  <video loading="lazy" controls>
+  <video class="lazyframe-bordered" loading="lazy" controls>
     <source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -335,7 +334,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   The developer dashboard literally makes you drag a slider then logs you out after 60 seconds
   </div></figcaption>
-  <video loading="lazy" controls>
+  <video class="lazyframe-bordered" loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -345,7 +344,7 @@ The PayPal developer dashboard is a disaster. Here's what we deal with daily:
   <figcaption><div class="alert alert-danger small text-center">
   More UI disasters in the PayPal developer interface showing broken workflows
   </div></figcaption>
-  <video loading="lazy" controls>
+  <video class="lazyframe-bordered" loading="lazy" controls>
     <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
