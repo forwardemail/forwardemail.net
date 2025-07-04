@@ -1,0 +1,55 @@
+include ../../_sort-header
+include ../../_pagination
+
+table.table.table-hover.table-bordered.table-sm
+  thead.thead-dark
+    tr
+      th.text-center.align-middle(scope="col")= t("Subject")
+      th.text-center.align-middle(scope="col")= t("From")
+      th.text-center.align-middle(scope="col")= t("Date")
+      th.text-center.align-middle(scope="col")= t("Folder")
+      th.text-center.align-middle(scope="col")= t("Actions")
+  tbody
+    if supportMessages.length === 0
+      tr
+        td.alert.alert-info(colspan="5")
+          if isSANB(ctx.query.q)
+            = t("No support messages found for that search.")
+          else
+            = t("No support messages found. Create a new support request to get started.")
+    else
+      each message in supportMessages
+        tr
+          td.align-middle
+            .d-flex.flex-column
+              strong= message.subject || t("(No Subject)")
+              if message.flags && message.flags.has('\\Seen')
+                small.text-muted
+                  i.fa.fa-envelope-open.mr-1
+                  = t("Read")
+              else
+                small.text-primary
+                  i.fa.fa-envelope.mr-1
+                  = t("Unread")
+          td.align-middle
+            if message.from && message.from.address
+              .d-flex.flex-column
+                span= message.from.name || message.from.address
+                if message.from.name
+                  small.text-muted= message.from.address
+            else
+              span.text-muted= t("Unknown")
+          td.align-middle
+            span.small.text-monospace
+              span.dayjs(data-time=new Date(message.date).getTime())= dayjs(message.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+          td.align-middle
+            span.badge.badge-secondary= message.folder
+          td.align-middle.text-center
+            a.btn.btn-sm.btn-outline-primary(
+              href=l(`/my-account/support/${encodeURIComponent(message.folder)}/${message.uid}`),
+              data-toggle="tooltip",
+              title=t("View Message")
+            )
+              i.fa.fa-eye
+
+include ../../_pagination

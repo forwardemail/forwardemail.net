@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-primary.d-block
+          h1.h5.card-header.text-center.bg-primary.text-white= t("Support Request")
+          .card-body.p-0
+            .p-3
+              .row.mb-3
+                .col-sm-3
+                  strong= t("From:")
+                .col-sm-9= user.email
+              .row.mb-3
+                .col-sm-3
+                  strong= t("Subject:")
+                .col-sm-9= subject
+              if priority && priority !== 'normal'
+                .row.mb-3
+                  .col-sm-3
+                    strong= t("Priority:")
+                  .col-sm-9
+                    if priority === 'low'
+                      span.badge.badge-secondary= t("Low")
+                    else if priority === 'high'
+                      span.badge.badge-warning= t("High")
+                    else if priority === 'critical'
+                      span.badge.badge-danger= t("Critical")
+                    else
+                      span.badge.badge-info= t("Normal")
+              .row.mb-3
+                .col-sm-3
+                  strong= t("Message:")
+                .col-sm-9
+                  .card-text.text-monospace.small!= splitLines(message).join("<br />")
+              if timestamp
+                .row.mb-3
+                  .col-sm-3
+                    strong= t("Submitted:")
+                  .col-sm-9.small.text-muted= dayjs(timestamp).format("MMMM D, YYYY h:mm A z")
+              if userAgent
+                .row.mb-3
+                  .col-sm-3
+                    strong= t("Browser:")
+                  .col-sm-9.small.text-muted= userAgent
+              if ip
+                .row.mb-3
+                  .col-sm-3
+                    strong= t("IP Address:")
+                  .col-sm-9.small.text-muted= ip
+          .card-footer.text-center.small.text-muted
+            strong= t("Need to add attachments?")
+            = " "
+            = t("Reply to this email with them.")
+            br
+            = t("We typically respond within 24 hours.")

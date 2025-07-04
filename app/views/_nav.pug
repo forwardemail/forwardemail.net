@@ -829,6 +829,10 @@ nav.navbar(class=navbarClasses.join(" "))
                     href=l("/my-account/logs")
                   )= t("Logs")
                   a.dropdown-item(
+                    class=ctx.pathWithoutLocale.startsWith("/my-account/support") ? "active" : "",
+                    href=l("/my-account/support")
+                  )= t("Support")
+                  a.dropdown-item(
                     class=ctx.pathWithoutLocale === "/my-account/profile" ? "active" : "",
                     href=l("/my-account/profile")
                   )= t("Profile")

@@ -1,0 +1,109 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        .card
+          .card-header.d-flex.justify-content-between.align-items-center
+            h5.mb-0= supportMessage.subject || t("(No Subject)")
+            .btn-group
+              a.btn.btn-sm.btn-outline-secondary(href=l("/my-account/support"))
+                i.fa.fa-arrow-left.mr-1
+                = t("Back to Support")
+              a.btn.btn-sm.btn-primary(href=l("/my-account/support/create"))
+                i.fa.fa-reply.mr-1
+                = t("New Request")
+
+          .card-body
+            .row.mb-3
+              .col-md-6
+                h6= t("From:")
+                if supportMessage.from && supportMessage.from.length > 0
+                  each sender in supportMessage.from
+                    .mb-1
+                      if sender.name
+                        strong= sender.name
+                        br
+                        small.text-muted= sender.address
+                      else
+                        = sender.address
+                else
+                  span.text-muted= t("Unknown")
+
+              .col-md-6
+                h6= t("Date:")
+                span.text-monospace
+                  span.dayjs(data-time=new Date(supportMessage.date).getTime())= dayjs(supportMessage.date).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("MMMM D, YYYY h:mm A z")
+
+            if supportMessage.to && supportMessage.to.length > 0
+              .row.mb-3
+                .col-md-6
+                  h6= t("To:")
+                  each recipient in supportMessage.to
+                    .mb-1
+                      if recipient.name
+                        strong= recipient.name
+                        br
+                        small.text-muted= recipient.address
+                      else
+                        = recipient.address
+
+            if supportMessage.cc && supportMessage.cc.length > 0
+              .row.mb-3
+                .col-md-6
+                  h6= t("CC:")
+                  each recipient in supportMessage.cc
+                    .mb-1
+                      if recipient.name
+                        strong= recipient.name
+                        br
+                        small.text-muted= recipient.address
+                      else
+                        = recipient.address
+
+            hr
+
+            .message-content
+              if supportMessage.html
+                .border.bg-light
+                  iframe.bg-white.border-0(
+                    sandbox="allow-downloads allow-scripts allow-same-origin",
+                    referrerpolicy="no-referrer",
+                    seamless="seamless",
+                    srcdoc=`<base target='_top'><style>body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:1rem;line-height:1.5;color:#333;}</style>${supportMessage.html}`,
+                    style="height: 600px; width: 100%; min-height: 400px",
+                    onload="this.style.height=(this.contentDocument.body.scrollHeight+20)+'px'"
+                  )
+                .mt-2
+                  small.text-muted
+                    i.fa.fa-shield-alt.mr-1
+                    = t("Email content is displayed in a secure sandbox")
+              else if supportMessage.text
+                pre.border.p-3.bg-light.text-wrap= supportMessage.text
+              else
+                .alert.alert-warning= t("No message content available")
+
+            if supportMessage.attachments && supportMessage.attachments.length > 0
+              hr
+              h6= t("Attachments:")
+              .list-group
+                each attachment in supportMessage.attachments
+                  .list-group-item.d-flex.justify-content-between.align-items-center
+                    .d-flex.align-items-center
+                      i.fa.fa-paperclip.mr-2
+                      .d-flex.flex-column
+                        span= attachment.filename || t("Unnamed attachment")
+                        small.text-muted= attachment.contentType
+                    if attachment.size
+                      span.badge.badge-secondary= `${Math.round(attachment.size / 1024)} KB`
+
+          .card-footer.text-muted
+            small
+              = t("Message ID: ")
+              code= supportMessage.messageId || t("Unknown")
+              = " | "
+              = t("Folder: ")
+              span.badge.badge-secondary= supportMessage.folder

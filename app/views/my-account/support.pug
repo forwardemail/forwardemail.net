@@ -1,0 +1,33 @@
+extends ../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../_breadcrumbs
+        .alert.alert-info!= t('Support messages are retrieved from your email conversations with our support team. <a href="%s" class="alert-link">Click here</a> to create a new support request.', l("/my-account/support/create"))
+
+        .row.mb-3
+          .col-md-8
+            form.ajax-form.table-ajax-form(
+              action=ctx.path,
+              method="GET",
+              data-table="#table-support",
+              data-search-params="q"
+            )
+              .input-group
+                input#input-keyword-search.form-control(
+                  type="text",
+                  value=ctx.query.q ? ctx.query.q : "",
+                  name="q",
+                  placeholder=t("Search support messages")
+                )
+                .input-group-append
+                  button.btn.btn-success(type="submit")= t("Search")
+          .col-md-4.text-right
+            a.btn.btn-primary(href=l("/my-account/support/create"))
+              i.fa.fa-plus.mr-1
+              = t("New Support Request")
+
+        #table-support
+          include ./support/_table

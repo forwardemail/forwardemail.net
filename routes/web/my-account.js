@@ -469,6 +469,27 @@ router
     web.myAccount.removeEmail
   )
   .get(
+    '/support',
+    paginate.middleware(10, 50),
+    rateLimit(100, 'list support'),
+    web.myAccount.listSupport
+  )
+  .get(
+    '/support/create',
+    rateLimit(50, 'create support form'),
+    web.myAccount.createSupportForm
+  )
+  .post(
+    '/support',
+    rateLimit(10, 'create support'),
+    web.myAccount.createSupport
+  )
+  .get(
+    '/support/:folder/:uid',
+    rateLimit(100, 'retrieve support'),
+    web.myAccount.retrieveSupport
+  )
+  .get(
     '/logs',
     paginate.middleware(10, 50),
     rateLimit(100, 'list logs'),

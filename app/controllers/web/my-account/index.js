@@ -11,6 +11,8 @@ const createDomain = require('./create-domain');
 const createDomainBilling = require('./create-domain-billing');
 const createDomainForm = require('./create-domain-form');
 const createInvite = require('./create-invite');
+const createSupport = require('./create-support');
+const createSupportForm = require('./create-support-form');
 const ensureAliasAdmin = require('./ensure-alias-admin');
 const ensureDomainAdmin = require('./ensure-domain-admin');
 const ensureNotBanned = require('./ensure-not-banned');
@@ -21,6 +23,7 @@ const importAliases = require('./import-aliases');
 const listAliases = require('./list-aliases');
 const listBilling = require('./list-billing');
 const listDomains = require('./list-domains');
+const listSupport = require('./list-support');
 const recoveryKeys = require('./recovery-keys');
 const remove = require('./remove');
 const removeAlias = require('./remove-alias');
@@ -36,6 +39,7 @@ const retrieveDomain = require('./retrieve-domain');
 const retrieveDomainBilling = require('./retrieve-domain-billing');
 const retrieveDomains = require('./retrieve-domains');
 const retrieveInvite = require('./retrieve-invite');
+const retrieveSupport = require('./retrieve-support');
 const retrieveProfile = require('./retrieve-profile');
 const retrieveReceipt = require('./retrieve-receipt');
 const sortedDomains = require('./sorted-domains');
@@ -79,6 +83,8 @@ module.exports = {
   createDomainForm,
   createDomainBilling,
   createInvite,
+  createSupport,
+  createSupportForm,
   ensureAliasAdmin,
   ensureDomainAdmin,
   ensureNotBanned,
@@ -89,6 +95,7 @@ module.exports = {
   listAliases,
   listBilling,
   listDomains,
+  listSupport,
   recoveryKeys,
   remove,
   removeAlias,
@@ -104,6 +111,7 @@ module.exports = {
   retrieveDomainBilling,
   retrieveDomains,
   retrieveInvite,
+  retrieveSupport,
   retrieveProfile,
   retrieveReceipt,
   sortedDomains,

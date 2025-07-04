@@ -1,0 +1,73 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        .row.justify-content-center
+          .col-lg-8
+            .card
+              .card-header
+                h5.mb-0
+                  i.fa.fa-life-ring.mr-2
+                  = t("Create Support Request")
+
+              .card-body
+                .alert.alert-info
+                  = t("Please provide as much detail as possible to help us assist you quickly. We typically respond within 24 hours.")
+
+                form.ajax-form(action=l("/my-account/support"), method="POST")
+                  .form-group
+                    label(for="input-subject")= t("Subject")
+                    input#input-subject.form-control(
+                      type="text",
+                      name="subject",
+                      required,
+                      maxlength="200",
+                      placeholder=t("Brief description of your issue")
+                    )
+                    small.form-text.text-muted= t("Please provide a clear, descriptive subject line")
+
+                  .form-group
+                    label(for="input-priority")= t("Priority")
+                    select#input-priority.form-control(name="priority")
+                      option(value="low")= t("Low - General question")
+                      option(value="normal", selected)= t("Normal - Standard support")
+                      option(value="high")= t("High - Urgent issue")
+                      option(value="critical")= t("Critical - Service down")
+
+                  .form-group
+                    label(for="input-message")= t("Message")
+                    textarea#input-message.form-control(
+                      name="message",
+                      rows="8",
+                      required,
+                      maxlength=config.supportRequestMaxLength,
+                      placeholder=t("Please describe your issue in detail...")
+                    )
+                    small.form-text.text-muted= t("Maximum %d characters", config.supportRequestMaxLength)
+
+                  .form-group
+                    .custom-control.custom-checkbox
+                      input#input-include-details.custom-control-input(
+                        type="checkbox",
+                        name="includeDetails",
+                        checked
+                      )
+                      label.custom-control-label(for="input-include-details")= t("Include technical details (browser, IP address, etc.)")
+
+                  if config.turnstileEnabled
+                    noscript
+                      .alert.alert-danger.font-weight-bold.text-center.border-top-0.border-left-0.border-right-0.rounded-0.small!= t("Please enable JavaScript to use our website.")
+                    .cf-explicit-turnstile
+
+                  .form-group.mb-0
+                    .d-flex.justify-content-between
+                      a.btn.btn-secondary(href=l("/my-account/support"))
+                        i.fa.fa-arrow-left.mr-1
+                        = t("Cancel")
+                      button.btn.btn-primary(type="submit")
+                        i.fa.fa-paper-plane.mr-1
+                        = t("Send Support Request")
