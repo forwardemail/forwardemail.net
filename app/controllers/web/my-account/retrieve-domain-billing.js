@@ -1235,7 +1235,7 @@ async function retrieveDomainBilling(ctx) {
           // - and 15s was tested and worked (seemingly) reliably
           // (if we have anything more than 15-20s it seems we may get Timeout error)
           //
-          await setTimeout(ms('15s'));
+          await setTimeout(ms('20s'));
 
           // attempt to lookup the transactions
           let transactionId;
