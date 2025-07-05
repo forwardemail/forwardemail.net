@@ -8,3 +8,462 @@
 @import 'node_modules/codemirror/addon/hint/show-hint';
 @import 'node_modules/codemirror/addon/lint/lint';
 @import 'node_modules/codemirror/theme/material';
+
+
+/* ===== MESSAGE HEADER BASE STYLES ===== */
+.message-header {
+  margin-bottom: 0;
+  
+  .avatar-container {
+    margin-right: 1rem;
+  }
+  
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+    
+    &.support-avatar {
+      background: linear-gradient(135deg, #0066FF, #004CBB);
+      box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+    }
+    
+    &.customer-avatar {
+      background: linear-gradient(135deg, #28a745, #1e7e34);
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+  }
+  
+  .message-meta {
+    .sender-name {
+      font-weight: 600;
+      color: #212529;
+      font-size: 0.95rem;
+    }
+    
+    .message-time {
+      color: #6c757d;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+/* ===== CONVERSATION THREAD STYLES ===== */
+.conversation-thread {
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  padding: 1rem;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-item {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+  
+  &.last-message {
+    margin-bottom: 0;
+  }
+  
+  &.support-message {
+    border-left: 4px solid #0066FF;
+    
+    .message-header {
+      background: linear-gradient(135deg, #0066FF, #004CBB);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      margin: 0;
+      border-radius: 0;
+      
+      .avatar-container {
+        .avatar {
+          background: rgba(255, 255, 255, 0.2);
+          border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+      }
+      
+      .message-meta {
+        .sender-name {
+          color: white;
+          font-weight: 600;
+        }
+        
+        .message-time {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+    
+    .message-content {
+      background: white;
+      padding: 1.25rem;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      
+      .message-text {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #212529;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 0;
+        border: none;
+        background: transparent;
+      }
+    }
+  }
+  
+  &.customer-message {
+    border-left: 4px solid #28a745;
+    
+    .message-header {
+      background: linear-gradient(135deg, #28a745, #1e7e34);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      margin: 0;
+      border-radius: 0;
+      
+      .avatar-container {
+        .avatar {
+          background: rgba(255, 255, 255, 0.2);
+          border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+      }
+      
+      .message-meta {
+        .sender-name {
+          color: white;
+          font-weight: 600;
+        }
+        
+        .message-time {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+    
+    .message-content {
+      background: #f8f9fa;
+      padding: 1.25rem;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      
+      .message-text {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #212529;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 0;
+        border: none;
+        background: transparent;
+      }
+    }
+  }
+}
+
+
+.empty-state {
+  .empty-icon {
+    opacity: 0.6;
+  }
+}
+
+/* ===== REPLY FORM STYLES ===== */
+.reply-card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  animation: fadeIn 0.4s ease-out;
+  
+  .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1.25rem;
+    
+    h5 {
+      color: #212529;
+      font-weight: 600;
+    }
+  }
+}
+
+.composer-header {
+  label {
+    color: #495057;
+    font-size: 0.95rem;
+  }
+}
+
+
+.editor-container {
+  position: relative;
+  
+  .CodeMirror {
+    border: 2px solid #dee2e6;
+    border-radius: 0.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    min-height: 300px;
+    transition: all 0.15s ease-in-out;
+    background: white;
+    
+    &:hover {
+      border-color: #adb5bd;
+    }
+    
+    &.CodeMirror-focused {
+      border-color: #0066FF;
+      box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.15);
+      outline: none;
+    }
+    
+    .CodeMirror-lines {
+      padding: 1.25rem;
+    }
+    
+    .CodeMirror-line {
+      line-height: 1.6;
+    }
+    
+    .CodeMirror-placeholder {
+      color: #6c757d;
+      font-style: italic;
+    }
+    
+    .CodeMirror-cursor {
+      border-left: 2px solid #0066FF;
+    }
+  }
+  
+  .CodeMirror-scroll {
+    min-height: 300px;
+  }
+  
+  .CodeMirror-sizer {
+    min-height: 300px;
+  }
+}
+
+.editor-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e9ecef;
+  
+  #character-count {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+  
+  .text-muted {
+    font-size: 0.875rem;
+  }
+}
+
+.editor-actions {
+  .btn {
+    font-size: 0.875rem;
+  }
+}
+
+/* ===== SAVE INDICATOR ===== */
+.reply-status {
+  #save-indicator {
+    font-size: 0.875rem;
+    
+    &.text-success {
+      color: #28a745 !important;
+    }
+    
+    &.text-muted {
+      color: #6c757d !important;
+    }
+    
+    .fa-spin {
+      animation: fa-spin 1s infinite linear;
+    }
+  }
+}
+
+/* ===== CUSTOM FILE INPUT ===== */
+.custom-file-label {
+  font-size: 0.95rem;
+  color: #495057;
+  
+  &::after {
+    background: #e9ecef;
+    border-left: 1px solid #ced4da;
+    color: #495057;
+  }
+}
+
+.custom-file-input:focus ~ .custom-file-label {
+  border-color: #0066FF;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.25);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .message-item {
+    padding: 1rem;
+  }
+  
+  .message-header {
+    .avatar-container {
+      margin-right: 0.75rem;
+    }
+    
+    .avatar {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+  }
+  
+  .message-content {
+    padding: 1rem;
+  }
+  
+  .editor-container .CodeMirror {
+    min-height: 250px;
+  }
+}
+
+/* ===== PREVIEW MODAL STYLES ===== */
+#preview-modal {
+  .preview-content {
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    
+    h1, h2, h3, h4, h5, h6 {
+      color: #212529;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      color: #495057;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    
+    ul, ol {
+      padding-left: 2rem;
+      margin-bottom: 1rem;
+      
+      li {
+        margin-bottom: 0.5rem;
+        color: #495057;
+      }
+    }
+    
+    blockquote {
+      border-left: 4px solid #dee2e6;
+      margin: 1rem 0;
+      font-style: italic;
+      color: #6c757d;
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+    
+    code {
+      background: #f8f9fa;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.875rem;
+      color: #e83e8c;
+    }
+    
+    pre {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      border: 1px solid #dee2e6;
+      
+      code {
+        background: transparent;
+        padding: 0;
+        color: #495057;
+      }
+    }
+    
+    a {
+      color: #0066FF;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    
+    strong {
+      font-weight: 600;
+      color: #212529;
+    }
+    
+    em {
+      font-style: italic;
+      color: #495057;
+    }
+  }
+  
+  .modal-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    
+    .modal-title {
+      color: #212529;
+      font-weight: 600;
+    }
+  }
+  
+  .modal-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+  }
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

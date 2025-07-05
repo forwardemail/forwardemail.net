@@ -637,16 +637,6 @@ async function bundle() {
       ),
       path.join(config.buildBase, 'css', 'bootstrap-table-sticky-header.css')
     ),
-    fs.promises.copyFile(
-      path.join(
-        __dirname,
-        'node_modules',
-        'codemirror',
-        'lib',
-        'codemirror.css'
-      ),
-      path.join(config.buildBase, 'css', 'inquiries-codemirror.css')
-    ),
     // factor bundle
     getFactorBundle()
   ]);

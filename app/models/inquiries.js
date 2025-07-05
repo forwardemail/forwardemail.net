@@ -15,27 +15,27 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 const config = require('#config');
 
 const Messages = new mongoose.Schema({
-    from: {
-      type: String,
-      default: 'Support'
-    },
-    date: {
-      type: Date,
-      default: Date.now
-    },
-    html: String,
-    text: String,
-    message: String,
-    type: {
-      type: String,
-      enum: ['customer', 'support'],
-      default: 'support'
-    },
-    created_at: {
-      type: Date,
-      default: Date.now
-    }
-  });
+  from: {
+    type: String,
+    default: 'Support'
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  },
+  html: String,
+  text: String,
+  message: String,
+  type: {
+    type: String,
+    enum: ['customer', 'support'],
+    default: 'support'
+  },
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
+});
 
 Messages.plugin(mongooseCommonPlugin, {
   object: 'messages',
@@ -109,7 +109,7 @@ Inquiries.pre('validate', async function (next) {
   }
 });
 
-Inquiries.pre('save', function(next) {
+Inquiries.pre('save', function (next) {
   // Sync is_resolved with status for backward compatibility
   this.is_resolved = ['resolved', 'closed'].includes(this.status);
   next();

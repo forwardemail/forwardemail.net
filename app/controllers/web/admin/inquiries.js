@@ -1,11 +1,7 @@
-const { Buffer } = require('node:buffer');
-const path = require('node:path');
-const getStream = require('get-stream');
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
-const previewEmail = require('preview-email');
 const nodemailer = require('nodemailer');
 const Axe = require('axe');
 const _ = require('#helpers/lodash');
@@ -22,41 +18,124 @@ const transporter = nodemailer.createTransport({
   })
 });
 
-const USER_SEARCH_PATHS = ['email', 'message'];
-
 // Enhanced list function (fixed query logic)
 async function list(ctx) {
-  let query = {};
+  // Build the aggregation pipeline
+  const pipeline = [
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user'
+      }
+    },
+    {
+      $unwind: {
+        path: '$user',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $addFields: {
+        firstMessage: {
+          $ifNull: [
+            {
+              $arrayElemAt: [
+                {
+                  $sortArray: {
+                    input: '$messages',
+                    sortBy: { created_at: 1 }
+                  }
+                },
+                0
+              ]
+            },
+            {}
+          ]
+        },
+        content: '$text',
+        created_at: '$created_at',
+        updated_at: '$updated_at'
+      }
+    },
+    {
+      $addFields: {
+        email: { $ifNull: ['$user.email', '$sender_email'] },
+        plan: { $ifNull: ['$user.plan', null] }
+      }
+    },
+    {
+      $project: {
+        id: 1,
+        message: { $ifNull: ['$message', '$firstMessage.text'] },
+        created_at: 1,
+        updated_at: 1,
+        reference: 1,
+        email: 1,
+        plan: 1,
+        is_resolved: 1,
+        is_denylist: 1,
+        priority: 1,
+        status: 1
+      }
+    }
+  ];
 
-  // Handle basic search (preserve existing functionality exactly)
+  // Build match query after all fields are available
+  let matchQuery = {};
+
+  // Handle basic search - now searching in the correct fields
   if (ctx.query.q) {
-    query = { $or: [] };
-    for (const field of USER_SEARCH_PATHS) {
-      query.$or.push(
-        { [field]: { $regex: ctx.query.q, $options: 'i' } },
-        { [field]: { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' } }
-      );
+    const searchRegex = { $regex: ctx.query.q, $options: 'i' };
+    const escapedRegex = { $regex: _.escapeRegExp(ctx.query.q), $options: 'i' };
+
+    matchQuery.$or = [
+      { email: searchRegex },
+      { email: escapedRegex },
+      { message: searchRegex },
+      { message: escapedRegex }
+    ];
+  }
+
+  // Filter for non-resolved inquiries
+  if (!matchQuery.$or) {
+    matchQuery.$or = [];
+  }
+
+  matchQuery.$or.push({ is_resolved: false });
+
+  // Add new filtering capabilities
+  if (
+    ctx.query.priority &&
+    ['high', 'medium', 'low'].includes(ctx.query.priority)
+  ) {
+    matchQuery.priority = ctx.query.priority;
+  }
+
+  if (
+    ctx.query.status &&
+    ['new', 'in_progress', 'resolved', 'closed'].includes(ctx.query.status)
+  ) {
+    matchQuery.status = ctx.query.status;
+  }
+
+  // Handle MongoDB query parser (this overrides other queries)
+  if (isSANB(ctx.query.mongodb_query)) {
+    try {
+      matchQuery = parser.parseFilter(ctx.query.mongodb_query);
+      if (!matchQuery || Object.keys(matchQuery).length === 0)
+        throw new Error('Query was not parsed properly');
+    } catch (err) {
+      ctx.logger.warn(err);
+      throw Boom.badRequest(err.message);
     }
   }
 
-  // FIXED: Initialize $or array if it doesn't exist before pushing
-  if (!query.$or) {
-    query.$or = [];
-  }
-  
-  // Filter for non-banned and verified users (preserve existing logic)
-  query.$or.push({ is_resolved: false });
+  // Add match stage after fields are available
+  pipeline.push({ $match: matchQuery });
 
-  // Add new filtering capabilities (only if specified in query)
-  if (ctx.query.priority && ['high', 'medium', 'low'].includes(ctx.query.priority)) {
-    query.priority = ctx.query.priority;
-  }
-
-  if (ctx.query.status && ['new', 'in_progress', 'resolved', 'closed'].includes(ctx.query.status)) {
-    query.status = ctx.query.status;
-  }
-
-  // Handle sort (preserve existing logic exactly)
+  // Handle sort
   let $sort = { created_at: -1 };
   if (ctx.query.sort) {
     const order = ctx.query.sort.startsWith('-') ? -1 : 1;
@@ -65,90 +144,18 @@ async function list(ctx) {
     };
   }
 
-  // Handle MongoDB query parser (preserve existing functionality)
-  if (isSANB(ctx.query.mongodb_query)) {
-    try {
-      query = parser.parseFilter(ctx.query.mongodb_query);
-      if (!query || Object.keys(query).length === 0)
-        throw new Error('Query was not parsed properly');
-    } catch (err) {
-      ctx.logger.warn(err);
-      throw Boom.badRequest(err.message);
-    }
-  }
+  pipeline.push({ $sort }, { $skip: ctx.paginate.skip });
+  pipeline.push({ $limit: Number.parseInt(ctx.query.limit, 10) });
 
-  // Execute aggregation (preserve existing pipeline structure exactly)
+  // Execute aggregation
   const [inquiries, itemCount] = await Promise.all([
+    Inquiries.aggregate(pipeline).exec(),
     Inquiries.aggregate([
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'user'
-        }
-      },
-      {
-        $unwind: {
-          path: '$user',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $addFields: {
-          firstMessage: {
-            $ifNull: [
-              {
-                $arrayElemAt: [
-                  {
-                    $sortArray: {
-                      input: '$messages',
-                      sortBy: { created_at: 1 }
-                    }
-                  },
-                  0
-                ]
-              },
-              {}
-            ]
-          },
-          content: '$text',
-          created_at: '$created_at',
-          updated_at: '$updated_at'
-        }
-      },
-      {
-        $addFields: {
-          email: { $ifNull: ['$user.email', '$sender_email'] },
-          plan: { $ifNull: ['$user.plan', null] }
-        }
-      },
-      {
-        $project: {
-          id: 1,
-          message: { $ifNull: ['$message', '$firstMessage.text'] },
-          created_at: 1,
-          updated_at: 1,
-          reference: 1,
-          email: 1,
-          plan: 1,
-          is_resolved: 1,
-          is_denylist: 1,
-          // Add new fields to projection
-          priority: 1,
-          status: 1
-        }
-      },
-      { $match: query },
-      { $sort },
-      {
-        $skip: ctx.paginate.skip
-      },
-      {
-        $limit: Number.parseInt(ctx.query.limit, 10)
-      }
-    ]).exec(),
-    Inquiries.countDocuments(query)
+      ...pipeline.slice(0, -2), // Remove skip and limit for count
+      { $count: 'total' }
+    ])
+      .exec()
+      .then((result) => result[0]?.total || 0)
   ]);
 
   // Calculate page count (preserve existing logic)
@@ -177,19 +184,19 @@ async function list(ctx) {
 async function updateStatus(ctx) {
   const { status } = ctx.request.body;
   const { id } = ctx.request.params;
-  
+
   // Validate status
   const validStatuses = ['new', 'in_progress', 'resolved', 'closed'];
   if (!validStatuses.includes(status)) {
     throw Boom.badRequest('Invalid status value');
   }
-  
+
   // Update the inquiry
   await Inquiries.findByIdAndUpdate(id, {
     status,
     updated_at: new Date()
   });
-  
+
   // Flash success message
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -200,7 +207,7 @@ async function updateStatus(ctx) {
     timer: 3000,
     position: 'top'
   });
-    
+
   if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
   else ctx.body = { redirectTo: '/admin/inquiries' };
 }
@@ -208,18 +215,18 @@ async function updateStatus(ctx) {
 async function updatePriority(ctx) {
   const { priority } = ctx.request.body;
   const { id } = ctx.request.params;
-  
+
   const validPriorities = ['low', 'medium', 'high'];
   if (!validPriorities.includes(priority)) {
     throw Boom.badRequest('Invalid priority value');
   }
-  
+
   // Update the inquiry
   await Inquiries.findByIdAndUpdate(id, {
     priority,
     updated_at: new Date()
   });
-  
+
   // Flash success message
   ctx.flash('custom', {
     title: ctx.request.t('Success'),
@@ -230,12 +237,12 @@ async function updatePriority(ctx) {
     timer: 3000,
     position: 'top'
   });
-  
+
   if (ctx.accepts('html')) ctx.redirect('/admin/inquiries');
   else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
-async retrieve(ctx) {
+async function retrieve(ctx) {
   try {
     // Get the inquiry with user population
     const inquiry = await Inquiries.findById(ctx.params.id)
@@ -243,14 +250,15 @@ async retrieve(ctx) {
       .lean()
       .exec();
 
-    if (!inquiry) throw Boom.notFound(ctx.translateError('INQUIRY_DOES_NOT_EXIST'));
+    if (!inquiry)
+      throw Boom.notFound(ctx.translateError('INQUIRY_DOES_NOT_EXIST'));
 
     // Set inquiry in state
     ctx.state.inquiry = inquiry;
 
     // Build messages array from inquiry data
-    let messages = [];
-    
+    const messages = [];
+
     // Add original inquiry message
     messages.push({
       from: inquiry.user ? inquiry.user.email : 'Customer',
@@ -260,10 +268,10 @@ async retrieve(ctx) {
       message: inquiry.message,
       type: 'customer'
     });
-    
+
     // Add any additional messages from inquiry.messages array
     if (inquiry.messages && Array.isArray(inquiry.messages)) {
-      inquiry.messages.forEach(msg => {
+      for (const msg of inquiry.messages) {
         messages.push({
           from: msg.from || 'Support',
           date: msg.date || msg.created_at,
@@ -272,7 +280,7 @@ async retrieve(ctx) {
           message: msg.message,
           type: msg.type || 'support'
         });
-      });
+      }
     }
 
     // Sort messages by date
@@ -294,10 +302,10 @@ async retrieve(ctx) {
 }
 
 // Enhanced create method to handle replies
-async create(ctx) {
+async function create(ctx) {
   try {
     const { message } = ctx.request.body;
-    
+
     if (!message || !message.trim()) {
       throw Boom.badRequest('Message is required');
     }
@@ -320,20 +328,20 @@ async create(ctx) {
         date: new Date(),
         html: message,
         text: message,
-        message: message,
+        message,
         type: 'support',
         created_at: new Date()
       };
 
       inquiry.messages.push(newMessage);
-      
+
       // Update inquiry status if it's new
       if (inquiry.status === 'new') {
         inquiry.status = 'in_progress';
       }
-      
+
       inquiry.updated_at = new Date();
-      
+
       // Save the inquiry
       await inquiry.save();
 
@@ -378,7 +386,7 @@ async create(ctx) {
   } catch (err) {
     ctx.logger.error(err);
     ctx.flash('error', err.message);
-    
+
     if (ctx.params.id) {
       ctx.redirect(`/admin/inquiries/${ctx.params.id}`);
     } else {
@@ -397,20 +405,20 @@ async function reply(ctx) {
   }
 
   const inquiry = await Inquiries.findById(id).populate('user');
-  
+
   if (!inquiry) {
     throw Boom.notFound('Inquiry not found');
   }
 
   // Process rich text message (convert HTML to plain text for email)
   const processedMessage = message
-    .replace(/<strong>(.*?)<\/strong>/g, '**$1**')  // Bold to markdown
-    .replace(/<em>(.*?)<\/em>/g, '*$1*')            // Italic to markdown
-    .replace(/<br\s*\/?>/g, '\n')                   // Line breaks
-    .replace(/<p>(.*?)<\/p>/g, '$1\n\n')           // Paragraphs
-    .replace(/<ul>(.*?)<\/ul>/gs, '$1')            // Remove ul tags
-    .replace(/<li>(.*?)<\/li>/g, '• $1\n')         // List items
-    .replace(/<[^>]*>/g, '')                       // Remove remaining HTML
+    .replace(/<strong>(.*?)<\/strong>/g, '**$1**') // Bold to markdown
+    .replace(/<em>(.*?)<\/em>/g, '*$1*') // Italic to markdown
+    .replace(/<br\s*\/?>/g, '\n') // Line breaks
+    .replace(/<p>(.*?)<\/p>/g, '$1\n\n') // Paragraphs
+    .replace(/<ul>(.*?)<\/ul>/gs, '$1') // Remove ul tags
+    .replace(/<li>(.*?)<\/li>/g, '• $1\n') // List items
+    .replace(/<[^>]*>/g, '') // Remove remaining HTML
     .trim();
 
   // Send email reply (existing email logic)
@@ -505,7 +513,7 @@ async function bulkReply(ctx) {
             to: address,
             cc: config.email.message.from,
             inReplyTo: inquiry?.messages[inquiry.messages.length - 1] || '',
-            references: inquiry.references,
+            references: inquiry.reference,
             subject: inquiry.subject
           },
           locals: {
@@ -554,11 +562,10 @@ async function bulkReply(ctx) {
   else ctx.body = { redirectTo: '/admin/inquiries' };
 }
 
-
-
 module.exports = {
   list,
   retrieve,
+  create,
   updateStatus,
   updatePriority,
   reply,

@@ -76,10 +76,9 @@ router
         maxCount: 3
       }
     ]),
-    web.admin.inquiries.reply
+    web.admin.inquiries.create
   )
   .put('/inquiries/:id', web.admin.inquiries.resolve)
-  .post('/:id', web.admin.inquiries.create)
   .put('/inquiries/:id/status', web.admin.inquiries.updateStatus)
   .put('/inquiries/:id/priority', web.admin.inquiries.updatePriority)
 

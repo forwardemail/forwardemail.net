@@ -31,7 +31,7 @@ block body
               .col-md-3
                 strong= t("Created:")
                 br
-                = moment(inquiry.created_at).format('MMMM Do YYYY, h:mm:ss a')
+                = inquiry.created_at
               .col-md-3
                 strong= t("User:")
                 br
@@ -43,84 +43,193 @@ block body
                 strong= t("Status:")
                 br
                 - const status = inquiry.status || 'new'
-                case status
-                  when 'new'
-                    span.badge.badge-primary= t("New")
-                  when 'in_progress'
-                    span.badge.badge-warning= t("In Progress")
-                  when 'resolved'
-                    span.badge.badge-success= t("Resolved")
-                  when 'closed'
-                    span.badge.badge-secondary= t("Closed")
-                  default
-                    span.badge.badge-light= t("Unknown")
+                .d-flex.align-items-center
+                  case status
+                    when 'new'
+                      span.badge.badge-primary.mr-2= t("New")
+                    when 'in_progress'
+                      span.badge.badge-warning.mr-2= t("In Progress")
+                    when 'resolved'
+                      span.badge.badge-success.mr-2= t("Resolved")
+                    when 'closed'
+                      span.badge.badge-secondary.mr-2= t("Closed")
+                    default
+                      span.badge.badge-light.mr-2= t("Unknown")
+                  
+                  //- Status Update Form
+                  .dropdown
+                    button.btn.btn-sm.btn-outline-secondary.dropdown-toggle(
+                      type="button",
+                      data-toggle="dropdown",
+                      aria-haspopup="true",
+                      aria-expanded="false",
+                      title="Change Status"
+                    )
+                      i.fa.fa-edit
+                    .dropdown-menu
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/status`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="status", value="new")
+                        button.dropdown-item(type="submit", class=status === 'new' ? 'active' : '')
+                          span.badge.badge-primary.mr-2= t("New")
+                          = t("New")
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/status`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="status", value="in_progress")
+                        button.dropdown-item(type="submit", class=status === 'in_progress' ? 'active' : '')
+                          span.badge.badge-warning.mr-2= t("In Progress")
+                          = t("In Progress")
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/status`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="status", value="resolved")
+                        button.dropdown-item(type="submit", class=status === 'resolved' ? 'active' : '')
+                          span.badge.badge-success.mr-2= t("Resolved")
+                          = t("Resolved")
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/status`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="status", value="closed")
+                        button.dropdown-item(type="submit", class=status === 'closed' ? 'active' : '')
+                          span.badge.badge-secondary.mr-2= t("Closed")
+                          = t("Closed")
               .col-md-3
                 strong= t("Priority:")
                 br
                 - const priority = inquiry.priority || 'medium'
-                case priority
-                  when 'high'
-                    span.badge.badge-danger= t("High")
-                  when 'medium'
-                    span.badge.badge-warning= t("Medium")
-                  when 'low'
-                    span.badge.badge-success= t("Low")
-                  default
-                    span.badge.badge-secondary= t("Medium")
-        
-        //- Messages Display
-        .card.mb-3
-          .card-header
-            h5.mb-0
-              i.fa.fa-comments.mr-2
-              = t("Conversation History")
-          .card-body
-            if messages && messages.length > 0
-              each message, index in messages
-                .mb-3.pb-3(class=index === messages.length - 1 ? '' : 'border-bottom')
-                  .row
-                    .col-auto
-                      .bg-primary.text-white.rounded-circle.d-flex.align-items-center.justify-content-center(
-                        style="width: 40px; height: 40px;"
+                .d-flex.align-items-center
+                  case priority
+                    when 'high'
+                      span.badge.badge-danger.mr-2= t("High")
+                    when 'medium'
+                      span.badge.badge-warning.mr-2= t("Medium")
+                    when 'low'
+                      span.badge.badge-success.mr-2= t("Low")
+                    default
+                      span.badge.badge-secondary.mr-2= t("Medium")
+                  
+                  //- Priority Update Form
+                  .dropdown
+                    button.btn.btn-sm.btn-outline-secondary.dropdown-toggle(
+                      type="button",
+                      data-toggle="dropdown",
+                      aria-haspopup="true",
+                      aria-expanded="false",
+                      title="Change Priority"
+                    )
+                      i.fa.fa-edit
+                    .dropdown-menu
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/priority`,
+                        method="POST"
                       )
-                        i.fa.fa-user
-                    .col
-                      .d-flex.justify-content-between.mb-2
-                        .font-weight-bold
-                          if message.from
-                            = message.from
-                          else if inquiry.user && inquiry.user.email
-                            = inquiry.user.email
-                          else
-                            = t("Unknown Sender")
-                        .text-muted.small
-                          if message.date
-                            = moment(message.date).format('MMM D, YYYY h:mm A')
-                          else
-                            = moment(inquiry.created_at).format('MMM D, YYYY h:mm A')
-                      
-                      .bg-light.p-3.rounded
-                        if message.html
-                          != message.html
-                        else if message.text
-                          = message.text
-                        else if message.message
-                          = message.message
-                        else
-                          = inquiry.message || t("No message content")
-            else
-              .text-center.py-4
-                .text-muted
-                  i.fa.fa-inbox.fa-2x.mb-2
-                  br
-                  = t("No messages found")
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="priority", value="high")
+                        button.dropdown-item(type="submit", class=priority === 'high' ? 'active' : '')
+                          span.badge.badge-danger.mr-2= t("High")
+                          = t("High")
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/priority`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="priority", value="medium")
+                        button.dropdown-item(type="submit", class=priority === 'medium' ? 'active' : '')
+                          span.badge.badge-warning.mr-2= t("Medium")
+                          = t("Medium")
+                      form.ajax-form.confirm-prompt(
+                        action=`${ctx.path}/priority`,
+                        method="POST"
+                      )
+                        input(type="hidden", name="_method", value="PUT")
+                        input(type="hidden", name="priority", value="low")
+                        button.dropdown-item(type="submit", class=priority === 'low' ? 'active' : '')
+                          span.badge.badge-success.mr-2= t("Low")
+                          = t("Low")
         
-        //- Reply Form
-        .card
-          .card-header
-            h5.mb-0
-              i.fa.fa-reply.mr-2
-              = t("Send Reply")
+        //- Messages Display - Email Thread Style
+        .card.mb-3
+          .card-header.bg-white.border-bottom
+            .d-flex.align-items-center.justify-content-between
+              h5.mb-0
+                i.fa.fa-comments.mr-2.text-primary
+                = t("Conversation History")
+              .text-muted.small
+                if messages && messages.length > 0
+                  = `${messages.length} ${messages.length === 1 ? t("message") : t("messages")}`
+          
+          .card-body.p-0
+            if messages && messages.length > 0
+              .conversation-thread
+                each message, index in messages
+                  - const isSupport = message.type === 'support' || message.from === 'Support' || message.from === 'Support Team'
+                  - const isLastMessage = index === messages.length - 1
+                  
+                  .message-item(
+                    class=isSupport ? 'support-message' : 'customer-message',
+                    class=isLastMessage ? 'last-message' : ''
+                  )
+                    .message-header
+                      .d-flex.align-items-center
+                        .avatar-container
+                          if isSupport
+                            .avatar.support-avatar
+                              i.fa.fa-headset
+                          else
+                            .avatar.customer-avatar
+                              i.fa.fa-user
+                        .message-meta.flex-grow-1
+                          .sender-name
+                            if message.from
+                              = message.from
+                            else if inquiry.user && inquiry.user.email
+                              = inquiry.user.email
+                            else
+                              = t("Unknown Sender")
+                          .message-time
+                            if message.date
+                              = message.date
+                            else
+                              = inquiry.created_at
+                    
+                    .message-content
+                      if message.html
+                        != message.html
+                      else if message.text
+                        pre.message-text= message.text
+                      else if message.message
+                        pre.message-text= message.message
+                      else
+                        pre.message-text= inquiry.message || t("No message content")
+            else
+              .empty-state
+                .text-center.py-5
+                  .empty-icon
+                    i.fa.fa-inbox.fa-3x.text-muted
+                  h6.mt-3.text-muted= t("No messages found")
+                  p.text-muted.small= t("This inquiry doesn't have any messages yet")
+        
+        //- Reply Form - Enhanced Email Composer
+        .card.reply-card
+          .card-header.bg-white.border-bottom
+            .d-flex.align-items-center.justify-content-between
+              h5.mb-0
+                i.fa.fa-reply.mr-2.text-primary
+                = t("Send Reply")
+              .reply-status
+                #save-indicator.text-muted.small
+                  i.fa.fa-circle-o-notch.fa-spin.mr-1(style="display: none;")
+                  span Auto-saving...
           
           form.confirm-prompt(
             action=ctx.path,
@@ -129,94 +238,65 @@ block body
           )
             .card-body
               .form-group
-                .row.align-items-center.mb-2
-                  .col
-                    label.font-weight-bold(for="input-message")= t("Your Response")
-                  .col-auto
-                    #save-indicator.text-muted.small Auto-saving...
+                .composer-header.mb-3
+                  .row.align-items-center
+                    .col
+                      label.font-weight-bold(for="inquiry-response-editor")= t("Your Response")
+                    .col-auto
+                      .editor-actions
+                        button.btn.btn-outline-primary.btn-sm(
+                          type="button",
+                          onclick="showPreview()",
+                          title="Preview"
+                        )
+                          i.fa.fa-eye.mr-1
+                          = t("Preview")
                 
-                //- Toolbar
-                .mb-2
-                  .btn-group.btn-group-sm(role="group")
-                    button.btn.btn-outline-secondary(
-                      type="button",
-                      onclick="insertBold()",
-                      title="Bold"
-                    )
-                      i.fa.fa-bold
-                    button.btn.btn-outline-secondary(
-                      type="button",
-                      onclick="insertItalic()",
-                      title="Italic"
-                    )
-                      i.fa.fa-italic
-                    button.btn.btn-outline-secondary(
-                      type="button",
-                      onclick="insertLink()",
-                      title="Link"
-                    )
-                      i.fa.fa-link
-                    button.btn.btn-outline-secondary(
-                      type="button",
-                      onclick="insertList()",
-                      title="List"
-                    )
-                      i.fa.fa-list-ul
-                  
-                  button.btn.btn-outline-primary.btn-sm.ml-2(
-                    type="button",
-                    onclick="showPreview()",
-                    title="Preview"
+                
+                //- CodeMirror Editor Container
+                .editor-container
+                  textarea#inquiry-response-editor.form-control(
+                    name="message",
+                    rows="12",
+                    required,
+                    placeholder="Write your response here... You can use Markdown formatting."
                   )
-                    i.fa.fa-eye.mr-1
-                    = t("Preview")
-                  
-                  button.btn.btn-outline-info.btn-sm.ml-1(
-                    type="button",
-                    onclick="debugCodeMirror()",
-                    title="Debug"
-                  )
-                    i.fa.fa-bug
                 
-                //- Textarea that CodeMirror will replace
-                textarea#input-message.form-control(
-                  name="message",
-                  rows="8",
-                  required,
-                  placeholder="Write your response in markdown..."
-                )
-                
-                //- Character count
-                .mt-2
-                  #character-count.text-muted.small 0 characters, 0 words
+                //- Editor Footer
+                .editor-footer.mt-2
+                  .row.align-items-center
+                    .col
+                      #character-count.text-muted.small 0 characters, 0 words
+                    .col-auto
+                      .text-muted.small
+                        i.fa.fa-info-circle.mr-1
+                        = t("Supports Markdown formatting")
               
               .form-group
-                label.font-weight-bold(for="input-attachments")= t("Attachments")
-                input#input-attachments.form-control-file(
-                  type="file",
-                  name="attachments",
-                  multiple
-                )
+                label.font-weight-bold(for="input-attachments")
+                  i.fa.fa-paperclip.mr-1
+                  = t("Attachments")
+                .custom-file
+                  input#input-attachments.custom-file-input(
+                    type="file",
+                    name="attachments",
+                    multiple
+                  )
+                  label.custom-file-label(for="input-attachments")= t("Choose files...")
             
-            .card-footer
+            .card-footer.bg-light
               .row.align-items-center
                 .col-md-6
                   small.text-muted
-                    i.fa.fa-info-circle.mr-1
+                    i.fa.fa-save.mr-1
                     = t("Drafts are automatically saved")
                 .col-md-6.text-right
-                  button.btn.btn-secondary.mr-2(
+                  button.btn.btn-outline-secondary.mr-2(
                     type="button",
                     onclick="history.back()"
                   )
                     i.fa.fa-arrow-left.mr-1
                     = t("Back")
-                  button.btn.btn-outline-primary.mr-2(
-                    type="button",
-                    onclick="showPreview()"
-                  )
-                    i.fa.fa-eye.mr-1
-                    = t("Preview")
                   button.btn.btn-primary(
                     type="submit"
                   )
