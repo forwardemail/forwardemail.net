@@ -3,23 +3,25 @@ name: "Matrix All Activity Notifications"
 on:
   # Issues
   issues:
-    types: [opened, edited, closed, reopened, assigned, unassigned, labeled, unlabeled, locked, unlocked, transferred, pinned, unpinned]
+    types: [opened, closed, reopened]
+  # edited, assigned, unassigned, labeled, unlabeled, locked, unlocked, transferred, pinned, unpinned]
 
   # Issue Comments
   issue_comment:
-    types: [created, edited, deleted]
+    types: [created] #, edited, deleted]
 
   # Pull Requests
   pull_request:
-    types: [opened, edited, closed, reopened, assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, synchronize, converted_to_draft, ready_for_review, locked, unlocked]
+    types: [opened] # , edited, closed]
+  # , reopened, assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, synchronize, converted_to_draft, ready_for_review, locked, unlocked]
 
   # Pull Request Reviews
   pull_request_review:
-    types: [submitted, edited, dismissed]
+    types: [submitted] # , edited, dismissed]
 
   # Pull Request Review Comments
   pull_request_review_comment:
-    types: [created, edited, deleted]
+    types: [created] #, edited, deleted]
 
   # Pushes to any branch AND tags
   push:
@@ -28,7 +30,7 @@ on:
 
   # Releases
   release:
-    types: [published, unpublished, created, edited, deleted, prereleased, released]
+    types: [published] #, unpublished, created, edited, deleted, prereleased, released]
 
   # Stars
   watch:
@@ -39,22 +41,22 @@ on:
 
   # Discussions
   discussion:
-    types: [created, edited, deleted, pinned, unpinned, locked, unlocked, transferred, category_changed, answered, unanswered]
+    types: [created, answered] #, edited, deleted, pinned, unpinned, locked, unlocked, transferred, category_changed, answered, unanswered]
 
   # Discussion Comments
   discussion_comment:
-    types: [created, edited, deleted]
+    types: [created] #, edited, deleted]
 
   # Wiki
   gollum:
 
   # Milestones
   milestone:
-    types: [created, closed, opened, edited, deleted]
+    types: [closed] # [created, closed, opened, edited, deleted]
 
   # Labels
-  label:
-    types: [created, edited, deleted]
+  #label:
+  #  types: [created, edited, deleted]
 
   # Branch/Tag creation and deletion
   create:
@@ -65,10 +67,10 @@ on:
   deployment_status:
 
   # Pages
-  page_build:
+  # page_build:
 
   # Repository dispatch
-  repository_dispatch:
+  # repository_dispatch:
 
   # Public (when repo goes public)
   public:
@@ -82,8 +84,8 @@ on:
   #  types: [completed, requested, rerequested]
 
   # Branch protection rules
-  branch_protection_rule:
-    types: [created, edited, deleted]
+  #branch_protection_rule:
+  #  types: [created, edited, deleted]
 
   # Registry packages
   registry_package:
