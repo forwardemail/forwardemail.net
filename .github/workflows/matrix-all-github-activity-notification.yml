@@ -1,4 +1,3 @@
-
 name: "Matrix All Activity Notifications"
 
 on:
@@ -75,8 +74,8 @@ on:
   public:
 
   # Check runs
-  # check_run:
-  #   types: [created, completed, rerequested, requested_action]
+  #check_run:
+  #  types: [created, completed, rerequested, requested_action]
 
   # Check suites
   #check_suite:
@@ -303,10 +302,17 @@ jobs:
           token: ${{ secrets.MATRIX_TOKEN }}
           room: '!azsMvrsrqEENIcSLOe:matrix.org'
           message: |
-            ${{ steps.format.outputs.icon }} **${{ steps.format.outputs.title }}**
+            ${{ steps.format.outputs.icon }} ${{ steps.format.outputs.title }}
 
-            **Actor:** ${{ steps.format.outputs.actor }}
-            **Repository:** ${{ github.repository }}
-            ${{ steps.format.outputs.description && format('**Details:** {0}', steps.format.outputs.description) || '' }}
+            Actor: ${{ steps.format.outputs.actor }}
+            Repository: ${{ github.repository }}
+            ${{ steps.format.outputs.description && format('Details: {0}', steps.format.outputs.description) || '' }}
 
-            **Link:** ${{ steps.format.outputs.url }}
+            Link: ${{ steps.format.outputs.url }}
+          formatted_message: |
+            ${{ steps.format.outputs.icon }} <b>${{ steps.format.outputs.title }}</b><br><br>
+            <b>Actor:</b> ${{ steps.format.outputs.actor }}<br>
+            <b>Repository:</b> ${{ github.repository }}<br>
+            ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
+            <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
+
