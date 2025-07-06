@@ -25,6 +25,9 @@ on:
   # Pushes to any branch
   push:
     branches: ['**']
+
+  # Tag pushes
+  push:
     tags: ['**']
 
   # Releases
@@ -178,8 +181,14 @@ jobs:
               ;;
             "push")
               ICON="📤"
-              TITLE="Push to ${{ github.ref_name }}"
-              DESCRIPTION="${{ github.event.head_commit.message }}"
+              if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+                ICON="🏷️"
+                TITLE="Tag Pushed"
+                DESCRIPTION="Tag: ${{ github.ref_name }}"
+              else
+                TITLE="Push to ${{ github.ref_name }}"
+                DESCRIPTION="${{ github.event.head_commit.message }}"
+              fi
               URL="${{ github.event.compare }}"
               ;;
             "release")
@@ -224,6 +233,22 @@ jobs:
               ICON="📖"
               TITLE="Wiki Updated"
               DESCRIPTION="Pages modified: ${{ join(github.event.pages.*.page_name, ', ') }}"
+              ;;
+            "project_card")
+              ICON="📋"
+              TITLE="Project Card ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.project_card.note }}"
+              ;;
+            "project_column")
+              ICON="📋"
+              TITLE="Project Column ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.project_column.name }}"
+              ;;
+            "project")
+              ICON="📋"
+              TITLE="Project ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.project.name }}"
+              URL="${{ github.event.project.html_url }}"
               ;;
             "create")
               ICON="🌱"
@@ -270,11 +295,32 @@ jobs:
               TITLE="Deployment"
               DESCRIPTION="Environment: ${{ github.event.deployment.environment }}"
               ;;
+            "deployment_status")
+              ICON="🚀"
+              TITLE="Deployment Status"
+              DESCRIPTION="State: ${{ github.event.deployment_status.state }}"
+              URL="${{ github.event.deployment_status.target_url }}"
+              ;;
+            "page_build")
+              ICON="📄"
+              TITLE="Page Build"
+              DESCRIPTION="GitHub Pages build"
+              ;;
             "security_advisory")
               ICON="🔒"
               TITLE="Security Advisory ${{ github.event.action }}"
               DESCRIPTION="${{ github.event.security_advisory.summary }}"
               URL="${{ github.event.security_advisory.html_url }}"
+              ;;
+            "repository_vulnerability_alert")
+              ICON="🔒"
+              TITLE="Vulnerability Alert ${{ github.event.action }}"
+              DESCRIPTION="Security alert"
+              ;;
+            "repository_dispatch")
+              ICON="📡"
+              TITLE="Repository Dispatch"
+              DESCRIPTION="Event type: ${{ github.event.action }}"
               ;;
             "sponsorship")
               ICON="💖"
@@ -313,4 +359,3 @@ jobs:
             <b>Repository:</b> ${{ github.repository }}<br>
             ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
             <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
-
