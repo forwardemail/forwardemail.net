@@ -5,7 +5,6 @@
 
 const punycode = require('node:punycode');
 
-const { setTimeout } = require('node:timers/promises');
 const Boom = require('@hapi/boom');
 const Stripe = require('stripe');
 const numeral = require('numeral');
@@ -14,6 +13,7 @@ const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
+const pWaitFor = require('p-wait-for');
 const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
 const striptags = require('striptags');
@@ -1224,39 +1224,42 @@ async function retrieveDomainBilling(ctx) {
             throw ctx.translateError('UNKNOWN_ERROR');
 
           //
-          // NOTE: we NEED to have this artificial delay here because
+          // NOTE: we NEED to wait for the transaction to appear because
           //       PayPal yet again has issues with their API...
           //
-          // artificial delay since it seems that PayPal doesn't
-          // instantly create transactions for a subscription
-          // - 5s was tested and was too fast
-          // - 10s was tested and was too fast
-          // - 25s was tested and worked but was too slow
-          // - and 15s was tested and worked (seemingly) reliably
-          // (if we have anything more than 15-20s it seems we may get Timeout error)
+          // Wait until the transaction appears in PayPal's system
+          // instead of using an artificial delay
           //
-          await setTimeout(ms('20s'));
-
-          // attempt to lookup the transactions
           let transactionId;
-          const agent = await paypalAgent();
-          const { body: { transactions } = {} } = await agent.get(
-            `/v1/billing/subscriptions/${
-              body.id
-            }/transactions?start_time=${dayjs()
-              .subtract(1, 'day')
-              .toDate()
-              .toISOString()}&end_time=${dayjs()
-              .add(1, 'day')
-              .toDate()
-              .toISOString()}`
-          );
+          await pWaitFor(
+            async () => {
+              const agent = await paypalAgent();
+              const { body: { transactions } = {} } = await agent.get(
+                `/v1/billing/subscriptions/${
+                  body.id
+                }/transactions?start_time=${dayjs()
+                  .subtract(1, 'day')
+                  .toDate()
+                  .toISOString()}&end_time=${dayjs()
+                  .add(1, 'day')
+                  .toDate()
+                  .toISOString()}`
+              );
 
-          if (Array.isArray(transactions) && transactions.length > 0) {
-            transactionId = transactions[0].id;
-            if (_.isDate(new Date(transactions[0].time)))
-              now = new Date(transactions[0].time);
-          }
+              if (Array.isArray(transactions) && transactions.length > 0) {
+                transactionId = transactions[0].id;
+                if (_.isDate(new Date(transactions[0].time)))
+                  now = new Date(transactions[0].time);
+                return true;
+              }
+
+              return false;
+            },
+            {
+              interval: ms('2s'),
+              timeout: ms('30s')
+            }
+          );
 
           //
           // NOTE: we don't want to re-create the payment if the paypal webhook already did

@@ -390,6 +390,26 @@ async function listLogs(ctx) {
     }
   }
 
+  //
+  // Filter out logs with err.isCodeBug=true for my-account users
+  // (all my-account users should be treated as non-admin for this filtering)
+  //
+  const codebugFilter = {
+    $or: [{ err: { $exists: false } }, { 'err.isCodeBug': { $ne: true } }]
+  };
+
+  if (query.$and) {
+    query.$and.push(codebugFilter);
+  } else if (query.$or) {
+    query = {
+      $and: [{ $or: query.$or }, codebugFilter]
+    };
+  } else {
+    query = {
+      $and: [query, codebugFilter]
+    };
+  }
+
   // in the future we can move this to a background job
   if (
     ctx.pathWithoutLocale === '/my-account/logs/download' ||
@@ -469,6 +489,7 @@ async function listLogs(ctx) {
       )
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
+      .hint({ 'err.isCodeBug': 1 })
       .exec(),
     Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS),
     Logs.distinct('err.responseCode', query),

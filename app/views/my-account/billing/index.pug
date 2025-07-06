@@ -83,7 +83,7 @@ block body
                 class=hasPlanExpired ? "alert-danger" : "alert-success"
               )
                 if hasPlanExpired && !hasSubscription
-                  != t('Your plan expired on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
+                  != t('Your plan expired on <span class="notranslate dayjs" data-time="%d" data-time-style="false">%s</span>.', new Date(user[config.userFields.planExpiresAt]).getTime(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
                   = " "
                   = t("Make payment immediately to avoid account termination.")
                 else
@@ -103,7 +103,7 @@ block body
                   = t("Auto-renew disabled")
               if !hasPlanExpired
                 .alert.alert-warning.small.mt-3.mb-0
-                  != t('Next payment due <span class="notranslate">%s<span> on <span class="notranslate">%s</span>.', dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("LL"))
+                  != t('Next payment due <span class="notranslate dayjs" data-time="%d" data-time-style="false">%s<span> on <span class="notranslate">%s</span>.', new Date(user[config.userFields.planExpiresAt]).getTime(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).fromNow(), dayjs(user[config.userFields.planExpiresAt]).locale(ctx.locale).format("M/D/YY"))
               ul.list-inline.text-center.mb-0
                 li.list-inline-item
                   a.btn.btn-sm.btn-primary.mt-3(
@@ -151,7 +151,7 @@ block body
                   != t("You don't need to upgrade unless you add custom domain names.")
             h2= t(titleize(humanize(user.plan)))
             .small.text-muted.text-uppercase.mb-3
-              != t('Plan started on <span class="notranslate">%s</span>', dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
+              != t('Plan started on <span class="notranslate" data-time="%d" data-time-style="false">%s</span>', new Date(user[config.userFields.planSetAt]).getTime(), dayjs(user[config.userFields.planSetAt]).format("M/D/YY"))
             button.btn.btn-sm.btn-dark.btn-success(
               type="button",
               data-toggle="modal",

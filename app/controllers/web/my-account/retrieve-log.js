@@ -22,9 +22,15 @@ async function retrieveLog(ctx, next) {
     throw Boom.badRequest(ctx.translateError('LOG_DOES_NOT_EXIST'));
 
   const log = await Logs.findOne({
-    _id: new mongoose.Types.ObjectId(ctx.params.id)
+    $and: [
+      { _id: new mongoose.Types.ObjectId(ctx.params.id) },
+      {
+        $or: [{ err: { $exists: false } }, { 'err.isCodeBug': { $ne: true } }]
+      }
+    ]
   })
     .lean()
+    .hint({ 'err.isCodeBug': 1 })
     .exec();
 
   if (

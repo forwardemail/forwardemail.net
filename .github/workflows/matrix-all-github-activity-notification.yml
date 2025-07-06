@@ -1,0 +1,315 @@
+name: Matrix All Activity Notifications
+
+on:
+  # Issues
+  issues:
+    types: [opened, edited, closed, reopened, assigned, unassigned, labeled, unlabeled, locked, unlocked, transferred, pinned, unpinned]
+
+  # Issue Comments
+  issue_comment:
+    types: [created, edited, deleted]
+
+  # Pull Requests
+  pull_request:
+    types: [opened, edited, closed, reopened, assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, synchronize, converted_to_draft, ready_for_review, locked, unlocked]
+
+  # Pull Request Reviews
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+  # Pull Request Review Comments
+  pull_request_review_comment:
+    types: [created, edited, deleted]
+
+  # Pushes to any branch
+  push:
+    branches: ['**']
+    tags: ['**']
+
+  # Releases
+  release:
+    types: [published, unpublished, created, edited, deleted, prereleased, released]
+
+  # Stars
+  star:
+    types: [created, deleted]
+
+  # Forks
+  fork:
+
+  # Watch (repository subscriptions)
+  watch:
+    types: [started]
+
+  # Discussions
+  discussion:
+    types: [created, edited, deleted, pinned, unpinned, locked, unlocked, transferred, category_changed, answered, unanswered]
+
+  # Discussion Comments
+  discussion_comment:
+    types: [created, edited, deleted]
+
+  # Wiki
+  gollum:
+
+  # Project Cards
+  project_card:
+    types: [created, edited, moved, converted, deleted]
+
+  # Project Columns
+  project_column:
+    types: [created, edited, moved, deleted]
+
+  # Projects
+  project:
+    types: [created, edited, closed, reopened, deleted]
+
+  # Milestones
+  milestone:
+    types: [created, closed, opened, edited, deleted]
+
+  # Labels
+  label:
+    types: [created, edited, deleted]
+
+  # Repository
+  repository:
+    types: [created, deleted, archived, unarchived, edited, renamed, transferred, publicized, privatized]
+
+  # Branch/Tag creation and deletion
+  create:
+  delete:
+
+  # Security and vulnerability alerts
+  security_advisory:
+    types: [published, updated, withdrawn]
+
+  # Dependabot alerts
+  repository_vulnerability_alert:
+    types: [create, dismiss, resolve]
+
+  # Workflow runs
+  workflow_run:
+    types: [completed, requested]
+
+  # Deployment
+  deployment:
+  deployment_status:
+
+  # Pages
+  page_build:
+
+  # Repository dispatch
+  repository_dispatch:
+
+  # Sponsorship
+  sponsorship:
+    types: [created, cancelled, edited, tier_changed, pending_cancellation, pending_tier_change]
+
+jobs:
+  notify-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine activity type and format message
+        id: format
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+
+          # Set default values
+          ICON="📝"
+          TITLE="GitHub Activity"
+          DESCRIPTION=""
+          URL="${{ github.event.repository.html_url }}"
+          ACTOR="${{ github.actor }}"
+
+          case "${{ github.event_name }}" in
+            "issues")
+              ICON="🐛"
+              case "${{ github.event.action }}" in
+                "opened") TITLE="New Issue Opened" ;;
+                "closed") TITLE="Issue Closed" ;;
+                "reopened") TITLE="Issue Reopened" ;;
+                "edited") TITLE="Issue Edited" ;;
+                "assigned") TITLE="Issue Assigned" ;;
+                "labeled") TITLE="Issue Labeled" ;;
+                *) TITLE="Issue ${{ github.event.action }}" ;;
+              esac
+              DESCRIPTION="${{ github.event.issue.title }}"
+              URL="${{ github.event.issue.html_url }}"
+              ;;
+            "issue_comment")
+              ICON="💬"
+              TITLE="Issue Comment ${{ github.event.action }}"
+              DESCRIPTION="On: ${{ github.event.issue.title }}"
+              URL="${{ github.event.comment.html_url }}"
+              ;;
+            "pull_request")
+              ICON="🔀"
+              case "${{ github.event.action }}" in
+                "opened") TITLE="New Pull Request" ;;
+                "closed")
+                  if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+                    TITLE="Pull Request Merged"
+                    ICON="✅"
+                  else
+                    TITLE="Pull Request Closed"
+                  fi
+                  ;;
+                "reopened") TITLE="Pull Request Reopened" ;;
+                "ready_for_review") TITLE="Pull Request Ready for Review" ;;
+                *) TITLE="Pull Request ${{ github.event.action }}" ;;
+              esac
+              DESCRIPTION="${{ github.event.pull_request.title }}"
+              URL="${{ github.event.pull_request.html_url }}"
+              ;;
+            "pull_request_review")
+              ICON="👀"
+              TITLE="Pull Request Review ${{ github.event.action }}"
+              DESCRIPTION="On: ${{ github.event.pull_request.title }}"
+              URL="${{ github.event.review.html_url }}"
+              ;;
+            "pull_request_review_comment")
+              ICON="💭"
+              TITLE="PR Review Comment ${{ github.event.action }}"
+              DESCRIPTION="On: ${{ github.event.pull_request.title }}"
+              URL="${{ github.event.comment.html_url }}"
+              ;;
+            "push")
+              ICON="📤"
+              TITLE="Push to ${{ github.ref_name }}"
+              DESCRIPTION="${{ github.event.head_commit.message }}"
+              URL="${{ github.event.compare }}"
+              ;;
+            "release")
+              ICON="🚀"
+              TITLE="Release ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.release.name || github.event.release.tag_name }}"
+              URL="${{ github.event.release.html_url }}"
+              ;;
+            "star")
+              ICON="⭐"
+              if [[ "${{ github.event.action }}" == "created" ]]; then
+                TITLE="Repository Starred"
+              else
+                TITLE="Star Removed"
+              fi
+              DESCRIPTION="Total stars: ${{ github.event.repository.stargazers_count }}"
+              ;;
+            "fork")
+              ICON="🍴"
+              TITLE="Repository Forked"
+              DESCRIPTION="By ${{ github.event.forkee.owner.login }}"
+              URL="${{ github.event.forkee.html_url }}"
+              ;;
+            "watch")
+              ICON="👁️"
+              TITLE="Repository Watched"
+              DESCRIPTION="New watcher: ${{ github.actor }}"
+              ;;
+            "discussion")
+              ICON="💬"
+              TITLE="Discussion ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.discussion.title }}"
+              URL="${{ github.event.discussion.html_url }}"
+              ;;
+            "discussion_comment")
+              ICON="💬"
+              TITLE="Discussion Comment ${{ github.event.action }}"
+              DESCRIPTION="On: ${{ github.event.discussion.title }}"
+              URL="${{ github.event.comment.html_url }}"
+              ;;
+            "gollum")
+              ICON="📖"
+              TITLE="Wiki Updated"
+              DESCRIPTION="Pages modified: ${{ join(github.event.pages.*.page_name, ', ') }}"
+              ;;
+            "create")
+              ICON="🌱"
+              TITLE="${{ github.event.ref_type }} Created"
+              DESCRIPTION="${{ github.event.ref }}"
+              ;;
+            "delete")
+              ICON="🗑️"
+              TITLE="${{ github.event.ref_type }} Deleted"
+              DESCRIPTION="${{ github.event.ref }}"
+              ;;
+            "milestone")
+              ICON="🎯"
+              TITLE="Milestone ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.milestone.title }}"
+              URL="${{ github.event.milestone.html_url }}"
+              ;;
+            "label")
+              ICON="🏷️"
+              TITLE="Label ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.label.name }}"
+              ;;
+            "repository")
+              ICON="📦"
+              TITLE="Repository ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.repository.full_name }}"
+              ;;
+            "workflow_run")
+              if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
+                ICON="✅"
+                TITLE="Workflow Succeeded"
+              elif [[ "${{ github.event.workflow_run.conclusion }}" == "failure" ]]; then
+                ICON="❌"
+                TITLE="Workflow Failed"
+              else
+                ICON="🔄"
+                TITLE="Workflow ${{ github.event.action }}"
+              fi
+              DESCRIPTION="${{ github.event.workflow_run.name }}"
+              URL="${{ github.event.workflow_run.html_url }}"
+              ;;
+            "deployment")
+              ICON="🚀"
+              TITLE="Deployment"
+              DESCRIPTION="Environment: ${{ github.event.deployment.environment }}"
+              ;;
+            "security_advisory")
+              ICON="🔒"
+              TITLE="Security Advisory ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.security_advisory.summary }}"
+              URL="${{ github.event.security_advisory.html_url }}"
+              ;;
+            "sponsorship")
+              ICON="💖"
+              TITLE="Sponsorship ${{ github.event.action }}"
+              DESCRIPTION="Sponsor: ${{ github.event.sponsorship.sponsor.login }}"
+              ;;
+            *)
+              TITLE="${{ github.event_name }} ${{ github.event.action }}"
+              ;;
+          esac
+
+          # Output variables
+          echo "icon=$ICON" >> $GITHUB_OUTPUT
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "actor=$ACTOR" >> $GITHUB_OUTPUT
+
+      - name: Send Matrix notification
+        uses: lkiesow/matrix-notification@v1
+        with:
+          server: matrix.org
+          token: ${{ secrets.MATRIX_TOKEN }}
+          room: '#forwardemail:matrix.org'
+          message: |
+            ${{ steps.format.outputs.icon }} **${{ steps.format.outputs.title }}**
+
+            **Actor:** ${{ steps.format.outputs.actor }}
+            **Repository:** ${{ github.repository }}
+            ${{ steps.format.outputs.description && format('**Details:** {0}', steps.format.outputs.description) || '' }}
+
+            **Link:** ${{ steps.format.outputs.url }}
+          formatted_message: |
+            ${{ steps.format.outputs.icon }} <b>${{ steps.format.outputs.title }}</b><br><br>
+            <b>Actor:</b> ${{ steps.format.outputs.actor }}<br>
+            <b>Repository:</b> ${{ github.repository }}<br>
+            ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
+            <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
+
