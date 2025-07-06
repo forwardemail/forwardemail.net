@@ -37,9 +37,9 @@ async function listSupport(ctx, next) {
     const folders = await imapClient.list();
     const searchFolders = folders.filter(
       (folder) =>
-        !folder.name.toLowerCase().includes('trash') &&
-        !folder.name.toLowerCase().includes('junk') &&
-        !folder.name.toLowerCase().includes('spam')
+        !folder.path.toLowerCase().includes('trash') &&
+        !folder.path.toLowerCase().includes('junk') &&
+        !folder.path.toLowerCase().includes('spam')
     );
 
     let allMessages = [];
@@ -52,7 +52,7 @@ async function listSupport(ctx, next) {
     // Search in each folder for messages involving the user
     for (const folder of searchFolders) {
       try {
-        await imapClient.mailboxOpen(folder.name);
+        await imapClient.mailboxOpen(folder.path);
 
         // Search for messages to/from/cc/bcc the user
         const searchCriteria = {
@@ -79,7 +79,7 @@ async function listSupport(ctx, next) {
           for await (const message of messageData) {
             allMessages.push({
               uid: message.uid,
-              folder: folder.name,
+              folder: folder.path,
               subject: message.envelope.subject || '(No Subject)',
               from: message.envelope.from?.[0] || {},
               to: message.envelope.to || [],
@@ -93,7 +93,7 @@ async function listSupport(ctx, next) {
         }
       } catch (err) {
         // Log error but continue with other folders
-        console.error(`Error searching folder ${folder.name}:`, err);
+        console.error(`Error searching folder ${folder.path}:`, err);
       }
     }
 
