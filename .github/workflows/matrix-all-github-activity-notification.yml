@@ -1,4 +1,4 @@
-name: Matrix All Activity Notifications
+name: "Matrix All Activity Notifications"
 
 on:
   # Issues
@@ -31,15 +31,11 @@ on:
     types: [published, unpublished, created, edited, deleted, prereleased, released]
 
   # Stars
-  star:
-    types: [created, deleted]
+  watch:
+    types: [started]
 
   # Forks
   fork:
-
-  # Watch (repository subscriptions)
-  watch:
-    types: [started]
 
   # Discussions
   discussion:
@@ -52,18 +48,6 @@ on:
   # Wiki
   gollum:
 
-  # Project Cards
-  project_card:
-    types: [created, edited, moved, converted, deleted]
-
-  # Project Columns
-  project_column:
-    types: [created, edited, moved, deleted]
-
-  # Projects
-  project:
-    types: [created, edited, closed, reopened, deleted]
-
   # Milestones
   milestone:
     types: [created, closed, opened, edited, deleted]
@@ -72,25 +56,9 @@ on:
   label:
     types: [created, edited, deleted]
 
-  # Repository
-  repository:
-    types: [created, deleted, archived, unarchived, edited, renamed, transferred, publicized, privatized]
-
   # Branch/Tag creation and deletion
   create:
   delete:
-
-  # Security and vulnerability alerts
-  security_advisory:
-    types: [published, updated, withdrawn]
-
-  # Dependabot alerts
-  repository_vulnerability_alert:
-    types: [create, dismiss, resolve]
-
-  # Workflow runs
-  workflow_run:
-    types: [completed, requested]
 
   # Deployment
   deployment:
@@ -101,6 +69,32 @@ on:
 
   # Repository dispatch
   repository_dispatch:
+
+  # Public (when repo goes public)
+  public:
+
+  # Check runs
+  check_run:
+    types: [created, completed, rerequested, requested_action]
+
+  # Check suites
+  check_suite:
+    types: [completed, requested, rerequested]
+
+  # Branch protection rules
+  branch_protection_rule:
+    types: [created, edited, deleted]
+
+  # Workflow runs
+  workflow_run:
+    types: [completed, requested]
+
+  # Registry packages
+  registry_package:
+    types: [published, updated]
+
+  # Status (commit status)
+  status:
 
 jobs:
   notify-matrix:
@@ -189,25 +183,16 @@ jobs:
               DESCRIPTION="${{ github.event.release.name || github.event.release.tag_name }}"
               URL="${{ github.event.release.html_url }}"
               ;;
-            "star")
+            "watch")
               ICON="⭐"
-              if [[ "${{ github.event.action }}" == "created" ]]; then
-                TITLE="Repository Starred"
-              else
-                TITLE="Star Removed"
-              fi
-              DESCRIPTION="Total stars: ${{ github.event.repository.stargazers_count }}"
+              TITLE="Repository Starred"
+              DESCRIPTION="New watcher: ${{ github.actor }}"
               ;;
             "fork")
               ICON="🍴"
               TITLE="Repository Forked"
               DESCRIPTION="By ${{ github.event.forkee.owner.login }}"
               URL="${{ github.event.forkee.html_url }}"
-              ;;
-            "watch")
-              ICON="👁️"
-              TITLE="Repository Watched"
-              DESCRIPTION="New watcher: ${{ github.actor }}"
               ;;
             "discussion")
               ICON="💬"
@@ -226,32 +211,6 @@ jobs:
               TITLE="Wiki Updated"
               DESCRIPTION="Pages modified: ${{ join(github.event.pages.*.page_name, ', ') }}"
               ;;
-            "project_card")
-              ICON="📋"
-              TITLE="Project Card ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.project_card.note }}"
-              ;;
-            "project_column")
-              ICON="📋"
-              TITLE="Project Column ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.project_column.name }}"
-              ;;
-            "project")
-              ICON="📋"
-              TITLE="Project ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.project.name }}"
-              URL="${{ github.event.project.html_url }}"
-              ;;
-            "create")
-              ICON="🌱"
-              TITLE="${{ github.event.ref_type }} Created"
-              DESCRIPTION="${{ github.event.ref }}"
-              ;;
-            "delete")
-              ICON="🗑️"
-              TITLE="${{ github.event.ref_type }} Deleted"
-              DESCRIPTION="${{ github.event.ref }}"
-              ;;
             "milestone")
               ICON="🎯"
               TITLE="Milestone ${{ github.event.action }}"
@@ -263,24 +222,15 @@ jobs:
               TITLE="Label ${{ github.event.action }}"
               DESCRIPTION="${{ github.event.label.name }}"
               ;;
-            "repository")
-              ICON="📦"
-              TITLE="Repository ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.repository.full_name }}"
+            "create")
+              ICON="🌱"
+              TITLE="${{ github.event.ref_type }} Created"
+              DESCRIPTION="${{ github.event.ref }}"
               ;;
-            "workflow_run")
-              if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
-                ICON="✅"
-                TITLE="Workflow Succeeded"
-              elif [[ "${{ github.event.workflow_run.conclusion }}" == "failure" ]]; then
-                ICON="❌"
-                TITLE="Workflow Failed"
-              else
-                ICON="🔄"
-                TITLE="Workflow ${{ github.event.action }}"
-              fi
-              DESCRIPTION="${{ github.event.workflow_run.name }}"
-              URL="${{ github.event.workflow_run.html_url }}"
+            "delete")
+              ICON="🗑️"
+              TITLE="${{ github.event.ref_type }} Deleted"
+              DESCRIPTION="${{ github.event.ref }}"
               ;;
             "deployment")
               ICON="🚀"
@@ -298,21 +248,58 @@ jobs:
               TITLE="Page Build"
               DESCRIPTION="GitHub Pages build"
               ;;
-            "security_advisory")
-              ICON="🔒"
-              TITLE="Security Advisory ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.security_advisory.summary }}"
-              URL="${{ github.event.security_advisory.html_url }}"
-              ;;
-            "repository_vulnerability_alert")
-              ICON="🔒"
-              TITLE="Vulnerability Alert ${{ github.event.action }}"
-              DESCRIPTION="Security alert"
-              ;;
             "repository_dispatch")
               ICON="📡"
               TITLE="Repository Dispatch"
               DESCRIPTION="Event type: ${{ github.event.action }}"
+              ;;
+            "public")
+              ICON="🌍"
+              TITLE="Repository Made Public"
+              DESCRIPTION="Repository is now public"
+              ;;
+            "check_run")
+              ICON="✅"
+              TITLE="Check Run ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.check_run.name }}"
+              URL="${{ github.event.check_run.html_url }}"
+              ;;
+            "check_suite")
+              ICON="✅"
+              TITLE="Check Suite ${{ github.event.action }}"
+              DESCRIPTION="Conclusion: ${{ github.event.check_suite.conclusion }}"
+              URL="${{ github.event.check_suite.html_url }}"
+              ;;
+            "branch_protection_rule")
+              ICON="🛡️"
+              TITLE="Branch Protection Rule ${{ github.event.action }}"
+              DESCRIPTION="Rule updated"
+              ;;
+            "workflow_run")
+              if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
+                ICON="✅"
+                TITLE="Workflow Succeeded"
+              elif [[ "${{ github.event.workflow_run.conclusion }}" == "failure" ]]; then
+                ICON="❌"
+                TITLE="Workflow Failed"
+              else
+                ICON="🔄"
+                TITLE="Workflow ${{ github.event.action }}"
+              fi
+              DESCRIPTION="${{ github.event.workflow_run.name }}"
+              URL="${{ github.event.workflow_run.html_url }}"
+              ;;
+            "registry_package")
+              ICON="📦"
+              TITLE="Package ${{ github.event.action }}"
+              DESCRIPTION="${{ github.event.package.name }}"
+              URL="${{ github.event.package.html_url }}"
+              ;;
+            "status")
+              ICON="🔍"
+              TITLE="Status Update"
+              DESCRIPTION="State: ${{ github.event.state }}"
+              URL="${{ github.event.target_url }}"
               ;;
             *)
               TITLE="${{ github.event_name }} ${{ github.event.action }}"
@@ -346,4 +333,3 @@ jobs:
             <b>Repository:</b> ${{ github.repository }}<br>
             ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
             <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
-
