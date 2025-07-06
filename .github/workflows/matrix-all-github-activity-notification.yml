@@ -22,12 +22,9 @@ on:
   pull_request_review_comment:
     types: [created, edited, deleted]
 
-  # Pushes to any branch
+  # Pushes to any branch AND tags
   push:
     branches: ['**']
-
-  # Tag pushes
-  push:
     tags: ['**']
 
   # Releases
@@ -359,3 +356,4 @@ jobs:
             <b>Repository:</b> ${{ github.repository }}<br>
             ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
             <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
+
