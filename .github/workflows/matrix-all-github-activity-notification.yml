@@ -75,12 +75,12 @@ on:
   public:
 
   # Check runs
-  check_run:
-    types: [created, completed, rerequested, requested_action]
+  # check_run:
+  #   types: [created, completed, rerequested, requested_action]
 
   # Check suites
-  check_suite:
-    types: [completed, requested, rerequested]
+  #check_suite:
+  #  types: [completed, requested, rerequested]
 
   # Branch protection rules
   branch_protection_rule:
