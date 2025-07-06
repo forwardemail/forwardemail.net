@@ -85,10 +85,6 @@ on:
   branch_protection_rule:
     types: [created, edited, deleted]
 
-  # Workflow runs
-  workflow_run:
-    types: [completed, requested]
-
   # Registry packages
   registry_package:
     types: [published, updated]
@@ -275,20 +271,6 @@ jobs:
               TITLE="Branch Protection Rule ${{ github.event.action }}"
               DESCRIPTION="Rule updated"
               ;;
-            "workflow_run")
-              if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
-                ICON="✅"
-                TITLE="Workflow Succeeded"
-              elif [[ "${{ github.event.workflow_run.conclusion }}" == "failure" ]]; then
-                ICON="❌"
-                TITLE="Workflow Failed"
-              else
-                ICON="🔄"
-                TITLE="Workflow ${{ github.event.action }}"
-              fi
-              DESCRIPTION="${{ github.event.workflow_run.name }}"
-              URL="${{ github.event.workflow_run.html_url }}"
-              ;;
             "registry_package")
               ICON="📦"
               TITLE="Package ${{ github.event.action }}"
@@ -333,3 +315,4 @@ jobs:
             <b>Repository:</b> ${{ github.repository }}<br>
             ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
             <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
+
