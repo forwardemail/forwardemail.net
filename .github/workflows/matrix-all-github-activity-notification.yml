@@ -1,3 +1,4 @@
+
 name: "Matrix All Activity Notifications"
 
 on:
@@ -298,9 +299,9 @@ jobs:
       - name: Send Matrix notification
         uses: lkiesow/matrix-notification@v1
         with:
-          server: matrix.org
+          server: https://matrix.org
           token: ${{ secrets.MATRIX_TOKEN }}
-          room: '#forwardemail:matrix.org'
+          room: '!azsMvrsrqEENIcSLOe:matrix.org'
           message: |
             ${{ steps.format.outputs.icon }} **${{ steps.format.outputs.title }}**
 
@@ -309,10 +310,3 @@ jobs:
             ${{ steps.format.outputs.description && format('**Details:** {0}', steps.format.outputs.description) || '' }}
 
             **Link:** ${{ steps.format.outputs.url }}
-          formatted_message: |
-            ${{ steps.format.outputs.icon }} <b>${{ steps.format.outputs.title }}</b><br><br>
-            <b>Actor:</b> ${{ steps.format.outputs.actor }}<br>
-            <b>Repository:</b> ${{ github.repository }}<br>
-            ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
-            <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
-
