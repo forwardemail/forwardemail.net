@@ -299,7 +299,7 @@ jobs:
       - name: Send Matrix notification
         uses: lkiesow/matrix-notification@v1
         with:
-          server: https://matrix.org
+          server: matrix.org
           token: ${{ secrets.MATRIX_TOKEN }}
           room: '!azsMvrsrqEENIcSLOe:matrix.org'
           message: |
