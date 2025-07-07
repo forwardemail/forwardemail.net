@@ -437,7 +437,12 @@ function syncStripePaymentIntent(user) {
       if (!existingUser) throw new Error('User does not exist');
       await existingUser.save();
     } catch (err) {
-      logger.error(err, { user });
+      // add more debug output to error log
+      err.paymentIntent = paymentIntent;
+      err.q = q;
+      err.user = user;
+
+      logger.error(err);
       errorEmails.push({
         template: 'alert',
         message: {

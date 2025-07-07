@@ -45,10 +45,16 @@ graceful.listen();
 const LEGACY_PAYPAL_SUBSCRIPTION_IDS = [];
 const NEW_PAYPAL_SUBSCRIPTION_IDS = [];
 
-const { PAYPAL_PLAN_MAPPING } = config.payments;
+const { PAYPAL_PLAN_MAPPING, PAYPAL_PLAN_MAPPING_LEGACY } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
   team: Object.values(PAYPAL_PLAN_MAPPING.team)
+};
+const PAYPAL_PLANS_LEGACY = {
+  enhanced_protection: Object.values(
+    PAYPAL_PLAN_MAPPING_LEGACY.enhanced_protection
+  ),
+  team: Object.values(PAYPAL_PLAN_MAPPING_LEGACY.team)
 };
 
 async function syncSubscriptionPayments(
@@ -86,18 +92,28 @@ async function syncSubscriptionPayments(
       `/v1/billing/subscriptions/${subscriptionId}`
     );
 
-    const plan = Object.keys(PAYPAL_PLANS).find((plan) =>
-      PAYPAL_PLANS[plan].includes(subscription.plan_id)
-    );
+    let plan;
+
+    if (agentType === 'legacy') {
+      plan = Object.keys(PAYPAL_PLANS_LEGACY).find((plan) =>
+        PAYPAL_PLANS_LEGACY[plan].includes(subscription.plan_id)
+      );
+    } else {
+      plan = Object.keys(PAYPAL_PLANS).find((plan) =>
+        PAYPAL_PLANS[plan].includes(subscription.plan_id)
+      );
+    }
 
     if (!plan) {
       throw new Error(`Unknown plan ID: ${subscription.plan_id}`);
     }
 
     const duration = ms(
-      Object.entries(PAYPAL_PLAN_MAPPING[plan]).find(
-        (mapping) => mapping[1] === subscription.plan_id
-      )[0]
+      Object.entries(
+        agentType === 'legacy'
+          ? PAYPAL_PLAN_MAPPING_LEGACY[plan]
+          : PAYPAL_PLAN_MAPPING[plan]
+      ).find((mapping) => mapping[1] === subscription.plan_id)[0]
     );
 
     // Get all transactions for this subscription

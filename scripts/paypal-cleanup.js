@@ -215,7 +215,6 @@ async function cancelLegacySubscriptions() {
       }
 
       // Set is_legacy_paypal flag and unset the PayPal subscription ID from user model
-      user.is_legacy_paypal = true;
       user[config.userFields.paypalSubscriptionID] = undefined;
       await user.save();
       console.log(
@@ -229,11 +228,17 @@ async function cancelLegacySubscriptions() {
             template: 'alert',
             message: {
               to: user.email,
-              subject: 'PayPal Account Transition - Action Required'
+              subject: '⚠️ PayPal Account Transition - Action Required ⚠️'
             },
             locals: {
               user,
-              message: `We have transitioned PayPal accounts from Niftylettuce, LLC. to Forward Email LLC. Both of these companies are from the owner/founder, and no transfer of the company was made, don't worry. We are simply keeping this tidy and ensuring all payments from July 1, 2025 onwards are with the correct account. Please log in at https://forwardemail.net/my-account/billing to set up Auto-Renew, which will use our new PayPal account. If you have any questions, just let us know by email, help requests, or hop our the Matrix chatroom! Thank you!`
+              message: `
+<p>We’ve smoothly transitioned our PayPal accounts from Niftylettuce, LLC to Forward Email LLC. 🎉</p>
+<p><strong>Good news!</strong> Both companies are under the same <a href="https://forwardemail.net/about" target="_blank" rel="noopener noreferrer">original owner/founder</a>—no ownership changes, so no worries! 😊</p>
+<p>This update keeps our records clean, ensuring all payments from July 1, 2025, use the correct account.</p>
+<p>Please visit <a href="https://forwardemail.net/my-account/billing" class="font-weight-bold" target="_blank" rel="noopener noreferrer">your billing page</a> to enable Auto-Renew with our new PayPal account. 🚀</p>
+<p>Got questions? Reach out via email, help requests, or join our Matrix chatroom! 💬</p>
+                `.trim()
             }
           });
           console.log(`Sent transition email to user ${user.email}`);
