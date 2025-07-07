@@ -168,7 +168,7 @@ async function syncUbuntuUser(user, map) {
     }
 
     // Query Launchpad API to validate user
-    const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
+    const url = `https://api.launchpad.net/devel/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
