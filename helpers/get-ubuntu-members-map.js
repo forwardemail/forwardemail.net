@@ -58,73 +58,61 @@ async function getUbuntuMembersMap(resolver) {
 
   await pMapSeries(Object.keys(config.ubuntuTeamMapping), async (name) => {
     const set = new Set();
-    //
-    // fetch the participants for this team
-    // (note the results are paginated so we use a while loop)
-    //
-    const url = `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[name]}/participants`;
-    const response = await retryRequest(url, { resolver });
-    let json = await response.body.json();
 
-    if (!Number.isFinite(json.total_size) || json.total_size < 0)
-      throw new TypeError('Property "total_size" was invalid');
+    // Initialize pagination variables
+    let url = `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[name]}/participants`;
+    let totalProcessed = 0;
+    let pageCount = 0;
+    const maxPages = 1000; // Safety limit to prevent infinite loops
 
-    // add to set
-    addToSet(json.entries, set);
+    // Paginate through all results using next_collection_link
+    while (url && pageCount < maxPages) {
+      pageCount++;
+      logger.debug(
+        `${name} fetching page ${pageCount}, processed ${totalProcessed} entries`
+      );
 
-    let totalSize = json.total_size;
-    let retrieved = json.entries.length;
+      // eslint-disable-next-line no-await-in-loop
+      const response = await retryRequest(url, { resolver });
+      // eslint-disable-next-line no-await-in-loop
+      const json = await response.body.json();
 
-    if (retrieved < totalSize) {
-      if (!isURL(json.next_collection_link))
-        throw new TypeError(
-          'Property "next_collection_link" was not a valid URL'
-        );
+      if (!Number.isFinite(json.total_size) || json.total_size < 0)
+        throw new TypeError('Property "total_size" was invalid');
 
-      // safeguard
-      if (!json.next_collection_link.startsWith('https://api.launchpad.net/'))
-        throw new TypeError(
-          'Property "next_collection_link" is not a valid API link'
-        );
+      // Add entries from current page
+      addToSet(json.entries, set);
+      totalProcessed += json.entries.length;
 
-      while (retrieved < totalSize) {
-        logger.debug(`${name} retrieved ${retrieved}/${totalSize}`);
-
-        if (!isURL(json.next_collection_link))
-          throw new TypeError(
-            'Property "next_collection_link" was not a valid URL'
-          );
-
-        // safeguard
+      // Check if there's a next page
+      if (json.next_collection_link && isURL(json.next_collection_link)) {
+        // Safeguard - ensure it's a valid Launchpad API URL
         if (!json.next_collection_link.startsWith('https://api.launchpad.net/'))
           throw new TypeError(
             'Property "next_collection_link" is not a valid API link'
           );
 
-        logger.debug('fetching', { url: json.next_collection_link });
-
-        // eslint-disable-next-line no-await-in-loop
-        const response = await retryRequest(json.next_collection_link, {
-          resolver
-        });
-        // eslint-disable-next-line no-await-in-loop
-        json = await response.body.json();
-
-        if (!Number.isFinite(json.total_size) || json.total_size < 0)
-          throw new TypeError('Property "total_size" was invalid');
-
-        // update total size in-memory (in case it changes)
-        totalSize = json.total_size;
-
-        // add to set
-        addToSet(json.entries, set);
-
-        // update retrieved in-memory
-        retrieved += json.entries.length;
+        url = json.next_collection_link;
+      } else {
+        url = null; // No more pages
       }
+
+      // Log progress and detect total_size changes
+      logger.debug(
+        `${name} page ${pageCount}: processed ${json.entries.length} entries, total: ${totalProcessed}, API total_size: ${json.total_size}`
+      );
     }
 
-    logger.debug(`setting ${name}`, { set: [...set] });
+    // Warn if we hit the safety limit
+    if (pageCount >= maxPages) {
+      logger.warn(
+        `${name} hit maximum page limit (${maxPages}), may have incomplete data`
+      );
+    }
+
+    logger.debug(
+      `${name} completed: ${totalProcessed} total entries processed across ${pageCount} pages`
+    );
     map.set(name, set);
   });
 
