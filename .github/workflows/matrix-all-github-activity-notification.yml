@@ -100,44 +100,84 @@ jobs:
     steps:
       - name: Determine activity type and format message
         id: format
+        env:
+          # Set environment variables for all potentially problematic values
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          COMMENT_URL: ${{ github.event.comment.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          REVIEW_URL: ${{ github.event.review.html_url }}
+          REF_NAME: ${{ github.ref_name }}
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMPARE_URL: ${{ github.event.compare }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+          ACTOR_NAME: ${{ github.actor }}
+          FORKEE_OWNER: ${{ github.event.forkee.owner.login }}
+          FORKEE_URL: ${{ github.event.forkee.html_url }}
+          DISCUSSION_TITLE: ${{ github.event.discussion.title }}
+          DISCUSSION_URL: ${{ github.event.discussion.html_url }}
+          PAGES_MODIFIED: ${{ join(github.event.pages.*.page_name, ', ') }}
+          MILESTONE_TITLE: ${{ github.event.milestone.title }}
+          MILESTONE_URL: ${{ github.event.milestone.html_url }}
+          LABEL_NAME: ${{ github.event.label.name }}
+          REF_VALUE: ${{ github.event.ref }}
+          REF_TYPE: ${{ github.event.ref_type }}
+          DEPLOYMENT_ENV: ${{ github.event.deployment.environment }}
+          DEPLOYMENT_STATUS_STATE: ${{ github.event.deployment_status.state }}
+          DEPLOYMENT_STATUS_URL: ${{ github.event.deployment_status.target_url }}
+          CHECK_RUN_NAME: ${{ github.event.check_run.name }}
+          CHECK_RUN_URL: ${{ github.event.check_run.html_url }}
+          CHECK_SUITE_CONCLUSION: ${{ github.event.check_suite.conclusion }}
+          CHECK_SUITE_URL: ${{ github.event.check_suite.html_url }}
+          PACKAGE_NAME: ${{ github.event.package.name }}
+          PACKAGE_URL: ${{ github.event.package.html_url }}
+          STATUS_STATE: ${{ github.event.state }}
+          TARGET_URL: ${{ github.event.target_url }}
+          REPO_URL: ${{ github.event.repository.html_url }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
         run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
+          echo "Event: $EVENT_NAME"
+          echo "Action: $EVENT_ACTION"
 
           # Set default values
           ICON="📝"
           TITLE="GitHub Activity"
           DESCRIPTION=""
-          URL="${{ github.event.repository.html_url }}"
-          ACTOR="${{ github.actor }}"
+          URL="$REPO_URL"
+          ACTOR="$ACTOR_NAME"
 
-          case "${{ github.event_name }}" in
+          case "$EVENT_NAME" in
             "issues")
               ICON="🐛"
-              case "${{ github.event.action }}" in
+              case "$EVENT_ACTION" in
                 "opened") TITLE="New Issue Opened" ;;
                 "closed") TITLE="Issue Closed" ;;
                 "reopened") TITLE="Issue Reopened" ;;
                 "edited") TITLE="Issue Edited" ;;
                 "assigned") TITLE="Issue Assigned" ;;
                 "labeled") TITLE="Issue Labeled" ;;
-                *) TITLE="Issue ${{ github.event.action }}" ;;
+                *) TITLE="Issue $EVENT_ACTION" ;;
               esac
-              DESCRIPTION="${{ github.event.issue.title }}"
-              URL="${{ github.event.issue.html_url }}"
+              DESCRIPTION="$ISSUE_TITLE"
+              URL="$ISSUE_URL"
               ;;
             "issue_comment")
               ICON="💬"
-              TITLE="Issue Comment ${{ github.event.action }}"
-              DESCRIPTION="On: ${{ github.event.issue.title }}"
-              URL="${{ github.event.comment.html_url }}"
+              TITLE="Issue Comment $EVENT_ACTION"
+              DESCRIPTION="On: $ISSUE_TITLE"
+              URL="$COMMENT_URL"
               ;;
             "pull_request")
               ICON="🔀"
-              case "${{ github.event.action }}" in
+              case "$EVENT_ACTION" in
                 "opened") TITLE="New Pull Request" ;;
                 "closed")
-                  if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+                  if [[ "$PR_MERGED" == "true" ]]; then
                     TITLE="Pull Request Merged"
                     ICON="✅"
                   else
@@ -146,100 +186,105 @@ jobs:
                   ;;
                 "reopened") TITLE="Pull Request Reopened" ;;
                 "ready_for_review") TITLE="Pull Request Ready for Review" ;;
-                *) TITLE="Pull Request ${{ github.event.action }}" ;;
+                *) TITLE="Pull Request $EVENT_ACTION" ;;
               esac
-              DESCRIPTION="${{ github.event.pull_request.title }}"
-              URL="${{ github.event.pull_request.html_url }}"
+              DESCRIPTION="$PR_TITLE"
+              URL="$PR_URL"
               ;;
             "pull_request_review")
               ICON="👀"
-              TITLE="Pull Request Review ${{ github.event.action }}"
-              DESCRIPTION="On: ${{ github.event.pull_request.title }}"
-              URL="${{ github.event.review.html_url }}"
+              TITLE="Pull Request Review $EVENT_ACTION"
+              DESCRIPTION="On: $PR_TITLE"
+              URL="$REVIEW_URL"
               ;;
             "pull_request_review_comment")
               ICON="💭"
-              TITLE="PR Review Comment ${{ github.event.action }}"
-              DESCRIPTION="On: ${{ github.event.pull_request.title }}"
-              URL="${{ github.event.comment.html_url }}"
+              TITLE="PR Review Comment $EVENT_ACTION"
+              DESCRIPTION="On: $PR_TITLE"
+              URL="$COMMENT_URL"
               ;;
             "push")
               ICON="📤"
               if [[ "${{ github.ref }}" == refs/tags/* ]]; then
                 ICON="🏷️"
                 TITLE="Tag Pushed"
-                DESCRIPTION="Tag: ${{ github.ref_name }}"
+                DESCRIPTION="Tag: $REF_NAME"
               else
-                TITLE="Push to ${{ github.ref_name }}"
-                DESCRIPTION="${{ github.event.head_commit.message }}"
+                TITLE="Push to $REF_NAME"
+                DESCRIPTION="$HEAD_COMMIT_MESSAGE"
               fi
-              URL="${{ github.event.compare }}"
+              URL="$COMPARE_URL"
               ;;
             "release")
               ICON="🚀"
-              TITLE="Release ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.release.name || github.event.release.tag_name }}"
-              URL="${{ github.event.release.html_url }}"
+              TITLE="Release $EVENT_ACTION"
+              # Use release name if available, otherwise use tag name
+              if [[ -n "$RELEASE_NAME" ]]; then
+                DESCRIPTION="$RELEASE_NAME"
+              else
+                DESCRIPTION="$RELEASE_TAG"
+              fi
+              URL="$RELEASE_URL"
               ;;
             "watch")
               ICON="⭐"
               TITLE="Repository Starred"
-              DESCRIPTION="New watcher: ${{ github.actor }}"
+              DESCRIPTION="New watcher: $ACTOR_NAME"
               ;;
             "fork")
               ICON="🍴"
               TITLE="Repository Forked"
-              DESCRIPTION="By ${{ github.event.forkee.owner.login }}"
-              URL="${{ github.event.forkee.html_url }}"
+              DESCRIPTION="By $FORKEE_OWNER"
+              URL="$FORKEE_URL"
               ;;
             "discussion")
               ICON="💬"
-              TITLE="Discussion ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.discussion.title }}"
-              URL="${{ github.event.discussion.html_url }}"
+              TITLE="Discussion $EVENT_ACTION"
+              DESCRIPTION="$DISCUSSION_TITLE"
+              URL="$DISCUSSION_URL"
               ;;
             "discussion_comment")
               ICON="💬"
-              TITLE="Discussion Comment ${{ github.event.action }}"
-              DESCRIPTION="On: ${{ github.event.discussion.title }}"
-              URL="${{ github.event.comment.html_url }}"
+              TITLE="Discussion Comment $EVENT_ACTION"
+              DESCRIPTION="On: $DISCUSSION_TITLE"
+              URL="$COMMENT_URL"
               ;;
             "gollum")
               ICON="📖"
               TITLE="Wiki Updated"
-              DESCRIPTION="Pages modified: ${{ join(github.event.pages.*.page_name, ', ') }}"
+              DESCRIPTION="Pages modified: $PAGES_MODIFIED"
               ;;
             "milestone")
               ICON="🎯"
-              TITLE="Milestone ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.milestone.title }}"
-              URL="${{ github.event.milestone.html_url }}"
+              TITLE="Milestone $EVENT_ACTION"
+              DESCRIPTION="$MILESTONE_TITLE"
+              URL="$MILESTONE_URL"
               ;;
             "label")
               ICON="🏷️"
-              TITLE="Label ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.label.name }}"
+              TITLE="Label $EVENT_ACTION"
+              DESCRIPTION="$LABEL_NAME"
               ;;
             "create")
               ICON="🌱"
-              TITLE="${{ github.event.ref_type }} Created"
-              DESCRIPTION="${{ github.event.ref }}"
+              TITLE="$REF_TYPE Created"
+              DESCRIPTION="$REF_VALUE"
               ;;
             "delete")
               ICON="🗑️"
-              TITLE="${{ github.event.ref_type }} Deleted"
-              DESCRIPTION="${{ github.event.ref }}"
+              TITLE="$REF_TYPE Deleted"
+              DESCRIPTION="$REF_VALUE"
               ;;
             "deployment")
               ICON="🚀"
               TITLE="Deployment"
-              DESCRIPTION="Environment: ${{ github.event.deployment.environment }}"
+              DESCRIPTION="Environment: $DEPLOYMENT_ENV"
               ;;
             "deployment_status")
               ICON="🚀"
               TITLE="Deployment Status"
-              DESCRIPTION="State: ${{ github.event.deployment_status.state }}"
-              URL="${{ github.event.deployment_status.target_url }}"
+              DESCRIPTION="State: $DEPLOYMENT_STATUS_STATE"
+              URL="$DEPLOYMENT_STATUS_URL"
               ;;
             "page_build")
               ICON="📄"
@@ -249,7 +294,7 @@ jobs:
             "repository_dispatch")
               ICON="📡"
               TITLE="Repository Dispatch"
-              DESCRIPTION="Event type: ${{ github.event.action }}"
+              DESCRIPTION="Event type: $EVENT_ACTION"
               ;;
             "public")
               ICON="🌍"
@@ -258,44 +303,46 @@ jobs:
               ;;
             "check_run")
               ICON="✅"
-              TITLE="Check Run ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.check_run.name }}"
-              URL="${{ github.event.check_run.html_url }}"
+              TITLE="Check Run $EVENT_ACTION"
+              DESCRIPTION="$CHECK_RUN_NAME"
+              URL="$CHECK_RUN_URL"
               ;;
             "check_suite")
               ICON="✅"
-              TITLE="Check Suite ${{ github.event.action }}"
-              DESCRIPTION="Conclusion: ${{ github.event.check_suite.conclusion }}"
-              URL="${{ github.event.check_suite.html_url }}"
+              TITLE="Check Suite $EVENT_ACTION"
+              DESCRIPTION="Conclusion: $CHECK_SUITE_CONCLUSION"
+              URL="$CHECK_SUITE_URL"
               ;;
             "branch_protection_rule")
               ICON="🛡️"
-              TITLE="Branch Protection Rule ${{ github.event.action }}"
+              TITLE="Branch Protection Rule $EVENT_ACTION"
               DESCRIPTION="Rule updated"
               ;;
             "registry_package")
               ICON="📦"
-              TITLE="Package ${{ github.event.action }}"
-              DESCRIPTION="${{ github.event.package.name }}"
-              URL="${{ github.event.package.html_url }}"
+              TITLE="Package $EVENT_ACTION"
+              DESCRIPTION="$PACKAGE_NAME"
+              URL="$PACKAGE_URL"
               ;;
             "status")
               ICON="🔍"
               TITLE="Status Update"
-              DESCRIPTION="State: ${{ github.event.state }}"
-              URL="${{ github.event.target_url }}"
+              DESCRIPTION="State: $STATUS_STATE"
+              URL="$TARGET_URL"
               ;;
             *)
-              TITLE="${{ github.event_name }} ${{ github.event.action }}"
+              TITLE="$EVENT_NAME $EVENT_ACTION"
               ;;
           esac
 
-          # Output variables
-          echo "icon=$ICON" >> $GITHUB_OUTPUT
-          echo "title=$TITLE" >> $GITHUB_OUTPUT
-          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "actor=$ACTOR" >> $GITHUB_OUTPUT
+          # Output variables using proper escaping
+          {
+            echo "icon=$ICON"
+            echo "title=$TITLE"
+            echo "description=$DESCRIPTION"
+            echo "url=$URL"
+            echo "actor=$ACTOR"
+          } >> $GITHUB_OUTPUT
 
       - name: Send Matrix notification
         uses: lkiesow/matrix-notification@v1
