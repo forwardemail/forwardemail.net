@@ -259,7 +259,8 @@ Logs.index(
   { default_language: 'english' }
 );
 
-Logs.index({ 'err.isCodeBug': 1 }, { sparse: true });
+// Restore regular index for err.isCodeBug to support $or queries efficiently
+Logs.index({ 'err.isCodeBug': 1 });
 
 //
 // create sparse (now known as "partial" indices) on common log queries
@@ -333,7 +334,7 @@ for (const index of PARTIAL_INDICES) {
   );
 }
 
-// For non-admin users with common query patterns
+// For non-admin users with common query patterns - optimized for $or queries
 Logs.index({
   user: 1,
   domains: 1,
@@ -341,12 +342,29 @@ Logs.index({
   created_at: 1
 });
 
-// For non-admin users with bounce category filtering
+// For non-admin users with bounce category filtering - optimized for $or queries
 Logs.index({
   bounce_category: 1,
   domains: 1,
   user: 1,
   'err.isCodeBug': 1
+});
+
+// Additional compound indexes to support common query patterns with $or filtering
+// For response code analysis queries
+Logs.index({
+  'err.responseCode': 1,
+  user: 1,
+  'err.isCodeBug': 1,
+  created_at: -1
+});
+
+// For domain-focused queries with date sorting
+Logs.index({
+  domains: 1,
+  user: 1,
+  'err.isCodeBug': 1,
+  created_at: -1
 });
 
 //

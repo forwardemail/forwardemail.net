@@ -30,7 +30,6 @@ async function retrieveLog(ctx, next) {
     ]
   })
     .lean()
-    .hint({ 'err.isCodeBug': 1 })
     .exec();
 
   if (

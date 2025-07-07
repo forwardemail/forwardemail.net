@@ -402,7 +402,7 @@ async function listLogs(ctx) {
     query.$and.push(codebugFilter);
   } else if (query.$or) {
     query = {
-      $and: [{ $or: query.$or }, codebugFilter]
+      $and: [query, codebugFilter]
     };
   } else {
     query = {
@@ -489,7 +489,6 @@ async function listLogs(ctx) {
       )
       .lean()
       .maxTimeMS(SIXTY_SECONDS)
-      .hint({ 'err.isCodeBug': 1 })
       .exec(),
     Logs.countDocuments(query).maxTimeMS(SIXTY_SECONDS),
     Logs.distinct('err.responseCode', query),
