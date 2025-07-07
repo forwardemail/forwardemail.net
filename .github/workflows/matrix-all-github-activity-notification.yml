@@ -24,9 +24,9 @@ on:
     types: [created] #, edited, deleted]
 
   # Pushes to any branch AND tags
-  push:
-    branches: ['**']
-    tags: ['**']
+  #push:
+  #  branches: ['**']
+  #  tags: ['**']
 
   # Releases
   release:
