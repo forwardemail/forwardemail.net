@@ -60,7 +60,7 @@ async function getUbuntuMembersMap(resolver) {
     const set = new Set();
 
     // Initialize pagination variables
-    let url = `https://api.launchpad.net/devel/${config.ubuntuTeamMapping[name]}/participants`;
+    let url = `https://api.launchpad.net/1.0/${config.ubuntuTeamMapping[name]}/participants`;
     let totalProcessed = 0;
     let pageCount = 0;
     const maxPages = 1000; // Safety limit to prevent infinite loops

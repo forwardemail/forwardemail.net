@@ -21,9 +21,6 @@ const emailHelper = require('#helpers/email');
 const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const logger = require('#helpers/logger');
 const retryRequest = require('#helpers/retry-request');
-const {
-  enhancedMembershipCheck
-} = require('#helpers/verify-ubuntu-membership');
 const { emoji } = require('#config/utilities');
 
 const { fields } = config.passport;
@@ -150,13 +147,11 @@ async function syncUbuntuUser(user, map) {
     }
 
     //
-    // GET https://api.launchpad.net/devel/~kotodamatest
+    // GET https://api.launchpad.net/1.0/~kotodamatest
     // - ensure `is_valid`
     // - ensure `is_ubuntu_coc_signer`
     //
-    const url = `https://api.launchpad.net/devel/~${
-      user[fields.ubuntuUsername]
-    }`;
+    const url = `https://api.launchpad.net/1.0/~${user[fields.ubuntuUsername]}`;
     const response = await retryRequest(url, { resolver });
     const json = await response.body.json();
 
@@ -263,35 +258,10 @@ async function syncUbuntuUser(user, map) {
           }
 
           //
-          // Enhanced membership check with real-time verification
-          // This provides double-verification and dummy-proofing
+          // check if the user was in the Set from Map
+          // to see if they were a member of the team or not
           //
-          const membershipCheck = await enhancedMembershipCheck(
-            user,
-            name,
-            map,
-            resolver,
-            adminEmailsForDomain,
-            client
-          );
-
-          // Log any discrepancies for monitoring (already handled in enhancedMembershipCheck)
-          if (membershipCheck.discrepancy) {
-            const err = new TypeError(
-              `Ubuntu membership discrepancy resolved for ${membershipCheck.username} in ${membershipCheck.teamName}: using real-time result ${membershipCheck.realtimeResult}`
-            );
-            err.isCodeBug = true;
-            err.user_id = user.id;
-            err.domain = name;
-            err.team = membershipCheck.teamName;
-            err.map_result = membershipCheck.mapResult;
-            err.realtime_result = membershipCheck.realtimeResult;
-            await logger.fatal(err);
-            // TODO: remove this `throw` here but keeping it for now in case of discrepancy
-            throw err;
-          }
-
-          if (membershipCheck.isMember) {
+          if (map.get(name).has(user[fields.ubuntuUsername])) {
             // ensure alias exists else create it
             let alias = await Aliases.findOne({
               user: user._id,
@@ -604,21 +574,11 @@ async function syncUbuntuUser(user, map) {
             });
 
             //
-            // Enhanced check for emailing admins
-            // Use real-time verification to determine if user was actually a member
+            // only email admins if one of two cases:
+            // 1) the user was found in the `map` for the team
+            // 2) the user was a member of the team already
             //
-            const membershipCheck = await enhancedMembershipCheck(
-              user,
-              name,
-              map,
-              resolver,
-              adminEmailsForDomain,
-              client
-            );
-            // Email if user was a member OR if real-time verification shows they were a member
-            const shouldEmailAdmins = isMember || membershipCheck.isMember;
-
-            if (shouldEmailAdmins) {
+            if (isMember || map.get(name).has(user[fields.ubuntuUsername])) {
               // email admins
               const key = `${keyPrefix}:${revHash(err.message)}`;
               const cache = await client.get(key);
