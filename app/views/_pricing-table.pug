@@ -81,88 +81,19 @@
                 target="_blank"
               )
                 = t("Regular expression filtering")
-            //-.
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-check-circle.text-themed.mr-3
-                ul.list-inline.mb-0
-                  li.list-inline-item.mr-1.small= t("Supports")
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#do-you-support-webhooks")
-                    )
-                      = "HTTP"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#do-you-support-sending-email-with-api")
-                    )
-                      = "API"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-i-set-up-spf-for-forward-email")
-                    )
-                      = "SPF"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-i-set-up-dkim-for-forward-email")
-                    )
-                      = "DKIM"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-i-set-up-dmarc-for-forward-email")
-                    )
-                      = "DMARC"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#do-you-support-email-best-practices")
-                    )
-                      = "ARC"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-i-set-up-srs-for-forward-email")
-                    )
-                      = "SRS"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-i-set-up-mta-sts-for-forward-email")
-                    )
-                      = "MTA-STS"
-                      = " "
-                      i.fa.fa-angle-right
-                  li.list-inline-item.lead
-                    a.badge.badge-light(
-                      target="_blank",
-                      href=l("/faq#how-do-you-perform-dns-lookups-on-domain-names")
-                    )
-                      = "DNS over HTTPS"
-                      = " "
-                      i.fa.fa-angle-right
+          //- Limitations section for Free plan
+          .card-footer.small.text-center.py-3
+            i.fa.fa-fw.fa-info-circle.text-muted
+            = " "
+            strong= t("Limitations")
+            = ": "
+            = t("Email forwarding only, which means you cannot send mail")
+
       #enhanced.col.mt-3.mt-md-0.mt-lg-0
         .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
           .card-body
             .h3.text-center.font-weight-normal.mb-3
-              = t("Enhanced")
+              = t("Enhanced Protection")
             p.text-center.mb-3.small!= t('Send &amp; receive as <span class="notranslate">you@yourdomain.com</span>')
             .lead.text-center.mb-3.text-nowrap
               if user && user.plan !== 'free'
@@ -245,85 +176,6 @@
                   data-target="#modal-storage"
                 )
                   i.fa.fa-info-circle
-            //-.
-              li.list-group-item.d-flex.align-items-center
-                i.fa.fa-fw.fa-check-circle.text-themed.mr-3
-                ul.list-inline.mb-0
-                  li.list-inline-item.mr-1.small= t("Works with")
-                  //- Apple
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/apple-email-clients"),
-                      target="_blank"
-                    )
-                      = "Apple"
-                      != "&reg;"
-                  //- Windows
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/windows-email-clients"),
-                      target="_blank"
-                    )
-                      = "Windows"
-                      != "&reg;"
-                  //- Android
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/android-email-clients"),
-                      target="_blank"
-                    )
-                      i.fa-fw.fab.fa-android
-                      = " "
-                      = "Android"
-                      != "&trade;"
-                  //- Linux
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/linux-email-clients"),
-                      target="_blank"
-                    )
-                      i.fa-fw.fab.fa-linux
-                      = " "
-                      = "Linux"
-                      != "&reg;"
-                  //- Desktop
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/desktop-email-clients"),
-                      target="_blank"
-                    )
-                      i.fa-fw.fas.fa-desktop
-                      = " "
-                      = t("Desktop")
-                  //- Web
-                  li.list-inline-item.mr-1.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/web-email-clients"),
-                      target="_blank"
-                    )
-                      if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Firefox")
-                        i.fab.fa-fw.fa-firefox-browser
-                        = " "
-                        = "Firefox"
-                        != "&reg;"
-                      else if ctx.get("User-Agent") && ctx.get("User-Agent").includes("Safari") && !ctx.get("User-Agent").includes("Chrome")
-                        = " "
-                        = "Safari"
-                        != "&reg;"
-                      else
-                        i.fab.fa-fw.fa-chrome
-                        = " "
-                        = "Chrome"
-                        != "&reg;"
-                  //- Terminal
-                  li.list-inline-item.lead
-                    a.badge.badge-light(
-                      href=l("/blog/open-source/terminal-email-clients"),
-                      target="_blank"
-                    )
-                      i.fa-fw.fas.fa-terminal
-                      = " "
-                      = "Terminal"
             li.list-group-item.d-flex.align-items-center.font-weight-bold
               i.fa.fa-fw.fa-lock.mr-3
               = " "
@@ -362,12 +214,6 @@
               i.fa.fa-fw.fas.fa-chart-area.text-themed.mr-3
               = " "
               != t("Email analytics &amp; insights")
-              //-.
-                a.font-weight-bold.text-decoration-underline.text-themed(
-                  href=l("/email-analytics"),
-                  target="_blank"
-                )
-                  != t("Email analytics &amp; insights")
             li.list-group-item.d-flex.align-items-center
               i.fa.fa-fw.fa-plus.text-themed.mr-3
               a.font-weight-bold.text-themed.text-decoration-underline(
@@ -381,6 +227,13 @@
                 target="_blank"
               )
                 = t("Developer API access")
+          //- Best for section for Enhanced plan
+          .card-footer.small.text-center.py-3
+            i.fa.fa-fw.fa-user.text-muted
+            = " "
+            strong= t("Best for")
+            = ": "
+            = t("Individuals, freelancers, and small businesses")
 
       #team.col.mt-3
         .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
@@ -453,6 +306,14 @@
               i.fa.fa-fw.fa-palette.text-themed.mr-3
               = " "
               = t("Custom recipient verification")
+          //- Best for section for Team plan
+          .card-footer.small.text-center.py-3
+            i.fa.fa-fw.fa-users.text-muted
+            = " "
+            strong= t("Best for")
+            = ": "
+            = t("Collaboration across families, teams, and organizations")
+
       #enterprise.col.mt-3
         .card.d-flex.flex-column.rounded-lg.bg-white.bg-themed.position-relative
           .card-body
@@ -503,3 +364,48 @@
               i.fa.fa-life-ring.text-themed.mr-3
               = " "
               = t("Onboarding assistance and real-time engineering support")
+
+//- FAQ Section
+section.py-5.bg-dark
+  .container
+    .row.justify-content-center
+      .col-lg-10
+        h2.text-center.display-4.mb-5= t("Frequently Asked Questions")
+        .row
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("What's the difference between Enhanced Protection and Team plans?")
+                p.card-text= t("Enhanced Protection ($3/month) is perfect for individuals who need professional email with sending/receiving capabilities, 10GB storage, and API access. Team plan ($9/month) adds collaborative features like team member management, shared organizational access, and priority support - ideal for families, groups, and businesses.")
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("Can I send and receive emails with the Free plan?")
+                p.card-text= t("No, the Free plan only supports email forwarding. You can receive emails at your custom domain and forward them to your existing email address, but you cannot send emails directly from your custom domain or store emails on our servers.")
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("Who should choose the Team plan?")
+                p.card-text= t("The Team plan is perfect for families sharing a domain (like @smithfamily.com), small businesses with multiple employees, organizations needing shared email management, or any group that requires collaborative access to email accounts with proper permission controls.")
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("What does 'unlimited domains' mean?")
+                p.card-text= t("All plans include unlimited domains at no extra cost. Whether you have 1 domain or 100 domains, you pay the same price. This makes our service extremely cost-effective for users managing multiple websites or businesses.")
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("Do you charge per user/alias like other services?")
+                p.card-text= t("No! Unlike other email services that charge per user or alias, we include unlimited aliases in our Enhanced Protection and Team plans. Create as many email addresses as you need (info@, sales@, support@, etc.) without additional fees.")
+          .col-md-6.mb-4
+            .card.h-100
+              .card-body
+                h5.card-title= t("Can I upgrade or downgrade my plan anytime?")
+                p.card-text= t("Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at your next billing cycle, and you'll retain access to paid features until then.")
+        .row.mb-4
+          .col.text-center
+            a.btn.btn-primary.btn-lg(href=l("/faq"))
+              = t("Frequently Asked Questions")
+              = " "
+              i.fa.fa-angle-double-right.align-middle
+
