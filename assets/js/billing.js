@@ -88,6 +88,8 @@ async function createPayPalOrder() {
   const body = qs.parse($formBilling.serialize());
   const response = await sendRequest(body);
 
+  console.log('response', response);
+
   // Check if any errors occurred
   if (response.err) {
     // render an alert
