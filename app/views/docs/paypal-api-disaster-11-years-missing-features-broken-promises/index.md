@@ -1,6 +1,6 @@
 # PayPal's 11-Year API Disaster: How We Built Workarounds While They Ignored Developers
 
-<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">At Forward Email, we've been dealing with PayPal's broken APIs for over a decade. What started as minor frustrations has turned into a complete disaster that forced us to build our own workarounds, block their phishing templates, and ultimately halt all PayPal payments during a critical account migration.</p>
 <p class="lead mt-3">This is the story of 11 years of PayPal ignoring basic developer needs while we tried everything to make their platform work.</p>
@@ -935,3 +935,5 @@ Meanwhile, developers are forced to build workarounds, compromise security, and 
 If you're building a payment system, learn from our experience: build your [trifecta approach](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) with multiple processors, but don't expect PayPal to provide the basic functionality you need. Plan to build workarounds from day one.
 
 > This post documents our 11-year experience with PayPal's APIs at Forward Email. All code examples and links are from our actual production systems. We continue to support PayPal payments despite these issues because some customers have no other option
+
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

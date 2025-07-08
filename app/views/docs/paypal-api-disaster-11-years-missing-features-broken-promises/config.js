@@ -14,5 +14,5 @@ module.exports = {
   notCodeExample: true,
   noYearAffix: true,
   hasSidebar: true,
-  ogImage: 'img/articles/paypal-api-issues.webp'
+  ogImage: 'img/articles/pypl-disaster.webp'
 };
