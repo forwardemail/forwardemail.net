@@ -7,8 +7,8 @@ on:
   # edited, assigned, unassigned, labeled, unlabeled, locked, unlocked, transferred, pinned, unpinned]
 
   # Issue Comments
-  issue_comment:
-    types: [created] #, edited, deleted]
+  #issue_comment:
+  #  types: [created] #, edited, deleted]
 
   # Pull Requests
   pull_request:
@@ -20,8 +20,8 @@ on:
     types: [submitted] # , edited, dismissed]
 
   # Pull Request Review Comments
-  pull_request_review_comment:
-    types: [created] #, edited, deleted]
+  #pull_request_review_comment:
+  #  types: [created] #, edited, deleted]
 
   # Pushes to any branch AND tags
   #push:
@@ -44,8 +44,8 @@ on:
     types: [created, answered] #, edited, deleted, pinned, unpinned, locked, unlocked, transferred, category_changed, answered, unanswered]
 
   # Discussion Comments
-  discussion_comment:
-    types: [created] #, edited, deleted]
+  #discussion_comment:
+  #  types: [created] #, edited, deleted]
 
   # Wiki
   gollum:
@@ -364,4 +364,3 @@ jobs:
             <b>Repository:</b> ${{ github.repository }}<br>
             ${{ steps.format.outputs.description && format('<b>Details:</b> {0}<br>', steps.format.outputs.description) || '' }}
             <br><b>Link:</b> <a href="${{ steps.format.outputs.url }}">${{ steps.format.outputs.url }}</a>
-
