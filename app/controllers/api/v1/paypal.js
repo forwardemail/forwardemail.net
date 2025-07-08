@@ -21,6 +21,7 @@ const { paypalAgent, paypal } = require('#helpers/paypal');
 const { paypalAgentLegacy } = require('#helpers/paypal-legacy');
 const syncPayPalSubscriptionPaymentsByUser = require('#helpers/sync-paypal-subscription-payments-by-user');
 const syncPayPalOrderPaymentByPaymentId = require('#helpers/sync-paypal-order-payment-by-payment-id');
+const retryPayPalRequest = require('#helpers/retry-paypal-request');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 
@@ -455,32 +456,53 @@ async function processEvent(ctx) {
       if (res?.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
         transactionId = res?.body.purchase_units[0].payments.captures[0].id;
 
-      // capture payment
+      // capture payment with retry logic for PayPal infrastructure delays
       try {
-        const agent = await paypalAgent();
-        const response = await agent.post(
-          `/v2/checkout/orders/${res.body.id}/capture`
+        await retryPayPalRequest(
+          async () => {
+            const agent = await paypalAgent();
+            const response = await agent.post(
+              `/v2/checkout/orders/${res.body.id}/capture`
+            );
+            // parse the transaction id
+            if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
+              transactionId =
+                response.body.purchase_units[0].payments.captures[0].id;
+          },
+          {
+            retries: 3,
+            additionalStatusCodes: [404], // PayPal infrastructure delays cause 404s
+            calculateDelay: (count) => Math.round(1000 * 2 ** count) // 2s, 4s, 8s
+          }
         );
-        // parse the transaction id
-        if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-          transactionId =
-            response.body.purchase_units[0].payments.captures[0].id;
       } catch (err) {
-        ctx.logger.warn(err);
+        ctx.logger.warn(err, {
+          paypal_order_id: res.body.id,
+          user_email: user.email,
+          retry_count: err.retryCount || 0,
+          max_retries: err.maxRetries || 0
+        });
+
+        // Only email admins for non-422 errors and include retry information
         if (!err.status || err.status !== 422) {
-          // email admins here
+          const isRetryExhausted = err.retryCount >= (err.maxRetries || 0);
           emailHelper({
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Error while capturing PayPal order payment for ${user.email}`
+              subject: `${
+                isRetryExhausted ? 'CRITICAL: ' : ''
+              }Error while capturing PayPal order payment for ${user.email}${
+                isRetryExhausted ? ' (Retries Exhausted)' : ''
+              }`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
-              )}</code></pre>`
+              message: `<pre><code>PayPal Order ID: ${res.body.id}
+User Email: ${user.email}
+Retry Count: ${err.retryCount || 0}/${err.maxRetries || 0}
+Error Status: ${err.status || err.statusCode || 'Unknown'}
+
+${safeStringify(parseErr(err), null, 2)}</code></pre>`
             }
           })
             .then()
@@ -539,6 +561,217 @@ async function processEvent(ctx) {
 
         // save the user
         await user.save();
+      }
+
+      break;
+    }
+
+    // Payment approval reversed - customer approved but payment wasn't captured in time
+    // Payment approval reversed - delete payment and cancel order
+    case 'CHECKOUT.PAYMENT-APPROVAL.REVERSED': {
+      if (!body?.resource?.id) {
+        const err = new TypeError(
+          'PayPal order ID missing from CHECKOUT.PAYMENT-APPROVAL.REVERSED webhook'
+        );
+        ctx.logger.error(err);
+        throw err;
+      }
+
+      if (!body?.resource?.purchase_units?.[0]?.reference_id) {
+        const err = new TypeError(
+          'Reference ID missing from CHECKOUT.PAYMENT-APPROVAL.REVERSED webhook'
+        );
+        ctx.logger.error(err);
+        throw err;
+      }
+
+      const user = await Users.findOne({
+        id: body.resource.purchase_units[0].reference_id
+      });
+
+      if (!user) {
+        ctx.logger.warn(
+          'User not found for CHECKOUT.PAYMENT-APPROVAL.REVERSED event',
+          {
+            paypal_order_id: body.resource.id,
+            reference_id: body.resource.purchase_units[0].reference_id
+          }
+        );
+        break;
+      }
+
+      // Find the payment record if it exists
+      const $or = [
+        {
+          user: user._id,
+          paypal_order_id: body.resource.id
+        }
+      ];
+
+      if (body?.resource?.purchase_units?.[0]?.invoice_id) {
+        $or.push({
+          user: user._id,
+          reference: body.resource.purchase_units[0].invoice_id
+        });
+      }
+
+      const payment = await Payments.findOne({ $or });
+
+      if (payment) {
+        ctx.logger.warn(
+          'Payment approval reversed by PayPal - deleting payment record',
+          {
+            payment_id: payment._id,
+            paypal_order_id: body.resource.id,
+            user_email: user.email,
+            amount: payment.amount,
+            plan: payment.plan
+          }
+        );
+
+        // Attempt to cancel the order on PayPal's side
+        try {
+          const cancelResponse = await paypalAgent.post(
+            `/v2/checkout/orders/${body.resource.id}/cancel`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'PayPal-Request-Id': `cancel-${body.resource.id}-${Date.now()}`
+              }
+            }
+          );
+
+          ctx.logger.info('Successfully cancelled PayPal order', {
+            paypal_order_id: body.resource.id,
+            cancel_response: cancelResponse.body
+          });
+        } catch (cancelErr) {
+          ctx.logger.warn(
+            'Failed to cancel PayPal order (order may already be cancelled)',
+            {
+              paypal_order_id: body.resource.id,
+              error: cancelErr.message
+            }
+          );
+        }
+
+        // Delete the payment record
+        await Payments.findByIdAndRemove(payment._id);
+
+        ctx.logger.info(
+          'Payment record deleted due to PayPal approval reversal',
+          {
+            payment_id: payment._id,
+            paypal_order_id: body.resource.id,
+            user_email: user.email
+          }
+        );
+      } else {
+        ctx.logger.warn(
+          'Payment record not found for CHECKOUT.PAYMENT-APPROVAL.REVERSED event',
+          {
+            paypal_order_id: body.resource.id,
+            user_email: user.email
+          }
+        );
+      }
+
+      // Send email notification to user
+      try {
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: user.email,
+            cc: config.email.message.from,
+            subject: 'Payment Processing Issue - Please Retry Your Payment'
+          },
+          locals: {
+            user: user.toObject(),
+            message: `
+<p>Hello ${user[config.userFields.fullEmail]},</p>
+
+<p>We encountered an issue processing your recent PayPal payment due to PayPal's infrastructure problems.</p>
+
+<p><strong>What happened:</strong></p>
+<ul>
+<li>PayPal approved your payment but then automatically reversed it</li>
+<li>No charge was made to your account</li>
+<li>Your payment attempt has been cancelled</li>
+</ul>
+
+<p><strong>Next steps:</strong></p>
+<ol>
+<li><strong>Please retry your payment</strong> by visiting your <a href="${
+              config.urls.web
+            }/my-account/billing">account billing page</a></li>
+<li>Consider using a credit card directly instead of PayPal for more reliable processing</li>
+<li>If you continue to experience issues, please contact our support team</li>
+</ol>
+
+<p><strong>Why this happened:</strong></p>
+<p>This issue is caused by PayPal's infrastructure problems, not your account or payment method. PayPal has had <a href="https://forwardemail.net/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises">documented API issues for over 11 years</a> that affect payment processing reliability.</p>
+
+<p>We apologize for any inconvenience. This is entirely due to PayPal's technical limitations.</p>
+
+<p>Best regards,<br>Forward Email Team</p>
+            `
+          }
+        });
+      } catch (err) {
+        ctx.logger.error(
+          'Failed to send user notification for CHECKOUT.PAYMENT-APPROVAL.REVERSED',
+          err
+        );
+      }
+
+      // Send detailed notification to team
+      try {
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.email.message.from,
+            cc: user.email,
+            subject: `PayPal Payment Approval Reversed - ${user.email} - Order ${body.resource.id}`
+          },
+          locals: {
+            message: `
+<h3>PayPal Payment Approval Reversed - Payment Deleted</h3>
+
+<p><strong>User Details:</strong></p>
+<ul>
+<li>Email: ${user.email}</li>
+<li>User ID: ${user.id}</li>
+<li>Plan: ${user.plan}</li>
+</ul>
+
+<p><strong>PayPal Details:</strong></p>
+<ul>
+<li>Order ID: ${body.resource.id}</li>
+<li>Payer Email: ${body?.resource?.payer?.email_address || 'N/A'}</li>
+<li>Payer ID: ${body?.resource?.payer?.payer_id || 'N/A'}</li>
+<li>Invoice ID: ${body?.resource?.purchase_units?.[0]?.invoice_id || 'N/A'}</li>
+</ul>
+
+<p><strong>Actions Taken:</strong></p>
+<ul>
+<li>✅ Payment record deleted from database</li>
+<li>✅ Attempted to cancel order on PayPal side</li>
+<li>✅ User notified to retry payment</li>
+</ul>
+
+<p><strong>Root Cause:</strong></p>
+<p>This is another example of PayPal's systematic infrastructure failures documented in our <a href="https://forwardemail.net/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises">PayPal API disaster blog post</a>.</p>
+
+<p><strong>Recommended Action:</strong></p>
+<p>Monitor if this user successfully retries with a different payment method. Consider reaching out proactively if they don't retry within 24 hours.</p>
+            `
+          }
+        });
+      } catch (err) {
+        ctx.logger.error(
+          'Failed to send team notification for CHECKOUT.PAYMENT-APPROVAL.REVERSED',
+          err
+        );
       }
 
       break;

@@ -26,6 +26,7 @@ const logger = require('#helpers/logger');
 const refundHelper = require('#helpers/refund');
 const { Aliases, Domains, Payments } = require('#models');
 const { paypalAgent } = require('#helpers/paypal');
+const retryPayPalRequest = require('#helpers/retry-paypal-request');
 
 const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
   config.payments;
@@ -990,31 +991,53 @@ async function retrieveDomainBilling(ctx) {
         transactionId = body.purchase_units[0].payments.captures[0].id;
 
       // capture the user's payment (towards the end in case something else went wrong)
+      // Use retry logic for PayPal capture operations due to infrastructure delays
       try {
-        const agent1 = await paypalAgent();
-        const response = await agent1.post(
-          `/v2/checkout/orders/${body.id}/capture`
+        await retryPayPalRequest(
+          async () => {
+            const agent1 = await paypalAgent();
+            const response = await agent1.post(
+              `/v2/checkout/orders/${body.id}/capture`
+            );
+            // parse the transaction id
+            if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
+              transactionId =
+                response.body.purchase_units[0].payments.captures[0].id;
+          },
+          {
+            retries: 3,
+            additionalStatusCodes: [404], // PayPal infrastructure delays cause 404s
+            calculateDelay: (count) => Math.round(1000 * 2 ** count) // 2s, 4s, 8s
+          }
         );
-        // parse the transaction id
-        if (response.body?.purchase_units?.[0]?.payments?.captures?.[0]?.id)
-          transactionId =
-            response.body.purchase_units[0].payments.captures[0].id;
       } catch (err) {
-        ctx.logger.warn(err);
+        ctx.logger.warn(err, {
+          paypal_order_id: body.id,
+          user_email: ctx.state.user.email,
+          retry_count: err.retryCount || 0,
+          max_retries: err.maxRetries || 0
+        });
+
+        // Only email admins for non-422 errors and include retry information
         if (!err.status || err.status !== 422) {
-          // email admins here
+          const isRetryExhausted = err.retryCount >= (err.maxRetries || 0);
           emailHelper({
             template: 'alert',
             message: {
               to: config.email.message.from,
-              subject: `Error while capturing PayPal order payment for ${ctx.state.user.email}`
+              subject: `${
+                isRetryExhausted ? 'CRITICAL: ' : ''
+              }Error while capturing PayPal order payment for ${
+                ctx.state.user.email
+              }${isRetryExhausted ? ' (Retries Exhausted)' : ''}`
             },
             locals: {
-              message: `<pre><code>${safeStringify(
-                parseErr(err),
-                null,
-                2
-              )}</code></pre>`
+              message: `<pre><code>PayPal Order ID: ${body.id}
+User Email: ${ctx.state.user.email}
+Retry Count: ${err.retryCount || 0}/${err.maxRetries || 0}
+Error Status: ${err.status || err.statusCode || 'Unknown'}
+
+${safeStringify(parseErr(err), null, 2)}</code></pre>`
             }
           })
             .then()

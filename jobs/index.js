@@ -27,6 +27,11 @@ let jobs = [
     path: path.join(__dirname, 'paypal', 'dup-tx-id.js')
   },
   {
+    name: 'paypal-automated-capture-retry',
+    interval: '1h',
+    timeout: '5m'
+  },
+  {
     name: 'stripe',
     interval: '1.5h',
     timeout: '1.5h',

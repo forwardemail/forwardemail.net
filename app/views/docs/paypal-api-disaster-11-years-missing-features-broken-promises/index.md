@@ -59,6 +59,22 @@
   * [Square](#square)
   * [The Industry Standard](#the-industry-standard)
   * [What Other Processors Provide vs PayPal](#what-other-processors-provide-vs-paypal)
+* [PayPal's Systematic Cover-Up: Silencing 6 Million Voices](#paypals-systematic-cover-up-silencing-6-million-voices)
+  * [The Great Erasure of 2024](#the-great-erasure-of-2024)
+  * [The Third-Party Rescue](#the-third-party-rescue)
+* [The 11-Year Capture Bug Disaster: $1,899 and Counting](#the-11-year-capture-bug-disaster-1899-and-counting)
+  * [Forward Email's $1,899 Loss](#forward-emails-1899-loss)
+  * [The 2013 Original Report: 11+ Years of Negligence](#the-2013-original-report-11-years-of-negligence)
+  * [The 2016 Admission: PayPal Breaks Their Own SDK](#the-2016-admission-paypal-breaks-their-own-sdk)
+  * [The 2024 Escalation: Still Broken](#the-2024-escalation-still-broken)
+  * [The Webhook Reliability Disaster](#the-webhook-reliability-disaster)
+  * [The Pattern of Systematic Negligence](#the-pattern-of-systematic-negligence)
+  * [The Undocumented Requirement](#the-undocumented-requirement)
+* [PayPal's Broader Pattern of Deception](#paypals-broader-pattern-of-deception)
+  * [The New York Department of Financial Services Action](#the-new-york-department-of-financial-services-action)
+  * [The Honey Lawsuit: Rewriting Affiliate Links](#the-honey-lawsuit-rewriting-affiliate-links)
+  * [The Cost of PayPal's Negligence](#the-cost-of-paypals-negligence)
+  * [The Documentation Lie](#the-documentation-lie)
 * [What This Means for Developers](#what-this-means-for-developers)
 
 
@@ -705,6 +721,198 @@ Authorization: Bearer access_token
 * ❌ No pagination support
 
 PayPal is the only major payment processor that forces developers to manually track subscription IDs in their own databases.
+
+
+## PayPal's Systematic Cover-Up: Silencing 6 Million Voices
+
+In a move that perfectly encapsulates PayPal's approach to handling criticism, they recently took their entire community forum offline, effectively silencing over 6 million members and erasing hundreds of thousands of posts documenting their failures.
+
+### The Great Erasure
+
+The original PayPal Community at `paypal-community.com` hosted **6,003,558 members** and contained hundreds of thousands of posts, bug reports, complaints, and discussions about PayPal's API failures. This represented over a decade of documented evidence of PayPal's systematic problems.
+
+On June 30, 2025, PayPal quietly took the entire forum offline. All `paypal-community.com` links now return 404 errors. This wasn't a migration or upgrade.
+
+### The Third-Party Rescue
+
+Fortunately, a third-party service at [ppl.lithium.com](https://ppl.lithium.com/) has preserved some of the content, allowing us to access the discussions that PayPal tried to hide. However, this third-party preservation is incomplete and could disappear at any time.
+
+This pattern of hiding evidence is not new for PayPal. They have a documented history of:
+
+* Removing critical bug reports from public view
+* Discontinuing developer tools without notice
+* Changing APIs without proper documentation
+* Silencing community discussions about their failures
+
+The forum takedown represents the most brazen attempt yet to hide their systematic failures from public scrutiny.
+
+
+## The 11-Year Capture Bug Disaster: $1,899 and Counting
+
+While PayPal was busy organizing feedback sessions and making promises, their core payment processing system has been fundamentally broken for over 11 years. The evidence is devastating.
+
+### Forward Email's $1,899 Loss
+
+In our production systems, we discovered 108 PayPal payments totaling **$1,899** that were lost due to PayPal's capture failures. These payments show a consistent pattern:
+
+* `CHECKOUT.ORDER.APPROVED` webhooks were received
+* PayPal's capture API returned 404 errors
+* Orders became inaccessible through PayPal's API
+
+It is impossible to determine if customers were charged since PayPal completely hides debug logs after 14 days and erases all data from the dashboard for order ID's that were not captured.
+
+This represents just one business. **The collective losses across thousands of merchants over 11+ years likely total millions of dollars.**
+
+**We're going to state it again: the collective losses across thousands of merchants over 11+ years likely total millions of dollars.**
+
+The only reason we discovered this is because we are incredibly meticulous and data driven.
+
+### The 2013 Original Report: 11+ Years of Negligence
+
+The earliest documented report of this exact issue appears on [Stack Overflow in November 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([archived](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
+
+> "Keep receiving 404 Error with Rest API when doing a capture"
+
+The error reported in 2013 is **identical** to what Forward Email experienced in 2024:
+
+```json
+{
+  "name": "INVALID_RESOURCE_ID",
+  "message": "The requested resource ID was not found",
+  "information_link": "https://developer.paypal.com/webapps/developer/docs/api/#INVALID_RESOURCE_ID",
+  "debug_id": "e56bae98dcc26"
+}
+```
+
+The community response in 2013 was telling:
+
+> "There is a reported problem at the moment with REST API. PayPal are working on it."
+
+**11+ years later, they're still "working on it."**
+
+### The 2016 Admission: PayPal Breaks Their Own SDK
+
+In 2016, PayPal's own GitHub repository documented [massive capture failures](https://github.com/paypal/PayPal-PHP-SDK/issues/660) affecting their official PHP SDK. The scale was staggering:
+
+> "Since 9/20/2016, all PayPal capture attempts have been failing with 'INVALID\_RESOURCE\_ID - Requested resource ID was not found.'. Nothing was changed between 9/19 and 9/20 to the API integration. **100% of the capture attempts since 9/20 have returned this error.**"
+
+One merchant reported:
+
+> "I've had **over 1,400 failed capture attempts in the last 24 hours**, all with the INVALID\_RESOURCE\_ID error response."
+
+PayPal's initial response was to blame the merchant and refer them to tech support. Only after massive pressure did they admit fault:
+
+> "I have an update from our Product Developers. They are noticing in the headers that are being sent over that the PayPal-Request-ID is being sent over with 42 characters, but **it seems a recent change took place that limits this ID to just 38 characters.**"
+
+This admission reveals PayPal's systematic negligence:
+
+1. **They made undocumented breaking changes**
+2. **They broke their own official SDK**
+3. **They blamed merchants first**
+4. **They only admitted fault under pressure**
+
+Even after "fixing" the issue, merchants reported:
+
+> "Upgraded the SDK to v1.7.4 and **the issue is still happening.**"
+
+### The 2024 Escalation: Still Broken
+
+Recent reports from the preserved PayPal Community show the problem has actually gotten worse. A [September 2024 discussion](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archived](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) documents the exact same issues:
+
+> "The issue has only started to appear around 2 weeks ago and does not affect all orders. **The much more common one seems to be 404s on capture.**"
+
+The merchant describes the same pattern Forward Email experienced:
+
+> "After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': '\<ID\>', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final\_capture': true, ...} **This is without any trace of a succesful capture on our side.**"
+
+### The Webhook Reliability Disaster
+
+Another [preserved community discussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) reveals PayPal's webhook system is fundamentally unreliable:
+
+> "Theoretically,It should have two event(CHECKOUT.ORDER.APPROVED and PAYMENT.CAPTURE.COMPLETED) from Webhook event.Actually,**those two events rarely is received immediately,PAYMENT.CAPTURE.COMPLETED cannot be received most of the time or would be received in a few hours.**"
+
+For subscription payments:
+
+> "**'PAYMENT.SALE.COMPLETED' was not received sometimes or until in a few hours.**"
+
+The merchant's questions reveal the depth of PayPal's reliability problems:
+
+1. **"Why does this happen?"** - PayPal's webhook system is fundamentally broken
+2. **"If order status is 'COMPLETED', may I take it that I have received the money?"** - Merchants can't trust PayPal's API responses
+3. **"Why 'Event Logs->Webhook Events' cannot find any logs?"** - Even PayPal's own logging system doesn't work
+
+### The Pattern of Systematic Negligence
+
+The evidence spans 11+ years and shows a clear pattern:
+
+* **2013**: "PayPal are working on it"
+* **2016**: PayPal admits breaking change, provides broken fix
+* **2024**: Same exact errors still occurring, affecting Forward Email and countless others
+
+This is not a bug - **this is systematic negligence.** PayPal has known about these critical payment processing failures for over a decade and has consistently:
+
+1. **Blamed merchants for PayPal's bugs**
+2. **Made undocumented breaking changes**
+3. **Provided inadequate fixes that don't work**
+4. **Ignored the financial impact on businesses**
+5. **Hidden evidence by taking down community forums**
+
+### The Undocumented Requirement
+
+Nowhere in PayPal's official documentation do they mention that merchants must implement retry logic for capture operations. Their documentation states merchants should "capture immediately after approval," but fails to mention their API randomly returns 404 errors requiring complex retry mechanisms.
+
+This forces every merchant to:
+
+* Implement exponential backoff retry logic
+* Handle inconsistent webhook delivery
+* Build complex state management systems
+* Monitor for failed captures manually
+
+**Every other payment processor provides reliable capture APIs that work the first time.**
+
+
+## PayPal's Broader Pattern of Deception
+
+The capture bug disaster is just one example of PayPal's systematic approach to deceiving customers and hiding their failures.
+
+### The New York Department of Financial Services Action
+
+In January 2025, the New York Department of Financial Services issued an [enforcement action against PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) for deceptive practices, demonstrating that PayPal's pattern of deception extends far beyond their APIs.
+
+This regulatory action shows PayPal's willingness to engage in deceptive practices across their entire business, not just their developer tools.
+
+### The Honey Lawsuit: Rewriting Affiliate Links
+
+PayPal's acquisition of Honey has resulted in [lawsuits alleging that Honey rewrites affiliate links](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), stealing commissions from content creators and influencers. This represents another form of systematic deception where PayPal profits by redirecting revenue that should go to others.
+
+The pattern is clear:
+
+1. **API failures**: Hide broken functionality, blame merchants
+2. **Community silencing**: Remove evidence of problems
+3. **Regulatory violations**: Engage in deceptive practices
+4. **Affiliate theft**: Steal commissions through technical manipulation
+
+### The Cost of PayPal's Negligence
+
+Forward Email's $1,899 loss represents just the tip of the iceberg. Consider the broader impact:
+
+* **Individual merchants**: Thousands losing hundreds to thousands of dollars each
+* **Enterprise customers**: Potentially millions in lost revenue
+* **Developer time**: Countless hours building workarounds for PayPal's broken APIs
+* **Customer trust**: Businesses losing customers due to PayPal's payment failures
+
+If one small email service lost nearly $2,000, and this issue has existed for 11+ years affecting thousands of merchants, the collective financial damage likely totals **hundreds of millions of dollars**.
+
+### The Documentation Lie
+
+PayPal's official documentation consistently fails to mention the critical limitations and bugs that merchants will encounter. For example:
+
+* **Capture API**: No mention that 404 errors are common and require retry logic
+* **Webhook reliability**: No mention that webhooks are often delayed by hours
+* **Subscription listing**: Documentation implies listing is possible when no endpoint exists
+* **Session timeouts**: No mention of aggressive 60-second timeouts
+
+This systematic omission of critical information forces merchants to discover PayPal's limitations through trial and error in production systems, often resulting in financial losses.
 
 
 ## What This Means for Developers

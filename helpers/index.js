@@ -50,6 +50,7 @@ const isSocketError = require('./is-socket-error');
 const SMTPError = require('./smtp-error');
 const RetryClient = require('./retry-client');
 const retryRequest = require('./retry-request');
+const retryPayPalRequest = require('./retry-paypal-request');
 const getBounceInfo = require('./get-bounce-info');
 const getLogsCsv = require('./get-logs-csv');
 const imap = require('./imap');
@@ -291,5 +292,6 @@ module.exports = {
   abusePreventionByUserId,
   xmlHelpers,
   setupAuthSession,
-  checkDiskSpace
+  checkDiskSpace,
+  retryPayPalRequest
 };
