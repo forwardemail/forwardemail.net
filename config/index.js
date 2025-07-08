@@ -1532,7 +1532,28 @@ const config = {
     're', // La Réunion
     'tf', // TAAF
     'wf', // Wallis-et-Futuna
-    'yt' // Mayotte
+    'yt', // Mayotte
+
+    // europe specific countries
+    'ax', // Åland Islands
+    'bg', // Bulgaria
+    'fo', // Faroe Islands
+    'gi', // Gibraltar
+    'gr', // Greece
+    'hr', // Croatia
+    'hu', // Hungary
+    'lt', // Lithuania
+    'lu', // Luxembourg
+    'mc', // Monaco
+    // spammy and not supported
+    // 'cz', // Czech Republic
+    // 'ru', // Russian Federation
+    // 'ua', // Ukraine
+    'mk', // North Macedonia
+    'mt', // Malta
+    'ro', // Romania
+    'sk', // Slovakia
+    'va' // Vatican (Holy See)
   ],
 
   validDurations: [

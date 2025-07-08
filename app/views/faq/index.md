@@ -3874,6 +3874,28 @@ As of March 18, 2025 we have also added these French overseas territories to thi
   <li class="list-inline-item"><code class="notranslate">yt</code></li>
 </ul>
 
+As of July 8, 2025 we have added these Europe-specific countries:
+
+<ul class="list-inline">
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
+</ul>
+
+We specifically did not include `cz`, `ru`, and `ua` due to high spam activity.
+
 ### What is your allowlist criteria
 
 We have a static list of [domain name extensions allowlisted by default](#what-domain-name-extensions-are-allowlisted-by-default) – and we also maintain a dynamic, cached, rolling allowlist based off the following strict criteria:
