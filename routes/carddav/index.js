@@ -15,6 +15,8 @@ const config = require('#config');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const xmlHelpers = require('#helpers/carddav-xml');
 
+const { encodeXMLEntities } = xmlHelpers;
+
 // TODO: PROPPATCH
 
 function vcf(id) {
@@ -393,7 +395,10 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
           propstat: [
             {
               props: [
-                { name: 'd:displayname', value: addressBook.name },
+                {
+                  name: 'd:displayname',
+                  value: encodeXMLEntities(addressBook.name)
+                },
                 {
                   name: 'd:resourcetype',
                   value: '<d:collection/><card:addressbook/>'
@@ -401,7 +406,7 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
                 { name: 'd:sync-token', value: addressBook.synctoken },
                 {
                   name: 'card:addressbook-description',
-                  value: addressBook.description || ''
+                  value: encodeXMLEntities(addressBook.description || '')
                 },
                 {
                   name: 'card:supported-address-data',
@@ -604,7 +609,10 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
           propstat: [
             {
               props: [
-                { name: 'd:displayname', value: addressBook.name },
+                {
+                  name: 'd:displayname',
+                  value: encodeXMLEntities(addressBook.name)
+                },
                 {
                   name: 'd:resourcetype',
                   value: '<d:collection/><card:addressbook/>'
@@ -612,7 +620,7 @@ davRouter.all('/:user/addressbooks', async (ctx) => {
                 { name: 'd:sync-token', value: addressBook.synctoken },
                 {
                   name: 'card:addressbook-description',
-                  value: addressBook.description || ''
+                  value: encodeXMLEntities(addressBook.description || '')
                 }
               ],
               status: '200 OK'
@@ -905,18 +913,25 @@ async function propFindPrincipal(ctx) {
         propstat: [
           {
             props: [
-              { name: 'd:displayname', value: ctx.state.session.user.username },
+              {
+                name: 'd:displayname',
+                value: encodeXMLEntities(ctx.state.session.user.username)
+              },
               {
                 name: 'd:resourcetype',
                 value: '<d:collection/><d:principal/>'
               },
               {
                 name: 'd:current-user-principal',
-                value: `<d:href>/dav/${ctx.state.session.user.username}/</d:href>`
+                value: `<d:href>/dav/${encodeXMLEntities(
+                  ctx.state.session.user.username
+                )}/</d:href>`
               },
               {
                 name: 'card:addressbook-home-set',
-                value: `<d:href>/dav/${ctx.state.session.user.username}/addressbooks/</d:href>`
+                value: `<d:href>/dav/${encodeXMLEntities(
+                  ctx.state.session.user.username
+                )}/addressbooks/</d:href>`
               }
             ],
             status: '200 OK'

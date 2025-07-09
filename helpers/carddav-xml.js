@@ -10,6 +10,24 @@ const { parseStringPromise, processors } = require('xml2js');
 const xmlbuilder = require('xmlbuilder');
 
 /**
+ * Encode special characters for XML content to prevent parsing errors
+ * @param {string} str - String to encode
+ * @returns {string} - XML-safe encoded string
+ */
+function encodeXMLEntities(str) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  return str
+    .replace(/&/g, '&amp;') // Must be first to avoid double-encoding
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
  * Parse XML string into a JavaScript object with security protections
  * @param {string} xmlString - XML string to parse
  * @returns {Promise<Object>} - Parsed XML as JavaScript object
@@ -326,7 +344,7 @@ function getPropfindContactXML(contact, props) {
       case 'address-data': {
         propstat.props.push({
           name: 'card:address-data',
-          value: contact.content
+          value: encodeXMLEntities(contact.content)
         });
         break;
       }
@@ -379,7 +397,7 @@ function getAddressbookQueryXML(contacts, props) {
           const vcardContent = contact.vcard || contact.content;
           propstat.props.push({
             name: 'card:address-data',
-            value: vcardContent
+            value: encodeXMLEntities(vcardContent)
           });
           break;
         }
@@ -453,7 +471,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
       case 'displayname': {
         propElements.push({
           name: 'd:displayname',
-          value: addressBook.name
+          value: encodeXMLEntities(addressBook.name)
         });
         break;
       }
@@ -461,7 +479,7 @@ function getAddressbookPropfindXML(addressBook, props, href) {
       case 'addressbook-description': {
         propElements.push({
           name: 'card:addressbook-description',
-          value: addressBook.description || ''
+          value: encodeXMLEntities(addressBook.description || '')
         });
         break;
       }
@@ -581,7 +599,7 @@ function getSyncCollectionXML(addressBook, changes, props) {
           case 'address-data': {
             propstat.props.push({
               name: 'card:address-data',
-              value: change.vcard
+              value: encodeXMLEntities(change.vcard)
             });
             break;
           }
@@ -719,5 +737,8 @@ module.exports = {
   extractHrefs,
   validateFilter,
   getFilterErrorXML,
-  getAddressbookPropfindXML
+  getAddressbookPropfindXML,
+
+  // Entity encoding function
+  encodeXMLEntities
 };
