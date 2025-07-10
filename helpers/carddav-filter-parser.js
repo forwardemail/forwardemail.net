@@ -7,6 +7,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const logger = require('#helpers/logger');
 const _ = require('#helpers/lodash');
 
 class CardDAVFilterParser {
@@ -131,7 +132,7 @@ class CardDAVFilterParser {
 
     // Validate property name against whitelist
     if (!this.allowedProperties.has(propertyName)) {
-      console.warn(
+      logger.warn(
         `Filter parsing security violation: Invalid or disallowed property name: ${propertyName}`
       );
       return {};

@@ -60,7 +60,7 @@
   * [The Industry Standard](#the-industry-standard)
   * [What Other Processors Provide vs PayPal](#what-other-processors-provide-vs-paypal)
 * [PayPal's Systematic Cover-Up: Silencing 6 Million Voices](#paypals-systematic-cover-up-silencing-6-million-voices)
-  * [The Great Erasure of 2024](#the-great-erasure-of-2024)
+  * [The Great Erasure](#the-great-erasure)
   * [The Third-Party Rescue](#the-third-party-rescue)
 * [The 11-Year Capture Bug Disaster: $1,899 and Counting](#the-11-year-capture-bug-disaster-1899-and-counting)
   * [Forward Email's $1,899 Loss](#forward-emails-1899-loss)
@@ -823,7 +823,7 @@ Recent reports from the preserved PayPal Community show the problem has actually
 
 The merchant describes the same pattern Forward Email experienced:
 
-> "After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': '\<ID\>', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final\_capture': true, ...} **This is without any trace of a succesful capture on our side.**"
+> "After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final\_capture': true, ...} **This is without any trace of a succesful capture on our side.**"
 
 ### The Webhook Reliability Disaster
 

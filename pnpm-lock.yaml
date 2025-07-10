@@ -265,8 +265,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(axe@13.0.0)
       caldav-adapter:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
@@ -6133,8 +6133,8 @@ packages:
     resolution: {integrity: sha512-kpqOvwXnjjN44D89K5ccQC+RUrsy7jB/XLlRrx0D7/2HNcTPqzsb6XgYoErwko6QsV184CA2YgS1fxDiiDZMWA==}
     engines: {node: '>=8'}
 
-  caldav-adapter@8.2.6:
-    resolution: {integrity: sha512-LqT9kFYPpvDHAn5bcq1pq6bFsF5x4RpJBg+nHmRa1jThTxhklyBvmbzDXoBSoFOevDTNv50ZxRmvwwEILLcn6Q==}
+  caldav-adapter@8.2.7:
+    resolution: {integrity: sha512-Ln5qrs3/Yyn2M3qCwJB+tlGZ378x+ML95AJ8ZaJtcND0al87RgjNjKplzPB1UFTEpUNTcT7+dFpUyYj0KUJD5Q==}
     engines: {node: '>=18'}
 
   call-bind-apply-helpers@1.0.2:
@@ -7781,8 +7781,8 @@ packages:
   ekko-lightbox@5.3.0:
     resolution: {integrity: sha512-mbacwySuVD3Ad6F2hTkjSTvJt59bcVv2l/TmBerp4xZnLak8tPtA4AScUn4DL42c1ksTiAO6sGhJZ52P/1Qgew==}
 
-  electron-to-chromium@1.5.181:
-    resolution: {integrity: sha512-+ISMj8OIQ+0qEeDj14Rt8WwcTOiqHyAB+5bnK1K7xNNLjBJ4hRCQfUkw8RWtcLbfBzDwc15ZnKH0c7SNOfwiyA==}
+  electron-to-chromium@1.5.182:
+    resolution: {integrity: sha512-Lv65Btwv9W4J9pyODI6EWpdnhfvrve/us5h1WspW8B2Fb0366REPtY3hX7ounk1CkV/TBjWCEvCBBbYbmV0qCA==}
 
   elkjs@0.9.3:
     resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
@@ -24932,14 +24932,14 @@ snapshots:
   browserslist@4.25.0:
     dependencies:
       caniuse-lite: 1.0.30001727
-      electron-to-chromium: 1.5.181
+      electron-to-chromium: 1.5.182
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.0)
 
   browserslist@4.25.1:
     dependencies:
       caniuse-lite: 1.0.30001727
-      electron-to-chromium: 1.5.181
+      electron-to-chromium: 1.5.182
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
@@ -25219,7 +25219,7 @@ snapshots:
       package-hash: 4.0.0
       write-file-atomic: 3.0.3
 
-  caldav-adapter@8.2.6:
+  caldav-adapter@8.2.7:
     dependencies:
       '@xmldom/xmldom': 0.8.10
       basic-auth: 2.0.1
@@ -27065,7 +27065,7 @@ snapshots:
 
   ekko-lightbox@5.3.0: {}
 
-  electron-to-chromium@1.5.181: {}
+  electron-to-chromium@1.5.182: {}
 
   elkjs@0.9.3: {}
 
