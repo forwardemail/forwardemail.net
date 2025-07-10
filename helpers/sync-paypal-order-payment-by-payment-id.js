@@ -8,7 +8,6 @@ const ms = require('ms');
 
 const logger = require('./logger');
 const { paypalAgent } = require('./paypal');
-const { paypalAgentLegacy } = require('./paypal-legacy');
 const _ = require('#helpers/lodash');
 const Payments = require('#models/payments');
 
@@ -20,9 +19,13 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
 
   if (!payment) throw new Error('Payment does not exist');
 
-  const agent = payment.is_legacy_paypal
-    ? await paypalAgentLegacy()
-    : await paypalAgent();
+  // Early return for deprecated legacy PayPal agent
+  if (payment.is_legacy_paypal) {
+    logger.debug('Skipping legacy PayPal agent usage - deprecated');
+    return;
+  }
+
+  const agent = await paypalAgent();
 
   //
   // if the payment was missing its transaction ID then we can
@@ -91,9 +94,15 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
       });
     } else if (capture.status === 'PARTIALLY_REFUNDED') {
       // lookup the refund and parse the amount refunded
-      const agent = payment.is_legacy_paypal
-        ? await paypalAgentLegacy()
-        : await paypalAgent();
+      // Early return for deprecated legacy PayPal agent
+      if (payment.is_legacy_paypal) {
+        logger.debug(
+          'Skipping legacy PayPal agent usage for refund lookup - deprecated'
+        );
+        return;
+      }
+
+      const agent = await paypalAgent();
       const { body: refund } = await agent.get(
         `/v2/payments/refunds/${capture.id}`
       );

@@ -6,7 +6,7 @@
 const Stripe = require('stripe');
 
 const { paypalAgent } = require('./paypal');
-const { paypalAgentLegacy } = require('./paypal-legacy');
+const logger = require('#helpers/logger');
 const env = require('#config/env');
 const { Payments } = require('#models');
 
@@ -35,9 +35,13 @@ async function refund(id) {
   // - paypal_transaction_id
   //
   if (payment.paypal_transaction_id) {
-    const agent = payment.is_legacy_paypal
-      ? await paypalAgentLegacy()
-      : await paypalAgent();
+    // Early return for deprecated legacy PayPal agent
+    if (payment.is_legacy_paypal) {
+      logger.debug('Skipping legacy PayPal agent usage - deprecated');
+      throw new Error('Legacy PayPal refunds are no longer supported');
+    }
+
+    const agent = await paypalAgent();
     // <https://developer.paypal.com/docs/api/payments/v2/#captures_refund>
     await agent.post(
       `/v2/payments/captures/${payment.paypal_transaction_id}/refund`

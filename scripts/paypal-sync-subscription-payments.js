@@ -28,7 +28,6 @@ const config = require('#config');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
 const { paypalAgent } = require('#helpers/paypal');
-const { paypalAgentLegacy } = require('#helpers/paypal-legacy');
 const getAllPayPalSubscriptionTransactions = require('#helpers/get-all-paypal-subscription-transactions');
 const ThresholdError = require('#helpers/threshold-error');
 const setupMongoose = require('#helpers/setup-mongoose');
@@ -63,6 +62,12 @@ async function syncSubscriptionPayments(
   agentType,
   errorEmails
 ) {
+  // Early return for deprecated legacy PayPal agent
+  if (agentType === 'legacy') {
+    logger.debug('Skipping legacy PayPal agent usage - deprecated');
+    return;
+  }
+
   let hasError = false;
   console.log(`Syncing subscription ${subscriptionId} with ${agentType} agent`);
 
@@ -376,22 +381,7 @@ async function syncAllSubscriptions() {
 
     // Sync legacy subscriptions
     if (LEGACY_PAYPAL_SUBSCRIPTION_IDS.length > 0) {
-      console.log(
-        `Syncing ${LEGACY_PAYPAL_SUBSCRIPTION_IDS.length} legacy subscriptions...`
-      );
-      const legacyAgent = await paypalAgentLegacy();
-
-      await pMapSeries(
-        LEGACY_PAYPAL_SUBSCRIPTION_IDS,
-        async (subscriptionId) => {
-          await syncSubscriptionPayments(
-            subscriptionId,
-            legacyAgent,
-            'legacy',
-            errorEmails
-          );
-        }
-      );
+      logger.debug('Skipping legacy PayPal subscription sync - deprecated');
     } else {
       console.log('No legacy subscription IDs to sync');
     }

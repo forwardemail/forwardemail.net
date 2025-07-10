@@ -22,7 +22,7 @@ const mongoose = require('mongoose');
 const Payments = require('#models/payments');
 const Users = require('#models/users');
 const { paypalAgent } = require('#helpers/paypal');
-const { paypalAgentLegacy } = require('#helpers/paypal-legacy');
+const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const _ = require('#helpers/lodash');
 
@@ -43,6 +43,12 @@ const FIVE_SECONDS = ms('5s');
  * @returns {Object|null} - Transaction data or null if not found
  */
 async function lookupPayPalOrder(payment, agent, agentType) {
+  // Early return for deprecated legacy PayPal agent
+  if (agentType === 'legacy') {
+    logger.debug('Skipping legacy PayPal agent usage - deprecated');
+    return null;
+  }
+
   try {
     console.log(
       `Looking up PayPal order ${payment.paypal_order_id} for payment ${payment._id} using ${agentType} agent`
@@ -162,10 +168,14 @@ async function syncPaymentTransaction(payment) {
     console.log(`Created: ${payment.created_at}`);
 
     // Determine which agent to use
-    const agent = payment.is_legacy_paypal
-      ? await paypalAgentLegacy()
-      : await paypalAgent();
-    const agentType = payment.is_legacy_paypal ? 'legacy' : 'new';
+    // Early return for deprecated legacy PayPal agent
+    if (payment.is_legacy_paypal) {
+      logger.debug('Skipping legacy PayPal agent usage - deprecated');
+      return;
+    }
+
+    const agent = await paypalAgent();
+    const agentType = 'new';
 
     // Look up the PayPal order
     const transactionData = await lookupPayPalOrder(payment, agent, agentType);

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+/* eslint-disable no-unreachable */
+
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/env');
 
@@ -66,6 +68,10 @@ async function checkPaymentWithAgent(transactionId, agent, agentType) {
 async function validatePayments() {
   try {
     console.log('Starting PayPal payment validation...');
+
+    // Early return for deprecated legacy PayPal agent
+    logger.debug('Legacy PayPal payment validation is deprecated - skipping');
+    return;
 
     // Get all payments that have PayPal transaction IDs
     const payments = await Payments.find({
@@ -155,6 +161,12 @@ async function validatePayments() {
 }
 
 async function cancelLegacySubscriptions() {
+  // Early return for deprecated legacy PayPal agent
+  logger.debug(
+    'Legacy PayPal subscription cancellation is deprecated - skipping'
+  );
+  return;
+
   if (LEGACY_PAYPAL_SUBSCRIPTION_IDS.length === 0) {
     console.log('No legacy PayPal subscription IDs to cancel');
     return;
