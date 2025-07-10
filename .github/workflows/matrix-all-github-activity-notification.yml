@@ -59,8 +59,8 @@ on:
   #  types: [created, edited, deleted]
 
   # Branch/Tag creation and deletion
-  create:
-  delete:
+  #create:
+  #delete:
 
   # Deployment
   deployment:
