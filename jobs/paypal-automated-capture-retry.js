@@ -14,12 +14,16 @@ require('#config/env');
 const Graceful = require('@ladjs/graceful');
 const Mongoose = require('@ladjs/mongoose');
 const dayjs = require('dayjs-with-plugins');
+const parseErr = require('parse-err');
+const safeStringify = require('fast-safe-stringify');
 
 const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const emailHelper = require('#helpers/email');
 const retryPayPalRequest = require('#helpers/retry-paypal-request');
 const config = require('#config');
+const { Users, Payments } = require('#models');
+const { paypalAgent } = require('#helpers/paypal');
 
 const graceful = new Graceful({
   mongooses: [Mongoose],
@@ -30,9 +34,6 @@ graceful.listen();
 
 (async () => {
   await setupMongoose(logger);
-
-  const { Users, Payments } = require('#models');
-  const paypalAgent = require('#helpers/paypal-agent');
 
   try {
     // Find payments that haven't been captured yet
@@ -56,26 +57,24 @@ graceful.listen();
           created_at: payment.created_at
         });
 
+        const agent = await paypalAgent();
+
         // First attempt to capture the payment one more time
         let captureSuccessful = false;
 
         try {
           const captureResult = await retryPayPalRequest(
-            () =>
-              paypalAgent.post(
-                `/v2/checkout/orders/${payment.paypal_order_id}/capture`,
-                {
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'PayPal-Request-Id': `capture-retry-${
-                      payment.paypal_order_id
-                    }-${Date.now()}`
-                  }
-                }
-              ),
+            async () => {
+              logger.log('sending request to capture');
+              const response = await agent.post(
+                `/v2/checkout/orders/${payment.paypal_order_id}/capture`
+              );
+              logger.log('response', response);
+              return response;
+            },
             {
               retries: 3,
-              additionalStatusCodes: [404, 422] // Retry on 404 and 422 errors
+              additionalStatusCodes: [404]
             }
           );
 
@@ -83,7 +82,6 @@ graceful.listen();
             // Success! Update the payment record
             payment.paypal_transaction_id =
               captureResult.body.purchase_units[0].payments.captures[0].id;
-            payment.paypal_captured_at = new Date();
             await payment.save();
 
             captureSuccessful = true;
@@ -129,15 +127,31 @@ graceful.listen();
             continue; // Move to next payment
           }
         } catch (captureErr) {
-          logger.warn('Final capture attempt failed for expired payment', {
-            payment_id: payment._id,
-            paypal_order_id: payment.paypal_order_id,
-            error: captureErr.message
-          });
+          if (
+            captureErr?.status === 422 ||
+            captureErr?.response?.status === 422
+          ) {
+            logger.log('Order already captured');
+            const { body } = await agent.get(
+              `/v2/checkout/orders/${payment.paypal_order_id}`
+            );
+            if (body?.purchase_units?.[0]?.payments?.captures?.[0]?.id) {
+              captureSuccessful = true;
+              payment.paypal_transaction_id =
+                body.purchase_units[0].payments.captures[0].id;
+              await payment.save();
+              logger.log(
+                'Updated payment with transaction id',
+                payment.paypal_transaction_id
+              );
+            }
+          } else {
+            throw captureErr;
+          }
         }
 
         // If we reach here, capture failed - delete payment and cancel order
-        // But if and only if the payment was more than 3 hours old
+        // But if and only if the payment was more than 3 hours ago (max time)
         const paymentCreatedAt = new Date(payment.created_at).getTime();
         const threeHoursAgo = dayjs().subtract(3, 'hours').toDate().getTime();
 
@@ -154,44 +168,26 @@ graceful.listen();
           );
 
           // Attempt to cancel the order on PayPal's side
-          try {
-            await paypalAgent.post(
-              `/v2/checkout/orders/${payment.paypal_order_id}/cancel`,
-              {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'PayPal-Request-Id': `cancel-expired-${
-                    payment.paypal_order_id
-                  }-${Date.now()}`
-                }
-              }
-            );
+          const agent = await paypalAgent();
+          await agent.post(
+            `/v2/checkout/orders/${payment.paypal_order_id}/cancel`
+          );
 
-            logger.info('Successfully cancelled expired PayPal order', {
-              paypal_order_id: payment.paypal_order_id
-            });
-          } catch (cancelErr) {
-            logger.warn(
-              'Failed to cancel expired PayPal order (may already be cancelled)',
-              {
-                paypal_order_id: payment.paypal_order_id,
-                error: cancelErr.message
-              }
-            );
-          }
+          logger.info('Successfully cancelled expired PayPal order', {
+            paypal_order_id: payment.paypal_order_id
+          });
 
           // Send notification to user about the failed payment
-          try {
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: payment.user.email,
-                cc: config.email.message.from,
-                subject: 'Payment Processing Failed - Please Retry Your Payment'
-              },
-              locals: {
-                user: payment.user.toObject(),
-                message: `
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: payment.user.email,
+              cc: config.email.message.from,
+              subject: 'Payment Processing Failed - Please Retry Your Payment'
+            },
+            locals: {
+              user: payment.user.toObject(),
+              message: `
 <p>Hello ${payment.user[config.userFields.fullEmail]},</p>
 
 <p>We were unable to process your PayPal payment due to PayPal's infrastructure issues.</p>
@@ -207,8 +203,8 @@ graceful.listen();
 <p><strong>Next steps:</strong></p>
 <ol>
 <li><strong>Please retry your payment</strong> by visiting your <a href="${
-                  config.urls.web
-                }/my-account/billing">account billing page</a></li>
+                config.urls.web
+              }/my-account/billing">account billing page</a></li>
 <li>Consider using a credit card directly instead of PayPal for more reliable processing</li>
 <li>If you continue to experience issues, please contact our support team</li>
 </ol>
@@ -220,32 +216,21 @@ graceful.listen();
 
 <p>Best regards,<br>Forward Email Team</p>
                 `
-              }
-            });
-          } catch (emailErr) {
-            logger.error(
-              'Failed to send user notification for expired payment',
-              {
-                payment_id: payment._id,
-                user_email: payment.user.email,
-                error: emailErr.message
-              }
-            );
-          }
+            }
+          });
 
           // Send detailed notification to team
-          try {
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: config.email.message.from,
-                cc: payment.user.email,
-                subject: `PayPal Payment Failed & Deleted - ${
-                  payment.user.email
-                } - $${payment.amount / 100}`
-              },
-              locals: {
-                message: `
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: config.email.message.from,
+              cc: payment.user.email,
+              subject: `PayPal Payment Failed & Deleted - ${
+                payment.user.email
+              } - $${payment.amount / 100}`
+            },
+            locals: {
+              message: `
 <h3>PayPal Payment Failed - Payment Deleted</h3>
 
 <p><strong>User Details:</strong></p>
@@ -280,17 +265,8 @@ graceful.listen();
 <p><strong>Recommended Action:</strong></p>
 <p>Monitor if this user successfully retries with a different payment method. Consider reaching out proactively if they don't retry within 24 hours.</p>
                 `
-              }
-            });
-          } catch (emailErr) {
-            logger.error(
-              'Failed to send team notification for expired payment',
-              {
-                payment_id: payment._id,
-                error: emailErr.message
-              }
-            );
-          }
+            }
+          });
 
           // Delete the payment record
           await Payments.findByIdAndRemove(payment._id);
@@ -309,6 +285,7 @@ graceful.listen();
           });
         }
       } catch (err) {
+        logger.error(err);
         logger.error('Error processing expired PayPal payment', {
           payment_id: payment._id,
           paypal_order_id: payment.paypal_order_id,
@@ -319,8 +296,22 @@ graceful.listen();
 
     logger.info('Completed processing expired PayPal payments');
   } catch (err) {
-    logger.error('Error in automated PayPal capture retry job', err);
-    throw err;
+    await logger.error(err);
+    // send an email to admins of the error
+    await emailHelper({
+      template: 'alert',
+      message: {
+        to: config.email.message.from,
+        subject: 'PayPal Automated Capture Retry Error'
+      },
+      locals: {
+        message: `<pre><code>${safeStringify(
+          parseErr(err),
+          null,
+          2
+        )}</code></pre>`
+      }
+    });
   }
 
   if (parentPort) parentPort.postMessage('done');

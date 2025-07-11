@@ -28,8 +28,13 @@ let jobs = [
   },
   {
     name: 'paypal-automated-capture-retry',
+    interval: '5m',
+    timeout: 0
+  },
+  {
+    name: 'check-paypal-abuse',
     interval: '1h',
-    timeout: '5m'
+    timeout: 0
   },
   {
     name: 'stripe',

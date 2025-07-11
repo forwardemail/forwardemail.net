@@ -588,6 +588,9 @@ importers:
       otplib:
         specifier: 12.0.1
         version: 12.0.1
+      out-of-character:
+        specifier: 2.0.1
+        version: 2.0.1
       p-event:
         specifier: 4.2.0
         version: 4.2.0
@@ -769,8 +772,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       superagent:
-        specifier: 8.1.2
-        version: 8.1.2
+        specifier: 10.2.2
+        version: 10.2.2
       sweetalert2:
         specifier: 8.19.1
         version: 8.19.1
@@ -1076,8 +1079,8 @@ importers:
         specifier: 5.3.2
         version: 5.3.2(stylelint@15.11.0(typescript@3.9.10))
       supertest:
-        specifier: 6.3.4
-        version: 6.3.4
+        specifier: 7.1.3
+        version: 7.1.3
       through2:
         specifier: 4.0.2
         version: 4.0.2
@@ -8861,6 +8864,10 @@ packages:
   formidable@2.1.5:
     resolution: {integrity: sha512-Oz5Hwvwak/DCaXVVUtPn4oLMLLy1CdclLKO1LFgU7XzDpVMUU5UjlSLpGMocyQNNk8F6IJW9M/YdooSn2MRI+Q==}
 
+  formidable@3.5.4:
+    resolution: {integrity: sha512-YikH+7CUTOtP44ZTnUhR7Ic2UASBPOqmaRkRKxRbywPTe5VxF7RRCck4af9wutiZ/QKM5nME9Bie2fFaPz5Gug==}
+    engines: {node: '>=14.0.0'}
+
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
@@ -13164,6 +13171,11 @@ packages:
   otplib@12.0.1:
     resolution: {integrity: sha512-xDGvUOQjop7RDgxTQ+o4pOol0/3xSZzawTiPKRrHnQWAy0WjhNs/5HdIDJCrqC4MBynmjXgULc6YfioaxZeFgg==}
 
+  out-of-character@2.0.1:
+    resolution: {integrity: sha512-RjczIhdnX1UDBdOMPzpiD0RPrHlEnhUXIN0Yb+vy3qedIRbvTcyKBJ1jlVsV7sZzfTqTaxr+ogFgCFvQycr6Rg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   outpipe@1.1.1:
     resolution: {integrity: sha512-BnNY/RwnDrkmQdUa9U+OfN/Y7AWmKuUPCCd+hbRclZnnANvYpO72zp/a6Q4n829hPbdqEac31XCcsvlEvb+rtA==}
 
@@ -16369,6 +16381,10 @@ packages:
     resolution: {integrity: sha512-CY8u7DtbvucKuquCmOFEKhr9Besln7n9uN8eFbwcoGYWXOMW07u2o8njWaiXt11ylS3qoGF55pILjRmPlbodyg==}
     engines: {node: '>=18'}
 
+  superagent@10.2.2:
+    resolution: {integrity: sha512-vWMq11OwWCC84pQaFPzF/VO3BrjkCeewuvJgt1jfV0499Z1QSAWN4EqfMM5WlFDDX9/oP8JjlDKpblrmEoyu4Q==}
+    engines: {node: '>=14.18.0'}
+
   superagent@7.1.6:
     resolution: {integrity: sha512-gZkVCQR1gy/oUXr+kxJMLDjla434KmSOKbx5iGD30Ql+AkJQ/YlPKECJy2nhqOsHLjGHzoDTXNSjhnvWhzKk7g==}
     engines: {node: '>=6.4.0 <13 || >=14'}
@@ -16383,10 +16399,9 @@ packages:
     resolution: {integrity: sha512-u1ZpIBCawJnO+0QePsEiOknOfCRq0yERxiAchT0i4li0WHNUJbf0evXXSXOcCAR4M8iMDoajXYmstm/qO81Isw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  supertest@6.3.4:
-    resolution: {integrity: sha512-erY3HFDG0dPnhw4U+udPfrzXa4xhSG+n4rxfRuZWCUvjFWwKl+OxWf/7zk50s84/fAAs7vf5QAb9uRa0cCykxw==}
-    engines: {node: '>=6.4.0'}
-    deprecated: Please upgrade to supertest v7.1.3+, see release notes at https://github.com/forwardemail/supertest/releases/tag/v7.1.3 - maintenance is supported by Forward Email @ https://forwardemail.net
+  supertest@7.1.3:
+    resolution: {integrity: sha512-ORY0gPa6ojmg/C74P/bDoS21WL6FMXq5I8mawkEz30/zkwdu0gOeqstFy316vHG6OKxqQ+IbGneRemHI8WraEw==}
+    engines: {node: '>=14.18.0'}
 
   supports-color@2.0.0:
     resolution: {integrity: sha512-KKNVtd6pCYgPIKU4cp2733HWYCpplQhddZLBUryaAHou723x+FRzQ5Df824Fj+IyyuiQTRoub4SnIFfIcrp70g==}
@@ -27157,12 +27172,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0)(webpack@5.100.0):
+  eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0):
     dependencies:
       array-find: 1.0.0
       debug: 2.6.9
       enhanced-resolve: 0.9.1
-      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0)
+      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0)
       find-root: 1.1.0
       has: 1.0.4
       interpret: 1.4.0
@@ -27174,11 +27189,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0)(webpack@5.100.0):
+  eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0):
     dependencies:
       debug: 3.2.7
       enhanced-resolve: 0.9.1
-      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0)
+      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0)
       find-root: 1.1.0
       hasown: 2.0.2
       interpret: 1.4.0
@@ -27191,25 +27206,25 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       eslint: 8.39.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-webpack: 0.13.10(eslint-plugin-import@2.26.0)(webpack@5.100.0)
+      eslint-import-resolver-webpack: 0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.12.2)(eslint@7.32.0):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@7.32.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 3.10.1(eslint@7.32.0)(typescript@3.9.10)
       eslint: 7.32.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.100.0)
+      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -27272,7 +27287,7 @@ snapshots:
       eslint: 8.39.0
       ignore: 5.3.2
 
-  eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0):
+  eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0):
     dependencies:
       array-includes: 3.1.9
       array.prototype.flat: 1.3.3
@@ -27280,7 +27295,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.39.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0)
       has: 1.0.4
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -27303,7 +27318,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 7.32.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.12.2)(eslint@7.32.0)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-webpack@0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@7.32.0)
       has: 1.0.4
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -28358,6 +28373,12 @@ snapshots:
       dezalgo: 1.0.4
       once: 1.4.0
       qs: 6.14.0
+
+  formidable@3.5.4:
+    dependencies:
+      '@paralleldrive/cuid2': 2.2.2
+      dezalgo: 1.0.4
+      once: 1.4.0
 
   fraction.js@4.3.7: {}
 
@@ -34052,6 +34073,11 @@ snapshots:
       '@otplib/preset-default': 12.0.1
       '@otplib/preset-v11': 12.0.1
 
+  out-of-character@2.0.1:
+    dependencies:
+      colorette: 2.0.20
+      glob: 7.2.3
+
   outpipe@1.1.1:
     dependencies:
       shell-quote: 1.8.3
@@ -38260,6 +38286,20 @@ snapshots:
       function-timeout: 1.0.2
       time-span: 5.1.0
 
+  superagent@10.2.2:
+    dependencies:
+      component-emitter: 1.3.1
+      cookiejar: 2.1.4
+      debug: 4.4.1(supports-color@5.5.0)
+      fast-safe-stringify: 2.1.1
+      form-data: 4.0.3
+      formidable: 3.5.4
+      methods: 1.1.2
+      mime: 2.6.0
+      qs: 6.14.0
+    transitivePeerDependencies:
+      - supports-color
+
   superagent@7.1.6:
     dependencies:
       component-emitter: 1.3.1
@@ -38298,10 +38338,10 @@ snapshots:
       serialize-error: 7.0.1
       strip-ansi: 7.1.0
 
-  supertest@6.3.4:
+  supertest@7.1.3:
     dependencies:
       methods: 1.1.2
-      superagent: 8.1.2
+      superagent: 10.2.2
     transitivePeerDependencies:
       - supports-color
 
@@ -40238,7 +40278,7 @@ snapshots:
       eslint-config-xo: 0.30.0(eslint@7.32.0)
       eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
-      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.100.0)
+      eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@7.32.0)
       eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.12.2)(eslint@7.32.0)
@@ -40287,10 +40327,10 @@ snapshots:
       eslint-config-prettier: 8.10.0(eslint@8.39.0)
       eslint-config-xo: 0.43.1(eslint@8.39.0)
       eslint-formatter-pretty: 4.1.0
-      eslint-import-resolver-webpack: 0.13.10(eslint-plugin-import@2.26.0)(webpack@5.100.0)
+      eslint-import-resolver-webpack: 0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0)
       eslint-plugin-ava: 13.2.0(eslint@8.39.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@8.39.0)
-      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10)(eslint@8.39.0)
+      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint-import-resolver-webpack@0.13.10(eslint-plugin-import@2.26.0(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0))(webpack@5.100.0))(eslint@8.39.0)
       eslint-plugin-n: 15.7.0(eslint@8.39.0)
       eslint-plugin-no-use-extend-native: 0.5.0
       eslint-plugin-prettier: 4.2.1(eslint-config-prettier@8.10.0(eslint@8.39.0))(eslint@8.39.0)(prettier@2.8.8)

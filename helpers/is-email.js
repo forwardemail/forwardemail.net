@@ -8,6 +8,8 @@ const punycode = require('node:punycode');
 const isSANB = require('is-string-and-not-blank');
 const { isEmail } = require('@forwardemail/validator');
 
+const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
+
 //
 // NOTE: this does not support local portion with quotes
 //
@@ -16,6 +18,10 @@ const { isEmail } = require('@forwardemail/validator');
 // <https://github.com/validatorjs/validator.js/issues/2504>
 module.exports = function (str) {
   if (!isSANB(str)) return false;
+
+  // Check for invisible Unicode characters as a security measure
+  if (detectInvisibleUnicode(str)) return false;
+
   return isEmail(punycode.toASCII(str), {
     allow_ip_domain: true,
     ignore_max_length: true,

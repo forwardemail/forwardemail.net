@@ -123,6 +123,14 @@ module.exports = {
     '<div>The following alias names were detected on <strong class="notranslate text-monospace">%s</span> to be listed in restricted alias names and already existed.  You may wish to manually remove them, edit the names, and/or notify the alias owner to change their alias name:</div><ul class="notranslate"><li>%s</li></ul>',
   INVALID_LOCAL_PART:
     '<span class="notranslate">%s</span> is not a valid UTF-8 local part for an alias name',
+  ALIAS_NAME_INVISIBLE_UNICODE:
+    'Alias name cannot contain invisible Unicode characters',
+  RECIPIENT_INVISIBLE_UNICODE:
+    'Recipient cannot contain invisible Unicode characters',
+  VERIFIED_RECIPIENT_INVISIBLE_UNICODE:
+    'Verified recipient cannot contain invisible Unicode characters',
+  PENDING_RECIPIENT_INVISIBLE_UNICODE:
+    'Pending recipient cannot contain invisible Unicode characters',
   RECIPIENT_MATCHES_EMAIL:
     '<p>You must edit the "Recipients" for these aliases to ensure they forward to a proper destination:</p><ul class="notranslate"><li>%s<li></ul><p><strong>IMPORTANT NOTE:</strong> You must ensure that you check the checkbox for "Active" once complete to re-enable the aliases on the Edit Alias screen.</p>',
   LINK_EXPIRED_OR_INVALID:

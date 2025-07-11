@@ -29,6 +29,7 @@ const createPassword = require('#helpers/create-password');
 const getKeyInfo = require('#helpers/get-key-info');
 const i18n = require('#helpers/i18n');
 const logger = require('#helpers/logger');
+const { detectInvisibleUnicode } = require('#helpers/detect-invisible-unicode');
 
 // <https://1loc.dev/string/check-if-a-string-consists-of-a-repeated-character-sequence/>
 const consistsRepeatedSubstring = (str) =>
@@ -234,7 +235,18 @@ const Aliases = new mongoose.Schema({
     required: true,
     lowercase: true,
     trim: true,
-    index: true
+    index: true,
+    validate: {
+      validator(value) {
+        if (detectInvisibleUnicode(value)) {
+          throw Boom.badRequest(
+            i18n.translateError('ALIAS_NAME_INVISIBLE_UNICODE', this.locale)
+          );
+        }
+
+        return true;
+      }
+    }
   },
   description: {
     type: String,
@@ -269,7 +281,20 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value)
+      validate: {
+        validator(value) {
+          if (detectInvisibleUnicode(value)) {
+            throw Boom.badRequest(
+              i18n.translateError(
+                'VERIFIED_RECIPIENT_INVISIBLE_UNICODE',
+                this.locale
+              )
+            );
+          }
+
+          return isEmail(value);
+        }
+      }
     }
   ],
   // this is an array of emails that have been sent a verification email
@@ -278,7 +303,20 @@ const Aliases = new mongoose.Schema({
       type: String,
       trim: true,
       lowercase: true,
-      validate: (value) => isEmail(value)
+      validate: {
+        validator(value) {
+          if (detectInvisibleUnicode(value)) {
+            throw Boom.badRequest(
+              i18n.translateError(
+                'PENDING_RECIPIENT_INVISIBLE_UNICODE',
+                this.locale
+              )
+            );
+          }
+
+          return isEmail(value);
+        }
+      }
     }
   ],
   recipients: [
@@ -288,11 +326,20 @@ const Aliases = new mongoose.Schema({
       trim: true,
       // must be IP or FQDN or email
       validate: {
-        validator: (value) =>
-          isIP(value) ||
-          isFQDN(value) ||
-          isEmail(value) ||
-          isURL(value, config.isURLOptions),
+        validator(value) {
+          if (detectInvisibleUnicode(value)) {
+            throw Boom.badRequest(
+              i18n.translateError('RECIPIENT_INVISIBLE_UNICODE', this.locale)
+            );
+          }
+
+          return (
+            isIP(value) ||
+            isFQDN(value) ||
+            isEmail(value) ||
+            isURL(value, config.isURLOptions)
+          );
+        },
         message:
           'Recipient must be a valid email address, fully-qualified domain name ("FQDN"), IP address, or webhook URL'
       }
