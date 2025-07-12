@@ -26,6 +26,7 @@ async function refund(id) {
       payment_intent: payment.stripe_payment_intent_id
     });
     payment.amount_refunded = payment.amount;
+    payment.currency_amount_refunded = payment.currency_amount;
     await payment.save();
     return payment.toObject();
   }

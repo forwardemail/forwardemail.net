@@ -1129,6 +1129,9 @@ Users.index(
   }
 );
 
+// Text search index for email field to enable efficient email searching
+Users.index({ email: 'text' });
+
 async function getBannedUserIdSet(client) {
   let bannedUserIds = [];
   bannedUserIds = await client.get('banned_user_ids');

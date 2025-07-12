@@ -1,0 +1,130 @@
+extends ../../layout
+
+block body
+  .container.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+        .card.border-themed
+          h4.card-header.bg-dark.text-white= payment.reference
+          .card-body
+            .row
+              .col-md-6
+                h5= t("Payment Details")
+                .table-responsive
+                  table.table.table-sm
+                    tbody
+                      tr
+                        th= t("Reference")
+                        td: code= payment.reference
+                      tr
+                        th= t("Amount")
+                        td= `$${(payment.amount / 100).toFixed(2)} ${payment.currency.toUpperCase()}`
+                      if payment.amount_refunded > 0
+                        tr
+                          th= t("Amount Refunded")
+                          td.text-danger= `$${(payment.amount_refunded / 100).toFixed(2)} ${payment.currency.toUpperCase()}`
+                      tr
+                        th= t("Method")
+                        td= titleize(humanize(payment.method))
+                      if payment.plan
+                        tr
+                          th= t("Plan")
+                          td= titleize(humanize(payment.plan))
+                      if payment.kind
+                        tr
+                          th= t("Type")
+                          td= titleize(humanize(payment.kind))
+                      if payment.duration
+                        tr
+                          th= t("Duration")
+                          td= durationFormatted
+                      tr
+                        th= t("Created")
+                        td.dayjs(
+                          data-time=new Date(payment.created_at).getTime()
+                        )= dayjs(payment.created_at).format("M/D/YY h:mm A")
+                      if payment.invoice_at
+                        tr
+                          th= t("Invoice Date")
+                          td.dayjs(
+                            data-time=new Date(payment.invoice_at).getTime()
+                          )= dayjs(payment.invoice_at).format("M/D/YY h:mm A")
+
+              .col-md-6
+                h5= t("User Details")
+                if payment.user
+                  .table-responsive
+                    table.table.table-sm
+                      tbody
+                        tr
+                          th= t("Email")
+                          td
+                            a(href=l(`/admin/users/${payment.user._id}`))= payment.user.email
+                        if payment.user.plan
+                          tr
+                            th= t("Current Plan")
+                            td= titleize(humanize(payment.user.plan))
+                        tr
+                          th= t("Actions")
+                          td
+                            a.btn.btn-secondary.btn-sm(
+                              href=l(`/admin/users?q=${encodeURIComponent(payment.user.email)}`)
+                            )= t("View User")
+
+                  h5.mt-4= t("Refund Actions")
+                  if payment.amount > payment.amount_refunded
+                    form.ajax-form.confirm-prompt(
+                      action=l(`/admin/payments/${payment._id}/refund`),
+                      method="POST"
+                    )
+                      .form-group
+                        button.btn.btn-warning.btn-block(type="submit")= t("Refund Payment")
+                  else
+                    p.text-muted= t("Payment has been fully refunded")
+                else
+                  p.text-muted= t("User information not available")
+
+                if payment.stripe_payment_intent_id || payment.paypal_transaction_id
+                  h5.mt-4= t("Payment Provider Details")
+                  .table-responsive
+                    table.table.table-sm
+                      tbody
+                        if payment.stripe_payment_intent_id
+                          tr
+                            th= t("Stripe Payment Intent")
+                            td: code= payment.stripe_payment_intent_id
+                        if payment.paypal_transaction_id
+                          tr
+                            th= t("PayPal Transaction ID")
+                            td: code= payment.paypal_transaction_id
+
+        if payment.user && userPayments && userPayments.length > 0
+          .card.mt-3
+            .card-header.bg-light
+              h5.mb-0= t("Payment History for %s", payment.user.email)
+            .card-body
+              .table-responsive
+                table.table.table-sm.table-hover
+                  thead
+                    tr
+                      th= t("Reference")
+                      th= t("Amount")
+                      th= t("Method")
+                      th= t("Plan")
+                      th= t("Date")
+                      th= t("Actions")
+                  tbody
+                    each userPayment in userPayments
+                      tr
+                        td: code= userPayment.reference
+                        td= `$${(userPayment.amount / 100).toFixed(2)} ${userPayment.currency.toUpperCase()}`
+                        td= titleize(humanize(userPayment.method))
+                        td= titleize(humanize(userPayment.plan))
+                        td.dayjs(
+                          data-time=new Date(userPayment.created_at).getTime()
+                        )= dayjs(userPayment.created_at).format("M/D/YY h:mm A")
+                        td
+                          a.btn.btn-outline-primary.btn-sm(
+                            href=l(`/admin/payments/${userPayment._id}`)
+                          )= t("View")
