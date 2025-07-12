@@ -38,7 +38,6 @@ block body
           include ../../_breadcrumbs
       .row
         .col-xs-12.col-sm-12.col-md-8.offset-md-2.col-lg-8.offset-lg-2.text-center
-          .alert.alert-warning= 'PayPal is temporarily <a class="alert-link" href="https://forwardemail.net/en/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises" target="_blank">disabled</a>'
           noscript
             .alert.alert-danger!= t("Please enable JavaScript for PayPal checkout option.")
           if bad_domain || (domain && domain.name && domain.plan === 'free' && (isRestricted || !isGood || isDisposable))
