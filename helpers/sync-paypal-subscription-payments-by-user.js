@@ -48,7 +48,8 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
     const subscriptionIds = await Payments.distinct(
       config.userFields.paypalSubscriptionID,
       {
-        user: customer._id
+        user: customer._id,
+        is_legacy_paypal: false
       }
     );
 
@@ -103,7 +104,8 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
             // try to find the payment
             const paymentCandidates = await Payments.find({
               user: customer._id,
-              [config.userFields.paypalSubscriptionID]: subscription.id
+              [config.userFields.paypalSubscriptionID]: subscription.id,
+              is_legacy_paypal: false
             });
 
             // then use it if its on the same day
