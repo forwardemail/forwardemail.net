@@ -81,7 +81,7 @@ graceful.listen();
           {
             is_global: false,
             plan: {
-              $in: ['enhanced_protection', 'team']
+              $in: ['enhanced_protection', 'team', 'enterprise']
             }
           }
         ]

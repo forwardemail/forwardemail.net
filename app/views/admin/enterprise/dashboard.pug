@@ -1,0 +1,70 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/open-startup.js"),
+    integrity=manifest("js/open-startup.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  .container-fluid.py-3
+    .row
+      .col
+        include ../../_breadcrumbs
+    // Enterprise Navigation
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            .d-flex.justify-content-between.align-items-center.flex-wrap
+              h5.mb-0
+                i.fa.fa-building.mr-2
+                = t("Enterprise Management")
+              .btn-group.mb-2
+                a.btn.btn-primary(href=l("/admin/enterprise/accounts"))
+                  i.fa.fa-users.mr-1
+                  = t("View All Accounts")
+
+    .row.mb-3
+      .col
+        .d-flex.flex-wrap.rounded.border.bg-white.bg-themed.text-center
+          .p-3.p-md-3.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h4.text-center= t("Enterprise Accounts")
+            .display-4.font-weight-bold= totalEnterprise.toLocaleString()
+          .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h4.text-center= t("New This Month")
+            .display-4.font-weight-bold= newEnterpriseThisMonth.toLocaleString()
+          .p-3.p-md-4.d-flex.flex-column.flex-grow-1.justify-content-center
+            h2.h4.text-center= t("Total Revenue")
+            .display-4.font-weight-bold= `$${(totalRevenue / 100).toLocaleString()}`
+
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            h2.h4.text-center.mb-0= t("Recent Enterprise Payments")
+            if recentPayments && recentPayments.length > 0
+              .table-responsive.mt-3
+                table.table.table-hover.table-sm
+                  thead
+                    tr
+                      th= t("Customer")
+                      th= t("Amount")
+                      th= t("Plan")
+                      th= t("Date")
+                  tbody
+                    each payment in recentPayments
+                      tr
+                        td
+                          if payment.user
+                            = payment.user.email
+                          else
+                            em.text-muted= t("Unknown User")
+                        td= `$${(payment.amount / 100).toFixed(2)}`
+                        td= payment.plan || "unknown"
+                        td= new Date(payment.created_at).toLocaleDateString()
+            else
+              .text-center.mt-3.text-muted
+                p= t("No recent enterprise payments found.")

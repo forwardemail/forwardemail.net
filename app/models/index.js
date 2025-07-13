@@ -6,6 +6,7 @@
 const Attachments = require('./attachments');
 const Aliases = require('./aliases');
 const Domains = require('./domains');
+const EnterpriseAccounts = require('./enterprise-accounts');
 const Inquiries = require('./inquiries');
 const Logs = require('./logs');
 const Payments = require('./payments');
@@ -29,6 +30,7 @@ module.exports = {
   Attachments,
   Aliases,
   Domains,
+  EnterpriseAccounts,
   Inquiries,
   Logs,
   Payments,

@@ -80,7 +80,7 @@ async function onDataSMTP(session, date, headers, body) {
 
   const domain = await Domains.findOne({
     id: session.user.domain_id,
-    plan: { $in: ['enhanced_protection', 'team'] }
+    plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
   })
     .populate(
       'members.user',

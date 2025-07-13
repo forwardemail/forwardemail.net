@@ -10,6 +10,7 @@ const calendars = require('./calendars');
 const contacts = require('./contacts');
 const domains = require('./domains');
 const enforcePaidPlan = require('./enforce-paid-plan');
+const enforceEnterprisePlan = require('./enforce-enterprise-plan');
 const folders = require('./folders');
 const inquiries = require('./inquiries');
 const log = require('./log');
@@ -35,6 +36,7 @@ module.exports = {
   contacts,
   domains,
   enforcePaidPlan,
+  enforceEnterprisePlan,
   folders,
   inquiries,
   log,

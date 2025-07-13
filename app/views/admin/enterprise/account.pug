@@ -1,0 +1,82 @@
+extends ../../layout
+
+block body
+  .container.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+    // Account Header
+    .row.mb-3
+      .col
+        .card
+          .card-body
+            .d-flex.justify-content-between.align-items-start
+              div
+                h1.h3.mb-1= enterpriseAccount.company_name
+                p.text-muted.mb-2= enterpriseAccount.user.email
+                .badge-group
+                  span.badge.badge-lg.badge-success= t("Enterprise Account")
+              div
+                .d-flex.flex-column.align-items-end
+                  .btn-group.mb-2
+                    a.btn.btn-outline-primary.btn-sm(
+                      href=l(`/admin/users/${enterpriseAccount.user._id}`)
+                    )
+                      i.fa.fa-user.mr-1
+                      = t("User Account")
+                    a.btn.btn-outline-primary.btn-sm(
+                      href=l(`/admin/payments?user=${enterpriseAccount.user._id}`)
+                    )
+                      i.fa.fa-credit-card.mr-1
+                      = t("Payments")
+                  a.btn.btn-outline-secondary.btn-sm(
+                    href=l("/admin/enterprise")
+                  )
+                    i.fa.fa-arrow-left.mr-1
+                    = t("Back to List")
+
+    .row
+      // Main Content - Account Information Form
+      .col-12
+        .card.mb-3
+          .card-header
+            h5.mb-0
+              i.fa.fa-edit.mr-2
+              = t("Edit Account Information")
+          .card-body
+            form.ajax-form(
+              action=l(`/admin/enterprise/accounts/${enterpriseAccount._id}`),
+              method="POST",
+              data-reload="true"
+            )
+              .form-group.floating-label.mb-4
+                input#company-name.form-control(
+                  name="company_name",
+                  type="text",
+                  value=enterpriseAccount.company_name,
+                  placeholder=" ",
+                  required
+                )
+                label(for="company-name")= t("Company Name")
+
+              .form-group.floating-label.mb-4
+                textarea#company-address.form-control(
+                  name="company_address",
+                  placeholder=" ",
+                  rows="3"
+                )= enterpriseAccount.company_address || ""
+                label(for="company-address")= t("Company Address")
+
+              .form-group.mb-4
+                .form-check.form-switch
+                  input#is-active.form-check-input(
+                    name="is_active",
+                    type="checkbox",
+                    checked=enterpriseAccount.is_active
+                  )
+                  label.form-check-label(for="is-active")= t("Account Active")
+
+              button.btn.btn-primary.btn-lg(type="submit")
+                i.fa.fa-save.mr-2
+                = t("Save Changes")

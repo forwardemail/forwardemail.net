@@ -12,6 +12,8 @@ const denylist = require('./denylist');
 const emails = require('./emails');
 const inquiries = require('./inquiries');
 const payments = require('./payments');
+const enterprise = require('./enterprise');
+const enterpriseAccount = require('./enterprise-account');
 
 module.exports = {
   dashboard,
@@ -22,5 +24,7 @@ module.exports = {
   denylist,
   emails,
   inquiries,
-  payments
+  payments,
+  enterprise,
+  enterpriseAccount
 };

@@ -39,7 +39,7 @@ async function mapper(customer) {
           group: 'admin'
         }
       },
-      plan: { $in: ['enhanced_protection', 'team'] },
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
       has_txt_record: true
     }),
     stripe.customers.listPaymentMethods(customer.id),

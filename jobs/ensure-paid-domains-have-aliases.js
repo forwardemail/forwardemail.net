@@ -57,7 +57,7 @@ graceful.listen();
     // - if count was zero, then make a global catch-all for them
     //
     const ids = await Domains.distinct('_id', {
-      plan: { $in: ['enhanced_protection', 'team'] }
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
     });
 
     await pMap(
@@ -81,7 +81,7 @@ graceful.listen();
 
         const user = await Users.findOne({
           _id: member.user,
-          plan: { $in: ['enhanced_protection', 'team'] },
+          plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
           [config.userFields.isBanned]: false,
           [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.paymentReminderTerminationNoticeSentAt]: {

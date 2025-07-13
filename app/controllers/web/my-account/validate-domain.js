@@ -110,7 +110,9 @@ async function validateDomain(ctx, next) {
 
   if (isSANB(ctx.request.body.plan)) {
     if (
-      !['free', 'enhanced_protection', 'team'].includes(ctx.request.body.plan)
+      !['free', 'enhanced_protection', 'team', 'enterprise'].includes(
+        ctx.request.body.plan
+      )
     )
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
   } else {
@@ -163,7 +165,11 @@ async function validateDomain(ctx, next) {
   if (isSANB(ctx.request.body.plan)) {
     switch (ctx.request.body.plan) {
       case 'enhanced_protection': {
-        if (!['enhanced_protection', 'team'].includes(ctx.state.user.plan)) {
+        if (
+          !['enhanced_protection', 'team', 'enterprise'].includes(
+            ctx.state.user.plan
+          )
+        ) {
           ctx.request.body.plan = 'free';
           ctx.state.redirectTo = ctx.state.l(
             `/my-account/domains/${punycode.toASCII(

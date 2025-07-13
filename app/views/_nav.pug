@@ -803,6 +803,10 @@ nav.navbar(class=navbarClasses.join(" "))
                       class=ctx.pathWithoutLocale.startsWith("/admin/denylist") ? "active" : "",
                       href=l("/admin/denylist")
                     )= t("Denylist")
+                    a.dropdown-item(
+                      class=ctx.pathWithoutLocale.startsWith("/admin/enterprise") ? "active" : "",
+                      href=l("/admin/enterprise")
+                    )= t("Enterprise")
             li.nav-item.dropdown.ml-xl-1.mt-1.mt-lg-0
               form.mb-0
                 a#navbar-dropdown-my-account.btn.dropdown-toggle.d-block.text-left(

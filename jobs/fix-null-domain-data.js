@@ -51,13 +51,13 @@ async function mapper(id) {
     const query = {
       $or: [
         {
-          plan: { $in: ['enhanced_protection', 'team'] },
+          plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
           dkim_private_key: {
             $exists: false
           }
         },
         {
-          plan: { $in: ['enhanced_protection', 'team'] },
+          plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
           return_path: {
             $exists: false
           }

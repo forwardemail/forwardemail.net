@@ -99,6 +99,26 @@ router
   .get('/payments', paginate.middleware(10, 50), web.admin.payments.list)
   .get('/payments/:id', web.admin.payments.retrieve)
   .post('/payments/:id/refund', web.admin.payments.refund)
-  .post('/free-credit', web.admin.payments.freeCredit);
+  .post('/free-credit', web.admin.payments.freeCredit)
+
+  // enterprise - specific routes first (all specific paths before parameterized routes)
+  .get('/enterprise/dashboard', web.admin.enterprise.dashboard)
+
+  // enterprise accounts (specific paths)
+  .get(
+    '/enterprise/accounts',
+    paginate.middleware(10, 50),
+    web.admin.enterpriseAccount.list
+  )
+  .get('/enterprise/accounts/:id', web.admin.enterpriseAccount.retrieve)
+  .post('/enterprise/accounts/:id', web.admin.enterpriseAccount.update)
+  .post('/enterprise/accounts/:id/remove', web.admin.enterpriseAccount.remove)
+
+  // enterprise - general routes (must come after all specific paths)
+  .get('/enterprise', paginate.middleware(10, 50), web.admin.enterprise.list)
+  .post('/enterprise/convert', web.admin.enterprise.convert)
+  .get('/enterprise/:id', web.admin.enterprise.retrieve)
+  .post('/enterprise/:id', web.admin.enterprise.update)
+  .post('/enterprise/:id/remove', web.admin.enterprise.remove);
 
 module.exports = router;

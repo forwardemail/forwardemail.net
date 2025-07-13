@@ -33,7 +33,8 @@ const graceful = new Graceful({
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
-  team: Object.values(PAYPAL_PLAN_MAPPING.team)
+  team: Object.values(PAYPAL_PLAN_MAPPING.team),
+  enterprise: Object.values(PAYPAL_PLAN_MAPPING.enterprise)
 };
 
 graceful.listen();

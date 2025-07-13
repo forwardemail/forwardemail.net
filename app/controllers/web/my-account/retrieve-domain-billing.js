@@ -196,7 +196,9 @@ async function retrieveDomainBilling(ctx) {
   try {
     if (
       !isSANB(ctx.query.plan) ||
-      !['free', 'enhanced_protection', 'team'].includes(ctx.query.plan)
+      !['free', 'enhanced_protection', 'team', 'enterprise'].includes(
+        ctx.query.plan
+      )
     )
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
 
@@ -261,7 +263,11 @@ async function retrieveDomainBilling(ctx) {
 
         // determine what plans are required
         const validPlans =
-          domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
+          domain.plan === 'team'
+            ? ['team']
+            : domain.plan === 'enterprise'
+            ? ['enterprise']
+            : ['enhanced_protection', 'team', 'enterprise'];
         let isValid = false;
 
         for (const member of domain.members) {
@@ -337,7 +343,9 @@ async function retrieveDomainBilling(ctx) {
         isMakePayment ||
         (ctx.query.plan === 'team' && ctx.state.user.plan !== 'team') ||
         (ctx.query.plan === 'enhanced_protection' &&
-          !['team', 'enhanced_protection'].includes(ctx.state.user.plan)))
+          !['team', 'enhanced_protection', 'enterprise'].includes(
+            ctx.state.user.plan
+          )))
     ) {
       //
       // if the user is switching between plans and had conversion credit
@@ -490,7 +498,7 @@ async function retrieveDomainBilling(ctx) {
 
       if (
         !isSANB(productToPlan) ||
-        !['team', 'enhanced_protection'].includes(productToPlan)
+        !['team', 'enhanced_protection', 'enterprise'].includes(productToPlan)
       )
         throw ctx.translateError('UNKNOWN_ERROR');
 
@@ -944,7 +952,7 @@ async function retrieveDomainBilling(ctx) {
 
       // validate plans matched up
       if (
-        !['team', 'enhanced_protection'].includes(
+        !['team', 'enhanced_protection', 'enterprise'].includes(
           body.purchase_units[0].custom_id.toLowerCase()
         ) ||
         body.purchase_units[0].custom_id.toLowerCase() !== ctx.query.plan
@@ -1462,7 +1470,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
               group: 'admin'
             }
           },
-          plan: { $in: ['enhanced_protection', 'team'] }
+          plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
         });
         if (count === 0) {
           ctx.logger.info(`updating to free plan`);

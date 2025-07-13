@@ -66,7 +66,7 @@ async function mapper(user) {
 
   try {
     const users = await Users.find({
-      plan: { $in: ['enhanced_protection', 'team'] },
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
       plan_expires_at: { $lt: new Date() }
     })
       .lean()

@@ -34,7 +34,9 @@ function validateDomain(domain, domainName) {
   // validate that at least one paying, non-banned admin on >= same plan without expiration
   //
   const validPlans =
-    domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+    domain.plan === 'team' || domain.plan === 'enterprise'
+      ? ['team', 'enterprise']
+      : ['team', 'enterprise', 'enhanced_protection'];
 
   if (
     !domain.members.some(

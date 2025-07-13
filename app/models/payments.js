@@ -369,7 +369,7 @@ const Payments = new mongoose.Schema({
   plan: {
     type: String,
     required: true,
-    enum: ['enhanced_protection', 'team'],
+    enum: ['enhanced_protection', 'team', 'enterprise'],
     index: true
   },
   // note that we use "kind" here instead of "type"
@@ -520,15 +520,36 @@ Payments.index({
   created_at: -1
 }); // For sorted pagination with user lookups
 
+// Enhanced compound indexes for admin queries
 Payments.index({
-  reference: 'text',
-  stripe_payment_intent_id: 'text',
-  paypal_transaction_id: 'text',
-  currency: 'text',
-  method: 'text',
-  plan: 'text',
-  kind: 'text'
-}); // For text searches across payment fields
+  created_at: -1,
+  method: 1,
+  plan: 1
+}); // Admin list with filters
+
+Payments.index({
+  method: 1,
+  created_at: -1,
+  amount: -1
+}); // Payment method analysis
+
+Payments.index({
+  plan: 1,
+  kind: 1,
+  invoice_at: -1
+}); // Plan analysis
+
+Payments.index({
+  amount_refunded: 1,
+  created_at: -1
+}); // Refund tracking
+
+// Targeted indexes instead of broad text index
+Payments.index({ reference: 1 }); // Exact reference lookup
+Payments.index({ stripe_payment_intent_id: 1 }); // Stripe lookup
+Payments.index({ paypal_transaction_id: 1 }); // PayPal lookup
+Payments.index({ currency: 1 }); // Currency filtering
+Payments.index({ method: 1 }); // Method filtering
 
 Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',

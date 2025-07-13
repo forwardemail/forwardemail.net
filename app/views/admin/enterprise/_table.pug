@@ -1,0 +1,81 @@
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('company_name', 'Company', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('primary_contact.email', 'Contact', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('domainCount', 'Domains', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('userCount', 'Users', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('aliasCount', 'Aliases', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('totalRevenue', 'Revenue', '#table-enterprise')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-enterprise')
+        th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if enterprises.length === 0
+        td.alert.alert-info(colspan="8")= t("No enterprise accounts exist for that search.")
+      else
+        each enterprise in enterprises
+          tr
+            td.align-middle
+              strong= enterprise.company_name
+              if enterprise.user && enterprise.user[config.passport.fields.organizationName]
+                br
+                small.text-muted= enterprise.user[config.passport.fields.organizationName]
+            td.align-middle
+              if enterprise.primary_contact && enterprise.primary_contact.email
+                a(
+                  href=`mailto:${enterprise.primary_contact.email}`,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )= enterprise.primary_contact.email
+                if enterprise.primary_contact.name
+                  br
+                  small.text-muted= enterprise.primary_contact.name
+              else if enterprise.user && enterprise.user.email
+                a(
+                  href=`mailto:${enterprise.user.email}`,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )= enterprise.user.email
+            td.align-middle.text-center= enterprise.domainCount || 0
+            td.align-middle.text-center= enterprise.userCount || 0
+            td.align-middle.text-center= enterprise.aliasCount || 0
+            td.align-middle
+              if enterprise.totalRevenue && enterprise.totalRevenue > 0
+                = `$${(enterprise.totalRevenue / 100).toFixed(2)}`
+              else
+                span.text-muted $0
+            td.align-middle.dayjs(
+              data-time=new Date(enterprise.created_at).getTime()
+            )= dayjs(enterprise.created_at).format("M/D/YY h:mm A")
+            td.align-middle
+              .btn-group(role="group", aria-label=t("Actions"))
+                a.btn.btn-primary.btn-sm(
+                  href=l(`/admin/enterprise/${enterprise._id}`),
+                  data-toggle="tooltip",
+                  data-title=t("View Details")
+                ): i.fa.fa-fw.fa-eye
+                if enterprise.user
+                  a.btn.btn-secondary.btn-sm(
+                    href=l(`/admin/users?q=${enterprise.user.email}`),
+                    data-toggle="tooltip",
+                    data-title=t("Edit User")
+                  ): i.fa.fa-fw.fa-user-cog
+                if enterprise.totalRevenue && enterprise.totalRevenue > 0
+                  - const contactEmail = (enterprise.primary_contact && enterprise.primary_contact.email) || (enterprise.user && enterprise.user.email);
+                  a.btn.btn-info.btn-sm(
+                    href=l(`/admin/payments?q=${contactEmail}`),
+                    data-toggle="tooltip",
+                    data-title=t("View Payments")
+                  ): i.fa.fa-fw.fa-credit-card
++paginate('#table-enterprise')

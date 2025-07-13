@@ -1,0 +1,103 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        .row.mb-3
+          .col.d-flex.justify-content-between.align-items-center
+            h2.h4.mb-0= t("Enterprise Accounts")
+            button.btn.btn-primary(
+              type="button",
+              data-toggle="modal",
+              data-target="#convert-account-modal"
+            )
+              i.fa.fa-exchange-alt.mr-2
+              = t("Convert Existing Account")
+
+        form.ajax-form.table-ajax-form.card.mb-3(
+          action=ctx.path,
+          method="GET",
+          data-table="#table-enterprise",
+          data-search-params="mongodb_query,q"
+        )
+          .card-body
+            .h5.card-title= t("Search for enterprise accounts")
+            .form-group
+              label(for="textarea-mongodb-query") MongoDB query
+              textarea#textarea-mongodb-query.form-control(
+                name="mongodb_query",
+                rows=3,
+                placeholder="MongoDB query"
+              )= ctx.query.mongodb_query || ""
+              small.form-text.text-muted!= t('See <a class="notranslate" href="https://github.com/mongodb-js/query-parser" target="_blank" rel="noopener noreferrer">mongodb-query-parser</a> for more insight.')
+            .form-group
+              label(for="input-keyword-search")= t("Basic search")
+              input#input-keyword-search.form-control(
+                type="text",
+                value=ctx.query.q || "",
+                name="q",
+                placeholder=t("Search by company name, contact name, email, or domain name")
+              )
+            button.btn.btn-success(type="submit")= t("Search")
+
+        #table-enterprise
+          include ./_table
+
+    // Convert Existing Account Modal
+    #convert-account-modal.modal.fade(
+      tabindex="-1",
+      role="dialog",
+      aria-labelledby="convert-account-modal-title",
+      aria-hidden="true"
+    )
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header.text-center.d-block
+            h4#convert-account-modal-title.d-inline-block.ml-4= t("Convert Account to Enterprise")
+            button.close(
+              type="button",
+              data-dismiss="modal",
+              aria-label="Close"
+            )
+              span(aria-hidden="true") &times;
+          .modal-body
+            .alert.alert-info.mb-3
+              i.fa.fa-info-circle.mr-2
+              = t("Convert an existing user account or team to enterprise status.")
+
+            form.ajax-form(
+              action=l("/admin/enterprise/convert"),
+              method="POST",
+              data-reload="true"
+            )
+              .form-group.floating-label
+                input#user-email.form-control(
+                  name="email",
+                  type="email",
+                  required
+                )
+                label(for="user-email")= t("User Email Address")
+                small.form-text.text-muted= t("Enter the email address of the account to convert")
+
+              .form-group.floating-label
+                input#company-name-convert.form-control(
+                  name="company_name",
+                  type="text",
+                  required
+                )
+                label(for="company-name-convert")= t("Company Name")
+
+              .form-group.floating-label
+                input#primary-contact-name-convert.form-control(
+                  name="primary_contact_name",
+                  type="text",
+                  required
+                )
+                label(for="primary-contact-name-convert")= t("Primary Contact Name")
+
+              button.btn.btn-primary.btn-block.btn-lg(type="submit")
+                i.fa.fa-exchange-alt.mr-2
+                = t("Convert to Enterprise")

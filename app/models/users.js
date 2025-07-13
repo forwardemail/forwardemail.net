@@ -160,7 +160,7 @@ const Users = new mongoose.Schema({
   // Plan
   plan: {
     type: String,
-    enum: ['free', 'enhanced_protection', 'team'],
+    enum: ['free', 'enhanced_protection', 'team', 'enterprise'],
     default: 'free',
     index: true
   },

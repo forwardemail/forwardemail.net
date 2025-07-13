@@ -142,7 +142,7 @@ async function getForwardingConfiguration({
           $or: [
             // get all paid users with expiration is >= 30 days ago
             {
-              plan: { $in: ['enhanced_protection', 'team'] },
+              plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
               [config.userFields.planExpiresAt]: {
                 $gte: dayjs().subtract(30, 'days').toDate()
               }
@@ -202,7 +202,7 @@ async function getForwardingConfiguration({
           // if the domain was on enhanced plan, then user can be on team or enhanced
           plan:
             domain.plan === 'enhanced_protection'
-              ? { $in: ['team', 'enhanced_protection'] }
+              ? { $in: ['team', 'enhanced_protection', 'enterprise'] }
               : domain.plan,
           // [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
@@ -218,7 +218,7 @@ async function getForwardingConfiguration({
           },
           plan:
             domain.plan === 'enhanced_protection'
-              ? { $in: ['team', 'enhanced_protection'] }
+              ? { $in: ['team', 'enhanced_protection', 'enterprise'] }
               : domain.plan,
           // [config.userFields.hasVerifiedEmail]: true,
           [config.userFields.isBanned]: false,
