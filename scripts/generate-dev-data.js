@@ -75,12 +75,12 @@ const createFakeInquiry = async () => {
 };
 
 const createFakePayment = async (user) => {
-  const amount = falso.randElement([999, 1999, 2999, 4999, 9999, 19999, 29999]);
-  const currency = falso.randElement(CURRENCIES);
-  const plan = falso.randElement(PLANS);
-  const kind = falso.randElement(PAYMENT_KINDS);
-  const duration = falso.randElement(VALID_DURATIONS);
-  const method = falso.randElement(PAYMENT_METHODS);
+  const amount = falso.rand([999, 1999, 2999, 4999, 9999, 19999, 29999]);
+  const currency = falso.rand(CURRENCIES);
+  const plan = falso.rand(PLANS);
+  const kind = falso.rand(PAYMENT_KINDS);
+  const duration = falso.rand(VALID_DURATIONS);
+  const method = falso.rand(PAYMENT_METHODS);
 
   const invoiceAt = falso.randPastDate({ years: 1 });
   const createdAt = dayjs(invoiceAt)
@@ -169,7 +169,7 @@ const createFakePayment = async (user) => {
 
   // Create payments for some of the users
   for (let count = 0; count < PAYMENT_COUNT; count++) {
-    const user = falso.randElement(users);
+    const user = falso.rand(users);
 
     await createFakePayment(user);
   }

@@ -144,7 +144,7 @@ p.text-center.d-lg-none
           - domain.plan = domain.plan || "free";
           tr
             td(
-              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan || domain.plan === "team" ? "bg-success" : "bg-warning") : "bg-danger"
+              class=domain.is_global ? "bg-secondary" : domain.has_mx_record && domain.has_txt_record ? (domain.plan === user.plan || domain.plan === "team" || domain.plan === "enterprise" ? "bg-success" : "bg-warning") : "bg-danger"
             )
             td.align-middle.p-3.position-relative
               h2.h5.mb-0= domain.name
@@ -162,7 +162,7 @@ p.text-center.d-lg-none
                     a.badge.badge-secondary.text-uppercase.stretched-link(
                       href=l(`/my-account/domains/${punycode.toASCII(domain.name)}/aliases`)
                     )= t("Vanity Domain")
-                else if (domain.plan === user.plan || domain.plan === 'team') && user.plan !== 'free'
+                else if (domain.plan === user.plan || domain.plan === 'team' || domain.plan === 'enterprise') && user.plan !== 'free'
                   li.list-inline-item
                     if domain.has_mx_record && domain.has_txt_record
                       a.badge.badge-success.text-uppercase.stretched-link(

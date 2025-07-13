@@ -61,7 +61,11 @@ graceful.listen();
         continue;
       }
 
-      if (domain.plan === user.plan || user.plan === 'team') {
+      if (
+        domain.plan === user.plan ||
+        user.plan === 'team' ||
+        user.plan === 'enterprise'
+      ) {
         validMembers.push(user);
         continue;
       }

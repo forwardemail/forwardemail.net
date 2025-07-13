@@ -59,7 +59,7 @@ graceful.listen();
     const bannedUserIdsSet = await Users.getBannedUserIdSet(client);
 
     for await (const domain of Domains.find({
-      plan: { $in: ['enhanced_protection', 'team'] },
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
       has_mx_record: true,
       has_txt_record: true
     })

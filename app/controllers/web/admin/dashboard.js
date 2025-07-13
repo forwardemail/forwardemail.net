@@ -45,7 +45,7 @@ async function getGrowthChart() {
   const docs = await Users.aggregate([
     {
       $match: {
-        plan: { $in: ['enhanced_protection', 'team'] },
+        plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
         created_at: {
           $gte: dayjs()
             .subtract(1, 'day')

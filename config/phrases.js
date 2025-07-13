@@ -559,6 +559,16 @@ module.exports = {
     'Please remove all invited members to the domain before changing plans.',
   PLAN_UPGRADE_REQUIRED:
     'Please <a class="font-weight-bold" href="%s">upgrade to a paid plan</a> to unlock this feature.',
+  ACCOUNT_IDS_REQUIRED: 'Account IDs are required for bulk operations.',
+  STATUS_REQUIRED: 'Status is required.',
+  BULK_STATUS_UPDATE_SUCCESS: '%d accounts updated successfully.',
+  BULK_UPDATE_PARTIAL_ERRORS: '%d accounts had errors during update.',
+  CANNOT_ADVANCE_STAGE: 'Cannot advance to next stage.',
+  ACCOUNT_ADVANCED_TO_NEXT_STAGE:
+    'Account advanced to next stage successfully.',
+  REMINDER_DATE_REQUIRED: 'Reminder date is required.',
+  REMINDER_SET: 'Reminder has been set successfully.',
+  WORKFLOW_UPDATED: 'Workflow has been updated successfully.',
   PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS:
     'Please <a class="font-weight-bold" target="_blank" href="%s">upgrade to the Enhanced Protection Plan</a> to unlock vanity domains on your account.',
   PLAN_UPGRADE_REQUIRED_FOR_GLOBAL_DOMAINS_AND_DELETE_REQUIRED:

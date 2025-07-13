@@ -329,7 +329,8 @@ router
       // then don't allow them to create aliases (only manage/delete their own)
       //
       if (
-        ctx.state.domain.plan === 'team' &&
+        (ctx.state.domain.plan === 'team' ||
+          ctx.state.domain.plan === 'enterprise') &&
         ctx.state.domain.has_txt_record &&
         Object.keys(config.ubuntuTeamMapping).includes(ctx.state.domain.name)
       ) {

@@ -827,9 +827,13 @@ Domains.pre('validate', async function (next) {
         return true;
       }
 
+      if (domain.plan === 'enterprise' && user.plan === 'enterprise') {
+        return true;
+      }
+
       if (
         domain.plan === 'enhanced_protection' &&
-        ['enhanced_protection', 'team'].includes(user.plan)
+        ['enhanced_protection', 'team', 'enterprise'].includes(user.plan)
       ) {
         return true;
       }
@@ -1099,7 +1103,7 @@ Domains.pre('save', function (next) {
 
 // Prevent members from existing on domains after plan changes
 Domains.pre('save', function (next) {
-  if (this.plan === 'team') {
+  if (this.plan === 'team' || this.plan === 'enterprise') {
     return next();
   }
 
@@ -2274,15 +2278,15 @@ async function getTxtAddresses(
 Domains.statics.getTxtAddresses = getTxtAddresses;
 
 async function ensureUserHasValidPlan(user, locale) {
-  // If the user was on the team plan
+  // If the user was on the team or enterprise plan
   // then all of their domains would be valid
-  if (user.plan === 'team') {
+  if (user.plan === 'team' || user.plan === 'enterprise') {
     return;
   }
 
   // Get all domains associated with this user
   const domains = await this.find({
-    plan: { $in: ['enhanced_protection', 'team'] },
+    plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
     'members.user': user._id
   })
     .select('name plan members.user members.group')
@@ -2300,7 +2304,11 @@ async function ensureUserHasValidPlan(user, locale) {
   for (const domain of domains) {
     // Determine what plans are required
     const validPlans =
-      domain.plan === 'team' ? ['team'] : ['enhanced_protection', 'team'];
+      domain.plan === 'team'
+        ? ['team']
+        : domain.plan === 'enterprise'
+        ? ['enterprise']
+        : ['enhanced_protection', 'team', 'enterprise'];
     let isValid = false;
 
     for (const member of domain.members) {

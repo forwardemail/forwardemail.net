@@ -1062,7 +1062,8 @@ const config = {
     hasDenylistRequests: 'has_denylist_requests',
     approvedDomains: 'approved_domains',
     smtpLimit: 'smtp_limit',
-    maxQuotaPerAlias: 'max_quota_per_alias'
+    maxQuotaPerAlias: 'max_quota_per_alias',
+    isEnterprise: 'is_enterprise'
   },
 
   // dynamic otp routes

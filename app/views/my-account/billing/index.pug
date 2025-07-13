@@ -52,7 +52,10 @@ block body
                   = t("Conversion Credit:")
                   = " "
                   = dayjs().add(_.sumBy(conversion.enhanced_protection, "duration"), "ms").locale(ctx.locale).fromNow(true)
-          if ['enhanced_protection', 'team'].includes(user.plan)
+          else if user.plan === 'enterprise'
+            p.text-muted.small
+              = t("Enterprise plan modifications require admin assistance. Contact support to modify your plan.")
+          if ['enhanced_protection', 'team', 'enterprise'].includes(user.plan)
             form.confirm-prompt(
               action=l("/my-account/billing/upgrade"),
               method="GET"

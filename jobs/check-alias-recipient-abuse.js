@@ -468,7 +468,7 @@ graceful.listen();
   try {
     const users = await Users.distinct('_id', {
       [config.userFields.isBanned]: false,
-      plan: { $in: ['enhanced_protection', 'team'] },
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
       has_passed_kyc: false
     });
 
