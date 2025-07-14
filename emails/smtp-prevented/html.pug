@@ -1,0 +1,62 @@
+extends ../layout
+
+block content
+  .container.mt-3
+    .row
+      .col-12
+        .card.border-dark.d-block
+          h1.h5.card-header.text-center
+            != t("Message prevented")
+          .card-body.p-0
+            .p-3.text-center
+              h2.h5= t("Why did I receive this email?")
+              p.small.card-text
+                != t('An email was processed in your outbound SMTP queue for <strong class="notranslate">%s</strong> that was detected to be a virus or spam by a trusted source.', domain.name)
+            .p-3.text-center
+              h1.h3.text-danger= t("What was the outbound email?")
+              table.table.table-striped
+                tbody
+                  tr
+                    th: span.badge.badge-pill.badge-dark MAIL FROM
+                    td: code= email.envelope.from
+                  tr
+                    th: span.badge.badge-pill.badge-dark RCPT TO
+                    td
+                      code= email.envelope.to.map((t) => (typeof t === "object" && typeof t.address === "string" ? t.address.trim().toLowerCase() : t.trim().toLowerCase())).join(", ")
+                  tr
+                    th: span.badge.badge-pill.badge-primary Message-ID
+                    td: code= email.messageId
+                  tr
+                    th: span.badge.badge-pill.badge-primary Subject
+                    td= email.subject
+                  tr
+                    th: span.badge.badge-pill.badge-primary Date
+                    td: code= dayjs(email.date).format("M/D/YY h:mm A z")
+            .p-3.text-center
+              h1.h3.text-danger= t("What was the trusted source?")
+              table.table.table-striped
+                tbody
+                  tr
+                    th= t("Trusted Source")
+                    td= truthSource
+                  tr
+                    th= t("Category")
+                    td= t(category)
+                  tr
+                    th= t("Status Code")
+                    td: span.badge.badge-pill.badge-danger= responseCode
+                  tr
+                    th= t("SMTP Response")
+                    td: pre: code= response
+            .p-3.text-center
+              h2.h5= t("What will happen if I don't resolve this?")
+              p.small.card-text
+                = t("Outbound SMTP is currently paused and suspended.")
+                = " "
+                = t("This means that all of your outbound emails are not being processed.")
+                = " "
+                = t("We have currently paused your outbound SMTP queue.")
+                = " "
+                = t("No emails will be attempted to be delivered.")
+          .card-footer.text-center.small.text-muted
+            = t("You must contact us to resolve this issue.")
