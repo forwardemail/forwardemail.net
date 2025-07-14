@@ -52,20 +52,18 @@ block body
                       option(value="team")= t("Team")
                 .col-md-3
                   .form-group
-                    label(for="gift-duration")= t("Duration")
-                    select#gift-duration.form-control(
+                    label(for="gift-duration")= t("Duration (months)")
+                    input#gift-duration.form-control(
+                      type="number",
                       name="duration",
+                      min="1",
+                      max="36",
+                      value="12",
                       required
                     )
-                      option(value=ms("30d")) 1 month
-                      option(value=ms("60d")) 2 months
-                      option(value=ms("90d")) 3 months
-                      option(value=ms("180d")) 6 months
-                      option(value=ms("1y")) 1 year
-                      option(value=ms("2y")) 2 years
-                      option(value=ms("3y")) 3 years
                 .col-md-2
                   .form-group
+                    label &nbsp;
                     button.btn.btn-primary.btn-block(type="submit")= t("Gift")
 
         #table-payments
