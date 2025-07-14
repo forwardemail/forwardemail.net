@@ -8,10 +8,11 @@ const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
 const parser = require('mongodb-query-parser');
-const _ = require('#helpers/lodash');
 
-const { Payments, Users } = require('#models');
+const _ = require('#helpers/lodash');
 const config = require('#config');
+const refundHelper = require('#helpers/refund');
+const { Payments, Users } = require('#models');
 
 const PAYMENT_SEARCH_PATHS = [
   'reference',
@@ -21,6 +22,7 @@ const PAYMENT_SEARCH_PATHS = [
 
 const PAYMENT_ENUM_FIELDS = ['currency', 'method', 'plan', 'kind'];
 
+// eslint-disable-next-line complexity
 async function list(ctx) {
   let query = {};
 
@@ -89,54 +91,46 @@ async function list(ctx) {
     }
   }
 
-  let payments;
-  let itemCount;
-
-  try {
-    [payments, itemCount] = await Promise.all([
-      Payments.aggregate([
-        { $match: query },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'user',
-            foreignField: '_id',
-            as: 'user'
-          }
-        },
-        {
-          $unwind: {
-            path: '$user',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        { $sort },
-        { $skip: ctx.paginate.skip },
-        { $limit: ctx.paginate.limit || 50 }
-      ]),
-      Payments.aggregate([
-        { $match: query },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'user',
-            foreignField: '_id',
-            as: 'user'
-          }
-        },
-        {
-          $unwind: {
-            path: '$user',
-            preserveNullAndEmptyArrays: true
-          }
-        },
-        { $count: 'count' }
-      ])
-    ]);
-  } catch (err) {
-    ctx.logger.error(err);
-    throw err;
-  }
+  const [payments, itemCount] = await Promise.all([
+    Payments.aggregate([
+      { $match: query },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      { $sort },
+      { $skip: ctx.paginate.skip },
+      { $limit: ctx.paginate.limit || 50 }
+    ]),
+    Payments.aggregate([
+      { $match: query },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      { $count: 'count' }
+    ])
+  ]);
 
   const pageCount = Math.ceil(
     (itemCount[0]?.count || 0) / (ctx.paginate.limit || 50)
@@ -170,8 +164,7 @@ async function retrieve(ctx) {
     .lean()
     .exec();
 
-  if (!payment)
-    throw Boom.notFound(ctx.translateError('PAYMENT_DOES_NOT_EXIST'));
+  if (!payment) throw Boom.notFound('Payment does not exist');
 
   // Fetch other payments for the same user (excluding current payment)
   const userPayments = payment.user
@@ -190,8 +183,7 @@ async function retrieve(ctx) {
 
 async function update(ctx) {
   const payment = await Payments.findById(ctx.params.id);
-  if (!payment)
-    throw Boom.notFound(ctx.translateError('PAYMENT_DOES_NOT_EXIST'));
+  if (!payment) throw Boom.notFound('Payment does not exist');
 
   if (ctx.request.body.refund_credit_amount !== undefined) {
     // Convert dollars to cents
@@ -221,77 +213,69 @@ async function update(ctx) {
 
 async function refund(ctx) {
   const payment = await Payments.findById(ctx.params.id).populate('user');
-  if (!payment)
-    throw Boom.notFound(ctx.translateError('PAYMENT_DOES_NOT_EXIST'));
+  if (!payment) throw Boom.notFound('Payment does not exist');
 
   // Check if already refunded
-  if (payment.amount_refunded >= payment.amount) {
-    throw Boom.badRequest(ctx.translateError('PAYMENT_ALREADY_REFUNDED'));
-  }
+  if (payment.amount_refunded > 0)
+    throw Boom.badRequest('Payment already refunded');
 
-  try {
-    // Use existing refund helper
-    const refund = require('#helpers/refund');
-    await refund(payment._id);
+  // Use existing refund helper
+  await refundHelper(payment._id);
 
-    const message = ctx.translate('PAYMENT_REFUNDED');
-    if (ctx.accepts('html')) {
-      ctx.flash('custom', {
-        title: ctx.request.t('Success'),
-        text: message,
-        type: 'success',
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000,
-        position: 'top'
-      });
-      ctx.redirect('back');
-    } else {
-      ctx.body = { message };
-    }
-  } catch (err) {
-    ctx.logger.error(err);
-    throw Boom.badRequest(ctx.translateError('REFUND_FAILED'));
+  const message = ctx.translate('PAYMENT_REFUNDED');
+  if (ctx.accepts('html')) {
+    ctx.flash('custom', {
+      title: ctx.request.t('Success'),
+      text: message,
+      type: 'success',
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      position: 'top'
+    });
+    ctx.redirect('back');
+  } else {
+    ctx.body = { message };
   }
 }
 
 async function giftSubscription(ctx) {
-  const { email, plan, duration } = ctx.request.body;
+  let { email, plan, duration } = ctx.request.body;
 
   if (
     !isSANB(email) ||
     !['enhanced_protection', 'team'].includes(plan) ||
-    !Number.isInteger(duration) ||
-    duration < 1 ||
-    duration > 36
-  ) {
-    throw Boom.badRequest(ctx.translateError('INVALID_GIFT_SUBSCRIPTION_DATA'));
-  }
+    typeof duration !== 'string'
+  )
+    throw Boom.badRequest('Invalid request');
+
+  duration = Number.parseInt(duration, 10);
+
+  if (!config.validDurations.includes(duration))
+    throw Boom.badRequest('Invalid request');
 
   const user = await Users.findOne({ email: email.toLowerCase() });
-  if (!user) throw Boom.notFound(ctx.translateError('USER_DOES_NOT_EXIST'));
+  if (!user) throw Boom.notFound('User does not exist');
 
-  const planExpiresAt = dayjs().add(duration, 'months').toDate();
+  if (user.plan === 'free' || user.plan !== plan)
+    user.plan_set_at = dayjs().startOf('day').toDate();
 
   user.plan = plan;
-  user[config.userFields.planExpiresAt] = planExpiresAt;
   await user.save();
 
   // Create a payment record for tracking
-  const payment = new Payments({
+  await Payments.create({
     user: user._id,
-    reference: `GIFT-${Date.now()}`,
-    amount: 0,
-    currency: 'usd',
-    method: 'gift',
     plan,
-    kind: 'one-time',
     duration,
-    stripe_payment_intent_id: null,
-    paypal_transaction_id: null
+    amount: 0,
+    invoice_at: dayjs().startOf('day').toDate(),
+    method: 'free_beta_program',
+    kind: 'one-time'
   });
 
-  await payment.save();
+  // Save the user so their plan expires at gets updated
+  await user.save();
 
   const message = ctx.translate('SUBSCRIPTION_GIFTED', {
     email,
