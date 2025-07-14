@@ -93,13 +93,6 @@ router
   .get('/emails', paginate.middleware(10, 50), web.admin.emails.list)
   .get('/emails/:id', web.admin.emails.retrieve)
   .put('/emails/:id', web.admin.emails.update)
-  .delete('/emails/:id', web.admin.emails.remove)
-
-  // payments
-  .get('/payments', paginate.middleware(10, 50), web.admin.payments.list)
-  .get('/payments/:id', web.admin.payments.retrieve)
-  .put('/payments/:id', web.admin.payments.update)
-  .post('/payments/:id/refund', web.admin.payments.refund)
-  .post('/gift-subscription', web.admin.payments.giftSubscription);
+  .delete('/emails/:id', web.admin.emails.remove);
 
 module.exports = router;
