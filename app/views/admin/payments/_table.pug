@@ -1,0 +1,71 @@
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('reference', 'Reference', '#table-payments')
+        th(scope="col")
+          +sortHeader('user.email', 'User Email', '#table-payments')
+        th(scope="col")
+          +sortHeader('amount', 'Amount', '#table-payments')
+        th(scope="col")
+          +sortHeader('currency', 'Currency', '#table-payments')
+        th(scope="col")
+          +sortHeader('method', 'Method', '#table-payments')
+        th(scope="col")
+          +sortHeader('plan', 'Plan', '#table-payments')
+        th(scope="col")
+          +sortHeader('kind', 'Type', '#table-payments')
+        th(scope="col")
+          +sortHeader('created_at', 'Created', '#table-payments')
+        th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if payments.length === 0
+        td.alert.alert-info(colspan="9")= t("No payments exist for that search.")
+      else
+        each payment in payments
+          tr
+            td.align-middle
+              code= payment.reference
+            td.align-middle
+              if payment.user && payment.user.email
+                a(
+                  href=`mailto:${payment.user.email}`,
+                  target="_blank",
+                  rel="noopener noreferrer"
+                )= payment.user.email
+              else
+                span.text-muted= t("Unknown User")
+            td.align-middle
+              = `$${(payment.amount / 100).toFixed(2)}`
+              if payment.amount_refunded > 0
+                br
+                small.text-danger= `Refunded: $${(payment.amount_refunded / 100).toFixed(2)}`
+            td.align-middle= payment.currency.toUpperCase()
+            td.align-middle= titleize(humanize(payment.method))
+            td.align-middle= payment.plan ? titleize(humanize(payment.plan)) : "-"
+            td.align-middle= payment.kind ? titleize(humanize(payment.kind)) : "-"
+            td.align-middle.dayjs(
+              data-time=new Date(payment.created_at).getTime()
+            )= dayjs(payment.created_at).format("M/D/YY h:mm A")
+            td.align-middle
+              .btn-group(role="group", aria-label=t("Actions"))
+                a.btn.btn-secondary.btn-sm(
+                  href=l(`/admin/payments/${payment._id}`),
+                  data-toggle="tooltip",
+                  data-title=t("View Details")
+                ): i.fa.fa-fw.fa-eye
+                if payment.amount > payment.amount_refunded
+                  form.ajax-form.confirm-prompt.btn-group(
+                    action=l(`/admin/payments/${payment._id}/refund`),
+                    method="POST"
+                  )
+                    button.btn.btn-warning.btn-sm(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Refund")
+                    ): i.fa.fa-fw.fa-undo
++paginate('#table-payments')
