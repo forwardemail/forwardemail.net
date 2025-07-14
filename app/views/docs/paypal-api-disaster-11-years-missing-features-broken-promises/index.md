@@ -504,12 +504,13 @@ You can see our PayPal-specific filtering implemented in our [email filtering co
 // X-Email-Type-Id = RT000238
 // PPC001017
 // RT000542 = gift message hack
+// RT002947 = paypal invoice spam
 // <https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-fraud/>
 //
 if (
   session.originalFromAddressRootDomain === 'paypal.com' &&
   headers.hasHeader('x-email-type-id') &&
-  ['PPC001017', 'RT000238', 'RT000542'].includes(
+  ['PPC001017', 'RT000238', 'RT000542', 'RT002947'].includes(
     headers.getFirst('x-email-type-id')
   )
 ) {

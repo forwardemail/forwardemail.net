@@ -156,11 +156,12 @@ function isArbitrary(session, headers) {
   //                   PPC001017
   //                   RT000542 = gift message hack
   //                              <https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/>
+  //                   RT002947 = paypal invoice spam
   //
   if (
     session.originalFromAddressRootDomain === 'paypal.com' &&
     headers.hasHeader('x-email-type-id') &&
-    ['PPC001017', 'RT000238', 'RT000542'].includes(
+    ['PPC001017', 'RT000238', 'RT000542', 'RT002947'].includes(
       headers.getFirst('x-email-type-id')
     )
   ) {
