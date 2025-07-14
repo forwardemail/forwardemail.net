@@ -166,7 +166,7 @@ function isArbitrary(session, headers) {
     )
   ) {
     const err = new SMTPError(
-      'Due to ongoing PayPal invoice spam, you must manually send an invoice link'
+      'Due to ongoing PayPal invoice spam, you must manually send an invoice link; See https://forwardemail.net/en/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises#the-11-year-capture-bug-disaster-1899-and-counting ;'
     );
     err.isCodeBug = true; // alert admins for inspection
     throw err;
