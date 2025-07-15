@@ -87,7 +87,7 @@ graceful.listen();
       if (result.duration < 2) continue;
       if (set.has(result.user.toString())) continue;
       set.add(result.user.toString());
-      // eslint-disable-next-line no-await-in-loop
+
       const user = await Users.findOne({ id: result.user.toString() })
         .lean()
         .exec();
@@ -115,7 +115,6 @@ graceful.listen();
         result.duration
       );
 
-      // eslint-disable-next-line no-await-in-loop
       await emailHelper({
         template: 'alert',
         message: {
@@ -129,7 +128,6 @@ graceful.listen();
         }
       });
 
-      // eslint-disable-next-line no-await-in-loop
       await Users.findByIdAndUpdate(user._id, {
         $set: {
           scheduled_send_sent_at: new Date()

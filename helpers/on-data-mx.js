@@ -692,7 +692,7 @@ async function checkBounceForSpam(bounce, headers, session) {
   //
   await pMap(
     attributes,
-    // eslint-disable-next-line complexity
+
     async (attr) => {
       const isAttributeAllowlisted = await isAllowlisted(
         attr,
@@ -861,7 +861,6 @@ async function checkBounceForSpam(bounce, headers, session) {
 //       we can probably rewrite most of the `recipient.replacements` stuff below to clean it up
 //
 
-// eslint-disable-next-line complexity
 async function forward(recipient, headers, session, body) {
   // prevent sending to the same webhook or email twice
   const key = getFingerprintKey(session, recipient.webhook || recipient.to[0]);
@@ -1633,7 +1632,6 @@ function updateMXHeaders(headers, session) {
   */
 }
 
-// eslint-disable-next-line complexity
 async function onDataMX(session, headers, body) {
   // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
@@ -1655,7 +1653,6 @@ async function onDataMX(session, headers, body) {
       let silentBanned = false;
       if (session.signingDomains.size > 0) {
         for (const signingDomain of session.signingDomains) {
-          // eslint-disable-next-line no-await-in-loop
           silentBanned = await isSilentBanned(
             signingDomain,
             this.client,
@@ -1663,7 +1660,6 @@ async function onDataMX(session, headers, body) {
           );
           if (silentBanned) break; // break early
           try {
-            // eslint-disable-next-line no-await-in-loop
             await isDenylisted(signingDomain, this.client, this.resolver);
           } catch (err) {
             // store a counter

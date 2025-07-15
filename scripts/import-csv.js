@@ -89,7 +89,6 @@ graceful.listen();
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     const count = await Aliases.countDocuments({
       user: user._id,
       domain: domain._id,
@@ -100,7 +99,6 @@ graceful.listen();
       continue;
     }
 
-    // eslint-disable-next-line no-await-in-loop
     await Aliases.create({
       user: user._id,
       domain: domain._id,

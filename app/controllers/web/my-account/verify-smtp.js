@@ -45,7 +45,6 @@ const DNS_RETRY_CODES = new Set([
   'ETIMEOUT'
 ]);
 
-// eslint-disable-next-line complexity
 async function verifySMTP(ctx) {
   try {
     const redirectTo = ctx.state.l(

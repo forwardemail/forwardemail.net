@@ -184,7 +184,6 @@ async function generatePayPalMapping() {
           ? 'Enhanced email protection and privacy features'
           : 'Team collaboration and advanced email management';
 
-      // eslint-disable-next-line no-await-in-loop
       const productId = await findOrCreateProduct(
         agent,
         productName,
@@ -201,7 +200,6 @@ async function generatePayPalMapping() {
         const planName = `${productName} - ${duration.toUpperCase()}`;
         const planDescription = `${productDescription} - ${duration} billing cycle`;
 
-        // eslint-disable-next-line no-await-in-loop
         const planId = await findOrCreatePlan(
           agent,
           productId,

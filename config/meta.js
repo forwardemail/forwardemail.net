@@ -32,7 +32,6 @@ const {
   useCases
 } = require('#config/utilities');
 
-// eslint-disable-next-line complexity
 module.exports = function (config, isSitemap = false) {
   // in order for snapshots to be consistent we need the same date to be used
   const now =

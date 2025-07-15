@@ -31,7 +31,6 @@ function findHeaderByName(name, headers) {
   return null;
 }
 
-// eslint-disable-next-line complexity
 async function create(ctx) {
   const { body, headers: requestHeaders } = ctx.request;
 

@@ -145,6 +145,7 @@ const abusePreventionByUserId = require('./abuse-prevention-by-user-id');
 const xmlHelpers = require('./carddav-xml');
 const setupAuthSession = require('./setup-auth-session');
 const checkDiskSpace = require('./check-disk-space');
+const ensureDefaultAddressBook = require('./ensure-default-address-book');
 
 const REGEX_LOCALHOST = require('./regex-localhost');
 
@@ -293,5 +294,6 @@ module.exports = {
   xmlHelpers,
   setupAuthSession,
   checkDiskSpace,
-  retryPayPalRequest
+  retryPayPalRequest,
+  ensureDefaultAddressBook
 };

@@ -14,7 +14,6 @@ const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
 const config = require('#config');
 const logger = require('#helpers/logger');
 
-// eslint-disable-next-line complexity
 async function createDomain(ctx, next) {
   //
   // if `team_domain` was specified then ensure that it's valid

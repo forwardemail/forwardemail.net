@@ -43,7 +43,7 @@
     "@ioredis/commands": "1.2.0",
     "@koa/multer": "3.0.2",
     "@koa/router": "13.1.1",
-    "@ladjs/api": "14.1.22",
+    "@ladjs/api": "14.1.23",
     "@ladjs/assets": "2.1.29",
     "@ladjs/consolidate": "1.0.4",
     "@ladjs/env": "4.0.0",

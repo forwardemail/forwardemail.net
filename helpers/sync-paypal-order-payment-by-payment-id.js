@@ -13,7 +13,6 @@ const Payments = require('#models/payments');
 
 const FIVE_SECONDS = ms('5s');
 
-// eslint-disable-next-line complexity
 async function syncPayPalOrderPaymentByPaymentId(id) {
   const payment = await Payments.findById(id);
 

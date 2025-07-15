@@ -29,7 +29,6 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 

@@ -97,7 +97,6 @@ async function onUpdate(update, session, fn) {
       // TODO: rewrite this
       for (const _id of _ids) {
         try {
-          // eslint-disable-next-line no-await-in-loop
           await Messages.findOneAndUpdate(
             this,
             session,

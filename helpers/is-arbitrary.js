@@ -76,7 +76,7 @@ const REGEX_DOMAIN_WITHOUT_TLD = new RE2(new RegExp(domainWithoutTLD, 'im'));
 const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
 // function isArbitrary(session, headers, bodyStr) {
-// eslint-disable-next-line complexity
+
 function isArbitrary(session, headers) {
   let subject = getHeaders(headers, 'subject');
   if (!isSANB(subject)) subject = null;

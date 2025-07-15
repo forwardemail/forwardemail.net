@@ -39,7 +39,6 @@ const HOSTNAMES = _.uniq(
       ]
 ).sort();
 
-// eslint-disable-next-line complexity
 async function ips(ctx, next) {
   try {
     if (!ctx.client || !ctx.resolver)

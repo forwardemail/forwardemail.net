@@ -15,7 +15,6 @@ const isEmail = require('#helpers/is-email');
 const { Domains, Aliases } = require('#models');
 const config = require('#config');
 
-// eslint-disable-next-line complexity
 async function importAliases(ctx) {
   if (ctx.state.domain.is_global)
     throw Boom.badRequest(ctx.translateError('IS_NOT_ADMIN'));

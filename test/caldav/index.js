@@ -98,7 +98,7 @@ test.beforeEach(async (t) => {
       ...calDAVConfig,
       wsp,
       port,
-      redis: client
+      client
     },
     Users
   );

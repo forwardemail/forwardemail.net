@@ -26,7 +26,6 @@ const syncStripePaymentIntent = require('#helpers/sync-stripe-payment-intent');
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 const { STRIPE_PRODUCTS } = config.payments;
 
-// eslint-disable-next-line complexity
 async function processEvent(ctx, event) {
   //
   // handle the events

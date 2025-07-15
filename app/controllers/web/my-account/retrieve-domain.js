@@ -26,7 +26,6 @@ const meta = new Meta(config.meta, logger);
 const META_TITLE_AFFIX = `| ${config.appName}`;
 const EXCHANGES = config.exchanges;
 
-// eslint-disable-next-line complexity
 async function retrieveDomain(ctx, next) {
   if (!isSANB(ctx.params.domain_id) && !isSANB(ctx.request.body.domain))
     throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));

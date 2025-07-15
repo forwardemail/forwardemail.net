@@ -392,4 +392,45 @@ router
 // inquiries
 // router.post('/inquiries', api.v1.inquiries.create);
 
+//
+// Alias endpoints (CardDAV, CalDAV, IMAP/POP3)
+// These use alias authentication instead of API token
+//
+
+// contacts (CardDAV)
+router
+  .use('/contacts', api.v1.aliasAuth)
+  .get('/contacts', paginate.middleware(10, 50), api.v1.contacts.list)
+  .post('/contacts', api.v1.contacts.create)
+  .get('/contacts/:id', api.v1.contacts.retrieve)
+  .put('/contacts/:id', api.v1.contacts.update)
+  .delete('/contacts/:id', api.v1.contacts.remove);
+
+// calendars (CalDAV)
+router
+  .use('/calendars', api.v1.aliasAuth)
+  .get('/calendars', paginate.middleware(10, 50), api.v1.calendars.list)
+  .post('/calendars', api.v1.calendars.create)
+  .get('/calendars/:id', api.v1.calendars.retrieve)
+  .put('/calendars/:id', api.v1.calendars.update)
+  .delete('/calendars/:id', api.v1.calendars.remove);
+
+// messages (IMAP/POP3)
+router
+  .use('/messages', api.v1.aliasAuth)
+  .get('/messages', paginate.middleware(10, 50), api.v1.messages.list)
+  .post('/messages', api.v1.messages.create)
+  .get('/messages/:id', api.v1.messages.retrieve)
+  .put('/messages/:id', api.v1.messages.update)
+  .delete('/messages/:id', api.v1.messages.remove);
+
+// folders (IMAP/POP3)
+router
+  .use('/folders', api.v1.aliasAuth)
+  .get('/folders', paginate.middleware(10, 50), api.v1.folders.list)
+  .post('/folders', api.v1.folders.create)
+  .get('/folders/:id', api.v1.folders.retrieve)
+  .put('/folders/:id', api.v1.folders.update)
+  .delete('/folders/:id', api.v1.folders.remove);
+
 module.exports = router;

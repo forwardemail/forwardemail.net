@@ -43,7 +43,6 @@ function parseFilter(address) {
 // <https://github.com/pdl/regexp-capture-interpolation/blob/fbe04423b37699c2d653d9bc57b085c24dfe1c75/lib/index.js#L92>
 const REGEX_INTERPOLATED_DOLLAR = new RE2(/(\$)([1-9]\d*|[$&`'])/);
 
-// eslint-disable-next-line complexity
 async function getForwardingAddresses(
   address,
   recursive = [],
@@ -725,7 +724,7 @@ async function getForwardingAddresses(
         );
 
       // support recursive IMAP lookup
-      // eslint-disable-next-line no-await-in-loop
+
       const data = await getForwardingAddresses.call(
         this,
         forwardingAddress,

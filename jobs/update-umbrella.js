@@ -142,7 +142,6 @@ async function getSPFRecord(name, isRedirect = false) {
 //       OR have an SPF record with -all or ~all qualifier
 // - [X} if criteria met, then cached for 7 days (job runs daily)
 
-// eslint-disable-next-line complexity
 async function isBadDomain(name) {
   // check if adult content or malware domain
   if (badDomains.has(name)) return badDomains.get(name);
@@ -218,7 +217,6 @@ async function isBadDomain(name) {
   return isBad;
 }
 
-// eslint-disable-next-line complexity
 async function checkDate(date) {
   const list = `http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m-${date}.csv.zip`;
   logger.info('updating list', { list });
@@ -318,7 +316,7 @@ async function checkDate(date) {
       if (filteredDomains.size >= MAX_RESULTS) break;
       if (count >= REQUIRED_FREQUENCY) {
         // only add it to filtered domains if it passed checklist above
-        // eslint-disable-next-line no-await-in-loop
+
         const isBad = await isBadDomain(domain);
         if (!isBad) filteredDomains.add(domain);
       }

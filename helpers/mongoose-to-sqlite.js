@@ -97,7 +97,7 @@ function noop(fnName) {
 // a case by case basis instead of writing this out
 
 // TODO: support `multi: true` option for this function (and rewrite IMAP helpers to leverage it)
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function updateMany(
   instance,
   session,
@@ -427,7 +427,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   return { deletedCount: result.changes };
 }
 
-// eslint-disable-next-line max-params, complexity
+// eslint-disable-next-line max-params
 async function find(
   instance,
   session,
@@ -437,9 +437,11 @@ async function find(
 ) {
   if (
     !_.isEmpty(options) &&
-    !Object.keys(options).every((key) => key === 'sort')
+    !Object.keys(options).every(
+      (key) => key === 'sort' || key === 'limit' || key === 'offset'
+    )
   )
-    throw new TypeError('Only sort option supported');
+    throw new TypeError('Only sort, limit, and offset options supported');
 
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -475,9 +477,20 @@ async function find(
   if (!_.isEmpty(fields)) opts.fields = fields;
 
   // sort support
-  if (options.sort) {
-    if (isSANB(options.sort)) opts.sort = options.sort;
-    else throw new TypeError('Sort must be a string');
+  if (options.sort) opts.sort = options.sort;
+
+  // limit support
+  if (options.limit) {
+    if (Number.isFinite(options.limit) && Number.isInteger(options.limit))
+      opts.limit = options.limit;
+    else throw new TypeError('Limit must be a finite integer');
+  }
+
+  // offset support
+  if (options.offset) {
+    if (Number.isFinite(options.offset) && Number.isInteger(options.offset))
+      opts.offset = options.offset;
+    else throw new TypeError('Offset must be a finite integer');
   }
 
   const sql = builder.build(opts);
@@ -583,7 +596,6 @@ async function findOne(
   return doc;
 }
 
-// eslint-disable-next-line complexity
 async function $__handleSave(options = {}, fn) {
   try {
     const table =
@@ -713,7 +725,7 @@ async function findByIdAndUpdate(
 }
 
 // TODO: handle projection from `options` (?)
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function findOneAndUpdate(
   instance,
   session,
@@ -1016,7 +1028,6 @@ function prepareQuery(mapping, doc) {
   return obj;
 }
 
-// eslint-disable-next-line complexity
 function parseSchema(Model, modelName = '') {
   if (typeof Model !== 'function' && typeof Model !== 'object')
     throw new TypeError('Model was missing');

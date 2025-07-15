@@ -32,7 +32,6 @@ function createDenylistError(val, code = 421) {
   );
 }
 
-// eslint-disable-next-line complexity
 async function isDenylisted(value, client, resolver) {
   if (!Array.isArray(value)) value = [value];
 
@@ -68,7 +67,7 @@ async function isDenylisted(value, client, resolver) {
 
     // if allowlisted return early
     // (note this does a reverse lookup on IP address to check hostname of IP against allowlist too)
-    // eslint-disable-next-line no-await-in-loop
+
     if (await isAllowlisted(v, client, resolver)) continue;
 
     // TODO: if it was a FQDN then lookup A records for domain and root domain (?)
@@ -86,8 +85,7 @@ async function isDenylisted(value, client, resolver) {
         if (config.denylist.has(root)) throw createDenylistError(root, 550);
 
         const isRootDomainAllowlisted = client
-          ? // eslint-disable-next-line no-await-in-loop
-            await isAllowlisted(root, client, resolver)
+          ? await isAllowlisted(root, client, resolver)
           : false;
         //
         // if the root domain was allowlisted and it was an email
@@ -98,7 +96,6 @@ async function isDenylisted(value, client, resolver) {
         //
         if (isRootDomainAllowlisted) {
           if (isEmail(v)) {
-            // eslint-disable-next-line no-await-in-loop
             const result = await client.get(`denylist:${v}`);
 
             if (boolean(result)) throw createDenylistError(v);
@@ -108,14 +105,13 @@ async function isDenylisted(value, client, resolver) {
         }
 
         // check redis denylist on root domain
-        // eslint-disable-next-line no-await-in-loop
+
         const isRootDomainDenylisted = await client.get(`denylist:${root}`);
 
         if (boolean(isRootDomainDenylisted)) throw createDenylistError(root);
       }
     }
 
-    // eslint-disable-next-line no-await-in-loop
     const denylisted = await client.get(`denylist:${v}`);
 
     if (boolean(denylisted)) throw createDenylistError(v);

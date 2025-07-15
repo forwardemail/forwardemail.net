@@ -26,7 +26,6 @@ const { Aliases, Logs } = require('#models');
 
 const SIXTY_SECONDS = ms('60s');
 
-// eslint-disable-next-line complexity
 async function listLogs(ctx) {
   //
   // NOTE: this is a safeguard since logs are sensitive

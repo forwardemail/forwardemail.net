@@ -92,7 +92,6 @@ graceful.listen();
 
     const description = (firstName.trim() + ' ' + lastName.trim()).trim();
 
-    // eslint-disable-next-line no-await-in-loop
     const exists = await Aliases.exists({
       user: user._id,
       domain: domain._id,
@@ -105,7 +104,6 @@ graceful.listen();
 
     if (!is_enabled) notActive.push(line);
 
-    // eslint-disable-next-line no-await-in-loop
     await Aliases.create({
       user: user._id,
       domain: domain._id,

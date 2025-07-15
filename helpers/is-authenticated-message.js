@@ -19,7 +19,6 @@ const HOSTNAME = os.hostname();
 
 const UBUNTU_DOMAINS = Object.keys(config.ubuntuTeamMapping);
 
-// eslint-disable-next-line complexity
 async function isAuthenticatedMessage(headers, body, session, resolver) {
   const options = {
     ip: session.remoteAddress,

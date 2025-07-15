@@ -33,7 +33,6 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 

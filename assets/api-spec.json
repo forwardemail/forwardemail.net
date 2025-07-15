@@ -1071,6 +1071,320 @@
         }
       }
     },
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "required": ["id", "object"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Contact ID"
+          },
+          "fn": {
+            "type": "string",
+            "description": "Full name"
+          },
+          "given_name": {
+            "type": "string",
+            "description": "Given name"
+          },
+          "family_name": {
+            "type": "string",
+            "description": "Family name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Organization"
+          },
+          "title": {
+            "type": "string",
+            "description": "Job title"
+          },
+          "note": {
+            "type": "string",
+            "description": "Notes"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for caching and conflict detection"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "object": {
+            "type": "string",
+            "example": "contact"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": ["id", "name", "object"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Calendar ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Calendar name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Calendar description"
+          },
+          "color": {
+            "type": "string",
+            "description": "Calendar color (hex code)",
+            "example": "#0066ff"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Calendar timezone",
+            "example": "UTC"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Display order"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for caching and conflict detection"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "object": {
+            "type": "string",
+            "example": "calendar"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": ["id", "object"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Message ID"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "Message UID"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Message subject"
+          },
+          "from": {
+            "type": "object",
+            "description": "Sender information",
+            "properties": {
+              "address": {
+                "type": "string",
+                "format": "email"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "to": {
+            "type": "array",
+            "description": "Recipients",
+            "items": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "cc": {
+            "type": "array",
+            "description": "CC recipients",
+            "items": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "bcc": {
+            "type": "array",
+            "description": "BCC recipients",
+            "items": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Message date"
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain text content"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML content"
+          },
+          "attachments": {
+            "type": "array",
+            "description": "Message attachments",
+            "items": {
+              "type": "object",
+              "properties": {
+                "filename": {
+                  "type": "string"
+                },
+                "contentType": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "flags": {
+            "type": "array",
+            "description": "Message flags",
+            "items": {
+              "type": "string"
+            }
+          },
+          "folder": {
+            "type": "string",
+            "description": "Folder/mailbox ID"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for caching and conflict detection"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "object": {
+            "type": "string",
+            "example": "message"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": ["id", "name", "path", "object"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Folder ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Folder name"
+          },
+          "path": {
+            "type": "string",
+            "description": "Folder path"
+          },
+          "delimiter": {
+            "type": "string",
+            "description": "Path delimiter",
+            "example": "/"
+          },
+          "specialUse": {
+            "type": "string",
+            "description": "Special use flag",
+            "enum": ["\\Inbox", "\\Sent", "\\Drafts", "\\Trash", "\\Junk", "\\Archive"]
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Whether folder is subscribed"
+          },
+          "uidValidity": {
+            "type": "integer",
+            "description": "UID validity value"
+          },
+          "uidNext": {
+            "type": "integer",
+            "description": "Next UID value"
+          },
+          "modifyIndex": {
+            "type": "integer",
+            "description": "Modification index"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for caching and conflict detection"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "object": {
+            "type": "string",
+            "example": "folder"
+          }
+        }
+      }
+    },
     "responses": {
       "Error": {
         "description": "Error response",
@@ -2862,7 +3176,7 @@
     "/v1/contacts": {
       "get": {
         "summary": "List contacts",
-        "description": "List all contacts (CardDAV). This endpoint is coming soon.",
+        "description": "List all contacts (CardDAV)",
         "tags": [
           "Alias Contacts"
         ],
@@ -2871,22 +3185,42 @@
             "AliasAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
         "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
+          "200": {
+            "description": "List of contacts",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "post": {
         "summary": "Create contact",
-        "description": "Create a new contact (CardDAV). This endpoint is coming soon.",
+        "description": "Create a new contact (CardDAV)",
         "tags": [
           "Alias Contacts"
         ],
@@ -2895,16 +3229,82 @@
             "AliasAuth": []
           }
         ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["fn"],
+                "properties": {
+                  "fn": {
+                    "type": "string",
+                    "description": "Full name"
+                  },
+                  "given_name": {
+                    "type": "string",
+                    "description": "Given name"
+                  },
+                  "family_name": {
+                    "type": "string",
+                    "description": "Family name"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Phone number"
+                  },
+                  "organization": {
+                    "type": "string",
+                    "description": "Organization"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Job title"
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "Notes"
+                  }
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "headers": {
+              "ETag": {
+                "description": "Entity tag for caching",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2997,7 +3397,7 @@
     "/v1/calendars": {
       "get": {
         "summary": "List calendars",
-        "description": "List all calendars (CalDAV). This endpoint is coming soon.",
+        "description": "List all calendars (CalDAV)",
         "tags": [
           "Alias Calendars"
         ],
@@ -3006,16 +3406,33 @@
             "AliasAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
         "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
+          "200": {
+            "description": "List of calendars",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       },
@@ -3132,7 +3549,7 @@
     "/v1/messages": {
       "get": {
         "summary": "List and search for messages",
-        "description": "List and search for messages (IMAP/POP3). This endpoint is coming soon.",
+        "description": "List and search for messages (IMAP/POP3)",
         "tags": [
           "Alias Messages"
         ],
@@ -3141,16 +3558,181 @@
             "AliasAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filter messages by folder path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "unread_only",
+            "in": "query",
+            "description": "Filter to only unread messages",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "flagged_only",
+            "in": "query",
+            "description": "Filter to only flagged messages",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "General search across subject, body, from, to fields",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Alias for search parameter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Search in message subject",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Search in message body content",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Search in message text content (alias for body)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Search in sender address or name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Search in recipient address or name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Search in CC recipient address or name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Search in message headers",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Search by message ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filter messages since this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filter messages before this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filter messages with minimum size in bytes",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filter messages with maximum size in bytes",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filter messages by attachment presence",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
+          "200": {
+            "description": "List of messages",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       },
@@ -3267,7 +3849,7 @@
     "/v1/folders": {
       "get": {
         "summary": "List folders",
-        "description": "List all folders (IMAP/POP3). This endpoint is coming soon.",
+        "description": "List all folders (IMAP/POP3)",
         "tags": [
           "Alias Folders"
         ],
@@ -3276,16 +3858,41 @@
             "AliasAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed_only",
+            "in": "query",
+            "description": "Filter to only subscribed folders",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
+          "200": {
+            "description": "List of folders",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       },

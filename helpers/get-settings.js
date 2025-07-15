@@ -31,7 +31,6 @@ const HTTP_RETRY_ERROR_CODES = new Set([
   'EAI_AGAIN'
 ]);
 
-// eslint-disable-next-line complexity
 async function getSettings(name, resolver, locale = i18n.config.defaultLocale) {
   if (!isSANB(name) || !isFQDN(name))
     throw Boom.badRequest(i18n.translateError('INVALID_FQDN', locale));

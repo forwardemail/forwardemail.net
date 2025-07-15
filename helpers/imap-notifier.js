@@ -16,18 +16,21 @@
 const { EventEmitter } = require('node:events');
 
 const Database = require('better-sqlite3-multiple-ciphers');
+const mongoose = require('mongoose');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql-enhanced');
-const _ = require('#helpers/lodash');
 
 const IMAPError = require('#helpers/imap-error');
-const Journals = require('#models/journals');
 const Mailboxes = require('#models/mailboxes');
+const _ = require('#helpers/lodash');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const i18n = require('#helpers/i18n');
+const logger = require('#helpers/logger');
 
 const builder = new Builder();
+const connectionNameSymbol = Symbol.for('connection.name');
+
+let conn;
 
 class IMAPNotifier extends EventEmitter {
   constructor(options) {
@@ -142,7 +145,6 @@ class IMAPNotifier extends EventEmitter {
     this._listeners.removeListener(session.user.alias_id, handler);
   }
 
-  // eslint-disable-next-line complexity
   async addEntries(instance, session, mailboxId, entries) {
     if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
       throw new TypeError('WebSocketAsPromised instance required');
@@ -185,6 +187,14 @@ class IMAPNotifier extends EventEmitter {
     let err;
 
     try {
+      if (!conn)
+        conn = mongoose.connections.find(
+          (conn) => conn[connectionNameSymbol] === 'JOURNALS_MONGO_URI'
+        );
+      if (!conn) throw new Error('Mongoose connection does not exist');
+      if (!conn.models || !conn.models.Journals || !conn.models.Journals.create)
+        throw new Error('Mongoose journals model not yet initialized');
+
       if (updated.length > 0) {
         mailbox = await Mailboxes.findOneAndUpdate(
           instance,
@@ -221,7 +231,7 @@ class IMAPNotifier extends EventEmitter {
         entry.modseq = entry.modseq || modseq;
         entry.created = entry.created || created;
         entry.mailbox = entry.mailbox || mailbox._id;
-        const doc = new Journals(entry).toObject({
+        const doc = new conn.models.Journals(entry).toObject({
           bson: true,
           transform: false,
           virtuals: true,
@@ -303,9 +313,9 @@ class IMAPNotifier extends EventEmitter {
       // <https://mongodb.github.io/node-mongodb-native/4.9/interfaces/BulkResult.html>
       try {
         if (docs.length <= 500) {
-          await Journals.create(docs);
+          await conn.models.Journals.create(docs);
         } else {
-          const bulkResult = await Journals.bulkWrite(
+          const bulkResult = await conn.models.Journals.bulkWrite(
             docs.map((doc) => ({
               insertOne: {
                 document: doc
@@ -350,7 +360,7 @@ class IMAPNotifier extends EventEmitter {
   // <https://github.com/nodemailer/wildduck/blob/c9188b3766b547b091d140a33308b5c3ec3aa1d4/imap-core/lib/imap-connection.js#L616-L619>
   getUpdates(mailbox, modifyIndex, fn) {
     modifyIndex = Number(modifyIndex) || 0;
-    Journals.find({
+    conn.models.Journals.find({
       mailbox: mailbox._id || mailbox,
       modseq: {
         $gt: modifyIndex

@@ -10,7 +10,6 @@ const isEmail = require('#helpers/is-email');
 
 const { Logs, Aliases } = require('#models');
 
-// eslint-disable-next-line complexity
 async function retrieveLog(ctx, next) {
   //
   // NOTE: this is a safeguard since logs are sensitive

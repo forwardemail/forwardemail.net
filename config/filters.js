@@ -71,7 +71,6 @@ function fixTableOfContents(content) {
 
 const MAX_SECTIONS = 5;
 
-// eslint-disable-next-line complexity
 function fixTableOfContents(content, options) {
   // CSP fixes
   content = content.replaceAll(

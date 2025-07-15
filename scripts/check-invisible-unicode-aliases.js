@@ -29,7 +29,6 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose();
 

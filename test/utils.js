@@ -9,7 +9,6 @@ const { randomUUID } = require('node:crypto');
 // <https://github.com/thiagomini/factory-girl-ts/issues/34>
 const BaseFactory = require('@zainundin/mongoose-factory').default;
 
-const API = require('@ladjs/api');
 const Redis = require('ioredis-mock');
 const Web = require('@ladjs/web');
 const falso = require('@ngneat/falso');
@@ -19,12 +18,15 @@ const pWaitFor = require('p-wait-for');
 const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const { listen } = require('async-listen');
-const _ = require('#helpers/lodash');
+
+const API = require('../api-server');
 
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
+const _ = require('#helpers/lodash');
 const apiConfig = require('#config/api');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
 const setupMongooseHelper = require('#helpers/setup-mongoose');
 const webConfig = require('#config/web');
@@ -75,13 +77,31 @@ exports.setupWebServer = async (t) => {
 };
 
 exports.setupApiServer = async (t) => {
-  const client = new Redis({ keyPrefix: randomUUID() });
+  const keyPrefix = randomUUID();
+  const client = new Redis({ keyPrefix });
   client.setMaxListeners(0);
   t.context.client = client;
+
+  const subscriber = new Redis({ keyPrefix });
+  subscriber.setMaxListeners(0);
+  t.context.subscriber = subscriber;
+
+  const sqlitePort = await getPort();
+  const SQLite = require('../sqlite-server');
+  const sqlite = new SQLite({ client, subscriber });
+  await sqlite.listen(sqlitePort);
+  t.context.sqlite = sqlite;
+  const wsp = createWebSocketAsPromised({
+    port: sqlitePort
+  });
+  t.context.wsp = wsp;
   const api = new API(
     {
       ...apiConfig,
-      redis: client
+      client,
+      // TODO: pass subscriber?
+      wsp,
+      resolver: sqlite.resolver
     },
     Users
   );
@@ -91,6 +111,7 @@ exports.setupApiServer = async (t) => {
   t.context.apiURL = await listen(api.server, { host: '127.0.0.1', port });
   t.context.apiURL = t.context.apiURL.toString().slice(0, -1);
   t.context.api = request.agent(api.server);
+  t.context.resolver = sqlite.resolver;
 };
 
 exports.setupRedisClient = async (t) => {

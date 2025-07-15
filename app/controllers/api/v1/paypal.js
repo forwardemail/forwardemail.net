@@ -24,7 +24,6 @@ const retryPayPalRequest = require('#helpers/retry-paypal-request');
 
 const { PAYPAL_PLAN_MAPPING } = config.payments;
 
-// eslint-disable-next-line complexity
 async function processEvent(ctx) {
   const { body } = ctx.request;
 

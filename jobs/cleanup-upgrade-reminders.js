@@ -58,25 +58,24 @@ graceful.listen();
     // and probably should ban them for spam/abuse
     const pipeline = client.pipeline();
     for (const email of Object.keys(emails)) {
-      // eslint-disable-next-line no-await-in-loop
       const domains = await UpgradeReminders.distinct('domain', {
         pending_recipients: email
       });
       // if the user is not on a paid plan and paid to date
       // then ban the user email and ban all the domains
-      // eslint-disable-next-line no-await-in-loop
+
       const user = await Users.findOne({ email });
       let shouldBan = true;
       if (user) {
         if (user.plan === 'free') {
           user.is_banned = true;
-          // eslint-disable-next-line no-await-in-loop
+
           await user.save();
         } else if (
           new Date(user[config.userFields.planExpiresAt]) < Date.now()
         ) {
           user.is_banned = true;
-          // eslint-disable-next-line no-await-in-loop
+
           await user.save();
         } else {
           // don't ban

@@ -26,7 +26,6 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 // payment and the data we are getting from stripe, we do
 // not make any changes and send an alert for that payment
 function syncStripePaymentIntent(user) {
-  // eslint-disable-next-line complexity
   return async function (errorEmails, paymentIntent) {
     logger.info(`paymentIntent ${paymentIntent.id}`);
 

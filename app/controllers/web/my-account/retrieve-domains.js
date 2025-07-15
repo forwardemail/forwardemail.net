@@ -10,7 +10,6 @@ const config = require('#config');
 // const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const { Domains, Aliases } = require('#models');
 
-// eslint-disable-next-line complexity
 async function retrieveDomains(ctx, next) {
   ctx.state.domains = [];
   ctx.state.adminTeams = [];

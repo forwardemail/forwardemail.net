@@ -210,7 +210,6 @@ async function syncUbuntuUser(user, map) {
     await pMap(
       [...map.keys()],
 
-      // eslint-disable-next-line complexity
       async (name) => {
         try {
           const domain = await Domains.findOne({

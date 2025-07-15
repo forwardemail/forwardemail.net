@@ -129,7 +129,6 @@ const instance = {
 // <https://github.com/artem-karpenko/archiver-zip-encrypted/>
 archiver.registerFormat('zip-encrypted', archiverZipEncrypted);
 
-// eslint-disable-next-line complexity
 async function rekey(payload) {
   if (isCancelled) throw new ServerShutdownError();
 
@@ -413,7 +412,6 @@ async function rekey(payload) {
   });
 }
 
-// eslint-disable-next-line complexity
 async function backup(payload) {
   if (isCancelled) throw new ServerShutdownError();
 
@@ -718,7 +716,7 @@ async function backup(payload) {
             //
             // TODO: if we do any of the above todo's then we should mirror it for EML export too
             //
-            // eslint-disable-next-line no-await-in-loop
+
             const content = await getStream(value);
             stream.write(
               `From ${

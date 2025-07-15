@@ -90,7 +90,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
     for (const dirent of dirents) {
       if (!dirent.isDirectory()) continue;
-      // eslint-disable-next-line no-await-in-loop
+
       const files = await fs.promises.readdir(
         path.join(mountDir, dirent.name),
         {
@@ -116,12 +116,10 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
         const filePath = path.join(mountDir, dirent.name, file.name);
         try {
-          // eslint-disable-next-line no-await-in-loop
           const stat = await fs.promises.stat(filePath);
           if (!stat.isFile()) continue; // safeguard
           // delete any backups that are 4h+ old
           if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('4h')) {
-            // eslint-disable-next-line no-await-in-loop
             await fs.promises.rm(filePath, {
               force: true,
               recursive: true

@@ -48,7 +48,7 @@ graceful.listen();
       // lookup if they have free credit with same date
       // if so, then set the plan_set_at date equal to it
       // and re-save the user so they have proper credit
-      // eslint-disable-next-line no-await-in-loop
+
       const payment = await Payments.findOne({
         kind: 'one-time',
         method: 'free_beta_program',
@@ -59,12 +59,12 @@ graceful.listen();
       });
       if (payment) {
         payment.invoice_at = dayjs('3/31/23').startOf('day').toDate();
-        // eslint-disable-next-line no-await-in-loop
+
         await payment.save();
         user[config.userFields.planSetAt] = dayjs('3/31/23')
           .startOf('day')
           .toDate();
-        // eslint-disable-next-line no-await-in-loop
+
         await user.save();
         console.log(`Fixed ${user.email} to have proper credit`);
       }

@@ -86,7 +86,6 @@ const OUTLOOK_HOSTS = new Set([
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 
-// eslint-disable-next-line complexity
 async function getTransporter(options = {}, err) {
   const {
     ignoreMXHosts,

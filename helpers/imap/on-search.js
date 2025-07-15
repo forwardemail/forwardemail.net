@@ -95,7 +95,7 @@ async function onSearch(mailboxId, options, session, fn) {
     const set = new Set();
     let mustIncludeIds = false;
 
-    // eslint-disable-next-line complexity, no-inner-declarations
+    // eslint-disable-next-line no-inner-declarations
     async function walkQuery(parent, ne, node) {
       if (returned) {
         return;
@@ -117,7 +117,6 @@ async function onSearch(mailboxId, options, session, fn) {
           }
 
           case 'not': {
-            // eslint-disable-next-line no-await-in-loop
             await walkQuery(parent, !ne, [term.value || []].flat());
             break;
           }
@@ -126,7 +125,6 @@ async function onSearch(mailboxId, options, session, fn) {
             const $or = [];
 
             for (const entry of [term.value || []].flat()) {
-              // eslint-disable-next-line no-await-in-loop
               await walkQuery($or, false, [entry || []].flat());
             }
 

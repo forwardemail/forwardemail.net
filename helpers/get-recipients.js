@@ -26,7 +26,6 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const parseUsername = require('#helpers/parse-username');
 const { encrypt } = require('#helpers/encrypt-decrypt');
 
-// eslint-disable-next-line complexity
 async function getRecipients(session, scan) {
   const bounces = [];
   const normalized = [];
@@ -35,7 +34,7 @@ async function getRecipients(session, scan) {
   // lookup forwarding recipients recursively
   let recipients = await pMap(
     session.envelope.rcptTo,
-    // eslint-disable-next-line complexity
+
     async (to) => {
       let port = 25;
       try {

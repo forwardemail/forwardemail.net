@@ -1099,7 +1099,7 @@ Emails.statics.getMessage = async function (obj, returnString = false) {
 // options.user (from `ctx.state.user` or `alias.user`)
 // options.date
 // options.catchall (boolean, true, if using domain-wide generated catch-all password)
-// eslint-disable-next-line complexity
+
 Emails.statics.queue = async function (
   options = {},
   locale = i18n.config.defaultLocale

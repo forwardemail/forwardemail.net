@@ -38,7 +38,6 @@ async function isValidPassword(tokens = [], password) {
     )
       continue;
 
-    // eslint-disable-next-line no-await-in-loop
     const rawHash = await pbkdf2({
       password,
       salt: token.salt,

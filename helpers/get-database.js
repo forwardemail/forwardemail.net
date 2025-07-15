@@ -125,7 +125,7 @@ function touchFile(s3, fileName) {
 }
 */
 
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function getDatabase(
   instance,
   alias,
@@ -143,15 +143,15 @@ async function getDatabase(
     return session.db;
   }
 
-  // instance must be either IMAP, POP3, SQLite, CalDAV, or CardDAV
+  // instance must be either IMAP, POP3, SQLite, CalDAV, CardDAV, or API
   if (
-    !['IMAP', 'POP3', 'SQLite', 'CalDAV', 'CardDAV'].includes(
+    !['IMAP', 'POP3', 'SQLite', 'CalDAV', 'CardDAV', 'API'].includes(
       instance?.constructor?.name
     ) &&
     HOSTNAME !== env.SQLITE_HOST
   ) {
     throw new TypeError(
-      'Instance must be either IMAP, POP3, SQLite, CalDAV, or CardDAV'
+      'Instance must be either IMAP, POP3, SQLite, CalDAV, CardDAV, or API'
     );
   }
 
@@ -973,7 +973,7 @@ function retryGetDatabase(...args) {
   return pRetry(() => getDatabase(...args), {
     retries: 2,
     minTimeout: ms('5s'),
-    // eslint-disable-next-line complexity
+
     async onFailedAttempt(error) {
       const session = args[2];
 

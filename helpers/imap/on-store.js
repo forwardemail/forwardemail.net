@@ -155,7 +155,7 @@ async function onStore(mailboxId, update, session, fn) {
     try {
       if (messages.length > 0) {
         session.db
-          // eslint-disable-next-line complexity
+
           .transaction((messages) => {
             for (const result of messages) {
               const message = syncConvertResult(Messages, result);

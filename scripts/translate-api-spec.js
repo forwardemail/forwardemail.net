@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 /**
  * Copyright (c) Forward Email LLC
  * SPDX-License-Identifier: MIT

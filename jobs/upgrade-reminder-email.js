@@ -65,7 +65,6 @@ async function mapper(upgradeReminder) {
   // check if the mail was banned and if so then don't send
   const cleanQueue = [];
   for (const addr of upgradeReminder.queue) {
-    // eslint-disable-next-line no-await-in-loop
     const emailBanned = await client.get(`denylist:${addr}`);
     if (!boolean(emailBanned)) cleanQueue.push(addr);
   }
@@ -134,7 +133,6 @@ async function mapper(upgradeReminder) {
 
     const bannedUserEmails = [];
     for (const id of bannedUserIdSet) {
-      // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(id);
       if (user && user.email) bannedUserEmails.push(user.email);
     }

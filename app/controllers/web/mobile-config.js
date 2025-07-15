@@ -387,7 +387,7 @@ function k9s(name, username) {
 // NOTE: for security reasons (so users can't guess that their inputs are accurate) we 404
 //       (which is similar to what we do for the forgot password stuff, e.g. so users can't guess valid emails)
 //
-// eslint-disable-next-line complexity
+
 async function mobileConfig(ctx, next) {
   try {
     // must end with `.mobileconfig` or `.k9s`

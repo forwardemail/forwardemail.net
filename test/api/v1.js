@@ -2365,7 +2365,6 @@ test('alias pagination', async (t) => {
     .create();
 
   for (let i = 0; i < 15; i++) {
-    // eslint-disable-next-line no-await-in-loop
     await t.context.aliasFactory
       .withState({
         name: dashify(falso.randFirstName().toLowerCase() + i.toString()),

@@ -21,7 +21,6 @@ const { Domains } = require('#models');
 //
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
 
-// eslint-disable-next-line complexity
 async function updateDomain(ctx, next) {
   ctx.state.domain = await Domains.findById(ctx.state.domain._id);
   if (!ctx.state.domain)

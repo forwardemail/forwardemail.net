@@ -135,7 +135,7 @@ const IGNORED_CONTENT_TYPES = [
 // ]);
 
 // <https://github.com/cabinjs/axe/#send-logs-to-http-endpoint>
-// eslint-disable-next-line complexity
+
 async function hook(err, message, meta) {
   //
   // if it was not `error` or `fatal` then we must have the symbol set
@@ -317,7 +317,6 @@ async function hook(err, message, meta) {
 // set the silent symbol in axe to true for successful asset responses
 //
 for (const level of logger.config.levels) {
-  // eslint-disable-next-line complexity
   logger.pre(level, function (err, message, meta) {
     //
     // NOTE: we delete `err.response` from object since PayPal adds it

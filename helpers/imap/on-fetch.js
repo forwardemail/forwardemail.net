@@ -35,7 +35,6 @@ const builder = new Builder();
 
 const { formatResponse } = IMAPConnection.prototype;
 
-// eslint-disable-next-line complexity
 async function onFetch(mailboxId, options, session, fn) {
   this.logger.debug('FETCH', { mailboxId, options, session });
 
@@ -249,7 +248,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
       // write the response early since we don't need to perform db operation
       if (options.metadataOnly && !markAsSeen) {
-        // eslint-disable-next-line no-await-in-loop
         const values = await Promise.all(
           getQueryResponse(
             options.query,
@@ -284,7 +282,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
         // flush compiled payloads after every 500 written
         if (isBatchMode && compiledPayloads.length >= 500) {
-          // eslint-disable-next-line no-await-in-loop
           await this.wss.broadcast(session, compiledPayloads);
           _.pullAll(compiledPayloads, compiledPayloads);
         }
@@ -304,7 +301,6 @@ async function onFetch(mailboxId, options, session, fn) {
       // simplify this for now just by writing to the socket writable stream
       //
 
-      // eslint-disable-next-line no-await-in-loop
       const values = await Promise.all(
         getQueryResponse(
           options.query,
@@ -331,7 +327,7 @@ async function onFetch(mailboxId, options, session, fn) {
 
       // <https://github.com/nodemailer/wildduck/issues/563#issuecomment-1826943401>
       const stream = imapHandler.compileStream(data);
-      // eslint-disable-next-line no-await-in-loop
+
       const compiled = await getStream(stream, {
         encoding: 'binary'
       });
@@ -341,7 +337,6 @@ async function onFetch(mailboxId, options, session, fn) {
 
       // flush compiled payloads after every 500 written
       if (isBatchMode && compiledPayloads.length >= 500) {
-        // eslint-disable-next-line no-await-in-loop
         await this.wss.broadcast(session, compiledPayloads);
         _.pullAll(compiledPayloads, compiledPayloads);
       }

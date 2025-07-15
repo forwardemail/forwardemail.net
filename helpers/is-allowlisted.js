@@ -17,7 +17,6 @@ const logger = require('#helpers/logger');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
-// eslint-disable-next-line complexity
 async function isAllowlisted(val, client, resolver, ignoreRedis = false) {
   const lc = punycode.toASCII(val).toLowerCase().trim();
 

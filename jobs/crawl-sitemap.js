@@ -57,7 +57,6 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose(logger);
 
@@ -81,13 +80,12 @@ graceful.listen();
       {
         const path = url.loc.replace(config.urls.web, '');
         logger.debug(`crawling ${path}`);
-        // eslint-disable-next-line no-await-in-loop
+
         const { body } = await client.request({
           method: 'GET',
           path
         });
 
-        // eslint-disable-next-line no-await-in-loop
         const text = await body.text();
 
         const document = parse(text);
@@ -241,13 +239,12 @@ graceful.listen();
       {
         const path = url.loc.replace(config.urls.web, '') + '.png';
         logger.debug(`crawling ${path}`);
-        // eslint-disable-next-line no-await-in-loop
+
         const { body } = await client.request({
           method: 'GET',
           path
         });
 
-        // eslint-disable-next-line no-await-in-loop
         await body.text();
         // body.destroy();
       }
@@ -308,7 +305,6 @@ graceful.listen();
       );
       for (const urlList of urlLists) {
         try {
-          // eslint-disable-next-line no-await-in-loop
           const { body } = await retryRequest(
             `https://ssl.bing.com/webmaster/api.svc/json/SubmitUrlBatch?apikey=${env.MICROSOFT_BING_API_KEY}`,
             {
@@ -325,11 +321,10 @@ graceful.listen();
               resolver
             }
           );
-          // eslint-disable-next-line no-await-in-loop
+
           await body.text();
           logger.debug('submitted %s urls to bing', urlList.length);
         } catch (err) {
-          // eslint-disable-next-line no-await-in-loop
           await logger.error(err);
         }
       }

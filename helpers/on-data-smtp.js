@@ -24,7 +24,6 @@ const validateAlias = require('#helpers/validate-alias');
 const validateDomain = require('#helpers/validate-domain');
 const { decrypt } = require('#helpers/encrypt-decrypt');
 
-// eslint-disable-next-line complexity
 async function onDataSMTP(session, date, headers, body) {
   //
   // NOTE: we don't share the full alias and domain object
@@ -197,7 +196,6 @@ async function onDataSMTP(session, date, headers, body) {
     let tokenUsed;
     if (Array.isArray(domain.tokens) && domain.tokens.length > 0) {
       for (const token of domain.tokens) {
-        // eslint-disable-next-line no-await-in-loop
         isValid = await isValidPassword(
           [token],
           decrypt(session.user.password)

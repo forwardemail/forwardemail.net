@@ -545,7 +545,6 @@ Aliases.virtual('is_update')
     this.__is_update = boolean(isUpdate);
   });
 
-// eslint-disable-next-line complexity
 Aliases.pre('save', async function (next) {
   const alias = this;
   try {

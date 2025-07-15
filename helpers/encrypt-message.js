@@ -25,7 +25,7 @@ openpgp.config.commentstring = 'Plaintext message encrypted by Forward Email';
 openpgp.config.versionString = `Forward Email v${config.pkg.version}`;
 
 // <https://github.com/nodemailer/wildduck/blob/a15878c7d709473c5b0d4eec2062e9425c9b5e31/lib/message-handler.js#L1688>
-// eslint-disable-next-line complexity
+
 async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
   if (!pubKeyArmored) throw new TypeError('Public key missing');
 

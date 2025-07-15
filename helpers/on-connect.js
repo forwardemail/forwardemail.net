@@ -22,7 +22,6 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const HOSTNAME = os.hostname();
 
-// eslint-disable-next-line complexity
 async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
 

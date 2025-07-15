@@ -121,7 +121,7 @@ async function isUserOnNewPayPal(user) {
   for (const payment of userPayments) {
     if (payment.paypal_transaction_id) {
       // Check if this transaction exists with new PayPal agent
-      // eslint-disable-next-line no-await-in-loop
+
       const transactionWithNew = await checkPaymentWithAgent(
         payment.paypal_transaction_id,
         newAgent,

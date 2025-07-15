@@ -74,7 +74,6 @@ async function getLogs(category, dates, query) {
   };
 }
 
-// eslint-disable-next-line complexity
 async function listAnalytics(ctx) {
   //
   // NOTE: this is a safeguard since analytics are sensitive

@@ -53,7 +53,6 @@ graceful.listen();
     if (domain.members.length <= 1) continue;
     const validMembers = [];
     for (const member of domain.members) {
-      // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(member.user).lean().exec();
       if (user[config.userFields.isBanned] || user[config.userFields.isRemoved])
         continue;
@@ -70,9 +69,8 @@ graceful.listen();
 
     // if domain is on free plan then delete domain
     if (domain.plan === 'free') {
-      // eslint-disable-next-line no-await-in-loop
       await Domains.findByIdAndRemove(domain._id);
-      // eslint-disable-next-line no-await-in-loop
+
       await Aliases.deleteMany({ domain: domain._id });
       continue;
     }
@@ -82,7 +80,6 @@ graceful.listen();
     const reassignedUser = validMembers.length === 1 ? validMembers[0] : false;
 
     if (reassignedUser) {
-      // eslint-disable-next-line no-await-in-loop
       const aliases = await Aliases.find({
         domain: domain._id,
         user: { $ne: reassignedUser._id }
@@ -94,7 +91,7 @@ graceful.listen();
           } from ${alias?.user?.email || '<inactive user>'} to ${
             reassignedUser.email
           } as part of our database integrity cleanup (since your domain is not on a team plan).`;
-          // eslint-disable-next-line no-await-in-loop
+
           await Aliases.findByIdAndUpdate(
             {
               _id: alias._id
@@ -105,7 +102,7 @@ graceful.listen();
               }
             }
           );
-          // eslint-disable-next-line no-await-in-loop
+
           await emailHelper({
             template: 'alert',
             message: {

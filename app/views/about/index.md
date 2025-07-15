@@ -113,6 +113,7 @@ The simplicity and effectiveness of this solution attracted attention from promi
 
 **February 2025**: Forward Email switched to [DataPacket](https://www.datapacket.com) as their new primary data center provider, implementing custom, performance-focused, bare-metal hardware to further enhance service reliability and speed.
 
+**June 2025**: Forward Email launched support for the [CardDAV protocol](/faq#do-you-support-contacts-carddav), expanding the platform's capabilities to include contact synchronization alongside existing email and calendar services.
 
 ## Core Principles
 

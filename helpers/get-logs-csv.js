@@ -17,7 +17,6 @@ function makeDelimitedString(arr) {
     .join('","')}"`;
 }
 
-// eslint-disable-next-line complexity
 async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
   if (!_.isObject(query) || _.isEmpty(query)) throw new Error('Invalid query');
 

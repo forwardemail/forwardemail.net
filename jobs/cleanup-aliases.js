@@ -39,7 +39,6 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 async function mapper(alias) {
   // allows us to recursively call mapper()
   if (typeof alias !== 'object' || typeof alias.save !== 'function') {

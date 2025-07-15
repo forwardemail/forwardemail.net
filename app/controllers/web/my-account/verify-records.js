@@ -42,7 +42,6 @@ const DNS_RETRY_CODES = new Set([
   'ETIMEOUT'
 ]);
 
-// eslint-disable-next-line complexity
 async function verifyRecords(ctx) {
   try {
     const domain = await Domains.findById(ctx.state.domain._id);

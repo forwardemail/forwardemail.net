@@ -876,7 +876,7 @@ class CalDAV extends API {
   //       because we want the email to retry, use their DKIM keys,
   //       and we also want to use up the users email credits
   //
-  // eslint-disable-next-line complexity, max-params
+  // eslint-disable-next-line max-params
   async sendEmailWithICS(ctx, calendar, calendarEvent, method, oldCalStr) {
     try {
       const [alias, domain] = await Promise.all([
@@ -1021,7 +1021,6 @@ class CalDAV extends API {
               const vc = new ICAL.Component(['vcalendar', [], []]);
               vc.addSubcomponent(oldEvent);
 
-              // eslint-disable-next-line no-await-in-loop
               const ics = await this.buildICS(
                 ctx,
                 [
@@ -1035,7 +1034,6 @@ class CalDAV extends API {
                 method
               );
 
-              // eslint-disable-next-line no-await-in-loop
               await Emails.queue({
                 message: {
                   from: ctx.state.user.username,
@@ -1152,7 +1150,6 @@ class CalDAV extends API {
           ) {
             for (const rcpt of to) {
               try {
-                // eslint-disable-next-line no-await-in-loop
                 await Emails.queue({
                   message: {
                     from: ctx.state.user.username,
@@ -1250,7 +1247,7 @@ class CalDAV extends API {
   //       <https://github.com/LordEidi/fennel.js/blob/abfc371701fcb2581d8f1382426f0ef9e9846554/handler/calendar.js#L982>
   //       (but note they don't do any normalization)
   //
-  // eslint-disable-next-line complexity
+
   async createCalendar(ctx, { name, description, timezone, color, order }) {
     ctx.logger.debug('createCalendar', {
       name,
@@ -1552,7 +1549,7 @@ class CalDAV extends API {
           vc.addSubcomponent(vevent);
 
           // check if the event already exists, and if so, then simply update it
-          // eslint-disable-next-line no-await-in-loop
+
           let existingEvent = await CalendarEvents.findOne(
             this,
             ctx.state.session,
@@ -1562,7 +1559,6 @@ class CalDAV extends API {
           // if uid was an email e.g. "xyz@google.com" then
           // sometimes the calendarEvent.eventId is the same value but with "_" instead of "@" symbol
           if (!existingEvent && isEmail(eventId)) {
-            // eslint-disable-next-line no-await-in-loop
             existingEvent = await CalendarEvents.findOne(
               this,
               ctx.state.session,
@@ -1575,7 +1571,7 @@ class CalDAV extends API {
 
           if (existingEvent) {
             existingEvent.ical = vc.toString();
-            // eslint-disable-next-line no-await-in-loop
+
             await existingEvent.save();
             continue;
           }
@@ -1590,7 +1586,6 @@ class CalDAV extends API {
         }
 
         for (const eventId of Object.keys(eventIdToEvents)) {
-          // eslint-disable-next-line no-await-in-loop
           const ical = await this.buildICS(
             ctx,
             eventIdToEvents[eventId],
@@ -1682,7 +1677,6 @@ class CalDAV extends API {
     return events;
   }
 
-  // eslint-disable-next-line complexity
   async getEventsByDate(
     ctx,
     { calendarId, start, end, principalId, user, fullData }

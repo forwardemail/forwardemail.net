@@ -31,7 +31,6 @@ const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
 //       take action if a given `truthSource` value actually exists
 //
 
-// eslint-disable-next-line complexity
 function getBounceInfo(err) {
   //
   // parse the bounce error if any

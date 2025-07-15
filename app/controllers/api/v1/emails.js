@@ -106,7 +106,6 @@ async function limit(ctx) {
   };
 }
 
-// eslint-disable-next-line complexity
 async function create(ctx) {
   try {
     if (!_.isPlainObject(ctx.request.body))

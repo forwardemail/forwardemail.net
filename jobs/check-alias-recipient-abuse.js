@@ -475,7 +475,6 @@ graceful.listen();
     const lis = [];
 
     for (const user of users) {
-      // eslint-disable-next-line no-await-in-loop
       const arr = await Aliases.aggregate([
         {
           $match: {
@@ -499,7 +498,6 @@ graceful.listen();
 
       // if it had more than 25 distinct then alert admins
       if (recipients.length >= 25) {
-        // eslint-disable-next-line no-await-in-loop
         const [u, names] = await Promise.all([
           Users.findById(user).lean().exec(),
           Domains.distinct('name', { 'members.user': user })
