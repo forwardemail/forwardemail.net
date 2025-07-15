@@ -120,7 +120,7 @@ router.get(
   web.myAccount.ensureNotBanned,
   api.v1.enforcePaidPlan,
   web.myAccount.ensurePaidToDate,
-  rateLimit(10, 'download logs'),
+  rateLimit(20, 'download logs'),
   web.myAccount.retrieveDomains,
   web.myAccount.listLogs
 );
@@ -378,7 +378,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
-    rateLimit(10, 'create catch all password'),
+    rateLimit(100, 'create catch all password'),
     web.myAccount.createCatchAllPassword
   )
   .delete(
