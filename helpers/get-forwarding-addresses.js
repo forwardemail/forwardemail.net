@@ -455,44 +455,32 @@ async function getForwardingAddresses(
     // "/i:"
     // "/:"
     //
-    let lastIndex;
     const REGEX_FLAG_ENDINGS = ['/gi:', '/ig:', '/g:', '/i:', '/:'];
+    const hasTwoSlashes = element.lastIndexOf('/') !== element.indexOf('/');
 
     // regex ignore support
     let wasIgnoredRegex = false;
     // ! -> 250
-    if (
-      element.startsWith('!') &&
-      element.indexOf('/') === 1 &&
-      element.endsWith('/')
-    ) {
-      element = element.slice(1) + ':';
-      wasIgnoredRegex = true;
+    if (element.startsWith('!/')) {
+      element = element.slice(1);
+      wasIgnoredRegex = 'ignored';
     }
 
     // !! -> 421
-    if (
-      element.startsWith('!!') &&
-      element.indexOf('/') === 2 &&
-      element.endsWith('/')
-    ) {
-      element = element.slice(2) + ':';
-      wasIgnoredRegex = true;
+    if (element.startsWith('!!/')) {
+      element = element.slice(2);
+      wasIgnoredRegex = 'soft';
     }
 
     // !!! -> 550
-    if (
-      element.startsWith('!!!') &&
-      element.indexOf('/') === 3 &&
-      element.endsWith('/')
-    ) {
-      element = element.slice(3) + ':';
-      wasIgnoredRegex = true;
+    if (element.startsWith('!!!/')) {
+      element = element.slice(3);
+      wasIgnoredRegex = 'hard';
     }
 
-    const hasTwoSlashes = element.lastIndexOf('/') !== 0;
     const startsWithSlash = element.indexOf('/') === 0;
 
+    let lastIndex;
     if (startsWithSlash && hasTwoSlashes) {
       for (const ending of REGEX_FLAG_ENDINGS) {
         if (
@@ -503,6 +491,8 @@ async function getForwardingAddresses(
           break;
         }
       }
+
+      if (!lastIndex) element += ':';
     }
 
     //
@@ -510,15 +500,16 @@ async function getForwardingAddresses(
     // <https://github.com/forwardemail/free-email-forwarding/pull/245/commits/e04ea02d700b51771bf61ed512d1763bbf80784b>
     // (with added support for regex gi flags)
     //
-    if (startsWithSlash && hasTwoSlashes && lastIndex) {
-      const elementWithoutRegex = element.slice(
-        Math.max(0, element.lastIndexOf(lastIndex) + lastIndex.length)
-      );
+    if (startsWithSlash && hasTwoSlashes) {
+      const elementWithoutRegex = lastIndex
+        ? element.slice(
+            Math.max(0, element.lastIndexOf(lastIndex) + lastIndex.length)
+          )
+        : element;
 
-      let parsedRegex = element.slice(
-        0,
-        Math.max(0, element.lastIndexOf(lastIndex) + 1)
-      );
+      let parsedRegex = lastIndex
+        ? element.slice(0, Math.max(0, element.lastIndexOf(lastIndex) + 1))
+        : element;
 
       // add case insensitive flag since email addresses are case insensitive
       if (lastIndex === '/g:' || lastIndex === '/:') parsedRegex += 'i';
@@ -553,24 +544,24 @@ async function getForwardingAddresses(
           : elementWithoutRegex;
 
         if (
-          (wasIgnoredRegex && !substitutedAlias) ||
-          substitutedAlias.indexOf('!!!') === 0
+          wasIgnoredRegex === 'hard' ||
+          (substitutedAlias && substitutedAlias.indexOf('!!!') === 0)
         ) {
           hardRejected = true;
           break;
         }
 
         if (
-          (wasIgnoredRegex && !substitutedAlias) ||
-          substitutedAlias.indexOf('!!') === 0
+          wasIgnoredRegex === 'soft' ||
+          (substitutedAlias && substitutedAlias.indexOf('!!') === 0)
         ) {
           softRejected = true;
           break;
         }
 
         if (
-          (wasIgnoredRegex && !substitutedAlias) ||
-          substitutedAlias.indexOf('!') === 0
+          wasIgnoredRegex === 'ignored' ||
+          (substitutedAlias && substitutedAlias.indexOf('!') === 0)
         ) {
           ignored = true;
           break;

@@ -4,6 +4,7 @@
  */
 
 const util = require('node:util');
+const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
 const Koa = require('koa');
@@ -29,6 +30,7 @@ const SQLite = require('../../sqlite-server');
 
 const Emails = require('#models/emails');
 const config = require('#config');
+const _ = require('#helpers/lodash');
 const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const env = require('#config/env');
 const isExpiredOrNewlyCreated = require('#helpers/is-expired-or-newly-created');
@@ -666,3 +668,553 @@ test('isExpiredOrNewlyCreated', async (t) => {
 // - X-Forward-Email-Sender
 
 // friendly-from rewrite if necessary
+
+test('catch-all should not receive emails to inactive normal alias with 550 error', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+  let smtpError = null;
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  // Create catch-all alias (active)
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: '*',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // Create inactive normal alias with 550 error code
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: 'inactive',
+      recipients: [`inactive@${IP_ADDRESS}`],
+      is_enabled: false,
+      error_code_if_disabled: 550
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Try to send email to inactive@domain.name
+  try {
+    await transporter.sendMail({
+      envelope: {
+        from: 'test@test.com',
+        to: `inactive@${domain.name}`
+      },
+      raw: `
+To: inactive@${domain.name}
+From: test@test.com
+Subject: test inactive alias
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should get 550 error, not be caught by catch-all
+`
+    });
+    t.fail('Should have thrown 550 error');
+  } catch (err) {
+    smtpError = err;
+  }
+
+  // Should get 550 error and no emails should be received by catch-all
+  t.truthy(smtpError);
+  t.is(smtpError.responseCode, 550);
+  t.is(
+    receivedEmails.length,
+    0,
+    'Catch-all should not receive emails for inactive aliases with 550 error'
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('free plan catch-all should not receive emails to inactive regex alias with 250 error', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+  let smtpError = null;
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'free'
+    })
+    .create();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      // NOTE: free plan must be of a specific list of goodDomains
+      // <https://github.com/ngneat/falso/blob/96a9c101ffbcc150e698a3f56e8cc18f734020b5/packages/falso/src/lib/domain-name.ts#L22>
+      name: `${falso.randWord()}.${_.sample(config.goodDomains)}`,
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [
+        // Set custom port
+        `forward-email-port=${serverPort.toString()}`,
+        // Create catch-all alias (active)
+        `forward-email=test@${IP_ADDRESS}`,
+        // Create inactive regex alias with 250 error code (quiet reject)
+        `forward-email=!/^(spam|bogus)$/:spam@${IP_ADDRESS}`
+      ],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Try to send email to spam@domain.name (matches regex but alias is inactive)
+  try {
+    await transporter.sendMail({
+      envelope: {
+        from: 'test@test.com',
+        to: `spam@${domain.name}`
+      },
+      raw: `
+To: spam@${domain.name}
+From: test@test.com
+Subject: test inactive regex alias
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should get 250 quiet reject, not be caught by catch-all
+`
+    });
+    // 250 is a success code, so this should not throw
+  } catch (err) {
+    smtpError = err;
+  }
+
+  // Should get 250 (quiet reject) and no emails should be received by catch-all
+  t.falsy(smtpError, 'Should not throw error for 250 quiet reject');
+  t.is(
+    receivedEmails.length,
+    0,
+    'Catch-all should not receive emails for inactive regex aliases with 250 error'
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('paid plan catch-all should not receive emails to inactive regex alias with 250 error', async (t) => {
+  const smtp = new MX({
+    client: t.context.client,
+    wsp: t.context.wsp
+  });
+  const { resolver } = smtp;
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const port = await getPort();
+  await smtp.listen(port);
+
+  const receivedEmails = [];
+  let smtpError = null;
+
+  const serverPort = await getPort();
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onConnect(session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const chunks = [];
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          chunks.push(chunk);
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        receivedEmails.push({
+          to: session.envelope.rcptTo,
+          from: session.envelope.mailFrom,
+          data: buffer.toString()
+        });
+        fn();
+      });
+    },
+    logger: false,
+    secure: false
+  });
+
+  // start test smtp server
+  await pify(server.listen.bind(server))(serverPort);
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver,
+      smtp_port: serverPort.toString()
+    })
+    .create();
+
+  // Create catch-all alias (active)
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: '*',
+      recipients: [`test@${IP_ADDRESS}`],
+      is_enabled: true
+    })
+    .create();
+
+  // Create inactive regex alias with 250 error code (quiet reject)
+  await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      name: '/^(spam|bogus)$/',
+      recipients: [`spam@${IP_ADDRESS}`],
+      is_enabled: false,
+      error_code_if_disabled: 250
+    })
+    .create();
+
+  // spoof dns records
+  const map = new Map();
+
+  // spoof domain A record
+  map.set(
+    `a:${domain.name}`,
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+  );
+
+  // spoof domain MX record
+  map.set(
+    `mx:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // store spoofed dns cache
+  await resolver.options.cache.mset(map);
+
+  // set our local IP to allowlist so message does not get greylisted
+  await t.context.client.set(`allowlist:${IP_ADDRESS}`, true);
+
+  // Create MX connection and transporter
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    ignoreTLS: true,
+    secure: false,
+    tls
+  });
+
+  // Try to send email to spam@domain.name (matches regex but alias is inactive)
+  try {
+    await transporter.sendMail({
+      envelope: {
+        from: 'test@test.com',
+        to: `spam@${domain.name}`
+      },
+      raw: `
+To: spam@${domain.name}
+From: test@test.com
+Subject: test inactive regex alias
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+This should get 250 quiet reject, not be caught by catch-all
+`
+    });
+    // 250 is a success code, so this should not throw
+  } catch (err) {
+    smtpError = err;
+  }
+
+  // Should get 250 (quiet reject) and no emails should be received by catch-all
+  t.falsy(smtpError, 'Should not throw error for 250 quiet reject');
+  t.is(
+    receivedEmails.length,
+    0,
+    'Catch-all should not receive emails for inactive regex aliases with 250 error'
+  );
+
+  await server.close();
+  await smtp.close();
+});

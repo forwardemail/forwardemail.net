@@ -521,7 +521,8 @@ async function getForwardingConfiguration({
       // "/:"
       //
       let lastIndex;
-      const hasTwoSlashes = alias.name.lastIndexOf('/') !== 0;
+      const hasTwoSlashes =
+        alias.name.lastIndexOf('/') !== alias.name.indexOf('/');
       const startsWithSlash = alias.name.startsWith('/');
       if (startsWithSlash && hasTwoSlashes) {
         for (const ending of REGEX_FLAG_ENDINGS) {
