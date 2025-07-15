@@ -196,7 +196,7 @@ router
     web.myAccount.retrieveDomain,
     web.myAccount.ensureDomainAdmin,
     web.myAccount.ensureUpgradedPlan,
-    rateLimit(10, 'create catch all password'),
+    rateLimit(100, 'create catch all password'),
     web.myAccount.createCatchAllPassword
   )
 
