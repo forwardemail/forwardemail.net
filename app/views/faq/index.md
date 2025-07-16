@@ -4591,7 +4591,7 @@ You should also set the SPF record for Outlook in your DNS configuration <strong
 
 ### Can I "send mail as" in Apple Mail and iCloud Mail with this
 
-If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail].
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail).
 
 Please see <https://support.apple.com/en-us/102540> for more information.
 
