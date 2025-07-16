@@ -73,7 +73,7 @@ We implement multiple layers of network security:
 * **Comprehensive Protection**: We implement encryption-at-rest, encryption-in-memory, and encryption-in-transit
 
 > \[!NOTE]
-> We're the world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes.
+> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Authentication and Authorization
 

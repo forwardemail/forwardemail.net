@@ -74,640 +74,592 @@ async function getDefaultAddressBook(ctx) {
 }
 
 async function list(ctx) {
-  try {
-    await ensureDefaultAddressBook.call(ctx.instance, ctx);
+  await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
-    // Find the default address book
-    const addressBook = await getDefaultAddressBook(ctx);
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+  // Find the default address book
+  const addressBook = await getDefaultAddressBook(ctx);
+  if (!addressBook)
+    throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
 
-    const query = { address_book: addressBook._id };
+  const query = { address_book: addressBook._id };
 
-    // Get contacts with pagination
-    const [contacts, itemCount] = await Promise.all([
-      Contacts.find(
-        ctx.instance,
-        ctx.state.session,
-        query,
-        {},
-        {
-          limit: ctx.query.limit,
-          offset: ctx.paginate.skip,
-          sort: { created_at: -1 }
-        }
-      ),
-      Contacts.countDocuments(ctx.instance, ctx.state.session, query)
-    ]);
+  // Get contacts with pagination
+  const [contacts, itemCount] = await Promise.all([
+    Contacts.find(
+      ctx.instance,
+      ctx.state.session,
+      query,
+      {},
+      {
+        limit: ctx.query.limit,
+        offset: ctx.paginate.skip,
+        sort: { created_at: -1 }
+      }
+    ),
+    Contacts.countDocuments(ctx.instance, ctx.state.session, query)
+  ]);
 
-    const pageCount = Math.ceil(itemCount / ctx.query.limit);
+  const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
-    // Set pagination headers
-    setPaginationHeaders(
-      ctx,
-      pageCount,
-      ctx.query.page,
-      contacts.length,
-      itemCount
-    );
+  // Set pagination headers
+  setPaginationHeaders(
+    ctx,
+    pageCount,
+    ctx.query.page,
+    contacts.length,
+    itemCount
+  );
 
-    ctx.body = Array.isArray(contacts)
-      ? contacts.map((contact) => json(contact))
-      : [];
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
-  }
+  ctx.body = Array.isArray(contacts)
+    ? contacts.map((contact) => json(contact))
+    : [];
 }
 
 async function create(ctx) {
-  try {
-    const { body } = ctx.request;
+  const { body } = ctx.request;
 
-    // Validate request body exists and is an object
-    if (!_.isObject(body)) {
-      throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
+  // Validate request body exists and is an object
+  if (!_.isObject(body)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
+  }
+
+  // Validate required fields
+  if (!body.content && !body.fullName) {
+    throw Boom.badRequest(
+      ctx.translateError('CONTACT_FULLNAME_OR_CONTENT_REQUIRED')
+    );
+  }
+
+  // Validate fullName if provided
+  if (body.fullName !== undefined && !isSANB(body.fullName)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
+  }
+
+  // Validate content if provided
+  if (body.content !== undefined && !isSANB(body.content)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_CONTENT_INVALID'));
+  }
+
+  // Validate contact_id if provided
+  if (body.contact_id !== undefined && !isSANB(body.contact_id)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_ID_INVALID'));
+  }
+
+  // Validate uid if provided
+  if (body.uid !== undefined && !isSANB(body.uid)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_UID_INVALID'));
+  }
+
+  // Validate emails array if provided
+  if (body.emails !== undefined) {
+    if (!Array.isArray(body.emails)) {
+      throw Boom.badRequest(ctx.translateError('CONTACT_EMAILS_MUST_BE_ARRAY'));
     }
 
-    // Validate required fields
-    if (!body.content && !body.fullName) {
+    for (const email of body.emails) {
+      if (!_.isObject(email)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_EMAIL_MUST_BE_OBJECT')
+        );
+      }
+
+      if (!isSANB(email.value) || !isEmail(email.value)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_INVALID'));
+      }
+
+      if (email.type !== undefined && !isSANB(email.type)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_TYPE_INVALID'));
+      }
+    }
+  }
+
+  // Validate phones array if provided
+  if (body.phones !== undefined) {
+    if (!Array.isArray(body.phones)) {
+      throw Boom.badRequest(ctx.translateError('CONTACT_PHONES_MUST_BE_ARRAY'));
+    }
+
+    for (const phone of body.phones) {
+      if (!_.isObject(phone)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_PHONE_MUST_BE_OBJECT')
+        );
+      }
+
+      if (!isSANB(phone.value)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_INVALID'));
+      }
+
+      if (phone.type !== undefined && !isSANB(phone.type)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_TYPE_INVALID'));
+      }
+    }
+  }
+
+  // Validate addresses array if provided
+  if (body.addresses !== undefined) {
+    if (!Array.isArray(body.addresses)) {
       throw Boom.badRequest(
-        ctx.translateError('CONTACT_FULLNAME_OR_CONTENT_REQUIRED')
+        ctx.translateError('CONTACT_ADDRESSES_MUST_BE_ARRAY')
       );
     }
 
-    // Validate fullName if provided
-    if (body.fullName !== undefined && !isSANB(body.fullName)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
-    }
-
-    // Validate content if provided
-    if (body.content !== undefined && !isSANB(body.content)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_CONTENT_INVALID'));
-    }
-
-    // Validate contact_id if provided
-    if (body.contact_id !== undefined && !isSANB(body.contact_id)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_ID_INVALID'));
-    }
-
-    // Validate uid if provided
-    if (body.uid !== undefined && !isSANB(body.uid)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_UID_INVALID'));
-    }
-
-    // Validate emails array if provided
-    if (body.emails !== undefined) {
-      if (!Array.isArray(body.emails)) {
+    for (const address of body.addresses) {
+      if (!_.isObject(address)) {
         throw Boom.badRequest(
-          ctx.translateError('CONTACT_EMAILS_MUST_BE_ARRAY')
+          ctx.translateError('CONTACT_ADDRESS_MUST_BE_OBJECT')
         );
       }
 
-      for (const email of body.emails) {
-        if (!_.isObject(email)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_EMAIL_MUST_BE_OBJECT')
-          );
-        }
-
-        if (!isSANB(email.value) || !isEmail(email.value)) {
-          throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_INVALID'));
-        }
-
-        if (email.type !== undefined && !isSANB(email.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_EMAIL_TYPE_INVALID')
-          );
-        }
-      }
-    }
-
-    // Validate phones array if provided
-    if (body.phones !== undefined) {
-      if (!Array.isArray(body.phones)) {
+      if (address.street !== undefined && !isSANB(address.street)) {
         throw Boom.badRequest(
-          ctx.translateError('CONTACT_PHONES_MUST_BE_ARRAY')
+          ctx.translateError('CONTACT_ADDRESS_STREET_INVALID')
         );
       }
 
-      for (const phone of body.phones) {
-        if (!_.isObject(phone)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_PHONE_MUST_BE_OBJECT')
-          );
-        }
-
-        if (!isSANB(phone.value)) {
-          throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_INVALID'));
-        }
-
-        if (phone.type !== undefined && !isSANB(phone.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_PHONE_TYPE_INVALID')
-          );
-        }
-      }
-    }
-
-    // Validate addresses array if provided
-    if (body.addresses !== undefined) {
-      if (!Array.isArray(body.addresses)) {
+      if (address.city !== undefined && !isSANB(address.city)) {
         throw Boom.badRequest(
-          ctx.translateError('CONTACT_ADDRESSES_MUST_BE_ARRAY')
+          ctx.translateError('CONTACT_ADDRESS_CITY_INVALID')
         );
       }
 
-      for (const address of body.addresses) {
-        if (!_.isObject(address)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_MUST_BE_OBJECT')
-          );
-        }
+      if (address.state !== undefined && !isSANB(address.state)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_STATE_INVALID')
+        );
+      }
 
-        if (address.street !== undefined && !isSANB(address.street)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_STREET_INVALID')
-          );
-        }
+      if (address.postalCode !== undefined && !isSANB(address.postalCode)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_POSTAL_CODE_INVALID')
+        );
+      }
 
-        if (address.city !== undefined && !isSANB(address.city)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_CITY_INVALID')
-          );
-        }
+      if (address.country !== undefined && !isSANB(address.country)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_COUNTRY_INVALID')
+        );
+      }
 
-        if (address.state !== undefined && !isSANB(address.state)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_STATE_INVALID')
-          );
-        }
-
-        if (address.postalCode !== undefined && !isSANB(address.postalCode)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_POSTAL_CODE_INVALID')
-          );
-        }
-
-        if (address.country !== undefined && !isSANB(address.country)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_COUNTRY_INVALID')
-          );
-        }
-
-        if (address.type !== undefined && !isSANB(address.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_TYPE_INVALID')
-          );
-        }
+      if (address.type !== undefined && !isSANB(address.type)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_TYPE_INVALID')
+        );
       }
     }
+  }
 
-    await ensureDefaultAddressBook.call(ctx.instance, ctx);
+  await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
-    // Find the default address book
-    const addressBook = await getDefaultAddressBook(ctx);
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+  // Find the default address book
+  const addressBook = await getDefaultAddressBook(ctx);
+  if (!addressBook)
+    throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
 
-    const contactId = body.contact_id || new ObjectID().toString();
-    const uid = body.uid || new ObjectID().toString();
+  const contactId = body.contact_id || new ObjectID().toString();
+  const uid = body.uid || new ObjectID().toString();
 
-    // Generate vCard content if not provided
-    let vCardContent = body.content;
-    if (!vCardContent) {
-      vCardContent = `BEGIN:VCARD
+  // Generate vCard content if not provided
+  let vCardContent = body.content;
+  if (!vCardContent) {
+    vCardContent = `BEGIN:VCARD
 VERSION:3.0
 UID:${uid}
 FN:${body.fullName || ''}`;
 
-      if (body.emails && Array.isArray(body.emails)) {
-        for (const email of body.emails) {
+    if (body.emails && Array.isArray(body.emails)) {
+      for (const email of body.emails) {
+        vCardContent += `\nEMAIL;TYPE=${email.type || 'INTERNET'}:${
+          email.value
+        }`;
+      }
+    }
+
+    if (body.phoneNumbers && Array.isArray(body.phoneNumbers)) {
+      for (const phone of body.phoneNumbers) {
+        vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
+      }
+    }
+
+    vCardContent += '\nEND:VCARD';
+  }
+
+  // Generate ETag
+  const etag = xmlHelpers.generateETag(vCardContent);
+
+  const contact = await Contacts.create({
+    // db virtual helper
+    instance: ctx.instance,
+    session: ctx.state.session,
+
+    // contact data
+    address_book: addressBook._id,
+    contact_id: contactId,
+    uid,
+    content: vCardContent,
+    etag,
+    fullName: body.fullName || '',
+    isGroup: boolean(body.isGroup),
+    emails: body.emails || [],
+    phoneNumbers: body.phoneNumbers || []
+  });
+
+  // Set ETag header
+  ctx.set('ETag', etag);
+
+  ctx.body = json(contact);
+
+  // Update storage in background (contacts contribute to storage usage)
+  updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
+    .then()
+    .catch((err) =>
+      ctx.logger.fatal(err, { contact, session: ctx.state.session })
+    );
+}
+
+async function retrieve(ctx) {
+  // Validate params object exists
+  if (!_.isObject(ctx.params)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
+  }
+
+  // Validate contact ID parameter
+  if (!isSANB(ctx.params.id)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
+  }
+
+  // Validate contact ID format
+  // if (!ObjectID.isValid(ctx.params.id)) {
+  //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
+  // }
+
+  await ensureDefaultAddressBook.call(ctx.instance, ctx);
+
+  // Find the default address book
+  const addressBook = await getDefaultAddressBook(ctx);
+  if (!addressBook)
+    throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+
+  const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
+    contact_id: ctx.params.id,
+    address_book: addressBook._id
+  });
+
+  if (!contact) {
+    throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
+  }
+
+  // Set ETag header
+  if (contact.etag) {
+    ctx.set('ETag', contact.etag);
+  }
+
+  ctx.body = json(contact);
+}
+
+async function update(ctx) {
+  const { body } = ctx.request;
+
+  // Validate params object exists
+  if (!_.isObject(ctx.params)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
+  }
+
+  // Validate contact ID parameter
+  if (!isSANB(ctx.params.id)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
+  }
+
+  // Validate contact ID format
+  // if (!ObjectID.isValid(ctx.params.id)) {
+  //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
+  // }
+
+  // Validate request body exists and is an object
+  if (!_.isObject(body)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
+  }
+
+  // Validate at least one field is provided for update
+  if (
+    !body.content &&
+    !body.fullName &&
+    !body.emails &&
+    !body.phones &&
+    !body.addresses
+  ) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_UPDATE_FIELDS_REQUIRED'));
+  }
+
+  // Validate fullName if provided
+  if (body.fullName !== undefined && !isSANB(body.fullName)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
+  }
+
+  // Validate content if provided
+  if (body.content !== undefined && !isSANB(body.content)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_CONTENT_INVALID'));
+  }
+
+  // Validate emails array if provided
+  if (body.emails !== undefined) {
+    if (!Array.isArray(body.emails)) {
+      throw Boom.badRequest(ctx.translateError('CONTACT_EMAILS_MUST_BE_ARRAY'));
+    }
+
+    for (const email of body.emails) {
+      if (!_.isObject(email)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_EMAIL_MUST_BE_OBJECT')
+        );
+      }
+
+      if (!isSANB(email.value) || !isEmail(email.value)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_INVALID'));
+      }
+
+      if (email.type !== undefined && !isSANB(email.type)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_TYPE_INVALID'));
+      }
+    }
+  }
+
+  // Validate phones array if provided
+  if (body.phones !== undefined) {
+    if (!Array.isArray(body.phones)) {
+      throw Boom.badRequest(ctx.translateError('CONTACT_PHONES_MUST_BE_ARRAY'));
+    }
+
+    for (const phone of body.phones) {
+      if (!_.isObject(phone)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_PHONE_MUST_BE_OBJECT')
+        );
+      }
+
+      if (!isSANB(phone.value)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_INVALID'));
+      }
+
+      if (phone.type !== undefined && !isSANB(phone.type)) {
+        throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_TYPE_INVALID'));
+      }
+    }
+  }
+
+  // Validate addresses array if provided
+  if (body.addresses !== undefined) {
+    if (!Array.isArray(body.addresses)) {
+      throw Boom.badRequest(
+        ctx.translateError('CONTACT_ADDRESSES_MUST_BE_ARRAY')
+      );
+    }
+
+    for (const address of body.addresses) {
+      if (!_.isObject(address)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_MUST_BE_OBJECT')
+        );
+      }
+
+      if (address.street !== undefined && !isSANB(address.street)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_STREET_INVALID')
+        );
+      }
+
+      if (address.city !== undefined && !isSANB(address.city)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_CITY_INVALID')
+        );
+      }
+
+      if (address.state !== undefined && !isSANB(address.state)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_STATE_INVALID')
+        );
+      }
+
+      if (address.postalCode !== undefined && !isSANB(address.postalCode)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_POSTAL_CODE_INVALID')
+        );
+      }
+
+      if (address.country !== undefined && !isSANB(address.country)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_COUNTRY_INVALID')
+        );
+      }
+
+      if (address.type !== undefined && !isSANB(address.type)) {
+        throw Boom.badRequest(
+          ctx.translateError('CONTACT_ADDRESS_TYPE_INVALID')
+        );
+      }
+    }
+  }
+
+  await ensureDefaultAddressBook.call(ctx.instance, ctx);
+
+  // Find the default address book
+  const addressBook = await getDefaultAddressBook(ctx);
+  if (!addressBook)
+    throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+
+  const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
+    contact_id: ctx.params.id,
+    address_book: addressBook._id
+  });
+
+  if (!contact) {
+    throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
+  }
+
+  // Check If-Match header if present
+  const ifMatch = ctx.request.headers['if-match'];
+  if (ifMatch && ifMatch !== contact.etag) {
+    throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
+  }
+
+  // Update contact fields
+  let vCardContent = contact.content;
+  let needsETagUpdate = false;
+
+  if (body.fullName !== undefined) {
+    contact.fullName = body.fullName;
+    needsETagUpdate = true;
+  }
+
+  if (body.content !== undefined) {
+    vCardContent = body.content;
+    contact.content = vCardContent;
+    needsETagUpdate = true;
+  }
+
+  if (body.emails !== undefined) {
+    contact.emails = body.emails;
+    needsETagUpdate = true;
+  }
+
+  if (body.phoneNumbers !== undefined) {
+    contact.phoneNumbers = body.phoneNumbers;
+    needsETagUpdate = true;
+  }
+
+  if (body.isGroup !== undefined) {
+    contact.isGroup = boolean(body.isGroup);
+    needsETagUpdate = true;
+  }
+
+  // Generate new ETag if content changed
+  if (needsETagUpdate) {
+    // If we updated individual fields but not content, regenerate vCard
+    if (
+      body.content === undefined &&
+      (body.fullName !== undefined ||
+        body.emails !== undefined ||
+        body.phoneNumbers !== undefined)
+    ) {
+      vCardContent = `BEGIN:VCARD
+VERSION:3.0
+UID:${contact.uid}
+FN:${contact.fullName || ''}`;
+
+      if (contact.emails && Array.isArray(contact.emails)) {
+        for (const email of contact.emails) {
           vCardContent += `\nEMAIL;TYPE=${email.type || 'INTERNET'}:${
             email.value
           }`;
         }
       }
 
-      if (body.phoneNumbers && Array.isArray(body.phoneNumbers)) {
-        for (const phone of body.phoneNumbers) {
+      if (contact.phoneNumbers && Array.isArray(contact.phoneNumbers)) {
+        for (const phone of contact.phoneNumbers) {
           vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
         }
       }
 
       vCardContent += '\nEND:VCARD';
-    }
-
-    // Generate ETag
-    const etag = xmlHelpers.generateETag(vCardContent);
-
-    const contact = await Contacts.create({
-      // db virtual helper
-      instance: ctx.instance,
-      session: ctx.state.session,
-
-      // contact data
-      address_book: addressBook._id,
-      contact_id: contactId,
-      uid,
-      content: vCardContent,
-      etag,
-      fullName: body.fullName || '',
-      isGroup: boolean(body.isGroup),
-      emails: body.emails || [],
-      phoneNumbers: body.phoneNumbers || []
-    });
-
-    // Set ETag header
-    ctx.set('ETag', etag);
-
-    ctx.body = json(contact);
-
-    // Update storage in background (contacts contribute to storage usage)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { contact, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
-  }
-}
-
-async function retrieve(ctx) {
-  try {
-    // Validate params object exists
-    if (!_.isObject(ctx.params)) {
-      throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
-    }
-
-    // Validate contact ID parameter
-    if (!isSANB(ctx.params.id)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
-    }
-
-    // Validate contact ID format
-    // if (!ObjectID.isValid(ctx.params.id)) {
-    //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
-    // }
-
-    await ensureDefaultAddressBook.call(ctx.instance, ctx);
-
-    // Find the default address book
-    const addressBook = await getDefaultAddressBook(ctx);
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
-
-    const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
-      contact_id: ctx.params.id,
-      address_book: addressBook._id
-    });
-
-    if (!contact) {
-      throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
-    }
-
-    // Set ETag header
-    if (contact.etag) {
-      ctx.set('ETag', contact.etag);
-    }
-
-    ctx.body = json(contact);
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
-  }
-}
-
-async function update(ctx) {
-  try {
-    const { body } = ctx.request;
-
-    // Validate params object exists
-    if (!_.isObject(ctx.params)) {
-      throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
-    }
-
-    // Validate contact ID parameter
-    if (!isSANB(ctx.params.id)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
-    }
-
-    // Validate contact ID format
-    // if (!ObjectID.isValid(ctx.params.id)) {
-    //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
-    // }
-
-    // Validate request body exists and is an object
-    if (!_.isObject(body)) {
-      throw Boom.badRequest(ctx.translateError('INVALID_REQUEST_BODY'));
-    }
-
-    // Validate at least one field is provided for update
-    if (
-      !body.content &&
-      !body.fullName &&
-      !body.emails &&
-      !body.phones &&
-      !body.addresses
-    ) {
-      throw Boom.badRequest(
-        ctx.translateError('CONTACT_UPDATE_FIELDS_REQUIRED')
-      );
-    }
-
-    // Validate fullName if provided
-    if (body.fullName !== undefined && !isSANB(body.fullName)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
-    }
-
-    // Validate content if provided
-    if (body.content !== undefined && !isSANB(body.content)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_CONTENT_INVALID'));
-    }
-
-    // Validate emails array if provided
-    if (body.emails !== undefined) {
-      if (!Array.isArray(body.emails)) {
-        throw Boom.badRequest(
-          ctx.translateError('CONTACT_EMAILS_MUST_BE_ARRAY')
-        );
-      }
-
-      for (const email of body.emails) {
-        if (!_.isObject(email)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_EMAIL_MUST_BE_OBJECT')
-          );
-        }
-
-        if (!isSANB(email.value) || !isEmail(email.value)) {
-          throw Boom.badRequest(ctx.translateError('CONTACT_EMAIL_INVALID'));
-        }
-
-        if (email.type !== undefined && !isSANB(email.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_EMAIL_TYPE_INVALID')
-          );
-        }
-      }
-    }
-
-    // Validate phones array if provided
-    if (body.phones !== undefined) {
-      if (!Array.isArray(body.phones)) {
-        throw Boom.badRequest(
-          ctx.translateError('CONTACT_PHONES_MUST_BE_ARRAY')
-        );
-      }
-
-      for (const phone of body.phones) {
-        if (!_.isObject(phone)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_PHONE_MUST_BE_OBJECT')
-          );
-        }
-
-        if (!isSANB(phone.value)) {
-          throw Boom.badRequest(ctx.translateError('CONTACT_PHONE_INVALID'));
-        }
-
-        if (phone.type !== undefined && !isSANB(phone.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_PHONE_TYPE_INVALID')
-          );
-        }
-      }
-    }
-
-    // Validate addresses array if provided
-    if (body.addresses !== undefined) {
-      if (!Array.isArray(body.addresses)) {
-        throw Boom.badRequest(
-          ctx.translateError('CONTACT_ADDRESSES_MUST_BE_ARRAY')
-        );
-      }
-
-      for (const address of body.addresses) {
-        if (!_.isObject(address)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_MUST_BE_OBJECT')
-          );
-        }
-
-        if (address.street !== undefined && !isSANB(address.street)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_STREET_INVALID')
-          );
-        }
-
-        if (address.city !== undefined && !isSANB(address.city)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_CITY_INVALID')
-          );
-        }
-
-        if (address.state !== undefined && !isSANB(address.state)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_STATE_INVALID')
-          );
-        }
-
-        if (address.postalCode !== undefined && !isSANB(address.postalCode)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_POSTAL_CODE_INVALID')
-          );
-        }
-
-        if (address.country !== undefined && !isSANB(address.country)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_COUNTRY_INVALID')
-          );
-        }
-
-        if (address.type !== undefined && !isSANB(address.type)) {
-          throw Boom.badRequest(
-            ctx.translateError('CONTACT_ADDRESS_TYPE_INVALID')
-          );
-        }
-      }
-    }
-
-    await ensureDefaultAddressBook.call(ctx.instance, ctx);
-
-    // Find the default address book
-    const addressBook = await getDefaultAddressBook(ctx);
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
-
-    const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
-      contact_id: ctx.params.id,
-      address_book: addressBook._id
-    });
-
-    if (!contact) {
-      throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
-    }
-
-    // Check If-Match header if present
-    const ifMatch = ctx.request.headers['if-match'];
-    if (ifMatch && ifMatch !== contact.etag) {
-      throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
-    }
-
-    // Update contact fields
-    let vCardContent = contact.content;
-    let needsETagUpdate = false;
-
-    if (body.fullName !== undefined) {
-      contact.fullName = body.fullName;
-      needsETagUpdate = true;
-    }
-
-    if (body.content !== undefined) {
-      vCardContent = body.content;
       contact.content = vCardContent;
-      needsETagUpdate = true;
     }
 
-    if (body.emails !== undefined) {
-      contact.emails = body.emails;
-      needsETagUpdate = true;
-    }
-
-    if (body.phoneNumbers !== undefined) {
-      contact.phoneNumbers = body.phoneNumbers;
-      needsETagUpdate = true;
-    }
-
-    if (body.isGroup !== undefined) {
-      contact.isGroup = boolean(body.isGroup);
-      needsETagUpdate = true;
-    }
-
-    // Generate new ETag if content changed
-    if (needsETagUpdate) {
-      // If we updated individual fields but not content, regenerate vCard
-      if (
-        body.content === undefined &&
-        (body.fullName !== undefined ||
-          body.emails !== undefined ||
-          body.phoneNumbers !== undefined)
-      ) {
-        vCardContent = `BEGIN:VCARD
-VERSION:3.0
-UID:${contact.uid}
-FN:${contact.fullName || ''}`;
-
-        if (contact.emails && Array.isArray(contact.emails)) {
-          for (const email of contact.emails) {
-            vCardContent += `\nEMAIL;TYPE=${email.type || 'INTERNET'}:${
-              email.value
-            }`;
-          }
-        }
-
-        if (contact.phoneNumbers && Array.isArray(contact.phoneNumbers)) {
-          for (const phone of contact.phoneNumbers) {
-            vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
-          }
-        }
-
-        vCardContent += '\nEND:VCARD';
-        contact.content = vCardContent;
-      }
-
-      const newEtag = xmlHelpers.generateETag(vCardContent);
-      contact.etag = newEtag;
-    }
-
-    // Set db virtual helpers
-    contact.instance = ctx.instance;
-    contact.session = ctx.state.session;
-    contact.isNew = false;
-
-    await contact.save();
-
-    // Set ETag header
-    if (contact.etag) {
-      ctx.set('ETag', contact.etag);
-    }
-
-    ctx.body = json(contact);
-
-    // Update storage in background (contact size may have changed)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { contact, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+    const newEtag = xmlHelpers.generateETag(vCardContent);
+    contact.etag = newEtag;
   }
+
+  // Set db virtual helpers
+  contact.instance = ctx.instance;
+  contact.session = ctx.state.session;
+  contact.isNew = false;
+
+  await contact.save();
+
+  // Set ETag header
+  if (contact.etag) {
+    ctx.set('ETag', contact.etag);
+  }
+
+  ctx.body = json(contact);
+
+  // Update storage in background (contact size may have changed)
+  updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
+    .then()
+    .catch((err) =>
+      ctx.logger.fatal(err, { contact, session: ctx.state.session })
+    );
 }
 
 async function remove(ctx) {
-  try {
-    // Validate params object exists
-    if (!_.isObject(ctx.params)) {
-      throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
-    }
-
-    // Validate contact ID parameter
-    if (!isSANB(ctx.params.id)) {
-      throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
-    }
-
-    // Validate contact ID format
-    // if (!ObjectID.isValid(ctx.params.id)) {
-    //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
-    // }
-
-    await ensureDefaultAddressBook.call(ctx.instance, ctx);
-
-    // Find the default address book
-    const addressBook = await getDefaultAddressBook(ctx);
-    if (!addressBook)
-      throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
-
-    const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
-      contact_id: ctx.params.id,
-      address_book: addressBook._id
-    });
-
-    if (!contact) {
-      throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
-    }
-
-    // Check If-Match header if present
-    const ifMatch = ctx.request.headers['if-match'];
-    if (ifMatch && ifMatch !== contact.etag) {
-      throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
-    }
-
-    await Contacts.deleteOne(ctx.instance, ctx.state.session, {
-      _id: contact._id
-    });
-
-    ctx.body = { message: 'Contact deleted successfully' };
-
-    // Update storage in background (contact was deleted, reducing storage usage)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { contact, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+  // Validate params object exists
+  if (!_.isObject(ctx.params)) {
+    throw Boom.badRequest(ctx.translateError('INVALID_PARAMS'));
   }
+
+  // Validate contact ID parameter
+  if (!isSANB(ctx.params.id)) {
+    throw Boom.badRequest(ctx.translateError('CONTACT_ID_REQUIRED'));
+  }
+
+  // Validate contact ID format
+  // if (!ObjectID.isValid(ctx.params.id)) {
+  //   throw Boom.badRequest(ctx.translateError('CONTACT_INVALID_ID'));
+  // }
+
+  await ensureDefaultAddressBook.call(ctx.instance, ctx);
+
+  // Find the default address book
+  const addressBook = await getDefaultAddressBook(ctx);
+  if (!addressBook)
+    throw Boom.notFound(ctx.translateError('ADDRESS_BOOK_DOES_NOT_EXIST'));
+
+  const contact = await Contacts.findOne(ctx.instance, ctx.state.session, {
+    contact_id: ctx.params.id,
+    address_book: addressBook._id
+  });
+
+  if (!contact) {
+    throw Boom.notFound(ctx.translateError('CONTACT_DOES_NOT_EXIST'));
+  }
+
+  // Check If-Match header if present
+  const ifMatch = ctx.request.headers['if-match'];
+  if (ifMatch && ifMatch !== contact.etag) {
+    throw Boom.preconditionFailed(ctx.translateError('ETAG_DOES_NOT_MATCH'));
+  }
+
+  await Contacts.deleteOne(ctx.instance, ctx.state.session, {
+    _id: contact._id
+  });
+
+  ctx.body = json(contact);
+
+  // Update storage in background (contact was deleted, reducing storage usage)
+  updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
+    .then()
+    .catch((err) =>
+      ctx.logger.fatal(err, { contact, session: ctx.state.session })
+    );
 }
 
 module.exports = {

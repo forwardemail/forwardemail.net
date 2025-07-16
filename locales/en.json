@@ -14247,5 +14247,9 @@
   "686d183bdca4b55aaf7b88a4": "686d183bdca4b55aaf7b88a4",
   "686d09de87090069b5d3daad": "686d09de87090069b5d3daad",
   "Alias does not yet have a generated password yet.": "Alias does not yet have a generated password yet.",
-  "686d2fec6616db89147d257c": "686d2fec6616db89147d257c"
+  "686d2fec6616db89147d257c": "686d2fec6616db89147d257c",
+  "Message recipient must be an object.": "Message recipient must be an object.",
+  "Folder must have either name or path.": "Folder must have either name or path.",
+  "Folder does not exist.": "Folder does not exist.",
+  "Invalid message ID.": "Invalid message ID."
 }

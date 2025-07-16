@@ -5,11 +5,21 @@
 
 const Boom = require('@hapi/boom');
 const ObjectID = require('bson-objectid');
+const pify = require('pify');
 const { boolean } = require('boolean');
 
-const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const Mailboxes = require('#models/mailboxes');
-const updateStorageUsed = require('#helpers/update-storage-used');
+const setPaginationHeaders = require('#helpers/set-pagination-headers');
+
+const onDelete = require('#helpers/imap/on-delete');
+const onCreate = require('#helpers/imap/on-create');
+const onRename = require('#helpers/imap/on-rename');
+
+const onDeletePromise = pify(onDelete, { multiArgs: true });
+const onCreatePromise = pify(onCreate, { multiArgs: true });
+const onRenamePromise = pify(onRename, { multiArgs: true });
+
+// TODO: add isOverQuota checks everywhere
 
 function json(mailbox) {
   // Transform mailbox data for API response
@@ -37,232 +47,184 @@ function json(mailbox) {
 }
 
 async function list(ctx) {
-  try {
-    const query = {};
+  const query = {};
 
-    // Filter by subscribed status if specified
-    if (boolean(ctx.query.subscribed_only)) {
-      query.subscribed = true;
-    }
-
-    // Get mailboxes/folders with pagination
-    const [mailboxes, itemCount] = await Promise.all([
-      Mailboxes.find(
-        ctx.instance,
-        ctx.state.session,
-        query,
-        {},
-        {
-          limit: ctx.query.limit,
-          offset: ctx.paginate.skip,
-          // Sort by path for logical folder ordering
-          sort: { path: 1 }
-        }
-      ),
-      Mailboxes.countDocuments(ctx.instance, ctx.state.session, query)
-    ]);
-
-    const pageCount = Math.ceil(itemCount / ctx.query.limit);
-
-    // Set pagination headers
-    setPaginationHeaders(
-      ctx,
-      pageCount,
-      ctx.query.page,
-      mailboxes.length,
-      itemCount
-    );
-
-    ctx.body = Array.isArray(mailboxes)
-      ? mailboxes.map((mailbox) => json(mailbox))
-      : [];
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+  // Filter by subscribed status if specified
+  if (boolean(ctx.query.subscribed_only)) {
+    query.subscribed = true;
   }
+
+  // Get mailboxes/folders with pagination
+  const [mailboxes, itemCount] = await Promise.all([
+    Mailboxes.find(
+      ctx.instance,
+      ctx.state.session,
+      query,
+      {},
+      {
+        limit: ctx.query.limit,
+        offset: ctx.paginate.skip,
+        // Sort by path for logical folder ordering
+        sort: 'path'
+      }
+    ),
+    Mailboxes.countDocuments(ctx.instance, ctx.state.session, query)
+  ]);
+
+  const pageCount = Math.ceil(itemCount / ctx.query.limit);
+
+  // Set pagination headers
+  setPaginationHeaders(
+    ctx,
+    pageCount,
+    ctx.query.page,
+    mailboxes.length,
+    itemCount
+  );
+
+  ctx.body = Array.isArray(mailboxes)
+    ? mailboxes.map((mailbox) => json(mailbox))
+    : [];
 }
 
 async function create(ctx) {
+  const { body } = ctx.request;
+
+  // Validate required fields
+  if (!body.path)
+    throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+
   try {
-    const { body } = ctx.request;
+    const [, mailboxId] = await onCreatePromise.call(
+      ctx.instance,
+      body.path,
+      ctx.state.session
+    );
 
-    // Validate required fields
-    if (!body.path && !body.name) {
-      throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
-    }
-
-    const path = body.path || body.name;
-
-    // Check if mailbox already exists
-    const existing = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path
-    });
-
-    if (existing) {
-      throw Boom.conflict(ctx.translateError('FOLDER_ALREADY_EXISTS'));
-    }
-
-    const mailbox = await Mailboxes.create({
-      // db virtual helper
-      instance: ctx.instance,
-      session: ctx.state.session,
-
-      // mailbox data
-      path,
-      subscribed:
-        body.subscribed === undefined ? true : boolean(body.subscribed),
-      flags: body.flags || [],
-      retention: body.retention || 0,
-      specialUse: body.special_use || ''
-    });
+    const mailbox = await Mailboxes.findById(
+      ctx.instance,
+      ctx.state.session,
+      mailboxId
+    );
 
     ctx.body = json(mailbox);
-
-    // Update storage in background (folders contribute to storage usage)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { mailbox, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+  } catch (_err) {
+    // since we use multiArgs from pify
+    // if a promise that was wrapped with multiArgs: true
+    // throws, then the error will be an array so we need to get first key
+    let err = _err;
+    if (Array.isArray(err)) err = _err[0];
+    throw err;
   }
 }
 
 async function retrieve(ctx) {
-  try {
-    // Validate folder ID if it looks like an ObjectID
-    if (ObjectID.isValid(ctx.params.id)) {
-      const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-        _id: ctx.params.id
-      });
-
-      if (mailbox) {
-        ctx.body = json(mailbox);
-        return;
-      }
-    }
-
-    // Try finding by path
+  // Validate folder ID if it looks like an ObjectID
+  if (ObjectID.isValid(ctx.params.id)) {
     const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-      path: ctx.params.id
+      _id: ctx.params.id
     });
 
-    if (!mailbox) {
-      throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+    if (mailbox) {
+      ctx.body = json(mailbox);
+      return;
     }
-
-    ctx.body = json(mailbox);
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
   }
+
+  // Try finding by path
+  const mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+    path: ctx.params.id
+  });
+
+  if (!mailbox) {
+    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+  }
+
+  ctx.body = json(mailbox);
 }
 
 async function update(ctx) {
+  const { body } = ctx.request;
+
+  // Try to find by ID first, then by path
+  let mailbox;
+
+  if (ObjectID.isValid(ctx.params.id)) {
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      _id: ctx.params.id
+    });
+  }
+
+  if (!mailbox) {
+    // Try finding by path
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      path: ctx.params.id
+    });
+  }
+
+  if (!mailbox) {
+    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+  }
+
   try {
-    const { body } = ctx.request;
+    const [, mailboxId] = await onRenamePromise.call(
+      ctx.instance,
+      mailbox.path,
+      body.path,
+      ctx.state.session
+    );
 
-    // Try to find by ID first, then by path
-    let mailbox;
-
-    if (ObjectID.isValid(ctx.params.id)) {
-      mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-        _id: ctx.params.id
-      });
-    }
-
-    if (!mailbox) {
-      // Try finding by path
-      mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-        path: ctx.params.id
-      });
-    }
-
-    if (!mailbox) {
-      throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
-    }
-
-    // Update mailbox fields
-    if (body.path) mailbox.path = body.path;
-    if (body.subscribed !== undefined)
-      mailbox.subscribed = boolean(body.subscribed);
-    if (body.flags) mailbox.flags = body.flags;
-    if (body.retention !== undefined) mailbox.retention = body.retention;
-    if (body.special_use !== undefined) mailbox.specialUse = body.special_use;
-
-    // Set db virtual helpers
-    mailbox.instance = ctx.instance;
-    mailbox.session = ctx.state.session;
-    mailbox.isNew = false;
-
-    await mailbox.save();
+    const mailbox = await Mailboxes.findById(
+      ctx.instance,
+      ctx.state.session,
+      mailboxId
+    );
 
     ctx.body = json(mailbox);
-
-    // Update storage in background (folder properties may have changed)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { mailbox, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+  } catch (_err) {
+    // since we use multiArgs from pify
+    // if a promise that was wrapped with multiArgs: true
+    // throws, then the error will be an array so we need to get first key
+    let err = _err;
+    if (Array.isArray(err)) err = _err[0];
+    throw err;
   }
 }
 
 async function remove(ctx) {
-  try {
-    // Try to find by ID first, then by path
-    let mailbox;
+  // Try to find by ID first, then by path
+  let mailbox;
 
-    if (ObjectID.isValid(ctx.params.id)) {
-      mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-        _id: ctx.params.id
-      });
-    }
-
-    if (!mailbox) {
-      // Try finding by path
-      mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
-        path: ctx.params.id
-      });
-    }
-
-    if (!mailbox) {
-      throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
-    }
-
-    // Prevent deletion of INBOX
-    if (mailbox.path === 'INBOX') {
-      throw Boom.badRequest(ctx.translateError('FOLDER_CANNOT_DELETE_INBOX'));
-    }
-
-    // TODO: prevent reserved folder deletion
-    // TODO: if you delete a folder
-
-    await Mailboxes.deleteOne(ctx.instance, ctx.state.session, {
-      _id: mailbox._id
+  if (ObjectID.isValid(ctx.params.id)) {
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      _id: ctx.params.id
     });
+  }
 
-    ctx.body = { message: 'Folder deleted successfully' };
+  if (!mailbox) {
+    // Try finding by path
+    mailbox = await Mailboxes.findOne(ctx.instance, ctx.state.session, {
+      path: ctx.params.id
+    });
+  }
 
-    // Update storage in background (folder was deleted, reducing storage usage)
-    updateStorageUsed(ctx.state.session.user.alias_id, ctx.client)
-      .then()
-      .catch((err) =>
-        ctx.logger.fatal(err, { mailbox, session: ctx.state.session })
-      );
-  } catch (err) {
-    ctx.logger.error(err);
-    if (err.isBoom) throw err;
-    throw Boom.badImplementation(err.message);
+  if (!mailbox) {
+    throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
+  }
+
+  // re-use the existing IMAP helper function
+  try {
+    // const [bool, mailboxId ] = await onDeletePromise.call(
+    await onDeletePromise.call(ctx.instance, mailbox.path, ctx.state.session);
+
+    ctx.body = json(mailbox);
+  } catch (_err) {
+    // since we use multiArgs from pify
+    // if a promise that was wrapped with multiArgs: true
+    // throws, then the error will be an array so we need to get first key
+    let err = _err;
+    if (Array.isArray(err)) err = _err[0];
+    throw err;
   }
 }
 

@@ -808,54 +808,14 @@ module.exports = {
 
   FOLDER_NAME_OR_PATH_REQUIRED: 'Folder must have either name or path.',
   FOLDER_INVALID_ID: 'Invalid folder ID.',
-  FOLDER_CANNOT_DELETE_INBOX: 'Cannot delete INBOX folder.',
-  FOLDER_ALREADY_EXISTS: 'Folder already exists.',
   FOLDER_DOES_NOT_EXIST: 'Folder does not exist.',
 
   // General validation phrases
   INVALID_PARAMS: 'Invalid parameters.',
   INVALID_REQUEST_BODY: 'Invalid request body.',
 
-  MESSAGE_RECIPIENT_MUST_BE_OBJECT: 'Message recipient must be an object.',
-  MESSAGE_RECIPIENTS_REQUIRED: 'Message must have at least one recipient.',
   MESSAGE_INVALID_ID: 'Invalid message ID.',
   MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
-  MESSAGE_RECIPIENT_EMAIL_INVALID:
-    'Message recipient email is required and must be a valid email address.',
-  MESSAGE_RECIPIENT_NAME_INVALID:
-    'Message recipient name must be a valid string.',
-  MESSAGE_CC_MUST_BE_ARRAY: 'Message CC must be an array.',
-  MESSAGE_CC_RECIPIENT_MUST_BE_OBJECT:
-    'Message CC recipient must be an object.',
-  MESSAGE_CC_RECIPIENT_EMAIL_INVALID:
-    'Message CC recipient email is required and must be a valid email address.',
-  MESSAGE_CC_RECIPIENT_NAME_INVALID:
-    'Message CC recipient name must be a valid string.',
-  MESSAGE_BCC_MUST_BE_ARRAY: 'Message BCC must be an array.',
-  MESSAGE_BCC_RECIPIENT_MUST_BE_OBJECT:
-    'Message BCC recipient must be an object.',
-  MESSAGE_BCC_RECIPIENT_EMAIL_INVALID:
-    'Message BCC recipient email is required and must be a valid email address.',
-  MESSAGE_BCC_RECIPIENT_NAME_INVALID:
-    'Message BCC recipient name must be a valid string.',
-  MESSAGE_FROM_MUST_BE_OBJECT: 'Message from field must be an object.',
-  MESSAGE_FROM_EMAIL_INVALID:
-    'Message from email is required and must be a valid email address.',
-  MESSAGE_FROM_NAME_INVALID: 'Message from name must be a valid string.',
-  MESSAGE_SUBJECT_INVALID: 'Message subject must be a valid string.',
-  MESSAGE_TEXT_INVALID: 'Message text must be a valid string.',
-  MESSAGE_HTML_INVALID: 'Message HTML must be a valid string.',
-  MESSAGE_FOLDER_INVALID: 'Message folder must be a valid string.',
-  MESSAGE_FLAGS_MUST_BE_ARRAY: 'Message flags must be an array.',
-  MESSAGE_FLAG_INVALID: 'Message flag must be a valid string.',
-  MESSAGE_ATTACHMENTS_MUST_BE_ARRAY: 'Message attachments must be an array.',
-  MESSAGE_ATTACHMENT_MUST_BE_OBJECT: 'Message attachment must be an object.',
-  MESSAGE_ATTACHMENT_FILENAME_INVALID:
-    'Message attachment filename is required and must be a valid string.',
-  MESSAGE_ATTACHMENT_CONTENT_INVALID:
-    'Message attachment content is required and must be a valid string.',
-  MESSAGE_ATTACHMENT_CONTENT_TYPE_INVALID:
-    'Message attachment contentType is required and must be a valid string.',
 
   // Contact validation phrases
   CONTACT_ID_REQUIRED: 'Contact ID is required.',

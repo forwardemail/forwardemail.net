@@ -173,7 +173,7 @@
     "knex-schema-inspector": "3.1.0",
     "koa-bodyparser": "4.4.1",
     "koa-convert": "2.0.0",
-    "koa-ctx-paginate": "1.0.0",
+    "koa-ctx-paginate": "1.1.0",
     "koa-meta": "4.1.0",
     "koa-passport": "5.0.0",
     "koa-views-render": "0.0.1",

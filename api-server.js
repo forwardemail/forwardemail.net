@@ -6,8 +6,6 @@
 const APIServer = require('@ladjs/api');
 
 const createTangerine = require('#helpers/create-tangerine');
-const AttachmentStorage = require('#helpers/attachment-storage');
-const IMAPNotifier = require('#helpers/imap-notifier');
 
 class API extends APIServer {
   constructor(...args) {
@@ -15,19 +13,8 @@ class API extends APIServer {
     // Add resolver and wsp to the API instance
     this.resolver = createTangerine(this.client, this.logger);
     this.wsp = this.config.wsp;
-    // Set up attachment storage
-    this.attachmentStorage = new AttachmentStorage();
-    // Set up notifier (similar to IMAP server)
-    this.notifier = new IMAPNotifier({
-      publisher: this.client
-      // NOTE: we do not supply `subscriber` option since it's not IMAP
-    });
     // this allows you to do `ctx.instance` inside routers
     this.app.context.instance = this;
-    // this allows you to do `ctx.notifier` inside routers
-    this.app.context.notifier = this.notifier;
-    // this allows you to do `ctx.attachmentStorage` inside routers
-    this.app.context.attachmentStorage = this.attachmentStorage;
   }
 }
 

@@ -216,7 +216,7 @@ test('deletes contact with alias auth', async (t) => {
     );
 
   t.is(res.status, 200);
-  t.true(res.body.message.includes('deleted'));
+  t.is(res.body.id, createRes.body.id);
 });
 
 //
@@ -309,6 +309,9 @@ test('creates message with alias auth', async (t) => {
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send(messageData);
 
+  console.log('res', res);
+  console.log('res.body', res.body);
+
   // Should create message successfully
   t.is(res.status, 200);
   t.is(res.body.object, 'message');
@@ -341,14 +344,14 @@ test('lists folders with alias auth', async (t) => {
   t.true(Array.isArray(res.body));
 });
 
-test('creates folder with alias auth', async (t) => {
+test('creates and deletes folder with alias auth', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
 
   const folderData = {
-    name: 'Test Folder',
-    path: 'Test Folder',
-    subscribed: true
+    // name: 'Test Folder',
+    path: 'Test Folder'
+    // subscribed: true
   };
 
   const res = await api
@@ -360,6 +363,16 @@ test('creates folder with alias auth', async (t) => {
   t.is(res.status, 200);
   t.is(res.body.object, 'folder');
   t.is(res.body.path, folderData.path);
+
+  const deleteRes = await api
+    .delete(`/v1/folders/${res.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(deleteRes.status, 200);
+  t.is(deleteRes.body.id, res.body.id);
 });
 
 //
@@ -536,8 +549,8 @@ test('folders list supports pagination and filtering', async (t) => {
         createAliasAuth(`${alias.name}@${domain.name}`, pass)
       )
       .send({
-        path: `TestFolder${i}`,
-        subscribed: i % 2 === 0
+        path: `TestFolder${i}`
+        // subscribed: i % 2 === 0
       });
   }
 
@@ -639,6 +652,16 @@ test('messages update with folder change', async (t) => {
 
   t.is(folderRes.status, 200);
 
+  // Update folder name
+  const renameFolderRes = await api
+    .post(`/v1/folders/${folderRes.body.id}`)
+    .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
+    .send({
+      path: 'TestFolderRenamed'
+    });
+
+  t.is(renameFolderRes.status, 200);
+
   // Create message
   const createRes = await api
     .post('/v1/messages')
@@ -656,7 +679,7 @@ test('messages update with folder change', async (t) => {
     .put(`/v1/messages/${createRes.body.id}`)
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send({
-      folder: 'TestFolder'
+      folder: 'TestFolderRenamed'
     });
 
   t.is(updateRes.status, 200);

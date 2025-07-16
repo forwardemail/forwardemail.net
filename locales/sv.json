@@ -11205,5 +11205,10 @@
   "Reset your password": "Reset your password",
   "<span class=\"notranslate\">%s</span> needs outbound SMTP configured or re-verified": "<span class=\"notranslate\">%s</span> needs outbound SMTP configured or re-verified",
   "<p>The domain <strong class=\"notranslate\">%s</strong> had an issue with its outbound SMTP configuration:</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Resolve Issues</a></p>": "<p>The domain <strong class=\"notranslate\">%s</strong> had an issue with its outbound SMTP configuration:</p><p class=\"text-center mb-0\"><a href=\"%s\" class=\"btn btn-lg btn-danger\">Resolve Issues</a></p>",
-  "Domain has past due balance or does not have at least one valid admin.": "Domain has past due balance or does not have at least one valid admin."
+  "Domain has past due balance or does not have at least one valid admin.": "Domain has past due balance or does not have at least one valid admin.",
+  "Message recipient must be an object.": "Message recipient must be an object.",
+  "Folder must have either name or path.": "Folder must have either name or path.",
+  "Folder does not exist.": "Folder does not exist.",
+  "Request Time-out": "Request Time-out",
+  "Invalid message ID.": "Invalid message ID."
 }
