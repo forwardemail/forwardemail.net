@@ -4591,10 +4591,9 @@ You should also set the SPF record for Outlook in your DNS configuration <strong
 
 ### Can I "send mail as" in Apple Mail and iCloud Mail with this
 
-Unfortunately Apple does not allow this, regardless of which service you use.  However you can use the Mail app along with your domain's email account.
+If you are a subscriber to iCloud+, you can use a custom domain.  [Our service is also compatible with Apple Mail](#apple-mail].
 
-* <https://discussions.apple.com/thread/8316291>
-* <https://discussions.apple.com/thread/6876839>
+Please see <https://support.apple.com/en-us/102540> for more information.
 
 ### Can I forward unlimited emails with this
 
