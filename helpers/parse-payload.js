@@ -160,7 +160,6 @@ async function increaseRateLimiting(client, date, sender, root, byteLength) {
     .exec();
 }
 
-// eslint-disable-next-line complexity
 async function parsePayload(data, ws) {
   const now = Date.now();
 
@@ -650,7 +649,7 @@ async function parsePayload(data, ws) {
 
         await pMap(
           payload.aliases,
-          // eslint-disable-next-line complexity
+
           async (obj) => {
             try {
               const alias = await Aliases.findById(obj.id)

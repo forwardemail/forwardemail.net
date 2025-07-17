@@ -48,7 +48,6 @@ const THREE_SECONDS = ms('3s');
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 async function mapper(user) {
   // safeguard
   if (!user) return;

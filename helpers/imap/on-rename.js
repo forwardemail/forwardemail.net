@@ -22,6 +22,28 @@ const refineAndLogError = require('#helpers/refine-and-log-error');
 async function onRename(path, newPath, session, fn) {
   this.logger.debug('RENAME', { path, newPath, session });
 
+  if (this.wsp) {
+    try {
+      const [bool, mailboxId] = await this.wsp.request({
+        action: 'rename',
+        session: {
+          id: session.id,
+          user: session.user,
+          remoteAddress: session.remoteAddress
+        },
+        path,
+        newPath
+      });
+
+      fn(null, bool, mailboxId);
+    } catch (err) {
+      if (err.imapResponse) return fn(null, err.imapResponse);
+      fn(err);
+    }
+
+    return;
+  }
+
   try {
     await this.refreshSession(session, 'RENAME');
 

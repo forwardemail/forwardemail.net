@@ -200,7 +200,6 @@ graceful.listen();
 
     // cancel subscriptions for banned users
     for (const id of bannedUserIdSet) {
-      // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(id);
       if (!user) continue;
       if (
@@ -211,9 +210,8 @@ graceful.listen();
       // paypal
       if (user[config.userFields.paypalSubscriptionID]) {
         try {
-          // eslint-disable-next-line no-await-in-loop
           const agent = await paypalAgent();
-          // eslint-disable-next-line no-await-in-loop
+
           await agent.post(
             `/v1/billing/subscriptions/${
               user[config.userFields.paypalSubscriptionID]
@@ -227,7 +225,6 @@ graceful.listen();
       // stripe
       if (user[config.userFields.stripeSubscriptionID]) {
         try {
-          // eslint-disable-next-line no-await-in-loop
           await stripe.subscriptions.del(
             user[config.userFields.stripeSubscriptionID]
           );
@@ -239,7 +236,7 @@ graceful.listen();
       // save user
       user[config.userFields.paypalSubscriptionID] = undefined;
       user[config.userFields.stripeSubscriptionID] = undefined;
-      // eslint-disable-next-line no-await-in-loop
+
       await user.save();
     }
   } catch (err) {

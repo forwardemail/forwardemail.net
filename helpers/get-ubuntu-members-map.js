@@ -72,9 +72,8 @@ async function getUbuntuMembersMap(resolver) {
         `${name} fetching page ${pageCount}, processed ${totalProcessed} entries`
       );
 
-      // eslint-disable-next-line no-await-in-loop
       const response = await retryRequest(url, { resolver });
-      // eslint-disable-next-line no-await-in-loop
+
       const json = await response.body.json();
 
       if (!Number.isFinite(json.total_size) || json.total_size < 0)

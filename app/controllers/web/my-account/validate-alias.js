@@ -33,7 +33,6 @@ const VACATION_FIELDS = [
   'vacation_responder_message'
 ];
 
-// eslint-disable-next-line complexity
 function validateAlias(ctx, next) {
   const body = _.pick(ctx.request.body, [
     'name',

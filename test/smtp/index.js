@@ -7,7 +7,6 @@ const util = require('node:util');
 const { Buffer } = require('node:buffer');
 const { Writable } = require('node:stream');
 
-const API = require('@ladjs/api');
 const Client = require('nodemailer/lib/smtp-connection');
 const Redis = require('ioredis-mock');
 const bytes = require('@forwardemail/bytes');
@@ -23,6 +22,7 @@ const { SMTPServer } = require('smtp-server');
 const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
+const API = require('../../api-server');
 const SMTP = require('../../smtp-server');
 const _ = require('#helpers/lodash');
 
@@ -2268,7 +2268,6 @@ test('smtp rate limiting', async (t) => {
 
   // from n to limit, it should not error
   for (let i = 1; i <= config.smtpLimitMessages + 10; i++) {
-    // eslint-disable-next-line no-await-in-loop
     const mx = await asyncMxConnect({
       target: IP_ADDRESS,
       port: smtp.server.address().port,
@@ -2297,7 +2296,6 @@ test('smtp rate limiting', async (t) => {
     });
 
     if (i > config.smtpLimitMessages) {
-      // eslint-disable-next-line no-await-in-loop
       const err = await t.throwsAsync(
         transporter.sendMail({
           envelope: {
@@ -2318,7 +2316,6 @@ Test`.trim()
       t.is(err.responseCode, 550);
       t.is(err.response, '550 Rate limit exceeded');
     } else {
-      // eslint-disable-next-line no-await-in-loop
       const info = await transporter.sendMail({
         envelope: {
           from: `${alias.name}@${domain.name}`,

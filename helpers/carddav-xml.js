@@ -133,7 +133,7 @@ function extractHrefs(xmlBody) {
  * @param {Object} xmlBody - Parsed XML body
  * @returns {Object} Validation result with isValid and error
  */
-// eslint-disable-next-line complexity
+
 function validateFilter(xmlBody) {
   try {
     const addressbookQuery = xmlBody && xmlBody['addressbook-query'];

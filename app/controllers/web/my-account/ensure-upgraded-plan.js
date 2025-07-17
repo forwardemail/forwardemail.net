@@ -7,7 +7,6 @@ const punycode = require('node:punycode');
 
 const Boom = require('@hapi/boom');
 
-// eslint-disable-next-line complexity
 function ensureUpgradedPlan(ctx, next) {
   if (
     ctx.state.domain &&

@@ -292,11 +292,9 @@ async function bulkReply(ctx) {
 
   try {
     for (const id of ids) {
-      // eslint-disable-next-line no-await-in-loop
       const inquiry = await Inquiries.findById(id);
       if (!inquiry) throw Boom.notFound(ctx.translateError('INVALID_INQUIRY'));
 
-      // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(inquiry.user);
       if (!user) {
         ctx.logger.warn('no user found, trying sender_email');
@@ -311,7 +309,6 @@ async function bulkReply(ctx) {
       // if the user has multiple inquiries and we've just responded
       // in bulk to a previous message then let's skip the email
       if (!repliedTo.has(address)) {
-        // eslint-disable-next-line no-await-in-loop
         const { email, info } = await emailHelper({
           template: 'inquiry-response',
           message: {
@@ -330,17 +327,14 @@ async function bulkReply(ctx) {
 
         let raw;
         if (email) {
-          // eslint-disable-next-line no-await-in-loop
           raw = await Emails.getMessage(email.message);
         } else {
-          // eslint-disable-next-line no-await-in-loop
           const obj = await transporter.sendMail(info.originalMessage);
           raw = obj.message;
         }
 
         inquiry.messages.push({ raw });
 
-        // eslint-disable-next-line no-await-in-loop
         await inquiry.save();
 
         repliedTo.add(address);

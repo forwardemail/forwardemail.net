@@ -39,7 +39,6 @@ const PUNCTUATION_REGEX = new RE2(
   /[-‒–—―|$&~=\\/⁄@+*!?({[\]})<>‹›«».;:^‘’“”'",،、`·•†‡°″¡¿※#№÷×%‰−‱¶′‴§_‖¦]/g
 );
 
-// eslint-disable-next-line complexity
 async function generateAliasPassword(ctx) {
   const redirectTo = ctx.state.l(
     `/my-account/domains/${punycode.toASCII(ctx.state.domain.name)}/aliases`

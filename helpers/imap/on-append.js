@@ -45,7 +45,7 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const SIXTY_FOUR_MB_IN_BYTES = bytes('64MB');
 
-// eslint-disable-next-line max-params, complexity
+// eslint-disable-next-line max-params
 async function onAppend(path, flags, date, raw, session, fn) {
   this.logger.debug('APPEND', { path, flags, date, session });
 

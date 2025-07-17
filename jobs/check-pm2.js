@@ -82,7 +82,6 @@ graceful.listen();
 
           if (reload.length > 0) {
             for (const p of reload) {
-              // eslint-disable-next-line no-await-in-loop
               await new Promise((resolve, reject) => {
                 pm2.reload(p.name, (err) => {
                   if (err) return reject(err);
@@ -94,7 +93,7 @@ graceful.listen();
               const subject = `PM2 reloaded ${
                 p.name
               } on ${os.hostname()} (${IP_ADDRESS})`;
-              // eslint-disable-next-line no-await-in-loop
+
               await emailHelper({
                 template: 'alert',
                 message: {

@@ -10,10 +10,11 @@ require('#config/env');
 // eslint-disable-next-line import/no-unassigned-import
 require('#config/mongoose');
 
-const API = require('@ladjs/api');
 const Graceful = require('@ladjs/graceful');
 const mongoose = require('mongoose');
 const ip = require('ip');
+
+const API = require('./api-server');
 
 const apiConfig = require('#config/api');
 const Users = require('#models/users');
@@ -22,6 +23,7 @@ const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
 
 const api = new API(apiConfig, Users);
+
 const graceful = new Graceful({
   mongooses: [mongoose],
   servers: [api.server],

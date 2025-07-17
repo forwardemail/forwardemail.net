@@ -95,12 +95,10 @@ graceful.listen();
       const filePath = path.join(TMP_DIR, file.name);
 
       try {
-        // eslint-disable-next-line no-await-in-loop
         const stat = await fs.promises.stat(filePath);
 
         // delete if file/folder is 1d+ old
         if (stat.mtimeMs && stat.mtimeMs <= Date.now() - ms('1d')) {
-          // eslint-disable-next-line no-await-in-loop
           await fs.promises.rm(filePath, {
             force: true,
             recursive: true

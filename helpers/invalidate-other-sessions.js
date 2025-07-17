@@ -18,7 +18,6 @@ async function invalidateOtherSessions(ctx) {
   if (user.sessions.length > 0) {
     for (const id of user.sessions) {
       try {
-        // eslint-disable-next-line no-await-in-loop
         if (id !== ctx.sessionId) await ctx.client.del(`koa:sess:${id}`);
       } catch (err) {
         ctx.logger.fatal(err);

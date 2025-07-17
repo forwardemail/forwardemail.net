@@ -48,7 +48,6 @@ if (parentPort)
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 async function mapper(user) {
   // return early if the job was already cancelled
   if (isCancelled) return;

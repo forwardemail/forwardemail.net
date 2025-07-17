@@ -439,7 +439,7 @@ Logs.pre('save', function (next) {
 // remote address
 // mail from, rcpt to, etc
 //
-// eslint-disable-next-line complexity
+
 Logs.pre('save', function (next) {
   if (!this.is_restricted) return next();
 
@@ -599,7 +599,7 @@ Logs.pre('validate', function (next) {
 //
 // we don't want to pollute our db (in addition to API endpoint rate limiting we check for duplicates)
 //
-// eslint-disable-next-line complexity
+
 function getQueryHash(log) {
   if (log.hash) return log.hash;
 

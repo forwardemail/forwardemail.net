@@ -48,7 +48,6 @@ graceful.listen();
     // send launch email (in serial)
     for (const _id of _ids) {
       try {
-        // eslint-disable-next-line no-await-in-loop
         const user = await Users.findById(_id);
 
         // in case user deleted their account or is banned
@@ -58,7 +57,7 @@ graceful.listen();
         if (user[config.userFields.launchEmailSentAt]) continue;
 
         // send email
-        // eslint-disable-next-line no-await-in-loop
+
         await email({
           template: 'launch',
           message: {
@@ -68,13 +67,13 @@ graceful.listen();
         });
 
         // store that we sent this email
-        // eslint-disable-next-line no-await-in-loop
+
         await Users.findByIdAndUpdate(user._id, {
           $set: {
             [config.userFields.launchEmailSentAt]: new Date()
           }
         });
-        // eslint-disable-next-line no-await-in-loop
+
         await user.save();
       } catch (err) {
         logger.error(err);

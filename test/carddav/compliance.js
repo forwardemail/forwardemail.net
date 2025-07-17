@@ -73,7 +73,7 @@ test.beforeEach(async (t) => {
       ...carddavConfig,
       wsp,
       port,
-      redis: client
+      client
     },
     Users
   );

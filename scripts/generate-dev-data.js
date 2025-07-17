@@ -50,7 +50,6 @@ const createFakeInquiry = async () => {
   await setupMongoose();
 
   for (let count = 0; count <= INQUIRY_COUNT; count++) {
-    // eslint-disable-next-line no-await-in-loop
     await createFakeInquiry();
   }
 

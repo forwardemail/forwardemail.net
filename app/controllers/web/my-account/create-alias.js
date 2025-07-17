@@ -13,7 +13,6 @@ const config = require('#config');
 const toObject = require('#helpers/to-object');
 const { Users, Domains, Aliases } = require('#models');
 
-// eslint-disable-next-line complexity
 async function createAlias(ctx, next) {
   try {
     if (

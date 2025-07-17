@@ -217,7 +217,6 @@ for (const alternative of config.alternatives) {
   }
 }
 
-// eslint-disable-next-line complexity
 async function generateOpenGraphImage(ctx, next) {
   if (ctx.path === '/mermaid.png') return next();
   try {

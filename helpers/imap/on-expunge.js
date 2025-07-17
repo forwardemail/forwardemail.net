@@ -29,7 +29,6 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
 
@@ -158,6 +157,12 @@ async function onExpunge(mailboxId, update, session, fn) {
       if (update.messages.length === 0) return fn(null, true, mailbox, []);
       condition.uid = tools.checkRangeQuery(update.messages);
     }
+
+    //
+    // NOTE: this is for the API usage which calls this function
+    //       (we could have re-used `condition.uid` above however this is more accurate)
+    //
+    if (update._id) condition._id = update._id;
 
     this.logger.debug('expunge query', { condition });
 

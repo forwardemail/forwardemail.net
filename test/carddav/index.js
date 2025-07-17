@@ -92,7 +92,7 @@ test.beforeEach(async (t) => {
       ...carddavConfig,
       wsp,
       port,
-      redis: client
+      client
     },
     Users
   );
@@ -745,7 +745,6 @@ test('addressBookQuery should be able to filter contacts', async (t) => {
 
   for (const contact of contacts) {
     if (contact.url === johnUrl || contact.url === janeUrl) {
-      // eslint-disable-next-line no-await-in-loop
       await deleteVCard({
         vCard: contact,
         headers: t.context.authHeaders

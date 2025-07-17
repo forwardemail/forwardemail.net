@@ -25,7 +25,6 @@ const logger = require('#helpers/logger');
 
 const REGEX_FLAG_ENDINGS = ['/gi', '/ig', '/g', '/i', '/'];
 
-// eslint-disable-next-line complexity
 async function getForwardingConfiguration({
   verificationRecord,
   username = false,
@@ -318,7 +317,6 @@ async function getForwardingConfiguration({
     mapping: []
   };
 
-  // eslint-disable-next-line complexity
   function pushToBody(alias) {
     // alias.name = "*" (wildcard catchall) otherwise an alias
     // alias.is_enabled = "!" prefixed alias name (or !! or !!!)

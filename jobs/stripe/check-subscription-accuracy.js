@@ -33,7 +33,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 // and if there is more than one active subscription or the subscription isn't stored on our side, then store it
 // and it will email admins if any errors occur
 //
-// eslint-disable-next-line complexity
+
 async function mapper(customer) {
   // wait a second to prevent rate limitation error
   await setTimeout(ms('1s'));

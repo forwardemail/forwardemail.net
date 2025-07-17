@@ -29,7 +29,6 @@ const email = new Email({ views: config.views });
 
 const meta = new Meta(config.meta, logger);
 
-// eslint-disable-next-line complexity
 async function onboard(ctx, next) {
   if (!['GET', 'POST'].includes(ctx.method)) return next();
 

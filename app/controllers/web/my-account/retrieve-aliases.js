@@ -19,7 +19,6 @@ const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 const config = require('#config');
 
-// eslint-disable-next-line complexity
 async function retrieveAliases(ctx, next) {
   let query =
     ctx.state.domain.group === 'admin'

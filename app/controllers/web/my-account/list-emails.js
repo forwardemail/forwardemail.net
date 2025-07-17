@@ -15,7 +15,6 @@ const config = require('#config');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const { Domains, Emails, Aliases } = require('#models');
 
-// eslint-disable-next-line complexity
 async function listEmails(ctx, next) {
   // user must be domain admin or alias owner of the email
   const [domains, aliases, count] = await Promise.all([

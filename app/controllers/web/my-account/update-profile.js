@@ -17,7 +17,6 @@ const invalidateOtherSessions = require('#helpers/invalidate-other-sessions');
 const isEmail = require('#helpers/is-email');
 const { Users } = require('#models');
 
-// eslint-disable-next-line complexity
 async function updateProfile(ctx) {
   const { body } = ctx.request;
 

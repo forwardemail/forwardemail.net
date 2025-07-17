@@ -63,7 +63,7 @@ const ALIAS_GENERATED_PASSWORD = `
       <a href="%s" download="%s" target="_blank" class="btn btn-success">Download</a>
     </div>
 
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 mt-4 mt-md-0">
       <strong>Thunderbird Mobile (Android)</strong>
       <div class="d-flex justify-content-center">
         <ol class="text-left mb-4 mt-3">
@@ -73,7 +73,6 @@ const ALIAS_GENERATED_PASSWORD = `
           <li>Tap Scan QR Code</li>
         </ol>
       </div>
-      <br />
       <img alt="Thunderbird QR Code" src="%s" class="bg-white p-3" />
     </div>
   </div>
@@ -798,5 +797,55 @@ module.exports = {
   UPGRADE_REQUEST: 'Upgrade Request',
   UPGRADE_REQUEST_NOTIFICATION:
     'Our team has been notified and will follow up shortly by email.',
+
+  // API endpoint validation messages
+  CONTACT_FULLNAME_OR_CONTENT_REQUIRED:
+    'Contact must have either fullName or vCard content.',
+  CONTACT_INVALID_ID: 'Invalid contact ID.',
+
+  CALENDAR_NAME_REQUIRED: 'Calendar name is required.',
+  CALENDAR_INVALID_ID: 'Invalid calendar ID.',
+
+  FOLDER_NAME_OR_PATH_REQUIRED: 'Folder must have either name or path.',
+  FOLDER_INVALID_ID: 'Invalid folder ID.',
+  FOLDER_DOES_NOT_EXIST: 'Folder does not exist.',
+
+  // General validation phrases
+  INVALID_PARAMS: 'Invalid parameters.',
+  INVALID_REQUEST_BODY: 'Invalid request body.',
+
+  MESSAGE_INVALID_ID: 'Invalid message ID.',
+  MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
+  MESSAGE_FLAGS_INVALID: 'Message flags invalid.',
+
+  // Contact validation phrases
+  CONTACT_ID_REQUIRED: 'Contact ID is required.',
+  CONTACT_FULLNAME_INVALID: 'Contact full name must be a valid string.',
+  CONTACT_CONTENT_INVALID: 'Contact content must be a valid string.',
+  CONTACT_UPDATE_FIELDS_REQUIRED:
+    'At least one field must be provided for contact update.',
+  CONTACT_EMAILS_MUST_BE_ARRAY: 'Contact emails must be an array.',
+  CONTACT_EMAIL_MUST_BE_OBJECT: 'Contact email must be an object.',
+  CONTACT_EMAIL_INVALID:
+    'Contact email address is required and must be a valid email address.',
+  CONTACT_EMAIL_TYPE_INVALID: 'Contact email type must be a valid string.',
+  CONTACT_PHONES_MUST_BE_ARRAY: 'Contact phones must be an array.',
+  CONTACT_PHONE_MUST_BE_OBJECT: 'Contact phone must be an object.',
+  CONTACT_PHONE_INVALID:
+    'Contact phone number is required and must be a valid string.',
+  CONTACT_PHONE_TYPE_INVALID: 'Contact phone type must be a valid string.',
+  CONTACT_ADDRESSES_MUST_BE_ARRAY: 'Contact addresses must be an array.',
+  CONTACT_ADDRESS_MUST_BE_OBJECT: 'Contact address must be an object.',
+  CONTACT_ADDRESS_STREET_INVALID:
+    'Contact address street must be a valid string.',
+  CONTACT_ADDRESS_CITY_INVALID: 'Contact address city must be a valid string.',
+  CONTACT_ADDRESS_STATE_INVALID:
+    'Contact address state must be a valid string.',
+  CONTACT_ADDRESS_POSTAL_CODE_INVALID:
+    'Contact address postal code must be a valid string.',
+  CONTACT_ADDRESS_COUNTRY_INVALID:
+    'Contact address country must be a valid string.',
+  CONTACT_ADDRESS_TYPE_INVALID: 'Contact address type must be a valid string.',
+
   ...STATUSES
 };

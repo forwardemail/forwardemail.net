@@ -11,12 +11,13 @@ const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql-enhanced');
-const _ = require('#helpers/lodash');
+const { boolean } = require('boolean');
 
+const _ = require('#helpers/lodash');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
+const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
 
 const builder = new Builder();
@@ -97,7 +98,7 @@ function noop(fnName) {
 // a case by case basis instead of writing this out
 
 // TODO: support `multi: true` option for this function (and rewrite IMAP helpers to leverage it)
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function updateMany(
   instance,
   session,
@@ -427,7 +428,7 @@ async function deleteOne(instance, session, conditions = {}, options = {}) {
   return { deletedCount: result.changes };
 }
 
-// eslint-disable-next-line max-params, complexity
+// eslint-disable-next-line max-params
 async function find(
   instance,
   session,
@@ -437,9 +438,11 @@ async function find(
 ) {
   if (
     !_.isEmpty(options) &&
-    !Object.keys(options).every((key) => key === 'sort')
+    !Object.keys(options).every(
+      (key) => key === 'sort' || key === 'limit' || key === 'offset'
+    )
   )
-    throw new TypeError('Only sort option supported');
+    throw new TypeError('Only sort, limit, and offset options supported');
 
   const table = this?.collection?.modelName;
   if (!isSANB(table)) throw new TypeError('Table name missing');
@@ -475,9 +478,20 @@ async function find(
   if (!_.isEmpty(fields)) opts.fields = fields;
 
   // sort support
-  if (options.sort) {
-    if (isSANB(options.sort)) opts.sort = options.sort;
-    else throw new TypeError('Sort must be a string');
+  if (options.sort) opts.sort = options.sort;
+
+  // limit support
+  if (options.limit) {
+    if (Number.isFinite(options.limit) && Number.isInteger(options.limit))
+      opts.limit = options.limit;
+    else throw new TypeError('Limit must be a finite integer');
+  }
+
+  // offset support
+  if (options.offset) {
+    if (Number.isFinite(options.offset) && Number.isInteger(options.offset))
+      opts.offset = options.offset;
+    else throw new TypeError('Offset must be a finite integer');
   }
 
   const sql = builder.build(opts);
@@ -554,11 +568,23 @@ async function findOne(
 
   const condition = prepareQuery(mapping, conditions);
 
-  const sql = builder.build({
+  const opts = {
     type: 'select',
     table,
     condition
-  });
+  };
+
+  const fields = [];
+  for (const key of Object.keys(projections)) {
+    if (boolean(projections[key])) fields.push(key);
+  }
+
+  if (!_.isEmpty(projections) && [-1, false].includes(projections._id))
+    fields.push('_id');
+
+  if (!_.isEmpty(fields)) opts.fields = fields;
+
+  const sql = builder.build(opts);
 
   let doc;
 
@@ -583,7 +609,6 @@ async function findOne(
   return doc;
 }
 
-// eslint-disable-next-line complexity
 async function $__handleSave(options = {}, fn) {
   try {
     const table =
@@ -713,7 +738,7 @@ async function findByIdAndUpdate(
 }
 
 // TODO: handle projection from `options` (?)
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function findOneAndUpdate(
   instance,
   session,
@@ -1016,7 +1041,6 @@ function prepareQuery(mapping, doc) {
   return obj;
 }
 
-// eslint-disable-next-line complexity
 function parseSchema(Model, modelName = '') {
   if (typeof Model !== 'function' && typeof Model !== 'object')
     throw new TypeError('Model was missing');
@@ -1483,7 +1507,7 @@ async function convertResult(
 
   const pathsToValidate = [];
   for (const key in projection) {
-    if (Boolean(projection[key]) === true) pathsToValidate.push(key);
+    if (boolean(projection[key])) pathsToValidate.push(key);
   }
 
   // if we had a projection with at least one truthy value then pass it as array
@@ -1492,7 +1516,17 @@ async function convertResult(
       ? d.validate(pathsToValidate)
       : d.validate());
 
-  return d;
+  // always include _id
+  if (
+    pathsToValidate.length > 0 &&
+    !pathsToValidate.includes('_id') &&
+    (projection._id === undefined || boolean(projection._id))
+  )
+    pathsToValidate.push('_id');
+
+  // TODO: should we include created_at and updated_at too?
+
+  return pathsToValidate.length > 0 ? _.pick(d, pathsToValidate) : d;
 }
 
 function sqliteVirtualDB(schema) {

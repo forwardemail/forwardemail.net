@@ -1083,7 +1083,6 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append('copy', Buffer.from(raw), [], new Date());
   }
 
@@ -1266,7 +1265,6 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append('move', Buffer.from(raw), [], new Date());
   }
 
@@ -1319,7 +1317,6 @@ Content-Transfer-Encoding: 7bit
 test Snap Ya Ya Ya
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append(
       'searchwoowoo',
       Buffer.from(raw),
@@ -1342,7 +1339,6 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append(
       'searchwoowoo',
       Buffer.from(raw),
@@ -1381,9 +1377,8 @@ test
     'old',
     'recent'
   ]) {
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.search({ [key]: false });
-    // eslint-disable-next-line no-await-in-loop
+
     await t.context.imapFlow.search({ [key]: true });
   }
 
@@ -1399,13 +1394,11 @@ test
     'keyword',
     'unKeyword' // TODO: (?)
   ]) {
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.search({ [key]: 'test' });
   }
 
   // size
   for (const key of ['larger', 'smaller']) {
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.search({ [key]: 100 });
   }
 
@@ -1418,7 +1411,6 @@ test
     'sentOn',
     'sentSince'
   ]) {
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.search({ [key]: new Date(Date.now() + 10000) });
   }
 });
@@ -1441,7 +1433,6 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append('yoyo', Buffer.from(raw), [], new Date());
   }
 
@@ -1459,7 +1450,6 @@ Content-Transfer-Encoding: 7bit
 test
 `.trim();
 
-    // eslint-disable-next-line no-await-in-loop
     await t.context.imapFlow.append(
       'yoyo',
       Buffer.from(raw),
@@ -1735,7 +1725,6 @@ Content-Transfer-Encoding: 7bit
 ${i}`.trim()
     );
 
-    // eslint-disable-next-line no-await-in-loop
     await imapFlow.append('INBOX', raw, [], new Date());
   }
 
@@ -1750,11 +1739,11 @@ ${i}`.trim()
 
   for (const uid of uids) {
     // <https://github.com/postalsys/imapflow/issues/203>
-    // eslint-disable-next-line no-await-in-loop
+
     const stream = await imapFlow.download(uid, undefined, {
       chunkSize: 12500049
     });
-    // eslint-disable-next-line no-await-in-loop
+
     await getStream(stream.content);
   }
 });
@@ -1892,7 +1881,7 @@ test('imap_flag_consistency_large_mailbox_test', async (t) => {
   t.log(`Appending ${numberOfMessages} messages...`);
   for (let i = 1; i <= numberOfMessages; i++) {
     const messageContent = `To: ${alias.name}@${domain.name}\nFrom: testuser${i}@example.com\nSubject: Large Mailbox Test Message ${i}\n\nThis is body of message ${i}.`;
-    // eslint-disable-next-line no-await-in-loop
+
     await imapFlow.append(
       mailboxPath,
       Buffer.from(messageContent),
@@ -2030,7 +2019,7 @@ test('imap_thunderbird_simulation_answered_flag_large_mailbox', async (t) => {
       const subject = `Test Email Large Sim ${i}`;
       const body = `This is test email number ${i} for the large mailbox simulation.`;
       const message = `Subject: ${subject}\r\nTo: ${alias.name}@${domain.name}\r\nFrom: testuser${i}@example.com\r\n\r\n${body}`;
-      // eslint-disable-next-line no-await-in-loop
+
       await client.append(mailboxName, Buffer.from(message), []);
       if (i % 50 === 0 || i === numMessages) {
         t.log(`Appended ${i} of ${numMessages} messages to ${mailboxName}.`);
@@ -2199,7 +2188,7 @@ test('imap_sequence_store_single_message_flag_consistency', async (t) => {
     }\nFrom: test@example.com\nSubject: Test Message ${
       i + 1
     }\n\nThis is test message ${i + 1}.`;
-    // eslint-disable-next-line no-await-in-loop
+
     const appendResult = await imapFlow.append(
       mailboxPath,
       Buffer.from(raw),

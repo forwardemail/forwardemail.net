@@ -40,7 +40,6 @@ graceful.listen();
 
 // TODO: all this could probably go into pre('save') or post('save') hook of Payment too
 
-// eslint-disable-next-line complexity
 async function mapper(id) {
   let payment;
   let invoiceAt;

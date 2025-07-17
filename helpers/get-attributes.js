@@ -109,7 +109,6 @@ async function getAttributes(headers, session, resolver, isAligned = false) {
       }
 
       try {
-        // eslint-disable-next-line no-await-in-loop
         const result = await spf({
           ip: session.remoteAddress,
           helo: session.hostNameAppearsAs,

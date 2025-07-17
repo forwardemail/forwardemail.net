@@ -216,7 +216,7 @@ class IMAP {
             }
 
             // attempt to send the request 3x
-            // eslint-disable-next-line no-await-in-loop
+
             await pRetry(
               async () => {
                 await pWaitFor(
@@ -351,13 +351,13 @@ class IMAP {
         try {
           // iterate in series with delay
           // to prevent piscina worker flooding
-          // eslint-disable-next-line no-await-in-loop
+
           await this.wsp.request({
             action: 'backup',
             backup_at: new Date().toISOString(),
             session: { user: connection.session.user }
           });
-          // eslint-disable-next-line no-await-in-loop
+
           await ms('1s');
         } catch (err) {
           this.logger.debug(err, { session: connection.session.user });

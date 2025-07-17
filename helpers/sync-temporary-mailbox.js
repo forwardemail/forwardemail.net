@@ -67,7 +67,7 @@ async function syncTemporaryMailbox(session) {
         // if it's been more than 60s
         if (Date.now() >= expireAtMs) {
           expireAtMs = dayjs().add(1, 'minute').toDate().getTime();
-          // eslint-disable-next-line no-await-in-loop
+
           await this.client.set(
             `sync_check:${session.user.alias_id}`,
             true,
@@ -96,7 +96,6 @@ async function syncTemporaryMailbox(session) {
         });
         const spaceRequired = Math.round(bytes('50MB') * messages.length * 2);
 
-        // eslint-disable-next-line no-await-in-loop
         const diskSpace = await checkDiskSpace(storagePath);
         if (diskSpace.free < spaceRequired)
           throw new TypeError(
@@ -112,7 +111,7 @@ async function syncTemporaryMailbox(session) {
             // if one message fails then not all of them should
             // (e.g. one might have an issue with `date` or `raw`)
             //
-            // eslint-disable-next-line no-await-in-loop
+
             await onAppendPromise.call(
               this,
               'INBOX',

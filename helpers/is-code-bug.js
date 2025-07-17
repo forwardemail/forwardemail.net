@@ -34,7 +34,6 @@ const SYSCALLS = new Set([
   'setsid'
 ]);
 
-// eslint-disable-next-line complexity
 function isCodeBug(err) {
   const bool = boolean(
     // it was already marked as a code bug

@@ -66,7 +66,7 @@ const srs = new SRS(config.srs);
 
 // `email` is an Email object from mongoose
 // `resolver` is a Tangerine instance
-// eslint-disable-next-line complexity
+
 async function processEmail({ email, port = 25, resolver, client }) {
   const meta = {
     session: createSession(email),
@@ -396,7 +396,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
     let feedbackId;
 
     // <https://github.com/andris9/mailsplit#events>
-    // eslint-disable-next-line complexity
+
     splitter.on('data', (data) => {
       if (data.type !== 'node' || data.root !== true) return;
       // - data.headers.get

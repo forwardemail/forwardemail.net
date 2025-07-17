@@ -40,7 +40,6 @@ const IMAP_COMMANDS = new Set([
   'XAPPLEPUSHSERVICE'
 ]);
 
-// eslint-disable-next-line complexity
 async function refreshSession(session, command) {
   if (!command) throw new Error('Command required');
   command = command.toUpperCase().trim();
@@ -48,7 +47,8 @@ async function refreshSession(session, command) {
     command !== 'POP3' &&
     !IMAP_COMMANDS.has(command) &&
     command !== 'CALDAV' &&
-    command !== 'CARDDAV'
+    command !== 'CARDDAV' &&
+    command !== 'API'
   )
     throw new Error('Invalid command');
 

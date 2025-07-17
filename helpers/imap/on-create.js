@@ -105,7 +105,7 @@ async function onCreate(path, session, fn) {
       path,
       // NOTE: this is the same uncommented code as `helpers/refresh-session`
       // TODO: support custom alias retention (would get stored on session)
-      // TODO: if user updates retetion then we'd need to update in-memory IMAP connections
+      // TODO: if user updates retention then we'd need to update in-memory IMAP connections
       // retention: typeof alias.retention === 'number' ? alias.retention : 0
       retention: 0
     });

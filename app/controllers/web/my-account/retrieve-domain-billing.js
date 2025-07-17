@@ -33,7 +33,6 @@ const { STRIPE_MAPPING, STRIPE_PRODUCTS, PAYPAL_PLAN_MAPPING } =
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
-// eslint-disable-next-line complexity
 async function retrieveDomainBilling(ctx) {
   const isAccountUpgrade =
     ctx.pathWithoutLocale === '/my-account/billing/upgrade';

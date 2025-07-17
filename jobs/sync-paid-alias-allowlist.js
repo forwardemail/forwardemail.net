@@ -52,7 +52,6 @@ const SEVEN_DAYS_TO_MS = ms('7d');
 
 graceful.listen();
 
-// eslint-disable-next-line complexity
 (async () => {
   await setupMongoose(logger);
 
@@ -163,7 +162,6 @@ graceful.listen();
         if (!isFQDN(host)) continue;
         // lookup A record for the hostname
         try {
-          // eslint-disable-next-line no-await-in-loop
           const ips = await resolver.resolve(host);
 
           for (const ip of ips) {
@@ -181,7 +179,6 @@ graceful.listen();
         // and then if any are found, if they are IP's then add otherwise if FQDN then lookup A records
         //
         try {
-          // eslint-disable-next-line no-await-in-loop
           const records = await resolver.resolveMx(host);
           if (records.length > 0) {
             for (const record of records) {
@@ -190,7 +187,6 @@ graceful.listen();
               } else if (isFQDN(record.exchange)) {
                 // lookup the IP address of the exchange
                 try {
-                  // eslint-disable-next-line no-await-in-loop
                   const ips = await resolver.resolve(record.exchange);
                   for (const ip of ips) {
                     if (isIP(ip)) set.add(ip);

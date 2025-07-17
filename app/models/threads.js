@@ -60,7 +60,7 @@ Threads.plugin(sqliteVirtualDB);
 Threads.plugin(validationErrorTransform);
 
 // code is inspired from wildduck (rewrite necessary for async/await and different db structure)
-// eslint-disable-next-line complexity
+
 async function getThreadId(instance, session, subject, mimeTree) {
   if (!session?.db || (!(session.db instanceof Database) && !instance.wsp))
     throw new TypeError('Database is missing');

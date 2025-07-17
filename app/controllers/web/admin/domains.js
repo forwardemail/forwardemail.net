@@ -90,7 +90,6 @@ async function list(ctx) {
   ctx.body = { table };
 }
 
-// eslint-disable-next-line complexity
 async function update(ctx) {
   const domain = await Domains.findById(ctx.params.id);
 

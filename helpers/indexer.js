@@ -85,7 +85,7 @@ class Indexer extends WildDuckIndexer {
     }
   }
 
-  // eslint-disable-next-line max-params, complexity
+  // eslint-disable-next-line max-params
   getContents(mimeTree, selector, options = {}, instance, session) {
     if (!instance) throw new TypeError('Instance is missing');
     if (!session) throw new TypeError('Session is missing');
@@ -319,7 +319,6 @@ class Indexer extends WildDuckIndexer {
         remainder = false;
       };
 
-      // eslint-disable-next-line complexity
       const walk = async (node) => {
         if (aborted) {
           return;
@@ -478,7 +477,6 @@ class Indexer extends WildDuckIndexer {
         if (Array.isArray(node.childNodes)) {
           let pos = 0;
           for (const childNode of node.childNodes) {
-            // eslint-disable-next-line no-await-in-loop
             await walk(childNode);
 
             if (aborted) {
@@ -487,7 +485,7 @@ class Indexer extends WildDuckIndexer {
 
             if (pos++ < node.childNodes.length - 1) {
               // emit boundary unless last item
-              // eslint-disable-next-line no-await-in-loop
+
               await emit(`--${node.boundary}`);
             }
           }

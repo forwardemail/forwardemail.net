@@ -74,7 +74,6 @@ const COLUMN_PROPERTIES = [
   'foreign_key_table'
 ];
 
-// eslint-disable-next-line complexity
 async function migrateSchema(db, session, tables) {
   // indices store for index list (which we use for conditionally adding indices)
   const indexList = {};
@@ -179,7 +178,7 @@ async function migrateSchema(db, session, tables) {
   const commands = [];
   for (const table of Object.keys(tables)) {
     // <https://github.com/knex/knex/issues/360#issuecomment-1692481083>
-    // eslint-disable-next-line no-await-in-loop
+
     const hasTable = await inspector.hasTable(table);
     if (!hasTable) {
       // create table
@@ -208,7 +207,7 @@ async function migrateSchema(db, session, tables) {
     }
 
     // ensure that all columns exist using mapping for the table
-    // eslint-disable-next-line no-await-in-loop
+
     const columnInfo = await inspector.columnInfo(table);
     // create mapping of columns by their key for easy lookup
     const columnInfoByKey = _.zipObject(

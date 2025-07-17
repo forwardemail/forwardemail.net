@@ -17,7 +17,6 @@ const isDenylisted = require('#helpers/is-denylisted');
 const isEmail = require('#helpers/is-email');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
-// eslint-disable-next-line complexity
 async function validateDomain(ctx, next) {
   if (
     !isSANB(ctx.request.body.domain) ||

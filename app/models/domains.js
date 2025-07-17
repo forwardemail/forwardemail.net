@@ -1656,7 +1656,7 @@ async function getVerificationResults(domain, resolver, purgeCache = false) {
     //
     // validate TXT records
     //
-    // eslint-disable-next-line complexity
+
     (async function () {
       try {
         const result = await getTxtAddresses(
@@ -2037,7 +2037,7 @@ function splitString(string_) {
     : [string_];
 }
 
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 async function getTxtAddresses(
   domainName,
   locale,
@@ -2438,7 +2438,6 @@ async function getMaxQuota(_id, aliasId, locale = i18n.config.defaultLocale) {
 
 Domains.statics.getMaxQuota = getMaxQuota;
 
-// eslint-disable-next-line complexity
 async function getStorageUsed(_id, _locale, aliasesOnly = false) {
   //
   // calculate storage used across entire domain and its admin users domains

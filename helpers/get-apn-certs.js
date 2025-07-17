@@ -136,10 +136,9 @@ async function parseResponse(xml, certs) {
   for (const key of KEYS) {
     const cert = certs[key];
 
-    // eslint-disable-next-line no-await-in-loop
     const cryptoPublicKey = await crypto.subtle.importKey(
       'jwk',
-      // eslint-disable-next-line no-await-in-loop
+
       await crypto.subtle.exportKey('jwk', cert.publicKey),
       { hash: 'SHA-1', name: 'RSASSA-PKCS1-v1_5' },
       true,
@@ -150,10 +149,9 @@ async function parseResponse(xml, certs) {
       .export({ format: 'pem', type: 'pkcs1' })
       .toString();
 
-    // eslint-disable-next-line no-await-in-loop
     const cryptoPrivateKey = await crypto.subtle.importKey(
       'jwk',
-      // eslint-disable-next-line no-await-in-loop
+
       await crypto.subtle.exportKey('jwk', cert.privateKey),
       { hash: 'SHA-1', name: 'RSASSA-PKCS1-v1_5' },
       true,
@@ -270,7 +268,7 @@ async function getApnCerts(client) {
       modulusLength: 2048,
       publicExponent: new Uint8Array([1, 0, 1])
     };
-    // eslint-disable-next-line no-await-in-loop
+
     const { publicKey, privateKey } = await crypto.subtle.generateKey(
       alg,
       true, // exportable
@@ -295,7 +293,6 @@ async function getApnCerts(client) {
   for (const [i, key] of KEYS.entries()) {
     const serialNumber = getCertSerialNumber(certs, key);
     CertRequestList.push({
-      // eslint-disable-next-line no-await-in-loop
       CSR: await createCsrs(certs, key),
       CertRequestNo: i,
       ...(serialNumber

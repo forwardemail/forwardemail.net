@@ -33,7 +33,6 @@ const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
 
-// eslint-disable-next-line complexity
 async function onMove(mailboxId, update, session, fn) {
   this.logger.debug('MOVE', { mailboxId, update, session });
 
@@ -219,7 +218,7 @@ async function onMove(mailboxId, update, session, fn) {
 
     // return early if no messages
     // (we could also do `_id: -1` as a query)
-    if (update.messages.length === 0)
+    if (!update._id && update.messages.length === 0)
       fn(
         null,
         true,
@@ -239,9 +238,15 @@ async function onMove(mailboxId, update, session, fn) {
     // <https://github.com/nodemailer/wildduck/issues/698>
     // <https://github.com/nodemailer/wildduck/issues/710>
     const condition = {
-      mailbox: mailbox._id.toString(),
-      uid: tools.checkRangeQuery(update.messages)
+      mailbox: mailbox._id.toString()
     };
+
+    // NOTE: this is for API support to be more specific than a UID
+    if (update._id) {
+      condition._id = update._id;
+    } else {
+      condition.uid = tools.checkRangeQuery(update.messages);
+    }
 
     const { modifyIndex, specialUse, retention, _id } = targetMailbox;
     let { uidNext } = targetMailbox;

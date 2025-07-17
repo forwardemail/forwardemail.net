@@ -104,7 +104,6 @@ async function getCharts(ctx) {
   };
 }
 
-// eslint-disable-next-line complexity
 async function listDomains(ctx, next) {
   // render charts for XHR request
   if (

@@ -12,7 +12,6 @@ const logger = require('./logger');
 
 const REGEX_DIAGNOSTIC_CODE = new RE2(/^\d{3} /);
 
-// eslint-disable-next-line complexity
 function getErrorCode(err) {
   if (typeof err !== 'object') {
     const err = new Error('Error passed was not an Object');

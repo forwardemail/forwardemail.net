@@ -61,14 +61,12 @@ graceful.listen();
         continue;
       }
 
-      // eslint-disable-next-line no-await-in-loop
       const user = await Users.findById(inquiry.user);
       if (!user) {
         console.log('No user found, skipping.');
         continue;
       }
 
-      // eslint-disable-next-line no-await-in-loop
       const domains = await Domains.find({
         'members.user': user._id
       })
@@ -76,7 +74,6 @@ graceful.listen();
         .lean()
         .exec();
 
-      // eslint-disable-next-line no-await-in-loop
       const { email, info } = await emailHelper({
         template: 'inquiry',
         message: {
@@ -96,10 +93,8 @@ graceful.listen();
 
       let raw;
       if (email) {
-        // eslint-disable-next-line no-await-in-loop
         raw = await Emails.getMessage(email.message);
       } else {
-        // eslint-disable-next-line no-await-in-loop
         const obj = await transporter.sendMail(info.originalMessage);
         raw = obj.message;
       }
@@ -113,7 +108,6 @@ graceful.listen();
 
       inquiry.messages = messages;
 
-      // eslint-disable-next-line no-await-in-loop
       await inquiry.save();
       console.log(`Migrated inquiry with id: ${inquiry._id}`);
     }

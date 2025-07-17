@@ -643,7 +643,6 @@ async function catchError(ctx, next) {
   }
 }
 
-// eslint-disable-next-line complexity
 async function verify(ctx) {
   let redirectTo = ctx.state.l(
     config.passportCallbackOptions.successReturnToOrRedirect

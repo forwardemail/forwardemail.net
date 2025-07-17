@@ -11,7 +11,6 @@ const _ = require('#helpers/lodash');
 const emailHelper = require('#helpers/email');
 const config = require('#config');
 
-// eslint-disable-next-line complexity
 async function ensurePaidToDate(ctx, next) {
   // short-circuit if in self-hosted mode
   // as we don't need to check payment

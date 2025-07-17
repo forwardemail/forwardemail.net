@@ -11,7 +11,9 @@ module.exports = {
     'no-warning-comments': 'off',
     'unicorn/prefer-top-level-await': 'off',
     'unicorn/no-process-exit': 'off',
-    'max-depth': 'off'
+    'max-depth': 'off',
+    'no-await-in-loop': 'off',
+    'complexity': 'off'
   },
   overrides: [
     {

@@ -20,7 +20,7 @@ const libmime = require('libmime');
 
 const Indexer = require('./indexer');
 
-// eslint-disable-next-line complexity, max-params
+// eslint-disable-next-line max-params
 function getQueryResponse(query, message, options = {}, instance, session) {
   options = options || {};
 

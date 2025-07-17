@@ -117,7 +117,6 @@ async function getPGPResults({
   return { finalRaw, pgp };
 }
 
-// eslint-disable-next-line complexity
 async function sendEmail(
   {
     session,

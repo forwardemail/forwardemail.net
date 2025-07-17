@@ -47,7 +47,6 @@ async function updateStorageUsed(id, client) {
           : ['-wal', '-shm', '-tmp', '-tmp-wal', '-tmp-shm']) {
           const affixFilePath = path.join(dirName, `${basename}${affix}${ext}`);
           try {
-            // eslint-disable-next-line no-await-in-loop
             const stats = await fs.promises.stat(affixFilePath);
             if (stats.isFile() && stats.size > 0) {
               size += stats.size;

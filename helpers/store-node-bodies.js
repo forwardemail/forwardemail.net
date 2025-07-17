@@ -39,7 +39,6 @@ async function storeNodeBodies(instance, session, maildata, mimeTree) {
     //       that has a large BLOB (e.g. if you have a large attachment it's slow)
     //
 
-    // eslint-disable-next-line no-await-in-loop
     const attachment = await this.attachmentStorage.create(
       instance,
       session,

@@ -27,7 +27,6 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 const { STRIPE_MAPPING, PAYPAL_MAPPING, PAYMENT_DURATIONS } = config.payments;
 
-// eslint-disable-next-line complexity
 async function createDomainBilling(ctx) {
   try {
     //

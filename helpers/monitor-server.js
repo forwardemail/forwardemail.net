@@ -65,7 +65,6 @@ const mountMapping = {};
 //   );
 // });
 
-// eslint-disable-next-line complexity
 async function check() {
   // NOTE: might want to add this somewhere
   // <https://updown.io/blog/the-funny-rules-of-spamassassin-in-2023>
@@ -188,7 +187,6 @@ async function check() {
 
             // dirent.name
             try {
-              // eslint-disable-next-line no-await-in-loop
               const diskSpace = await checkDiskSpace(
                 path.join('/mnt', dirent.name)
               );
