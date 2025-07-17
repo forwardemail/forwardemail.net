@@ -158,6 +158,12 @@ async function onExpunge(mailboxId, update, session, fn) {
       condition.uid = tools.checkRangeQuery(update.messages);
     }
 
+    //
+    // NOTE: this is for the API usage which calls this function
+    //       (we could have re-used `condition.uid` above however this is more accurate)
+    //
+    if (update._id) condition._id = update._id;
+
     this.logger.debug('expunge query', { condition });
 
     const sql = builder.build({

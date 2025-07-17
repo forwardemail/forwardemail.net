@@ -8,8 +8,10 @@ const ObjectID = require('bson-objectid');
 const falso = require('@ngneat/falso');
 const isSANB = require('is-string-and-not-blank');
 
+const Aliases = require('#models/aliases');
 const Calendars = require('#models/calendars');
 const config = require('#config');
+const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
@@ -26,8 +28,8 @@ function json(calendar) {
     color: calendar.color,
     timezone: calendar.timezone,
     order: calendar.order,
-    created_at: calendar.created_at || calendar.createdAt,
-    updated_at: calendar.updated_at || calendar.updatedAt,
+    created_at: calendar.created_at,
+    updated_at: calendar.updated_at,
     object: 'calendar'
   };
 
@@ -100,6 +102,19 @@ async function create(ctx) {
   if (existingCalendar)
     throw Boom.conflict(ctx.translateError('CALENDAR_ALREADY_EXISTS'));
 
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
+
   const calendar = await Calendars.create({
     // db virtual helper
     instance: ctx.instance,
@@ -166,6 +181,19 @@ async function update(ctx) {
   if (!calendar) {
     throw Boom.notFound(ctx.translateError('CALENDAR_DOES_NOT_EXIST'));
   }
+
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
   // Update calendar fields
   if (body.name !== undefined) {

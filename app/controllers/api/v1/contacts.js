@@ -10,9 +10,11 @@ const isSANB = require('is-string-and-not-blank');
 const isEmail = require('#helpers/is-email');
 
 const AddressBooks = require('#models/address-books');
+const Aliases = require('#models/aliases');
 const Contacts = require('#models/contacts');
 const _ = require('#helpers/lodash');
 const ensureDefaultAddressBook = require('#helpers/ensure-default-address-book');
+const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 const updateStorageUsed = require('#helpers/update-storage-used');
 const xmlHelpers = require('#helpers/carddav-xml');
@@ -26,14 +28,14 @@ function json(contact) {
     //
     id: contact.contact_id,
     uid: contact.uid,
-    fullName: contact.fullName,
+    full_name: contact.fullName,
     content: contact.content,
     etag: contact.etag,
-    isGroup: contact.isGroup,
+    is_group: contact.isGroup,
     emails: contact.emails,
-    phoneNumbers: contact.phoneNumbers,
-    created_at: contact.created_at || contact.createdAt,
-    updated_at: contact.updated_at || contact.updatedAt,
+    phone_numbers: contact.phoneNumbers,
+    created_at: contact.created_at,
+    updated_at: contact.updated_at,
     object: 'contact'
   };
 
@@ -124,14 +126,14 @@ async function create(ctx) {
   }
 
   // Validate required fields
-  if (!body.content && !body.fullName) {
+  if (!body.content && !body.full_name) {
     throw Boom.badRequest(
       ctx.translateError('CONTACT_FULLNAME_OR_CONTENT_REQUIRED')
     );
   }
 
   // Validate fullName if provided
-  if (body.fullName !== undefined && !isSANB(body.fullName)) {
+  if (body.full_name !== undefined && !isSANB(body.full_name)) {
     throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
   }
 
@@ -249,6 +251,19 @@ async function create(ctx) {
     }
   }
 
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
+
   await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
   // Find the default address book
@@ -265,7 +280,7 @@ async function create(ctx) {
     vCardContent = `BEGIN:VCARD
 VERSION:3.0
 UID:${uid}
-FN:${body.fullName || ''}`;
+FN:${body.full_name || ''}`;
 
     if (body.emails && Array.isArray(body.emails)) {
       for (const email of body.emails) {
@@ -275,8 +290,8 @@ FN:${body.fullName || ''}`;
       }
     }
 
-    if (body.phoneNumbers && Array.isArray(body.phoneNumbers)) {
-      for (const phone of body.phoneNumbers) {
+    if (body.phone_numbers && Array.isArray(body.phone_numbers)) {
+      for (const phone of body.phone_numbers) {
         vCardContent += `\nTEL;TYPE=${phone.type || 'CELL'}:${phone.value}`;
       }
     }
@@ -298,10 +313,10 @@ FN:${body.fullName || ''}`;
     uid,
     content: vCardContent,
     etag,
-    fullName: body.fullName || '',
-    isGroup: boolean(body.isGroup),
+    fullName: body.full_name || '',
+    isGroup: boolean(body.is_group),
     emails: body.emails || [],
-    phoneNumbers: body.phoneNumbers || []
+    phoneNumbers: body.phone_numbers || []
   });
 
   // Set ETag header
@@ -383,7 +398,7 @@ async function update(ctx) {
   // Validate at least one field is provided for update
   if (
     !body.content &&
-    !body.fullName &&
+    !body.full_name &&
     !body.emails &&
     !body.phones &&
     !body.addresses
@@ -392,7 +407,7 @@ async function update(ctx) {
   }
 
   // Validate fullName if provided
-  if (body.fullName !== undefined && !isSANB(body.fullName)) {
+  if (body.full_name !== undefined && !isSANB(body.full_name)) {
     throw Boom.badRequest(ctx.translateError('CONTACT_FULLNAME_INVALID'));
   }
 
@@ -500,6 +515,19 @@ async function update(ctx) {
     }
   }
 
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
+
   await ensureDefaultAddressBook.call(ctx.instance, ctx);
 
   // Find the default address book
@@ -526,8 +554,8 @@ async function update(ctx) {
   let vCardContent = contact.content;
   let needsETagUpdate = false;
 
-  if (body.fullName !== undefined) {
-    contact.fullName = body.fullName;
+  if (body.full_name !== undefined) {
+    contact.fullName = body.full_name;
     needsETagUpdate = true;
   }
 
@@ -542,13 +570,13 @@ async function update(ctx) {
     needsETagUpdate = true;
   }
 
-  if (body.phoneNumbers !== undefined) {
-    contact.phoneNumbers = body.phoneNumbers;
+  if (body.phone_numbers !== undefined) {
+    contact.phoneNumbers = body.phone_numbers;
     needsETagUpdate = true;
   }
 
-  if (body.isGroup !== undefined) {
-    contact.isGroup = boolean(body.isGroup);
+  if (body.is_group !== undefined) {
+    contact.isGroup = boolean(body.is_group);
     needsETagUpdate = true;
   }
 
@@ -557,9 +585,9 @@ async function update(ctx) {
     // If we updated individual fields but not content, regenerate vCard
     if (
       body.content === undefined &&
-      (body.fullName !== undefined ||
+      (body.full_name !== undefined ||
         body.emails !== undefined ||
-        body.phoneNumbers !== undefined)
+        body.phone_numbers !== undefined)
     ) {
       vCardContent = `BEGIN:VCARD
 VERSION:3.0

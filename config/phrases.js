@@ -816,10 +816,11 @@ module.exports = {
 
   MESSAGE_INVALID_ID: 'Invalid message ID.',
   MESSAGE_DOES_NOT_EXIST: 'Message does not exist.',
+  MESSAGE_FLAGS_INVALID: 'Message flags invalid.',
 
   // Contact validation phrases
   CONTACT_ID_REQUIRED: 'Contact ID is required.',
-  CONTACT_FULLNAME_INVALID: 'Contact fullName must be a valid string.',
+  CONTACT_FULLNAME_INVALID: 'Contact full name must be a valid string.',
   CONTACT_CONTENT_INVALID: 'Contact content must be a valid string.',
   CONTACT_UPDATE_FIELDS_REQUIRED:
     'At least one field must be provided for contact update.',

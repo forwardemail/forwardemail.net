@@ -11,12 +11,13 @@ const mongoose = require('mongoose');
 const pRetry = require('p-retry');
 const safeStringify = require('fast-safe-stringify');
 const { Builder } = require('json-sql-enhanced');
-const _ = require('#helpers/lodash');
+const { boolean } = require('boolean');
 
+const _ = require('#helpers/lodash');
 const config = require('#config');
-const logger = require('#helpers/logger');
 const env = require('#config/env');
 const isRetryableError = require('#helpers/is-retryable-error');
+const logger = require('#helpers/logger');
 const recursivelyParse = require('#helpers/recursively-parse');
 
 const builder = new Builder();
@@ -567,11 +568,23 @@ async function findOne(
 
   const condition = prepareQuery(mapping, conditions);
 
-  const sql = builder.build({
+  const opts = {
     type: 'select',
     table,
     condition
-  });
+  };
+
+  const fields = [];
+  for (const key of Object.keys(projections)) {
+    if (boolean(projections[key])) fields.push(key);
+  }
+
+  if (!_.isEmpty(projections) && [-1, false].includes(projections._id))
+    fields.push('_id');
+
+  if (!_.isEmpty(fields)) opts.fields = fields;
+
+  const sql = builder.build(opts);
 
   let doc;
 
@@ -1494,7 +1507,7 @@ async function convertResult(
 
   const pathsToValidate = [];
   for (const key in projection) {
-    if (Boolean(projection[key]) === true) pathsToValidate.push(key);
+    if (boolean(projection[key])) pathsToValidate.push(key);
   }
 
   // if we had a projection with at least one truthy value then pass it as array
@@ -1503,7 +1516,17 @@ async function convertResult(
       ? d.validate(pathsToValidate)
       : d.validate());
 
-  return d;
+  // always include _id
+  if (
+    pathsToValidate.length > 0 &&
+    !pathsToValidate.includes('_id') &&
+    (projection._id === undefined || boolean(projection._id))
+  )
+    pathsToValidate.push('_id');
+
+  // TODO: should we include created_at and updated_at too?
+
+  return pathsToValidate.length > 0 ? _.pick(d, pathsToValidate) : d;
 }
 
 function sqliteVirtualDB(schema) {

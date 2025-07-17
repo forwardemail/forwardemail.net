@@ -117,9 +117,9 @@ test('creates contact with alias auth', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   const contactData = {
-    fullName: falso.randFullName(),
+    full_name: falso.randFullName(),
     emails: [{ value: falso.randEmail(), type: 'INTERNET' }],
-    phoneNumbers: [{ value: falso.randPhoneNumber(), type: 'CELL' }]
+    phone_numbers: [{ value: falso.randPhoneNumber(), type: 'CELL' }]
   };
 
   const res = await api
@@ -130,7 +130,7 @@ test('creates contact with alias auth', async (t) => {
   // Should create contact successfully
   t.is(res.status, 200);
   t.is(res.body.object, 'contact');
-  t.is(res.body.fullName, contactData.fullName);
+  t.is(res.body.full_name, contactData.full_name);
 });
 
 test('retrieves contact with alias auth', async (t) => {
@@ -139,7 +139,7 @@ test('retrieves contact with alias auth', async (t) => {
 
   // First create a contact
   const contactData = {
-    fullName: falso.randFullName()
+    full_name: falso.randFullName()
   };
 
   const createRes = await api
@@ -167,7 +167,7 @@ test('updates contact with alias auth', async (t) => {
 
   // First create a contact
   const contactData = {
-    fullName: falso.randFullName()
+    full_name: falso.randFullName()
   };
 
   const createRes = await api
@@ -179,7 +179,7 @@ test('updates contact with alias auth', async (t) => {
 
   // Then update it
   const updateData = {
-    fullName: falso.randFullName()
+    full_name: falso.randFullName()
   };
 
   const res = await api
@@ -188,7 +188,7 @@ test('updates contact with alias auth', async (t) => {
     .send(updateData);
 
   t.is(res.status, 200);
-  t.is(res.body.fullName, updateData.fullName);
+  t.is(res.body.full_name, updateData.full_name);
 });
 
 test('deletes contact with alias auth', async (t) => {
@@ -197,7 +197,7 @@ test('deletes contact with alias auth', async (t) => {
 
   // First create a contact
   const contactData = {
-    fullName: falso.randFullName()
+    full_name: falso.randFullName()
   };
 
   const createRes = await api
@@ -293,7 +293,7 @@ test('lists messages with alias auth', async (t) => {
   t.true(Array.isArray(res.body));
 });
 
-test('creates message with alias auth', async (t) => {
+test('creates, retrieves, and deletes message with alias auth', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
 
@@ -309,13 +309,42 @@ test('creates message with alias auth', async (t) => {
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send(messageData);
 
-  console.log('res', res);
-  console.log('res.body', res.body);
-
   // Should create message successfully
   t.is(res.status, 200);
   t.is(res.body.object, 'message');
   t.is(res.body.subject, messageData.subject);
+
+  const retrieveRes = await api
+    .get(`/v1/messages/${res.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  // Should retrieve message
+  t.is(retrieveRes.status, 200);
+  t.is(retrieveRes.body.object, 'message');
+  t.is(retrieveRes.body.subject, messageData.subject);
+
+  const deleteRes = await api
+    .delete(`/v1/messages/${res.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  t.is(deleteRes.status, 200);
+  t.is(deleteRes.body.id, res.body.id);
+
+  const deletedConfirmationRes = await api
+    .get(`/v1/messages/${res.body.id}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  // Should not return message
+  t.is(deletedConfirmationRes.status, 404);
 });
 
 //
@@ -427,7 +456,7 @@ test('contacts list supports pagination', async (t) => {
         createAliasAuth(`${alias.name}@${domain.name}`, pass)
       )
       .send({
-        fullName: `Test Contact ${i}`,
+        full_name: `Test Contact ${i}`,
         emails: [{ value: `test${i}@example.com`, type: 'INTERNET' }]
       });
   }
@@ -493,7 +522,7 @@ test('messages list supports pagination and filtering', async (t) => {
 
   // Test filtering unread messages
   const res2 = await api
-    .get('/v1/messages?unread_only=true')
+    .get('/v1/messages?is_unread=true')
     .set(
       'Authorization',
       createAliasAuth(`${alias.name}@${domain.name}`, pass)
@@ -568,7 +597,7 @@ test('folders list supports pagination and filtering', async (t) => {
 
   // Test filtering subscribed folders
   const res2 = await api
-    .get('/v1/folders?subscribed_only=true')
+    .get('/v1/folders?subscribed=true')
     .set(
       'Authorization',
       createAliasAuth(`${alias.name}@${domain.name}`, pass)
@@ -595,14 +624,14 @@ test('contacts create validates required fields', async (t) => {
   t.truthy(res.body.message);
 });
 
-test('messages create validates required fields', async (t) => {
+test('messages create validates fields', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
 
   const res = await api
     .post('/v1/messages')
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
-    .send({ subject: 'Test' }); // Missing required 'to' field
+    .send({ attachments: true });
 
   t.is(res.status, 400);
   t.truthy(res.body.message);
@@ -651,16 +680,18 @@ test('messages update with folder change', async (t) => {
     });
 
   t.is(folderRes.status, 200);
+  t.is(folderRes.body.path, 'TestFolder');
 
   // Update folder name
   const renameFolderRes = await api
-    .post(`/v1/folders/${folderRes.body.id}`)
+    .put(`/v1/folders/${folderRes.body.id}`)
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send({
       path: 'TestFolderRenamed'
     });
 
   t.is(renameFolderRes.status, 200);
+  t.is(renameFolderRes.body.path, 'TestFolderRenamed');
 
   // Create message
   const createRes = await api
@@ -673,6 +704,7 @@ test('messages update with folder change', async (t) => {
     });
 
   t.is(createRes.status, 200);
+  t.is(createRes.body.folder_path, 'INBOX');
 
   // Move message to folder
   const updateRes = await api
@@ -683,6 +715,7 @@ test('messages update with folder change', async (t) => {
     });
 
   t.is(updateRes.status, 200);
+  t.is(updateRes.body.folder_path, 'TestFolderRenamed');
 });
 
 test('delete operations work correctly', async (t) => {
@@ -694,7 +727,7 @@ test('delete operations work correctly', async (t) => {
     .post('/v1/contacts')
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send({
-      fullName: 'Delete Test Contact',
+      full_name: 'Delete Test Contact',
       emails: [{ value: 'delete@example.com', type: 'INTERNET' }]
     });
 
@@ -724,7 +757,7 @@ test('delete operations work correctly', async (t) => {
 // Invalid ID Tests
 //
 
-test('invalid contact ID returns 400', async (t) => {
+test('invalid contact ID returns 404', async (t) => {
   const { api } = t.context;
   const { alias, domain, pass } = await createTestAlias(t);
 
@@ -735,7 +768,7 @@ test('invalid contact ID returns 400', async (t) => {
       createAliasAuth(`${alias.name}@${domain.name}`, pass)
     );
 
-  t.is(res.status, 400);
+  t.is(res.status, 404);
 });
 
 test('invalid message ID returns 400', async (t) => {
@@ -796,7 +829,7 @@ test('pagination handles large page numbers', async (t) => {
     .post('/v1/contacts')
     .set('Authorization', createAliasAuth(`${alias.name}@${domain.name}`, pass))
     .send({
-      fullName: 'Single Contact',
+      full_name: 'Single Contact',
       emails: [{ value: 'single@example.com', type: 'INTERNET' }]
     });
 

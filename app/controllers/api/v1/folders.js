@@ -5,10 +5,13 @@
 
 const Boom = require('@hapi/boom');
 const ObjectID = require('bson-objectid');
+const isSANB = require('is-string-and-not-blank');
 const pify = require('pify');
 const { boolean } = require('boolean');
 
+const Aliases = require('#models/aliases');
 const Mailboxes = require('#models/mailboxes');
+const i18n = require('#helpers/i18n');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
 
 const onDelete = require('#helpers/imap/on-delete');
@@ -19,8 +22,6 @@ const onDeletePromise = pify(onDelete, { multiArgs: true });
 const onCreatePromise = pify(onCreate, { multiArgs: true });
 const onRenamePromise = pify(onRename, { multiArgs: true });
 
-// TODO: add isOverQuota checks everywhere
-
 function json(mailbox) {
   // Transform mailbox data for API response
   const object = {
@@ -30,16 +31,15 @@ function json(mailbox) {
     parent: mailbox.path.includes('/')
       ? mailbox.path.slice(0, Math.max(0, mailbox.path.lastIndexOf('/')))
       : null,
-    delimiter: '/',
-    flags: mailbox.flags,
-    special_use: mailbox.specialUse,
-    subscribed: mailbox.subscribed,
     uid_validity: mailbox.uidValidity,
     uid_next: mailbox.uidNext,
     modify_index: mailbox.modifyIndex,
+    subscribed: mailbox.subscribed,
+    flags: mailbox.flags,
     retention: mailbox.retention,
-    created_at: mailbox.created_at || mailbox.createdAt,
-    updated_at: mailbox.updated_at || mailbox.updatedAt,
+    special_use: mailbox.specialUse,
+    created_at: mailbox.created_at,
+    updated_at: mailbox.updated_at,
     object: 'folder'
   };
 
@@ -50,9 +50,8 @@ async function list(ctx) {
   const query = {};
 
   // Filter by subscribed status if specified
-  if (boolean(ctx.query.subscribed_only)) {
-    query.subscribed = true;
-  }
+  if (ctx.query.subscribed !== undefined)
+    query.subscribed = boolean(ctx.query.subscribed);
 
   // Get mailboxes/folders with pagination
   const [mailboxes, itemCount] = await Promise.all([
@@ -91,8 +90,21 @@ async function create(ctx) {
   const { body } = ctx.request;
 
   // Validate required fields
-  if (!body.path)
+  if (!isSANB(body.path))
     throw Boom.badRequest(ctx.translateError('FOLDER_NAME_OR_PATH_REQUIRED'));
+
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
   try {
     const [, mailboxId] = await onCreatePromise.call(
@@ -162,9 +174,21 @@ async function update(ctx) {
     });
   }
 
-  if (!mailbox) {
+  if (!mailbox)
     throw Boom.notFound(ctx.translateError('FOLDER_DOES_NOT_EXIST'));
-  }
+
+  // check if over quota
+  const { isOverQuota } = await Aliases.isOverQuota(
+    {
+      id: ctx.state.session.user.alias_id,
+      domain: ctx.state.session.user.domain_id,
+      locale: ctx.locale
+    },
+    0,
+    ctx.client
+  );
+  if (isOverQuota)
+    throw Boom.forbidden(i18n.translate('IMAP_MAILBOX_OVER_QUOTA', ctx.locale));
 
   try {
     const [, mailboxId] = await onRenamePromise.call(
@@ -174,7 +198,7 @@ async function update(ctx) {
       ctx.state.session
     );
 
-    const mailbox = await Mailboxes.findById(
+    mailbox = await Mailboxes.findById(
       ctx.instance,
       ctx.state.session,
       mailboxId
